@@ -25,16 +25,15 @@ import com.globalmentor.model.NameValuePair;
  * be provided for this parameter in the URI query.
  * @author Garret Wilson
  */
-public class URIQueryParameter extends NameValuePair<String, String>
-{
+public class URIQueryParameter extends NameValuePair<String, String> {
+
 	/**
 	 * Constructor specifying the name and value.
 	 * @param name The parameter name.
 	 * @param value The parameter value.
 	 * @throws NullPointerException if the given name is <code>null</code>.
 	 */
-	public URIQueryParameter(final String name, final String value)
-	{
+	public URIQueryParameter(final String name, final String value) {
 		super(checkInstance(name, "URI query parameter name cannot be null."), value); //construct the parent class
 	}
 

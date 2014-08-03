@@ -50,8 +50,8 @@ import java.util.*;
  * 
  * @author Garret Wilson
  */
-public class PollStateManager<S>
-{
+public class PollStateManager<S> {
+
 	/** The ordered list of states and corresponding info. */
 	private final List<StateInfo> stateInfos = new ArrayList<StateInfo>();
 
@@ -59,8 +59,7 @@ public class PollStateManager<S>
 	private int stateInfoIndex = 0;
 
 	/** Default constructor. */
-	public PollStateManager()
-	{
+	public PollStateManager() {
 	}
 
 	/**
@@ -69,8 +68,7 @@ public class PollStateManager<S>
 	 * @param maxDuration The maximum duration, in milliseconds, for a transition, regardless of polls.
 	 * @throws NullPointerException if the given state is <code>null</code>.
 	 */
-	public synchronized void addMaxDurationState(final S state, final long maxDuration)
-	{
+	public synchronized void addMaxDurationState(final S state, final long maxDuration) {
 		addState(state, maxDuration, Long.MAX_VALUE);
 	}
 
@@ -80,8 +78,7 @@ public class PollStateManager<S>
 	 * @param maxPollCount The maximum number of polls before a transition, regardless of duration.
 	 * @throws NullPointerException if the given state is <code>null</code>.
 	 */
-	public synchronized void addMaxPollCountState(final S state, final long maxPollCount)
-	{
+	public synchronized void addMaxPollCountState(final S state, final long maxPollCount) {
 		addState(state, Long.MAX_VALUE, maxPollCount);
 	}
 
@@ -92,8 +89,7 @@ public class PollStateManager<S>
 	 * @param maxPollCount The maximum number of polls before a transition, regardless of duration.
 	 * @throws NullPointerException if the given state is <code>null</code>.
 	 */
-	public synchronized void addState(final S state, final long maxDuration, final long maxPollCount)
-	{
+	public synchronized void addState(final S state, final long maxDuration, final long maxPollCount) {
 		addState(state, Long.MAX_VALUE, maxDuration, Long.MAX_VALUE, maxPollCount);
 	}
 
@@ -106,14 +102,12 @@ public class PollStateManager<S>
 	 * @param maxPollCount The maximum number of polls before a transition, regardless of duration.
 	 * @throws NullPointerException if the given state is <code>null</code>.
 	 */
-	public synchronized void addState(final S state, final long minDuration, final long maxDuration, final long minPollCount, final long maxPollCount)
-	{
+	public synchronized void addState(final S state, final long minDuration, final long maxDuration, final long minPollCount, final long maxPollCount) {
 		stateInfos.add(new StateInfo(state, minDuration, maxDuration, minPollCount, maxPollCount));
 	}
 
 	/** @return Info for the current state, or <code>null</code> if no states are defined. */
-	protected synchronized StateInfo getStateInfo()
-	{
+	protected synchronized StateInfo getStateInfo() {
 		return !stateInfos.isEmpty() ? stateInfos.get(stateInfoIndex) : null;
 	}
 
@@ -122,8 +116,7 @@ public class PollStateManager<S>
 	 * @return <code>true</code> if there exists states after the current state, if any, or <code>false</code> if there are no further states or no states are
 	 *         defined.
 	 */
-	public synchronized boolean hasNextState()
-	{
+	public synchronized boolean hasNextState() {
 		return stateInfoIndex < stateInfos.size() - 1;
 	}
 
@@ -132,8 +125,7 @@ public class PollStateManager<S>
 	 * the maximum duration for the current state.
 	 * @return The amount of time, in milliseconds, the current state has been in effect, or -1 if no states are defined.
 	 */
-	public synchronized long getStateDuration()
-	{
+	public synchronized long getStateDuration() {
 		final StateInfo stateInfo = getStateInfo();
 		return stateInfo != null ? stateInfo.getDuration() : -1;
 	}
@@ -143,8 +135,7 @@ public class PollStateManager<S>
 	 * in effect longer than its maximum allowed.
 	 * @return The amount of time, in milliseconds, the current state has remaining to be in effect, or {@link Long#MAX_VALUE} if no states are defined.
 	 */
-	public long getStateRemainingDuration()
-	{
+	public long getStateRemainingDuration() {
 		final StateInfo stateInfo = getStateInfo();
 		return stateInfo != null ? stateInfo.getRemainingDuration() : Long.MAX_VALUE;
 	}
@@ -153,11 +144,9 @@ public class PollStateManager<S>
 	 * Retrieves the current state. The current poll count is not affected, but if sufficient time has passed the state may first transition because of duration.
 	 * @return The current state, or <code>null</code> if no states are defined.
 	 */
-	public synchronized S getState()
-	{
+	public synchronized S getState() {
 		StateInfo stateInfo = getStateInfo();
-		while(stateInfo != null && isTransitionReady()) //if we should transition states
-		{
+		while(stateInfo != null && isTransitionReady()) { //if we should transition states
 			stateInfo = transition(); //transition the state
 		}
 		return stateInfo != null ? stateInfo.getState() : null;
@@ -167,11 +156,9 @@ public class PollStateManager<S>
 	 * Polls and then retrieves the current state. The state is transitioned if the increased poll count or duration requires.
 	 * @return The current state, or <code>null</code> if no states are defined.
 	 */
-	public synchronized S pollState()
-	{
+	public synchronized S pollState() {
 		StateInfo stateInfo = getStateInfo();
-		if(stateInfo != null)
-		{
+		if(stateInfo != null) {
 			stateInfo.poll(); //poll the state
 		}
 		return getState();
@@ -183,8 +170,7 @@ public class PollStateManager<S>
 	 * @return <code>true</code> if this state should transition, or <code>null</code> if there are no states or the current state is the last state.
 	 * @see #hasNextState()
 	 */
-	public synchronized boolean isTransitionReady()
-	{
+	public synchronized boolean isTransitionReady() {
 		final StateInfo stateInfo = getStateInfo();
 		return stateInfo != null && hasNextState() && stateInfo.isTransitionReady();
 	}
@@ -193,21 +179,15 @@ public class PollStateManager<S>
 	 * Transitions to the next state in the sequence. The new state is reset. If there are no further states in the sequence, no action occurs.
 	 * @return Information on the new state, or <code>null</code> if no states are defined.
 	 */
-	protected synchronized StateInfo transition()
-	{
+	protected synchronized StateInfo transition() {
 		final StateInfo stateInfo;
-		if(stateInfoIndex < stateInfos.size() - 1) //if there are more states in the sequence
-		{
+		if(stateInfoIndex < stateInfos.size() - 1) { //if there are more states in the sequence
 			stateInfoIndex++; //go to the next state
 			stateInfo = getStateInfo(); //get the new state information
-			if(stateInfo != null) //if we have a new state
-			{
+			if(stateInfo != null) { //if we have a new state
 				stateInfo.reset(); //reset the new state
 			}
-		}
-		else
-		//if there are no more states
-		{
+		} else { //if there are no more states
 			stateInfo = getStateInfo(); //the state hasn't changed
 		}
 		return stateInfo;
@@ -218,8 +198,7 @@ public class PollStateManager<S>
 	 * @return The new state, or <code>null</code> if no states are defined.
 	 * @see #resetState()
 	 */
-	public synchronized S reset()
-	{
+	public synchronized S reset() {
 		stateInfoIndex = 0; //reset the state index
 		return resetState();
 	}
@@ -229,16 +208,12 @@ public class PollStateManager<S>
 	 * action occurs.
 	 * @return The current state, or <code>null</code> if no states are defined.
 	 */
-	public synchronized S resetState()
-	{
+	public synchronized S resetState() {
 		final StateInfo stateInfo = getStateInfo();
-		if(stateInfo != null)
-		{
+		if(stateInfo != null) {
 			stateInfo.reset();
 			return stateInfo.getState();
-		}
-		else
-		{
+		} else {
 			return null;
 		}
 	}
@@ -247,14 +222,13 @@ public class PollStateManager<S>
 	 * The value class for keeping track of the current state, along with transition requirements and current duration and poll count.
 	 * @author Garret Wilson
 	 */
-	private class StateInfo
-	{
+	private class StateInfo {
+
 		/** The state. */
 		private final S state;
 
 		/** @return The state. */
-		public S getState()
-		{
+		public S getState() {
 			return state;
 		}
 
@@ -262,8 +236,7 @@ public class PollStateManager<S>
 		private final long minDuration;
 
 		/** @return The minimum duration, in milliseconds, before a transition. */
-		public long getMinDuration()
-		{
+		public long getMinDuration() {
 			return minDuration;
 		}
 
@@ -271,8 +244,7 @@ public class PollStateManager<S>
 		private final long maxDuration;
 
 		/** @return The maximum duration, in milliseconds, for a transition, regardless of polls. */
-		public long getMaxDuration()
-		{
+		public long getMaxDuration() {
 			return maxDuration;
 		}
 
@@ -280,8 +252,7 @@ public class PollStateManager<S>
 		private final long minPollCount;
 
 		/** @return The minimum number of polls before a transition. */
-		public long getMinPollCount()
-		{
+		public long getMinPollCount() {
 			return minPollCount;
 		}
 
@@ -289,8 +260,7 @@ public class PollStateManager<S>
 		private final long maxPollCount;
 
 		/** @return The maximum number of polls before a transition, regardless of duration. */
-		public long getMaxPollCount()
-		{
+		public long getMaxPollCount() {
 			return maxPollCount;
 		}
 
@@ -304,8 +274,7 @@ public class PollStateManager<S>
 		private long pollCount;
 
 		/** Increments the poll count. */
-		public void poll()
-		{
+		public void poll() {
 			pollCount++;
 		}
 
@@ -313,8 +282,7 @@ public class PollStateManager<S>
 		 * Determines the amount of time the current state has been in effect.
 		 * @return The amount of time, in milliseconds, the current state has been in effect.
 		 */
-		public long getDuration()
-		{
+		public long getDuration() {
 			return System.currentTimeMillis() - startTime;
 		}
 
@@ -324,8 +292,7 @@ public class PollStateManager<S>
 		 * @return The amount of time, in milliseconds, the current state has remaining to be in effect.
 		 * @see #getMaxDuration()
 		 */
-		public long getRemainingDuration()
-		{
+		public long getRemainingDuration() {
 			return getMaxDuration() - getDuration();
 		}
 
@@ -334,15 +301,13 @@ public class PollStateManager<S>
 		 * the poll count is above the current maximum, or both are above their minimums.
 		 * @return <code>true</code> if this state should transition.
 		 */
-		public boolean isTransitionReady()
-		{
+		public boolean isTransitionReady() {
 			final long duration = System.currentTimeMillis() - startTime;
 			return duration > getMaxDuration() || pollCount > getMaxPollCount() || (duration > getMinDuration() && pollCount > getMinPollCount());
 		}
 
 		/** Resets the information of this state by setting the poll count to zero and initializing the time to the current time. */
-		public void reset()
-		{
+		public void reset() {
 			startTime = System.currentTimeMillis();
 			pollCount = 0;
 		}
@@ -356,8 +321,7 @@ public class PollStateManager<S>
 		 * @param maxPollCount The maximum number of polls before a transition, regardless of duration.
 		 * @throws NullPointerException if the given state is <code>null</code>.
 		 */
-		public StateInfo(final S state, final long minDuration, final long maxDuration, final long minPollCount, final long maxPollCount)
-		{
+		public StateInfo(final S state, final long minDuration, final long maxDuration, final long minPollCount, final long maxPollCount) {
 			this.state = checkInstance(state);
 			this.minDuration = minDuration;
 			this.maxDuration = maxDuration;

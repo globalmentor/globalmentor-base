@@ -22,8 +22,7 @@ import java.net.URI;
  * Represents a generic resource with an identifying URI.
  * @author Garret Wilson
  */
-public interface Resource
-{
+public interface Resource {
 
 	/** The Java property name of a resource's URI. */
 	public final static String URI_PROPERTY_NAME = "uri";

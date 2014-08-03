@@ -25,8 +25,7 @@ import com.globalmentor.collections.comparators.SortOrder;
  * @author Garret Wilson
  * @see Comparable
  */
-public class Comparables
-{
+public class Comparables {
 
 	/**
 	 * Compares two comparables for order in ascending order. Returns a negative integer, zero, or a positive integer as the first argument is less than, equal
@@ -44,8 +43,7 @@ public class Comparables
 	 * @throws ClassCastException if the arguments' types prevent them from being compared.
 	 * @see Comparable#compareTo(Object)
 	 */
-	public static <T extends Comparable<? super T>> int compare(final T comparable1, final T comparable2)
-	{
+	public static <T extends Comparable<? super T>> int compare(final T comparable1, final T comparable2) {
 		return compare(comparable1, comparable2, SortOrder.ASCENDING); //compare in ascending order
 	}
 
@@ -66,27 +64,17 @@ public class Comparables
 	 * @throws ClassCastException if the arguments' types prevent them from being compared.
 	 * @see Comparable#compareTo(Object)
 	 */
-	public static <T extends Comparable<? super T>> int compare(final T comparable1, final T comparable2, final SortOrder sortOrder)
-	{
-		if(comparable1 == comparable2) //if the comparables are identical
-		{
+	public static <T extends Comparable<? super T>> int compare(final T comparable1, final T comparable2, final SortOrder sortOrder) {
+		if(comparable1 == comparable2) { //if the comparables are identical
 			return 0; //identical comparables are always equal
 		}
-		if(comparable1 != null) //if the first comparable is not null
-		{
-			if(comparable2 != null) //if the second comparable is not null
-			{
+		if(comparable1 != null) { //if the first comparable is not null
+			if(comparable2 != null) { //if the second comparable is not null
 				return sortOrder == SortOrder.ASCENDING ? comparable1.compareTo(comparable2) : comparable2.compareTo(comparable1); //compare in the requested order
-			}
-			else
-			//if only the first comparable is not null
-			{
+			} else { //if only the first comparable is not null
 				return sortOrder == SortOrder.ASCENDING ? 1 : -1; //null comparables should be sorted lower
 			}
-		}
-		else
-		//if the first comparable is null
-		{
+		} else { //if the first comparable is null
 			assert comparable2 != null : "Both comparables cannot be null, because we already checked for identity.";
 			return sortOrder == SortOrder.ASCENDING ? -1 : 1; //null comparables should be sorted lower
 		}

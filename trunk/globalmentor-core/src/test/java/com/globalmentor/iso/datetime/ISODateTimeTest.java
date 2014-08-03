@@ -35,16 +35,13 @@ import com.globalmentor.time.Milliseconds;
  * 
  * @author Garret Wilson
  */
-public class ISODateTimeTest extends AbstractTest
-{
+public class ISODateTimeTest extends AbstractTest {
 
 	@Test
-	public void testRoundTrip()
-	{
+	public void testRoundTrip() {
 		final long startTime = System.currentTimeMillis(); //start now
 		final long endTime = startTime + Milliseconds.fromHours(11); //check times for a few hours
-		for(long time = startTime; time < endTime; time += 17) //check every 17 milliseconds
-		{
+		for(long time = startTime; time < endTime; time += 17) { //check every 17 milliseconds
 			final Calendar calendar = new GregorianCalendar(GMT); //get a calendar in UTC
 			calendar.setTimeInMillis(time); //set the calendar to our time
 			final ISODateTime datetime1 = new ISODateTime(time);

@@ -21,40 +21,43 @@ import java.net.URI;
 
 import com.globalmentor.io.URIAccessible;
 
-/**Provides reading and writing functionality for an object.
-@author Garret Wilson
-@deprecated
-*/
-public interface IOKit<T> extends URIAccessible
-{
+/**
+ * Provides reading and writing functionality for an object.
+ * @author Garret Wilson
+ * @deprecated
+ */
+public interface IOKit<T> extends URIAccessible {
 
-	/**Loads an object from a given URI.
-	@param uri The URI that identifies the object to be loaded.
-	@return The object containing the data of the resouce represented by the URI.
-	@throws IOException Thrown if there is an error reading the object.
-	*/
+	/**
+	 * Loads an object from a given URI.
+	 * @param uri The URI that identifies the object to be loaded.
+	 * @return The object containing the data of the resouce represented by the URI.
+	 * @throws IOException Thrown if there is an error reading the object.
+	 */
 	public T load(final URI uri) throws IOException;
 
-	/**Loads an object from an input stream.
-	@param inputStream The input stream from which to read the data.
-	@param baseURI The base URI of the content, or <code>null</code> if no base
-		URI is available.
-	@throws IOException Thrown if there is an error reading the data.
-	*/ 
+	/**
+	 * Loads an object from an input stream.
+	 * @param inputStream The input stream from which to read the data.
+	 * @param baseURI The base URI of the content, or <code>null</code> if no base URI is available.
+	 * @throws IOException Thrown if there is an error reading the data.
+	 */
 	public T load(final InputStream inputStream, final URI baseURI) throws IOException;
 
-	/**Saves an object to a given URI.
-	@param object The object the data of which will be saved at the given URI.
-	@param uri The URI at which the object should be saved.
-	@throws IOException Thrown if there is an error writing the object.
-	*/
+	/**
+	 * Saves an object to a given URI.
+	 * @param object The object the data of which will be saved at the given URI.
+	 * @param uri The URI at which the object should be saved.
+	 * @throws IOException Thrown if there is an error writing the object.
+	 */
 	public void save(final T object, final URI uri) throws IOException;
 
-	/**Saves an object to an output stream.
-	@param object The object the data of which will be written to the given output stream.
-	@param outputStream The output stream to which to write the object content.
-	@throws IOException Thrown if there is an error writing the object.
-	*/
+	/**
+	 * Saves an object to an output stream.
+	 * @param object The object the data of which will be written to the given output stream.
+	 * @param outputStream The output stream to which to write the object content.
+	 * @throws IOException Thrown if there is an error writing the object.
+	 */
 	public void save(final T object, final OutputStream outputStream) throws IOException;
 
 }

@@ -16,21 +16,23 @@
 
 package com.globalmentor.iso.datetime;
 
-/**The base for all ISO 8601 types.
-@author Garret Wilson
-*/
-public interface ISOTemporal
-{
+/**
+ * The base for all ISO 8601 types.
+ * @author Garret Wilson
+ */
+public interface ISOTemporal {
 
-	/**Appends the canonical lexical representation of this temporal.
-	@param stringBuild The string builder to which the lexical representation will be appended.
-	@return The string builder.
-	*/
+	/**
+	 * Appends the canonical lexical representation of this temporal.
+	 * @param stringBuild The string builder to which the lexical representation will be appended.
+	 * @return The string builder.
+	 */
 	public StringBuilder append(final StringBuilder stringBuilder);
 
-	/**Returns the canonical lexical representation of this temporal
-	@return The canonical lexical representation of this temporal.
-	*/
+	/**
+	 * Returns the canonical lexical representation of this temporal
+	 * @return The canonical lexical representation of this temporal.
+	 */
 	public String toString();
 
 }

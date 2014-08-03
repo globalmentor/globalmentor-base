@@ -28,8 +28,7 @@ import static java.util.Calendar.*;
  * Utilities for working with ISO dates.
  * @author Garret Wilson
  */
-public class ISODates
-{
+public class ISODates {
 
 	/**
 	 * Calculates the counts of calendar days before that intersect a set of ranges.
@@ -37,16 +36,13 @@ public class ISODates
 	 * @return A map of all calendar days and the corresponding total number of intersections for each with the ranges.
 	 * @throws IllegalArgumentException if the lower bound of one of the ranges is above its upper bound.
 	 */
-	public static SortedMap<ISODate, Count> getDayCounts(final Set<Range<ISODate>> ranges)
-	{
+	public static SortedMap<ISODate, Count> getDayCounts(final Set<Range<ISODate>> ranges) {
 		final SortedMap<ISODate, Count> dayCounts = new TreeMap<ISODate, Count>();
-		for(final Range<ISODate> range : ranges) //fill the day counts from the ranges
-		{
+		for(final Range<ISODate> range : ranges) { //fill the day counts from the ranges
 			final GregorianCalendar rangeCalendar = range.getLowerBound().toCalendar(); //start at the bottom of the range
 			final GregorianCalendar rangeUpperBound = range.getUpperBound().toCalendar();
 			checkArgument(rangeCalendar.compareTo(rangeUpperBound) <= 0, "Calendar range {0} cannot be greater than {1}.", rangeCalendar, rangeUpperBound);
-			while(rangeCalendar.compareTo(rangeUpperBound) <= 0) //sweep the range until we go past the upper end of the range
-			{
+			while(rangeCalendar.compareTo(rangeUpperBound) <= 0) { //sweep the range until we go past the upper end of the range
 				incrementCounterMapCount(dayCounts, new ISODate(rangeCalendar));
 				rangeCalendar.add(DAY_OF_YEAR, 1); //go to the next day in the range
 			}
@@ -65,8 +61,7 @@ public class ISODates
 	 * @param ranges The ranges used for intersection.
 	 * @return A map of all calendar days and the total number of intersection with the ranges within that period.
 	 */
-	public static SortedMap<ISODate, Long> getDayTotals(final ISODate date, final int windowSize, final Map<ISODate, Count> dayCounts)
-	{
+	public static SortedMap<ISODate, Long> getDayTotals(final ISODate date, final int windowSize, final Map<ISODate, Count> dayCounts) {
 		return getDayTotals(date, windowSize, windowSize, dayCounts);
 	}
 
@@ -82,19 +77,15 @@ public class ISODates
 	 * @param ranges The ranges used for intersection.
 	 * @return A map of all calendar days and the total number of intersection with the ranges within the indicated history period.
 	 */
-	public static SortedMap<ISODate, Long> getDayTotals(final ISODate date, final int windowSize, final int historyCount, final Map<ISODate, Count> dayCounts)
-	{
+	public static SortedMap<ISODate, Long> getDayTotals(final ISODate date, final int windowSize, final int historyCount, final Map<ISODate, Count> dayCounts) {
 		final GregorianCalendar dayCalendar = date.toCalendar();
 		final SortedMap<ISODate, Long> dayTotals = new TreeMap<ISODate, Long>();
-		for(int i = 0; i < historyCount; ++i) //calculate all the day totals in the past
-		{
+		for(int i = 0; i < historyCount; ++i) { //calculate all the day totals in the past
 			final GregorianCalendar totalCalendar = (GregorianCalendar)dayCalendar.clone(); //use a separate calendar to calculate the totals for this day
 			long total = 0; //calculate the total for this date
-			for(int j = 0; j < windowSize; ++j) //look at previous days relative to the current calendar date
-			{
+			for(int j = 0; j < windowSize; ++j) { //look at previous days relative to the current calendar date
 				final Count currentDayCount = dayCounts.get(new ISODate(totalCalendar)); //get the count for this day
-				if(currentDayCount != null)
-				{
+				if(currentDayCount != null) {
 					total += currentDayCount.getCount();
 				}
 				totalCalendar.add(DAY_OF_YEAR, -1); //go back a day and continue calculating the total

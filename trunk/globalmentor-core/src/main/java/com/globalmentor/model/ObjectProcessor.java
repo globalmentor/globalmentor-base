@@ -16,15 +16,16 @@
 
 package com.globalmentor.model;
 
-/**The interface for a class that can perform some processing on an object.
-@author Garret Wilson
-@deprecated
-*/
-public interface ObjectProcessor
-{
+/**
+ * The interface for a class that can perform some processing on an object.
+ * @author Garret Wilson
+ * @deprecated
+ */
+public interface ObjectProcessor {
 
-	/**Processes a single object.
-	@param object The object to process.
-	*/
+	/**
+	 * Processes a single object.
+	 * @param object The object to process.
+	 */
 	public void process(final Object object);
 }

@@ -18,16 +18,16 @@ package com.globalmentor.text;
 
 import java.text.Collator;
 
-/**A source of collators for sorting.
-@author Garret Wilson
-*/
-public interface CollatorFactory
-{
+/**
+ * A source of collators for sorting.
+ * @author Garret Wilson
+ */
+public interface CollatorFactory {
 
-	/**Retrieves an instance of a collator.
-	Implementations will usually take into account some user locale and sorting preferences.
-	@return An instance of a collator.
-	*/
+	/**
+	 * Retrieves an instance of a collator. Implementations will usually take into account some user locale and sorting preferences.
+	 * @return An instance of a collator.
+	 */
 	public Collator getCollatorInstance();
 
 }

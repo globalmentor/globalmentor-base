@@ -29,42 +29,36 @@ import com.globalmentor.model.AbstractHashObject;
  * supports {@link #hashCode()} and {@link #equals(Object)}.
  * @author Garret Wilson
  */
-public class MethodSignature extends AbstractHashObject
-{
+public class MethodSignature extends AbstractHashObject {
 
 	private final String name;
 
 	/** @return The name of the method. */
-	public String getName()
-	{
+	public String getName() {
 		return name;
 	}
 
 	private final Class<?> returnType;
 
 	/** @return The return type of the method. */
-	public Class<?> getReturnType()
-	{
+	public Class<?> getReturnType() {
 		return returnType;
 	}
 
 	private final List<Class<?>> parameterTypes;
 
-	public List<Class<?>> getParameterTypes()
-	{
+	public List<Class<?>> getParameterTypes() {
 		return parameterTypes;
 	}
 
 	private final boolean returnTypeSignificant;
 
 	/** @return Whether, for purposes of equality, the return type is significant. */
-	public boolean isReturnTypeSignificant()
-	{
+	public boolean isReturnTypeSignificant() {
 		return returnTypeSignificant;
 	}
 
-	private MethodSignature(final String name, final Class<?> returnType, final List<Class<?>> parameterTypes, final boolean returnTypeSignificant)
-	{
+	private MethodSignature(final String name, final Class<?> returnType, final List<Class<?>> parameterTypes, final boolean returnTypeSignificant) {
 		this.name = checkInstance(name);
 		this.returnType = returnType;
 		this.parameterTypes = checkInstance(parameterTypes);
@@ -72,20 +66,16 @@ public class MethodSignature extends AbstractHashObject
 	}
 
 	@Override
-	public int hashCode()
-	{
+	public int hashCode() {
 		return Objects.getHashCode(name, parameterTypes); //don't hash the return type, as some method signature instances won't consider it significant
 	}
 
 	@Override
-	public boolean equals(final Object object)
-	{
-		if(this == object)
-		{
+	public boolean equals(final Object object) {
+		if(this == object) {
 			return true;
 		}
-		if(!(object instanceof MethodSignature))
-		{
+		if(!(object instanceof MethodSignature)) {
 			return false;
 		}
 		final MethodSignature methodSignature = (MethodSignature)object;
@@ -100,8 +90,7 @@ public class MethodSignature extends AbstractHashObject
 	 * @param method The method for which a signature should be returned.
 	 * @return An object representing the signature of the given methods.
 	 */
-	public static MethodSignature forMethod(final Method method)
-	{
+	public static MethodSignature forMethod(final Method method) {
 		return forMethod(method, true);
 	}
 
@@ -111,8 +100,7 @@ public class MethodSignature extends AbstractHashObject
 	 * @param returnTypeSignificant Whether, for purposes of equality, the return type is significant.
 	 * @return An object representing the signature of the given methods.
 	 */
-	public static MethodSignature forMethod(final Method method, final boolean returnTypeSignificant)
-	{
+	public static MethodSignature forMethod(final Method method, final boolean returnTypeSignificant) {
 		return new MethodSignature(method.getName(), method.getReturnType(), asList(method.getParameterTypes()), returnTypeSignificant);
 	}
 }

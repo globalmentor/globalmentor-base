@@ -16,11 +16,11 @@
 
 package com.globalmentor.io;
 
-/**Indicates an object that allow access to resources by providing input and output streams.
-@author Garret Wilson
-@deprecated
-*/
-public interface URIAccessible extends URIInputStreamable, URIOutputStreamable
-{
+/**
+ * Indicates an object that allow access to resources by providing input and output streams.
+ * @author Garret Wilson
+ * @deprecated
+ */
+public interface URIAccessible extends URIInputStreamable, URIOutputStreamable {
 
 }

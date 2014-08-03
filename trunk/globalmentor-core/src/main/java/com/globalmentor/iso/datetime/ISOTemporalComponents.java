@@ -37,15 +37,13 @@ import static com.globalmentor.time.TimeZones.*;
  * A lightweight structure for transferring components of ISO 8601 types.
  * @author Garret Wilson
  */
-public class ISOTemporalComponents
-{
+public class ISOTemporalComponents {
 
 	/** The year (0-9999), or -1 if there is no year specified. */
 	private final int year;
 
 	/** @return The year (0-9999), or -1 if there is no year specified. */
-	public final int getYear()
-	{
+	public final int getYear() {
 		return year;
 	}
 
@@ -53,8 +51,7 @@ public class ISOTemporalComponents
 	private final int month;
 
 	/** @return The month (1-12), or -1 if there is no month specified. */
-	public final int getMonth()
-	{
+	public final int getMonth() {
 		return month;
 	}
 
@@ -62,8 +59,7 @@ public class ISOTemporalComponents
 	private final int day;
 
 	/** @return The day (1-31), or -1 if there is no day specified. */
-	public final int getDay()
-	{
+	public final int getDay() {
 		return day;
 	}
 
@@ -71,8 +67,7 @@ public class ISOTemporalComponents
 	private final int hours;
 
 	/** @return The hours (0-23), or -1 if there is no hours specified. */
-	public final int getHours()
-	{
+	public final int getHours() {
 		return hours;
 	}
 
@@ -80,8 +75,7 @@ public class ISOTemporalComponents
 	private final int minutes;
 
 	/** @return The minutes (0-59), or -1 if there is no minutes specified. */
-	public final int getMinutes()
-	{
+	public final int getMinutes() {
 		return minutes;
 	}
 
@@ -89,8 +83,7 @@ public class ISOTemporalComponents
 	private final int seconds;
 
 	/** @return The seconds (0-60, allowing leap-seconds; see ISO 8601:2004(E) 4.2.1), or -1 if there is no seconds specified. */
-	public final int getSeconds()
-	{
+	public final int getSeconds() {
 		return seconds;
 	}
 
@@ -98,8 +91,7 @@ public class ISOTemporalComponents
 	private final int microseconds;
 
 	/** @return The microseconds (0-999999), or -1 if there is no microseconds specified. */
-	public final int getMicroseconds()
-	{
+	public final int getMicroseconds() {
 		return microseconds;
 	}
 
@@ -107,8 +99,7 @@ public class ISOTemporalComponents
 	private final int utcOffsetHours;
 
 	/** @return The UTC offset hours. */
-	public final int getUTCOffsetHours()
-	{
+	public final int getUTCOffsetHours() {
 		return utcOffsetHours;
 	}
 
@@ -116,8 +107,7 @@ public class ISOTemporalComponents
 	private final int utcOffsetMinutes;
 
 	/** @return The UTC offset minutes, or -1 if there is no UTC offset hours or minutes specified. */
-	public final int getUTCOffsetMinutes()
-	{
+	public final int getUTCOffsetMinutes() {
 		return utcOffsetMinutes;
 	}
 
@@ -125,20 +115,17 @@ public class ISOTemporalComponents
 	private final long time;
 
 	/** @return The difference, measured in milliseconds, between the current time and midnight, January 1, 1970 UTC. */
-	public long getTime()
-	{
+	public long getTime() {
 		return time;
 	}
 
 	/** @return <code>true</code> if there are sufficient components to create an {@link ISODate}. */
-	public boolean hasDateComponents()
-	{
+	public boolean hasDateComponents() {
 		return getYear() >= 0 && getMonth() >= 0 && getDay() >= 0;
 	}
 
 	/** @return <code>true</code> if there are sufficient components to create an {@link ISOTime}. */
-	public boolean hasTimeComponents()
-	{
+	public boolean hasTimeComponents() {
 		return getHours() >= 0 && getMinutes() >= 0 && getSeconds() >= 0 && getMicroseconds() >= 0;
 	}
 
@@ -155,8 +142,7 @@ public class ISOTemporalComponents
 	 * @param utcOffsetMinutes The UTC offset minutes, or -1 if there is no UTC offset hours or minutes specified.
 	 */
 	public ISOTemporalComponents(final int year, final int month, final int day, final int hours, final int minutes, final int seconds, final int microseconds,
-			final int utcOffsetHours, final int utcOffsetMinutes)
-	{
+			final int utcOffsetHours, final int utcOffsetMinutes) {
 		this.year = year;
 		this.month = month;
 		this.day = day;
@@ -170,22 +156,15 @@ public class ISOTemporalComponents
 		final Calendar calendar = new GregorianCalendar(utcOffsetHours == 0 && utcOffsetMinutes == 0 ? TimeZone.getTimeZone(GMT_ID) : getTimeZone(utcOffsetHours,
 				utcOffsetMinutes)); //get Gregorian calendar using the time zone from the UTC offset, defaulting to a GMT time zone
 		calendar.clear(); //clear the calendar
-		if(year >= 0 && month >= 0 && day >= 0) //if there is date information
-		{
-			if(hours >= 0 && minutes >= 0 && seconds >= 0 && microseconds >= 0) //if date and time is available
-			{
+		if(year >= 0 && month >= 0 && day >= 0) { //if there is date information
+			if(hours >= 0 && minutes >= 0 && seconds >= 0 && microseconds >= 0) { //if date and time is available
 				setDateTime(calendar, checkArgumentRange(year, 0, 9999), checkArgumentRange(month, 1, 12) - 1, checkArgumentRange(day, 1, 31),
 						checkArgumentRange(hours, 0, 23), checkArgumentRange(minutes, 0, 59), checkArgumentRange(seconds, 0, 60),
 						checkArgumentRange(microseconds, 0, 999999) / 1000); //set the calendar's date and the time, allowing leap-seconds (see ISO 8601:2004(E) 4.2.1); compensate for Calendar's zero-based month
-			}
-			else
-			//if no time is available
-			{
+			} else { //if no time is available
 				calendar.set(checkArgumentRange(year, 0, 9999), checkArgumentRange(month, 1, 12) - 1, checkArgumentRange(day, 1, 31)); //set the calendar's date
 			}
-		}
-		else if(hours >= 0 && minutes >= 0 && seconds >= 0 && microseconds >= 0) //if only time is available
-		{
+		} else if(hours >= 0 && minutes >= 0 && seconds >= 0 && microseconds >= 0) { //if only time is available
 			setTime(calendar, checkArgumentRange(hours, 0, 23), checkArgumentRange(minutes, 0, 59), checkArgumentRange(seconds, 0, 60),
 					checkArgumentRange(microseconds, 0, 999999) / 1000); //set the calendar's time, converting the microseconds to milliseconds
 		}
@@ -197,8 +176,7 @@ public class ISOTemporalComponents
 	 * @param date The date representing the difference, measured in milliseconds, between the current time and midnight, January 1, 1970 UTC.
 	 * @throws NullPointerException if the given date is <code>null</code>.
 	 */
-	public ISOTemporalComponents(final Date date)
-	{
+	public ISOTemporalComponents(final Date date) {
 		this(date.getTime()); //calculate the components from the time
 	}
 
@@ -209,8 +187,7 @@ public class ISOTemporalComponents
 	 * @throws NullPointerException if the given date and/or time zone is <code>null</code>.
 	 * @throws IllegalArgumentException if a time zone was provided with an unsupported offset for the given time.
 	 */
-	public ISOTemporalComponents(final Date date, final TimeZone timeZone)
-	{
+	public ISOTemporalComponents(final Date date, final TimeZone timeZone) {
 		this(date.getTime(), timeZone); //calculate the components from the time
 	}
 
@@ -218,8 +195,7 @@ public class ISOTemporalComponents
 	 * Millisecond time constructor in terms of UTC.
 	 * @param time The difference, measured in milliseconds, between the current time and midnight, January 1, 1970 UTC.
 	 */
-	public ISOTemporalComponents(final long time)
-	{
+	public ISOTemporalComponents(final long time) {
 		this(time, TimeZone.getTimeZone(GMT_ID)); //construct the class using UTC
 	}
 
@@ -230,8 +206,7 @@ public class ISOTemporalComponents
 	 * @throws NullPointerException if the given time zone is <code>null</code>.
 	 * @throws IllegalArgumentException if a time zone was provided with an unsupported offset for the given time.
 	 */
-	public ISOTemporalComponents(final long time, final TimeZone timeZone)
-	{
+	public ISOTemporalComponents(final long time, final TimeZone timeZone) {
 		final Calendar calendar = new GregorianCalendar(timeZone); //create a new Gregorian calendar for the given time zone
 		calendar.setTimeInMillis(time); //set the time of the calendar to the given time
 		this.year = calendar.get(YEAR); //get the components from the calendar
@@ -243,14 +218,12 @@ public class ISOTemporalComponents
 		this.microseconds = calendar.get(MILLISECOND) * 1000; //convert milliseconds to microseconds
 		int offset = timeZone.getOffset(time); //determine the offset for the given time zone
 		final boolean negative = offset < 0; //see if the offset is negative
-		if(negative) //if the offset is negative
-		{
+		if(negative) { //if the offset is negative
 			offset = -offset; //use the postive offset in our calculations
 		}
 		final int hours = offset / (60 * 60 * 1000); //get the hours
 		final int minutes = (offset - (hours * 60 * 60 * 1000)) / (60 * 1000); //determine the minutes
-		if(hours * 60 * 60 * 1000 + minutes * 60 * 1000 != offset) //if there were milliseconds, we can't deal with those
-		{
+		if(hours * 60 * 60 * 1000 + minutes * 60 * 1000 != offset) { //if there were milliseconds, we can't deal with those
 			throw new IllegalArgumentException("Cannot get UTF offset for millisecond-level offset " + offset);
 		}
 		this.utcOffsetHours = negative ? -hours : hours; //set the UTC offset hours and minutes
@@ -262,8 +235,7 @@ public class ISOTemporalComponents
 	 * Returns the temporal components as time information.
 	 * @return A time object representing the time components, or <code>null</code> if time components are not represented.
 	 */
-	public ISOTime asTime()
-	{
+	public ISOTime asTime() {
 		return hours >= 0 && minutes >= 0 && seconds >= 0 && microseconds >= 0 ? new ISOTime(this) : null; //if we have time information, return a time; otherwise return null
 	}
 
@@ -271,8 +243,7 @@ public class ISOTemporalComponents
 	 * Returns the temporal components as an ISO time.
 	 * @return A time object representing the time and optional UTC offset.
 	 */
-	public ISOTime toTime()
-	{
+	public ISOTime toTime() {
 		return new ISOTime(hours, minutes, seconds, microseconds, asUTCOffset()); //construct a time from the components
 	}
 
@@ -280,8 +251,7 @@ public class ISOTemporalComponents
 	 * Returns the temporal components as UTC offset information.
 	 * @return A UTC offset object representing the UTC offset components, or <code>null</code> if UTC offset components are not represented.
 	 */
-	public ISOUTCOffset asUTCOffset()
-	{
+	public ISOUTCOffset asUTCOffset() {
 		return utcOffsetMinutes >= 0 ? (utcOffsetHours == 0 && utcOffsetMinutes == 0 ? ISOUTCOffset.UTC : new ISOUTCOffset(utcOffsetHours, utcOffsetMinutes))
 				: null; //if we have UTC offset information, return a new UTC offset, using the shared zero offset instance if possible
 	}
@@ -296,8 +266,7 @@ public class ISOTemporalComponents
 	 * @throws NullPointerException if the given time and/or locale is <code>null</code>.
 	 * @throws IllegalArgumentException if one of the given arguments is outside the allowed range.
 	 */
-	public static GregorianCalendar createCalendar(final int year, final int month, final int day, final ISOTime time, final Locale locale)
-	{
+	public static GregorianCalendar createCalendar(final int year, final int month, final int day, final ISOTime time, final Locale locale) {
 		return createCalendar(year, month, day, time != null ? time.getHours() : 0, time != null ? time.getMinutes() : 0, time != null ? time.getSeconds() : 0,
 				time != null ? time.getMicroseconds() : 0, time != null ? time.getUTCOffset() : null, locale); //create a calendar using the time components
 	}
@@ -317,8 +286,7 @@ public class ISOTemporalComponents
 	 * @throws IllegalArgumentException if one of the given arguments is outside the allowed range.
 	 */
 	public static GregorianCalendar createCalendar(final int year, final int month, final int day, final int hours, final int minutes, final int seconds,
-			final int microseconds, final ISOUTCOffset utcOffset, final Locale locale)
-	{
+			final int microseconds, final ISOUTCOffset utcOffset, final Locale locale) {
 		final GregorianCalendar calendar = new GregorianCalendar(utcOffset != null ? utcOffset.toTimeZone() : GMT, checkInstance(locale, "Locale cannot be null.")); //get Gregorian calendar for the locale using the time zone from the UTC offset, defaulting to a GMT time zone
 		calendar.clear(); //clear the calendar
 		return setDateTime(calendar, checkArgumentRange(year, 0, 9999), checkArgumentRange(month, 1, 12) - 1, checkArgumentRange(day, 1, 31),
@@ -336,8 +304,7 @@ public class ISOTemporalComponents
 	 * @throws NullPointerException if the given string is <code>null</code>.
 	 * @throws SyntaxException if the date/time is not of the correct format.
 	 */
-	static ISOTemporalComponents parseDateTimeUTCOffset(final String string, final boolean hasDate, final boolean hasTime) throws SyntaxException
-	{
+	static ISOTemporalComponents parseDateTimeUTCOffset(final String string, final boolean hasDate, final boolean hasTime) throws SyntaxException {
 		return parseDateTimeUTCOffset(string, hasDate, hasTime, false, false, true); //parse the temporal components, requiring strict ISO format
 	}
 
@@ -363,25 +330,19 @@ public class ISOTemporalComponents
 	 * @throws SyntaxException if the date/time is not of the correct format.
 	 */
 	static ISOTemporalComponents parseDateTimeUTCOffset(final String string, final boolean hasDate, final Boolean hasTime, final boolean allowTimestampFormat,
-			final boolean lenient, final boolean requireDelimiters) throws SyntaxException
-	{
-		try
-		{
+			final boolean lenient, final boolean requireDelimiters) throws SyntaxException {
+		try {
 			final Reader reader = new StringReader(string); //create a new string reader from the string
-			if(lenient) //if we're parsing leniently
-			{
+			if(lenient) { //if we're parsing leniently
 				skip(reader, WHITESPACE_CHARACTERS); //skip whitespace
 			}
 			final ISOTemporalComponents temporalComponents = parseDateTimeUTCOffset(reader, hasDate, hasTime, allowTimestampFormat, lenient, requireDelimiters); //parse the date/time components
-			if(lenient) //if we're parsing leniently
-			{
+			if(lenient) { //if we're parsing leniently
 				skip(reader, WHITESPACE_CHARACTERS); //skip whitespace
 			}
 			checkReaderEnd(reader); //make sure we're at the end of the reader
 			return temporalComponents; //return the temporal components
-		}
-		catch(final IOException ioException) //if there is an I/O exception (likely from a parse error)
-		{
+		} catch(final IOException ioException) { //if there is an I/O exception (likely from a parse error)
 			throw new SyntaxException(ioException);
 		}
 	}
@@ -400,8 +361,7 @@ public class ISOTemporalComponents
 	 * @throws SyntaxException if the date/time is not of the correct format.
 	 */
 	public static ISOTemporalComponents parseDateTimeUTCOffset(final Reader reader, final boolean hasDate, final boolean hasTime) throws IOException,
-			ParseIOException, SyntaxException
-	{
+			ParseIOException, SyntaxException {
 		return parseDateTimeUTCOffset(reader, hasDate, hasTime, false, false, true); //parse the temporal components, requiring strict ISO format
 	}
 
@@ -433,8 +393,7 @@ public class ISOTemporalComponents
 	 * @see <a href="http://www.w3.org/TR/NOTE-datetime">W3C Date and Time Formats</a>
 	 */
 	static ISOTemporalComponents parseDateTimeUTCOffset(final Reader reader, final boolean hasDate, Boolean hasTime, final boolean allowTimestampFormat,
-			final boolean lenient, final boolean requireDelimiters) throws IOException, ParseIOException, SyntaxException
-	{
+			final boolean lenient, final boolean requireDelimiters) throws IOException, ParseIOException, SyntaxException {
 		final int year;
 		final int month;
 		final int day;
@@ -444,110 +403,74 @@ public class ISOTemporalComponents
 		final int microseconds;
 		final int utcOffsetHours;
 		final int utcOffsetMinutes;
-		try
-		{
-			if(hasDate) //if we should parse a date
-			{
+		try {
+			if(hasDate) { //if we should parse a date
 				year = Integer.parseInt(readStringCheck(reader, 4, '0', '9')); //read the year
-				if(requireDelimiters || peek(reader) == DATE_DELIMITER)
-				{
+				if(requireDelimiters || peek(reader) == DATE_DELIMITER) {
 					check(reader, DATE_DELIMITER); //check the date delimiter
 				}
 				month = Integer.parseInt(readStringCheck(reader, 2, '0', '9')); //read the month
-				if(requireDelimiters || peek(reader) == DATE_DELIMITER)
-				{
+				if(requireDelimiters || peek(reader) == DATE_DELIMITER) {
 					check(reader, DATE_DELIMITER); //check the date delimiter
 				}
 				day = Integer.parseInt(readStringCheck(reader, 2, '0', '9')); //read the day
-				if(hasTime == null) //if we should check to see if there is a time
-				{
+				if(hasTime == null) { //if we should check to see if there is a time
 					hasTime = peekEnd(reader) == TIME_BEGIN; //determine whether we have time based upon the presence of the introductory time delimiter
 				}
-			}
-			else
-			//if we shouldn't parse a date
-			{
+			} else { //if we shouldn't parse a date
 				year = -1; //set the date values to invalid
 				month = -1;
 				day = -1;
 			}
-			if(hasTime) //if we should parse a time
-			{
-				if(hasDate) //if there is both a date and a time
-				{
+			if(hasTime) { //if we should parse a time
+				if(hasDate) { //if there is both a date and a time
 					check(reader, TIME_BEGIN); //check the beginning of the time section
 				}
 				hours = Integer.parseInt(readStringCheck(reader, 2, '0', '9')); //read the hours
-				if(requireDelimiters || peek(reader) == TIME_DELIMITER)
-				{
+				if(requireDelimiters || peek(reader) == TIME_DELIMITER) {
 					check(reader, TIME_DELIMITER); //check the time delimiter
 				}
 				minutes = Integer.parseInt(readStringCheck(reader, 2, '0', '9')); //read the minutes
-				if(!lenient || peek(reader) == TIME_DELIMITER) //if there are seconds (seconds are only optional if we are parsing leniently)
-				{
+				if(!lenient || peek(reader) == TIME_DELIMITER) { //if there are seconds (seconds are only optional if we are parsing leniently)
 					check(reader, TIME_DELIMITER); //check the time delimiter
 					seconds = Integer.parseInt(readStringCheck(reader, 2, '0', '9')); //read the seconds
-				}
-				else if(!requireDelimiters && isPeek(reader, '0', '9')) //if we don't require delimiters and there is a digit
-				{
+				} else if(!requireDelimiters && isPeek(reader, '0', '9')) { //if we don't require delimiters and there is a digit
 					seconds = Integer.parseInt(readStringCheck(reader, 2, '0', '9')); //read the seconds
-				}
-				else
-				//if this is a lenient parsing and there are no seconds
-				{
+				} else { //if this is a lenient parsing and there are no seconds
 					seconds = 0; //conclude no seconds
 				}
-				if(confirm(reader, TIME_SUBSECONDS_DELIMITER)) //if there are subseconds
-				{
+				if(confirm(reader, TIME_SUBSECONDS_DELIMITER)) { //if there are subseconds
 					microseconds = Integer.parseInt(makeStringLength(readMinimum(reader, 1, '0', '9'), 6, '0', -1)); //read all subseconds, converting the precision to six digits
-				}
-				else
-				//if there are no microseconds
-				{
+				} else { //if there are no microseconds
 					microseconds = 0;
 				}
-			}
-			else
-			//if we shouldn't parse a time
-			{
+			} else { //if we shouldn't parse a time
 				hours = -1; //set the time values to invalid
 				minutes = -1;
 				seconds = -1;
 				microseconds = -1;
 			}
-			if(hasDate && !hasTime) //the only type not to parse a UTC offset is a date with no time
-			{
+			if(hasDate && !hasTime) { //the only type not to parse a UTC offset is a date with no time
 				utcOffsetHours = -1; //set the UTC offset values to invalid
 				utcOffsetMinutes = -1;
-			}
-			else
-			//if we should at least allow a UTC offset
-			{
+			} else { //if we should at least allow a UTC offset
 				final int utcOffsetDelimiter = peekEnd(reader); //peek the next character
-				if(utcOffsetDelimiter == '+' || utcOffsetDelimiter == '-') //if this is the start of a UTC offset
-				{
+				if(utcOffsetDelimiter == '+' || utcOffsetDelimiter == '-') { //if this is the start of a UTC offset
 					check(reader, (char)utcOffsetDelimiter); //read the delimiter
 					final StringBuilder utcOffsetStringBuilder = new StringBuilder(3); //create a new string builder for just enough room for a sign and the offset hours
-					if(utcOffsetDelimiter == '-') //if this was the negative sign (don't append the positive sign, because Integer.parseInt doesn't allow it)
-					{
+					if(utcOffsetDelimiter == '-') { //if this was the negative sign (don't append the positive sign, because Integer.parseInt doesn't allow it)
 						utcOffsetStringBuilder.append((char)utcOffsetDelimiter); //append the negative sign
 					}
 					utcOffsetStringBuilder.append(readStringCheck(reader, 2, '0', '9')); //read the UTC offset hours
 					utcOffsetHours = Integer.parseInt(utcOffsetStringBuilder.toString()); //parse the UTC offset hours
 					check(reader, TIME_DELIMITER); //check the time delimiter
 					utcOffsetMinutes = Integer.parseInt(readStringCheck(reader, 2, '0', '9')); //read the UTC offset minutes
-				}
-				else if(allowTimestampFormat && utcOffsetDelimiter == UTC_DESIGNATOR) //if we allow the UTC designator, and this character is the UTC designator
-				{
+				} else if(allowTimestampFormat && utcOffsetDelimiter == UTC_DESIGNATOR) { //if we allow the UTC designator, and this character is the UTC designator
 					check(reader, UTC_DESIGNATOR); //read the UTC designator
 					utcOffsetHours = 0; //Zulu time is equivalent to +00:00
 					utcOffsetMinutes = 0;
-				}
-				else
-				//if we shouldn't parse a UTC offset
-				{
-					if(!hasDate && !hasTime) //if neither a date nor a time were requested, require a UTC offset
-					{
+				} else { //if we shouldn't parse a UTC offset
+					if(!hasDate && !hasTime) { //if neither a date nor a time were requested, require a UTC offset
 						checkReaderEnd(reader); //make sure we're not at the end of the reader
 						throw new ParseIOException(reader, "Expected one of " + Arrays.toString(SIGNS) + "; found " + (char)utcOffsetDelimiter + ".");
 					}
@@ -555,9 +478,7 @@ public class ISOTemporalComponents
 					utcOffsetMinutes = -1;
 				}
 			}
-		}
-		catch(final NumberFormatException numberFormatException) //if a  number wasn't formatted correctly
-		{
+		} catch(final NumberFormatException numberFormatException) { //if a  number wasn't formatted correctly
 			throw new SyntaxException(numberFormatException);
 		}
 		return new ISOTemporalComponents(year, month, day, hours, minutes, seconds, microseconds, utcOffsetHours, utcOffsetMinutes);

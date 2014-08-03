@@ -30,12 +30,10 @@ import com.globalmentor.net.*;
  * Utilities for manipulating Java packages.
  * @author Garret Wilson
  */
-public class Packages
-{
+public class Packages {
 
 	/** This class cannot be publicly instantiated. */
-	private Packages()
-	{
+	private Packages() {
 	}
 
 	/**
@@ -44,37 +42,26 @@ public class Packages
 	 * @param resourceURI The URI which is expected to represent a Java package, or <code>null</code>.
 	 * @return The Java package represented by the given URI, or <code>null</code> if the URI is not a <code>java:</code> URI.
 	 * @throws IllegalArgumentException if the given URI represents a Java package that does not have the correct syntax, e.g. it does not have an absolute
-	 *              collection path.
+	 *           collection path.
 	 * @throws ClassNotFoundException if the package represented by the given URI could not be found.
 	 * @see Java#JAVA_URI_SCHEME
 	 */
-	public static Package asPackage(final URI resourceURI) throws ClassNotFoundException
-	{
-		if(resourceURI != null && JAVA_URI_SCHEME.equals(resourceURI.getScheme())) //if an java: URI was given
-		{
+	public static Package asPackage(final URI resourceURI) throws ClassNotFoundException {
+		if(resourceURI != null && JAVA_URI_SCHEME.equals(resourceURI.getScheme())) { //if an java: URI was given
 			final String classPath = resourceURI.getRawPath(); //get the path to the class
-			if(classPath != null) //if there is a path
-			{
+			if(classPath != null) { //if there is a path
 				checkCollectionPath(classPath); //a package URI is a collection
-				if(classPath.startsWith(ROOT_PATH)) //if the path is absolute
-				{
+				if(classPath.startsWith(ROOT_PATH)) { //if the path is absolute
 					final String packageName = decode(classPath.substring(ROOT_PATH.length()).replace(PATH_SEPARATOR, PACKAGE_SEPARATOR)); //skip the root path delimiter, replace path separators with package separators, and decode the string before trying to load the class
 					final Package pkg = Package.getPackage(packageName);
-					if(pkg == null)
-					{
+					if(pkg == null) {
 						throw new ClassNotFoundException("Package not found: " + packageName);
 					}
 					return pkg;
-				}
-				else
-				//if the path is not absolute
-				{
+				} else { //if the path is not absolute
 					throw new IllegalArgumentException("Java URI " + resourceURI + " does not have an absolute path.");
 				}
-			}
-			else
-			//if there is no path
-			{
+			} else { //if there is no path
 				throw new IllegalArgumentException("Java URI " + resourceURI + " missing path.");
 			}
 		}
@@ -88,8 +75,7 @@ public class Packages
 	 * @return A <code>java:</code> URI based upon the given class.
 	 * @throws NullPointerException if the given package name is <code>null</code>.
 	 */
-	public static URI createJavaURI(final Package objectPackage)
-	{
+	public static URI createJavaURI(final Package objectPackage) {
 		return createJavaURI(objectPackage.getName());
 	}
 
@@ -100,8 +86,7 @@ public class Packages
 	 * @return A <code>java:</code> URI based upon the given class.
 	 * @throws NullPointerException if the given package name is <code>null</code>.
 	 */
-	public static URI createJavaURI(final String objectPackageName)
-	{
+	public static URI createJavaURI(final String objectPackageName) {
 		final String packagePath = URIPath.encodeSegment(objectPackageName).replace(PACKAGE_SEPARATOR, PATH_SEPARATOR); //get the package path by replacing the package separators with path separators after encoding
 		return URI.create(JAVA_URI_SCHEME + SCHEME_SEPARATOR + ROOT_PATH + packagePath + PATH_SEPARATOR); //create and return a new Java URI for the package
 	}
@@ -114,8 +99,7 @@ public class Packages
 	 * @return A full class name in the given package and the given local name.
 	 * @see Classes#getFullName(Class, String)
 	 */
-	public static String getFullName(final Package objectPackage, final String localName)
-	{
+	public static String getFullName(final Package objectPackage, final String localName) {
 		return objectPackage.getName() + PACKAGE_SEPARATOR + localName; //return the package plus the name separated by a package separator
 	}
 
@@ -126,8 +110,7 @@ public class Packages
 	 * @return <code>true</code> if the given class is inside the given package.
 	 * @throws NullPointerException if the given package and/or class is <code>null</code>.
 	 */
-	public static boolean isInsidePackage(final Package parentPackage, final Class<?> childClass)
-	{
+	public static boolean isInsidePackage(final Package parentPackage, final Class<?> childClass) {
 		return isInsidePackage(parentPackage.getName(), childClass.getName());
 	}
 
@@ -138,8 +121,7 @@ public class Packages
 	 * @return <code>true</code> if the given child package is inside the given parent package.
 	 * @throws NullPointerException if the given parent package and/or child package is <code>null</code>.
 	 */
-	public static boolean isInsidePackage(final Package parentPackage, final Package childPackage)
-	{
+	public static boolean isInsidePackage(final Package parentPackage, final Package childPackage) {
 		return isInsidePackage(parentPackage.getName(), childPackage.getName());
 	}
 
@@ -152,19 +134,15 @@ public class Packages
 	 * @throws NullPointerException if the given package name and/or full name is <code>null</code>.
 	 * @see Java#PACKAGE_SEPARATOR
 	 */
-	public static boolean isInsidePackage(final String packageName, final String fullName)
-	{
+	public static boolean isInsidePackage(final String packageName, final String fullName) {
 		final int packageNameLength = packageName.length();
-		if(fullName.length() < packageNameLength + 1) //there must be enough room for the package name plus a package separator
-		{
+		if(fullName.length() < packageNameLength + 1) { //there must be enough room for the package name plus a package separator
 			return false;
 		}
-		if(!fullName.startsWith(packageName)) //we expect the full name to start with the package name
-		{
+		if(!fullName.startsWith(packageName)) { //we expect the full name to start with the package name
 			return false;
 		}
-		if(fullName.charAt(packageNameLength) != PACKAGE_SEPARATOR) //there must be a package separator '.' after the package name
-		{
+		if(fullName.charAt(packageNameLength) != PACKAGE_SEPARATOR) { //there must be a package separator '.' after the package name
 			return false;
 		}
 		return true;
@@ -178,8 +156,7 @@ public class Packages
 	 * @throws NullPointerException if the given full name is <code>null</code>.
 	 * @see Java#PACKAGE_SEPARATOR
 	 */
-	public static String getPackageName(final String fullName)
-	{
+	public static String getPackageName(final String fullName) {
 		return truncateAtLast(fullName, PACKAGE_SEPARATOR).toString();
 	}
 
@@ -190,12 +167,10 @@ public class Packages
 	 * @throws NullPointerException if the given package name is <code>null</code>.
 	 * @see Java#PACKAGE_SEPARATOR
 	 */
-	public static List<String> getParentPackageNames(final String packageName)
-	{
+	public static List<String> getParentPackageNames(final String packageName) {
 		final List<String> parentPackageNames = new ArrayList<String>();
 		int index = packageName.length() - 1;
-		while((index = packageName.lastIndexOf(PACKAGE_SEPARATOR, index)) >= 0) //keep looking backwards for the last package separator
-		{
+		while((index = packageName.lastIndexOf(PACKAGE_SEPARATOR, index)) >= 0) { //keep looking backwards for the last package separator
 			parentPackageNames.add(packageName.substring(0, index)); //get everything up to but not including the package separator
 			--index; //start looking before the package separator
 		}

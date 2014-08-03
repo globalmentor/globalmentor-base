@@ -25,6 +25,5 @@ import java.util.Collection;
  * 
  * @param <E> The type of element contained in the collection.
  */
-public interface ImmutableCollection<E> extends Collection<E>
-{
+public interface ImmutableCollection<E> extends Collection<E> {
 }

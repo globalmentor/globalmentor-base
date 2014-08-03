@@ -23,33 +23,33 @@ import com.globalmentor.collections.comparators.SortOrder;
 import com.globalmentor.util.*;
 import static com.globalmentor.java.Objects.*;
 
-/**A comparator that uses a collator for text sorting.
-@param <T> The type of objects that may be compared by this comparator.
-@author Garret Wilson
-*/
-public abstract class AbstractCollatedSortOrderComparator<T> extends AbstractSortOrderComparator<T> implements CollatorFactory
-{
+/**
+ * A comparator that uses a collator for text sorting.
+ * @param <T> The type of objects that may be compared by this comparator.
+ * @author Garret Wilson
+ */
+public abstract class AbstractCollatedSortOrderComparator<T> extends AbstractSortOrderComparator<T> implements CollatorFactory {
 
-	/**The source of collators.*/
+	/** The source of collators. */
 	private final CollatorFactory collatorFactory;
 
-	/**Retrieves an instance of a collator.
-	@return An instance of a collator.
-	*/
-	public Collator getCollatorInstance()
-	{
-		return collatorFactory.getCollatorInstance();	//delegate to the internal collator factory
+	/**
+	 * Retrieves an instance of a collator.
+	 * @return An instance of a collator.
+	 */
+	public Collator getCollatorInstance() {
+		return collatorFactory.getCollatorInstance(); //delegate to the internal collator factory
 	}
 
-	/**Collator factory and sort order constructor.
-	@param collatorFactory The source of collators.
-	@param sortOrder The order in which to perform comparisons.
-	@throws NullPointerException if the given collator factory and/or sort order is <code>null</code>.
-	*/
-	public AbstractCollatedSortOrderComparator(final CollatorFactory collatorFactory, final SortOrder sortOrder)
-	{
-		super(sortOrder);	//construct the parent class
-		this.collatorFactory=checkInstance(collatorFactory, "Collator factory cannot be null.");
+	/**
+	 * Collator factory and sort order constructor.
+	 * @param collatorFactory The source of collators.
+	 * @param sortOrder The order in which to perform comparisons.
+	 * @throws NullPointerException if the given collator factory and/or sort order is <code>null</code>.
+	 */
+	public AbstractCollatedSortOrderComparator(final CollatorFactory collatorFactory, final SortOrder sortOrder) {
+		super(sortOrder); //construct the parent class
+		this.collatorFactory = checkInstance(collatorFactory, "Collator factory cannot be null.");
 	}
 
 }

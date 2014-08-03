@@ -29,15 +29,13 @@ import com.globalmentor.model.Converter;
  * @param <O> The output type.
  * @see Converter
  */
-public class ConverterListIterator<I, O> extends ConverterIterator<I, O> implements ListIterator<O>
-{
+public class ConverterListIterator<I, O> extends ConverterIterator<I, O> implements ListIterator<O> {
 
 	/**
 	 * {@inheritDoc} This version returns the iterator as a {@link ListIterator}.
 	 */
 	@Override
-	protected ListIterator<I> getIterator()
-	{
+	protected ListIterator<I> getIterator() {
 		return (ListIterator<I>)super.getIterator();
 	}
 
@@ -46,14 +44,12 @@ public class ConverterListIterator<I, O> extends ConverterIterator<I, O> impleme
 	 * @param iterator The iterator of source objects.
 	 * @throws NullPointerException of if the given iterator and/or converter is <code>null</code>.
 	 */
-	public ConverterListIterator(final ListIterator<I> iterator, final Converter<I, O> converter)
-	{
+	public ConverterListIterator(final ListIterator<I> iterator, final Converter<I, O> converter) {
 		super(iterator, converter);
 	}
 
 	/** {@inheritDoc} */
-	public boolean hasNext()
-	{
+	public boolean hasNext() {
 		return getIterator().hasNext();
 	}
 
@@ -64,14 +60,12 @@ public class ConverterListIterator<I, O> extends ConverterIterator<I, O> impleme
 	 * </p>
 	 * @see Converter#convert(Object)
 	 */
-	public O next()
-	{
+	public O next() {
 		return getConverter().convert(getIterator().next());
 	}
 
 	/** {@inheritDoc} */
-	public boolean hasPrevious()
-	{
+	public boolean hasPrevious() {
 		return getIterator().hasPrevious();
 	}
 
@@ -82,20 +76,17 @@ public class ConverterListIterator<I, O> extends ConverterIterator<I, O> impleme
 	 * </p>
 	 * @see Converter#convert(Object)
 	 */
-	public O previous()
-	{
+	public O previous() {
 		return getConverter().convert(getIterator().previous());
 	}
 
 	/** {@inheritDoc} */
-	public int nextIndex()
-	{
+	public int nextIndex() {
 		return getIterator().nextIndex();
 	}
 
 	/** {@inheritDoc} */
-	public int previousIndex()
-	{
+	public int previousIndex() {
 		return getIterator().previousIndex();
 	}
 
@@ -105,8 +96,7 @@ public class ConverterListIterator<I, O> extends ConverterIterator<I, O> impleme
 	 * This implementation throws an {@link UnsupportedOperationException}.
 	 * </p>
 	 */
-	public void set(final O e)
-	{
+	public void set(final O e) {
 		throw new UnsupportedOperationException("Converter list iterators do not support setting elements.");
 	}
 
@@ -116,8 +106,7 @@ public class ConverterListIterator<I, O> extends ConverterIterator<I, O> impleme
 	 * This implementation throws an {@link UnsupportedOperationException}.
 	 * </p>
 	 */
-	public void add(final O e)
-	{
+	public void add(final O e) {
 		throw new UnsupportedOperationException("Converter list iterators do not support adding elements.");
 	}
 

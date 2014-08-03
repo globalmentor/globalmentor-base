@@ -18,24 +18,22 @@ package com.globalmentor.util;
 
 import java.util.*;
 
-/**Various utilities for working with a string tokenizer.
-@author Garret Wilson
-*/
-public class StringTokenizers
-{
-	
-	/**Retrieves all remaining tokens from a string tokenizer and returns them
-		in an array of strings.
-	@param stringTokenizer The string tokenizer from which to retrieve tokens.
-	@return An array of all remaining tokens in the string tokenizer.
-	*/ 
-	public static String[] getTokens(final StringTokenizer stringTokenizer)
-	{
-		final String[] tokens=new String[stringTokenizer.countTokens()];	//create an array in which to place the tokens
-		for(int i=0; i<tokens.length; ++i)	//fill at each position in the array
-		{
-			tokens[i]=stringTokenizer.nextToken();	//fill this position in the array with the next token
+/**
+ * Various utilities for working with a string tokenizer.
+ * @author Garret Wilson
+ */
+public class StringTokenizers {
+
+	/**
+	 * Retrieves all remaining tokens from a string tokenizer and returns them in an array of strings.
+	 * @param stringTokenizer The string tokenizer from which to retrieve tokens.
+	 * @return An array of all remaining tokens in the string tokenizer.
+	 */
+	public static String[] getTokens(final StringTokenizer stringTokenizer) {
+		final String[] tokens = new String[stringTokenizer.countTokens()]; //create an array in which to place the tokens
+		for(int i = 0; i < tokens.length; ++i) { //fill at each position in the array
+			tokens[i] = stringTokenizer.nextToken(); //fill this position in the array with the next token
 		}
-		return tokens;	//return the tokens we extracted from the string tokenizer
+		return tokens; //return the tokens we extracted from the string tokenizer
 	}
 }

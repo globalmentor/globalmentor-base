@@ -20,34 +20,42 @@ import java.util.*;
 
 import static com.globalmentor.java.Objects.*;
 
-/**An iterator that wraps an existing iterator, providing access through the {@link Iterator} interface.
-@author Garret Wilson
-*/
-public class IteratorDecorator<E> implements Iterator<E>
-{
+/**
+ * An iterator that wraps an existing iterator, providing access through the {@link Iterator} interface.
+ * @author Garret Wilson
+ */
+public class IteratorDecorator<E> implements Iterator<E> {
 
-	/**The iterator this class decorates.*/
+	/** The iterator this class decorates. */
 	private final Iterator<E> iterator;
 
-	/**@return The iterator this class decorates.*/
-	protected Iterator<E> getIterator() {return iterator;}
-	
-	/**Iterator constructor.
-	@param iterator The iterator this iterator should decorate.
-	@throws NullPointerException if the given iterator is <code>null</code>.
-	*/
-	public IteratorDecorator(final Iterator<E> iterator)
-	{
-		this.iterator=checkInstance(iterator, "Iterator cannot be null");	//save the iterator
+	/** @return The iterator this class decorates. */
+	protected Iterator<E> getIterator() {
+		return iterator;
 	}
 
-	/**{@inheritDoc}*/
-	public boolean hasNext() {return getIterator().hasNext();}
+	/**
+	 * Iterator constructor.
+	 * @param iterator The iterator this iterator should decorate.
+	 * @throws NullPointerException if the given iterator is <code>null</code>.
+	 */
+	public IteratorDecorator(final Iterator<E> iterator) {
+		this.iterator = checkInstance(iterator, "Iterator cannot be null"); //save the iterator
+	}
 
-	/**{@inheritDoc}*/
-	public E next() {return getIterator().next();}
+	/** {@inheritDoc} */
+	public boolean hasNext() {
+		return getIterator().hasNext();
+	}
 
-	/**{@inheritDoc}*/
-	public void remove() {getIterator().remove();}
+	/** {@inheritDoc} */
+	public E next() {
+		return getIterator().next();
+	}
+
+	/** {@inheritDoc} */
+	public void remove() {
+		getIterator().remove();
+	}
 
 }

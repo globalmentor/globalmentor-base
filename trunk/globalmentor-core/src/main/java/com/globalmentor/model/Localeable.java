@@ -20,21 +20,22 @@ import java.util.Locale;
 
 import static com.globalmentor.java.Classes.*;
 
-/**An object that keeps track of a locale.
-@author Garret Wilson
-*/
-public interface Localeable
-{
+/**
+ * An object that keeps track of a locale.
+ * @author Garret Wilson
+ */
+public interface Localeable {
 
-	/**The name of the locale property, if it is bound in any modifiable object.*/
-	public final static String LOCALE_PROPERTY_NAME=getPropertyName(Localeable.class, "locale");
+	/** The name of the locale property, if it is bound in any modifiable object. */
+	public final static String LOCALE_PROPERTY_NAME = getPropertyName(Localeable.class, "locale");
 
-	/**@return The locale or <code>null</code>	if no locale is indicated.*/
+	/** @return The locale or <code>null</code> if no locale is indicated. */
 	public Locale getLocale();
 
-	/**Sets the locale
-	@param locale The locale or <code>null</code>	if no locale is indicated.
-	*/
+	/**
+	 * Sets the locale
+	 * @param locale The locale or <code>null</code> if no locale is indicated.
+	 */
 	public void setLocale(final Locale locale);
 
 }

@@ -26,15 +26,13 @@ import static com.globalmentor.java.Java.*;
  * Various utilities to manipulate Java objects.
  * @author Garret Wilson
  */
-public class Objects
-{
+public class Objects {
 
 	/** A shared object array that contains no elements. */
 	public final static Object[] NO_OBJECTS = new Object[0];
 
 	/** This class cannot be publicly instantiated. */
-	private Objects()
-	{
+	private Objects() {
 	}
 
 	/**
@@ -44,8 +42,7 @@ public class Objects
 	 * @return The given variable.
 	 * @throws NullPointerException if the given variable is <code>null</code>.
 	 */
-	public static <T> T checkInstance(final T variable)
-	{
+	public static <T> T checkInstance(final T variable) {
 		return checkInstance(variable, null); //check for null with no description
 	}
 
@@ -57,10 +54,8 @@ public class Objects
 	 * @return The given variable.
 	 * @throws NullPointerException if the given variable is <code>null</code>.
 	 */
-	public static <T> T checkInstance(final T variable, final String description)
-	{
-		if(variable == null) //if the variable is null
-		{
+	public static <T> T checkInstance(final T variable, final String description) {
+		if(variable == null) { //if the variable is null
 			throw new NullPointerException(description);
 		}
 		return variable; //return the variable
@@ -74,8 +69,7 @@ public class Objects
 	 * @return The given variable.
 	 * @throws ClassCastException if the given variable is not <code>null</code> and not an instance of type <var>type</var>.
 	 */
-	public static <T> T checkType(final Object variable, final Class<T> type)
-	{
+	public static <T> T checkType(final Object variable, final Class<T> type) {
 		return checkType(variable, type, null); //check for type with no description
 	}
 
@@ -89,10 +83,8 @@ public class Objects
 	 * @throws ClassCastException if the given variable is not <code>null</code> and not an instance of type <var>type</var>.
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T> T checkType(final Object variable, final Class<T> type, final String description)
-	{
-		if(variable != null && !type.isInstance(variable)) //if the variable is not null but is of a different type
-		{
+	public static <T> T checkType(final Object variable, final Class<T> type, final String description) {
+		if(variable != null && !type.isInstance(variable)) { //if the variable is not null but is of a different type
 			throw new ClassCastException(description);
 		}
 		return (T)variable; //return the variable
@@ -106,14 +98,10 @@ public class Objects
 	 * @see CloneSupported#clone()
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T extends CloneSupported> T clone(final T object)
-	{
-		try
-		{
+	public static <T extends CloneSupported> T clone(final T object) {
+		try {
 			return (T)object.clone();
-		}
-		catch(final CloneNotSupportedException cloneNotSupportedException)
-		{
+		} catch(final CloneNotSupportedException cloneNotSupportedException) {
 			throw unexpected(cloneNotSupportedException);
 		}
 	}
@@ -128,15 +116,10 @@ public class Objects
 	 *          objects.
 	 * @return A negative integer, zero, or a positive integer as this object is less than, equal to, or greater than the specified object.
 	 */
-	public static <T extends Comparable<? super T>> int compare(final T object1, final T object2, final int nullBias)
-	{
-		if(object1 == null) //if the first object is null
-		{
+	public static <T extends Comparable<? super T>> int compare(final T object1, final T object2, final int nullBias) {
+		if(object1 == null) { //if the first object is null
 			return object2 == null ? 0 : nullBias; //if both objects are null, they are considered equal; otherwise, send back whatever null should be
-		}
-		else
-		//if the first object is not null
-		{
+		} else { //if the first object is not null
 			return object2 != null ? object1.compareTo(object2) : -nullBias; //if both objects are non-null, they can be compared; otherwise, the second object is the only one null, and gets the negation of the null bias
 		}
 	}
@@ -149,8 +132,7 @@ public class Objects
 	 * @param instanceClass The class of which the object may be an instance.
 	 * @return The object if it is an instance of the given class, otherwise <code>null</code>.
 	 */
-	public static <T> T asInstance(final Object object, final Class<T> instanceClass)
-	{
+	public static <T> T asInstance(final Object object, final Class<T> instanceClass) {
 		return asInstance(object, instanceClass, null); //use a default value of null
 	}
 
@@ -164,8 +146,7 @@ public class Objects
 	 * @param defaultValue The default value to return.
 	 * @return The object if it is an instance of the given class, otherwise the default value.
 	 */
-	public static <T> T asInstance(final Object object, final Class<T> instanceClass, final T defaultValue)
-	{
+	public static <T> T asInstance(final Object object, final Class<T> instanceClass, final T defaultValue) {
 		return instanceClass.isInstance(object) ? instanceClass.cast(object) : defaultValue; //cast and return the object if it is an instance of the class, otherwise the default value
 	}
 
@@ -179,8 +160,7 @@ public class Objects
 	 *         <code>null</code>.
 	 * @see Object#equals(Object)
 	 */
-	public final static boolean equals(final Object object1, final Object object2)
-	{
+	public final static boolean equals(final Object object1, final Object object2) {
 		//if the first object isn't null, compare it to the second; otherwise, see if the second object is null as well
 		return object1 != null ? object1.equals(object2) : object2 == null;
 	}
@@ -190,12 +170,9 @@ public class Objects
 	 * @param objects The objects to investigate.
 	 * @return The first object that is not <code>null</code>, or <code>null</code> if all objects are <code>null</code>.
 	 */
-	public static <T> T getInstance(final T... objects)
-	{
-		for(final T object : objects) //look at all the references
-		{
-			if(object != null) //if the object isn't null (it is faster to just check for null rather than to delegate to the class-based getInstance() version
-			{
+	public static <T> T getInstance(final T... objects) {
+		for(final T object : objects) { //look at all the references
+			if(object != null) { //if the object isn't null (it is faster to just check for null rather than to delegate to the class-based getInstance() version
 				return object; //return the object
 			}
 		}
@@ -209,12 +186,9 @@ public class Objects
 	 * @return The first object that is the instance of the given type, or <code>null</code> if no object is an instance of the indicated type.
 	 * @throws NullPointerException if the given object class is <code>null</code>.
 	 */
-	public static <T, C extends T> C getInstance(final Class<C> objectClass, final T... objects)
-	{
-		for(final T object : objects) //look at all the references
-		{
-			if(objectClass.isInstance(object)) //if this object is an instance of the given class
-			{
+	public static <T, C extends T> C getInstance(final Class<C> objectClass, final T... objects) {
+		for(final T object : objects) { //look at all the references
+			if(objectClass.isInstance(object)) { //if this object is an instance of the given class
 				return objectClass.cast(object); //cast and return the object
 			}
 		}
@@ -232,8 +206,7 @@ public class Objects
 	 * @throws NullPointerException if the given default instance is <code>null</code>.
 	 * @see #checkInstance(Object)
 	 */
-	public static <T> T toInstance(final T object, final T defaultInstance)
-	{
+	public static <T> T toInstance(final T object, final T defaultInstance) {
 		return object != null ? object : checkInstance(defaultInstance);
 	}
 
@@ -251,16 +224,11 @@ public class Objects
 	 * @throws ExceptionInInitializerError if the initialization provoked by the getter method fails.
 	 */
 	public static Object getProperty(final Object object, final String propertyName) throws NoSuchMethodException, InvocationTargetException,
-			IllegalAccessException
-	{
+			IllegalAccessException {
 		final Method getterMethod = getGetterMethod(object.getClass(), propertyName); //get the getter property, if there is one
-		if(getterMethod != null) //if there is a getter method
-		{
+		if(getterMethod != null) { //if there is a getter method
 			return getterMethod.invoke(object); //invoke the getter method and return the value
-		}
-		else
-		//if there is no getter method
-		{
+		} else { //if there is no getter method
 			throw new NoSuchMethodException("Object with class " + object.getClass() + " has no getter method for property " + propertyName);
 		}
 	}
@@ -273,8 +241,7 @@ public class Objects
 	 * @return A hash code taking into account the given objects.
 	 * @throws NullPointerException if the given array of objects is <code>null</code>.
 	 */
-	public static int getHashCode(final Object... objects)
-	{
+	public static int getHashCode(final Object... objects) {
 		return getSeededHashCode(17, objects); //generate a hash code with a particular seed
 	}
 
@@ -287,10 +254,8 @@ public class Objects
 	 * @return A hash code starting with the given seed and taking into account the given objects.
 	 * @throws NullPointerException if the given array of objects is <code>null</code>.
 	 */
-	public static int getSeededHashCode(int seed, final Object... objects)
-	{
-		for(final Object object : objects) //for each object
-		{
+	public static int getSeededHashCode(int seed, final Object... objects) {
+		for(final Object object : objects) { //for each object
 			final int hashCode = object != null ? (object.getClass().isArray() ? getHashCode((Object[])object) : object.hashCode()) : 0; //get the object's hash code, or zero if the object is null
 			seed = 37 * seed + hashCode; //multiply by 37 and add the hash code of this object
 		}
@@ -305,8 +270,7 @@ public class Objects
 	 * @throws NullPointerException if the given array of values is <code>null</code>.
 	 * @see java.util.Arrays#hashCode(int[])
 	 */
-	public static int getIntHashCode(final int... values)
-	{
+	public static int getIntHashCode(final int... values) {
 		return java.util.Arrays.hashCode(values);
 	}
 
@@ -318,8 +282,7 @@ public class Objects
 	 * @throws NullPointerException if the given array of values is <code>null</code>.
 	 * @see java.util.Arrays#hashCode(long[])
 	 */
-	public static int getLongHashCode(final long... values)
-	{
+	public static int getLongHashCode(final long... values) {
 		return java.util.Arrays.hashCode(values);
 	}
 
@@ -331,8 +294,7 @@ public class Objects
 	 * @throws NullPointerException if the given array of values is <code>null</code>.
 	 * @see java.util.Arrays#hashCode(double[])
 	 */
-	public static int getDoubleHashCode(final double... values)
-	{
+	public static int getDoubleHashCode(final double... values) {
 		return java.util.Arrays.hashCode(values);
 	}
 
@@ -343,12 +305,9 @@ public class Objects
 	 * @return The first of the listed classes of which the given object is an instance, or <code>null</code> if the object is not an instance of any of the
 	 *         listed classes.
 	 */
-	public static Class<?> getInstanceOf(final Object object, final Class<?>... classes)
-	{
-		for(final Class<?> objectClass : classes)
-		{
-			if(objectClass.isInstance(object))
-			{
+	public static Class<?> getInstanceOf(final Object object, final Class<?>... classes) {
+		for(final Class<?> objectClass : classes) {
+			if(objectClass.isInstance(object)) {
 				return objectClass;
 			}
 		}
@@ -361,8 +320,7 @@ public class Objects
 	 * @param classes The classes of which to check the given object being an instance.
 	 * @return <code>true</code> if the object is an instance of one of the listed classes.
 	 */
-	public static boolean isInstanceOf(final Object object, final Class<?>... classes)
-	{
+	public static boolean isInstanceOf(final Object object, final Class<?>... classes) {
 		return getInstanceOf(object, classes) != null;
 	}
 
@@ -371,8 +329,7 @@ public class Objects
 	 * @param object An object to be represented by a string.
 	 * @return The string representation of the object or {@value Java#NULL_KEYWORD} if the object is <code>null</code>.
 	 */
-	public final static String toString(final Object object)
-	{
+	public final static String toString(final Object object) {
 		return object != null ? object.toString() : NULL_KEYWORD; //return the object's string representation or "null"
 	}
 

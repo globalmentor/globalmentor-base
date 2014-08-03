@@ -32,8 +32,7 @@ import java.util.Comparator;
  * @param <T> The type of objects that may be compared by this comparator.
  * @author Garret Wilson
  */
-public class SerialDelegateComparator<T> extends AbstractSortOrderComparator<T>
-{
+public class SerialDelegateComparator<T> extends AbstractSortOrderComparator<T> {
 
 	/** The delegate comparators to use for comparison. */
 	private final Comparator<? super T>[] comparators;
@@ -45,8 +44,7 @@ public class SerialDelegateComparator<T> extends AbstractSortOrderComparator<T>
 	 * @throws NullPointerException if the given sort order and/or comparators is <code>null</code>.
 	 * @throws IllegalArgumentException if no comparators are given.
 	 */
-	public SerialDelegateComparator(final Comparator<? super T>... comparators)
-	{
+	public SerialDelegateComparator(final Comparator<? super T>... comparators) {
 		this(SortOrder.ASCENDING, comparators); //construct the class for ascending order
 	}
 
@@ -57,11 +55,9 @@ public class SerialDelegateComparator<T> extends AbstractSortOrderComparator<T>
 	 * @throws NullPointerException if the given sort order and/or comparators is <code>null</code>.
 	 * @throws IllegalArgumentException if no comparators are given.
 	 */
-	public SerialDelegateComparator(final SortOrder sortOrder, final Comparator<? super T>... comparators)
-	{
+	public SerialDelegateComparator(final SortOrder sortOrder, final Comparator<? super T>... comparators) {
 		super(sortOrder); //construct the parent class
-		if(comparators.length == 0) //if no comparators are given
-		{
+		if(comparators.length == 0) { //if no comparators are given
 			throw new IllegalArgumentException("At least one delegate comparator must be given.");
 		}
 		this.comparators = comparators.clone(); //clone the comparators so no one can modify them external to this class
@@ -69,14 +65,11 @@ public class SerialDelegateComparator<T> extends AbstractSortOrderComparator<T>
 
 	/** {@inheritDoc} */
 	@Override
-	public int compareImpl(final T object1, final T object2)
-	{
+	public int compareImpl(final T object1, final T object2) {
 		int result = 0; //keep track of the result; we don't need to initialize the value, because we already ensured we'll have at least one delegate comparator, but the compiler doesn't know that, so we initialize anyway
-		for(final Comparator<? super T> comparator : comparators) //delegate to each comparator
-		{
+		for(final Comparator<? super T> comparator : comparators) { //delegate to each comparator
 			result = comparator.compare(object1, object2);
-			if(result != 0) //if these objects aren't equal
-			{
+			if(result != 0) { //if these objects aren't equal
 				break; //we're finished comparing
 			}
 		}

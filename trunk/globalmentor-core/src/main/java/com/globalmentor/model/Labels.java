@@ -22,8 +22,7 @@ package com.globalmentor.model;
  * @author Garret Wilson
  * 
  */
-public class Labels
-{
+public class Labels {
 
 	/**
 	 * Determines a human-readable representation of a given object.
@@ -36,18 +35,12 @@ public class Labels
 	 * @throws NullPointerException if the given object is <code>null</code>.
 	 * @see Labeled#getLabel()
 	 */
-	public static CharSequence getLabel(final Object object)
-	{
-		if(object instanceof Labeled)
-		{
+	public static CharSequence getLabel(final Object object) {
+		if(object instanceof Labeled) {
 			return ((Labeled)object).getLabel();
-		}
-		else if(object instanceof CharSequence)
-		{
+		} else if(object instanceof CharSequence) {
 			return (CharSequence)object;
-		}
-		else
-		{
+		} else {
 			return object.toString();
 		}
 	}

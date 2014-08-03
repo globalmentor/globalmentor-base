@@ -22,8 +22,7 @@ import com.globalmentor.lex.Identifier;
  * Represents the progress of a task.
  * @author Garret Wilson
  */
-public enum TaskState implements Identifier
-{
+public enum TaskState implements Identifier {
 
 	/** The task has not yet begun. */
 	UNSTARTED,

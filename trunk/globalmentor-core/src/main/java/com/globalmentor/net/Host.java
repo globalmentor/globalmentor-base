@@ -27,8 +27,7 @@ import com.globalmentor.model.DefaultComparableNamed;
  * </p>
  * @author Garret Wilson
  */
-public class Host extends DefaultComparableNamed<String>
-{
+public class Host extends DefaultComparableNamed<String> {
 
 	/** Shared representation of <code>localhost</code>. */
 	public final static Host LOCALHOST = new Host("localhost");
@@ -40,8 +39,7 @@ public class Host extends DefaultComparableNamed<String>
 	private final int port;
 
 	/** @return The port of the host, or <code>-1</code> if no port is specified. */
-	public int getPort()
-	{
+	public int getPort() {
 		return port;
 	}
 
@@ -50,8 +48,7 @@ public class Host extends DefaultComparableNamed<String>
 	 * @param host A host and optional port in the form <code><var>hostname</var>[:<var>port</var>]</var>.
 	 * @throws IllegalArgumentException if the given host string is not syntactically correct.
 	 */
-	public Host(final String host) throws IllegalArgumentException
-	{
+	public Host(final String host) throws IllegalArgumentException {
 		this(getName(host), getPort(host)); //extract the hostname and optional port and construct the class
 	}
 
@@ -60,8 +57,7 @@ public class Host extends DefaultComparableNamed<String>
 	 * @param name A hostname.
 	 * @param port The port of the host, or <code>-1</code> if no port should be specified.
 	 */
-	public Host(final String name, final int port)
-	{
+	public Host(final String name, final int port) {
 		super(name); //construct the parent class with the hostname
 		this.port = port; //save the port
 	}
@@ -71,8 +67,7 @@ public class Host extends DefaultComparableNamed<String>
 	 * @param host The host string to parse.
 	 * @return The name of the host.
 	 */
-	public static String getName(final String host)
-	{
+	public static String getName(final String host) {
 		final int portDelimiterIndex = host.indexOf(PORT_SEPARATOR); //get the index of the port separator
 		return portDelimiterIndex >= 0 ? host.substring(0, portDelimiterIndex) : host; //return the hostname unless there is no port, in which case the entire string is the hostname
 	}
@@ -83,27 +78,23 @@ public class Host extends DefaultComparableNamed<String>
 	 * @return The port of the host, or <code>-1</code> if no port is specified.
 	 * @throws IllegalArgumentException if the given port is not a valid integer.
 	 */
-	public static int getPort(final String host) throws NumberFormatException
-	{
+	public static int getPort(final String host) throws NumberFormatException {
 		final int portDelimiterIndex = host.indexOf(PORT_SEPARATOR); //get the index of the port separator
 		return portDelimiterIndex >= 0 ? Integer.valueOf(host.substring(portDelimiterIndex + 1)) : -1; //return the port unless there is no port, in which case return -1
 	}
 
 	/** @return A string representation of the host in the form <code><var>hostname</var>[:<var>port</var>]</var>. */
-	public String toString()
-	{
+	public String toString() {
 		final StringBuilder stringBuilder = new StringBuilder(getName()); //host
 		final int port = getPort(); //get the port
-		if(port >= 0) //if a port is given
-		{
+		if(port >= 0) { //if a port is given
 			stringBuilder.append(PORT_SEPARATOR).append(port); //:port
 		}
 		return stringBuilder.toString(); //return the string we constructed
 	}
 
 	/** @return A hash code for this object. */
-	public int hashCode()
-	{
+	public int hashCode() {
 		return (17 * 37 + super.hashCode()) * 37 + getPort();
 	}
 
@@ -115,19 +106,13 @@ public class Host extends DefaultComparableNamed<String>
 	 * @see #getName()
 	 * @see #getPort()
 	 */
-	public boolean equals(Object object)
-	{
-		if(object == this) //identical objects are always equal
-		{
+	public boolean equals(Object object) {
+		if(object == this) { //identical objects are always equal
 			return true;
 		}
-		if(object instanceof Host) //if we're being compared with another host
-		{
+		if(object instanceof Host) { //if we're being compared with another host
 			return super.equals(object) && getPort() == ((Host)object).getPort(); //compare names and ports
-		}
-		else
-		//if the object is not a host
-		{
+		} else { //if the object is not a host
 			return false;
 		}
 	}

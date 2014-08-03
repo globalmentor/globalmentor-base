@@ -35,16 +35,14 @@ import static com.globalmentor.model.TaskState.*;
  * 
  * @author Garret Wilson
  */
-public abstract class AbstractOperation extends AbstractTask implements Operation, Runnable, Task
-{
+public abstract class AbstractOperation extends AbstractTask implements Operation, Runnable, Task {
 
 	/**
 	 * {@inheritDoc} This implementation sets the state to {@link TaskState#CANCELED}.
 	 * @see #setState(TaskState)
 	 */
 	@Override
-	public void cancel()
-	{
+	public void cancel() {
 		setState(CANCELED);
 	}
 
@@ -53,14 +51,12 @@ public abstract class AbstractOperation extends AbstractTask implements Operatio
 	 * @see #getState()
 	 */
 	@Override
-	public boolean isCanceled()
-	{
+	public boolean isCanceled() {
 		return getState() == CANCELED;
 	}
 
 	/** Method that can be overridden to initialize before execution. */
-	protected void initialize()
-	{
+	protected void initialize() {
 	}
 
 	/**
@@ -71,23 +67,17 @@ public abstract class AbstractOperation extends AbstractTask implements Operatio
 	 * @see #initialize()
 	 */
 	@Override
-	public final void run()
-	{
+	public final void run() {
 		checkState(getState() != TaskState.INCOMPLETE, "Task is running.");
-		try
-		{
+		try {
 			setState(INITIALIZE);
 			initialize();
 			setState(INCOMPLETE);
 			execute();
 			setState(COMPLETE);
-		}
-		catch(final CancelException cancelException) //if the operation was canceled
-		{
+		} catch(final CancelException cancelException) { //if the operation was canceled
 			setState(CANCELED);
-		}
-		catch(final Throwable throwable) //if any error occurred
-		{
+		} catch(final Throwable throwable) { //if any error occurred
 			setState(ERROR);
 			rethrow(throwable);
 		}

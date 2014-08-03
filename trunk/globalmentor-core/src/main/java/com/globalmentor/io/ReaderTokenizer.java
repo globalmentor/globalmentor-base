@@ -30,8 +30,7 @@ import static com.globalmentor.java.Characters.*;
  * This class does not return independent iterators.
  * @author Garret Wilson
  */
-public class ReaderTokenizer implements Iterator<String>, Iterable<String>
-{
+public class ReaderTokenizer implements Iterator<String>, Iterable<String> {
 
 	/**
 	 * The default delimiter characters: whitespace.
@@ -49,8 +48,7 @@ public class ReaderTokenizer implements Iterator<String>, Iterable<String>
 	private final Reader reader;
 
 	/** @return The source of the input characters. */
-	protected Reader getReader()
-	{
+	protected Reader getReader() {
 		return reader;
 	}
 
@@ -58,8 +56,7 @@ public class ReaderTokenizer implements Iterator<String>, Iterable<String>
 	private Characters delimiters;
 
 	/** @return The characters delimiting tokens. */
-	public Characters getDelimiters()
-	{
+	public Characters getDelimiters() {
 		return delimiters;
 	}
 
@@ -67,8 +64,7 @@ public class ReaderTokenizer implements Iterator<String>, Iterable<String>
 	private final String groupBegins;
 
 	/** @return The valid group beginning characters. */
-	public String getGroupBegins()
-	{
+	public String getGroupBegins() {
 		return groupBegins;
 	}
 
@@ -76,8 +72,7 @@ public class ReaderTokenizer implements Iterator<String>, Iterable<String>
 	private final String groupEnds;
 
 	/** @return The valid group ending characters, matching to beginning characters. */
-	public String getGroupEnds()
-	{
+	public String getGroupEnds() {
 		return groupEnds;
 	}
 
@@ -88,8 +83,7 @@ public class ReaderTokenizer implements Iterator<String>, Iterable<String>
 	 * Pushes a group onto the stack.
 	 * @param groupBegin The character representing the start of the group.
 	 */
-	protected void pushGroup(final char groupBegin)
-	{
+	protected void pushGroup(final char groupBegin) {
 		groupStackStringBuilder.append(groupBegin); //append the group beginning character
 	}
 
@@ -99,18 +93,13 @@ public class ReaderTokenizer implements Iterator<String>, Iterable<String>
 	 * @throws StringIndexOutOfBoundsException {@inheritDoc}
 	 * @throws EmptyStackException if there are no groups left.
 	 */
-	protected char popGroup() throws EmptyStackException
-	{
+	protected char popGroup() throws EmptyStackException {
 		final int groupDepth = getGroupDepth(); //see how many groups there are
-		if(groupDepth > 0) //if we have groups
-		{
+		if(groupDepth > 0) { //if we have groups
 			final char groupBegin = groupStackStringBuilder.charAt(groupDepth - 1); //get the group beginning character
 			groupStackStringBuilder.deleteCharAt(groupDepth - 1); //delete the group beginning character
 			return groupBegin; //return the group beginning character
-		}
-		else
-		//if we are out of groups
-		{
+		} else { //if we are out of groups
 			throw new EmptyStackException(); //show that there are no more groups
 		}
 	}
@@ -121,23 +110,17 @@ public class ReaderTokenizer implements Iterator<String>, Iterable<String>
 	 * @throws StringIndexOutOfBoundsException {@inheritDoc}
 	 * @throws EmptyStackException if there are no groups left.
 	 */
-	protected char peekGroup() throws EmptyStackException
-	{
+	protected char peekGroup() throws EmptyStackException {
 		final int groupDepth = getGroupDepth(); //see how many groups there are
-		if(groupDepth > 0) //if we have groups
-		{
+		if(groupDepth > 0) { //if we have groups
 			return groupStackStringBuilder.charAt(groupDepth - 1); //get the group beginning character
-		}
-		else
-		//if we are out of groups
-		{
+		} else { //if we are out of groups
 			throw new EmptyStackException(); //show that there are no more groups
 		}
 	}
 
 	/** @return The number of nested groups currently being processed. */
-	protected int getGroupDepth()
-	{
+	protected int getGroupDepth() {
 		return groupStackStringBuilder.length();
 	}
 
@@ -159,8 +142,7 @@ public class ReaderTokenizer implements Iterator<String>, Iterable<String>
 	 * @param groupEnds The valid group ending characters, matching to beginning characters.
 	 * @see #DEFAULT_DELIMITERS
 	 */
-	public ReaderTokenizer(final Reader reader)
-	{
+	public ReaderTokenizer(final Reader reader) {
 		this(reader, DEFAULT_DELIMITERS);
 	}
 
@@ -169,8 +151,7 @@ public class ReaderTokenizer implements Iterator<String>, Iterable<String>
 	 * @param reader The input characters to tokenize.
 	 * @param delimiters The delimiter characters.
 	 */
-	public ReaderTokenizer(final Reader reader, final Characters delimiters)
-	{
+	public ReaderTokenizer(final Reader reader, final Characters delimiters) {
 		this(reader, delimiters, null, null); //construct the tokenizer with no group recognition
 	}
 
@@ -181,8 +162,7 @@ public class ReaderTokenizer implements Iterator<String>, Iterable<String>
 	 * @param groupBegins The valid group beginning characters.
 	 * @param groupEnds The valid group ending characters, matching to beginning characters.
 	 */
-	public ReaderTokenizer(final Reader reader, final Characters delimiters, final String groupBegins, final String groupEnds)
-	{
+	public ReaderTokenizer(final Reader reader, final Characters delimiters, final String groupBegins, final String groupEnds) {
 		this.reader = reader;
 		this.delimiters = delimiters;
 		this.groupBegins = groupBegins != null ? groupBegins : "";
@@ -190,8 +170,7 @@ public class ReaderTokenizer implements Iterator<String>, Iterable<String>
 	}
 
 	/** @return <code>true</code> if there are more tokens. */
-	public boolean hasNext()
-	{
+	public boolean hasNext() {
 		return primeToken() != null; //prime a token and see if there is one available
 	}
 
@@ -199,17 +178,12 @@ public class ReaderTokenizer implements Iterator<String>, Iterable<String>
 	 * @return The next token available.
 	 * @throws NoSuchElementException if there are no more tokens.
 	 */
-	public String next()
-	{
+	public String next() {
 		final String token = primeToken(); //prime the next token
-		if(token != null) //if there is a token available
-		{
+		if(token != null) { //if there is a token available
 			primedToken = null; //show that we've used the primed token
 			return token; //return the token
-		}
-		else
-		//if there is no token available
-		{
+		} else { //if there is no token available
 			throw new NoSuchElementException(); //show that there are no more tokens
 		}
 	}
@@ -218,10 +192,9 @@ public class ReaderTokenizer implements Iterator<String>, Iterable<String>
 	 * Removes the last token from the underlying collection. This method is not supported, and an <code>UnsupportedOperationException</code> is always thrown.
 	 * @throws UnsupportedOperationException if the the remove operation is not supported .
 	 * @throws IllegalStateException if the <code>next()</code> method has not yet been called, or the <code>remove</code> method has already been called after
-	 *              the last call to the <code>next</code> method.
+	 *           the last call to the <code>next</code> method.
 	 */
-	public void remove()
-	{
+	public void remove() {
 		throw new UnsupportedOperationException();
 	}
 
@@ -234,8 +207,7 @@ public class ReaderTokenizer implements Iterator<String>, Iterable<String>
 	 * @return The last delimiter encountered.
 	 * @see #getDelimiters()
 	 */
-	public char getLastDelimiter()
-	{
+	public char getLastDelimiter() {
 		return lastDelimiter;
 	}
 
@@ -248,8 +220,7 @@ public class ReaderTokenizer implements Iterator<String>, Iterable<String>
 	 * @return The current delimiter encountered.
 	 * @see #getDelimiters()
 	 */
-	public char getDelimiter()
-	{
+	public char getDelimiter() {
 		return delimiter;
 	}
 
@@ -258,75 +229,50 @@ public class ReaderTokenizer implements Iterator<String>, Iterable<String>
 	 * @return Either the token that was already primed or, if there is no token already, the token newly primed by this method. If no token is available, this
 	 *         method returns <code>null</code>.
 	 */
-	public String primeToken()
-	{
-		if(primedToken == null) //if there is no token primed
-		{
+	public String primeToken() {
+		if(primedToken == null) { //if there is no token primed
 			final Reader reader = getReader(); //get a reference to our reader
 			final Characters delimiters = getDelimiters(); //get our delimiters
 			final String groupBegins = getGroupBegins(); //get our group beginning delimiters
 			final String groupEnds = getGroupEnds(); //get our group ending delimiters
 			final StringBuilder stringBuilder = new StringBuilder(); //create a string builder to build our token
-			try
-			{
-				while(true)
-				{
+			try {
+				while(true) {
 					final int value = reader.read(); //read the next character
-					if(value < 0) //if there are no more characters
-					{
+					if(value < 0) { //if there are no more characters
 						this.lastDelimiter = this.delimiter; //move the delimiter to the last delimiter
 						this.delimiter = UNDEFINED_CHAR; //indicate that we did not encounter a delimiter; we ran out of characters
 						break; //stop processing characters
 					}
 					final char character = (char)value; //cast the character value to a char
-					if(getGroupDepth() == 0 && delimiters.contains(character)) //only look at delimiters when we're not in a group
-					{
+					if(getGroupDepth() == 0 && delimiters.contains(character)) { //only look at delimiters when we're not in a group
 						this.lastDelimiter = this.delimiter; //move the delimiter to the last delimiter
 						this.delimiter = character; //save the delimiter							
 						//TODO improve; does this not allow empty tokens? there should at least be an option for this
-						if(stringBuilder.length() > 0) //if we've already started a token, return the token; otherwise, just skip the delimiter
-						{
+						if(stringBuilder.length() > 0) { //if we've already started a token, return the token; otherwise, just skip the delimiter
 							break; //we found a delimiter, so we've finished a token; this will shift delimiters
 						}
-					}
-					else
-					//if this is not a delimiter, or we're inside the group, we'll keep the character
-					{
+					} else { //if this is not a delimiter, or we're inside the group, we'll keep the character
 						final int groupBeginCharIndex = groupBegins.indexOf(character); //see if this is a group beginning character
-						if(groupBeginCharIndex >= 0) //if this is a group beginning
-						{
+						if(groupBeginCharIndex >= 0) { //if this is a group beginning
 							if(groupEnds.charAt(groupBeginCharIndex) == character //if the beginning and ending character is the same for this group...
 									&& getGroupDepth() > 0 //...and if we're inside a group...
-									&& peekGroup() == character) //...and the group we're in has the same character as we just found, assume we're closing the group
-							{
-								try
-								{
+									&& peekGroup() == character) { //...and the group we're in has the same character as we just found, assume we're closing the group
+								try {
 									final char groupBegin = popGroup(); //pop a group from the stack
-								}
-								catch(EmptyStackException emptyStackException) //this should never happen, as we've already checked the group depth, and we even know that the delimiters match
-								{
+								} catch(EmptyStackException emptyStackException) { //this should never happen, as we've already checked the group depth, and we even know that the delimiters match
 									throw new AssertionError(emptyStackException);
 								}
-							}
-							else
-							//if this group has different beginning or ending characters, or we're inside another group, assume we really are starting a new group
-							{
+							} else { //if this group has different beginning or ending characters, or we're inside another group, assume we really are starting a new group
 								pushGroup(character); //push the group onto the stack
 							}
-						}
-						else
-						//if this is not a group beginning
-						{
+						} else { //if this is not a group beginning
 							final int groupEndCharIndex = groupEnds.indexOf(character); //see if this is a group ending character
-							if(groupEndCharIndex >= 0) //if this is a group ending
-							{
-								try
-								{
+							if(groupEndCharIndex >= 0) { //if this is a group ending
+								try {
 									final char groupBegin = popGroup(); //pop a group from the stack
 									//TODO check to make sure groupBegins[groupEndCharIndex]==groupBegin and do something interesting
-								}
-								catch(final EmptyStackException emptyStackException)
-								{
+								} catch(final EmptyStackException emptyStackException) {
 									throw new AssertionError(emptyStackException);
 								}
 							}
@@ -334,9 +280,7 @@ public class ReaderTokenizer implements Iterator<String>, Iterable<String>
 						stringBuilder.append(character); //append the character
 					}
 				}
-			}
-			catch(final IOException ioException)
-			{
+			} catch(final IOException ioException) {
 				throw new AssertionError(ioException);
 			}
 			primedToken = stringBuilder.length() > 0 ? stringBuilder.toString() : null; //store the token, or null if we didn't collect any characters
@@ -345,8 +289,7 @@ public class ReaderTokenizer implements Iterator<String>, Iterable<String>
 	}
 
 	/** @return An iterator over the tokens. */
-	public Iterator<String> iterator()
-	{
+	public Iterator<String> iterator() {
 		return this;
 	}
 

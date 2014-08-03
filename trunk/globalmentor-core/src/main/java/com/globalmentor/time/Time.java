@@ -26,20 +26,17 @@ import java.util.Date;
  * 
  * @author Garret Wilson
  */
-public class Time extends Date
-{
+public class Time extends Date {
 
 	/** The granularity of time. */
-	public enum Resolution
-	{
+	public enum Resolution {
 
 		NANOSECONDS(-1000), MILLISECONDS(1), SECONDS(fromSeconds(1)), MINUTES(fromMinutes(1)), HOURS(fromHours(1)), DAYS(fromDays(1));
 
 		private final long milliseconds;
 
 		/** The number of milliseconds of this resolution. */
-		public long getMilliseconds()
-		{
+		public long getMilliseconds() {
 			return milliseconds;
 		}
 
@@ -47,8 +44,7 @@ public class Time extends Date
 		 * Constructor.
 		 * @param milliseconds The number of milliseconds of this resolution.
 		 */
-		private Resolution(final long milliseconds)
-		{
+		private Resolution(final long milliseconds) {
 			this.milliseconds = milliseconds;
 		}
 
@@ -70,8 +66,7 @@ public class Time extends Date
 	 * Default constructor with the current time.
 	 * @see System#currentTimeMillis()
 	 */
-	public Time()
-	{
+	public Time() {
 		this(System.currentTimeMillis());
 	}
 
@@ -80,8 +75,7 @@ public class Time extends Date
 	 * 
 	 * @param date The date containing the number of milliseconds past the epoch.
 	 */
-	public Time(final Date date)
-	{
+	public Time(final Date date) {
 		this(date.getTime());
 	}
 
@@ -90,8 +84,7 @@ public class Time extends Date
 	 * 
 	 * @param milliseconds The number of milliseconds past the epoch.
 	 */
-	public Time(final long milliseconds)
-	{
+	public Time(final long milliseconds) {
 		super(milliseconds);
 	}
 
@@ -101,8 +94,7 @@ public class Time extends Date
 	 * @return A time object representing this time plus the given duration.
 	 * @throws NullPointerException if the given duration is <code>null</code>.
 	 */
-	public Time add(final Duration duration)
-	{
+	public Time add(final Duration duration) {
 		final long time = duration.getTime(); //if the duration is 0, we can just return this time
 		return time == 0 ? this : new Time(getTime() + time);
 	}
@@ -113,8 +105,7 @@ public class Time extends Date
 	 * @return A time object representing this time minus the given duration.
 	 * @throws NullPointerException if the given duration is <code>null</code>.
 	 */
-	public Time subtract(final Duration duration)
-	{
+	public Time subtract(final Duration duration) {
 		final long time = duration.getTime(); //if the duration is 0, we can just return this time
 		return time == 0 ? this : new Time(getTime() - time);
 	}
@@ -125,8 +116,7 @@ public class Time extends Date
 	 * @return The duration between the two times, that is, this time minus the given time.
 	 * @throws NullPointerException if the given time is <code>null</code>.
 	 */
-	public Duration subtract(final Time time)
-	{
+	public Duration subtract(final Time time) {
 		return Duration.of(getTime() - time.getTime());
 	}
 
@@ -137,10 +127,8 @@ public class Time extends Date
 	 * @return A time instance indicating the ceiling time at the specified resolution.
 	 * @see Math#ceil(double)
 	 */
-	public Time ceil(final Resolution resolution)
-	{
-		if(resolution == Resolution.MILLISECONDS)
-		{
+	public Time ceil(final Resolution resolution) {
+		if(resolution == Resolution.MILLISECONDS) {
 			return this;
 		}
 		return new Time((long)Math.ceil(getTime() / resolution.getMilliseconds()) * resolution.getMilliseconds());
@@ -153,10 +141,8 @@ public class Time extends Date
 	 * @return A time instance indicating the floor time at the specified resolution.
 	 * @see Math#floor(double)
 	 */
-	public Time floor(final Resolution resolution)
-	{
-		if(resolution == Resolution.MILLISECONDS)
-		{
+	public Time floor(final Resolution resolution) {
+		if(resolution == Resolution.MILLISECONDS) {
 			return this;
 		}
 		return new Time((long)Math.floor(getTime() / resolution.getMilliseconds()) * resolution.getMilliseconds());
@@ -169,10 +155,8 @@ public class Time extends Date
 	 * @return A time instance indicating the rounded time at the specified resolution.
 	 * @see Math#round(double)
 	 */
-	public Time round(final Resolution resolution)
-	{
-		if(resolution == Resolution.MILLISECONDS)
-		{
+	public Time round(final Resolution resolution) {
+		if(resolution == Resolution.MILLISECONDS) {
 			return this;
 		}
 		return new Time((long)Math.round(getTime() / resolution.getMilliseconds()) * resolution.getMilliseconds());
@@ -180,8 +164,7 @@ public class Time extends Date
 
 	/** {@inheritDoc} This version adds the current time in milliseconds. */
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return super.toString() + " (" + getTime() + ")";
 	}
 }

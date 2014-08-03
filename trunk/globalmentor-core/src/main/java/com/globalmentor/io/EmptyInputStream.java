@@ -24,34 +24,29 @@ import java.io.InputStream;
  * 
  * @author Garret Wilson
  */
-public class EmptyInputStream extends InputStream
-{
+public class EmptyInputStream extends InputStream {
 
 	/** {@inheritDoc} This version always returns -1. */
 	@Override
-	public int read() throws IOException
-	{
+	public int read() throws IOException {
 		return -1;
 	}
 
 	/** {@inheritDoc} This version always returns -1. */
 	@Override
-	public int read(byte[] b) throws IOException
-	{
+	public int read(byte[] b) throws IOException {
 		return -1;
 	}
 
 	/** {@inheritDoc} This version always returns -1. */
 	@Override
-	public int read(byte[] b, int off, int len) throws IOException
-	{
+	public int read(byte[] b, int off, int len) throws IOException {
 		return -1;
 	}
 
 	/** {@inheritDoc} This version always returns 0. */
 	@Override
-	public long skip(long n) throws IOException
-	{
+	public long skip(long n) throws IOException {
 		return 0;
 	}
 

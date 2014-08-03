@@ -27,30 +27,25 @@ import com.globalmentor.test.AbstractTest;
  * 
  * @author Garret Wilson
  */
-public class MillisecondsTest extends AbstractTest
-{
+public class MillisecondsTest extends AbstractTest {
 
 	@Test
-	public void testSeconds()
-	{
+	public void testSeconds() {
 		assertEquals(5 * 1000, Milliseconds.fromSeconds(5));
 	}
 
 	@Test
-	public void testMinutes()
-	{
+	public void testMinutes() {
 		assertEquals(5 * 60 * 1000, Milliseconds.fromMinutes(5));
 	}
 
 	@Test
-	public void testHours()
-	{
+	public void testHours() {
 		assertEquals(5 * 60 * 60 * 1000, Milliseconds.fromHours(5));
 	}
 
 	@Test
-	public void testDays()
-	{
+	public void testDays() {
 		assertEquals(5 * 24 * 60 * 60 * 1000, Milliseconds.fromDays(5));
 	}
 

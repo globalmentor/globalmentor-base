@@ -27,8 +27,7 @@ import com.globalmentor.model.NameValuePair;
  * href="http://www.ietf.org/rfc/rfc2425.txt">RFC 2425</a>, "A MIME Content-Type for Directory Information".
  * @author Garret Wilson
  */
-public interface ValueFactory
-{
+public interface ValueFactory {
 
 	/**
 	 * Processes the textual representation of a line's value and returns one or more object representing the value(s).

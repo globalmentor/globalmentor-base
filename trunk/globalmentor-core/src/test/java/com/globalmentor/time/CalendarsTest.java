@@ -33,13 +33,11 @@ import com.globalmentor.iso.datetime.ISODate;
  * @see Calendars
  * 
  */
-public class CalendarsTest
-{
+public class CalendarsTest {
 
 	/** @see Calendars#getDayDifference(Calendar, Calendar) */
 	@Test
-	public void testGetDayDifference()
-	{
+	public void testGetDayDifference() {
 		assertThat(Calendars.getDayDifference(new ISODate(2002, 03, 04).toCalendar(GMT), new ISODate(2002, 03, 04).toCalendar(GMT)), is(0)); //same day
 		assertThat(Calendars.getDayDifference(new ISODate(2002, 03, 04).toCalendar(GMT), new ISODate(2002, 03, 03).toCalendar(GMT)), is(1)); //yesterday
 		assertThat(Calendars.getDayDifference(new ISODate(2002, 03, 04).toCalendar(GMT), new ISODate(2001, 03, 04).toCalendar(GMT)), is(365)); //a year ago

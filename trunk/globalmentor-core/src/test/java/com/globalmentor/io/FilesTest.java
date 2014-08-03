@@ -33,20 +33,17 @@ import com.globalmentor.test.AbstractTest;
  * 
  * @author Garret Wilson
  */
-public class FilesTest extends AbstractTest
-{
+public class FilesTest extends AbstractTest {
 
 	private static File tempFile;
 
 	@BeforeClass
-	public static void createTempFile() throws IOException
-	{
+	public static void createTempFile() throws IOException {
 		tempFile = Files.createTempFile(); //create a plain old type file
 	}
 
 	@AfterClass
-	public static void deleteTempFile() throws IOException
-	{
+	public static void deleteTempFile() throws IOException {
 		Files.delete(tempFile);
 	}
 
@@ -56,8 +53,7 @@ public class FilesTest extends AbstractTest
 	 * @see Uris#createUri(URI)
 	 */
 	@Test
-	public void testFileURI()
-	{
+	public void testFileURI() {
 		final URI fileURI = Files.toURI(tempFile); //create a Java URI directly from a file
 		assertThat(fileURI.getScheme(), is(FILE_SCHEME)); //file:
 		assertTrue(fileURI.getRawPath().startsWith(ROOT_PATH)); //file:/

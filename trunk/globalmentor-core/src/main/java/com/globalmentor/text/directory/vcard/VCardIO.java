@@ -34,15 +34,13 @@ import static java.util.Collections.emptySet;
  * @author Garret Wilson
  * @see VCard
  */
-public class VCardIO implements IO<VCard>
-{
+public class VCardIO implements IO<VCard> {
 
 	/** The names of contact lines that should be reduced to single content lines upon serialization. */
 	private Set<String> serializationSingleValueNames = emptySet();
 
 	/** @return The names of contact lines that should be reduced to a single value in single content lines upon serialization. */
-	public Set<String> getSerializationSingleValueNames()
-	{
+	public Set<String> getSerializationSingleValueNames() {
 		return serializationSingleValueNames;
 	}
 
@@ -50,8 +48,7 @@ public class VCardIO implements IO<VCard>
 	 * Sets the names of contact lines that should be reduced to a single value in a single content lines upon serialization.
 	 * @param singleValueNames The names of contact lines that should be reduced to a single value in a single content lines.
 	 */
-	public void setSerializationSingleValueNames(final Set<String> singleValueNames)
-	{
+	public void setSerializationSingleValueNames(final Set<String> singleValueNames) {
 		this.serializationSingleValueNames = immutableSetOf(singleValueNames);
 	}
 
@@ -59,32 +56,28 @@ public class VCardIO implements IO<VCard>
 	 * Sets the names of contact lines that should be reduced to a single value in a single content lines upon serialization.
 	 * @param singleValueNames The names of contact lines that should be reduced to a single value in a single content lines.
 	 */
-	public void setSerializationSingleValueNames(final String... singleValueNames)
-	{
+	public void setSerializationSingleValueNames(final String... singleValueNames) {
 		this.serializationSingleValueNames = immutableSetOf(singleValueNames);
 	}
-	
+
 	/** The profile to handle vCards. */
 	protected final static VCardProfile VCARD_PROFILE = new VCardProfile();
 
 	/** {@inheritDoc} */
-	public VCard read(final InputStream inputStream, final URI baseURI) throws IOException
-	{
+	public VCard read(final InputStream inputStream, final URI baseURI) throws IOException {
 		final DirectoryProcessor directoryProcessor = new DirectoryProcessor(); //create a new directory processor
 		directoryProcessor.registerProfile(VCARD_PROFILE_NAME, VCARD_PROFILE); //register the vCard profile with the vCard processor
 		final Reader reader = new InputStreamReader(inputStream, UTF_8_CHARSET); //assume the vCard is stored in UTF-8
 		final Directory directory = directoryProcessor.processDirectory(reader, baseURI); //process the directory
 		//TODO del Log.trace("parsed directory: ", directory);
-		if(!(directory instanceof VCard)) //if the directory is not a VCard
-		{
+		if(!(directory instanceof VCard)) { //if the directory is not a VCard
 			throw new IOException("Directory " + directory.getDisplayName() + " is not a vCard."); //TODO i18n
 		}
 		return (VCard)directory; //cast the directory to a vCard and return it 
 	}
 
 	/** {@inheritDoc} */
-	public void write(final OutputStream outputStream, final URI baseURI, final VCard object) throws IOException
-	{
+	public void write(final OutputStream outputStream, final URI baseURI, final VCard object) throws IOException {
 		final ContentLine[] contentLines = VCardProfile.createContentLines(object); //create content lines from the vCard
 		final DirectorySerializer directorySerializer = new DirectorySerializer(); //create a new directory serializer
 		directorySerializer.setSingleValueNames(getSerializationSingleValueNames()); //set the single-value names, if any

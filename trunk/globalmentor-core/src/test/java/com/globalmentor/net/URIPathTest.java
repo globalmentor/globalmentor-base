@@ -26,13 +26,11 @@ import org.junit.Test;
  * Tests for URI paths.
  * @author Garret Wilson
  */
-public class URIPathTest
-{
+public class URIPathTest {
 
 	/** Tests retrieving base paths of a path. */
 	@Test
-	public void testBasePaths()
-	{
+	public void testBasePaths() {
 		assertThat(new URIPath("").getBasePaths(), equalTo(asList(new URIPath(""))));
 		assertThat(new URIPath("/").getBasePaths(), equalTo(asList(new URIPath("/"))));
 		assertThat(new URIPath("one").getBasePaths(), equalTo(asList(new URIPath("one"))));

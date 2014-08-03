@@ -41,8 +41,7 @@ import com.globalmentor.model.NameValuePair;
  * @see Profile
  * @see PredefinedProfile
  */
-public class DirectorySerializer
-{
+public class DirectorySerializer {
 
 	/**
 	 * The delimiter string used for combining content line text values.
@@ -55,8 +54,7 @@ public class DirectorySerializer
 	private Set<String> singleValueNames = emptySet();
 
 	/** @return The names of contact lines that should be reduced to a single value in single content lines. */
-	public Set<String> getSingleValueNames()
-	{
+	public Set<String> getSingleValueNames() {
 		return singleValueNames;
 	}
 
@@ -64,8 +62,7 @@ public class DirectorySerializer
 	 * Sets the names of contact lines that should be reduced to a single value in a single content lines.
 	 * @param singleValueNames The names of contact lines that should be reduced to a single value in a single content lines.
 	 */
-	public void setSingleValueNames(final Set<String> singleValueNames)
-	{
+	public void setSingleValueNames(final Set<String> singleValueNames) {
 		this.singleValueNames = immutableSetOf(singleValueNames);
 	}
 
@@ -73,8 +70,7 @@ public class DirectorySerializer
 	 * Sets the names of contact lines that should be reduced to a single value in a single content lines upon serialization.
 	 * @param singleValueNames The names of contact lines that should be reduced to a single value in a single content lines.
 	 */
-	public void setSerializationSingleValueNames(final String... singleValueNames)
-	{
+	public void setSerializationSingleValueNames(final String... singleValueNames) {
 		this.singleValueNames = immutableSetOf(singleValueNames);
 	}
 
@@ -82,8 +78,7 @@ public class DirectorySerializer
 	private final PredefinedProfile predefinedProfile = new PredefinedProfile();
 
 	/** @return The profile for the predefined types. */
-	protected PredefinedProfile getPredefinedProfile()
-	{
+	protected PredefinedProfile getPredefinedProfile() {
 		return predefinedProfile;
 	}
 
@@ -95,8 +90,7 @@ public class DirectorySerializer
 	 * @param profileName The name of the profile.
 	 * @param profile The profile to be registered with this profile name.
 	 */
-	public void registerProfile(final String profileName, final Profile profile)
-	{
+	public void registerProfile(final String profileName, final Profile profile) {
 		profileMap.put(profileName.toLowerCase(), profile); //put the profile in the map, keyed to the lowercase version of the profile name
 	}
 
@@ -106,8 +100,7 @@ public class DirectorySerializer
 	 * @return A profile for this profile name, or <code>null</code> if there is no profile registered for this profile name.
 	 * @see #getPredefinedProfile
 	 */
-	protected Profile getProfile(final String profileName)
-	{
+	protected Profile getProfile(final String profileName) {
 		return profileName != null ? profileMap.get(profileName.toLowerCase()) : getPredefinedProfile(); //get the profile keyed to the lowercase version of the profile name, or return the predefined profile if null was passed
 	}
 
@@ -119,8 +112,7 @@ public class DirectorySerializer
 	 * @param valueType The value type for which this value serializer can serialize values.
 	 * @param valueSerializer The value serializer to be registered with this value type.
 	 */
-	public void registerValueSerializer(final String valueType, final ValueSerializer valueSerializer)
-	{
+	public void registerValueSerializer(final String valueType, final ValueSerializer valueSerializer) {
 		valueSerializerMap.put(valueType.toLowerCase(), valueSerializer); //put the value serializer in the map, keyed to the lowercase version of the type
 	}
 
@@ -129,8 +121,7 @@ public class DirectorySerializer
 	 * @param valueType The value type for which a value serializer should be returned.
 	 * @return A value serializer for this value type, or <code>null</code> if there is no value serializer registered for this value type.
 	 */
-	protected ValueSerializer getValueSerializer(final String valueType)
-	{
+	protected ValueSerializer getValueSerializer(final String valueType) {
 		return valueSerializerMap.get(valueType.toLowerCase()); //get the value serializer keyed to the lowercase version of this value type
 	}
 
@@ -150,8 +141,7 @@ public class DirectorySerializer
 	 * until the block ends or another block begins.
 	 * @param profile The new profile of the directory.
 	 */
-	protected void setProfile(final String profile)
-	{
+	protected void setProfile(final String profile) {
 		defaultProfile = profile; //save the profile
 		useDefaultProfile = true; //show that we should use the default profile
 	}
@@ -160,19 +150,12 @@ public class DirectorySerializer
 	 * @return The current profile, either the last set profile, the profile of the current "begin:"/"end:" block, or <code>null</code> if there is no profile, in
 	 *         that order.
 	 */
-	protected String getProfile()
-	{
-		if(useDefaultProfile && defaultProfile != null) //if we should use the default profile and there is a profile set
-		{
+	protected String getProfile() {
+		if(useDefaultProfile && defaultProfile != null) { //if we should use the default profile and there is a profile set
 			return defaultProfile; //return the last set profile
-		}
-		else if(profileStack.size() > 0) //if we're in a profile "begin:"/"end:" block
-		{
+		} else if(profileStack.size() > 0) { //if we're in a profile "begin:"/"end:" block
 			return profileStack.getLast(); //return the profile of the current block
-		}
-		else
-		//if no profile is set, and we're not in a profile "begin:"/"end:" block
-		{
+		} else { //if no profile is set, and we're not in a profile "begin:"/"end:" block
 			return defaultProfile; //if there's no profile "begin:"/"end:" block, we'll have to use the default profile, even if it is null
 		}
 	}
@@ -181,8 +164,7 @@ public class DirectorySerializer
 	 * Pushes the given profile on the stack, and removes the set profile, if any. Suspends the currently set profile, if any.
 	 * @param profile The profile of the new "begin:"/"end:" block block.
 	 */
-	protected void pushProfile(final String profile)
-	{
+	protected void pushProfile(final String profile) {
 		profileStack.addLast(profile); //push the profile onto the stack
 		useDefaultProfile = false; //suspend use of the default profile
 	}
@@ -192,8 +174,7 @@ public class DirectorySerializer
 	 * @return The profile from the top of the stack.
 	 * @throws NoSuchElementException Thrown if there are no more profiles on the stack.
 	 */
-	protected String popProfile()
-	{
+	protected String popProfile() {
 		useDefaultProfile = false; //suspend use of the default profile
 		return (String)profileStack.removeLast(); //pop the profile from the stack
 	}
@@ -201,8 +182,7 @@ public class DirectorySerializer
 	/**
 	 * Default constructor. This class automatically registers the predefined profile as a value serializer for standard value types.
 	 */
-	public DirectorySerializer()
-	{
+	public DirectorySerializer() {
 		//register the predefined profile as a value serializer for the standard value types
 		registerValueSerializer(URI_VALUE_TYPE, getPredefinedProfile());
 		registerValueSerializer(TEXT_VALUE_TYPE, getPredefinedProfile());
@@ -220,8 +200,7 @@ public class DirectorySerializer
 	 * @param writer The writer to which the lines of the directory should be serialized.
 	 * @throws IOException Thrown if there is an error writing to the directory.
 	 */
-	public void serializeContentLines(final ContentLine[] contentLines, final Writer writer) throws IOException
-	{
+	public void serializeContentLines(final ContentLine[] contentLines, final Writer writer) throws IOException {
 		serializeContentLines(contentLines, new LineFoldWriter(writer)); //create a new line fold writer and use that to serialize the directory
 	}
 
@@ -237,19 +216,15 @@ public class DirectorySerializer
 	 * @see LocaledText
 	 * @see #CONTENT_LINE_TEXT_COMBINE_STRING
 	 */
-	protected ContentLine combineValues(final ContentLine contentLine1, final ContentLine contentLine2)
-	{
+	protected ContentLine combineValues(final ContentLine contentLine1, final ContentLine contentLine2) {
 		final Object value1 = contentLine1.getValue();
 		final Object value2 = contentLine2.getValue();
 		final LocaledText newValue;
-		if(value1 instanceof LocaledText && value2 instanceof LocaledText)
-		{
+		if(value1 instanceof LocaledText && value2 instanceof LocaledText) {
 			//combine the strings: value1+"\nP\n"+value2, where 'P' is the paragraph separator symbol
 			final String combinedStringValue = value1.toString() + CONTENT_LINE_TEXT_COMBINE_STRING + value2.toString();
 			newValue = new LocaledText(combinedStringValue, ((LocaledText)value1).getLocale()); //use the locale, if any, of the first value
-		}
-		else
-		{
+		} else {
 			throw new IllegalArgumentException("Cannot combine content lines for " + contentLine1.getName() + " with values of types "
 					+ contentLine1.getValue().getClass() + " and " + contentLine2.getValue().getClass() + ".");
 		}
@@ -263,46 +238,33 @@ public class DirectorySerializer
 	 * @param writer The writer to which the lines of the directory should be serialized.
 	 * @throws IOException Thrown if there is an error writing to the directory.
 	 */
-	protected void serializeContentLines(final ContentLine[] contentLineArray, final LineFoldWriter writer) throws IOException
-	{
+	protected void serializeContentLines(final ContentLine[] contentLineArray, final LineFoldWriter writer) throws IOException {
 		final List<ContentLine> contentLines = new ArrayList<ContentLine>();
 		Collections.addAll(contentLines, contentLineArray);
 		//collapse named content lines if requested
-		for(final String singleValueName : getSingleValueNames())
-		{
+		for(final String singleValueName : getSingleValueNames()) {
 			ContentLine firstContentLine = null; //keep track of the first content line to combine values for
 			ContentLine combinedValueContentLine = null; //we'll combine values and place them here
 			final Iterator<ContentLine> contentLineIterator = contentLines.iterator();
-			while(contentLineIterator.hasNext())
-			{
+			while(contentLineIterator.hasNext()) {
 				final ContentLine contentLine = contentLineIterator.next();
-				if(contentLine.getName().equals(singleValueName)) //if this is a content line to combine values for
-				{
-					if(firstContentLine == null) //if this is the first content line with that name so far
-					{
+				if(contentLine.getName().equals(singleValueName)) { //if this is a content line to combine values for
+					if(firstContentLine == null) { //if this is the first content line with that name so far
 						firstContentLine = contentLine; //make note of this content line
-					}
-					else
-					//if we already have other content lines with this name
-					{
-						if(combinedValueContentLine == null) //if we haven't combined any values, yet
-						{
+					} else { //if we already have other content lines with this name
+						if(combinedValueContentLine == null) { //if we haven't combined any values, yet
 							combinedValueContentLine = firstContentLine; //start with the first line
 						}
-						try
-						{
+						try {
 							combinedValueContentLine = combineValues(combinedValueContentLine, contentLine); //combine the new value with what we had before
-						}
-						catch(final IllegalArgumentException illegalArgumentException)
-						{
+						} catch(final IllegalArgumentException illegalArgumentException) {
 							throw new UnsupportedOperationException(illegalArgumentException);
 						}
 						contentLineIterator.remove(); //remove this content line; it has been combined with a previous one
 					}
 				}
 			}
-			if(combinedValueContentLine != null) //if we combined any values
-			{
+			if(combinedValueContentLine != null) { //if we combined any values
 				assert firstContentLine != null;
 				contentLines.set(contentLines.indexOf(firstContentLine), combinedValueContentLine); //replace the first content line with the combined value content line
 			}
@@ -310,8 +272,7 @@ public class DirectorySerializer
 		profileStack = new LinkedList<String>(); //create a new profile stack
 		defaultProfile = null; //show that there is no default profile
 		useDefaultProfile = false; //don't use the default profile
-		for(final ContentLine contentLine : contentLines) //look at each processed content line
-		{
+		for(final ContentLine contentLine : contentLines) { //look at each processed content line
 			serializeContentLine(contentLine, writer); //serialize the content line
 		}
 		profileStack = null; //release the profile stack
@@ -340,11 +301,9 @@ public class DirectorySerializer
 	 * @param writer The writer to which the lines of the directory should be serialized.
 	 * @throws IOException Thrown if there is an error writing to the directory.
 	 */
-	public void serializeContentLine(final ContentLine contentLine, final Writer writer) throws IOException
-	{
+	public void serializeContentLine(final ContentLine contentLine, final Writer writer) throws IOException {
 		final String group = contentLine.getGroup(); //get the line group
-		if(group != null) //if there is a group
-		{
+		if(group != null) { //if there is a group
 			writer.write(group); //write the group
 			writer.write(GROUP_NAME_SEPARATOR_CHAR); //write the group name separator
 		}
@@ -352,34 +311,25 @@ public class DirectorySerializer
 		//TODO del Log.trace("Serializing content line for type name: ", typeName);
 		writer.write(typeName); //write the type name
 		final List<NameValuePair<String, String>> paramList = contentLine.getParamList(); //get the list of parameters
-		if(paramList.size() > 0) //if there are parameters
-		{
+		if(paramList.size() > 0) { //if there are parameters
 			serializeParameters(paramList, writer); //serialize the parameters
 		}
 		writer.write(NAME_VALUE_SEPARATOR_CHAR); //write the content line name-value separator
-		if(PROFILE_TYPE.equalsIgnoreCase(typeName)) //if this is PROFILE
-		{
+		if(PROFILE_TYPE.equalsIgnoreCase(typeName)) { //if this is PROFILE
 			final String profile = ((LocaledText)contentLine.getValue()).getText(); //get the profile
 			contentLine.setProfile(profile); //a profile type should have the same profile as the one it sets
 			setProfile(profile); //set the profile to the new profile
-		}
-		else if(BEGIN_TYPE.equalsIgnoreCase(typeName)) //if this is BEGIN:xxx
-		{
+		} else if(BEGIN_TYPE.equalsIgnoreCase(typeName)) { //if this is BEGIN:xxx
 			final String profile = ((LocaledText)contentLine.getValue()).getText(); //get the profile
 			contentLine.setProfile(profile); //a beginning profile type should have the same profile as the one it sets
 			pushProfile(profile); //push the new profile
-		}
-		else if(END_TYPE.equalsIgnoreCase(typeName)) //if this is END:xxx
-		{
+		} else if(END_TYPE.equalsIgnoreCase(typeName)) { //if this is END:xxx
 			final String profile = ((LocaledText)contentLine.getValue()).getText(); //get the profile
 			contentLine.setProfile(profile); //an ending profile type should have the same profile to which it refers
-			try
-			{
+			try {
 				final String oldProfile = popProfile(); //pop the profile from the stack
 				//TODO make sure the old profile is what we expect
-			}
-			catch(NoSuchElementException noSuchElementException) //if there are no more profiles on the stack
-			{
+			} catch(NoSuchElementException noSuchElementException) { //if there are no more profiles on the stack
 				//TODO fix or del throw new ParseIOException("Profile \""+profile+"\" END without BEGIN.", reader);	//throw an error indicating that there was no beginning to the profile
 			}
 		}
@@ -390,32 +340,25 @@ public class DirectorySerializer
 		//TODO del Log.trace("found profile name: ", profileName);
 		final Profile profile = getProfile(profileName); //see if we have a profile registered with this profile name
 		String valueType = getParamValue(paramList, VALUE_PARAM_NAME); //get the value type parameter value
-		if(valueType == null) //if the value type wasn't explicitly given
-		{
-			if(profile != null) //if there is a profile for this profile name
-			{
+		if(valueType == null) { //if the value type wasn't explicitly given
+			if(profile != null) { //if there is a profile for this profile name
 				valueType = profile.getValueType(profileName, group, typeName, paramList); //ask this profile's value factory for the value type
 			}
-			if(valueType == null && profile != getPredefinedProfile()) //if we still don't know the type, and we didn't already check the predefined profile 
-			{
+			if(valueType == null && profile != getPredefinedProfile()) { //if we still don't know the type, and we didn't already check the predefined profile 
 				valueType = getPredefinedProfile().getValueType(profileName, group, typeName, paramList); //ask the predefined profile for the value type
 			}
 		}
 		//TODO del Log.trace("using profile type: ", typeName);
-		if(profile instanceof ValueSerializer) //if our profile is a value serializer, use the profile as a value serializer
-		{
+		if(profile instanceof ValueSerializer) { //if our profile is a value serializer, use the profile as a value serializer
 			isValueSerialized = ((ValueSerializer)profile).serializeValue(profileName, group, typeName, paramList, value, valueType, writer); //serialize the value for this profile
 		}
-		if(!isValueSerialized && valueType != null) //if the value was not serialized, but we know the value type
-		{
+		if(!isValueSerialized && valueType != null) { //if the value was not serialized, but we know the value type
 			final ValueSerializer valueSerializer = getValueSerializer(valueType); //see if we have a value serializer registered with this value type
-			if(valueSerializer != null) //if there is a value serializer for this value type
-			{
+			if(valueSerializer != null) { //if there is a value serializer for this value type
 				isValueSerialized = valueSerializer.serializeValue(profileName, group, typeName, paramList, value, valueType, writer); //serialize the value for this value type
 			}
 		}
-		if(!isValueSerialized) //if the value was not serialized
-		{
+		if(!isValueSerialized) { //if the value was not serialized
 			writer.write(value.toString()); //just write a string representation of the value
 		}
 		writer.write(CRLF); //write the CR+LF that ends the content line
@@ -429,23 +372,18 @@ public class DirectorySerializer
 	 * @param writer The writer to which the lines of the directory should be serialized.
 	 * @throws IOException Thrown if there is an error writing to the directory.
 	 */
-	protected void serializeParameters(final List<NameValuePair<String, String>> paramList, final Writer writer) throws IOException
-	{
+	protected void serializeParameters(final List<NameValuePair<String, String>> paramList, final Writer writer) throws IOException {
 		final List<NameValuePair<String, String>> paramRemainingList = new ArrayList<NameValuePair<String, String>>(paramList); //create a list of remaining parameters
-		while(paramRemainingList.size() > 0) //while there are parameters remaining
-		{
+		while(paramRemainingList.size() > 0) { //while there are parameters remaining
 			//get all parameter values for parameters that have the same name as the first parameter
 			final String firstParamName = paramRemainingList.get(0).getName(); //get the name of the first parameter, and see if there are other parameters with the same name
 			final List<String> valueList = new ArrayList<String>(); //create a list in which to place all param values of params that have the same name as the first remaining param
 			final Iterator<NameValuePair<String, String>> paramIterator = paramRemainingList.iterator(); //get an iterator to the parameters
-			while(paramIterator.hasNext()) //while there are remaining parameters
-			{
+			while(paramIterator.hasNext()) { //while there are remaining parameters
 				final NameValuePair<String, String> param = paramIterator.next(); //get the first parameter (there will always be at least one, because we checked the size first)
-				if(param.getName().equalsIgnoreCase(firstParamName)) //if this parameter has the same name as the first parameter
-				{
+				if(param.getName().equalsIgnoreCase(firstParamName)) { //if this parameter has the same name as the first parameter
 					final String value = param.getValue(); //get the parameter value
-					if(value != null) //if the parameter has a value
-					{
+					if(value != null) { //if the parameter has a value
 						valueList.add(param.getValue()); //add the parameter value to the list
 					}
 					paramIterator.remove(); //remove this parameter from the remaining parameter list
@@ -455,18 +393,14 @@ public class DirectorySerializer
 			writer.write(PARAM_SEPARATOR_CHAR); //write the parameter separator ';'
 			writer.write(firstParamName); //write the parameter name
 			final Iterator<String> valueIterator = valueList.iterator(); //get an iterator to the values
-			if(valueIterator.hasNext()) //if there are values
-			{
+			if(valueIterator.hasNext()) { //if there are values
 				writer.write(PARAM_NAME_VALUE_SEPARATOR_CHAR); //write the parameter name-value separator '='
-				do
-				{
+				do {
 					writer.write(valueIterator.next()); //write the next value
-					if(valueIterator.hasNext()) //if there is another value
-					{
+					if(valueIterator.hasNext()) { //if there is another value
 						writer.write(PARAM_VALUE_SEPARATOR_CHAR); //write the separator between param values ','
 					}
-				}
-				while(valueIterator.hasNext()); //while there are more values
+				} while(valueIterator.hasNext()); //while there are more values
 			}
 		}
 	}

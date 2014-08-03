@@ -53,8 +53,7 @@ import static com.globalmentor.text.Text.*;
  * @author Garret Wilson
  * @see <a href="http://blogs.msdn.com/b/ie/archive/2006/12/06/file-uris-in-windows.aspx">File URIs in Windows.</p>
  */
-public class Files
-{
+public class Files {
 
 	/** The character used to separate an extension from the rest of a filename. */
 	public final static char FILENAME_EXTENSION_SEPARATOR = '.';
@@ -161,8 +160,7 @@ public class Files
 	/** A singleton read-only map of lowercase file extensions and the corresponding content types they represent. */
 	public final static Map<String, ContentType> FILE_EXTENSION_CONTENT_TYPE_MAP; //TODO convert to lazy weak referenced map
 
-	static
-	{
+	static {
 		final Map<String, ContentType> tempFileExtensionContentTypeMap = new HashMap<String, ContentType>(); //create a new hash map in which to store extensions, and add the default extensions
 		tempFileExtensionContentTypeMap.put("asi", ContentType.create(ContentType.APPLICATION_PRIMARY_TYPE, "x-qti-assessment"));
 		tempFileExtensionContentTypeMap.put(Audio.AU_NAME_EXTENSION, ContentType.create(ContentType.AUDIO_PRIMARY_TYPE, BASIC_SUBTYPE));
@@ -207,8 +205,7 @@ public class Files
 	}
 
 	/** This class cannot be publicly instantiated. */
-	private Files()
-	{
+	private Files() {
 	}
 
 	/**
@@ -217,8 +214,7 @@ public class Files
 	 * @param extension The extension to add.
 	 * @return The file with the new extension.
 	 */
-	public static File addExtension(final File file, final String extension)
-	{
+	public static File addExtension(final File file, final String extension) {
 		return new File(addExtension(file.getPath(), extension)); //add an extension to the path and create and return a new file with that 
 	}
 
@@ -230,8 +226,7 @@ public class Files
 	 * @return The filename with the new extension.
 	 * @throws NullPointerException if the given extension is <code>null</code>.
 	 */
-	public static String addExtension(final String filename, final String extension)
-	{
+	public static String addExtension(final String filename, final String extension) {
 		return new StringBuilder(filename).append(FILENAME_EXTENSION_SEPARATOR).append(checkInstance(extension, "Extension cannot be null")).toString(); //add the requested extension and return the new filename
 	}
 
@@ -268,8 +263,7 @@ public class Files
 	 * @return A list of files in the given path matching the given wildcard filename.
 	 * @see #FILENAME_WILDCARD_CHARACTERS
 	 */
-	public static File[] listWildcards(final File wildcardFile) //TODO improve to only return directories
-	{
+	public static File[] listWildcards(final File wildcardFile) { //TODO improve to only return directories
 		return listWildcards(wildcardFile.getParentFile(), wildcardFile.getName());
 	}
 
@@ -283,8 +277,7 @@ public class Files
 	 * @return A list of files in the given directory with names matching the given wildcard filename.
 	 * @see #FILENAME_WILDCARD_CHARACTERS
 	 */
-	public static File[] listWildcards(final File directory, final String wildcardFilename)
-	{
+	public static File[] listWildcards(final File directory, final String wildcardFilename) {
 		final StringBuilder filenamePatternStringBuilder = new StringBuilder(wildcardFilename);
 		//1. Escape all pattern characters (including '.') except for '*' and '?' with '\'.
 		escape(filenamePatternStringBuilder, FILENAME_NON_WILDCARD_PATTERN_RESTRICTED_CHARACTERS, RegularExpressions.ESCAPE);
@@ -304,8 +297,7 @@ public class Files
 	 * @see File#createTempFile(String, String)
 	 * @see #TEMP_EXTENSION
 	 */
-	public static File createTempFile() throws IOException
-	{
+	public static File createTempFile() throws IOException {
 		return createTempFile(TEMP_PREFIX);
 	}
 
@@ -319,8 +311,7 @@ public class Files
 	 * @see File#createTempFile(String, String)
 	 * @see #TEMP_EXTENSION
 	 */
-	public static File createTempFile(final String baseName) throws IOException
-	{
+	public static File createTempFile(final String baseName) throws IOException {
 		return createTempFile(baseName, TEMP_EXTENSION); //create a temporary file with a temp extension
 	}
 
@@ -335,8 +326,7 @@ public class Files
 	 * @throws IOException if there is a problem creating the temporary file.
 	 * @see File#createTempFile(String, String)
 	 */
-	public static File createTempFile(final String baseName, final String extension) throws IOException
-	{
+	public static File createTempFile(final String baseName, final String extension) throws IOException {
 		return createTempFile(baseName, extension, false); //create a temporary file that is automatically scheduled for deletion
 	}
 
@@ -353,8 +343,7 @@ public class Files
 	 * @see File#deleteOnExit()
 	 * @see #TEMP_EXTENSION
 	 */
-	public static File createTempFile(final String baseName, final boolean deleteOnExit) throws IOException
-	{
+	public static File createTempFile(final String baseName, final boolean deleteOnExit) throws IOException {
 		return createTempFile(baseName, TEMP_EXTENSION, deleteOnExit);
 	}
 
@@ -371,8 +360,7 @@ public class Files
 	 * @see File#createTempFile(String, String)
 	 * @see File#deleteOnExit()
 	 */
-	public static File createTempFile(final String baseName, final String extension, final boolean deleteOnExit) throws IOException
-	{
+	public static File createTempFile(final String baseName, final String extension, final boolean deleteOnExit) throws IOException {
 		return createTempFile(baseName, extension, null, deleteOnExit); //create a temp file using the standard temporary directory
 	}
 
@@ -393,18 +381,13 @@ public class Files
 	 * @see #TEMP_PREFIX
 	 * @see #TEMP_EXTENSION
 	 */
-	public static File createTempFile(final File file) throws IOException
-	{
+	public static File createTempFile(final File file) throws IOException {
 		final File directory;
 		final String baseName;
-		if(file.isDirectory()) //if a directory is given
-		{
+		if(file.isDirectory()) { //if a directory is given
 			directory = file; //use the file as the directory
 			baseName = TEMP_PREFIX; //use a generic temp prefix
-		}
-		else
-		//if the file is a directory+file 
-		{
+		} else { //if the file is a directory+file 
 			directory = file.getParentFile(); //put the temp file in the same directory
 			checkArgument(directory != null, "Non-directory file {0} has no parent directory.", file);
 			baseName = file.getName();
@@ -425,8 +408,7 @@ public class Files
 	 * @see File#createTempFile(String, String, File)
 	 * @see #TEMP_EXTENSION
 	 */
-	public static File createTempFile(final String baseName, final File directory) throws IOException
-	{
+	public static File createTempFile(final String baseName, final File directory) throws IOException {
 		return createTempFile(baseName, directory, false);
 	}
 
@@ -444,8 +426,7 @@ public class Files
 	 * @see File#deleteOnExit()
 	 * @see #TEMP_EXTENSION
 	 */
-	public static File createTempFile(final String baseName, final File directory, final boolean deleteOnExit) throws IOException
-	{
+	public static File createTempFile(final String baseName, final File directory, final boolean deleteOnExit) throws IOException {
 		return createTempFile(baseName, TEMP_EXTENSION, directory, deleteOnExit);
 	}
 
@@ -463,19 +444,15 @@ public class Files
 	 * @see File#createTempFile(String, String, File)
 	 * @see File#deleteOnExit()
 	 */
-	public static File createTempFile(String baseName, final String extension, final File directory, final boolean deleteOnExit) throws IOException
-	{
-		if(checkInstance(baseName, "Base name cannot be null.").length() == 0) //if the base name is empty
-		{
+	public static File createTempFile(String baseName, final String extension, final File directory, final boolean deleteOnExit) throws IOException {
+		if(checkInstance(baseName, "Base name cannot be null.").length() == 0) { //if the base name is empty
 			throw new IllegalArgumentException("Base name cannot be the empty string.");
 		}
-		if(baseName.length() < 3) //if the base name is under three characters long (the temp file creation API requires at least three characters)
-		{
+		if(baseName.length() < 3) { //if the base name is under three characters long (the temp file creation API requires at least three characters)
 			baseName = baseName + "-temp"; //pad the base name to meet the requirements of File.createTempFile()
 		}
 		final File tempFile = File.createTempFile(baseName, new StringBuilder().append(FILENAME_EXTENSION_SEPARATOR).append(extension).toString(), directory); //create a temporary file in the given directory, if any
-		if(deleteOnExit) //if the file should be deleted on JVM exit
-		{
+		if(deleteOnExit) { //if the file should be deleted on JVM exit
 			tempFile.deleteOnExit(); //tell the file it should be deleted when the JVM exits
 		}
 		return tempFile; //return the temporary file
@@ -486,16 +463,11 @@ public class Files
 	 * @param file The file to create.
 	 * @throws IOException Thrown if there is an error creating the file.
 	 */
-	public static void createNewFile(final File file) throws IOException
-	{
-		if(!file.createNewFile()) //create the file; if unsuccessful
-		{
-			if(file.exists()) //if the file already exists
-			{
+	public static void createNewFile(final File file) throws IOException {
+		if(!file.createNewFile()) { //create the file; if unsuccessful
+			if(file.exists()) { //if the file already exists
 				throw new IOException("File " + file + " already exists and cannot be created."); //throw an exception TODO i18n
-			}
-			else
-			{
+			} else {
 				//if the file doesn't exist, there must have been some other creation error
 				throw new IOException("Cannot create " + file); //throw an exception TODO i18n
 			}
@@ -510,8 +482,7 @@ public class Files
 	 * @param file The directory or file to delete.
 	 * @throws IOException Thrown if there is an problem deleting any directory or file.
 	 */
-	public static void delete(final File file) throws IOException
-	{
+	public static void delete(final File file) throws IOException {
 		delete(file, false); //delete the file without recursion
 	}
 
@@ -525,19 +496,15 @@ public class Files
 	 * @param recursive <code>true</code> if all child directories and files of a directory should recursively be deleted.
 	 * @throws IOException Thrown if there is an problem deleting any directory or file.
 	 */
-	public static void delete(final File file, final boolean recursive) throws IOException
-	{
-		if(recursive && file.isDirectory()) //if this is a directory and we should recursively delete files
-		{
+	public static void delete(final File file, final boolean recursive) throws IOException {
+		if(recursive && file.isDirectory()) { //if this is a directory and we should recursively delete files
 			final File[] files = file.listFiles(); //get all the files in the directory
 			assert files != null : "File " + file + " is not a directory.";
-			for(int i = files.length - 1; i >= 0; --i) //look at each file in the directory
-			{
+			for(int i = files.length - 1; i >= 0; --i) { //look at each file in the directory
 				delete(files[i], recursive); //delete this file
 			}
 		}
-		if(file.exists() && !file.delete()) //delete the file; if unsuccessful
-		{
+		if(file.exists() && !file.delete()) { //delete the file; if unsuccessful
 			throw new IOException("Unable to delete " + file); //throw an exception TODO i18n
 		}
 	}
@@ -550,8 +517,7 @@ public class Files
 	 * @throws NullPointerException if the given file path is <code>null</code>.
 	 * @see #FILE_PATH_SEPARATOR_CHARACTERS
 	 */
-	public static String getFilename(final String filePath) //TODO fix for Unix filenames; perhaps pass a system identification enum value
-	{
+	public static String getFilename(final String filePath) { //TODO fix for Unix filenames; perhaps pass a system identification enum value
 		final int pathSeparatorIndex = lastIndexOf(filePath, FILE_PATH_SEPARATOR_CHARACTERS); //see if there are any file path separator characters (unfortunately, this will strip away any backslash found in a Unix filename if the entire path was sent, but it's better to have a too-short filename in a rare case than one that includes the full Windows path)
 		return pathSeparatorIndex >= 0 ? filePath.substring(pathSeparatorIndex + 1) : filePath; //if there is a path separator, remove everything but what comes after the last path separator
 	}
@@ -561,8 +527,7 @@ public class Files
 	 * @param file The file to examine.
 	 * @return The extension of the file (not including '.'), or <code>null</code> if no extension is present.
 	 */
-	public static String getExtension(final File file)
-	{
+	public static String getExtension(final File file) {
 		return getExtension(file.getName()); //return the extension of the filename
 	}
 
@@ -571,8 +536,7 @@ public class Files
 	 * @param filename The filename to examine.
 	 * @return The extension of the file (not including '.'), or <code>null</code> if no extension is present.
 	 */
-	public static String getExtension(final String filename)
-	{
+	public static String getExtension(final String filename) {
 		final int separatorIndex = getExtensionSeparatorIndex(filename); //see if we can find the extension separator
 		return separatorIndex >= 0 ? filename.substring(separatorIndex + 1) : null; //if we found a separator, return everything after it 
 	}
@@ -583,8 +547,7 @@ public class Files
 	 * @param fileExtension The file extension, without the '.', or <code>null</code> if there is no extension.
 	 * @return The default media type for the file extension, or <code>null</code> if no known media type is associated with this file extension.
 	 */
-	public static ContentType getExtensionContentType(final String fileExtension)
-	{
+	public static ContentType getExtensionContentType(final String fileExtension) {
 		return FILE_EXTENSION_CONTENT_TYPE_MAP.get(fileExtension != null ? fileExtension.toLowerCase() : null); //see if the file extension exists as a key in the file extension map
 	}
 
@@ -595,8 +558,7 @@ public class Files
 	 * @return The file with the new name.
 	 * @throws NullPointerException if the given file and/or name is <code>null</code>.
 	 */
-	public static File changeName(final File file, final String name)
-	{
+	public static File changeName(final File file, final String name) {
 		final String path = file.getPath(); //get the file path
 		final int pathLength = path.length(); //get the length of the path
 		final String filename = file.getName(); //get the name of the file
@@ -611,8 +573,7 @@ public class Files
 	 * @param extension The extension to set, or <code>null</code> if the extension should be removed.
 	 * @return The file with the new extension.
 	 */
-	public static File changeExtension(final File file, final String extension)
-	{
+	public static File changeExtension(final File file, final String extension) {
 		return changeName(file, changeExtension(file.getName(), extension)); //return a file based on the name with the new extension
 	}
 
@@ -623,15 +584,12 @@ public class Files
 	 * @param extension The extension to set, or <code>null</code> if the extension should be removed.
 	 * @return The filename with the new extension.
 	 */
-	public static String changeExtension(String filename, final String extension)
-	{
+	public static String changeExtension(String filename, final String extension) {
 		final int separatorIndex = getExtensionSeparatorIndex(filename); //see if we can find the extension separator
-		if(separatorIndex >= 0) //if we found a separator
-		{
+		if(separatorIndex >= 0) { //if we found a separator
 			filename = filename.substring(0, separatorIndex); //remove the extension
 		}
-		if(extension != null) //if an extension was given
-		{
+		if(extension != null) { //if an extension was given
 			filename = addExtension(filename, extension); //add the requested extension
 		}
 		return filename; //return the new filename
@@ -644,10 +602,8 @@ public class Files
 	 * @throws FileNotFoundException if the given file does not exist or is not a directory.
 	 * @see File#isDirectory()
 	 */
-	public static File checkDirectoryExists(final File directory) throws FileNotFoundException
-	{
-		if(!directory.isDirectory()) //if the given file is not a directory
-		{
+	public static File checkDirectoryExists(final File directory) throws FileNotFoundException {
+		if(!directory.isDirectory()) { //if the given file is not a directory
 			checkFileExists(directory); //see if the file isn't a directory or it doesn't exist altogether
 			throw new FileNotFoundException("File does not exist as a directory: " + directory);
 		}
@@ -661,10 +617,8 @@ public class Files
 	 * @throws FileNotFoundException if the given file does not exist.
 	 * @see File#exists()
 	 */
-	public static File checkFileExists(final File file) throws FileNotFoundException
-	{
-		if(!file.exists())
-		{
+	public static File checkFileExists(final File file) throws FileNotFoundException {
+		if(!file.exists()) {
 			throw new FileNotFoundException("File does not exist: " + file);
 		}
 		return file;
@@ -677,8 +631,7 @@ public class Files
 	 * @param extension The extension to set, or <code>null</code> if the extension should be removed.
 	 * @return The file with no extension.
 	 */
-	public static File removeExtension(final File file)
-	{
+	public static File removeExtension(final File file) {
 		return changeExtension(file, null); //replace the extension with nothing
 	}
 
@@ -688,8 +641,7 @@ public class Files
 	 * @param filename The file to examine.
 	 * @return The filename with no extension.
 	 */
-	public static String removeExtension(final String filename)
-	{
+	public static String removeExtension(final String filename) {
 		return changeExtension(filename, null); //replace the extension with nothing
 	}
 
@@ -700,8 +652,7 @@ public class Files
 	 * @param charSequence The characters to append to the filename.
 	 * @return A path with the given string appended before the filename extension, if any.
 	 */
-	public static String appendFilename(final String path, final CharSequence charSequence)
-	{
+	public static String appendFilename(final String path, final CharSequence charSequence) {
 		final int separatorIndex = getExtensionSeparatorIndex(path); //see if we can find the extension separator
 		final int insertionIndex = separatorIndex >= 0 ? separatorIndex : path.length(); //insert the characters before the extension or, if there is no extension, at the end of the string
 		return StringBuilders.insert(new StringBuilder(path), insertionIndex, charSequence).toString(); //create a new string builder, insert the characters, and return the new string
@@ -712,13 +663,10 @@ public class Files
 	 * @param path The filename or path to examine.
 	 * @return The index of the extension separator character ('.'), or -1 if no extension is present.
 	 */
-	protected static int getExtensionSeparatorIndex(final String path) //TODO fix to work with Windows backslashes as well
-	{
+	protected static int getExtensionSeparatorIndex(final String path) { //TODO fix to work with Windows backslashes as well
 		final int separatorIndex = path.lastIndexOf(FILENAME_EXTENSION_SEPARATOR); //see if we can find the extension separator, which will be the last such character in the string
-		if(separatorIndex >= 0) //if we found a separator
-		{
-			if(indexOf(path, FILE_PATH_SEPARATOR_CHARACTERS, separatorIndex + 1) < 0) //if there is no slash after after the extension separator
-			{
+		if(separatorIndex >= 0) { //if we found a separator
+			if(indexOf(path, FILE_PATH_SEPARATOR_CHARACTERS, separatorIndex + 1) < 0) { //if there is no slash after after the extension separator
 				return separatorIndex; //return the index of the extension separator
 			}
 		}
@@ -731,8 +679,7 @@ public class Files
 	 * @return The default media type for the file's extension, or <code>null</code> if no known media type is associated with this file's extension.
 	 * @see #getExtensionContentType(String)
 	 */
-	public static ContentType getContentType(final File file)
-	{
+	public static ContentType getContentType(final File file) {
 		final String extension = getExtension(file); //get the file's extension
 		return getExtensionContentType(extension); //return the media type based on the file's extension
 	}
@@ -744,8 +691,7 @@ public class Files
 	 *         filename has no extension.
 	 * @see #getExtensionContentType(String)
 	 */
-	public static ContentType getMediaType(final String filename)
-	{
+	public static ContentType getMediaType(final String filename) {
 		final String extension = getExtension(filename); //get the file's extension
 		return extension != null ? getExtensionContentType(extension) : null; //return the media type based on the filename's extension, if there is one
 	}
@@ -756,8 +702,7 @@ public class Files
 	 * @return The file suitable for temporary access.
 	 * @see TEMP_EXTENSION
 	 */
-	public static File getTempFile(final File file)
-	{
+	public static File getTempFile(final File file) {
 		return new File(file.getParent(), addExtension(file.getName(), TEMP_EXTENSION)); //return the file with a "temp" extension
 	}
 
@@ -767,8 +712,7 @@ public class Files
 	 * @return The file suitable for backup.
 	 * @see BACKUP_EXTENSION
 	 */
-	public static File getBackupFile(final File file)
-	{
+	public static File getBackupFile(final File file) {
 		return new File(file.getParent(), addExtension(file.getName(), BACKUP_EXTENSION)); //return the file with a "backup" extension
 	}
 
@@ -778,8 +722,7 @@ public class Files
 	 * @see System
 	 * @see OperatingSystem#USER_DIR_PROPERTY
 	 */
-	public static File getUserDirectory() throws SecurityException
-	{
+	public static File getUserDirectory() throws SecurityException {
 		return new File(System.getProperty(OperatingSystem.USER_DIR_PROPERTY)); //try to get the current directory
 	}
 
@@ -799,8 +742,7 @@ public class Files
 	 * @param string The string of characters which may represent a filename.
 	 * @return <code>true</code> if the string contains no illegal filname characters.
 	 */
-	public static boolean isCrossPlatformFilename(final String string)
-	{
+	public static boolean isCrossPlatformFilename(final String string) {
 		return isFilename(string, CROSS_PLATFORM_FILENAME_RESERVED_CHARACTERS, CROSS_PLATFORM_FILENAME_RESERVED_FINAL_CHARACTERS); //check the filename using cross-platform reserved characters
 	}
 
@@ -812,8 +754,7 @@ public class Files
 	 * @param string The string of characters which may represent a filename.
 	 * @return <code>true</code> if the string contains no illegal filname characters.
 	 */
-	public static boolean isFilename(final String string)
-	{
+	public static boolean isFilename(final String string) {
 		if(isWindowsOS()) //if we're running on Windows
 			return isFilename(string, WINDOWS_FILENAME_RESERVED_CHARACTERS, WINDOWS_FILENAME_RESERVED_FINAL_CHARACTERS); //check the filename using Windows reserved characters
 		else
@@ -829,17 +770,13 @@ public class Files
 	 *          final character doesn't have to meet special rules.
 	 * @return <code>true</code> if the string contains no reserved filename characters.
 	 */
-	public static boolean isFilename(final String string, final Characters reservedCharacters, final Characters reservedFinalCharacters)
-	{
+	public static boolean isFilename(final String string, final Characters reservedCharacters, final Characters reservedFinalCharacters) {
 		//the string is a filename if the string isn't null and there are no illegal characters in the string
 		final boolean isFilename = string != null && !contains(string, reservedCharacters);
-		if(isFilename && reservedFinalCharacters != null && !reservedFinalCharacters.isEmpty()) //if we should check the final character
-		{
-			if(string.length() > 0) //if we have any characters at all
-			{
+		if(isFilename && reservedFinalCharacters != null && !reservedFinalCharacters.isEmpty()) { //if we should check the final character
+			if(string.length() > 0) { //if we have any characters at all
 				final char lastChar = string.charAt(string.length() - 1); //see what the last character is
-				if(reservedFinalCharacters.contains(lastChar)) //if the last character is reserved
-				{
+				if(reservedFinalCharacters.contains(lastChar)) { //if the last character is reserved
 					return false; //this is not a valid filename
 				}
 			}
@@ -855,21 +792,14 @@ public class Files
 	 * @return <code>true</code> if the file existed or exists now after moving the backup file, else <code>false</code> if neither file exists.
 	 * @throws IOException Thrown if the backup file cannot be moved.
 	 */
-	public static boolean ensureExistsFromBackup(final File file, final File backupFile) throws IOException
-	{
-		if(file.exists()) //if the file exists
-		{
+	public static boolean ensureExistsFromBackup(final File file, final File backupFile) throws IOException {
+		if(file.exists()) { //if the file exists
 			return true; //there's nothing more to do; return true
-		}
-		else
-		//if the file doesn't exist
-		{
-			if(backupFile.exists()) //if the backup file exists
-			{
+		} else { //if the file doesn't exist
+			if(backupFile.exists()) { //if the backup file exists
 				move(backupFile, file); //try to move the backup file to the original file
 				return true; //show that a file now exists where it is expected to be
-			}
-			else
+			} else
 				//if the backup file does not exist
 				return false; //show that we can't find either file
 		}
@@ -883,8 +813,7 @@ public class Files
 	 * @throws IOException Thrown if the backup file cannot be moved.
 	 * @see #getBackupFile
 	 */
-	public static boolean ensureExistsFromBackup(final File file) throws IOException
-	{
+	public static boolean ensureExistsFromBackup(final File file) throws IOException {
 		return ensureExistsFromBackup(file, getBackupFile(file)); //check to see if the file exists, using the default filename for the backup file
 	}
 
@@ -904,8 +833,7 @@ public class Files
 	 * @see CharSequences#escapeHex(CharSequence, String, String, int, char, int, Case)
 	 * @see #isFilename(String, String, String)
 	 */
-	public static String encodeCrossPlatformFilename(final String filename)
-	{
+	public static String encodeCrossPlatformFilename(final String filename) {
 		return encodeFilename(filename, CROSS_PLATFORM_FILENAME_RESERVED_CHARACTERS, CROSS_PLATFORM_FILENAME_RESERVED_FINAL_CHARACTERS); //encode the filename using cross-platform reserved characters
 	}
 
@@ -926,8 +854,7 @@ public class Files
 	 * @see CharSequences#escapeHex(CharSequence, String, String, int, char, int, Case)
 	 * @see #isFilename(String, String, String)
 	 */
-	public static String encodeFilename(final String filename)
-	{
+	public static String encodeFilename(final String filename) {
 		if(isWindowsOS()) //if we're running on Windows
 			return encodeFilename(filename, WINDOWS_FILENAME_RESERVED_CHARACTERS, WINDOWS_FILENAME_RESERVED_FINAL_CHARACTERS); //encode the filename using Windows reserved characters
 		else
@@ -949,26 +876,18 @@ public class Files
 	 * @see CharSequences#escapeHex(CharSequence, String, String, int, char, int, Case)
 	 * @see #isFilename(String, String, String)
 	 */
-	public static String encodeFilename(final String filename, final Characters reservedCharacters, final Characters reservedFinalCharacters)
-	{
+	public static String encodeFilename(final String filename, final Characters reservedCharacters, final Characters reservedFinalCharacters) {
 		//check to see if this is already a valid filename; if so (it usually is), this will give us a performance increase
 		//even if this is a valid filename, make sure it doesn't have the escape character in it---we would have to escape that, too, even though it isn't reserved
 		if(isFilename(filename, reservedCharacters, reservedFinalCharacters) //if this is a valid filename already	
-				&& filename.indexOf(FILENAME_ESCAPE_CHAR) < 0) //if the filename doesn't contain the escape character	
-		{
+				&& filename.indexOf(FILENAME_ESCAPE_CHAR) < 0) { //if the filename doesn't contain the escape character	
 			return filename; //return the string as is---it already is a valid filename
-		}
-		else
-		//if something about the filename isn't correct
-		{
+		} else { //if something about the filename isn't correct
 			final String encodedFilename = escapeHex(filename, null, reservedCharacters, Integer.MAX_VALUE, FILENAME_ESCAPE_CHAR, 2, Case.UPPERCASE);
-			if(reservedFinalCharacters != null && !reservedFinalCharacters.isEmpty()) //if we should check the final character (e.g. on Windows)
-			{
-				if(encodedFilename.length() > 0) //if we have a filename
-				{
+			if(reservedFinalCharacters != null && !reservedFinalCharacters.isEmpty()) { //if we should check the final character (e.g. on Windows)
+				if(encodedFilename.length() > 0) { //if we have a filename
 					final char lastChar = encodedFilename.charAt(encodedFilename.length() - 1); //see what the last character is
-					if(reservedFinalCharacters.contains(lastChar)) //if the last character is a reserved character
-					{
+					if(reservedFinalCharacters.contains(lastChar)) { //if the last character is a reserved character
 						final String replacementString = escapeHex(String.valueOf(lastChar), null, new Characters(lastChar), Integer.MAX_VALUE, FILENAME_ESCAPE_CHAR, 2,
 								Case.UPPERCASE); //escape the last character						
 						return encodedFilename.substring(0, encodedFilename.length() - 1) + replacementString; //replace the last character with its escaped form
@@ -986,8 +905,7 @@ public class Files
 	 * @see #FILENAME_ESCAPE_CHAR
 	 * @see CharSequences#unescapeHex(CharSequence, char, int)
 	 */
-	public static String decodeFilename(final String filename)
-	{
+	public static String decodeFilename(final String filename) {
 		return unescapeHex(filename, FILENAME_ESCAPE_CHAR, 2); //decode the filename
 	}
 
@@ -1016,8 +934,7 @@ public class Files
 	 * @see URIs#canonicalize(URI)
 	 * @see URIs#PATH_CHARACTERS
 	 */
-	public static URI toURI(final File file)
-	{
+	public static URI toURI(final File file) {
 		return toURI(file, false);
 	}
 
@@ -1047,18 +964,15 @@ public class Files
 	 * @see URIs#canonicalize(URI)
 	 * @see URIs#PATH_CHARACTERS
 	 */
-	public static URI toURI(final File file, final boolean forceDirectoryURI)
-	{
+	public static URI toURI(final File file, final boolean forceDirectoryURI) {
 		URI uri = file.toURI(); //create a URI from the file normally; Java may allow non-ASCII characters in this version
 		//test the entire URI for non-ASCII characters, as well the ';' character, which has a special meaning in URIs
 		//get the scheme-specific of the URI, as Windows UNC path URIs hide an extra couple of slash characters elsewhere than in the path
 		//assuming that most URIs do not have non-ASCII characters, it will be more efficient to check the characters first, as we may not have to do any conversion
 		String rawSSP = uri.getRawSchemeSpecificPart();
-		for(int i = rawSSP.length() - 1; i >= 0; --i) //for each character (iteration order doesn't matter)
-		{
+		for(int i = rawSSP.length() - 1; i >= 0; --i) { //for each character (iteration order doesn't matter)
 			final char c = rawSSP.charAt(i);
-			if(c > 127 || c == ';') //if we found a non-ASCII character or the special character ';'
-			{
+			if(c > 127 || c == ';') { //if we found a non-ASCII character or the special character ';'
 				//escape the scheme-specific part from scratch, but only consider the ';' character and characters above 127 invalid so as to preserve the originally encoded characters, if any 
 				rawSSP = CharSequences.escapeHex(rawSSP, null, new Characters(';'), 127, URIs.ESCAPE_CHAR, 2, Case.LOWERCASE); //TODO use a constant
 				uri = URIs.changeRawSchemeSpecificPart(uri, rawSSP); //change the scheme-specific part of the URI
@@ -1066,8 +980,7 @@ public class Files
 			}
 		}
 		uri = canonicalize(uri); //convert the URI to canonical form; even if we converted ASCII characters, the File.toURI() method might have produced uppercase hex escape codes when escaping illegal characters
-		if(forceDirectoryURI) //force a collection URI if needed
-		{
+		if(forceDirectoryURI) { //force a collection URI if needed
 			uri = toCollectionURI(uri);
 		}
 		return uri;
@@ -1084,12 +997,9 @@ public class Files
 	 * @return <code>true</code> if the files share a parent/child relationship in the file system hierarchy.
 	 * @throws NullPointerException if the given parent file and/or child file is <code>null</code>.
 	 */
-	public static boolean isChild(final File parentFile, File file)
-	{
-		while((file = file.getParentFile()) != null) //while there are parents
-		{
-			if(parentFile.equals(file)) //if this parent equals the given parent
-			{
+	public static boolean isChild(final File parentFile, File file) {
+		while((file = file.getParentFile()) != null) { //while there are parents
+			if(parentFile.equals(file)) { //if this parent equals the given parent
 				return true;
 			}
 		}
@@ -1101,10 +1011,8 @@ public class Files
 	 * @param directory The directory to create.
 	 * @throws IOException Thrown if there is an error creating the directory.
 	 */
-	public static void mkdir(final File directory) throws IOException
-	{
-		if(!directory.mkdir()) //create the directory; if unsuccessful
-		{
+	public static void mkdir(final File directory) throws IOException {
+		if(!directory.mkdir()) { //create the directory; if unsuccessful
 			throw new IOException("Cannot create directory " + directory); //throw an exception TODO i18n
 		}
 	}
@@ -1114,10 +1022,8 @@ public class Files
 	 * @param directory The directory to create.
 	 * @throws IOException Thrown if there is an error creating the directory.
 	 */
-	public static void mkdirs(final File directory) throws IOException
-	{
-		if(!directory.mkdirs()) //create the directory; if unsuccessful
-		{
+	public static void mkdirs(final File directory) throws IOException {
+		if(!directory.mkdirs()) { //create the directory; if unsuccessful
 			throw new IOException("Cannot create directories " + directory); //throw an exception TODO i18n
 		}
 	}
@@ -1130,10 +1036,8 @@ public class Files
 	 * @throws IOException Thrown if there is an error creating the directory.
 	 * @see #mkdirs(File)
 	 */
-	public static File ensureDirectoryExists(final File directory) throws IOException
-	{
-		if(!directory.exists() || !directory.isDirectory()) //if the directory doesn't exist as a directory
-		{
+	public static File ensureDirectoryExists(final File directory) throws IOException {
+		if(!directory.exists() || !directory.isDirectory()) { //if the directory doesn't exist as a directory
 			mkdirs(directory); //make the directories
 		}
 		return directory;
@@ -1147,15 +1051,11 @@ public class Files
 	 * @see InputStreams#getBytes
 	 * @see #write
 	 */
-	public static byte[] readBytes(final File file) throws IOException
-	{
+	public static byte[] readBytes(final File file) throws IOException {
 		final InputStream fileInputStream = new FileInputStream(file); //create an input stream to the file
-		try
-		{
+		try {
 			return getBytes(fileInputStream); //convert the file to an array of bytes
-		}
-		finally
-		{
+		} finally {
 			fileInputStream.close(); //always close the file input stream
 		}
 	}
@@ -1167,15 +1067,11 @@ public class Files
 	 * @return The object read from the file.
 	 * @throws IOException if there is an error reading the data.
 	 */
-	public static <T> T read(final File file, final IO<T> io) throws IOException
-	{
+	public static <T> T read(final File file, final IO<T> io) throws IOException {
 		final InputStream bufferedInputStream = new BufferedInputStream(new FileInputStream(file)); //create a buffered input stream to the file
-		try
-		{
+		try {
 			return io.read(bufferedInputStream, toURI(file)); //read the object, determining the base URI from the file
-		}
-		finally
-		{
+		} finally {
 			bufferedInputStream.close(); //always close the input stream
 		}
 	}
@@ -1189,15 +1085,11 @@ public class Files
 	 * @param inputStreamReadable The object to read the information from the file.
 	 * @throws IOException if there is an error loading the contents of the file.
 	 */
-	public static void read(final File file, final InputStreamReadable inputStreamReadable) throws IOException
-	{
+	public static void read(final File file, final InputStreamReadable inputStreamReadable) throws IOException {
 		final InputStream bufferedInputStream = new BufferedInputStream(new FileInputStream(file)); //create a buffered input stream to the file
-		try
-		{
+		try {
 			inputStreamReadable.read(bufferedInputStream, toURI(file)); //read from the stream, determining the base URI from the file
-		}
-		finally
-		{
+		} finally {
 			bufferedInputStream.close(); //always close the input stream
 		}
 	}
@@ -1211,15 +1103,11 @@ public class Files
 	 * @param outputStreamWritable The object to write the information to the file.
 	 * @throws IOException if there is an error writing the contents to the file.
 	 */
-	public static void write(final File file, final OutputStreamWritable outputStreamWritable) throws IOException
-	{
+	public static void write(final File file, final OutputStreamWritable outputStreamWritable) throws IOException {
 		final OutputStream bufferedOutputStream = new BufferedOutputStream(new FileOutputStream(file)); //create a buffered output stream to the file
-		try
-		{
+		try {
 			outputStreamWritable.write(bufferedOutputStream, toURI(file)); //write to the stream, determining the base URI from the file
-		}
-		finally
-		{
+		} finally {
 			bufferedOutputStream.close(); //always close the input stream
 		}
 	}
@@ -1235,10 +1123,8 @@ public class Files
 	 * @throws IOException Thrown if there is an error renaming the file.
 	 * @see #move(File, File)
 	 */
-	public static void renameTo(final File source, final File destination) throws IOException
-	{
-		if(!source.renameTo(destination)) //rename the file to its new filename; if unsuccessful
-		{
+	public static void renameTo(final File source, final File destination) throws IOException {
+		if(!source.renameTo(destination)) { //rename the file to its new filename; if unsuccessful
 			throw new IOException("Cannot rename " + source + " to " + destination); //throw an exception TODO i18n
 		}
 	}
@@ -1249,8 +1135,7 @@ public class Files
 	 * @param destinationFile The location to where the source files should be be moved.
 	 * @throws IOException Thrown if there is an error moving the file.
 	 */
-	public static void move(final File sourceFile, final File destinationFile) throws IOException
-	{
+	public static void move(final File sourceFile, final File destinationFile) throws IOException {
 		move(sourceFile, destinationFile, true);
 	}
 
@@ -1263,12 +1148,9 @@ public class Files
 	 * @throws IllegalStateException if overwrite is turned off and a destination file exists.
 	 * @throws IOException Thrown if there is an error moving the file.
 	 */
-	public static void move(final File sourceFile, final File destinationFile, final boolean overwrite) throws IOException
-	{
-		if(!overwrite)
-		{
-			if(destinationFile.exists())
-			{
+	public static void move(final File sourceFile, final File destinationFile, final boolean overwrite) throws IOException {
+		if(!overwrite) {
+			if(destinationFile.exists()) {
 				throw new IllegalStateException("Move destination file " + destinationFile + " already exists.");
 			}
 		}
@@ -1283,12 +1165,9 @@ public class Files
 	 * @param backupFile The backup file to where the destination file, if any, will first be moved, or <code>null</code> if no backup file is necessary.
 	 * @throws IOException Thrown if there is an error renaming the file.
 	 */
-	public static void move(final File sourceFile, final File destinationFile, final File backupFile) throws IOException
-	{
-		if(destinationFile.exists()) //if the destination file exists
-		{
-			if(backupFile != null) //if we should backup the original destination file, and the original destination file exists
-			{
+	public static void move(final File sourceFile, final File destinationFile, final File backupFile) throws IOException {
+		if(destinationFile.exists()) { //if the destination file exists
+			if(backupFile != null) { //if we should backup the original destination file, and the original destination file exists
 				//try to move the destination file to the backup file; if this fails, at worst it will leave the destination file at the same state it was in to begin with 
 				move(destinationFile, backupFile);
 			}
@@ -1305,30 +1184,23 @@ public class Files
 	 * @throws SecurityException if file access is not allowed.
 	 * @throws UnsupportedOperationException if the specified list's list-iterator does not support the <code>set</code> operation.
 	 */
-	public static <T> void sortLastModified(final List<? extends File> fileList) throws IOException
-	{
+	public static <T> void sortLastModified(final List<? extends File> fileList) throws IOException {
 		//create a map of files mapped to modified times; use an identity map to speed things up (and will even allow files to appear in the list multiple times) 
 		final Map<File, Long> lastModifiedMap = new IdentityHashMap<File, Long>(fileList.size());
 		//create a map of files mapped to canonical paths; use an identity map to speed things up (and will even allow files to appear in the list multiple times) 
 		final Map<File, String> canonicalPathMap = new IdentityHashMap<File, String>(fileList.size());
-		for(final File file : fileList) //get the last modified times and the canonical pathnames ahead of time to speed things up---and to throw an I/O exception here rather than during comparison
-		{
+		for(final File file : fileList) { //get the last modified times and the canonical pathnames ahead of time to speed things up---and to throw an I/O exception here rather than during comparison
 			lastModifiedMap.put(file, Long.valueOf(file.lastModified())); //cache the last modified time
 			canonicalPathMap.put(file, file.getCanonicalPath()); //cache the canonical path
 		}
-		sort(fileList, new Comparator<File>() //compare the files based upon last modified time and secondly canonical path 
-				{
-					public int compare(final File file1, final File file2)
-					{
+		sort(fileList, new Comparator<File>() { //compare the files based upon last modified time and secondly canonical path 
+
+					public int compare(final File file1, final File file2) {
 						final long lastModified1 = lastModifiedMap.get(file1); //get the last modified times from the map
 						final long lastModified2 = lastModifiedMap.get(file2);
-						if(lastModified1 != lastModified2) //if the modified times of the files are different
-						{
+						if(lastModified1 != lastModified2) { //if the modified times of the files are different
 							return lastModified1 > lastModified2 ? 1 : -1; //return the difference between modifications (we can't simply subtract, as the times theoretically could be farther apart than the integer range)
-						}
-						else
-						//if the files have the same modification times
-						{
+						} else { //if the files have the same modification times
 							return canonicalPathMap.get(file1).compareTo(canonicalPathMap.get(file2)); //compare canonical paths
 						}
 					}
@@ -1341,8 +1213,7 @@ public class Files
 	 * @param file The destination of the file contents.
 	 * @throws IOException Thrown if there is an error copying the information.
 	 */
-	public static void copy(final InputStream inputStream, final File file) throws IOException
-	{
+	public static void copy(final InputStream inputStream, final File file) throws IOException {
 		copy(inputStream, file, null);
 	}
 
@@ -1353,15 +1224,11 @@ public class Files
 	 * @param progressListener A listener to be notified of progress, or <code>null</code> if no progress notifications is requested.
 	 * @throws IOException Thrown if there is an error copying the information.
 	 */
-	public static void copy(final InputStream inputStream, final File file, final ProgressListener progressListener) throws IOException
-	{
+	public static void copy(final InputStream inputStream, final File file, final ProgressListener progressListener) throws IOException {
 		final OutputStream fileOutputStream = new BufferedOutputStream(new FileOutputStream(file)); //created a buffered output stream to the file
-		try
-		{
+		try {
 			Streams.copy(inputStream, fileOutputStream, progressListener); //copy the contents of the input stream to the output stream
-		}
-		finally
-		{
+		} finally {
 			fileOutputStream.close(); //always close the file output stream
 		}
 	}
@@ -1372,8 +1239,7 @@ public class Files
 	 * @param outputStream The destination of the file contents.
 	 * @throws IOException Thrown if there is an error copying the file.
 	 */
-	public static void copy(final File file, final OutputStream outputStream) throws IOException
-	{
+	public static void copy(final File file, final OutputStream outputStream) throws IOException {
 		copy(file, outputStream, null);
 	}
 
@@ -1387,8 +1253,7 @@ public class Files
 	 * @throws FileNotFoundException if the given source file is <code>null</code>.
 	 * @throws IllegalStateException if a directory copy is performed and the destination file's parent directory doesn't exist.
 	 */
-	public static void copy(final File sourceFile, final File destinationFile) throws IOException
-	{
+	public static void copy(final File sourceFile, final File destinationFile) throws IOException {
 		copy(sourceFile, destinationFile, true);
 	}
 
@@ -1403,8 +1268,7 @@ public class Files
 	 * @throws FileNotFoundException if the given source file is <code>null</code>.
 	 * @throws IllegalStateException if a directory copy is performed and the destination file's parent directory doesn't exist.
 	 */
-	public static void copy(final File sourceFile, final File destinationFile, final ProgressListener progressListener) throws IOException
-	{
+	public static void copy(final File sourceFile, final File destinationFile, final ProgressListener progressListener) throws IOException {
 		copy(sourceFile, destinationFile, true, progressListener);
 	}
 
@@ -1419,8 +1283,7 @@ public class Files
 	 * @throws FileNotFoundException if the given source file is <code>null</code>.
 	 * @throws IllegalStateException if a directory copy is performed and the destination file's parent directory doesn't exist.
 	 */
-	public static void copy(final File sourceFile, final File destinationFile, final boolean deep) throws IOException
-	{
+	public static void copy(final File sourceFile, final File destinationFile, final boolean deep) throws IOException {
 		copy(sourceFile, destinationFile, deep, WILDCARD_FILE_FILTER);
 	}
 
@@ -1436,8 +1299,7 @@ public class Files
 	 * @throws FileNotFoundException if the given source file is <code>null</code>.
 	 * @throws IllegalStateException if a directory copy is performed and the destination file's parent directory doesn't exist.
 	 */
-	public static void copy(final File sourceFile, final File destinationFile, final boolean deep, final ProgressListener progressListener) throws IOException
-	{
+	public static void copy(final File sourceFile, final File destinationFile, final boolean deep, final ProgressListener progressListener) throws IOException {
 		copy(sourceFile, destinationFile, deep, WILDCARD_FILE_FILTER, progressListener);
 	}
 
@@ -1454,8 +1316,7 @@ public class Files
 	 * @throws IllegalStateException if a directory copy is performed and the destination file's parent directory doesn't exist.
 	 * @throws IllegalStateException if overwrite is turned off and a destination file exists.
 	 */
-	public static void copy(final File sourceFile, final File destinationFile, final boolean deep, final boolean overwrite) throws IOException
-	{
+	public static void copy(final File sourceFile, final File destinationFile, final boolean deep, final boolean overwrite) throws IOException {
 		copy(sourceFile, destinationFile, deep, WILDCARD_FILE_FILTER, overwrite);
 	}
 
@@ -1475,8 +1336,7 @@ public class Files
 	 * @throws IllegalStateException if overwrite is turned off and a destination file exists.
 	 */
 	public static void copy(final File sourceFile, final File destinationFile, final boolean deep, final boolean overwrite,
-			final ProgressListener progressListener) throws IOException
-	{
+			final ProgressListener progressListener) throws IOException {
 		copy(sourceFile, destinationFile, deep, WILDCARD_FILE_FILTER, overwrite, progressListener);
 	}
 
@@ -1487,15 +1347,11 @@ public class Files
 	 * @param progressListener A listener to be notified of progress, or <code>null</code> if no progress notifications is requested.
 	 * @throws IOException Thrown if there is an error copying the file.
 	 */
-	public static void copy(final File file, final OutputStream outputStream, final ProgressListener progressListener) throws IOException
-	{
+	public static void copy(final File file, final OutputStream outputStream, final ProgressListener progressListener) throws IOException {
 		final InputStream fileInputStream = new BufferedInputStream(new FileInputStream(file)); //created a buffered input stream to the file
-		try
-		{
+		try {
 			Streams.copy(fileInputStream, outputStream, file.length(), progressListener); //copy the contents of the input stream to the output stream
-		}
-		finally
-		{
+		} finally {
 			fileInputStream.close(); //always close the file input stream
 		}
 	}
@@ -1513,8 +1369,7 @@ public class Files
 	 * @throws FileNotFoundException if the given source file is <code>null</code>.
 	 * @throws IllegalStateException if a directory copy is performed and the destination file's parent directory doesn't exist.
 	 */
-	public static void copy(final File sourceFile, final File destinationFile, final boolean deep, final FileFilter fileFilter) throws IOException
-	{
+	public static void copy(final File sourceFile, final File destinationFile, final boolean deep, final FileFilter fileFilter) throws IOException {
 		copy(sourceFile, destinationFile, deep, fileFilter, null);
 	}
 
@@ -1533,8 +1388,7 @@ public class Files
 	 * @throws IllegalStateException if a directory copy is performed and the destination file's parent directory doesn't exist.
 	 */
 	public static void copy(final File sourceFile, final File destinationFile, final boolean deep, final FileFilter fileFilter,
-			final ProgressListener progressListener) throws IOException
-	{
+			final ProgressListener progressListener) throws IOException {
 		copy(sourceFile, destinationFile, deep, fileFilter, true, progressListener);
 	}
 
@@ -1555,8 +1409,7 @@ public class Files
 	 * @throws IllegalStateException if overwrite is turned off and a destination file exists.
 	 */
 	public static void copy(final File sourceFile, final File destinationFile, final boolean deep, final FileFilter fileFilter, final boolean overwrite)
-			throws IOException
-	{
+			throws IOException {
 		copy(sourceFile, destinationFile, deep, fileFilter, overwrite, null);
 	}
 
@@ -1578,58 +1431,41 @@ public class Files
 	 * @throws IllegalStateException if overwrite is turned off and a destination file exists.
 	 */
 	public static void copy(final File sourceFile, final File destinationFile, final boolean deep, final FileFilter fileFilter, final boolean overwrite,
-			final ProgressListener progressListener) throws IOException
-	{
+			final ProgressListener progressListener) throws IOException {
 		//TODO add beginning and ending progress events, along with a system of levels
-		if(isChild(sourceFile, destinationFile))
-		{
+		if(isChild(sourceFile, destinationFile)) {
 			throw new IllegalArgumentException("Cannot perform circular copy from " + sourceFile + " to " + destinationFile);
 		}
-		if(sourceFile.isDirectory()) //directory
-		{
-			if(!overwrite)
-			{
-				if(destinationFile.isDirectory())
-				{
+		if(sourceFile.isDirectory()) { //directory
+			if(!overwrite) {
+				if(destinationFile.isDirectory()) {
 					throw new IllegalStateException("Copy destination directory " + destinationFile + " already exists.");
 				}
 			}
 			final File destinationParentFile = destinationFile.getParentFile(); //make sure the destination parent file exists
-			if(destinationParentFile != null)
-			{
-				if(!destinationParentFile.isDirectory())
-				{
+			if(destinationParentFile != null) {
+				if(!destinationParentFile.isDirectory()) {
 					throw new IllegalStateException("Copy destination parent directory " + destinationParentFile + " does not exist.");
 				}
 			}
 			mkdir(destinationFile); //create the destination file
-			if(deep) //if we are copying deeply
-			{
-				for(final File childSourceFile : sourceFile.listFiles(fileFilter)) //list all the files in the directory
-				{
+			if(deep) { //if we are copying deeply
+				for(final File childSourceFile : sourceFile.listFiles(fileFilter)) { //list all the files in the directory
 					final String filename = childSourceFile.getName();
 					copy(childSourceFile, new File(destinationFile, filename), deep, fileFilter, overwrite, progressListener); //recursively copy the child file or directory
 				}
 			}
-		}
-		else
-		//file
-		{
+		} else { //file
 			checkFileExists(sourceFile);
-			if(!overwrite)
-			{
-				if(destinationFile.exists())
-				{
+			if(!overwrite) {
+				if(destinationFile.exists()) {
 					throw new IllegalStateException("Copy destination file " + destinationFile + " already exists.");
 				}
 			}
 			final OutputStream outputStream = new FileOutputStream(destinationFile); //create an output stream to the destination file
-			try
-			{
+			try {
 				copy(sourceFile, outputStream, progressListener); //copy the file contents
-			}
-			finally
-			{
+			} finally {
 				outputStream.close();
 			}
 		}

@@ -23,60 +23,55 @@ import com.globalmentor.net.ContentType;
 
 import static com.globalmentor.java.Objects.*;
 
-/**A JavaBeans Activation Framework data source class that serves as a source of data from an array of bytes.
-@author Garret Wilson
-*/
-public class ByteArrayDataSource implements DataSource
-{
+/**
+ * A JavaBeans Activation Framework data source class that serves as a source of data from an array of bytes.
+ * @author Garret Wilson
+ */
+public class ByteArrayDataSource implements DataSource {
 
-	/**The data of which this class is a source.*/
+	/** The data of which this class is a source. */
 	private final byte[] bytes;
 
-	/**The name of the data.*/
+	/** The name of the data. */
 	private final String name;
 
-	/**Constructor that saves an array of bytes.
-	The name of the class {@link ByteArrayDataSource} will be used as the name of the data source object.
-	@param bytes The bytes from which data will be retrieved.
-	@throws NullPointerException if the given byte array and/or name is <code>null</code>.
-	*/
-	public ByteArrayDataSource(final byte[] bytes)
-	{
-		this(bytes, ByteArrayDataSource.class.getName());	//construct the class with the class name
+	/**
+	 * Constructor that saves an array of bytes. The name of the class {@link ByteArrayDataSource} will be used as the name of the data source object.
+	 * @param bytes The bytes from which data will be retrieved.
+	 * @throws NullPointerException if the given byte array and/or name is <code>null</code>.
+	 */
+	public ByteArrayDataSource(final byte[] bytes) {
+		this(bytes, ByteArrayDataSource.class.getName()); //construct the class with the class name
 	}
 
-	/**Byte array and name constructor.
-	@param bytes The bytes from which data will be retrieved.
-	@param name The name of the data source.
-	@throws NullPointerException if the given byte array and/or name is <code>null</code>.
-	*/
-	public ByteArrayDataSource(final byte[] bytes, final String name)
-	{
-		this.bytes=checkInstance(bytes, "Bytes cannot be null.");  //save the bytes
-		this.name=checkInstance(name, "Name cannot be null.");  //save the name
+	/**
+	 * Byte array and name constructor.
+	 * @param bytes The bytes from which data will be retrieved.
+	 * @param name The name of the data source.
+	 * @throws NullPointerException if the given byte array and/or name is <code>null</code>.
+	 */
+	public ByteArrayDataSource(final byte[] bytes, final String name) {
+		this.bytes = checkInstance(bytes, "Bytes cannot be null."); //save the bytes
+		this.name = checkInstance(name, "Name cannot be null."); //save the name
 	}
 
-	/**@return An input stream to the bytes.*/
-  public InputStream getInputStream() throws IOException
-	{
+	/** @return An input stream to the bytes. */
+	public InputStream getInputStream() throws IOException {
 		return new ByteArrayInputStream(bytes); //return an input stream to the bytes
 	}
 
-  /**@return An output stream to the bytes.*/
-	public OutputStream getOutputStream() throws IOException
-	{
+	/** @return An output stream to the bytes. */
+	public OutputStream getOutputStream() throws IOException {
 		throw new IOException("ByteArrayDataSource.getOutputStream() not yet implemented."); //TODO fix
 	}
 
-	/**@return The content type of a byte array, <code>application/octet-stream</code>.*/
-  public String getContentType()
-	{
+	/** @return The content type of a byte array, <code>application/octet-stream</code>. */
+	public String getContentType() {
 		return ContentType.APPLICATION_OCTET_STREAM_CONTENT_TYPE.toString();
 	}
 
-  /**@return The name of this object.*/
-	public String getName()
-	{
+	/** @return The name of this object. */
+	public String getName() {
 		return name;
 	}
 }

@@ -24,8 +24,7 @@ package com.globalmentor.model;
  * @author Garret Wilson
  * @see Labeled
  */
-public interface Named<N>
-{
+public interface Named<N> {
 
 	/** @return The name of the object, or <code>null</code> if the object has no name. */
 	public N getName();

@@ -16,15 +16,15 @@
 
 package com.globalmentor.io;
 
-/**Utilities and constants for working with archive content.
-@author Garret Wilson
-*/
-public class Archive
-{
+/**
+ * Utilities and constants for working with archive content.
+ * @author Garret Wilson
+ */
+public class Archive {
 
-	/**The name extension for rar compressed files.*/
-	public final static String RAR_NAME_EXTENSION="rar";
-	/**The name extension for zip files.*/
-	public final static String ZIP_NAME_EXTENSION="zip";
+	/** The name extension for rar compressed files. */
+	public final static String RAR_NAME_EXTENSION = "rar";
+	/** The name extension for zip files. */
+	public final static String ZIP_NAME_EXTENSION = "zip";
 
 }

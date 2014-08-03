@@ -23,8 +23,7 @@ import java.net.URI;
  * An object that can read information from an input stream.
  * @author Garret Wilson
  */
-public interface OutputStreamWritable
-{
+public interface OutputStreamWritable {
 
 	/**
 	 * Writes to the given output stream.

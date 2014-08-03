@@ -24,8 +24,8 @@ import java.util.*;
  * @param <E> The type of elements in this iterator
  * @author Garret Wilson
  */
-public class ObjectListIterator<E> extends ObjectIterator<E> implements ListIterator<E>
-{
+public class ObjectListIterator<E> extends ObjectIterator<E> implements ListIterator<E> {
+
 	/** The single object being iterated. */
 	private E object;
 
@@ -36,80 +36,64 @@ public class ObjectListIterator<E> extends ObjectIterator<E> implements ListIter
 	 * Object constructor.
 	 * @param object The single object over which iteration should occur.
 	 */
-	public ObjectListIterator(final E object)
-	{
+	public ObjectListIterator(final E object) {
 		super(object);
 	}
 
 	/** @return <code>true</code> if the single object has not yet been retrieved. */
-	public boolean hasNext()
-	{
+	public boolean hasNext() {
 		return hasNext;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public E next()
-	{
-		if(hasNext) //if we haven't returned the object, yet
-		{
+	public E next() {
+		if(hasNext) { //if we haven't returned the object, yet
 			hasNext = false;
 			return object; //return our copy of the object, but don't release it 
-		}
-		else
-		//if we've already returned the object
-		{
+		} else { //if we've already returned the object
 			throw new NoSuchElementException();
 		}
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public boolean hasPrevious()
-	{
+	public boolean hasPrevious() {
 		return !hasNext;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public E previous()
-	{
-		if(!hasNext) //if we've already returned the object
-		{
+	public E previous() {
+		if(!hasNext) { //if we've already returned the object
 			hasNext = true;
 			return object; //return our copy of the object, but don't release it 
-		}
-		else
-		{
+		} else {
 			throw new NoSuchElementException();
 		}
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public int nextIndex()
-	{
+	public int nextIndex() {
 		return hasNext ? 0 : 1;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public int previousIndex()
-	{
+	public int previousIndex() {
 		return hasNext ? -1 : 0;
 	}
 
 	/** {@inheritDoc} This implementation does not support setting the element. */
 	@Override
-	public void set(E e)
-	{
+	public void set(E e) {
 		throw new UnsupportedOperationException("This iterator does not support setting the element.");
 	}
 
 	/** {@inheritDoc} This implementation does not support adding an element. */
 	@Override
-	public void add(final E e)
-	{
+	public void add(final E e) {
 		throw new UnsupportedOperationException("This iterator does not support adding an element.");
 	}
 }

@@ -30,15 +30,13 @@ import static com.globalmentor.iso.datetime.ISO8601.*;
  * terms of UTC.
  * @author Garret Wilson
  */
-public abstract class AbstractISODateTime extends Time implements ISOTemporal
-{
+public abstract class AbstractISODateTime extends Time implements ISOTemporal {
 
 	/** The year, 0-9999. */
 	private final int year;
 
 	/** @return The year, 0-9999. */
-	public final int getYear()
-	{
+	public final int getYear() {
 		return year;
 	}
 
@@ -46,8 +44,7 @@ public abstract class AbstractISODateTime extends Time implements ISOTemporal
 	private final int month;
 
 	/** @return The month, 1-12. */
-	public final int getMonth()
-	{
+	public final int getMonth() {
 		return month;
 	}
 
@@ -55,8 +52,7 @@ public abstract class AbstractISODateTime extends Time implements ISOTemporal
 	private final int day;
 
 	/** @return The day, 1-31. */
-	public final int getDay()
-	{
+	public final int getDay() {
 		return day;
 	}
 
@@ -64,8 +60,7 @@ public abstract class AbstractISODateTime extends Time implements ISOTemporal
 	private final ISOTime time;
 
 	/** @return The time, or <code>null</code> if there is a date with no time (not even midnight) */
-	public ISOTime getISOTime()
-	{
+	public ISOTime getISOTime() {
 		return time;
 	}
 
@@ -75,8 +70,7 @@ public abstract class AbstractISODateTime extends Time implements ISOTemporal
 	 * @param useTime <code>true</code> if the time should be used, or <code>false</code> if the given type components should be ignored.
 	 * @throws NullPointerException if the temporal components is null.
 	 */
-	protected AbstractISODateTime(final ISOTemporalComponents temporalComponents, final boolean useTime)
-	{
+	protected AbstractISODateTime(final ISOTemporalComponents temporalComponents, final boolean useTime) {
 		super(temporalComponents.getTime()); //construct the parent class with the date time in milliseconds
 		this.year = temporalComponents.getYear();
 		this.month = temporalComponents.getMonth();
@@ -89,16 +83,14 @@ public abstract class AbstractISODateTime extends Time implements ISOTemporal
 	 * @param stringBuild The string builder to which the lexical representation will be appended.
 	 * @return The string builder.
 	 */
-	public StringBuilder append(final StringBuilder stringBuilder)
-	{
+	public StringBuilder append(final StringBuilder stringBuilder) {
 		stringBuilder.append(Integers.toString(getYear(), 10, 4)); //append the year, using four digits
 		stringBuilder.append(DATE_DELIMITER); //append the date delimiter
 		stringBuilder.append(Integers.toString(getMonth(), 10, 2)); //append the month, using two digits
 		stringBuilder.append(DATE_DELIMITER); //append the date delimiter
 		stringBuilder.append(Integers.toString(getDay(), 10, 2)); //append the day, using two digits
 		final ISOTime time = getISOTime(); //get the time, if any
-		if(time != null) //if there is a time
-		{
+		if(time != null) { //if there is a time
 			stringBuilder.append(TIME_BEGIN); //indicate that the time is beginning
 			time.append(stringBuilder); //append the time
 		}
@@ -121,15 +113,11 @@ public abstract class AbstractISODateTime extends Time implements ISOTemporal
 	 * @throws NullPointerException if the given string is <code>null</code>
 	 * @throws ArgumentSyntaxException if the given string does not have the correct syntax.
 	 */
-	public static AbstractISODateTime valueOfLenient(final String string) throws ArgumentSyntaxException
-	{
-		try
-		{
+	public static AbstractISODateTime valueOfLenient(final String string) throws ArgumentSyntaxException {
+		try {
 			final ISOTemporalComponents temporalComponents = ISOTemporalComponents.parseDateTimeUTCOffset(string, true, null, true, true, true); //parse temporal components for both the date and the time and use that to create a new date time object, leniently accepting input
 			return temporalComponents.hasTimeComponents() ? new ISODateTime(temporalComponents) : new ISODate(temporalComponents); //return an ISO date or an ISO date time, depending on which components were present
-		}
-		catch(final SyntaxException syntaxException) //if the syntax of the string was not correct
-		{
+		} catch(final SyntaxException syntaxException) { //if the syntax of the string was not correct
 			throw new ArgumentSyntaxException(syntaxException);
 		}
 	}
@@ -151,15 +139,11 @@ public abstract class AbstractISODateTime extends Time implements ISOTemporal
 	 * @throws NullPointerException if the given string is <code>null</code>
 	 * @throws ArgumentSyntaxException if the given string does not have the correct syntax.
 	 */
-	public static AbstractISODateTime valueOfLiberal(final String string) throws ArgumentSyntaxException
-	{
-		try
-		{
+	public static AbstractISODateTime valueOfLiberal(final String string) throws ArgumentSyntaxException {
+		try {
 			final ISOTemporalComponents temporalComponents = ISOTemporalComponents.parseDateTimeUTCOffset(string, true, null, true, true, false); //parse temporal components for both the date and the time and use that to create a new date time object, liberally accepting input
 			return temporalComponents.hasTimeComponents() ? new ISODateTime(temporalComponents) : new ISODate(temporalComponents); //return an ISO date or an ISO date time , depending on which components were present
-		}
-		catch(final SyntaxException syntaxException) //if the syntax of the string was not correct
-		{
+		} catch(final SyntaxException syntaxException) { //if the syntax of the string was not correct
 			throw new ArgumentSyntaxException(syntaxException);
 		}
 	}
@@ -169,8 +153,7 @@ public abstract class AbstractISODateTime extends Time implements ISOTemporal
 	 * @return A calendar representing this date time in the default locale.
 	 * @see Locale#getDefault()
 	 */
-	public GregorianCalendar toCalendar()
-	{
+	public GregorianCalendar toCalendar() {
 		return toCalendar(Locale.getDefault());
 	}
 
@@ -180,8 +163,7 @@ public abstract class AbstractISODateTime extends Time implements ISOTemporal
 	 * @return A calendar representing this date time in the given locale.
 	 * @throws NullPointerException if the given locale is <code>null</code>.
 	 */
-	public GregorianCalendar toCalendar(final Locale locale)
-	{
+	public GregorianCalendar toCalendar(final Locale locale) {
 		return ISOTemporalComponents.createCalendar(getYear(), getMonth(), getDay(), getISOTime(), locale);
 	}
 
@@ -203,8 +185,7 @@ public abstract class AbstractISODateTime extends Time implements ISOTemporal
 	 * Returns the canonical lexical representation of this date time in the form "YYYY-MM-DDThh:mm:ss[.s+]+/-hh:mm".
 	 * @return The canonical lexical representation of this date time.
 	 */
-	public String toString()
-	{
+	public String toString() {
 		return append(new StringBuilder()).toString(); //append the lexical representation to a new string builder and return the resulting string
 	}
 

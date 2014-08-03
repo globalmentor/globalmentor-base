@@ -23,8 +23,7 @@ package com.globalmentor.net;
  * 
  * @author Garret Wilson
  */
-public interface ValueResource<V> extends Resource
-{
+public interface ValueResource<V> extends Resource {
 
 	/** @return The class representing the type of value represented by the resource. */
 	public Class<V> getValueClass();

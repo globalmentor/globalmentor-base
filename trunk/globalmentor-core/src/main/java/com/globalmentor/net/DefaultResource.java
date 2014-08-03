@@ -22,15 +22,13 @@ import java.net.URI;
  * Represents the default implementation of a resource. This class provides compare functionality that sorts according to the reference URI, if available.
  * @author Garret Wilson
  */
-public class DefaultResource extends AbstractResource implements Comparable<Resource>
-{
+public class DefaultResource extends AbstractResource implements Comparable<Resource> {
 
 	/** The resource identifier URI, or <code>null</code> if the identifier is not known. */
 	private URI uri;
 
 	/** @return The resource identifier URI, or <code>null</code> if the identifier is not known. */
-	public URI getURI()
-	{
+	public URI getURI() {
 		return uri;
 	}
 
@@ -38,14 +36,12 @@ public class DefaultResource extends AbstractResource implements Comparable<Reso
 	 * Sets the URI of the resource.
 	 * @param uri The new URI, or <code>null</code> if the identifier is not known.
 	 */
-	public void setURI(final URI uri)
-	{
+	public void setURI(final URI uri) {
 		this.uri = uri;
 	}
 
 	/** Default constructor that allows the URI to be set later. */
-	protected DefaultResource()
-	{
+	protected DefaultResource() {
 		this(null); //construct the class without a URI
 	}
 
@@ -53,8 +49,7 @@ public class DefaultResource extends AbstractResource implements Comparable<Reso
 	 * URI constructor.
 	 * @param uri The URI for the new resource.
 	 */
-	protected DefaultResource(final URI uri)
-	{
+	protected DefaultResource(final URI uri) {
 		this.uri = uri; //set the reference URI
 	}
 
@@ -70,36 +65,22 @@ public class DefaultResource extends AbstractResource implements Comparable<Reso
 	 * @see #getURI()
 	 * @see #hashCode()
 	 */
-	public int compareTo(final Resource resource)
-	{
-		if(this == resource) //if this resource is being compared to itself
-		{
+	public int compareTo(final Resource resource) {
+		if(this == resource) { //if this resource is being compared to itself
 			return 0; //the resources are identical
 		}
 		final URI uri = getURI(); //get this resource's URI
 		final URI resourceURI = resource.getURI(); //get the other resource's URI
-		if(uri != null) //if this resource has a URI
-		{
-			if(resourceURI != null) //if the other resource has a URI
-			{
+		if(uri != null) { //if this resource has a URI
+			if(resourceURI != null) { //if the other resource has a URI
 				return uri.compareTo(resourceURI); //compare reference URIs
-			}
-			else
-			//if the other resource has no URI
-			{
+			} else { //if the other resource has no URI
 				return 1; //sort resources with no URI first
 			}
-		}
-		else
-		//if this resource has no URI
-		{
-			if(resourceURI != null) //if the other resource has a URI
-			{
+		} else { //if this resource has no URI
+			if(resourceURI != null) { //if the other resource has a URI
 				return -1; //sort resources with no URI first
-			}
-			else
-			//if the other resource has no URI
-			{
+			} else { //if the other resource has no URI
 				return hashCode() - resource.hashCode(); //compare hash codes TODO improve
 			}
 		}

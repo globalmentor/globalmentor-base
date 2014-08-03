@@ -23,8 +23,7 @@ import java.util.Collection;
  * Utilities for working with math.
  * @author Garret Wilson
  */
-public class Maths
-{
+public class Maths {
 
 	/**
 	 * Finds the floor of a value with a particular precision of a specified digit. A position of zero will result in the input value. Otherwise, the value will
@@ -37,8 +36,7 @@ public class Maths
 	 *          positive numbers representing integer positions.
 	 * @return The value rounded down at the given decimal position.
 	 */
-	public static int floor(final int value, final int position)
-	{
+	public static int floor(final int value, final int position) {
 		final double divisor = Math.pow(10, position); //raise 10 to the power of the negative position to get the divisor
 		return (int)(((int)(value / divisor)) * divisor); //divide by the divisor, floor, then multiply by the divisor
 	}
@@ -54,8 +52,7 @@ public class Maths
 	 *          positive numbers representing integer positions.
 	 * @return The value rounded down at the given decimal position.
 	 */
-	public static long floor(final long value, final int position)
-	{
+	public static long floor(final long value, final int position) {
 		final double divisor = Math.pow(10, position); //raise 10 to the power of the negative position to get the divisor
 		return (long)(((long)(value / divisor)) * divisor); //divide by the divisor, floor, then multiply by the divisor
 	}
@@ -68,8 +65,7 @@ public class Maths
 	 *          positive numbers representing integer positions.
 	 * @return The value rounded at the given position.
 	 */
-	public static float round(float a, final int position)
-	{
+	public static float round(float a, final int position) {
 		final double divisor = Math.pow(10, position); //raise 10 to the power of the negative position to get the divisor
 		return (float)(Math.round(a / divisor) * divisor); //divide by the divisor, round, then multiply by the divisor
 	}
@@ -81,8 +77,7 @@ public class Maths
 	 * @return The larger of <var>a</var> and <var>b</var>.
 	 * @see Math#max(int, int)
 	 */
-	public static short max(final short a, final short b)
-	{
+	public static short max(final short a, final short b) {
 		return a >= b ? a : b; //return the greater of a and b
 	}
 
@@ -94,8 +89,7 @@ public class Maths
 	 * @return The greatest of <var>a</var>, <var>b</var>, and <var>c</var>.
 	 * @see Math#max(double, double)
 	 */
-	public static double max(final double a, final double b, final double c)
-	{
+	public static double max(final double a, final double b, final double c) {
 		return Math.max(Math.max(a, b), c); //return the greates of a, b, and c
 	}
 
@@ -107,8 +101,7 @@ public class Maths
 	 * @return The least of <var>a</var>, <var>b</var>, and <var>c</var>.
 	 * @see Math#min(double, double)
 	 */
-	public static double min(final double a, final double b, final double c)
-	{
+	public static double min(final double a, final double b, final double c) {
 		return Math.min(Math.min(a, b), c); //return the least of a, b, and c
 	}
 
@@ -118,8 +111,7 @@ public class Maths
 	 * @return The minimum of the given integers, or the {@link Integer#MAX_VALUE} if there are no integers.
 	 * @throws NullPointerException if the given collection is <code>null</code> or one of its elements is <code>null</code>.
 	 */
-	public static int min(final Collection<? extends Integer> integers)
-	{
+	public static int min(final Collection<? extends Integer> integers) {
 		return min(integers, Integer.MAX_VALUE); //return the minimum of the integers with the largest integer as the max
 	}
 
@@ -130,13 +122,10 @@ public class Maths
 	 * @return The minimum of the given integers, or the given maximum if there are no integers.
 	 * @throws NullPointerException if the given collection is <code>null</code> or one of its elements is <code>null</code>.
 	 */
-	public static int min(final Collection<? extends Integer> integers, int max)
-	{
-		for(final Integer integer : integers) //for each integer
-		{
+	public static int min(final Collection<? extends Integer> integers, int max) {
+		for(final Integer integer : integers) { //for each integer
 			final int intValue = integer.intValue(); //get the int value
-			if(intValue < max) //if this is a lower value
-			{
+			if(intValue < max) { //if this is a lower value
 				max = intValue; //lower the max value
 			}
 		}

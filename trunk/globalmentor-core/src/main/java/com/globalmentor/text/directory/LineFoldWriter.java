@@ -28,8 +28,7 @@ import static com.globalmentor.text.directory.Directory.*;
  * </p>
  * @author Garret Wilson
  */
-public class LineFoldWriter extends Writer
-{
+public class LineFoldWriter extends Writer {
 
 	/** The underlying writer that will actually write the data. */
 	protected final Writer writer;
@@ -41,8 +40,7 @@ public class LineFoldWriter extends Writer
 	 * Constructor that specifies another writer.
 	 * @param writer The writer to which directory data will be written.
 	 */
-	public LineFoldWriter(final Writer writer)
-	{
+	public LineFoldWriter(final Writer writer) {
 		this.writer = writer; //save the writer
 	}
 
@@ -56,15 +54,11 @@ public class LineFoldWriter extends Writer
 	 * @param len The number of characters to write.
 	 * @throws IOException Thrown if an I/O error occurs.
 	 */
-	public void write(final char cbuf[], final int off, final int len) throws IOException
-	{
+	public void write(final char cbuf[], final int off, final int len) throws IOException {
 		int writeBeginIndex = off; //when we actually write something, we'll start writing where they asked us to start
-		for(int i = 0; i < len; ++i) //look at each character to write
-		{
+		for(int i = 0; i < len; ++i) { //look at each character to write
 			final int bufferIndex = off + i; //make a note of where we are in the buffer
-			switch(cbuf[bufferIndex])
-			//see which character this is
-			{
+			switch(cbuf[bufferIndex]) { //see which character this is
 				case CR: //we'll assume a CR is the end of the line
 					lineLength = 0; //reset the length of the line
 					break;
@@ -74,8 +68,7 @@ public class LineFoldWriter extends Writer
 					++lineLength; //make the line longer
 					break;
 			}
-			if(lineLength > LONG_LINE_LENGTH) //if we're ready to write a character, and writing this character would be past a full line
-			{
+			if(lineLength > LONG_LINE_LENGTH) { //if we're ready to write a character, and writing this character would be past a full line
 				writer.write(cbuf, writeBeginIndex, bufferIndex - writeBeginIndex); //write everything up to but not including this character
 				writer.write(CRLF); //write CRLF
 				writer.write(SP); //write a space
@@ -83,8 +76,7 @@ public class LineFoldWriter extends Writer
 				writeBeginIndex = bufferIndex; //next time we'll start writing at this character
 			}
 		}
-		if(writeBeginIndex < off + len) //if we have data we haven't written
-		{
+		if(writeBeginIndex < off + len) { //if we have data we haven't written
 			writer.write(cbuf, writeBeginIndex, (off + len) - writeBeginIndex); //write the remaining data
 		}
 	}
@@ -96,8 +88,7 @@ public class LineFoldWriter extends Writer
 	 * 
 	 * @throws IOException If an I/O error occurs
 	 */
-	public void flush() throws IOException
-	{
+	public void flush() throws IOException {
 		writer.flush(); //pass the request on to the writer
 	}
 
@@ -107,8 +98,7 @@ public class LineFoldWriter extends Writer
 	 * 
 	 * @throws IOException If an I/O error occurs
 	 */
-	public void close() throws IOException
-	{
+	public void close() throws IOException {
 		writer.close(); //pass the request on to the writer
 	}
 

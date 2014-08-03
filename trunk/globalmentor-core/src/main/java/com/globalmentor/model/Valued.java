@@ -21,8 +21,7 @@ package com.globalmentor.model;
  * @param <V> The type of value contained in the object.
  * @author Garret Wilson
  */
-public interface Valued<V>
-{
+public interface Valued<V> {
 
 	/** @return The current value, or <code>null</code> if there is no value. */
 	public V getValue();

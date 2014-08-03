@@ -21,8 +21,7 @@ package com.globalmentor.model;
  * 
  * @author Garret Wilson
  */
-public interface Labeled
-{
+public interface Labeled {
 
 	/** @return A label meant for human consumption identifying the object. */
 	public CharSequence getLabel();

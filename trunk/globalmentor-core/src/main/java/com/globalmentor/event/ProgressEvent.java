@@ -25,15 +25,13 @@ import java.util.EventObject;
  * @author Garret Wilson
  * @see ProgressListener
  */
-public class ProgressEvent extends EventObject
-{
+public class ProgressEvent extends EventObject {
 
 	/** The amount of recent progress, or <code>-1</code> if not known. */
 	private final long delta;
 
 	/** @return The amount of recent progress, or <code>-1</code> if not known. */
-	public long getDelta()
-	{
+	public long getDelta() {
 		return delta;
 	}
 
@@ -41,8 +39,7 @@ public class ProgressEvent extends EventObject
 	private final long value;
 
 	/** @return The total progress to this point, or <code>-1</code> if not known. */
-	public long getValue()
-	{
+	public long getValue() {
 		return value;
 	}
 
@@ -50,8 +47,7 @@ public class ProgressEvent extends EventObject
 	private final long maximum;
 
 	/** @return The goal, or <code>-1</code> if not known. */
-	public long getMaximum()
-	{
+	public long getMaximum() {
 		return maximum;
 	}
 
@@ -60,8 +56,7 @@ public class ProgressEvent extends EventObject
 	 * @param source The object on which the event initially occurred.
 	 * @param value The total progress to this point, or <code>-1</code> if not known.
 	 */
-	public ProgressEvent(final Object source, final long value)
-	{
+	public ProgressEvent(final Object source, final long value) {
 		this(source, value, -1);
 	}
 
@@ -71,8 +66,7 @@ public class ProgressEvent extends EventObject
 	 * @param value The total progress to this point, or <code>-1</code> if not known.
 	 * @param maximum The goal, or <code>-1</code> if not known.
 	 */
-	public ProgressEvent(final Object source, final long value, final long maximum)
-	{
+	public ProgressEvent(final Object source, final long value, final long maximum) {
 		this(source, -1, value, maximum);
 	}
 
@@ -83,8 +77,7 @@ public class ProgressEvent extends EventObject
 	 * @param value The total progress to this point, or <code>-1</code> if not known.
 	 * @param maximum The goal, or <code>-1</code> if not known.
 	 */
-	public ProgressEvent(final Object source, final long delta, final long value, final long maximum)
-	{
+	public ProgressEvent(final Object source, final long delta, final long value, final long maximum) {
 		super(source); //let the parent class initialize
 		this.delta = delta;
 		this.value = value;
@@ -92,17 +85,13 @@ public class ProgressEvent extends EventObject
 	}
 
 	/** @return A string representing a progress bar with the current progress. */
-	public String getProgressBarString()
-	{
+	public String getProgressBarString() {
 		final long value = getValue();
 		final long maximum = getMaximum();
-		if(value >= 0 && maximum >= 0) //if we know enough information to plot the progress
-		{
+		if(value >= 0 && maximum >= 0) { //if we know enough information to plot the progress
 			final int progress = (int)(value * 10 / maximum); //get the progress out of 10
 			return createString('X', progress) + createString('.', 10 - progress); //create a string in the form "XXX......."
-		}
-		else
-		{
+		} else {
 			return "?.........";
 		}
 	}
@@ -110,15 +99,12 @@ public class ProgressEvent extends EventObject
 	/**
 	 * {@inheritDoc} This implementation returns a string indicating the current progress in the form <code>123/1000</code>.
 	 */
-	public String toString()
-	{
+	public String toString() {
 		final StringBuilder stringBuilder = new StringBuilder();
-		if(value >= 0)
-		{
+		if(value >= 0) {
 			stringBuilder.append(value);
 		}
-		if(maximum >= 0)
-		{
+		if(maximum >= 0) {
 			stringBuilder.append('/').append(maximum);
 		}
 		return stringBuilder.toString();

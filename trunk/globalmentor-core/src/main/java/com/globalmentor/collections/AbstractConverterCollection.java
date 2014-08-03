@@ -20,63 +20,64 @@ import java.util.*;
 
 import com.globalmentor.collections.iterators.IteratorDecorator;
 
-/**A collection that provides access to another collection, automatically converting elements to objects possibly of a different type.
-The conversion is done on the fly as elements are requested, and not before.
-@param <S> The type of element contained in the source collection.
-@param <D> The type of element contained in the destination collection.
-@author Garret Wilson
-*/
-public abstract class AbstractConverterCollection<S, D> extends CollectionDecorator<D>	//TODO add conversion access for all necessary methods
-{
-	/**Collection constructor.
-	@param collection The collection the elements of which this collection should convert.
-	*/
+/**
+ * A collection that provides access to another collection, automatically converting elements to objects possibly of a different type. The conversion is done on
+ * the fly as elements are requested, and not before.
+ * @param <S> The type of element contained in the source collection.
+ * @param <D> The type of element contained in the destination collection.
+ * @author Garret Wilson
+ */
+public abstract class AbstractConverterCollection<S, D> extends CollectionDecorator<D> { //TODO add conversion access for all necessary methods
+
+	/**
+	 * Collection constructor.
+	 * @param collection The collection the elements of which this collection should convert.
+	 */
 	@SuppressWarnings("unchecked")
-	public AbstractConverterCollection(final Collection<S> collection)
-	{
-		super((Collection<D>)collection);	//construct the parent class with the source collection, even though we know the list may be of a different type; we'll do the correct conversions for the access methods
+	public AbstractConverterCollection(final Collection<S> collection) {
+		super((Collection<D>)collection); //construct the parent class with the source collection, even though we know the list may be of a different type; we'll do the correct conversions for the access methods
 	}
 
-	/**Converts an object in the collection to another object.
-	@param source The object to convert.
-	@return The converted object.
-	*/
+	/**
+	 * Converts an object in the collection to another object.
+	 * @param source The object to convert.
+	 * @return The converted object.
+	 */
 	protected abstract D convert(final S source);
 
-	/**@return A custom proxied iterator that will convert returned elements on the fly.*/
+	/** @return A custom proxied iterator that will convert returned elements on the fly. */
 	@SuppressWarnings("unchecked")
-	public Iterator<D> iterator()
-	{
-		return new ConverterIterator((Iterator<S>)super.iterator());	//create an iterator that will convert the elements
+	public Iterator<D> iterator() {
+		return new ConverterIterator((Iterator<S>)super.iterator()); //create an iterator that will convert the elements
 	}
 
-	/**A custom proxied iterator that converts returned elements on the fly.
-	@author Garret Wilson
-	*/
-	protected class ConverterIterator extends IteratorDecorator<D>
-	{
-	
-		/**Iterator constructor.
-		@param iterator The iterator of source objects.
-	*/
+	/**
+	 * A custom proxied iterator that converts returned elements on the fly.
+	 * @author Garret Wilson
+	 */
+	protected class ConverterIterator extends IteratorDecorator<D> {
+
+		/**
+		 * Iterator constructor.
+		 * @param iterator The iterator of source objects.
+		 */
 		@SuppressWarnings("unchecked")
-		public ConverterIterator(final Iterator<S> iterator)
-		{
-			super((Iterator<D>)iterator);	//construct the parent class source iterator, even though we know the list may be of a different type; we'll do the correct conversions for the access methods
+		public ConverterIterator(final Iterator<S> iterator) {
+			super((Iterator<D>)iterator); //construct the parent class source iterator, even though we know the list may be of a different type; we'll do the correct conversions for the access methods
 		}
-	
-		/**Converts and returns the next element in the iteration.
-		@return An object representing the converted next element in the iteration.
-		@throws NoSuchElementException Thrown if the iteration has no more elements.
-		*/
+
+		/**
+		 * Converts and returns the next element in the iteration.
+		 * @return An object representing the converted next element in the iteration.
+		 * @throws NoSuchElementException Thrown if the iteration has no more elements.
+		 */
 		@SuppressWarnings("unchecked")
-		public D next()
-		{
-			return convert((S)super.next());	//get the next entry, convert it, and return it 			
+		public D next() {
+			return convert((S)super.next()); //get the next entry, convert it, and return it 			
 		}
-	
-	//TODO fix conversion versions of the other iterator methods
-	
+
+		//TODO fix conversion versions of the other iterator methods
+
 	}
 
 }

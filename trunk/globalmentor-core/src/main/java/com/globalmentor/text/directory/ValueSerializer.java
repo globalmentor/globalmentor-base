@@ -26,8 +26,7 @@ import com.globalmentor.model.NameValuePair;
  * href="http://www.ietf.org/rfc/rfc2425.txt">RFC 2425</a>, "A MIME Content-Type for Directory Information".
  * @author Garret Wilson
  */
-public interface ValueSerializer
-{
+public interface ValueSerializer {
 
 	/**
 	 * Serializes a line's value.

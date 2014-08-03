@@ -23,14 +23,13 @@ import java.net.URI;
  * @param <V> The type of value represented by the resource.
  * @author Garret Wilson
  */
-public class DefaultValueResource<V> extends AbstractValueResource<V>
-{
+public class DefaultValueResource<V> extends AbstractValueResource<V> {
+
 	/** The resource identifier URI, or <code>null</code> if the identifier is not known. */
 	private final URI uri;
 
 	/** @return The resource identifier URI, or <code>null</code> if the identifier is not known. */
-	public URI getURI()
-	{
+	public URI getURI() {
 		return uri;
 	}
 
@@ -41,8 +40,7 @@ public class DefaultValueResource<V> extends AbstractValueResource<V>
 	 * @param value The non-<code>null</code> value represented by the resource.
 	 * @throws NullPointerException if the given value class and/or value is <code>null</code>.
 	 */
-	public DefaultValueResource(final URI uri, final Class<V> valueClass, final V value)
-	{
+	public DefaultValueResource(final URI uri, final Class<V> valueClass, final V value) {
 		super(valueClass, value);
 		this.uri = uri;
 	}

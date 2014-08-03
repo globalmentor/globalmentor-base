@@ -30,15 +30,13 @@ import static com.globalmentor.java.Objects.*;
  * A class for resource-related I/O errors, agnostic of the I/O protocol being used. In most case a subclass more specific to the error should be used.
  * @author Garret Wilson
  */
-public class ResourceIOException extends IOException
-{
+public class ResourceIOException extends IOException {
 
 	/** The URI of the resource to which the exception is related. */
 	private final URI resourceURI;
 
 	/** @return The URI of the resource to which the exception is related. */
-	public URI getResourceURI()
-	{
+	public URI getResourceURI() {
 		return resourceURI;
 	}
 
@@ -47,8 +45,7 @@ public class ResourceIOException extends IOException
 	 * @param resourceURI The URI of the resource to which the exception is related.
 	 * @throws NullPointerException if the given resource URI is <code>null</code>.
 	 */
-	public ResourceIOException(final URI resourceURI)
-	{
+	public ResourceIOException(final URI resourceURI) {
 		this(resourceURI, (String)null); //construct the exception with the resource URI and no message
 	}
 
@@ -58,8 +55,7 @@ public class ResourceIOException extends IOException
 	 * @param message The detail message.
 	 * @throws NullPointerException if the given resource URI is <code>null</code>.
 	 */
-	public ResourceIOException(final URI resourceURI, final String message)
-	{
+	public ResourceIOException(final URI resourceURI, final String message) {
 		this(resourceURI, message, null); //construct the class with no cause
 	}
 
@@ -69,8 +65,7 @@ public class ResourceIOException extends IOException
 	 * @param cause The cause, or <code>null</code> to indicate the cause is nonexistent or unknown.
 	 * @throws NullPointerException if the given resource URI is <code>null</code>.
 	 */
-	public ResourceIOException(final URI resourceURI, final Throwable cause)
-	{
+	public ResourceIOException(final URI resourceURI, final Throwable cause) {
 		this(resourceURI, cause != null ? cause.toString() : null, cause); //create an exception with a generated detail message
 	}
 
@@ -81,16 +76,14 @@ public class ResourceIOException extends IOException
 	 * @param cause The cause, or <code>null</code> to indicate the cause is nonexistent or unknown.
 	 * @throws NullPointerException if the given resource URI is <code>null</code>.
 	 */
-	public ResourceIOException(final URI resourceURI, final String message, final Throwable cause)
-	{
+	public ResourceIOException(final URI resourceURI, final String message, final Throwable cause) {
 		super(message); //construct the parent class
 		initCause(cause); //indicate the source of this exception
 		this.resourceURI = checkInstance(resourceURI, "Resource URI cannot be null."); //save the resource URI
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return DefaultResource.toString(getResourceURI()) + ' ' + super.toString();
 	}
 
@@ -111,33 +104,24 @@ public class ResourceIOException extends IOException
 	 * @param resourceURI The URI of the resource to which the exception is related.
 	 * @return A resource I/O exception based upon the given throwable.
 	 */
-	public static ResourceIOException toResourceIOException(final Throwable throwable, final URI resourceURI)
-	{
-		if(throwable instanceof ResourceIOException) //resource I/O exception
-		{
+	public static ResourceIOException toResourceIOException(final Throwable throwable, final URI resourceURI) {
+		if(throwable instanceof ResourceIOException) { //resource I/O exception
 			return (ResourceIOException)throwable; //cast the throwable to a resource I/O exception
 		}
 		//file exceptions
-		else if(throwable instanceof FileNotFoundException)
-		{
+		else if(throwable instanceof FileNotFoundException) {
 			return new ResourceNotFoundException(resourceURI, throwable);
 		}
 		//HTTP exceptions
-		else if(throwable instanceof HTTPForbiddenException)
-		{
+		else if(throwable instanceof HTTPForbiddenException) {
 			return new ResourceForbiddenException(resourceURI, throwable);
-		}
-		else if(throwable instanceof HTTPNotFoundException)
-		{
+		} else if(throwable instanceof HTTPNotFoundException) {
 			return new ResourceNotFoundException(resourceURI, throwable);
-		}
-		else if(throwable instanceof HTTPPreconditionFailedException)
-		{
+		} else if(throwable instanceof HTTPPreconditionFailedException) {
 			return new ResourceStateException(resourceURI, throwable);
 		}
 		//default
-		else
-		{
+		else {
 			return new ResourceIOException(resourceURI, throwable); //create a default resource I/O exception
 		}
 	}

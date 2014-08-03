@@ -28,8 +28,7 @@ import com.globalmentor.text.ArgumentSyntaxException;
  * The encapsulation of an email address in the form specified by <a href="http://www.ietf.org/rfc/rfc2822.txt">RFC 2822, "Internet Message Format"</a>.
  * @author Garret Wilson
  */
-public class EmailAddress implements Resource, Comparable<EmailAddress>
-{
+public class EmailAddress implements Resource, Comparable<EmailAddress> {
 
 	/** The delimiter separating the local part from the domain. */
 	public final static char LOCAL_PART_DOMAIN_DELIMITER = '@';
@@ -70,8 +69,7 @@ public class EmailAddress implements Resource, Comparable<EmailAddress>
 	private final String localPart;
 
 	/** @return The local part of the email address. */
-	public String getLocalPart()
-	{
+	public String getLocalPart() {
 		return localPart;
 	}
 
@@ -79,8 +77,7 @@ public class EmailAddress implements Resource, Comparable<EmailAddress>
 	private final String domain;
 
 	/** @return The domain of the email address. */
-	public String getDomain()
-	{
+	public String getDomain() {
 		return domain;
 	}
 
@@ -91,14 +88,11 @@ public class EmailAddress implements Resource, Comparable<EmailAddress>
 	 * @throws NullPointerException if the given local part and/or domain is <code>null</code>.
 	 * @throws ArgumentSyntaxException if the given local part and/or domain violates RFC 2822.
 	 */
-	public EmailAddress(final String localPart, final String domain) throws ArgumentSyntaxException //TODO resolve encoding differences between this class and URIUtilities.createMailtoURI(); decide if we want the parameters to be encoded or raw
-	{
-		if(!LOCAL_PART_PATTERN.matcher(checkInstance(localPart, "Local part cannot be null.")).matches()) //if the local part does not match the pattern
-		{
+	public EmailAddress(final String localPart, final String domain) throws ArgumentSyntaxException { //TODO resolve encoding differences between this class and URIUtilities.createMailtoURI(); decide if we want the parameters to be encoded or raw
+		if(!LOCAL_PART_PATTERN.matcher(checkInstance(localPart, "Local part cannot be null.")).matches()) { //if the local part does not match the pattern
 			throw new ArgumentSyntaxException("Local part " + localPart + " is syntactically incorrect.");
 		}
-		if(!DOMAIN_PATTERN.matcher(checkInstance(domain, "Domain cannot be null.")).matches()) //if the domain does not match the pattern
-		{
+		if(!DOMAIN_PATTERN.matcher(checkInstance(domain, "Domain cannot be null.")).matches()) { //if the domain does not match the pattern
 			throw new ArgumentSyntaxException("Domain " + domain + " is syntactically incorrect.");
 		}
 		this.localPart = localPart;
@@ -111,11 +105,9 @@ public class EmailAddress implements Resource, Comparable<EmailAddress>
 	 * @throws NullPointerException if the given character sequence is <code>null</code>.
 	 * @throws ArgumentSyntaxException if the input string violates RFC 2822.
 	 */
-	public EmailAddress(final CharSequence input) throws ArgumentSyntaxException
-	{
+	public EmailAddress(final CharSequence input) throws ArgumentSyntaxException {
 		final Matcher matcher = EMAIL_ADDRESS_PATTERN.matcher(checkInstance(input, "Email address string cannot be null.")); //get a matcher for matching the given input string
-		if(!matcher.matches()) //if the input string does not match the email address patter
-		{
+		if(!matcher.matches()) { //if the input string does not match the email address patter
 			throw new ArgumentSyntaxException("Email address " + input + " is syntactically incorrect.");
 		}
 		this.localPart = matcher.group(EMAIL_ADDRESS_PATTERN_LOCAL_PART_GROUP); //the first group contains the local part
@@ -123,8 +115,7 @@ public class EmailAddress implements Resource, Comparable<EmailAddress>
 	}
 
 	/** @return A hash code representing this object. */
-	public int hashCode()
-	{
+	public int hashCode() {
 		return Objects.getHashCode(getLocalPart(), getDomain()); //return a hash code for the local part and domain
 	}
 
@@ -133,16 +124,11 @@ public class EmailAddress implements Resource, Comparable<EmailAddress>
 	 * local part and domain.
 	 * @return <code>true</code> if the given object is an equivalent email address.
 	 */
-	public boolean equals(final Object object)
-	{
-		if(object instanceof EmailAddress) //if the other object is an email address
-		{
+	public boolean equals(final Object object) {
+		if(object instanceof EmailAddress) { //if the other object is an email address
 			final EmailAddress emailAddress = (EmailAddress)object; //get the other object as an email address
 			return getLocalPart().equals(emailAddress.getLocalPart()) && getDomain().equals(emailAddress.getDomain()); //compare local part and domain
-		}
-		else
-		//if the other object is not an email address
-		{
+		} else { //if the other object is not an email address
 			return false; //the objects aren't equal
 		}
 	}
@@ -154,11 +140,9 @@ public class EmailAddress implements Resource, Comparable<EmailAddress>
 	 * @see #getDomain()
 	 * @see #getLocalPart()
 	 */
-	public int compareTo(final EmailAddress emailAddress)
-	{
+	public int compareTo(final EmailAddress emailAddress) {
 		int result = getDomain().compareToIgnoreCase(emailAddress.getDomain()); //compare domains
-		if(result == 0) //if domains are equal
-		{
+		if(result == 0) { //if domains are equal
 			result = getLocalPart().compareTo(emailAddress.getLocalPart()); //compare local parts
 		}
 		return result; //return the result of the comparison
@@ -168,16 +152,14 @@ public class EmailAddress implements Resource, Comparable<EmailAddress>
 	 * Constructs a string representation of the email address in its RFC 2822 format. This implementation returns the canonical version of the email address.
 	 * @return A string representation of the email address.
 	 */
-	public String toString()
-	{
+	public String toString() {
 		return getLocalPart() + LOCAL_PART_DOMAIN_DELIMITER + getDomain(); //return "localPart@domain"
 	}
 
 	//Resource
 
 	/** @return The resource identifier URI, or <code>null</code> if the identifier is not known. */
-	public URI getURI()
-	{
+	public URI getURI() {
 		return URI.create(MAILTO_SCHEME + SCHEME_SEPARATOR + toString()); //construct and return the mailto URI
 	}
 
@@ -188,11 +170,9 @@ public class EmailAddress implements Resource, Comparable<EmailAddress>
 	 * @throws NullPointerException if the given character sequence is <code>null</code>.
 	 * @throws ArgumentSyntaxException if the input string violates RFC 2822.
 	 */
-	public static String getLocalPart(final CharSequence input) throws ArgumentSyntaxException
-	{
+	public static String getLocalPart(final CharSequence input) throws ArgumentSyntaxException {
 		final Matcher matcher = EMAIL_ADDRESS_PATTERN.matcher(checkInstance(input, "Email address string cannot be null.")); //get a matcher for matching the given input string
-		if(!matcher.matches()) //if the input string does not match the email address patter
-		{
+		if(!matcher.matches()) { //if the input string does not match the email address patter
 			throw new ArgumentSyntaxException("Email address " + input + " is syntactically incorrect.");
 		}
 		return matcher.group(EMAIL_ADDRESS_PATTERN_LOCAL_PART_GROUP); //the first group contains the local part
@@ -205,11 +185,9 @@ public class EmailAddress implements Resource, Comparable<EmailAddress>
 	 * @throws NullPointerException if the given character sequence is <code>null</code>.
 	 * @throws ArgumentSyntaxException if the input string violates RFC 2822.
 	 */
-	public static String getDomain(final CharSequence input) throws ArgumentSyntaxException
-	{
+	public static String getDomain(final CharSequence input) throws ArgumentSyntaxException {
 		final Matcher matcher = EMAIL_ADDRESS_PATTERN.matcher(checkInstance(input, "Email address string cannot be null.")); //get a matcher for matching the given input string
-		if(!matcher.matches()) //if the input string does not match the email address patter
-		{
+		if(!matcher.matches()) { //if the input string does not match the email address patter
 			throw new ArgumentSyntaxException("Email address " + input + " is syntactically incorrect.");
 		}
 		return matcher.group(EMAIL_ADDRESS_PATTERN_DOMAIN_GROUP); //the second group contains the domain

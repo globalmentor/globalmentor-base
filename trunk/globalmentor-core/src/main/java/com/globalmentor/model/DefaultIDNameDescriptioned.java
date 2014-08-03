@@ -16,43 +16,43 @@
 
 package com.globalmentor.model;
 
-/**A convenience class for storing an ID, a name, and a description. Is useful
-	to serve as a base class to other classes that are identified by an ID and
-	have a name and a description.
-@author Garret Wilson
-*/
-public class DefaultIDNameDescriptioned<I, N extends Comparable<N>, D> extends DefaultIDNamed<I, N>
-{
+/**
+ * A convenience class for storing an ID, a name, and a description. Is useful to serve as a base class to other classes that are identified by an ID and have a
+ * name and a description.
+ * @author Garret Wilson
+ */
+public class DefaultIDNameDescriptioned<I, N extends Comparable<N>, D> extends DefaultIDNamed<I, N> {
 
-	/**The description of the object, or <code>null</code> if the object has no description.*/
+	/** The description of the object, or <code>null</code> if the object has no description. */
 	private D description;
 
-		/**@return The description of the object, or <code>null</code> if the object has no description.*/
-		public D getDescription() {return description;}
-
-		/**Sets the description of the object.
-		@param description The new description of the object, or <code>null</code> if the object should have no description.
-		*/
-		protected void setDescription(final D description)
-		{
-			this.description=description;
-		}
-
-	/**Constructor specifying the ID, name, and description.
-	@param id The ID of the object, or <code>null</code> if the object should have no ID.
-	@param name The name of the object, or <code>null</code> if the object should have no name.
-	@param description The description of the object, or <code>null</code> if the object should have no description.
-	*/
-	public DefaultIDNameDescriptioned(final I id, final N name, final D description)
-	{
-		super(id, name);  //construct the base class
-		this.description=description;
+	/** @return The description of the object, or <code>null</code> if the object has no description. */
+	public D getDescription() {
+		return description;
 	}
 
-	/**@return A string representation of this object in the format "objectinfo: [ID] name (description)".*/
-	public String toString()
-	{
-		return super.toString()+" ("+getDescription()+")";  //return a string constructed from the default string and the description
+	/**
+	 * Sets the description of the object.
+	 * @param description The new description of the object, or <code>null</code> if the object should have no description.
+	 */
+	protected void setDescription(final D description) {
+		this.description = description;
+	}
+
+	/**
+	 * Constructor specifying the ID, name, and description.
+	 * @param id The ID of the object, or <code>null</code> if the object should have no ID.
+	 * @param name The name of the object, or <code>null</code> if the object should have no name.
+	 * @param description The description of the object, or <code>null</code> if the object should have no description.
+	 */
+	public DefaultIDNameDescriptioned(final I id, final N name, final D description) {
+		super(id, name); //construct the base class
+		this.description = description;
+	}
+
+	/** @return A string representation of this object in the format "objectinfo: [ID] name (description)". */
+	public String toString() {
+		return super.toString() + " (" + getDescription() + ")"; //return a string constructed from the default string and the description
 	}
 
 }

@@ -25,11 +25,9 @@ import java.io.IOException;
  * 
  * @see Appendable
  */
-public class Appendables
-{
+public class Appendables {
 
-	private Appendables()
-	{
+	private Appendables() {
 	}
 
 	/**
@@ -41,10 +39,8 @@ public class Appendables
 	 * @throws NullPointerException if the given appendable is <code>null</code>.
 	 * @throws IOException if there is an error appending to the appendable.
 	 */
-	public static <A extends Appendable> A append(final A appendable, final char character, int count) throws IOException
-	{
-		for(; count > 0; --count)
-		{
+	public static <A extends Appendable> A append(final A appendable, final char character, int count) throws IOException {
+		for(; count > 0; --count) {
 			appendable.append(character);
 		}
 		return appendable;

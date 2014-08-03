@@ -28,11 +28,10 @@ import java.io.*;
  * 
  * @author Garret Wilson
  */
-public class WildcardFileFilter extends AbstractFileFilter
-{
+public class WildcardFileFilter extends AbstractFileFilter {
+
 	@Override
-	public boolean accept(final File pathname)
-	{
+	public boolean accept(final File pathname) {
 		return true;
 	}
 }

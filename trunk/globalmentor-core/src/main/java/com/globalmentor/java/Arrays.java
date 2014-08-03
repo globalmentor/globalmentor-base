@@ -23,8 +23,7 @@ import java.lang.reflect.Array;
  * @author Garret Wilson
  * @see java.util.Arrays
  */
-public class Arrays
-{
+public class Arrays {
 
 	/** An object array that contains no elements. */
 	public final static Object[] EMPTY_OBJECT_ARRAY = new Object[] {};
@@ -35,8 +34,7 @@ public class Arrays
 	 * @param value The value to append to the array.
 	 * @return A new array containing the contents of the first array followed by the contents of the second array.
 	 */
-	public static int[] append(final int[] array, final int value)
-	{
+	public static int[] append(final int[] array, final int value) {
 		return append(array, new int[] { value }); //create an array containing the value and append it to the first array
 	}
 
@@ -46,8 +44,7 @@ public class Arrays
 	 * @param array2 The array to append to the first array.
 	 * @return A new array containing the contents of the first array followed by the contents of the second array.
 	 */
-	public static int[] append(final int[] array1, final int[] array2)
-	{
+	public static int[] append(final int[] array1, final int[] array2) {
 		final int[] array = new int[array1.length + array2.length]; //create an array large enough to hold both arrays
 		System.arraycopy(array1, 0, array, 0, array1.length); //copy the first array to the new array
 		System.arraycopy(array2, 0, array, array1.length, array2.length); //copy the second array to the new array
@@ -63,8 +60,7 @@ public class Arrays
 	 * @return The object if it is an instance of an array containing objects of the given class, otherwise <code>null</code>.
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T> T[] asArrayInstance(final Object object, final Class<T> elementClass)
-	{
+	public static <T> T[] asArrayInstance(final Object object, final Class<T> elementClass) {
 		return object != null && elementClass.isInstance(object.getClass().getComponentType()) ? (T[])object : null; //if each array element of the object is of the correct type, cast to the correct type of array
 	}
 
@@ -75,8 +71,7 @@ public class Arrays
 	 * @return The given array.
 	 * @throws NullPointerException if the given array or any element within the array is <code>null</code>.
 	 */
-	public static <T> T[] checkInstances(final T[] array)
-	{
+	public static <T> T[] checkInstances(final T[] array) {
 		return checkInstances(array, null); //check for null with no description
 	}
 
@@ -88,12 +83,9 @@ public class Arrays
 	 * @return The given variable.
 	 * @throws NullPointerException if the given array or any element within the array is <code>null</code>.
 	 */
-	public static <T> T[] checkInstances(final T[] array, final String description)
-	{
-		for(final T element : array) //for each element in the array
-		{
-			if(element == null) //if the element is null
-			{
+	public static <T> T[] checkInstances(final T[] array, final String description) {
+		for(final T element : array) { //for each element in the array
+			if(element == null) { //if the element is null
 				throw new NullPointerException(description);
 			}
 		}
@@ -109,19 +101,15 @@ public class Arrays
 	 * @throws IllegalArgumentException if the start index is greater than the end index.
 	 * @throws ArrayIndexOutOfBoundsException if the start index is less than zero or the end index is greater than the length.
 	 */
-	public static int checkIndexRange(final int length, int start, int end)
-	{
+	public static int checkIndexRange(final int length, int start, int end) {
 		final int rangeLength = end - start;
-		if(rangeLength < 0) //if the first index is greater than the last index
-		{
+		if(rangeLength < 0) { //if the first index is greater than the last index
 			throw new IllegalArgumentException("Start range index " + start + " greater than end range index" + end);
 		}
-		if(start < 0) //if the first index is too low
-		{
+		if(start < 0) { //if the first index is too low
 			throw new IllegalArgumentException("Start range index " + start + " cannot be less than zero.");
 		}
-		if(end > length) //if the last index is too high
-		{
+		if(end > length) { //if the last index is too high
 			throw new IllegalArgumentException("End range index " + end + " cannot be greater than length " + length);
 		}
 		return rangeLength;
@@ -137,8 +125,7 @@ public class Arrays
 	 * @throws IllegalArgumentException if the start index is greater than the end index.
 	 * @throws ArrayIndexOutOfBoundsException if the start index is less than zero or the end index is greater than the length.
 	 */
-	public static int checkIndexRange(final Object[] array, int start, int end)
-	{
+	public static int checkIndexRange(final Object[] array, int start, int end) {
 		return checkIndexRange(array.length, start, end);
 	}
 
@@ -149,11 +136,9 @@ public class Arrays
 	 * @param a The array whose content will be copied, or <code>null</code> if there are no values to copy..
 	 * @return A new array with the content of the old array at the corresponding indexes.
 	 */
-	public static int[] create(final int length, final int[] a)
-	{
+	public static int[] create(final int length, final int[] a) {
 		final int[] newArray = new int[length]; //create a new array
-		if(a != null) //if an array was provided for content
-		{
+		if(a != null) { //if an array was provided for content
 			final int copyLength = Math.min(a.length, length); //see how many elements we should copy
 			System.arraycopy(a, 0, newArray, 0, copyLength); //copy the specified number of elements
 		}
@@ -168,8 +153,7 @@ public class Arrays
 	 * @throws IllegalArgumentException if the start index is greater than the end index.
 	 * @throws ArrayIndexOutOfBoundsException if the start index is less than zero or the end index is greater than the length.
 	 */
-	public static <T> T[] createCopy(final T[] source, final int start)
-	{
+	public static <T> T[] createCopy(final T[] source, final int start) {
 		return createCopy(source, start, source.length);
 	}
 
@@ -182,8 +166,7 @@ public class Arrays
 	 * @throws IllegalArgumentException if the start index is greater than the end index.
 	 * @throws ArrayIndexOutOfBoundsException if the start index is less than zero or the end index is greater than the length.
 	 */
-	public static <T> T[] createCopy(final T[] source, final int start, final int end)
-	{
+	public static <T> T[] createCopy(final T[] source, final int start, final int end) {
 		checkIndexRange(source.length, start, end); //check the validity of the given range
 		final int length = end - start;
 		final T[] destination = createArray(source, length); //create a destination array of the correct length
@@ -200,8 +183,7 @@ public class Arrays
 	 * @throws IllegalArgumentException if the start index is greater than the end index.
 	 * @throws ArrayIndexOutOfBoundsException if the start index is less than zero or the end index is greater than the length.
 	 */
-	public static char[] createCopy(final char[] source, final int start, final int end)
-	{
+	public static char[] createCopy(final char[] source, final int start, final int end) {
 		checkIndexRange(source.length, start, end); //check the validity of the given range
 		final int length = end - start;
 		final char[] destination = new char[length]; //create a destination array of the correct length
@@ -218,8 +200,7 @@ public class Arrays
 	 * @throws IllegalArgumentException if the start index is greater than the end index.
 	 * @throws ArrayIndexOutOfBoundsException if the start index is less than zero or the end index is greater than the length.
 	 */
-	public static int[] createCopy(final int[] source, final int start, final int end)
-	{
+	public static int[] createCopy(final int[] source, final int start, final int end) {
 		checkIndexRange(source.length, start, end); //check the validity of the given range
 		final int length = end - start;
 		final int[] destination = new int[length]; //create a destination array of the correct length
@@ -233,8 +214,7 @@ public class Arrays
 	 * @param elements The elements the array should contain.
 	 * @return An array containing the provided elements.
 	 */
-	public static <T> T[] createArray(final T... elements)
-	{
+	public static <T> T[] createArray(final T... elements) {
 		return elements; //return the varargs as an array
 	}
 
@@ -245,11 +225,9 @@ public class Arrays
 	 * @param elements The elements with which to initialize the array.
 	 * @return A new array of the requested type containing the provided elements.
 	 */
-	public static <T> T[] createArray(final Class<T> elementType, final T... elements)
-	{
+	public static <T> T[] createArray(final Class<T> elementType, final T... elements) {
 		final T[] array = createArray(elementType, elements.length); //create an array of the given type large enough to hold the given elements
-		for(int i = elements.length - 1; i >= 0; --i) //for each element in the array
-		{
+		for(int i = elements.length - 1; i >= 0; --i) { //for each element in the array
 			array[i] = elements[i]; //copy the element to the new array
 		}
 		return array; //return the created array
@@ -263,8 +241,7 @@ public class Arrays
 	 * @return A new array of the requested length containing components of the requested type.
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T> T[] createArray(final Class<T> elementType, final int length)
-	{
+	public static <T> T[] createArray(final Class<T> elementType, final int length) {
 		return (T[])Array.newInstance(elementType, length); //create a new array of the specified length to contain the given type
 	}
 
@@ -277,8 +254,7 @@ public class Arrays
 	 * @return A new array of the requested length containing components of the requested type, filled with the given value.
 	 * @see #fill(Object[], Object)
 	 */
-	public static <T> T[] createArray(final Class<T> elementType, final int length, final T value)
-	{
+	public static <T> T[] createArray(final Class<T> elementType, final int length, final T value) {
 		final T[] array = createArray(elementType, length); //create an array of the appropriate length
 		fill(array, value); //fill the array
 		return array; //return the array we created
@@ -292,8 +268,7 @@ public class Arrays
 	 * @return A new array of the requested length containing the same components as the original array.
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T> T[] createArray(final T[] array, final int length)
-	{
+	public static <T> T[] createArray(final T[] array, final int length) {
 		return (T[])createArray(array.getClass().getComponentType(), length); //create a new array based upon the component type of the template array
 	}
 
@@ -309,10 +284,8 @@ public class Arrays
 	 * @return An array of at least the requested length containing the same components as the original array; either the original array or a new array.
 	 * @see #createArray(Object[], int)
 	 */
-	public static <T> T[] getArray(T[] array, final int minLength)
-	{
-		if(array.length < minLength) //if the given array is not large enough
-		{
+	public static <T> T[] getArray(T[] array, final int minLength) {
+		if(array.length < minLength) { //if the given array is not large enough
 			array = createArray(array, minLength); //create a new array that is large enough
 		}
 		return array; //return the array
@@ -324,8 +297,7 @@ public class Arrays
 	 * @param value The value to be stored in all elements of the array.
 	 * @return The array that was filled.
 	 */
-	public static <T> T[] fill(final T[] array, final T value)
-	{
+	public static <T> T[] fill(final T[] array, final T value) {
 		return fill(array, 0, array.length, value); //fill the entire range of the array
 	}
 
@@ -340,8 +312,7 @@ public class Arrays
 	 * @throws ArrayIndexOutOfBoundsException if the start index is less than zero or the end index is greater than the length.
 	 * @return The array that was filled.
 	 */
-	public static <T> T[] fill(final T[] array, final int start, final int end, T value)
-	{
+	public static <T> T[] fill(final T[] array, final int start, final int end, T value) {
 		checkIndexRange(array.length, start, end); //check the given range
 		for(int i = start; i < end; array[i++] = value)
 			; //store the value in each index of the array
@@ -354,8 +325,7 @@ public class Arrays
 	 * @param value The value to be stored in all elements of the array.
 	 * @return The array that was filled.
 	 */
-	public static double[] fill(final double[] array, final double value)
-	{
+	public static double[] fill(final double[] array, final double value) {
 		return fill(array, 0, array.length, value); //fill the entire range of the array
 	}
 
@@ -370,8 +340,7 @@ public class Arrays
 	 * @throws ArrayIndexOutOfBoundsException if the start index is less than zero or the end index is greater than the length.
 	 * @return The array that was filled.
 	 */
-	public static double[] fill(final double[] array, final int start, final int end, double value)
-	{
+	public static double[] fill(final double[] array, final int start, final int end, double value) {
 		checkIndexRange(array.length, start, end); //check the given range
 		for(int i = start; i < end; array[i++] = value)
 			; //store the value in each index of the array
@@ -385,8 +354,7 @@ public class Arrays
 	 * @param object The object to find.
 	 * @return <code>true</code> if the object exists in the array, else <code>false</code>.
 	 */
-	public static <T> boolean contains(final T[] array, final T object)
-	{
+	public static <T> boolean contains(final T[] array, final T object) {
 		return indexOf(array, object) >= 0; //see if the given object appears in the array
 	}
 
@@ -397,10 +365,8 @@ public class Arrays
 	 * @param object The object to find.
 	 * @return The index of the first instance of an object that is equal to the specified object, or -1 if no such object exits.
 	 */
-	public static <T> int indexOf(final T[] array, final T object)
-	{
-		for(int i = 0; i < array.length; ++i) //look at each object in the array
-		{
+	public static <T> int indexOf(final T[] array, final T object) {
+		for(int i = 0; i < array.length; ++i) { //look at each object in the array
 			if(object.equals(array[i])) //if the object equals this element of the array
 				return i; //return this index
 		}
@@ -415,12 +381,9 @@ public class Arrays
 	 * @return The first object that is the instance of the given class, or <code>null</code> if there is no instance of the given class in the array.
 	 * @throws NullPointerException if the given array and/or object class is <code>null</code>.
 	 */
-	public static <T> T getInstance(final Object[] array, final Class<T> objectClass)
-	{
-		for(final Object object : array) //look at each object in the array
-		{
-			if(objectClass.isInstance(object)) //if this object is an instance of the given class
-			{
+	public static <T> T getInstance(final Object[] array, final Class<T> objectClass) {
+		for(final Object object : array) { //look at each object in the array
+			if(objectClass.isInstance(object)) { //if this object is an instance of the given class
 				return objectClass.cast(object); //return the object
 			}
 		}
@@ -433,13 +396,10 @@ public class Arrays
 	 * @param array The array to iteratate.
 	 * @return The number of objects in the array that are not <code>null</code>.
 	 */
-	public static <T> int getInstanceCount(final T[] array)
-	{
+	public static <T> int getInstanceCount(final T[] array) {
 		int count = 0; //we'll see how many instances are in the row
-		for(int i = array.length - 1; i >= 0; --i) //for each index
-		{
-			if(array[i] != null) //if there is an object at this position
-			{
+		for(int i = array.length - 1; i >= 0; --i) { //for each index
+			if(array[i] != null) { //if there is an object at this position
 				++count; //increase the count of instances
 			}
 		}
@@ -452,8 +412,7 @@ public class Arrays
 	 * @param value The value to find.
 	 * @return The index of the first instance of an value, or -1 if no such value exits.
 	 */
-	public static <T> boolean contains(final char[] array, final char value)
-	{
+	public static <T> boolean contains(final char[] array, final char value) {
 		return indexOf(array, value) >= 0; //see if the given value appears in the array
 	}
 
@@ -463,10 +422,8 @@ public class Arrays
 	 * @param value The value to find.
 	 * @return <code>true</code> if the value exists in the array, else <code>false</code>.
 	 */
-	public static int indexOf(final char[] array, final char value)
-	{
-		for(int i = 0; i < array.length; ++i) //look at each object in the array
-		{
+	public static int indexOf(final char[] array, final char value) {
+		for(int i = 0; i < array.length; ++i) { //look at each object in the array
 			if(value == array[i]) //if the value equals this element of the array
 				return i; //return this index
 		}
@@ -479,8 +436,7 @@ public class Arrays
 	 * @param value The value to find.
 	 * @return The index of the first instance of an value, or -1 if no such value exits.
 	 */
-	public static <T> boolean contains(final int[] array, final int value)
-	{
+	public static <T> boolean contains(final int[] array, final int value) {
 		return indexOf(array, value) >= 0; //see if the given value appears in the array
 	}
 
@@ -490,10 +446,8 @@ public class Arrays
 	 * @param value The value to find.
 	 * @return <code>true</code> if the value exists in the array, else <code>false</code>.
 	 */
-	public static int indexOf(final int[] array, final int value)
-	{
-		for(int i = 0; i < array.length; ++i) //look at each object in the array
-		{
+	public static int indexOf(final int[] array, final int value) {
+		for(int i = 0; i < array.length; ++i) { //look at each object in the array
 			if(value == array[i]) //if the value equals this element of the array
 				return i; //return this index
 		}
@@ -507,12 +461,10 @@ public class Arrays
 	 *         corresponding object is <code>null</code>.
 	 * @throws NullPointerException if the given array is <code>null</code>.
 	 */
-	public static String[] toStringArray(final Object[] array)
-	{
+	public static String[] toStringArray(final Object[] array) {
 		final int length = array.length; //get the length of the array
 		final String[] strings = new String[length]; //create a string array
-		for(int i = 0; i < length; ++i) //for each index
-		{
+		for(int i = 0; i < length; ++i) { //for each index
 			final Object object = array[i]; //get this object
 			strings[i] = object != null ? object.toString() : null; //store the object or null in the new array
 		}

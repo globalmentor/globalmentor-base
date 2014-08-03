@@ -18,74 +18,82 @@ package com.globalmentor.text.xml.oeb;
 
 import com.globalmentor.net.ContentType;
 
-/**Class which represents an OEB item (OEB document, image, etc.) found in
-the manifest section of an OEB package.
-@author Garret Wilson
-@see OEBPublication
-*/
-public class OEBItem	//TODO del class when new XPackage stuff works
+/**
+ * Class which represents an OEB item (OEB document, image, etc.) found in the manifest section of an OEB package.
+ * @author Garret Wilson
+ * @see OEBPublication
+ */
+public class OEBItem //TODO del class when new XPackage stuff works
 {
 
-	/**The ID of this item.*/
+	/** The ID of this item. */
 	private String ID;
 
-		/**@return The ID of this item.*/
-		public String getID() {return ID;}
+	/** @return The ID of this item. */
+	public String getID() {
+		return ID;
+	}
 
-	/**The filename of this item.*/
+	/** The filename of this item. */
 	private String HRef;
 
-		/**@return The filename of this item.*/
-		public String getHRef() {return HRef;}
+	/** @return The filename of this item. */
+	public String getHRef() {
+		return HRef;
+	}
 
-	/**The media type of this item.*/
+	/** The media type of this item. */
 	private ContentType mediaType;
 
-		/**@return The media type of this item.*/
-		public ContentType getMediaType() {return mediaType;}
+	/** @return The media type of this item. */
+	public ContentType getMediaType() {
+		return mediaType;
+	}
 
+	/** The item to be used as a fallback, or <code>null</code> for no fallback. */
+	private OEBItem Fallback = null;
 
-	/**The item to be used as a fallback, or <code>null</code> for no fallback.*/
-	private OEBItem Fallback=null;
+	/** @return The item to be used as a fallback, or <code>null</code> for no fallback. */
+	public OEBItem getFallback() {
+		return Fallback;
+	}
 
-		/**@return The item to be used as a fallback, or <code>null</code> for no fallback.*/
-		public OEBItem getFallback() {return Fallback;}
+	/**
+	 * Sets the item to be used as a fallback. This method can only be called by other classes in this package.
+	 * @param newFallback The new item to use as a fallback, or <code>null</code> if this item should have no fallback.
+	 */
+	void setFallback(final OEBItem newFallback) {
+		Fallback = newFallback;
+	}
 
-		/**Sets the item to be used as a fallback. This method can only be called by
-		  other classes in this package.
-		@param newFallback The new item to use as a fallback, or <code>null</code>
-			if this item should have no fallback.
-		*/
-		void setFallback(final OEBItem newFallback) {Fallback=newFallback;}
-
-	/**Constructor for creating an OEB item with no fallback.
-	@param id The ID of this item.
-	@param href The filename of this item.
-	@param newMediaType The media type of this item.
-	*/
-	public OEBItem(final String id, final String href, final ContentType newMediaType)
-	{
+	/**
+	 * Constructor for creating an OEB item with no fallback.
+	 * @param id The ID of this item.
+	 * @param href The filename of this item.
+	 * @param newMediaType The media type of this item.
+	 */
+	public OEBItem(final String id, final String href, final ContentType newMediaType) {
 		this(id, href, newMediaType, null); //do the default construction with a null fallback
 	}
 
-	/**Constructor.
-	@param id The ID of this item.
-	@param href The filename of this item.
-	@param newMediaType The media type of this item.
-	@param fallback The fallback item, or <code>null</code> for no fallback.
-	*/
-	public OEBItem(final String id, final String href, final ContentType newMediaType, final OEBItem fallback)
-	{
-		ID=id;	//set the ID
-		HRef=href;	//set the href
-		mediaType=newMediaType;	//set the media type
-		Fallback=fallback;	//set the fallback
+	/**
+	 * Constructor.
+	 * @param id The ID of this item.
+	 * @param href The filename of this item.
+	 * @param newMediaType The media type of this item.
+	 * @param fallback The fallback item, or <code>null</code> for no fallback.
+	 */
+	public OEBItem(final String id, final String href, final ContentType newMediaType, final OEBItem fallback) {
+		ID = id; //set the ID
+		HRef = href; //set the href
+		mediaType = newMediaType; //set the media type
+		Fallback = fallback; //set the fallback
 	}
 
-	/**@return A string representation of this OEBItem.*/
-	public String toString()
-	{
-		return "OEBItem [id: "+getID()+" href: "+getHRef()+" media-type: "+getMediaType()+" fallback: "+(getFallback()!=null ? getFallback().getID() : "none")+"]";	//create a string representation of this item and return it
+	/** @return A string representation of this OEBItem. */
+	public String toString() {
+		return "OEBItem [id: " + getID() + " href: " + getHRef() + " media-type: " + getMediaType() + " fallback: "
+				+ (getFallback() != null ? getFallback().getID() : "none") + "]"; //create a string representation of this item and return it
 	}
 
 }

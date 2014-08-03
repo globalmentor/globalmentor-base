@@ -31,30 +31,26 @@ import com.globalmentor.java.Longs;
  * 
  * @author Garret Wilson
  */
-public class Count extends AbstractLong<Count> implements CloneSupported
-{
+public class Count extends AbstractLong<Count> implements CloneSupported {
 
 	/** The current count. */
 	private long count;
 
 	/** @return The current count. */
-	public long getCount()
-	{
+	public long getCount() {
 		return count;
 	}
 
 	/** {@inheritDoc} This version delegates to {@link #getCount()}. */
 	@Override
-	public long longValue()
-	{
+	public long longValue() {
 		return getCount();
 	}
 
 	/**
 	 * Default constructor with a count of zero.
 	 */
-	public Count()
-	{
+	public Count() {
 		this(0L);
 	}
 
@@ -63,8 +59,7 @@ public class Count extends AbstractLong<Count> implements CloneSupported
 	 * 
 	 * @param count The current count.
 	 */
-	public Count(final long count)
-	{
+	public Count(final long count) {
 		this.count = count;
 	}
 
@@ -72,8 +67,7 @@ public class Count extends AbstractLong<Count> implements CloneSupported
 	 * Increments the counter and returns the new value.
 	 * @return The new, incremented count value.
 	 */
-	protected long increment()
-	{
+	protected long increment() {
 		return ++count;
 	}
 
@@ -81,14 +75,12 @@ public class Count extends AbstractLong<Count> implements CloneSupported
 	 * Decrements the counter and returns the new value.
 	 * @return The new, decremented count value.
 	 */
-	protected long decrement()
-	{
+	protected long decrement() {
 		return --count;
 	}
 
 	@Override
-	public Object clone() throws CloneNotSupportedException
-	{
+	public Object clone() throws CloneNotSupportedException {
 		return super.clone();
 	}
 
@@ -97,8 +89,7 @@ public class Count extends AbstractLong<Count> implements CloneSupported
 	 * @see #getCount()
 	 **/
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return Long.toString(getCount());
 	}
 
@@ -115,11 +106,9 @@ public class Count extends AbstractLong<Count> implements CloneSupported
 	 * @param key The key being counted.
 	 * @return The new count of the key in the map.
 	 */
-	public static <K> long incrementCounterMapCount(final Map<K, Count> map, final K key)
-	{
+	public static <K> long incrementCounterMapCount(final Map<K, Count> map, final K key) {
 		Count counter = map.get(key); //get the current counter
-		if(counter == null) //if the key does not exist in the map
-		{
+		if(counter == null) { //if the key does not exist in the map
 			counter = new Count(); //create a new counter and put it in the map keyed to the key 
 			map.put(key, counter);
 		}
@@ -140,16 +129,13 @@ public class Count extends AbstractLong<Count> implements CloneSupported
 	 * @return The new count of the key in the map.
 	 * @throws IllegalStateException if the key does not exist in the map (i.e. the count is zero).
 	 */
-	public static <K> long decrementCounterMapCount(final Map<K, Count> map, final K key)
-	{
+	public static <K> long decrementCounterMapCount(final Map<K, Count> map, final K key) {
 		final Count counter = map.get(key); //get the current counter
-		if(counter == null) //if the key does not exist in the map
-		{
+		if(counter == null) { //if the key does not exist in the map
 			throw new IllegalStateException("Key " + key + " does not exist in the counter map (it has an effective zero count).");
 		}
 		final long count = counter.decrement(); //decrement the counter
-		if(count == 0L) //if we reached zero
-		{
+		if(count == 0L) { //if we reached zero
 			map.remove(key); //remove the counter from the map altogether
 		}
 		return count; //return the new count
@@ -167,8 +153,7 @@ public class Count extends AbstractLong<Count> implements CloneSupported
 	 * @param key The key being counted.
 	 * @return The count value of the counter of the key in the map.
 	 */
-	public static <K> long getCount(final Map<K, Count> map, final K key)
-	{
+	public static <K> long getCount(final Map<K, Count> map, final K key) {
 		final Count counter = map.get(key); //get the current counter
 		return counter != null ? counter.getCount() : 0L; //return the count, considering no counter to indicate a count of zero
 	}
@@ -181,11 +166,10 @@ public class Count extends AbstractLong<Count> implements CloneSupported
 	 * @author Garret Wilson
 	 * @param <K> The type of key used in the map.
 	 */
-	public static class CounterMapEntryComparator<K> implements Comparator<Map.Entry<K, Count>>
-	{
+	public static class CounterMapEntryComparator<K> implements Comparator<Map.Entry<K, Count>> {
+
 		@Override
-		public int compare(final Map.Entry<K, Count> entry1, final Map.Entry<K, Count> entry2)
-		{
+		public int compare(final Map.Entry<K, Count> entry1, final Map.Entry<K, Count> entry2) {
 			return Longs.compare(entry1.getValue().getCount(), entry2.getValue().getCount());
 		}
 	}

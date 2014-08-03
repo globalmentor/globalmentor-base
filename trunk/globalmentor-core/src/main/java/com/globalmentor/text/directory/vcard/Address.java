@@ -30,15 +30,13 @@ import com.globalmentor.java.*;
  * 2426</a>, "vCard MIME Directory Profile".
  * @author Garret Wilson
  */
-public class Address
-{
+public class Address {
 
 	/**
 	 * The type of address.
 	 * @author Garret Wilson
 	 */
-	public enum Type
-	{
+	public enum Type {
 		/** A domestic delivery address. */
 		DOM,
 		/** An international delivery address. */
@@ -62,8 +60,7 @@ public class Address
 	private final Set<Type> types;
 
 	/** @return The delivery address types. */
-	public Set<Type> getTypes()
-	{
+	public Set<Type> getTypes() {
 		return types;
 	}
 
@@ -71,8 +68,7 @@ public class Address
 	private final String postOfficeBox;
 
 	/** @return The post office box. */
-	public String getPostOfficeBox()
-	{
+	public String getPostOfficeBox() {
 		return postOfficeBox;
 	}
 
@@ -80,14 +76,12 @@ public class Address
 	private List<String> extendedAddresses;
 
 	/** @return The extended addresses. */
-	public List<String> getExtendedAddresses()
-	{
+	public List<String> getExtendedAddresses() {
 		return extendedAddresses;
 	}
 
 	/** @return The first extended address, or <code>null</code> if there are no extended addresses. */
-	public String getExtendedAddress()
-	{
+	public String getExtendedAddress() {
 		return !extendedAddresses.isEmpty() ? extendedAddresses.get(0) : null;
 	}
 
@@ -95,14 +89,12 @@ public class Address
 	private final List<String> streetAddresses;
 
 	/** @return The street addresses. */
-	public List<String> getStreetAddresses()
-	{
+	public List<String> getStreetAddresses() {
 		return streetAddresses;
 	}
 
 	/** @return The first street address, or <code>null</code> if there are no street addresses. */
-	public String getStreetAddress()
-	{
+	public String getStreetAddress() {
 		return !streetAddresses.isEmpty() ? streetAddresses.get(0) : null;
 	}
 
@@ -110,8 +102,7 @@ public class Address
 	private final String locality;
 
 	/** @return The locality (e.g. city). */
-	public String getLocality()
-	{
+	public String getLocality() {
 		return locality;
 	}
 
@@ -119,8 +110,7 @@ public class Address
 	private final String region;
 
 	/** @return The region (e.g. state or province). */
-	public String getRegion()
-	{
+	public String getRegion() {
 		return region;
 	}
 
@@ -128,8 +118,7 @@ public class Address
 	private final String postalCode;
 
 	/** @return The postal code. */
-	public String getPostalCode()
-	{
+	public String getPostalCode() {
 		return postalCode;
 	}
 
@@ -137,8 +126,7 @@ public class Address
 	private final String countryName;
 
 	/** @return The country name. */
-	public String getCountryName()
-	{
+	public String getCountryName() {
 		return countryName;
 	}
 
@@ -146,8 +134,7 @@ public class Address
 	private final Locale locale;
 
 	/** @return The locale that represents the language of the text, or <code>null</code> if no language is indicated. */
-	public Locale getLocale()
-	{
+	public Locale getLocale() {
 		return locale;
 	}
 
@@ -170,8 +157,7 @@ public class Address
 	 * @param countryName The country name, or <code>null</code> for no country name.
 	 */
 	public Address(final String postOfficeBox, final List<String> extendedAddresses, final List<String> streetAddresses, final String locality,
-			final String region, final String postalCode, final String countryName)
-	{
+			final String region, final String postalCode, final String countryName) {
 		this(postOfficeBox, extendedAddresses, streetAddresses, locality, region, postalCode, countryName, DEFAULT_TYPES); //construct an address with the default address types
 	}
 
@@ -187,8 +173,7 @@ public class Address
 	 * @param types The delivery address types.
 	 */
 	public Address(final String postOfficeBox, final List<String> extendedAddresses, final List<String> streetAddresses, final String locality,
-			final String region, final String postalCode, final String countryName, final Set<Type> types)
-	{
+			final String region, final String postalCode, final String countryName, final Set<Type> types) {
 		this(postOfficeBox, extendedAddresses, streetAddresses, locality, region, postalCode, countryName, types, null); //construct an address with no locale		
 	}
 
@@ -205,8 +190,7 @@ public class Address
 	 * @param locale The locale that represents the language of the text, or <code>null</code> if no language should be indicated.
 	 */
 	public Address(final String postOfficeBox, final List<String> extendedAddresses, final List<String> streetAddresses, final String locality,
-			final String region, final String postalCode, final String countryName, final Set<Type> types, final Locale locale)
-	{
+			final String region, final String postalCode, final String countryName, final Set<Type> types, final Locale locale) {
 		this.postOfficeBox = postOfficeBox;
 		this.extendedAddresses = immutableListOf(extendedAddresses);
 		this.streetAddresses = immutableListOf(streetAddresses);
@@ -229,8 +213,7 @@ public class Address
 	 * @param countryName The country name, or <code>null</code> for no country name.
 	 */
 	public Address(final String postOfficeBox, final String extendedAddress, final String streetAddress, final String locality, final String region,
-			final String postalCode, final String countryName)
-	{
+			final String postalCode, final String countryName) {
 		this(postOfficeBox, extendedAddress, streetAddress, locality, region, postalCode, countryName, DEFAULT_TYPES); //construct the address with the default address types
 	}
 
@@ -246,8 +229,7 @@ public class Address
 	 * @param types The delivery address types.
 	 */
 	public Address(final String postOfficeBox, final String extendedAddress, final String streetAddress, final String locality, final String region,
-			final String postalCode, final String countryName, final Set<Type> types)
-	{
+			final String postalCode, final String countryName, final Set<Type> types) {
 		this(postOfficeBox, extendedAddress, streetAddress, locality, region, postalCode, countryName, types, null); //construct the address with no locale	
 	}
 
@@ -264,14 +246,12 @@ public class Address
 	 * @param locale The locale that represents the language of the text, or <code>null</code> if no language should be indicated.
 	 */
 	public Address(final String postOfficeBox, final String extendedAddress, final String streetAddress, final String locality, final String region,
-			final String postalCode, final String countryName, final Set<Type> types, final Locale locale)
-	{
+			final String postalCode, final String countryName, final Set<Type> types, final Locale locale) {
 		this(postOfficeBox, asList(extendedAddress), asList(streetAddress), locality, region, postalCode, countryName, types, locale);
 	}
 
 	/** @return A string to represent the delivery address types. */
-	public String getTypeString()
-	{
+	public String getTypeString() {
 		return getTypeString(getTypes()); //return a string for our telephone type
 	}
 
@@ -279,60 +259,47 @@ public class Address
 	 * Constructs a string to represent the given delivery address types.
 	 * @param types The delivery address types.
 	 */
-	public static String getTypeString(final Set<Type> types)
-	{
+	public static String getTypeString(final Set<Type> types) {
 		return formatList(',', types);
 	}
 
 	/** @return A string representation of the address. */
-	public String toString()
-	{
+	public String toString() {
 		final StringBuilder stringBuilder = new StringBuilder(); //create a new string buffer to hold the string we'll construct
-		if(postOfficeBox != null) //if there is a post office box
-		{
+		if(postOfficeBox != null) { //if there is a post office box
 			stringBuilder.append("PO Box ").append(postOfficeBox); //append the post office box TODO i18n
 		}
 		if(postOfficeBox != null
-				&& (!extendedAddresses.isEmpty() || !streetAddresses.isEmpty() || locality != null || region != null || postalCode != null || countryName != null)) //if we added information and there is more information following
-		{
+				&& (!extendedAddresses.isEmpty() || !streetAddresses.isEmpty() || locality != null || region != null || postalCode != null || countryName != null)) { //if we added information and there is more information following
 			stringBuilder.append('\n'); //append a newline
 		}
 		StringBuilders.append(stringBuilder, extendedAddresses, '\n'); //append the extended addresses, separated by a newline
-		if(!extendedAddresses.isEmpty() && (!streetAddresses.isEmpty() || locality != null || region != null || postalCode != null || countryName != null)) //if we added information and there is more information following
-		{
+		if(!extendedAddresses.isEmpty() && (!streetAddresses.isEmpty() || locality != null || region != null || postalCode != null || countryName != null)) { //if we added information and there is more information following
 			stringBuilder.append('\n'); //append a newline
 		}
 		StringBuilders.append(stringBuilder, streetAddresses, '\n'); //append the street addresses, separated by a newline
-		if(!streetAddresses.isEmpty() && (locality != null || region != null || postalCode != null || countryName != null)) //if we added information and there is more information following
-		{
+		if(!streetAddresses.isEmpty() && (locality != null || region != null || postalCode != null || countryName != null)) { //if we added information and there is more information following
 			stringBuilder.append('\n'); //append a newline
 		}
-		if(locality != null) //if there is a locality
-		{
+		if(locality != null) { //if there is a locality
 			stringBuilder.append(locality); //append the locality
 		}
-		if(locality != null && (region != null || postalCode != null || countryName != null)) //if we added information and there is more information following
-		{
+		if(locality != null && (region != null || postalCode != null || countryName != null)) { //if we added information and there is more information following
 			stringBuilder.append(", "); //append a comma and a space
 		}
-		if(region != null) //if there is a region
-		{
+		if(region != null) { //if there is a region
 			stringBuilder.append(region); //append the region
 		}
-		if(region != null && (postalCode != null || countryName != null)) //if we added information and there is more information following
-		{
+		if(region != null && (postalCode != null || countryName != null)) { //if we added information and there is more information following
 			stringBuilder.append('\n'); //append a newline
 		}
-		if(postalCode != null) //if there is a postal code
-		{
+		if(postalCode != null) { //if there is a postal code
 			stringBuilder.append(postalCode); //append the postal code
 		}
-		if(postalCode != null && (countryName != null)) //if we added information and there is more information following
-		{
+		if(postalCode != null && (countryName != null)) { //if we added information and there is more information following
 			stringBuilder.append(' '); //append a space
 		}
-		if(countryName != null) //if there is a country name
-		{
+		if(countryName != null) { //if there is a country name
 			stringBuilder.append(countryName); //append the country name
 		}
 		return stringBuilder.toString(); //return the string we constructed

@@ -27,55 +27,46 @@ package com.globalmentor.java;
  * 
  * @author Garret Wilson
  */
-public abstract class AbstractLong<L extends Number> extends Number implements Comparable<L>
-{
+public abstract class AbstractLong<L extends Number> extends Number implements Comparable<L> {
 
 	/** {@inheritDoc} This version delegates to {@link #longValue()}. */
 	@Override
-	public int intValue()
-	{
+	public int intValue() {
 		return (int)longValue();
 	}
 
 	/** {@inheritDoc} This version delegates to {@link #doubleValue()}. */
 	@Override
-	public float floatValue()
-	{
+	public float floatValue() {
 		return (float)doubleValue();
 	}
 
 	/** {@inheritDoc} This version delegates to {@link #longValue()}. */
 	@Override
-	public double doubleValue()
-	{
+	public double doubleValue() {
 		return longValue();
 	}
 
 	/** {@inheritDoc} This returns a hash code of {@link #longValue()}. */
 	@Override
-	public int hashCode()
-	{
+	public int hashCode() {
 		return Longs.hashCode(longValue());
 	}
 
 	/** {@inheritDoc} This compares the value of {@link #longValue()} if the given object is an instance of the concrete subclass of this class. */
 	@Override
-	public boolean equals(final Object object)
-	{
-		if(object == this)
-		{
+	public boolean equals(final Object object) {
+		if(object == this) {
 			return true;
 		}
-		if(!(getClass().isInstance(object)))
-		{
+		if(!(getClass().isInstance(object))) {
 			return false;
 		}
 		return longValue() == ((Number)object).longValue();
 	}
 
 	@Override
-	public int compareTo(final L l)
-	{
+	public int compareTo(final L l) {
 		return Longs.compare(longValue(), l.longValue());
 	}
 

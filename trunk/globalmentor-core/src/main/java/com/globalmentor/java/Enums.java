@@ -28,8 +28,7 @@ import static com.globalmentor.java.StringBuilders.*;
  * Utilities for working with enums.
  * @author Garret Wilson
  */
-public class Enums
-{
+public class Enums {
 
 	/**
 	 * Creates a set of enums using varargs. This method exists because the existing method {@link EnumSet#of(Enum, Enum...)} requires knowledge ahead of time of
@@ -40,11 +39,9 @@ public class Enums
 	 * @return A set of enums containing the given enum values.
 	 * @throws NullPointerException if the given enum class and/or enum elements is <code>null</code>.
 	 */
-	public static <E extends Enum<E>> EnumSet<E> createEnumSet(final Class<E> enumClass, final E... enumElements)
-	{
+	public static <E extends Enum<E>> EnumSet<E> createEnumSet(final Class<E> enumClass, final E... enumElements) {
 		final EnumSet<E> set = EnumSet.noneOf(enumClass); //create an empty enum set
-		for(final E enumElement : enumElements) //for each of the given enum values
-		{
+		for(final E enumElement : enumElements) { //for each of the given enum values
 			set.add(enumElement); //add this enum element to the set
 		}
 		return set; //return the set we created and populated
@@ -61,11 +58,9 @@ public class Enums
 	 * @see Enum#name()
 	 * @see Identifier
 	 */
-	public static <E extends Enum<?>> String getSerializationName(final E e)	//JDK 6/7 does not work with some enum generics if Enum<E> is used; Eclipse 4.2.1 works fine
-	{
+	public static <E extends Enum<?>> String getSerializationName(final E e) { //JDK 6/7 does not work with some enum generics if Enum<E> is used; Eclipse 4.2.1 works fine
 		String name = e.name();
-		if(e instanceof Identifier) //if the enum is an identifier
-		{
+		if(e instanceof Identifier) { //if the enum is an identifier
 			final StringBuilder stringBuilder = new StringBuilder(e.name()); //start with the name of the enum
 			ASCII.toLowerCase(stringBuilder); //convert the name to lowercase (enums names will only consist of ASCII characters)
 			replace(stringBuilder, '_', '-'); //replace underscores with hyphens
@@ -90,10 +85,8 @@ public class Enums
 	 * @see Enum#valueOf(Class, String)
 	 * @see Identifier
 	 */
-	public static <E extends Enum<E>> E getSerializedEnum(final Class<E> enumType, String serializationName)
-	{
-		if(Identifier.class.isAssignableFrom(enumType)) //if the enum is an identifier
-		{
+	public static <E extends Enum<E>> E getSerializedEnum(final Class<E> enumType, String serializationName) {
+		if(Identifier.class.isAssignableFrom(enumType)) { //if the enum is an identifier
 			final StringBuilder stringBuilder = new StringBuilder(serializationName); //start with the serialization name
 			replace(stringBuilder, '-', '_'); //convert hyphens to underscores
 			ASCII.toUpperCase(stringBuilder); //convert the serialization name back to uppercase
@@ -111,8 +104,7 @@ public class Enums
 	 * @see Enum#getClass()
 	 * @see Enum#name()
 	 */
-	public static <E extends Enum<E>> String getPropertyName(final E e)
-	{
+	public static <E extends Enum<E>> String getPropertyName(final E e) {
 		return getPropertyName(e, null); //get an ID with no property
 	}
 
@@ -128,8 +120,7 @@ public class Enums
 	 * @see Enum#getClass()
 	 * @see Enum#name()
 	 */
-	public static <E extends Enum<E>> String getPropertyName(final E e, final String property)
-	{
+	public static <E extends Enum<E>> String getPropertyName(final E e, final String property) {
 		final String classPropertyName = Classes.getPropertyName(e.getClass(), e.name()); //com.example.EnumClass.NAME
 		return property != null ? classPropertyName + OBJECT_PREDICATE_SEPARATOR + property : classPropertyName; //if a property was given, append it
 	}

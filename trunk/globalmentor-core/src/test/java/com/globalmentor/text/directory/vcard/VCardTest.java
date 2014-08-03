@@ -39,15 +39,13 @@ import com.globalmentor.text.directory.DirectorySerializer;
  * 
  * @author Garret Wilson
  */
-public class VCardTest
-{
+public class VCardTest {
 
 	/**
 	 * Performs tests on a VCard to ensure that it has the appropriate properties of Jane Doe.
 	 * @param vcard The VCard to test.
 	 */
-	public void testJaneDoe(final VCard vcard)
-	{
+	public void testJaneDoe(final VCard vcard) {
 		assertThat(vcard.getName().getGivenName(), is("Jane"));
 		assertThat(vcard.getName().getFamilyName(), is("Doe"));
 		assertThat(vcard.getAddress().getExtendedAddress(), is("Oak and Pine"));
@@ -85,16 +83,14 @@ public class VCardTest
 	}
 
 	@Test
-	public void testReadNokiaC301JaneDoe() throws IOException
-	{
+	public void testReadNokiaC301JaneDoe() throws IOException {
 		final IO<VCard> vcardIO = new VCardIO();
 		final VCard vcard = Classes.readResource(getClass(), "nokia-c3-01-janedoe.vcf", vcardIO);
 		testJaneDoe(vcard);
 	}
 
 	@Test
-	public void testWriteJaneDoe() throws IOException
-	{
+	public void testWriteJaneDoe() throws IOException {
 		final IO<VCard> vcardIO = new VCardIO();
 		//read the card from resources
 		final VCard inputVCard = Classes.readResource(getClass(), "nokia-c3-01-janedoe.vcf", vcardIO);
@@ -111,8 +107,7 @@ public class VCardTest
 
 	/** Tests the ability to combine NOTEs when serializing, for consumers such as GMail that don't allow multiple notes. */
 	@Test
-	public void testWriteJaneDoeCombineNotes() throws IOException
-	{
+	public void testWriteJaneDoeCombineNotes() throws IOException {
 		final VCardIO vcardIO = new VCardIO();
 		vcardIO.setSerializationSingleValueNames(VCard.NOTE_TYPE); //combine notes
 		//read the card from resources

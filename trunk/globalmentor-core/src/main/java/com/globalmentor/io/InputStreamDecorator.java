@@ -29,8 +29,7 @@ import static com.globalmentor.java.Objects.*;
  * @param <I> The type of input stream being decorated.
  * @author Garret Wilson
  */
-public class InputStreamDecorator<I extends InputStream> extends InputStream implements Disposable
-{
+public class InputStreamDecorator<I extends InputStream> extends InputStream implements Disposable {
 
 	/** Whether the stream should be automatically disposed when closed. */
 	private final boolean autoDispose;
@@ -39,8 +38,7 @@ public class InputStreamDecorator<I extends InputStream> extends InputStream imp
 	private I inputStream;
 
 	/** @return The input stream being decorated, or <code>null</code> if it has been released after this stream was closed. */
-	protected I getInputStream()
-	{
+	protected I getInputStream() {
 		return inputStream;
 	}
 
@@ -49,8 +47,7 @@ public class InputStreamDecorator<I extends InputStream> extends InputStream imp
 	 * @param inputStream The input stream to decorate.
 	 * @throws NullPointerException if the given stream is <code>null</code>.
 	 */
-	public InputStreamDecorator(final I inputStream)
-	{
+	public InputStreamDecorator(final I inputStream) {
 		this(inputStream, true);
 	}
 
@@ -60,78 +57,67 @@ public class InputStreamDecorator<I extends InputStream> extends InputStream imp
 	 * @param autoDispose Whether the stream should be automatically disposed when closed.
 	 * @throws NullPointerException if the given stream is <code>null</code>.
 	 */
-	public InputStreamDecorator(final I inputStream, final boolean autoDispose)
-	{
+	public InputStreamDecorator(final I inputStream, final boolean autoDispose) {
 		this.inputStream = checkInstance(inputStream, "Input stream cannot be null."); //save the decorated input stream
 		this.autoDispose = true;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public int read() throws IOException
-	{
+	public int read() throws IOException {
 		final InputStream inputStream = getInputStream(); //get the decorated input stream
 		return inputStream != null ? inputStream.read() : -1; //if there is no decorated input stream, indicate that the stream is closed by returning -1
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public int read(byte b[]) throws IOException
-	{
+	public int read(byte b[]) throws IOException {
 		final InputStream inputStream = getInputStream(); //get the decorated input stream
 		return inputStream != null ? inputStream.read(b) : -1; //if there is no decorated input stream, indicate that the stream is closed by returning -1
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public int read(byte b[], int off, int len) throws IOException
-	{
+	public int read(byte b[], int off, int len) throws IOException {
 		final InputStream inputStream = getInputStream(); //get the decorated input stream
 		return inputStream != null ? inputStream.read(b, off, len) : -1; //if there is no decorated input stream, indicate that the stream is closed by returning -1
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public long skip(long n) throws IOException
-	{
+	public long skip(long n) throws IOException {
 		final InputStream inputStream = getInputStream(); //get the decorated input stream
 		return inputStream != null ? inputStream.skip(n) : 0;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public int available() throws IOException
-	{
+	public int available() throws IOException {
 		final InputStream inputStream = getInputStream(); //get the decorated input stream
 		return inputStream != null ? inputStream.available() : 0;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public synchronized void mark(int readlimit)
-	{
+	public synchronized void mark(int readlimit) {
 		final InputStream inputStream = getInputStream(); //get the decorated input stream
-		if(inputStream != null) //if we still have an input stream to decorate
-		{
+		if(inputStream != null) { //if we still have an input stream to decorate
 			inputStream.mark(readlimit);
 		}
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public synchronized void reset() throws IOException
-	{
+	public synchronized void reset() throws IOException {
 		final InputStream inputStream = getInputStream(); //get the decorated input stream
-		if(inputStream != null) //if we still have an input stream to decorate
-		{
+		if(inputStream != null) { //if we still have an input stream to decorate
 			inputStream.reset();
 		}
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public boolean markSupported()
-	{
+	public boolean markSupported() {
 		final InputStream inputStream = getInputStream(); //get the decorated input stream
 		return inputStream != null ? inputStream.markSupported() : false;
 	}
@@ -140,16 +126,14 @@ public class InputStreamDecorator<I extends InputStream> extends InputStream imp
 	 * Called before the stream is closed.
 	 * @throws IOException if an I/O error occurs.
 	 */
-	protected void beforeClose() throws IOException
-	{
+	protected void beforeClose() throws IOException {
 	}
 
 	/**
 	 * Called after the stream is successfully closed.
 	 * @throws IOException if an I/O error occurs.
 	 */
-	protected void afterClose() throws IOException
-	{
+	protected void afterClose() throws IOException {
 	}
 
 	/**
@@ -161,20 +145,16 @@ public class InputStreamDecorator<I extends InputStream> extends InputStream imp
 	 * @see #afterClose()
 	 * @see #dispose()
 	 */
-	public synchronized void close(final boolean closeDecoratedStream) throws IOException //this method is synchronized so that the closing operation can complete without being bothered by other threads
-	{
+	public synchronized void close(final boolean closeDecoratedStream) throws IOException { //this method is synchronized so that the closing operation can complete without being bothered by other threads
 		final InputStream inputStream = getInputStream(); //get the decorated input stream
-		if(inputStream != null) //if we still have an input stream to decorate
-		{
+		if(inputStream != null) { //if we still have an input stream to decorate
 			beforeClose(); //perform actions before closing
-			if(closeDecoratedStream)
-			{
+			if(closeDecoratedStream) {
 				inputStream.close(); //close the decorated input stream
 			}
 			this.inputStream = null; //release the decorated input stream if closing was successful
 			afterClose(); //perform actions after closing
-			if(autoDispose)
-			{
+			if(autoDispose) {
 				dispose(); //dispose of the object
 			}
 		}
@@ -189,23 +169,17 @@ public class InputStreamDecorator<I extends InputStream> extends InputStream imp
 	 * @see #close(boolean)
 	 * @see #dispose()
 	 */
-	public void close() throws IOException
-	{
+	public void close() throws IOException {
 		close(true); //close this stream and the underlying stream
 	}
 
 	/** {@inheritDoc} This version closes the input stream and releases it, if still available. */
 	@Override
-	public synchronized void dispose()
-	{
-		if(inputStream != null) //if we still have an input stream
-		{
-			try
-			{
+	public synchronized void dispose() {
+		if(inputStream != null) { //if we still have an input stream
+			try {
 				inputStream.close();
-			}
-			catch(final IOException ioException)
-			{
+			} catch(final IOException ioException) {
 				Log.error(ioException);
 			}
 			inputStream = null; //release the decorated output stream
@@ -214,14 +188,10 @@ public class InputStreamDecorator<I extends InputStream> extends InputStream imp
 
 	/** {@inheritDoc} This version calls {@link #dispose()}. */
 	@Override
-	protected void finalize() throws Throwable
-	{
-		try
-		{
+	protected void finalize() throws Throwable {
+		try {
 			dispose();
-		}
-		finally
-		{
+		} finally {
 			super.finalize(); //always call the parent version
 		}
 	}

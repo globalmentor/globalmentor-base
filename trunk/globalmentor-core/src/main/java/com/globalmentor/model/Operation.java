@@ -22,8 +22,7 @@ package com.globalmentor.model;
  * 
  * @author Garret Wilson
  */
-public interface Operation extends Runnable
-{
+public interface Operation extends Runnable {
 
 	/** Cancels the operation. If called before execution has started, the operation will not execute. */
 	public void cancel();

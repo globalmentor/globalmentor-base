@@ -29,15 +29,13 @@ import com.globalmentor.model.Converter;
  * @author Garret Wilson
  * @see Converter
  */
-public class ConverterIterator<I, O> implements Iterator<O>
-{
+public class ConverterIterator<I, O> implements Iterator<O> {
 
 	/** The iterator this class decorates. */
 	private final Iterator<I> iterator;
 
 	/** @return The iterator this class decorates. */
-	protected Iterator<I> getIterator()
-	{
+	protected Iterator<I> getIterator() {
 		return iterator;
 	}
 
@@ -45,8 +43,7 @@ public class ConverterIterator<I, O> implements Iterator<O>
 	private final Converter<I, O> converter;
 
 	/** @return The converter for converting the elements. */
-	public Converter<I, O> getConverter()
-	{
+	public Converter<I, O> getConverter() {
 		return converter;
 	}
 
@@ -55,15 +52,13 @@ public class ConverterIterator<I, O> implements Iterator<O>
 	 * @param iterator The iterator of source objects.
 	 * @throws NullPointerException of if the given iterator and/or converter is <code>null</code>.
 	 */
-	public ConverterIterator(final Iterator<I> iterator, final Converter<I, O> converter)
-	{
+	public ConverterIterator(final Iterator<I> iterator, final Converter<I, O> converter) {
 		this.iterator = checkInstance(iterator);
 		this.converter = checkInstance(converter);
 	}
 
 	@Override
-	public boolean hasNext()
-	{
+	public boolean hasNext() {
 		return getIterator().hasNext();
 	}
 
@@ -75,14 +70,12 @@ public class ConverterIterator<I, O> implements Iterator<O>
 	 * @see Converter#convert(Object)
 	 */
 	@Override
-	public O next()
-	{
+	public O next() {
 		return getConverter().convert(getIterator().next());
 	}
 
 	@Override
-	public void remove()
-	{
+	public void remove() {
 		getIterator().remove();
 	}
 

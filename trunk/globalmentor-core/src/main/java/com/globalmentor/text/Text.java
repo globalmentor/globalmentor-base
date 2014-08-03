@@ -33,8 +33,7 @@ import static com.globalmentor.java.Objects.*;
  * Constants and utilities for text.
  * @author Garret Wilson
  */
-public class Text
-{
+public class Text {
 
 	/** The MIME subtype of <code>text/plain</code>. */
 	public final static String PLAIN_SUBTYPE = "plain";
@@ -86,8 +85,7 @@ public class Text
 	 * @throws ClassCastException if the arguments' types prevent them from being compared.
 	 * @see Collator#compare(String, String)
 	 */
-	public static int compare(final String string1, final String string2, final Collator collator)
-	{
+	public static int compare(final String string1, final String string2, final Collator collator) {
 		return compare(string1, string2, collator, SortOrder.ASCENDING); //compare in ascending order
 	}
 
@@ -107,27 +105,17 @@ public class Text
 	 * @throws ClassCastException if the arguments' types prevent them from being compared.
 	 * @see Collator#compare(String, String)
 	 */
-	public static int compare(final String string1, final String string2, final Collator collator, final SortOrder sortOrder)
-	{
-		if(string1 == string2) //if the strings are identical
-		{
+	public static int compare(final String string1, final String string2, final Collator collator, final SortOrder sortOrder) {
+		if(string1 == string2) { //if the strings are identical
 			return 0; //identical strings are always equal
 		}
-		if(string1 != null) //if the first string is not null
-		{
-			if(string2 != null) //if the second string is not null
-			{
+		if(string1 != null) { //if the first string is not null
+			if(string2 != null) { //if the second string is not null
 				return sortOrder == SortOrder.ASCENDING ? collator.compare(string1, string2) : collator.compare(string2, string1); //compare in the requested order
-			}
-			else
-			//if only the first string is not null
-			{
+			} else { //if only the first string is not null
 				return sortOrder == SortOrder.ASCENDING ? 1 : -1; //null strings should be sorted lower
 			}
-		}
-		else
-		//if the first string is null
-		{
+		} else { //if the first string is null
 			assert string2 != null : "Both strings cannot be null, because we already checked for identity.";
 			return sortOrder == SortOrder.ASCENDING ? -1 : 1; //null strings should be sorted lower
 		}
@@ -142,8 +130,7 @@ public class Text
 	 * @throws NullPointerException if the given string is <code>null</code>.
 	 * @see <a href="http://www.ecma-international.org/publications/standards/Ecma-048.htm">ECMA-48: Control Functions for Coded Character Sets</a>
 	 */
-	public final static String createControlString(final String string)
-	{
+	public final static String createControlString(final String string) {
 		return START_OF_STRING_CHAR + checkInstance(string, "String cannot be null.") + STRING_TERMINATOR_CHAR; //wrap the string with a SOS/ST pair
 	}
 
@@ -164,12 +151,9 @@ public class Text
 	 * @see XML#isXML(ContentType)
 	 * @see XML#isXMLExternalParsedEntity(ContentType)
 	 */
-	public static boolean isText(final ContentType contentType)
-	{
-		if(contentType != null) //if a content type is given
-		{
-			if(ContentType.TEXT_PRIMARY_TYPE.equals(contentType.getPrimaryType())) //if this is "text/*"
-			{
+	public static boolean isText(final ContentType contentType) {
+		if(contentType != null) { //if a content type is given
+			if(ContentType.TEXT_PRIMARY_TYPE.equals(contentType.getPrimaryType())) { //if this is "text/*"
 				return true; //text/* is a text content type
 			}
 			return XML.isXML(contentType) || XML.isXMLExternalParsedEntity(contentType); //return whether this is an XML document or external parsed entity content type; all XML content types are text content types
@@ -186,8 +170,7 @@ public class Text
 	 * @return The a string created from encoding the characters in the specified new encoding.
 	 * @throws UnsupportedEncodingException Thrown if either the old encoding or the new encoding is not supported.
 	 */
-	public static String recode(final String string, final String oldEncoding, final String newEncoding) throws UnsupportedEncodingException
-	{
+	public static String recode(final String string, final String oldEncoding, final String newEncoding) throws UnsupportedEncodingException {
 		final byte[] bytes = string.getBytes(oldEncoding); //get the bytes of the string as they were before they were encoded
 		return new String(bytes, newEncoding); //create a string from the bytes using the new encoding
 	}
@@ -200,10 +183,8 @@ public class Text
 	 * @return A string containing the escaped data.
 	 * @throws NullPointerException if the given character sequence is <code>null</code>.
 	 */
-	public static String escape(final CharSequence charSequence, final Characters restricted, final char escape) //TODO consolidate either in CharSequences or Formatter
-	{
-		if(!contains(charSequence, restricted)) //if there are no restricted characters in the string (assuming that most strings won't need to be escaped, it's less expensive to check up-front before we start allocating and copying)
-		{
+	public static String escape(final CharSequence charSequence, final Characters restricted, final char escape) { //TODO consolidate either in CharSequences or Formatter
+		if(!contains(charSequence, restricted)) { //if there are no restricted characters in the string (assuming that most strings won't need to be escaped, it's less expensive to check up-front before we start allocating and copying)
 			return charSequence.toString(); //the string doesn't need to be escaped
 		}
 		return escape(new StringBuilder(charSequence), restricted, escape).toString(); //make a string builder copy and escape its contents
@@ -217,8 +198,7 @@ public class Text
 	 * @return A string containing the escaped data.
 	 * @throws NullPointerException if the given string builder is <code>null</code>.
 	 */
-	public static StringBuilder escape(final StringBuilder stringBuilder, final Characters restricted, final char escape)
-	{
+	public static StringBuilder escape(final StringBuilder stringBuilder, final Characters restricted, final char escape) {
 		return escape(stringBuilder, restricted, escape, true);
 	}
 
@@ -232,13 +212,10 @@ public class Text
 	 * @return A string containing the escaped data.
 	 * @throws NullPointerException if the given string builder is <code>null</code>.
 	 */
-	public static StringBuilder escape(final StringBuilder stringBuilder, final Characters restricted, final char escape, final boolean escapeEscape)
-	{
-		for(int characterIndex = stringBuilder.length() - 1; characterIndex >= 0; --characterIndex) //work backwards; this keeps us from having a separate variable for the length, but it also makes it simpler to calculate the next position when we swap out characters
-		{
+	public static StringBuilder escape(final StringBuilder stringBuilder, final Characters restricted, final char escape, final boolean escapeEscape) {
+		for(int characterIndex = stringBuilder.length() - 1; characterIndex >= 0; --characterIndex) { //work backwards; this keeps us from having a separate variable for the length, but it also makes it simpler to calculate the next position when we swap out characters
 			final char c = stringBuilder.charAt(characterIndex); //get the current character
-			if((escapeEscape && c == escape) || restricted.contains(c)) //if we should encode this character (always encode the escape character)
-			{
+			if((escapeEscape && c == escape) || restricted.contains(c)) { //if we should encode this character (always encode the escape character)
 				stringBuilder.insert(characterIndex, escape); //insert the escape character
 			}
 		}
@@ -257,19 +234,15 @@ public class Text
 	 * @return A character sequence with the ends of lines normalized to the given end of line characters.
 	 * @throws NullPointerException if the given character sequence and/or EOL characters is <code>null</code>.
 	 */
-	public static CharSequence normalizeEOL(final CharSequence charSequence, final CharSequence eol)
-	{
+	public static CharSequence normalizeEOL(final CharSequence charSequence, final CharSequence eol) {
 		final int length = charSequence.length(); //get the length of the string
 		int currentIndex = 0; //start searching from the beginning
 		int resultIndex;
 		StringBuilder stringBuilder = null; //don't create a string builder unless we need to
-		while(currentIndex < length) //keep searching until we finish the string
-		{
+		while(currentIndex < length) { //keep searching until we finish the string
 			resultIndex = indexOfLength(charSequence, EOL_CHARACTERS, currentIndex); //perform the next search
-			if(stringBuilder == null) //if we don't yet have a string builder
-			{
-				if(resultIndex == length) //if there are no characters in the entire character sequence
-				{
+			if(stringBuilder == null) { //if we don't yet have a string builder
+				if(resultIndex == length) { //if there are no characters in the entire character sequence
 					break; //there's no need to modify the character sequence
 				}
 				stringBuilder = new StringBuilder(); //create a new string builder
@@ -277,14 +250,11 @@ public class Text
 			stringBuilder.append(charSequence, currentIndex, resultIndex); //add the characters that aren't EOL characters
 			stringBuilder.append(eol); //append the EOL sequence
 			int skipEOLCount = 1; //assume we'll just skip one character
-			if(resultIndex < length) //if we aren't out of characters, yet
-			{
+			if(resultIndex < length) { //if we aren't out of characters, yet
 				final char eolChar = charSequence.charAt(resultIndex); //get the EOL character we found
-				if(eolChar == CARRIAGE_RETURN_CHAR) //if this is a CR, see if it is a CRLF
-				{
+				if(eolChar == CARRIAGE_RETURN_CHAR) { //if this is a CR, see if it is a CRLF
 					final int nextIndex = resultIndex + 1; //get the index of the next character
-					if(nextIndex < length && charSequence.charAt(nextIndex) == LINE_FEED_CHAR) //if the next character is an LF
-					{
+					if(nextIndex < length && charSequence.charAt(nextIndex) == LINE_FEED_CHAR) { //if the next character is an LF
 						++skipEOLCount; //skip the next character
 					}
 				}

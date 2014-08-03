@@ -18,25 +18,23 @@ package com.globalmentor.model;
 
 import java.util.Iterator;
 
-/**An object that can appear in a sequence, able to provide the next object in
-	the sequence.
-<p>This interface differs from {@link Iterator} in the semantics of the
-	"get next" functionality. An {@link Iterator} is an independent object
-	that returns different next objects after successive calls. A
-	{@link Sequenceable} is an object that is part of a sequence, which will
-	always return the successive object after <var>this</var> (which will
-	seldom change).</p>
-@param <E> The type of element in the sequence.
-@author Garret Wilson
-@see Iterator
-*/
-public interface Sequenceable<E>	//TODO rename to Sequence
-{
+/**
+ * An object that can appear in a sequence, able to provide the next object in the sequence.
+ * <p>
+ * This interface differs from {@link Iterator} in the semantics of the "get next" functionality. An {@link Iterator} is an independent object that returns
+ * different next objects after successive calls. A {@link Sequenceable} is an object that is part of a sequence, which will always return the successive object
+ * after <var>this</var> (which will seldom change).
+ * </p>
+ * @param <E> The type of element in the sequence.
+ * @author Garret Wilson
+ * @see Iterator
+ */
+public interface Sequenceable<E> { //TODO rename to Sequence
 
-	/**@return <code>true</code> if there is an object after this one in the sequence.*/
-	public boolean hasNext();	
+	/** @return <code>true</code> if there is an object after this one in the sequence. */
+	public boolean hasNext();
 
-	/**@return The next object in the sequence, which need not be constant.*/
-	public E getNext();	
-	
+	/** @return The next object in the sequence, which need not be constant. */
+	public E getNext();
+
 }

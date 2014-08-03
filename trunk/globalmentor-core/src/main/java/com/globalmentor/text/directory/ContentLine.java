@@ -27,15 +27,13 @@ import com.globalmentor.model.NameValuePair;
  * "A MIME Content-Type for Directory Information".
  * @author Garret Wilson
  */
-public class ContentLine extends NameValuePair<String, Object>
-{
+public class ContentLine extends NameValuePair<String, Object> {
 
 	/** The profile of this content line, or <code>null</code> if there is no profile. */
 	private String profile = null;
 
 	/** @return The profile of this content line, or <code>null</code> if there is no profile. */
-	public String getProfile()
-	{
+	public String getProfile() {
 		return profile;
 	}
 
@@ -43,8 +41,7 @@ public class ContentLine extends NameValuePair<String, Object>
 	 * Sets the profile.
 	 * @param profile The profile of this content line, or <code>null</code> if there is no profile.
 	 */
-	public void setProfile(final String profile)
-	{
+	public void setProfile(final String profile) {
 		this.profile = profile;
 	}
 
@@ -52,8 +49,7 @@ public class ContentLine extends NameValuePair<String, Object>
 	private String group = null;
 
 	/** @return The group specification, or <code>null</code> if there is no group. */
-	public String getGroup()
-	{
+	public String getGroup() {
 		return group;
 	}
 
@@ -61,8 +57,7 @@ public class ContentLine extends NameValuePair<String, Object>
 	 * Sets the group.
 	 * @param group The group specification, or <code>null</code> if there is no group.
 	 */
-	public void setGroup(final String group)
-	{
+	public void setGroup(final String group) {
 		this.group = group;
 	}
 
@@ -74,8 +69,7 @@ public class ContentLine extends NameValuePair<String, Object>
 	 *         <code>String</code>.
 	 * @see NameValuePair
 	 */
-	public List<NameValuePair<String, String>> getParamList()
-	{
+	public List<NameValuePair<String, String>> getParamList() {
 		return paramList;
 	}
 
@@ -84,8 +78,7 @@ public class ContentLine extends NameValuePair<String, Object>
 	 * @param name The name of the information.
 	 * @param value The value of the information.
 	 */
-	public ContentLine(final String name, final Object value)
-	{
+	public ContentLine(final String name, final Object value) {
 		this(null, name, value); //create a content line with no group
 	}
 
@@ -95,8 +88,7 @@ public class ContentLine extends NameValuePair<String, Object>
 	 * @param name The name of the information.
 	 * @param value The value of the information.
 	 */
-	public ContentLine(final String group, final String name, final Object value)
-	{
+	public ContentLine(final String group, final String name, final Object value) {
 		this(null, group, name, value); //create a content line with no profile
 	}
 
@@ -108,8 +100,7 @@ public class ContentLine extends NameValuePair<String, Object>
 	 *          <code>String</code>.
 	 * @param value The value of the information.
 	 */
-	public ContentLine(final String group, final String name, final List<NameValuePair<String, String>> paramList, final Object value)
-	{
+	public ContentLine(final String group, final String name, final List<NameValuePair<String, String>> paramList, final Object value) {
 		this(null, group, name, paramList, value); //create a content line with no profile
 	}
 
@@ -120,8 +111,7 @@ public class ContentLine extends NameValuePair<String, Object>
 	 * @param name The name of the information.
 	 * @param value The value of the information.
 	 */
-	public ContentLine(final String profile, final String group, final String name, final Object value)
-	{
+	public ContentLine(final String profile, final String group, final String name, final Object value) {
 		this(profile, group, name, new ArrayList<NameValuePair<String, String>>(), value); //create a content line with an empty param list
 	}
 
@@ -134,8 +124,7 @@ public class ContentLine extends NameValuePair<String, Object>
 	 *          <code>String</code>.
 	 * @param value The value of the information.
 	 */
-	public ContentLine(final String profile, final String group, final String name, final List<NameValuePair<String, String>> paramList, final Object value)
-	{
+	public ContentLine(final String profile, final String group, final String name, final List<NameValuePair<String, String>> paramList, final Object value) {
 		super(name, value); //construct the parent class
 		this.profile = profile; //save the profile
 		this.group = group; //save the group
@@ -147,28 +136,22 @@ public class ContentLine extends NameValuePair<String, Object>
 	 * @param paramName The name of the parameter, which will be matched against available parameters in a case insensitive way.
 	 * @return The value of the first matching parameter, or <code>null</code> if there is no matching parameter.
 	 */
-	public String getParamValue(final String paramName)
-	{
+	public String getParamValue(final String paramName) {
 		return Directory.getParamValue(getParamList(), paramName); //get the value from the parameter list 
 	}
 
 	/** @return A string representation of this content line. */
-	public String toString()
-	{
+	public String toString() {
 		final StringBuilder stringBuilder = new StringBuilder(); //create a string builder to use in constructing the string
-		if(getProfile() != null) //if there's a profile
-		{
+		if(getProfile() != null) { //if there's a profile
 			stringBuilder.append('[').append(getProfile()).append(']').append(' '); //append the profile
 		}
-		if(getGroup() != null) //if there's a group
-		{
+		if(getGroup() != null) { //if there's a group
 			stringBuilder.append(getGroup()).append(GROUP_NAME_SEPARATOR_CHAR); //append the group
 		}
 		stringBuilder.append(getName()); //append the type name
-		if(getParamList().size() > 0) //if there are parameters
-		{
-			for(final NameValuePair<String, String> parameter : getParamList()) //for each parameter
-			{
+		if(getParamList().size() > 0) { //if there are parameters
+			for(final NameValuePair<String, String> parameter : getParamList()) { //for each parameter
 				//append the parameter name and value
 				stringBuilder.append(PARAM_SEPARATOR_CHAR).append(parameter.getName()).append(PARAM_NAME_VALUE_SEPARATOR_CHAR).append(parameter.getValue());
 			}

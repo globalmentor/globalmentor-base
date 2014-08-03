@@ -26,21 +26,18 @@ import com.globalmentor.model.LocaledText;
  * 2426</a>, "vCard MIME Directory Profile".
  * @author Garret Wilson
  */
-public class Label extends LocaledText
-{
+public class Label extends LocaledText {
 
 	/** The delivery address types. */
 	private final Set<Address.Type> addressTypes;
 
 	/** @return The delivery address types. */
-	public Set<Address.Type> getAddressTypes()
-	{
+	public Set<Address.Type> getAddressTypes() {
 		return addressTypes;
 	}
 
 	/** Default constructor. */
-	public Label()
-	{
+	public Label() {
 		this(""); //construct a default label with no information
 	}
 
@@ -49,8 +46,7 @@ public class Label extends LocaledText
 	 * @param text The non-<code>null</code> text string to represent.
 	 * @throws NullPointerException Thrown if <code>text</code> is <code>null</code>.
 	 */
-	public Label(final String text) throws NullPointerException
-	{
+	public Label(final String text) throws NullPointerException {
 		this(text, (Locale)null); //create label with no locale
 	}
 
@@ -59,8 +55,7 @@ public class Label extends LocaledText
 	 * @param localeText The non-<code>null</code> object containing the text and optional locale.
 	 * @throws NullPointerException Thrown if <code>localeText</code> is <code>null</code>.
 	 */
-	public Label(final LocaledText localeText) throws NullPointerException
-	{
+	public Label(final LocaledText localeText) throws NullPointerException {
 		this(localeText, Address.DEFAULT_TYPES); //construct a label with the default address type
 	}
 
@@ -70,8 +65,7 @@ public class Label extends LocaledText
 	 * @param locale The locale that represents the language of the text, or <code>null</code> if no language should be indicated.
 	 * @throws NullPointerException Thrown if <code>text</code> is <code>null</code>.
 	 */
-	public Label(final String text, final Locale locale) throws NullPointerException
-	{
+	public Label(final String text, final Locale locale) throws NullPointerException {
 		this(text, Address.DEFAULT_TYPES, locale); //construct a label with the default address type
 	}
 
@@ -81,8 +75,7 @@ public class Label extends LocaledText
 	 * @param addressTypes The delivery address types.
 	 * @throws NullPointerException Thrown if <code>text</code> and/or the types is <code>null</code>.
 	 */
-	public Label(final String text, final Set<Address.Type> addressTypes) throws NullPointerException
-	{
+	public Label(final String text, final Set<Address.Type> addressTypes) throws NullPointerException {
 		this(text, addressTypes, null); //construct a label with the given address types and no locale
 	}
 
@@ -92,8 +85,7 @@ public class Label extends LocaledText
 	 * @param addressTypes The delivery address types.
 	 * @throws NullPointerException Thrown if <code>localeText</code> and/or types is <code>null</code>.
 	 */
-	public Label(final LocaledText localeText, final Set<Address.Type> addressTypes) throws NullPointerException
-	{
+	public Label(final LocaledText localeText, final Set<Address.Type> addressTypes) throws NullPointerException {
 		super(localeText); //construct the locale text
 		this.addressTypes = immutableSetOf(addressTypes);
 	}
@@ -105,8 +97,7 @@ public class Label extends LocaledText
 	 * @param locale The locale that represents the language of the text, or <code>null</code> if no language should be indicated.
 	 * @throws NullPointerException Thrown if <code>text</code> and/or types is <code>null</code>.
 	 */
-	public Label(final String text, final Set<Address.Type> addressTypes, final Locale locale) throws NullPointerException
-	{
+	public Label(final String text, final Set<Address.Type> addressTypes, final Locale locale) throws NullPointerException {
 		super(text, locale); //construct the locale text
 		this.addressTypes = immutableSetOf(addressTypes);
 	}

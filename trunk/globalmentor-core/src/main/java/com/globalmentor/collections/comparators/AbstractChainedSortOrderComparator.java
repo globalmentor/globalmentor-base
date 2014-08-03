@@ -20,33 +20,38 @@ import java.util.Comparator;
 
 import static com.globalmentor.java.Objects.*;
 
+/**
+ * A comparator that can can be chained for subordinate sorting in ascending or descending order.
+ * <p>
+ * Subclasses should delegate to the subordinate comparator if the compared objects are not identical yet evaluate as equal, or if sufficient information is
+ * absent for sorting on both objects.
+ * </p>
+ * <p>
+ * No checks are made to prevent circular chaining, which could create infinite loops.
+ * </p>
+ * @param <T> The type of objects that may be compared by this comparator.
+ * @author Garret Wilson
+ * @see SortOrder
+ */
+public abstract class AbstractChainedSortOrderComparator<T> extends AbstractSortOrderComparator<T> {
 
-/**A comparator that can can be chained for subordinate sorting in ascending or descending order.
-<p>Subclasses should delegate to the subordinate comparator if the compared objects are not identical yet evaluate as equal,
-or if sufficient information is absent for sorting on both objects.</p>
-<p>No checks are made to prevent circular chaining, which could create infinite loops.</p>
-@param <T> The type of objects that may be compared by this comparator.
-@author Garret Wilson
-@see SortOrder
-*/
-public abstract class AbstractChainedSortOrderComparator<T> extends AbstractSortOrderComparator<T>
-{
-
-	/**The comparator to perform subordinate sorting.*/
+	/** The comparator to perform subordinate sorting. */
 	private final Comparator<T> subordinateComparator;
-	
-		/**@return The comparator to perform subordinate sorting.*/
-		public Comparator<T> getSubordinateComparator() {return subordinateComparator;}
 
-	/**Sort order and subordinate comparator constructor.
-	@param sortOrder The order in which to perform comparisons.
-	@param subordinateComparator The comparator to perform subordinate sorting.
-	@throws NullPointerException if the given subordinate comparator and/or sort order is <code>null</code>.
-	*/
-	public AbstractChainedSortOrderComparator(final SortOrder sortOrder, final Comparator<T> subordinateComparator)
-	{
-		super(sortOrder);	//construct the parent class
-		this.subordinateComparator=checkInstance(subordinateComparator, "Subordinate comparator cannot be null.");
+	/** @return The comparator to perform subordinate sorting. */
+	public Comparator<T> getSubordinateComparator() {
+		return subordinateComparator;
+	}
+
+	/**
+	 * Sort order and subordinate comparator constructor.
+	 * @param sortOrder The order in which to perform comparisons.
+	 * @param subordinateComparator The comparator to perform subordinate sorting.
+	 * @throws NullPointerException if the given subordinate comparator and/or sort order is <code>null</code>.
+	 */
+	public AbstractChainedSortOrderComparator(final SortOrder sortOrder, final Comparator<T> subordinateComparator) {
+		super(sortOrder); //construct the parent class
+		this.subordinateComparator = checkInstance(subordinateComparator, "Subordinate comparator cannot be null.");
 	}
 
 }

@@ -20,8 +20,7 @@ package com.globalmentor.iso.datetime;
  * Definitions related to ISO 8601-2004, "Data elements and interchange formats — Information interchange — Representation of dates and times".
  * @author Garret Wilson
  */
-public class ISO8601
-{
+public class ISO8601 {
 
 	/** The delimiter that introduces a time component in a temporal. */
 	public final static char TIME_BEGIN = 'T';

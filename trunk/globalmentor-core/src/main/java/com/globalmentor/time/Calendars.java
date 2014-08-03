@@ -25,8 +25,7 @@ import static java.util.Calendar.*;
  * Constants and utilities for working with dates and times.
  * @author Garret Wilson
  */
-public class Calendars
-{
+public class Calendars {
 
 	/** The number of days in a week. */
 	public final static int WEEK_DAY_COUNT = 7;
@@ -41,8 +40,7 @@ public class Calendars
 	 * @param amount The amount of date or time to be added to the field.
 	 * @see Calendar#add(int, int)
 	 */
-	public static <C extends Calendar> C add(final C calendar, final int field, final int amount)
-	{
+	public static <C extends Calendar> C add(final C calendar, final int field, final int amount) {
 		calendar.add(field, amount);
 		return calendar;
 	}
@@ -64,8 +62,7 @@ public class Calendars
 	 * @return The calendar being modified.
 	 * @throws NullPointerException if the given calendar is <code>null</code>.
 	 */
-	public static <C extends Calendar> C clearDate(final C calendar)
-	{
+	public static <C extends Calendar> C clearDate(final C calendar) {
 		calendar.clear(ERA); //clear the time-related fields
 		calendar.clear(YEAR);
 		calendar.clear(MONTH);
@@ -92,8 +89,7 @@ public class Calendars
 	 * @return The calendar being modified.
 	 * @throws NullPointerException if the given calendar is <code>null</code>.
 	 */
-	public static <C extends Calendar> C clearTime(final C calendar)
-	{
+	public static <C extends Calendar> C clearTime(final C calendar) {
 		calendar.clear(HOUR_OF_DAY); //clear the time-related fields
 		calendar.clear(HOUR); //clear the 12-hour time field as well, because otherwise it may be used if the hour-of-day field is unset
 		calendar.clear(AM_PM); //clear the AM/PM designation just to be sure and to be thorough
@@ -115,8 +111,7 @@ public class Calendars
 	 * @param fromCalendar The calendar from which to get the time.
 	 * @throws NullPointerException if either of the given calendars is <code>null</code>.
 	 */
-	public static <C extends Calendar> C setTime(final C calendar, final Calendar fromCalendar)
-	{
+	public static <C extends Calendar> C setTime(final C calendar, final Calendar fromCalendar) {
 		return setTime(calendar, fromCalendar.get(HOUR_OF_DAY), fromCalendar.get(MINUTE), fromCalendar.get(SECOND), fromCalendar.get(MILLISECOND)); //set the time fields from the given calendar and return the modified calendar
 	}
 
@@ -134,8 +129,7 @@ public class Calendars
 	 * @see Calendar#set(int, int, int, int, int, int)
 	 */
 	public static <C extends Calendar> C setDateTime(final C calendar, final int year, final int month, final int date, final int hour, final int minute,
-			final int second, final int millisecond)
-	{
+			final int second, final int millisecond) {
 		calendar.set(year, month, date, hour, minute, second); //set the calendar
 		calendar.set(MILLISECOND, millisecond); //set the milliseconds
 		return calendar; //return the calendar
@@ -157,8 +151,7 @@ public class Calendars
 	 * @return The calendar being modified.
 	 * @throws NullPointerException if the given calendar is <code>null</code>.
 	 */
-	public static <C extends Calendar> C setTime(final C calendar, final int hour, final int minute, final int second, final int millisecond)
-	{
+	public static <C extends Calendar> C setTime(final C calendar, final int hour, final int minute, final int second, final int millisecond) {
 		calendar.set(HOUR_OF_DAY, hour); //clear the time-related fields
 		calendar.set(MINUTE, minute);
 		calendar.set(SECOND, second);
@@ -177,17 +170,13 @@ public class Calendars
 	 * @return The difference between the calendars, in days.
 	 * @throws IllegalArgumentException if the number of days between the calendars would be greater than an integer.
 	 */
-	public static int getDayDifference(final Calendar calendar1, final Calendar calendar2)
-	{
+	public static int getDayDifference(final Calendar calendar1, final Calendar calendar2) {
 		final boolean isNegative = calendar1.compareTo(calendar2) < 0;
 		final Calendar lowCalendar, highCalendar;
-		if(isNegative) //arrange copies of the calendars in order from largest to smallest
-		{
+		if(isNegative) { //arrange copies of the calendars in order from largest to smallest
 			lowCalendar = (Calendar)calendar1.clone();
 			highCalendar = (Calendar)calendar2.clone();
-		}
-		else
-		{
+		} else {
 			highCalendar = (Calendar)calendar1.clone();
 			lowCalendar = (Calendar)calendar2.clone();
 		}
@@ -197,8 +186,7 @@ public class Calendars
 		int dayDifference = toInt((calendar1.getTimeInMillis() - calendar2.getTimeInMillis()) / Milliseconds.fromDays(1));
 		dayDifference = Math.min(dayDifference - 2, 0); //back up a couple of days to account for
 		assert add((Calendar)lowCalendar.clone(), DAY_OF_YEAR, dayDifference).compareTo(highCalendar) <= 0 : "Day overshoot.";
-		while(add((Calendar)lowCalendar.clone(), DAY_OF_YEAR, dayDifference).compareTo(highCalendar) < 0) //go forward until adding the number of days reaches the end calendar 
-		{
+		while(add((Calendar)lowCalendar.clone(), DAY_OF_YEAR, dayDifference).compareTo(highCalendar) < 0) { //go forward until adding the number of days reaches the end calendar 
 			++dayDifference;
 		}
 		return isNegative ? -dayDifference : dayDifference; //account for calendar order

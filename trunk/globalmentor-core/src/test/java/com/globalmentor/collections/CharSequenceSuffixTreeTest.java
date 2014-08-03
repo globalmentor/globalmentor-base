@@ -39,8 +39,7 @@ import com.globalmentor.test.AbstractTest;
  * 
  * @see <a href="http://marknelson.us/1996/08/01/suffix-trees/">Mark Nelson: Fast String Searching With Suffix Trees</a>
  */
-public class CharSequenceSuffixTreeTest extends AbstractTest
-{
+public class CharSequenceSuffixTreeTest extends AbstractTest {
 
 	/** Interesting test string to use for creating suffix trees. */
 	private final static Set<String> TEST_STRINGS = Sets.immutableSetOf("xabxa", "bananas", "bookkeeper", "mississippi", "dooodah",
@@ -51,10 +50,8 @@ public class CharSequenceSuffixTreeTest extends AbstractTest
 	 * @see #TEST_STRINGS
 	 */
 	@Test
-	public void testCreate()
-	{
-		for(final String testString : TEST_STRINGS)
-		{
+	public void testCreate() {
+		for(final String testString : TEST_STRINGS) {
 			//test creating an implicit suffix tree
 			final CharSequenceSuffixTree implicitSuffixTree = CharSequenceSuffixTree.create(testString, false);
 			//dumpEdges(implicitSuffixTree, System.out);
@@ -75,11 +72,9 @@ public class CharSequenceSuffixTreeTest extends AbstractTest
 	 * @see <a href="http://marknelson.us/1996/08/01/suffix-trees/">Mark Nelson: Fast String Searching With Suffix Trees</a>
 	 * @throws NullPointerException if the given suffix tree and/or print stream is <code>null</code>.
 	 */
-	public static void dumpEdges(final CharSequenceSuffixTree suffixTree, final PrintStream printStream)
-	{
+	public static void dumpEdges(final CharSequenceSuffixTree suffixTree, final PrintStream printStream) {
 		printStream.println("  From     To Suffix  First   Last String");
-		for(final Edge edge : suffixTree.getRootNode().getChildEdges())
-		{
+		for(final Edge edge : suffixTree.getRootNode().getChildEdges()) {
 			printStream.format("%6s %6s %6s %6d %6d %s\n", edge.getParentNode(), edge.getChildNode(), edge.getChildNode().getSuffixNode(), edge.getStart(),
 					edge.getEnd(), ((CharSequenceEdge)edge).getSubSequence());
 		}
@@ -91,8 +86,7 @@ public class CharSequenceSuffixTreeTest extends AbstractTest
 	 * @throws NullPointerException if the given suffix tree is <code>null</code>.
 	 * @throws AssertionError if the suffix tree is not valid.
 	 */
-	public static void validate(final CharSequenceSuffixTree suffixTree)
-	{
+	public static void validate(final CharSequenceSuffixTree suffixTree) {
 		final StringBuilder stringBuilder = new StringBuilder(); //keep track of the suffix down each path
 		final Map<Node, Count> nodeChildEdgeCountMap = new HashMap<Node, Count>(); //keep track of the count of each edge for each node
 		final Map<Integer, Count> suffixLengthCountMap = new HashMap<Integer, Count>(); //keep track of how many times we've seen each suffix
@@ -101,10 +95,8 @@ public class CharSequenceSuffixTreeTest extends AbstractTest
 		final CharSequence charSequence = suffixTree.getCharSequence();
 		final int charSequenceLength = charSequence.length();
 
-		if(suffixTree.isExplicit())
-		{
-			for(int suffixLength = 0; suffixLength < charSequenceLength; ++suffixLength) //make sure we have one and only one suffix of each length
-			{
+		if(suffixTree.isExplicit()) {
+			for(int suffixLength = 0; suffixLength < charSequenceLength; ++suffixLength) { //make sure we have one and only one suffix of each length
 				final long suffixCount = Count.getCount(suffixLengthCountMap, suffixLength); //get the number of suffixes of this length
 				assertThat("Unexpected suffix count for suffix " + charSequence.subSequence(0, suffixLength) + ".", suffixCount, equalTo(1L));
 			}
@@ -113,22 +105,17 @@ public class CharSequenceSuffixTreeTest extends AbstractTest
 		final int nodeCount = suffixTree.getNodeCount();
 		int leafNodeCount = 0;
 		int branchCount = 0;
-		for(final Node node : suffixTree.getNodes()) //check that we counted each node, and update the leaf/branch counts
-		{
+		for(final Node node : suffixTree.getNodes()) { //check that we counted each node, and update the leaf/branch counts
 			assertTrue("Node " + node + " never counted.", nodeChildEdgeCountMap.containsKey(node));
 			final long childBranchCount = Count.getCount(nodeChildEdgeCountMap, node);
-			if(Count.getCount(nodeChildEdgeCountMap, node) == 0L) //update the branch/leaf count
-			{
+			if(Count.getCount(nodeChildEdgeCountMap, node) == 0L) { //update the branch/leaf count
 				leafNodeCount++;
-			}
-			else
-			{
+			} else {
 				branchCount += childBranchCount;
 			}
 		}
 
-		if(suffixTree.isExplicit())
-		{
+		if(suffixTree.isExplicit()) {
 			assertThat("Leaf count not equal to one more than the number of characters in the sequence.", leafNodeCount, equalTo(charSequenceLength + 1));
 		}
 		assertThat("Branch count not equal to number of nodes minus one.", branchCount, equalTo(nodeCount - 1));
@@ -152,27 +139,22 @@ public class CharSequenceSuffixTreeTest extends AbstractTest
 	 * @throws AssertionError if the suffix tree is not valid.
 	 */
 	protected static boolean validate(final CharSequenceSuffixTree suffixTree, final Node node, final int length, final StringBuilder stringBuilder,
-			final Map<Node, Count> nodeChildEdgeCountMap, final Map<Integer, Count> suffixLengthCountMap)
-	{
+			final Map<Node, Count> nodeChildEdgeCountMap, final Map<Integer, Count> suffixLengthCountMap) {
 		int edgeCount = 0; //keep track of the edges from this node
-		for(final Edge childEdge : node.getChildEdges()) //look at all the child edges for this node
-		{
+		for(final Edge childEdge : node.getChildEdges()) { //look at all the child edges for this node
 			assertThat("Edge child node's parent node doesn't equal the parent node of the edge.", childEdge.getChildNode().getParentNode(),
 					equalTo(childEdge.getParentNode()));
 			final CharSequenceEdge charSequenceChildEdge = (CharSequenceEdge)childEdge;
 			assertFalse("Node " + node + " already counted.", nodeChildEdgeCountMap.containsKey(node));
 			edgeCount++; //update our local record of edges for the parent node
 			stringBuilder.replace(length, stringBuilder.length(), charSequenceChildEdge.getSubSequence().toString()); //add the substring from this edge to our growing suffix (replacing any leftover text from previous edges)
-			if(validate(suffixTree, childEdge.getChildNode(), stringBuilder.length(), stringBuilder, nodeChildEdgeCountMap, suffixLengthCountMap)) //validate this edge; if the edge's child node is a leaf node
-			{
-				assertTrue("Leaf node " + childEdge.getChildNode() + " should have no children.",
-						Count.getCount(nodeChildEdgeCountMap, childEdge.getChildNode()) == 0);
+			if(validate(suffixTree, childEdge.getChildNode(), stringBuilder.length(), stringBuilder, nodeChildEdgeCountMap, suffixLengthCountMap)) { //validate this edge; if the edge's child node is a leaf node
+				assertTrue("Leaf node " + childEdge.getChildNode() + " should have no children.", Count.getCount(nodeChildEdgeCountMap, childEdge.getChildNode()) == 0);
 			}
 		}
 		nodeChildEdgeCountMap.put(node, new Count(edgeCount)); //set the count of edges for this parent node
 		assertThat("The leaf node designation of the node did not match child edge count.", edgeCount == 0, equalTo(node.isLeaf()));
-		if(node.isLeaf()) //if this is a leaf node
-		{
+		if(node.isLeaf()) { //if this is a leaf node
 			final CharSequence suffix = stringBuilder.subSequence(0, length); //get our collected suffix up to the parent node
 			final CharSequence expectedSuffix = suffixTree.getCharSequence().subSequence(suffixTree.getCharSequence().length() - length,
 					suffixTree.getCharSequence().length()); //get what we would have expected if we were looking directly at the underlying character sequence
@@ -184,15 +166,13 @@ public class CharSequenceSuffixTreeTest extends AbstractTest
 	}
 
 	@Test
-	public void testLongestRepeatedSubsequence()
-	{
+	public void testLongestRepeatedSubsequence() {
 		assertNull(getLongestRepeatedSubsequence("1234abcd"));
 		assertThat(getLongestRepeatedSubsequence("One and two and three then four, Mr. Balfour."), equalTo((CharSequence)" and t"));
 	}
 
 	@Test
-	public void testLongestSequentialRepeatedSubsequence()
-	{
+	public void testLongestSequentialRepeatedSubsequence() {
 		assertNull(getLongestSequentialRepeatedSubsequence("1234abcd"));
 		assertThat(getLongestSequentialRepeatedSubsequence("One and two and three then four, Mr. Balfour."), equalTo((CharSequence)"e"));
 		assertThat(getLongestSequentialRepeatedSubsequence("thisisareallyreallylongstring"), equalTo((CharSequence)"really"));

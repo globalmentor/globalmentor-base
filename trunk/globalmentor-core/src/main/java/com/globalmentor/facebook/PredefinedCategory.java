@@ -25,21 +25,18 @@ import com.globalmentor.model.Labeled;
  * @author Garret Wilson
  * @see <a href="http://ogp.me/">The Open Graph Protocol</a>
  */
-public enum PredefinedCategory implements Labeled
-{
+public enum PredefinedCategory implements Labeled {
 	ACTIVITIES("Activities"), BUSINESSES("Businesses"), GROUPS("Groups"), ORGANIZATIONS("Organizations"), PEOPLE("People"), PLACES("Places"), PRODUCTS_ENTERTAINMENT(
 			"Products and Entertainment"), WEBSITES("Websites");
 
 	private final CharSequence label;
 
 	/** {@inheritDoc} */
-	public CharSequence getLabel()
-	{
+	public CharSequence getLabel() {
 		return label;
 	}
 
-	PredefinedCategory(final CharSequence label)
-	{
+	PredefinedCategory(final CharSequence label) {
 		this.label = checkInstance(label);
 	}
 

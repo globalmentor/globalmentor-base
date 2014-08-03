@@ -27,8 +27,7 @@ import static com.globalmentor.java.Characters.*;
  * Utility methods for working with message digests.
  * @author Garret Wilson
  */
-public class MessageDigests
-{
+public class MessageDigests {
 
 	/** The MD5 digest algorithm. */
 	public final static String MD5_ALGORITHM = "MD5";
@@ -41,8 +40,7 @@ public class MessageDigests
 	 * @param charSequences The character sequences to digest.
 	 * @return The array of bytes for the resulting hash value.
 	 */
-	public static byte[] digest(final MessageDigest messageDigest, final CharSequence... charSequences)
-	{
+	public static byte[] digest(final MessageDigest messageDigest, final CharSequence... charSequences) {
 		return update(messageDigest, charSequences).digest(); //update the digest with the given character sequences and return the digest
 	}
 
@@ -53,8 +51,7 @@ public class MessageDigests
 	 * @param charSequences The character sequences to digest.
 	 * @return The array of bytes for the resulting hash value.
 	 */
-	public static byte[] digest(final MessageDigest messageDigest, final Charset charset, final CharSequence... charSequences)
-	{
+	public static byte[] digest(final MessageDigest messageDigest, final Charset charset, final CharSequence... charSequences) {
 		return update(messageDigest, charset, charSequences).digest(); //update the digest from the character sequence's characters using the given charset and return the digest
 	}
 
@@ -64,8 +61,7 @@ public class MessageDigests
 	 * @param characters The characters to digest.
 	 * @return The array of bytes for the resulting hash value.
 	 */
-	public static byte[] digest(final MessageDigest messageDigest, final char[] characters)
-	{
+	public static byte[] digest(final MessageDigest messageDigest, final char[] characters) {
 		return digest(messageDigest, UTF_8_CHARSET, characters); //digest the characters using UTF-8
 	}
 
@@ -76,8 +72,7 @@ public class MessageDigests
 	 * @param characters The arrays of characters to digest.
 	 * @return The array of bytes for the resulting hash value.
 	 */
-	public static byte[] digest(final MessageDigest messageDigest, final Charset charset, final char[] characters)
-	{
+	public static byte[] digest(final MessageDigest messageDigest, final Charset charset, final char[] characters) {
 		final byte[] bytes = toByteArray(characters, charset); //convert the characters to bytes
 		return messageDigest.digest(bytes); //calculate and return the digest
 	}
@@ -88,8 +83,7 @@ public class MessageDigests
 	 * @param charSequences The character sequences to digest.
 	 * @return The message digest.
 	 */
-	public static MessageDigest update(final MessageDigest messageDigest, final CharSequence... charSequences)
-	{
+	public static MessageDigest update(final MessageDigest messageDigest, final CharSequence... charSequences) {
 		return update(messageDigest, UTF_8_CHARSET, charSequences); //update the digest using UTF-8
 	}
 
@@ -100,10 +94,8 @@ public class MessageDigests
 	 * @param charSequences The character sequences to digest.
 	 * @return The message digest.
 	 */
-	public static MessageDigest update(final MessageDigest messageDigest, final Charset charset, final CharSequence... charSequences)
-	{
-		for(final CharSequence charSequence : charSequences) //for each character sequence
-		{
+	public static MessageDigest update(final MessageDigest messageDigest, final Charset charset, final CharSequence... charSequences) {
+		for(final CharSequence charSequence : charSequences) { //for each character sequence
 			update(messageDigest, charset, charSequence); //update the digest from the character sequence using the given charset
 		}
 		return messageDigest; //return the message digest
@@ -115,8 +107,7 @@ public class MessageDigests
 	 * @param characters The characters to digest.
 	 * @return The message digest.
 	 */
-	public static MessageDigest update(final MessageDigest messageDigest, final char[] characters)
-	{
+	public static MessageDigest update(final MessageDigest messageDigest, final char[] characters) {
 		return update(messageDigest, UTF_8_CHARSET, characters); //update the digest using UTF-8
 	}
 
@@ -127,8 +118,7 @@ public class MessageDigests
 	 * @param charSequence The character sequence to digest.
 	 * @return The message digest.
 	 */
-	public static MessageDigest update(final MessageDigest messageDigest, final Charset charset, final CharSequence charSequence)
-	{
+	public static MessageDigest update(final MessageDigest messageDigest, final Charset charset, final CharSequence charSequence) {
 		final byte[] bytes = charSequence.toString().getBytes(charset); //convert the characters to bytes
 		messageDigest.update(bytes); //update the digest
 		return messageDigest; //return the message digest
@@ -141,8 +131,7 @@ public class MessageDigests
 	 * @param characters The arrays of characters to digest.
 	 * @return The message digest.
 	 */
-	public static MessageDigest update(final MessageDigest messageDigest, final Charset charset, final char[] characters)
-	{
+	public static MessageDigest update(final MessageDigest messageDigest, final Charset charset, final char[] characters) {
 		final byte[] bytes = toByteArray(characters, charset); //convert the characters to bytes
 		messageDigest.update(bytes); //update the digest
 		return messageDigest; //return the message digest

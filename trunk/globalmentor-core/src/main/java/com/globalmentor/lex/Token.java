@@ -21,7 +21,6 @@ package com.globalmentor.lex;
  * 
  * @author Garret Wilson
  */
-public interface Token
-{
+public interface Token {
 
 }

@@ -24,8 +24,7 @@ import com.globalmentor.java.Characters;
  * Constants and utility methods for regular expression-related tasks.
  * @author Garret Wilson
  */
-public class RegularExpressions
-{
+public class RegularExpressions {
 
 	/** The regular expression character that matches any character. */
 	public final static char WILDCARD_CHAR = '.';
@@ -59,8 +58,7 @@ public class RegularExpressions
 	 * @throws NullPointerException if the given characters is <code>null</code>.
 	 * @see #escapePatternString(String)
 	 */
-	public static String createCharacterClass(final char... characters)
-	{
+	public static String createCharacterClass(final char... characters) {
 		return createCharacterClass(new Characters(characters));
 	}
 
@@ -71,8 +69,7 @@ public class RegularExpressions
 	 * @throws NullPointerException if the given characters is <code>null</code>.
 	 * @see #escapePatternString(String)
 	 */
-	public static String createCharacterClass(final Characters characters)
-	{
+	public static String createCharacterClass(final Characters characters) {
 		return new StringBuilder().append(CHARACTER_CLASS_BEGIN).append(escapePatternString(characters.toString())).append(CHARACTER_CLASS_END).toString(); //escape the characters and surround them with character class characters
 	}
 
@@ -83,8 +80,7 @@ public class RegularExpressions
 	 * @see #RESTRICTED
 	 * @see #ESCAPE
 	 */
-	public static String escapePatternString(final String patternString)
-	{
+	public static String escapePatternString(final String patternString) {
 		return escape(patternString, RESTRICTED, ESCAPE); //escape the string
 	}
 }

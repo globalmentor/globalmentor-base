@@ -25,8 +25,7 @@ import com.globalmentor.java.Characters;
  * Constants and utilities for working with US_ASCII.
  * @author Garret Wilson
  */
-public class ASCII
-{
+public class ASCII {
 
 	/** The value of the first uppercase letter. */
 	public final static short UPPERCASE_LETTER_FIRST = 'A';
@@ -53,8 +52,7 @@ public class ASCII
 	 * @return <code>true</code> if the given character is not greater than {@value #MAX_VALUE}.
 	 * @see #MAX_VALUE
 	 */
-	public static boolean isASCII(final char c)
-	{
+	public static boolean isASCII(final char c) {
 		return c <= MAX_VALUE;
 	}
 
@@ -64,8 +62,7 @@ public class ASCII
 	 * @return <code>true</code> if the given character is not negative and not greater than {@value #MAX_VALUE}.
 	 * @see #MAX_VALUE
 	 */
-	public static boolean isASCII(final int c)
-	{
+	public static boolean isASCII(final int c) {
 		return c >= 0 && c <= MAX_VALUE;
 	}
 
@@ -75,12 +72,9 @@ public class ASCII
 	 * @return <code>true</code> if no character(s) in the character sequence are outside the ASCII range.
 	 * @see #isASCII(char)
 	 */
-	public static boolean isASCII(final CharSequence charSequence)
-	{
-		for(int i = charSequence.length() - 1; i >= 0; --i)
-		{
-			if(!isASCII(charSequence.charAt(i)))
-			{
+	public static boolean isASCII(final CharSequence charSequence) {
+		for(int i = charSequence.length() - 1; i >= 0; --i) {
+			if(!isASCII(charSequence.charAt(i))) {
 				return false;
 			}
 		}
@@ -93,8 +87,7 @@ public class ASCII
 	 * @return <code>true</code> if the given character is not greater than {@value #MAX_CONTROL_VALUE}.
 	 * @see #MAX_CONTROL_VALUE
 	 */
-	public static boolean isASCIIControl(final char c)
-	{
+	public static boolean isASCIIControl(final char c) {
 		return c <= MAX_CONTROL_VALUE;
 	}
 
@@ -104,8 +97,7 @@ public class ASCII
 	 * @return <code>true</code> if the given character is not negative and not greater than {@value #MAX_VALUE}.
 	 * @see #MAX_CONTROL_VALUE
 	 */
-	public static boolean isASCIIControl(final int c)
-	{
+	public static boolean isASCIIControl(final int c) {
 		return c >= 0 && c <= MAX_CONTROL_VALUE;
 	}
 
@@ -116,13 +108,10 @@ public class ASCII
 	 * @see #isASCII(char)
 	 * @see #isASCIIControl(char)
 	 */
-	public static boolean isASCIINonControl(final CharSequence charSequence)
-	{
-		for(int i = charSequence.length() - 1; i >= 0; --i)
-		{
+	public static boolean isASCIINonControl(final CharSequence charSequence) {
+		for(int i = charSequence.length() - 1; i >= 0; --i) {
 			final char c = charSequence.charAt(i);
-			if(!isASCII(c) || isASCIIControl(c))
-			{
+			if(!isASCII(c) || isASCIIControl(c)) {
 				return false;
 			}
 		}
@@ -137,8 +126,7 @@ public class ASCII
 	 * @return The <code>true</code> if one of the given tokens was found.
 	 * @throws NullPointerException if the given character sequence, delimiters, and/or tokens is <code>null</code>.
 	 */
-	public static boolean containsTokenIgnoreCase(final CharSequence charSequence, final Characters delimiters, final CharSequence... tokens)
-	{
+	public static boolean containsTokenIgnoreCase(final CharSequence charSequence, final Characters delimiters, final CharSequence... tokens) {
 		return getTokenIgnoreCase(charSequence, delimiters, tokens) != null;
 	}
 
@@ -150,19 +138,14 @@ public class ASCII
 	 * @return The token that was found, or <code>null</code> if no token was found.
 	 * @throws NullPointerException if the given character sequence, delimiters, and/or tokens is <code>null</code>.
 	 */
-	public static CharSequence getTokenIgnoreCase(final CharSequence charSequence, final Characters delimiters, final CharSequence... tokens)
-	{
+	public static CharSequence getTokenIgnoreCase(final CharSequence charSequence, final Characters delimiters, final CharSequence... tokens) {
 		final int length = charSequence.length();
-		for(int i = 0; i < length; ++i) //look through the sequence
-		{
-			if(delimiters.contains(charSequence.charAt(i))) //skip delimiters
-			{
+		for(int i = 0; i < length; ++i) { //look through the sequence
+			if(delimiters.contains(charSequence.charAt(i))) { //skip delimiters
 				continue;
 			}
-			for(final CharSequence token : tokens) //look at each token
-			{
-				if(equalsIgnoreCase(token, charSequence, i, i + token.length())) //if this token equals the characters starting at the current position
-				{
+			for(final CharSequence token : tokens) { //look at each token
+				if(equalsIgnoreCase(token, charSequence, i, i + token.length())) { //if this token equals the characters starting at the current position
 					return token;
 				}
 			}
@@ -179,20 +162,15 @@ public class ASCII
 	 * @return A character sequence with the tokens removed.
 	 * @throws NullPointerException if the given character sequence, delimiters, and/or tokens is <code>null</code>.
 	 */
-	public static CharSequence removeTokensIgnoreCase(final CharSequence charSequence, final Characters delimiters, final CharSequence... tokens)
-	{
+	public static CharSequence removeTokensIgnoreCase(final CharSequence charSequence, final Characters delimiters, final CharSequence... tokens) {
 		final int end = charSequence.length();
-		for(int i = 0; i < end; ++i) //look through the sequence
-		{
-			if(delimiters.contains(charSequence.charAt(i))) //skip delimiters
-			{
+		for(int i = 0; i < end; ++i) { //look through the sequence
+			if(delimiters.contains(charSequence.charAt(i))) { //skip delimiters
 				continue;
 			}
-			for(final CharSequence token : tokens) //look at each token
-			{
+			for(final CharSequence token : tokens) { //look at each token
 				final int tokenEnd = min(i + token.length(), end); //find where the end of the token would be
-				if(equalsIgnoreCase(token, charSequence, i, tokenEnd) && (tokenEnd == end || delimiters.contains(charSequence.charAt(tokenEnd)))) //if this token equals the characters starting at the current position and ends with a delimiter or the end of the sequence
-				{
+				if(equalsIgnoreCase(token, charSequence, i, tokenEnd) && (tokenEnd == end || delimiters.contains(charSequence.charAt(tokenEnd)))) { //if this token equals the characters starting at the current position and ends with a delimiter or the end of the sequence
 					return removeTokensIgnoreCase(new StringBuilder(charSequence), i, end, delimiters, tokens); //put the characters into a string builder and remove tokens from there
 				}
 			}
@@ -209,8 +187,7 @@ public class ASCII
 	 * @return The string builder with the tokens removed.
 	 * @throws NullPointerException if the given string builder, delimiters, and/or tokens is <code>null</code>.
 	 */
-	public static StringBuilder removeTokensIgnoreCase(final StringBuilder stringBuilder, final Characters delimiters, final CharSequence... tokens)
-	{
+	public static StringBuilder removeTokensIgnoreCase(final StringBuilder stringBuilder, final Characters delimiters, final CharSequence... tokens) {
 		return removeTokensIgnoreCase(stringBuilder, 0, stringBuilder.length(), delimiters, tokens);
 	}
 
@@ -226,19 +203,14 @@ public class ASCII
 	 * @throws NullPointerException if the given string builder, delimiters, and/or tokens is <code>null</code>.
 	 */
 	public static StringBuilder removeTokensIgnoreCase(final StringBuilder stringBuilder, final int start, final int end, final Characters delimiters,
-			final CharSequence... tokens)
-	{
-		for(int i = start; i < end; ++i) //look through the sequence
-		{
-			if(delimiters.contains(stringBuilder.charAt(i))) //skip delimiters
-			{
+			final CharSequence... tokens) {
+		for(int i = start; i < end; ++i) { //look through the sequence
+			if(delimiters.contains(stringBuilder.charAt(i))) { //skip delimiters
 				continue;
 			}
-			for(final CharSequence token : tokens) //look at each token
-			{
+			for(final CharSequence token : tokens) { //look at each token
 				final int tokenEnd = min(i + token.length(), end); //find where the end of the token would be
-				if(equalsIgnoreCase(token, stringBuilder, i, tokenEnd) && (tokenEnd == end || delimiters.contains(stringBuilder.charAt(tokenEnd)))) //if this token equals the characters starting at the current position and ends with a delimiter or the end of the sequence
-				{
+				if(equalsIgnoreCase(token, stringBuilder, i, tokenEnd) && (tokenEnd == end || delimiters.contains(stringBuilder.charAt(tokenEnd)))) { //if this token equals the characters starting at the current position and ends with a delimiter or the end of the sequence
 					stringBuilder.delete(i, tokenEnd); //remove the token; no need to re-adjust the index, as the next character is a delimiter or the end
 				}
 			}
@@ -255,10 +227,8 @@ public class ASCII
 	 * @param charSequence2 The character sequence to compare with.
 	 * @return <code>true</code> if the characters in the first character sequence equal the characters in the second character sequence.
 	 */
-	public static boolean equalsIgnoreCase(final CharSequence charSequence1, final CharSequence charSequence2)
-	{
-		if(charSequence1 == charSequence2) //identity always implies equality
-		{
+	public static boolean equalsIgnoreCase(final CharSequence charSequence1, final CharSequence charSequence2) {
+		if(charSequence1 == charSequence2) { //identity always implies equality
 			return true;
 		}
 		return equalsIgnoreCase(charSequence1, charSequence2, 0);
@@ -276,8 +246,7 @@ public class ASCII
 	 * @return <code>true</code> if the characters in the first character sequence equal the indicated characters in the second character sequence.
 	 * @throws StringIndexOutOfBoundsException if <code>start</code> is negative or greater than the length of the second character sequence.
 	 */
-	public static boolean equalsIgnoreCase(final CharSequence charSequence1, final CharSequence charSequence2, final int start)
-	{
+	public static boolean equalsIgnoreCase(final CharSequence charSequence1, final CharSequence charSequence2, final int start) {
 		return equalsIgnoreCase(charSequence1, charSequence2, start, charSequence2.length());
 	}
 
@@ -297,8 +266,7 @@ public class ASCII
 	 *           is greater than <code>end</code>, with the exception that if <code>end</code> is greater than the length of the second character sequence it will
 	 *           be adjusted to equal the end.
 	 */
-	public static boolean equalsIgnoreCase(final CharSequence charSequence1, final CharSequence charSequence2, final int start, final int end)
-	{
+	public static boolean equalsIgnoreCase(final CharSequence charSequence1, final CharSequence charSequence2, final int start, final int end) {
 		return equalsIgnoreCase(charSequence1, 0, charSequence1.length(), charSequence2, start, end);
 	}
 
@@ -321,38 +289,27 @@ public class ASCII
 	 *           will be adjusted to equal the end.
 	 */
 	public static boolean equalsIgnoreCase(final CharSequence charSequence1, final int start1, final int end1, final CharSequence charSequence2,
-			final int start2, int end2)
-	{
+			final int start2, int end2) {
 		checkBounds(charSequence1, start1, end1);
 		final int length2 = charSequence2.length();
-		if(end2 > length2) //adjust the second character sequence's end if needed
-		{
+		if(end2 > length2) { //adjust the second character sequence's end if needed
 			end2 = length2;
 		}
 		checkBounds(charSequence2, start2, end2);
-		if((end2 - start2) != (end1 - start1)) //if the counts differ
-		{
+		if((end2 - start2) != (end1 - start1)) { //if the counts differ
 			return false;
 		}
-		for(int i1 = start1, i2 = start2; i1 < end1; ++i1, ++i2) //look at each character; we only need to check one end position because we already made sure the counts are the same
-		{
+		for(int i1 = start1, i2 = start2; i1 < end1; ++i1, ++i2) { //look at each character; we only need to check one end position because we already made sure the counts are the same
 			final char c1 = charSequence1.charAt(i1);
 			final char c2 = charSequence1.charAt(i2);
-			if(c1 == c2) //if the characters match
-			{
+			if(c1 == c2) { //if the characters match
 				continue;
-			}
-			else if(c1 >= UPPERCASE_LETTER_FIRST && c2 <= UPPERCASE_LETTER_LAST) //if the first character is uppercase
-			{
-				if(c1 + LOWERCASE_UPPERCASE_LETTER_DIFFERENCE == c2) //if the characters match after converting the first to uppercase
-				{
+			} else if(c1 >= UPPERCASE_LETTER_FIRST && c2 <= UPPERCASE_LETTER_LAST) { //if the first character is uppercase
+				if(c1 + LOWERCASE_UPPERCASE_LETTER_DIFFERENCE == c2) { //if the characters match after converting the first to uppercase
 					continue;
 				}
-			}
-			else if(c1 >= LOWERCASE_LETTER_FIRST && c2 <= LOWERCASE_LETTER_LAST) //if the first character is lowercase
-			{
-				if(c1 - LOWERCASE_UPPERCASE_LETTER_DIFFERENCE == c2) //if the characters match after converting the first to lowercase
-				{
+			} else if(c1 >= LOWERCASE_LETTER_FIRST && c2 <= LOWERCASE_LETTER_LAST) { //if the first character is lowercase
+				if(c1 - LOWERCASE_UPPERCASE_LETTER_DIFFERENCE == c2) { //if the characters match after converting the first to lowercase
 					continue;
 				}
 			}
@@ -369,14 +326,11 @@ public class ASCII
 	 * @param charSequence The character sequence containing the text to convert.
 	 * @return A character sequence containing the converted text.
 	 */
-	public static CharSequence toLowerCase(final CharSequence charSequence)
-	{
+	public static CharSequence toLowerCase(final CharSequence charSequence) {
 		final int end = charSequence.length();
-		for(int i = 0; i < end; ++i) //look at each character
-		{
+		for(int i = 0; i < end; ++i) { //look at each character
 			final char c = charSequence.charAt(i);
-			if(c >= UPPERCASE_LETTER_FIRST && c <= UPPERCASE_LETTER_LAST) //if this character is uppercase
-			{
+			if(c >= UPPERCASE_LETTER_FIRST && c <= UPPERCASE_LETTER_LAST) { //if this character is uppercase
 				return toLowerCase(new StringBuilder(charSequence), i, end); //create a new string builder and do the conversion in-place
 			}
 		}
@@ -391,8 +345,7 @@ public class ASCII
 	 * @param stringBuilder The string builder containing the text to convert.
 	 * @return The string builder after the conversions.
 	 */
-	public static StringBuilder toLowerCase(final StringBuilder stringBuilder)
-	{
+	public static StringBuilder toLowerCase(final StringBuilder stringBuilder) {
 		return toLowerCase(stringBuilder, 0, stringBuilder.length());
 	}
 
@@ -406,13 +359,10 @@ public class ASCII
 	 * @param end The ending position, exclusive.
 	 * @return The string builder after the conversions.
 	 */
-	public static StringBuilder toLowerCase(final StringBuilder stringBuilder, final int start, final int end)
-	{
-		for(int i = start; i < end; ++i) //look at each character
-		{
+	public static StringBuilder toLowerCase(final StringBuilder stringBuilder, final int start, final int end) {
+		for(int i = start; i < end; ++i) { //look at each character
 			final char c = stringBuilder.charAt(i);
-			if(c >= UPPERCASE_LETTER_FIRST && c <= UPPERCASE_LETTER_LAST) //if this character is uppercase
-			{
+			if(c >= UPPERCASE_LETTER_FIRST && c <= UPPERCASE_LETTER_LAST) { //if this character is uppercase
 				stringBuilder.setCharAt(i, (char)(c + LOWERCASE_UPPERCASE_LETTER_DIFFERENCE)); //convert the character to lowercase
 			}
 		}
@@ -427,14 +377,11 @@ public class ASCII
 	 * @param charSequence The character sequence containing the text to convert.
 	 * @return A character sequence containing the converted text.
 	 */
-	public static CharSequence toUpperCase(final CharSequence charSequence)
-	{
+	public static CharSequence toUpperCase(final CharSequence charSequence) {
 		final int end = charSequence.length();
-		for(int i = 0; i < end; ++i) //look at each character
-		{
+		for(int i = 0; i < end; ++i) { //look at each character
 			final char c = charSequence.charAt(i);
-			if(c >= LOWERCASE_LETTER_FIRST && c <= LOWERCASE_LETTER_LAST) //if this character is lowercase
-			{
+			if(c >= LOWERCASE_LETTER_FIRST && c <= LOWERCASE_LETTER_LAST) { //if this character is lowercase
 				return toUpperCase(new StringBuilder(charSequence), i, end); //create a new string builder and do the conversion in-place
 			}
 		}
@@ -449,8 +396,7 @@ public class ASCII
 	 * @param stringBuilder The string builder containing the text to convert.
 	 * @return The string builder after the conversions.
 	 */
-	public static StringBuilder toUpperCase(final StringBuilder stringBuilder)
-	{
+	public static StringBuilder toUpperCase(final StringBuilder stringBuilder) {
 		return toUpperCase(stringBuilder, 0, stringBuilder.length());
 	}
 
@@ -464,13 +410,10 @@ public class ASCII
 	 * @param end The ending position, exclusive.
 	 * @return The string builder after the conversions.
 	 */
-	public static StringBuilder toUpperCase(final StringBuilder stringBuilder, final int start, final int end)
-	{
-		for(int i = start; i < end; ++i) //look at each character
-		{
+	public static StringBuilder toUpperCase(final StringBuilder stringBuilder, final int start, final int end) {
+		for(int i = start; i < end; ++i) { //look at each character
 			final char c = stringBuilder.charAt(i);
-			if(c >= LOWERCASE_LETTER_FIRST && c <= LOWERCASE_LETTER_LAST) //if this character is lowercase
-			{
+			if(c >= LOWERCASE_LETTER_FIRST && c <= LOWERCASE_LETTER_LAST) { //if this character is lowercase
 				stringBuilder.setCharAt(i, (char)(c - LOWERCASE_UPPERCASE_LETTER_DIFFERENCE)); //convert the character to uppercase
 			}
 		}

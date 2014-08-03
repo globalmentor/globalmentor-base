@@ -30,13 +30,11 @@ import org.junit.Test;
  * @author Garret Wilson
  * 
  */
-public class CharactersTest
-{
+public class CharactersTest {
 
 	/** Tests the {@link Characters#split(CharSequence)} method. */
 	@Test
-	public void testSplit()
-	{
+	public void testSplit() {
 		assertThat(WHITESPACE_CHARACTERS.split("abc"), is(Arrays.<CharSequence> asList("abc")));
 		assertThat(WHITESPACE_CHARACTERS.split(" abc"), is(Arrays.<CharSequence> asList("abc")));
 		assertThat(WHITESPACE_CHARACTERS.split("abc "), is(Arrays.<CharSequence> asList("abc")));

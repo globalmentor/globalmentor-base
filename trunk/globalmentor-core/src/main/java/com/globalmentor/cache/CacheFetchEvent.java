@@ -20,49 +20,52 @@ import java.util.EventObject;
 
 import static com.globalmentor.java.Objects.*;
 
-/**An event that is fired when a value is fetched in the cache.
-@param <Q> The type of query used to request data from the cache.
-@param <V> The type of value stored in the cache.
-@see Cache
-@see CacheFetchListener
-@author Garret Wilson
-*/
-public class CacheFetchEvent<Q, V> extends EventObject
-{
+/**
+ * An event that is fired when a value is fetched in the cache.
+ * @param <Q> The type of query used to request data from the cache.
+ * @param <V> The type of value stored in the cache.
+ * @see Cache
+ * @see CacheFetchListener
+ * @author Garret Wilson
+ */
+public class CacheFetchEvent<Q, V> extends EventObject {
 
-	/**The cache which fetched the value.
-	@return The object on which the Event initially occurred.
-	*/
+	/**
+	 * The cache which fetched the value.
+	 * @return The object on which the Event initially occurred.
+	 */
 	@SuppressWarnings("unchecked")
-	public Cache<Q, V> getSource()
-	{
+	public Cache<Q, V> getSource() {
 		return (Cache<Q, V>)super.getSource();
-  }
+	}
 
-	/**The query used to request data from the cache.*/
+	/** The query used to request data from the cache. */
 	private final Q query;
 
-		/**@return The query used to request data from the cache.*/
-		public Q getQuery() {return query;}
+	/** @return The query used to request data from the cache. */
+	public Q getQuery() {
+		return query;
+	}
 
-	/**The fetched value.*/
+	/** The fetched value. */
 	private final V value;
 
-		/**@return The fetched value.*/
-		public V getValue() {return value;}
+	/** @return The fetched value. */
+	public V getValue() {
+		return value;
+	}
 
-	/**Source and property name constructor with old and new values.
-	The target will be set to be the same as the given source.
-	@param source The bean that fired the event.
-	@param query The query used to request data from the cache.
-	@param value The fetched value.
-	@throws NullPointerException if the given source, query, and/or value is <code>null</code>.
-	*/
-	public CacheFetchEvent(final Cache<Q, V> source, final Q query, final V value)
-	{
-		super(checkInstance(source, "Event source object cannot be null."));	//construct the parent class
-		this.query=checkInstance(query, "Query cannot be null.");
-		this.value=checkInstance(value, "Value cannot be null.");
+	/**
+	 * Source and property name constructor with old and new values. The target will be set to be the same as the given source.
+	 * @param source The bean that fired the event.
+	 * @param query The query used to request data from the cache.
+	 * @param value The fetched value.
+	 * @throws NullPointerException if the given source, query, and/or value is <code>null</code>.
+	 */
+	public CacheFetchEvent(final Cache<Q, V> source, final Q query, final V value) {
+		super(checkInstance(source, "Event source object cannot be null.")); //construct the parent class
+		this.query = checkInstance(query, "Query cannot be null.");
+		this.value = checkInstance(value, "Value cannot be null.");
 	}
 
 }

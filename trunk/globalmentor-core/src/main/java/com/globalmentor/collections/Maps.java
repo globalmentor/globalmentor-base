@@ -27,8 +27,7 @@ import com.globalmentor.model.NameValuePair;
  * Various utilities to be used with objects implementing the {@link Map} interface.
  * @author Garret Wilson
  */
-public class Maps
-{
+public class Maps {
 
 	/**
 	 * Adds values from an array of name-value pairs to a map. If more than one pair with the same name is given, the last one will override the others.
@@ -36,10 +35,8 @@ public class Maps
 	 * @param nameValuePairs An array of name-value pairs.
 	 * @return The given map.
 	 */
-	public static <N, V> Map<N, V> addAll(final Map<N, V> map, final NameValuePair<N, V>[] nameValuePairs)
-	{
-		for(final NameValuePair<N, V> nameValuePair : nameValuePairs) //look at each name-value pair
-		{
+	public static <N, V> Map<N, V> addAll(final Map<N, V> map, final NameValuePair<N, V>[] nameValuePairs) {
+		for(final NameValuePair<N, V> nameValuePair : nameValuePairs) { //look at each name-value pair
 			map.put(nameValuePair.getName(), nameValuePair.getValue()); //add the name-value pair name and value to the map
 		}
 		return map; //return the map with the new values added
@@ -54,10 +51,8 @@ public class Maps
 	 * @param iterable The source of name-value pairs.
 	 * @return The given map.
 	 */
-	public static <K, V> Map<K, V> addAll(final Map<K, V> map, final Iterable<NameValuePair<K, V>> iterable)
-	{
-		for(final NameValuePair<K, V> nameValuePair : iterable) //for all elements already in the iterable
-		{
+	public static <K, V> Map<K, V> addAll(final Map<K, V> map, final Iterable<NameValuePair<K, V>> iterable) {
+		for(final NameValuePair<K, V> nameValuePair : iterable) { //for all elements already in the iterable
 			map.put(nameValuePair.getName(), nameValuePair.getValue()); //store the value in the map, keyed to the name
 		}
 		return map; //return the map with the new values added
@@ -75,15 +70,10 @@ public class Maps
 	 * @throws IllegalArgumentException if some aspect of this key or value prevents it from being stored in this map.
 	 * @throws NullPointerException this map does not permit <code>null</code> keys, and the specified key is <code>null</code>.
 	 */
-	public static <K, V> V putRemoveNull(final Map<K, V> map, final K key, final V value)
-	{
-		if(value == null) //if the value is null
-		{
+	public static <K, V> V putRemoveNull(final Map<K, V> map, final K key, final V value) {
+		if(value == null) { //if the value is null
 			return map.remove(key); //remove the value associated with the key, and return the old value, if any
-		}
-		else
-		//if the value is not null
-		{
+		} else { //if the value is not null
 			return map.put(key, value); //store the value normally, returning the old value, if any
 		}
 	}
@@ -95,14 +85,11 @@ public class Maps
 	 * @param map The map from which to remove values.
 	 * @param set The set to indicate which key entries to retain.
 	 */
-	public static <K, V> void retainAll(final Map<K, V> map, final Set<K> set)
-	{
+	public static <K, V> void retainAll(final Map<K, V> map, final Set<K> set) {
 		final Iterator<Map.Entry<K, V>> entryIterator = map.entrySet().iterator(); //get an iterator to the entries in the map
-		while(entryIterator.hasNext()) //while there are more entries
-		{
+		while(entryIterator.hasNext()) { //while there are more entries
 			final Map.Entry<K, V> entry = entryIterator.next(); //get the next entry
-			if(!set.contains(entry.getKey())) //if this entry is not represented in the set
-			{
+			if(!set.contains(entry.getKey())) { //if this entry is not represented in the set
 				entryIterator.remove(); //remove this entry
 			}
 		}
@@ -115,8 +102,7 @@ public class Maps
 	 * @param map The map from which to the retrieve the key values.
 	 * @return A set of the key value pairs added.
 	 */
-	public static <K, V> Set<NameValuePair<K, V>> getKeyValues(final Map<K, V> map)
-	{
+	public static <K, V> Set<NameValuePair<K, V>> getKeyValues(final Map<K, V> map) {
 		return getKeyValues(map, new HashSet<NameValuePair<K, V>>());
 	}
 
@@ -129,10 +115,8 @@ public class Maps
 	 * @param collection The collection to which the key value pairs should be added.
 	 * @return The given collection, with the key value pairs added.
 	 */
-	public static <K, V, C extends Collection<NameValuePair<K, V>>> C getKeyValues(final Map<K, V> map, final C collection)
-	{
-		for(final Map.Entry<K, V> entry : map.entrySet()) //convert all the map entries to NameValues and add them to the collection
-		{
+	public static <K, V, C extends Collection<NameValuePair<K, V>>> C getKeyValues(final Map<K, V> map, final C collection) {
+		for(final Map.Entry<K, V> entry : map.entrySet()) { //convert all the map entries to NameValues and add them to the collection
 			collection.add(new NameValuePair<K, V>(entry));
 		}
 		return collection;
@@ -147,11 +131,9 @@ public class Maps
 	 * @param collection The collection to which the key value pairs should be added.
 	 * @return The given collection, with the key value pairs added.
 	 */
-	public static <K, V extends CloneSupported, C extends Collection<NameValuePair<K, V>>> C getKeyValuesCloned(final Map<K, V> map, final C collection)
-	{
-		for(final Map.Entry<K, V> entry : map.entrySet()) //convert all the map entries to NameValues and add them to the collection
-		{
-			collection.add(new NameValuePair<K, V>(entry.getKey(), Objects.clone(entry.getValue())));	//clone the values
+	public static <K, V extends CloneSupported, C extends Collection<NameValuePair<K, V>>> C getKeyValuesCloned(final Map<K, V> map, final C collection) {
+		for(final Map.Entry<K, V> entry : map.entrySet()) { //convert all the map entries to NameValues and add them to the collection
+			collection.add(new NameValuePair<K, V>(entry.getKey(), Objects.clone(entry.getValue()))); //clone the values
 		}
 		return collection;
 	}
@@ -163,15 +145,12 @@ public class Maps
 	 * @param map The map which should be returned in read-only form.
 	 * @throws NullPointerException if the given map is <code>null</code>.
 	 */
-	public static <K, V> Map<K, V> toImmutableMap(final Map<K, V> map) //TODO improve to return an ImmutableMap<K, V>
-	{
-		if(map instanceof ImmutableMap) //if the map is already immutable TODO fix for Java's immutable maps
-		{
+	public static <K, V> Map<K, V> toImmutableMap(final Map<K, V> map) { //TODO improve to return an ImmutableMap<K, V>
+		if(map instanceof ImmutableMap) { //if the map is already immutable TODO fix for Java's immutable maps
 			return map;
 		}
 		final int size = map.size(); //see how big the map is
-		if(size == 1) //if the map only contains one map entry
-		{
+		if(size == 1) { //if the map only contains one map entry
 			return new MapEntryMap<K, V>(map.entrySet().iterator().next()); //return an immutable map containing only one map entry
 		}
 		return Collections.unmodifiableMap(new HashMap<K, V>(map)); //copy the map and wrap it in an unmodifiable map

@@ -26,29 +26,25 @@ import java.util.concurrent.locks.*;
  * @param <T> The type of object being held.
  * @author Garret Wilson
  */
-public class ReadWriteLockObjectHolder<T> extends ObjectHolder<T> implements ReadWriteLock
-{
+public class ReadWriteLockObjectHolder<T> extends ObjectHolder<T> implements ReadWriteLock {
 
 	/** The decorated read write lock. */
 	private final ReadWriteLock readWriteLock;
 
 	/** {@inheritDoc} */
 	@Override
-	public Lock readLock()
-	{
+	public Lock readLock() {
 		return readWriteLock.readLock();
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public Lock writeLock()
-	{
+	public Lock writeLock() {
 		return readWriteLock.writeLock();
 	}
 
 	/** Default constructor to hold <code>null</code>. */
-	public ReadWriteLockObjectHolder()
-	{
+	public ReadWriteLockObjectHolder() {
 		this(new ReentrantReadWriteLock());
 	}
 
@@ -57,8 +53,7 @@ public class ReadWriteLockObjectHolder<T> extends ObjectHolder<T> implements Rea
 	 * @param readWriteLock The lock for controlling access to the properties.
 	 * @throws NullPointerException if the given lock is <code>null</code>.
 	 */
-	public ReadWriteLockObjectHolder(final ReadWriteLock readWriteLock)
-	{
+	public ReadWriteLockObjectHolder(final ReadWriteLock readWriteLock) {
 		this(null, readWriteLock);
 	}
 
@@ -66,8 +61,7 @@ public class ReadWriteLockObjectHolder<T> extends ObjectHolder<T> implements Rea
 	 * Held object constructor.
 	 * @param object The object to hold.
 	 */
-	public ReadWriteLockObjectHolder(final T object)
-	{
+	public ReadWriteLockObjectHolder(final T object) {
 		this(object, new ReentrantReadWriteLock());
 	}
 
@@ -77,8 +71,7 @@ public class ReadWriteLockObjectHolder<T> extends ObjectHolder<T> implements Rea
 	 * @param readWriteLock The lock for controlling access to the properties.
 	 * @throws NullPointerException if the given lock is <code>null</code>.
 	 */
-	public ReadWriteLockObjectHolder(final T object, final ReadWriteLock readWriteLock)
-	{
+	public ReadWriteLockObjectHolder(final T object, final ReadWriteLock readWriteLock) {
 		super(object); //construct the parent class
 		this.readWriteLock = checkInstance(readWriteLock, "Read write lock cannot be null.");
 	}
@@ -88,15 +81,11 @@ public class ReadWriteLockObjectHolder<T> extends ObjectHolder<T> implements Rea
 	 * @see #readLock()
 	 */
 	@Override
-	public T getObject()
-	{
+	public T getObject() {
 		readLock().lock();
-		try
-		{
+		try {
 			return super.getObject();
-		}
-		finally
-		{
+		} finally {
 			readLock().unlock();
 		}
 	}
@@ -106,15 +95,11 @@ public class ReadWriteLockObjectHolder<T> extends ObjectHolder<T> implements Rea
 	 * @see #writeLock()
 	 */
 	@Override
-	public void setObject(final T object)
-	{
+	public void setObject(final T object) {
 		writeLock().lock();
-		try
-		{
+		try {
 			super.setObject(object);
-		}
-		finally
-		{
+		} finally {
 			writeLock().unlock();
 		}
 	}

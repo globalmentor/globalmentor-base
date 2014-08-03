@@ -33,8 +33,7 @@ import com.globalmentor.log.Log;
  * 
  * @author Garret Wilson
  */
-public class TempFileInputStream extends InputStreamDecorator<FileInputStream>
-{
+public class TempFileInputStream extends InputStreamDecorator<FileInputStream> {
 
 	/** The temporary file in use, or <code>null</code> if the class has been disposed. */
 	private File tempFile;
@@ -45,8 +44,7 @@ public class TempFileInputStream extends InputStreamDecorator<FileInputStream>
 	 * @throws NullPointerException if the given file is <code>null</code>.
 	 * @throws FileNotFoundException if the file does not exist, is a directory rather than a regular file, or for some other reason cannot be opened for reading.
 	 */
-	public TempFileInputStream(final File tempFile) throws FileNotFoundException
-	{
+	public TempFileInputStream(final File tempFile) throws FileNotFoundException {
 		super(new FileInputStream(checkInstance(tempFile)));
 		this.tempFile = tempFile;
 	}
@@ -56,8 +54,7 @@ public class TempFileInputStream extends InputStreamDecorator<FileInputStream>
 	 * @throws IllegalArgumentException if the close decorated stream flag is <code>false</code>.
 	 */
 	@Override
-	public synchronized void close(final boolean closeDecoratedStream) throws IOException
-	{
+	public synchronized void close(final boolean closeDecoratedStream) throws IOException {
 		checkArgument(closeDecoratedStream == true, "This decorated input stream does not allow closing with closing the underlying stream.");
 		super.close(closeDecoratedStream);
 	}
@@ -67,22 +64,14 @@ public class TempFileInputStream extends InputStreamDecorator<FileInputStream>
 	 * being deleted after the input stream is closed.
 	 */
 	@Override
-	public synchronized void dispose()
-	{
-		try
-		{
+	public synchronized void dispose() {
+		try {
 			super.dispose();
-		}
-		finally
-		{
-			if(tempFile != null) //if we still have a temporary file
-			{
-				try
-				{
+		} finally {
+			if(tempFile != null) { //if we still have a temporary file
+				try {
 					delete(tempFile); //try to delete the temporary file
-				}
-				catch(final IOException ioException)
-				{
+				} catch(final IOException ioException) {
 					Log.error(ioException);
 				}
 				tempFile = null;

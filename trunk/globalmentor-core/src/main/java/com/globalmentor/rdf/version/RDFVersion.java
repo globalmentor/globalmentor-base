@@ -20,40 +20,38 @@ import java.net.URI;
 
 import com.globalmentor.rdf.*;
 
-/**Utilities for working with version metadata stored in RDF.
-@author Garret Wilson
-*/
-public class RDFVersion
-{
+/**
+ * Utilities for working with version metadata stored in RDF.
+ * @author Garret Wilson
+ */
+public class RDFVersion {
 
-	/**The recommended prefix to the version ontology namespace.*/
-	public final static String VERSION_NAMESPACE_PREFIX="ver";
-	/**The URI to the version namespace.*/
-	public final static URI VERSION_NAMESPACE_URI=URI.create("http://globalmentor.com/namespaces/2003/version#");
+	/** The recommended prefix to the version ontology namespace. */
+	public final static String VERSION_NAMESPACE_PREFIX = "ver";
+	/** The URI to the version namespace. */
+	public final static URI VERSION_NAMESPACE_URI = URI.create("http://globalmentor.com/namespaces/2003/version#");
 
-		//version ontology property names
+	//version ontology property names
 
-	/**The version of a resource. The local name of ver:version.*/
-	public final static String VERSION_PROPERTY_NAME="version";
+	/** The version of a resource. The local name of ver:version. */
+	public final static String VERSION_PROPERTY_NAME = "version";
 
-	/**Adds a <code>ver:version</code> property with the given value to the
-		resource.
-	@param resource The resource to which the property should be added.
-	@param value The property value to add.
-	@return The added literal property value.
-	*/
-	public static RDFLiteral addVersion(final RDFResource resource, final String value)
-	{
+	/**
+	 * Adds a <code>ver:version</code> property with the given value to the resource.
+	 * @param resource The resource to which the property should be added.
+	 * @param value The property value to add.
+	 * @return The added literal property value.
+	 */
+	public static RDFLiteral addVersion(final RDFResource resource, final String value) {
 		return resource.addProperty(VERSION_NAMESPACE_URI, VERSION_PROPERTY_NAME, value);
 	}
 
-	/**Returns the value of the first <code>ver:version</code> property.
-	@param resource The resource the property of which should be located.
-	@return The value of the first <code>ver:version</code> property, or
-		<code>null</code> if no such property exists.
-	*/
-	public static RDFObject getVersion(final RDFResource resource)
-	{
+	/**
+	 * Returns the value of the first <code>ver:version</code> property.
+	 * @param resource The resource the property of which should be located.
+	 * @return The value of the first <code>ver:version</code> property, or <code>null</code> if no such property exists.
+	 */
+	public static RDFObject getVersion(final RDFResource resource) {
 		return resource.getPropertyValue(VERSION_NAMESPACE_URI, VERSION_PROPERTY_NAME);
 	}
 }

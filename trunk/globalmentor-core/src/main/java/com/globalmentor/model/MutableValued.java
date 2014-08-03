@@ -23,8 +23,7 @@ import java.beans.PropertyVetoException;
  * @param <V> The type of value contained in the object.
  * @author Garret Wilson
  */
-public interface MutableValued<V> extends Valued<V>
-{
+public interface MutableValued<V> extends Valued<V> {
 
 	/**
 	 * Sets the new value.

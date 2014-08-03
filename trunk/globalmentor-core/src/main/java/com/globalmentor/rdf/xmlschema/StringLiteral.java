@@ -20,19 +20,19 @@ import com.globalmentor.rdf.*;
 
 import static com.globalmentor.text.xml.schema.XMLSchema.*;
 
-/**An RDF typed literal that represents an XML Schema string.
-@author Garret Wilson
-@see String
-*/
-public class StringLiteral extends RDFTypedLiteral<String>
-{
+/**
+ * An RDF typed literal that represents an XML Schema string.
+ * @author Garret Wilson
+ * @see String
+ */
+public class StringLiteral extends RDFTypedLiteral<String> {
 
-	/**Constructs a string literal using the datatype <code>http://www.w3.org/2001/XMLSchema#string</code>.
-	@param string The <code>String</code> object representing the value of the literal.
-	*/
-	public StringLiteral(final String string)
-	{
-		super(string, STRING_DATATYPE_URI);	//save the string object as the value, specifying the XML Schema boolean datatype URI
+	/**
+	 * Constructs a string literal using the datatype <code>http://www.w3.org/2001/XMLSchema#string</code>.
+	 * @param string The <code>String</code> object representing the value of the literal.
+	 */
+	public StringLiteral(final String string) {
+		super(string, STRING_DATATYPE_URI); //save the string object as the value, specifying the XML Schema boolean datatype URI
 	}
 
 }

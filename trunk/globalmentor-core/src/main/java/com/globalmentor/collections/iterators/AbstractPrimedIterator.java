@@ -33,8 +33,7 @@ import java.util.*;
  * 
  * @param <E> The type of element returned by the iterator.
  */
-public abstract class AbstractPrimedIterator<E> implements Iterator<E>
-{
+public abstract class AbstractPrimedIterator<E> implements Iterator<E> {
 
 	/** Indicates whether the iterator has been primed. */
 	private boolean primed = false;
@@ -46,28 +45,23 @@ public abstract class AbstractPrimedIterator<E> implements Iterator<E>
 	 * Ensures that the iterator has been primed.
 	 * @see #primeNext()
 	 */
-	private void ensurePrimed()
-	{
-		if(!primed) //if we aren't prime
-		{
+	private void ensurePrimed() {
+		if(!primed) { //if we aren't prime
 			next = primeNext(); //prime the value
 			primed = true; //we are now primed
 		}
 	}
 
 	@Override
-	public boolean hasNext()
-	{
+	public boolean hasNext() {
 		ensurePrimed(); //make sure we are primed
 		return next != null;
 	}
 
 	@Override
-	public E next()
-	{
+	public E next() {
 		ensurePrimed(); //make sure we are primed
-		if(next == null) //if there is no next value
-		{
+		if(next == null) { //if there is no next value
 			throw new NoSuchElementException();
 		}
 		primed = false; //we're returning the next value, so we are no longer primed
@@ -82,8 +76,7 @@ public abstract class AbstractPrimedIterator<E> implements Iterator<E>
 	protected abstract E primeNext();
 
 	@Override
-	public void remove()
-	{
+	public void remove() {
 		throw new UnsupportedOperationException();
 	}
 

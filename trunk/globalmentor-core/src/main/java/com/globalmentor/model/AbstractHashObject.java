@@ -27,8 +27,7 @@ import com.globalmentor.java.Objects;
  * Equality is only supported for exact top-level types.
  * @author Garret Wilson
  */
-public abstract class AbstractHashObject
-{
+public abstract class AbstractHashObject {
 
 	/** The objects for hashing and equality, any or all of which can be <code>null</code>. */
 	private final Object[] objects;
@@ -38,8 +37,7 @@ public abstract class AbstractHashObject
 	 * @param objects The objects for hashing and equality, any or all of which can be <code>null</code>.
 	 * @throws NullPointerException if the given objects is <code>null</code>
 	 */
-	public AbstractHashObject(final Object... objects)
-	{
+	public AbstractHashObject(final Object... objects) {
 		this.objects = checkInstance(objects, "Objects cannot be null."); //save the objects
 	}
 
@@ -47,8 +45,7 @@ public abstract class AbstractHashObject
 	 * Returns the hash code of this object. This version returns the hash code of the underlying objects.
 	 * @return The hash code of this object.
 	 */
-	public int hashCode()
-	{
+	public int hashCode() {
 		return Objects.getHashCode(objects); //return the hash code of the objects
 	}
 
@@ -59,18 +56,15 @@ public abstract class AbstractHashObject
 	 * @param object The object to compare with this object.
 	 * @return <code>true</code> if the given object is considered equal to this object.
 	 */
-	public boolean equals(final Object object)
-	{
-		if(object==this)	//identity always implies equality
-		{
+	public boolean equals(final Object object) {
+		if(object == this) { //identity always implies equality
 			return true;
 		}
-		return getClass().isInstance(object) && java.util.Arrays.equals(objects, ((AbstractHashObject)object).objects);	//see if the object is of this class and our objects are equal to its objects
+		return getClass().isInstance(object) && java.util.Arrays.equals(objects, ((AbstractHashObject)object).objects); //see if the object is of this class and our objects are equal to its objects
 	}
 
 	/** @return A string representation of this hash object. */
-	public String toString()
-	{
+	public String toString() {
 		return Arrays.toString(objects); //convert the objects to strings
 	}
 }

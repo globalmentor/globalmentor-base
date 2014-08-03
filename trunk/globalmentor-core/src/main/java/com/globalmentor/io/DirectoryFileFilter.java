@@ -23,21 +23,18 @@ import java.io.File;
  * 
  * @author Garret Wilson
  */
-public class DirectoryFileFilter extends AbstractFileFilter
-{
+public class DirectoryFileFilter extends AbstractFileFilter {
 
 	/** <code>true</code> if only directories will be accepted, else <code>false</code> for only files. */
 	private final boolean acceptDirectoryStatus;
 
 	/** @return <code>true</code> if only directories will be accepted, else <code>false</code> for only files. */
-	protected boolean getAcceptDirectoryStatus()
-	{
+	protected boolean getAcceptDirectoryStatus() {
 		return acceptDirectoryStatus;
 	}
 
 	/** Default constructor, accepting only directories. */
-	public DirectoryFileFilter()
-	{
+	public DirectoryFileFilter() {
 		this(true);
 	}
 
@@ -46,8 +43,7 @@ public class DirectoryFileFilter extends AbstractFileFilter
 	 * 
 	 * @param acceptDirectoryStatus <code>true</code> if only directories will be accepted, else <code>false</code> for only files.
 	 */
-	public DirectoryFileFilter(final boolean acceptDirectoryStatus)
-	{
+	public DirectoryFileFilter(final boolean acceptDirectoryStatus) {
 		this.acceptDirectoryStatus = acceptDirectoryStatus;
 	}
 
@@ -57,8 +53,7 @@ public class DirectoryFileFilter extends AbstractFileFilter
 	 * @see #getAcceptDirectoryStatus()
 	 */
 	@Override
-	public boolean accept(final File pathname)
-	{
+	public boolean accept(final File pathname) {
 		return pathname.isDirectory() == getAcceptDirectoryStatus();
 	}
 }

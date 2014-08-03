@@ -41,8 +41,7 @@ import com.globalmentor.model.Filter;
  * 
  * @param <E> The type of element returned by the iterator.
  */
-public class FilteredIterator<E> extends AbstractFilteredIterator<E>
-{
+public class FilteredIterator<E> extends AbstractFilteredIterator<E> {
 
 	/** The filter for this iterator's elements. */
 	private final Filter<E> filter;
@@ -53,8 +52,7 @@ public class FilteredIterator<E> extends AbstractFilteredIterator<E>
 	 * @param filter The filter for this iterator's elements.
 	 * @throws NullPointerException if the given iterator and/or filter is <code>null</code>.
 	 */
-	public FilteredIterator(final Iterator<E> iterator, final Filter<E> filter)
-	{
+	public FilteredIterator(final Iterator<E> iterator, final Filter<E> filter) {
 		super(iterator);
 		this.filter = checkInstance(filter);
 	}
@@ -63,8 +61,7 @@ public class FilteredIterator<E> extends AbstractFilteredIterator<E>
 	 * {@inheritDoc} This version delegates to {@link Filter#isPass(Object)}.
 	 */
 	@Override
-	protected boolean isPass(final E element)
-	{
+	protected boolean isPass(final E element) {
 		return filter.isPass(element);
 	}
 

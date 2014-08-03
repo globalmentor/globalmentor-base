@@ -22,28 +22,21 @@ import java.lang.reflect.UndeclaredThrowableException;
  * Utility methods for threads.
  * @author Garret Wilson
  */
-public class Threads
-{
+public class Threads {
 
 	/**
 	 * Joins a thread, ignoring any interruptions. If any interruptions occur, they will be ignored and joining will be attempted again.
 	 * @param thread The thread to join.
 	 */
-	public static void join(final Thread thread)
-	{
+	public static void join(final Thread thread) {
 		boolean joined = false; //we'll note when joining actually finishes
-		do
-		{
-			try
-			{
+		do {
+			try {
 				thread.join(); //join the thread
 				joined = true; //joining was successful
+			} catch(final InterruptedException interruptedException) { //if joining was interrupted, ignore the interruption and try again
 			}
-			catch(final InterruptedException interruptedException) //if joining was interrupted, ignore the interruption and try again
-			{
-			}
-		}
-		while(!joined); //keep joining until successful
+		} while(!joined); //keep joining until successful
 	}
 
 	/**
@@ -52,8 +45,7 @@ public class Threads
 	 * @see Thread#start()
 	 * @see #join(Thread)
 	 */
-	public static void call(final Thread thread)
-	{
+	public static void call(final Thread thread) {
 		thread.start(); //start the thread
 		join(thread); //join the thread
 	}
@@ -77,23 +69,18 @@ public class Threads
 			final UncaughtExceptionHandler uncaughtExceptionHandler=new UncaughtExceptionHandler();	//create an uncaught exception handler that will store any error
 			final Thread thread=call(threadGroup, runnable, uncaughtExceptionHandler);	//call the runnable with our local exception handler
 			final Throwable throwable=uncaughtExceptionHandler.getThrowable();	//get the error, if any
-			if(throwable!=null)	//if there was an error
-			{
-				if(throwable instanceof UndeclaredThrowableException)	//if this was an undeclared throwable exception thrown, we can throw it in this thread, but we need to update the decorated throwable's stack trace
-				{
+			if(throwable!=null) {	//if there was an error
+				if(throwable instanceof UndeclaredThrowableException) {	//if this was an undeclared throwable exception thrown, we can throw it in this thread, but we need to update the decorated throwable's stack trace
 					throwable.getCause().fillInStackTrace();	//fill in the stack trace of the cause
 					throw (UndeclaredThrowableException)throwable.fillInStackTrace();	//fill in the stack track of the exception itself and send it on
 				}
-				else if(throwable instanceof Error)	//if this was an Error, we can throw it in this thread
-				{
+				else if(throwable instanceof Error) {	//if this was an Error, we can throw it in this thread
 					throw (Error)throwable.fillInStackTrace();	//fill in the stack track of the error and send it on
 				}
-				if(throwable instanceof RuntimeException)	//if this was a RuntimeException, we can throw that in this thread as well
-				{
+				if(throwable instanceof RuntimeException) {	//if this was a RuntimeException, we can throw that in this thread as well
 					throw (RuntimeException)throwable.fillInStackTrace();	//fill in the stack track of the runtime exception and send it on
 				}
-				else	//if this was any other Exception
-				{
+				else {	//if this was any other Exception
 					throw new UndeclaredThrowableException(throwable.fillInStackTrace());	//throw a wrapper exception after filling in the throwable's stack trace
 				}
 			}
@@ -112,24 +99,17 @@ public class Threads
 	 * @throws UndeclaredThrowableException if the thread throws any {@link Throwable} that is not an {@link Error} or a {@link RuntimeException}.
 	 * @see #call(Thread)
 	 */
-	public static Thread call(final ThreadGroup threadGroup, final Runnable runnable)
-	{
+	public static Thread call(final ThreadGroup threadGroup, final Runnable runnable) {
 		final UncaughtExceptionHandler uncaughtExceptionHandler = new UncaughtExceptionHandler(); //create an uncaught exception handler that will store any error
 		final Thread thread = call(threadGroup, runnable, uncaughtExceptionHandler); //call the runnable with our local exception handler
 		final Throwable throwable = uncaughtExceptionHandler.getThrowable(); //get the error, if any
-		if(throwable != null) //if there was an error
-		{
-			if(throwable instanceof Error) //if this was an Error, we can throw it in this thread
-			{
+		if(throwable != null) { //if there was an error
+			if(throwable instanceof Error) { //if this was an Error, we can throw it in this thread
 				throw (Error)throwable;
 			}
-			if(throwable instanceof RuntimeException) //if this was a RuntimeException, we can throw that in this thread as well
-			{
+			if(throwable instanceof RuntimeException) { //if this was a RuntimeException, we can throw that in this thread as well
 				throw (RuntimeException)throwable;
-			}
-			else
-			//if this was any other Exception
-			{
+			} else { //if this was any other Exception
 				throw new UndeclaredThrowableException(throwable); //throw a wrapper exception
 			}
 		}
@@ -144,11 +124,9 @@ public class Threads
 	 * @return The thread that has been run in the thread group.
 	 * @see #call(Thread)
 	 */
-	public static Thread call(final ThreadGroup threadGroup, final Runnable runnable, final Thread.UncaughtExceptionHandler uncaughtExceptionHandler)
-	{
+	public static Thread call(final ThreadGroup threadGroup, final Runnable runnable, final Thread.UncaughtExceptionHandler uncaughtExceptionHandler) {
 		final Thread thread = new Thread(threadGroup, runnable); //create a new thread in the thread group for the runnable
-		if(uncaughtExceptionHandler != null) //if an exception handler was given
-		{
+		if(uncaughtExceptionHandler != null) { //if an exception handler was given
 			thread.setUncaughtExceptionHandler(uncaughtExceptionHandler); //install the exception handler
 		}
 		call(thread); //call the thread
@@ -162,8 +140,7 @@ public class Threads
 	 * @return The first thread group of the given type, or <code>null</code> if no thread group of the given type could be found.
 	 * @throws NullPointerException if the given thread group class is <code>null</code>.
 	 */
-	public static <TG extends ThreadGroup> TG getThreadGroup(final Class<TG> threadGroupClass)
-	{
+	public static <TG extends ThreadGroup> TG getThreadGroup(final Class<TG> threadGroupClass) {
 		return getThreadGroup(Thread.currentThread(), threadGroupClass);
 	}
 
@@ -175,8 +152,7 @@ public class Threads
 	 * @return The first thread group of the given type, or <code>null</code> if no thread group of the given type could be found.
 	 * @throws NullPointerException if the given thread and/or thread group class is <code>null</code>.
 	 */
-	public static <TG> TG getThreadGroup(final Thread thread, final Class<TG> threadGroupClass)
-	{
+	public static <TG> TG getThreadGroup(final Thread thread, final Class<TG> threadGroupClass) {
 		final ThreadGroup threadGroup = thread.getThreadGroup(); //get the thread's thread group
 		return threadGroup != null ? getThreadGroup(threadGroup, threadGroupClass) : null; //if the thread has a thread group, look for the thread group of the requested type 
 	}
@@ -189,17 +165,13 @@ public class Threads
 	 * @return The first thread group of the given type, or <code>null</code> if no thread group of the given type could be found.
 	 * @throws NullPointerException if the given thread group and/or thread group class is <code>null</code>.
 	 */
-	public static <TG> TG getThreadGroup(ThreadGroup threadGroup, final Class<TG> threadGroupClass)
-	{
-		do
-		{
-			if(threadGroupClass.isInstance(threadGroup)) //if this is the required thread group type
-			{
+	public static <TG> TG getThreadGroup(ThreadGroup threadGroup, final Class<TG> threadGroupClass) {
+		do {
+			if(threadGroupClass.isInstance(threadGroup)) { //if this is the required thread group type
 				return threadGroupClass.cast(threadGroup); //return the thread group as the type
 			}
 			threadGroup = threadGroup.getParent(); //check this thread group's parent thread group
-		}
-		while(threadGroup != null); //stop looking if we run out of thread groups
+		} while(threadGroup != null); //stop looking if we run out of thread groups
 		return null; //we were unable to find the required thread group
 	}
 
@@ -210,19 +182,12 @@ public class Threads
 	 * @param throwable The throwable to rethrow.
 	 * @throws NullPointerException if the given throwable is <code>null</code>.
 	 */
-	public static void rethrow(final Throwable throwable) throws RuntimeException, Error, UndeclaredThrowableException
-	{
-		if(throwable instanceof RuntimeException) //if this was a RuntimeException, we can throw that in this thread
-		{
+	public static void rethrow(final Throwable throwable) throws RuntimeException, Error, UndeclaredThrowableException {
+		if(throwable instanceof RuntimeException) { //if this was a RuntimeException, we can throw that in this thread
 			throw (RuntimeException)throwable; //send it on
-		}
-		else if(throwable instanceof Error) //if this was an Error, we can throw it in this thread as well
-		{
+		} else if(throwable instanceof Error) { //if this was an Error, we can throw it in this thread as well
 			throw (Error)throwable; //send it on
-		}
-		else
-		//if this was any other Exception
-		{
+		} else { //if this was any other Exception
 			throw new UndeclaredThrowableException(throwable); //throw a wrapper exception
 		}
 	}
@@ -231,14 +196,13 @@ public class Threads
 	 * The uncaught exception handler that stores the error for later access.
 	 * @author Garret Wilson
 	 */
-	private static class UncaughtExceptionHandler implements Thread.UncaughtExceptionHandler
-	{
+	private static class UncaughtExceptionHandler implements Thread.UncaughtExceptionHandler {
+
 		/** The error that occurred, or <code>null</code> if no error occurred. */
 		private Throwable throwable = null;
 
 		/** @return The error that occurred, or <code>null</code> if no error occurred. */
-		public Throwable getThrowable()
-		{
+		public Throwable getThrowable() {
 			return throwable;
 		}
 
@@ -247,8 +211,7 @@ public class Threads
 		 * @param thread The thread in which the exception occurred.
 		 * @param throwable The exception that occurred.
 		 */
-		public void uncaughtException(final Thread thread, final Throwable throwable)
-		{
+		public void uncaughtException(final Thread thread, final Throwable throwable) {
 			this.throwable = throwable; //save the throwable for later
 		}
 	}
@@ -262,8 +225,7 @@ public class Threads
 	 * @throws IllegalStateException if there was no caller in the stack before the caller to this method.
 	 */
 	@Deprecated
-	public static Class<?> getCallingClass()
-	{
+	public static Class<?> getCallingClass() {
 		return getCallingClass(null); //get the calling class, ignoring no classes
 	}
 
@@ -280,14 +242,10 @@ public class Threads
 	 *           given class.
 	 */
 	@Deprecated
-	public static Class<?> getCallingClass(final Class<?> ignoreClass)
-	{
-		try
-		{
+	public static Class<?> getCallingClass(final Class<?> ignoreClass) {
+		try {
 			return Class.forName(getCallingClassStackTraceElement(ignoreClass).getClassName()); //get the calling class stack trace and determine the class
-		}
-		catch(final ClassNotFoundException classNotFoundException) //since the class is calling us, the class should exist and already be loaded
-		{
+		} catch(final ClassNotFoundException classNotFoundException) { //since the class is calling us, the class should exist and already be loaded
 			throw new AssertionError(classNotFoundException);
 		}
 	}
@@ -301,8 +259,7 @@ public class Threads
 	 * @throws IllegalStateException if there was no caller in the stack before the caller to this method.
 	 */
 	@Deprecated
-	public static StackTraceElement getCallingClassStackTraceElement()
-	{
+	public static StackTraceElement getCallingClassStackTraceElement() {
 		return getCallingClassStackTraceElement(null); //get the previous stack trace element, ignoring no classes
 	}
 
@@ -321,8 +278,7 @@ public class Threads
 	 *           given class.
 	 */
 	@Deprecated
-	public static StackTraceElement getCallingClassStackTraceElement(final Class<?> ignoreClass)
-	{
+	public static StackTraceElement getCallingClassStackTraceElement(final Class<?> ignoreClass) {
 		final String thisClassName = Threads.class.getName(); //get the name of this class so we can ignore it
 		final String ignoreClassName = ignoreClass != null ? ignoreClass.getName() : null;
 		final StackTraceElement[] stack = new Throwable().getStackTrace(); //get the current stack TODO integrate new StackTrace class
@@ -334,39 +290,27 @@ public class Threads
 		assert i < stackLength : "There should have been a caller that is not in this class, as this class has no main() method.";
 		final String callerClassName = stack[i].getClassName(); //the current stack trace element should now be that of the caller
 		StackTraceElement beforeCallerStackTraceElement = null;
-		for(i = i + 1; i < stackLength; ++i) //start looking one stack element before the caller
-		{
+		for(i = i + 1; i < stackLength; ++i) { //start looking one stack element before the caller
 			final StackTraceElement stackTraceElement = stack[i];
 			final String stackTraceElementClassName = stackTraceElement.getClassName();
-			if(beforeCallerStackTraceElement == null) //if we haven't found the stack trace element before the caller
-			{
-				if(!callerClassName.equals(stackTraceElementClassName)) //if this location was before the caller
-				{
-					if(ignoreClassName == null || ignoreClassName.equals(callerClassName)) //if we shouldn't go back any further (either because there is no extra class to ignore, or because it is the same class as the caller)
-					{
+			if(beforeCallerStackTraceElement == null) { //if we haven't found the stack trace element before the caller
+				if(!callerClassName.equals(stackTraceElementClassName)) { //if this location was before the caller
+					if(ignoreClassName == null || ignoreClassName.equals(callerClassName)) { //if we shouldn't go back any further (either because there is no extra class to ignore, or because it is the same class as the caller)
 						return stackTraceElement; //return this location
-					}
-					else
-					//if we should keep looking back before some class
-					{
+					} else { //if we should keep looking back before some class
 						beforeCallerStackTraceElement = stackTraceElement; //note that we found the class before the caller
 					}
 				}
 			}
-			if(beforeCallerStackTraceElement != null) //if we've already found the class before the caller (we can only get here if an ignore class was provided)
-			{
-				if(!ignoreClassName.equals(stackTraceElementClassName)) //if this location was before the before class
-				{
+			if(beforeCallerStackTraceElement != null) { //if we've already found the class before the caller (we can only get here if an ignore class was provided)
+				if(!ignoreClassName.equals(stackTraceElementClassName)) { //if this location was before the before class
 					return stackTraceElement; //we found the class before the before class
 				}
 			}
 		}
-		if(ignoreClass != null)
-		{
+		if(ignoreClass != null) {
 			throw new IllegalArgumentException("No caller exists on the stack before class " + ignoreClassName);
-		}
-		else
-		{
+		} else {
 			throw new IllegalStateException("No caller exists on the stack before class " + callerClassName);
 		}
 	};

@@ -29,8 +29,7 @@ import com.globalmentor.java.Bytes;
  * Class to manipulate input streams.
  * @author Garret Wilson
  */
-public class InputStreams
-{
+public class InputStreams {
 
 	/** The shared instance of an input stream with no content. */
 	public final static InputStream EMPTY_INPUT_STREAM = new EmptyInputStream();
@@ -44,24 +43,20 @@ public class InputStreams
 	 * @return An array of bytes from the input stream.
 	 * @throws IOException Thrown if there is an error loading the bytes.
 	 */
-	public static byte[] getBytes(final InputStream inputStream) throws IOException
-	{
+	public static byte[] getBytes(final InputStream inputStream) throws IOException {
 		final List<byte[]> bufferList = new ArrayList<byte[]>(); //create a list for the buffers
 		final int bufferSize = 64 * 1024; //use a series of 64K buffers
 		int totalBytesRead = 0; //show that we haven't read anything at all yet
 		int bufferBytesRead; //we'll use this to store the number of bytes read into this buffer
-		do
-		{
+		do {
 			final byte[] buffer = new byte[bufferSize]; //create a new buffer
 			bufferBytesRead = read(inputStream, buffer); //read bytes into the buffer
 			totalBytesRead += bufferBytesRead; //update our total bytes read
 			bufferList.add(buffer); //add this buffer to our list of buffers
-		}
-		while(bufferBytesRead == bufferSize); //keep adding new buffers until we run out of bytes (leaving one buffer not fully filled)
+		} while(bufferBytesRead == bufferSize); //keep adding new buffers until we run out of bytes (leaving one buffer not fully filled)
 		final byte[] finalBuffer = new byte[totalBytesRead]; //create a buffer of the correct length of all the bytes we've read
 		int bytesCopied = 0; //show that we haven't copied any bytes yet
-		for(int i = 0; i < bufferList.size(); ++i) //look at each of our buffers
-		{
+		for(int i = 0; i < bufferList.size(); ++i) { //look at each of our buffers
 			//all the buffers should be full except for the last one, which will only hold the number of bytes last read
 			final int bytesToCopy = (i < bufferList.size() - 1) ? bufferSize : bufferBytesRead;
 			arraycopy(bufferList.get(i), 0, finalBuffer, bytesCopied, bytesToCopy); //copy bytes from this buffer to our final buffer
@@ -79,8 +74,7 @@ public class InputStreams
 	 * @throws IllegalArgumentException if the offset or the length is negative.
 	 * @throws IOException if there is an error reading from the input stream.
 	 */
-	public static byte[] getBytes(final InputStream inputStream, final int length) throws IOException
-	{
+	public static byte[] getBytes(final InputStream inputStream, final int length) throws IOException {
 		return getBytes(inputStream, 0, length); //get bytes from the stream starting at the beginning
 	}
 
@@ -94,36 +88,25 @@ public class InputStreams
 	 * @throws IllegalArgumentException if the offset or the length is negative.
 	 * @throws IOException if there is an error reading from the input stream.
 	 */
-	public static byte[] getBytes(final InputStream inputStream, final long offset, final int length) throws IOException
-	{
-		if(offset < 0) //if a negative offset is requested
-		{
+	public static byte[] getBytes(final InputStream inputStream, final long offset, final int length) throws IOException {
+		if(offset < 0) { //if a negative offset is requested
 			throw new IllegalArgumentException("Offset cannot be negative.");
 		}
-		if(length < 0) //if a negative length is requested
-		{
+		if(length < 0) { //if a negative length is requested
 			throw new IllegalArgumentException("Length cannot be negative.");
 		}
 		final long bytesSkipped = offset > 0 ? inputStream.skip(offset) : 0; //skip the requested amount, if any
-		if(bytesSkipped == offset) //if all the requested bytes were skipped
-		{
+		if(bytesSkipped == offset) { //if all the requested bytes were skipped
 			final byte[] buffer = new byte[length]; //create a new array of bytes
 			final int bytesRead = read(inputStream, buffer); //read bytes into the buffer
-			if(bytesRead == length) //if all the bytes were read
-			{
+			if(bytesRead == length) { //if all the bytes were read
 				return buffer; //return the buffer normally
-			}
-			else
-			//if less bytes were read then requested
-			{
+			} else { //if less bytes were read then requested
 				final byte[] shortBuffer = new byte[bytesRead]; //create a shorter buffer
 				arraycopy(buffer, 0, shortBuffer, 0, bytesRead); //copy the bytes read from the expected buffer to the shorter buffer
 				return shortBuffer; //return the shorter buffer of bytes that were actually read
 			}
-		}
-		else
-		//if not all the skipped bytes requested were actually skipped
-		{
+		} else { //if not all the skipped bytes requested were actually skipped
 			return Bytes.NO_BYTES; //return an empty byte array
 		}
 	}
@@ -137,8 +120,7 @@ public class InputStreams
 	 * @throws IOException if there was an error accessing the input stream.
 	 * @see InputStream#markSupported()
 	 */
-	public static boolean isEmpty(final InputStream inputStream) throws IOException
-	{
+	public static boolean isEmpty(final InputStream inputStream) throws IOException {
 		checkMarkSupported(inputStream);
 		inputStream.mark(1); //we want to only check one byte
 		final int b = inputStream.read(); //read a single byte
@@ -154,8 +136,7 @@ public class InputStreams
 	 * @throws IllegalArgumentException if the given input stream does not support mark/reset.
 	 * @see InputStream#markSupported()
 	 */
-	public static InputStream checkMarkSupported(final InputStream inputStream)
-	{
+	public static InputStream checkMarkSupported(final InputStream inputStream) {
 		checkArgument(inputStream.markSupported(), "Input stream mark not supported.");
 		return inputStream;
 	}
@@ -168,10 +149,8 @@ public class InputStreams
 	 * @throws NullPointerException if the given input stream is <code>null</code>.
 	 * @see InputStream#markSupported()
 	 */
-	public static InputStream toMarkSupportedInputStream(final InputStream inputStream)
-	{
-		if(inputStream.markSupported()) //if the input stream already supports mark/reset
-		{
+	public static InputStream toMarkSupportedInputStream(final InputStream inputStream) {
+		if(inputStream.markSupported()) { //if the input stream already supports mark/reset
 			return inputStream; //return what we have already
 		}
 		return new BufferedInputStream(inputStream); //return buffered access to the input stream, which we know will support mark/reset 
@@ -184,19 +163,16 @@ public class InputStreams
 	 * @return The number of bytes actually read; if less than the size of the buffer, the end of the stream has been reached.
 	 * @throws IOException if there is an error reading from the input stream.
 	 */
-	public static int read(final InputStream inputStream, final byte[] buffer) throws IOException
-	{
+	public static int read(final InputStream inputStream, final byte[] buffer) throws IOException {
 		final int bufferLength = buffer.length; //get the length of the buffer
 		int bufferBytesRead = 0; //show that we haven't read any bytes in this buffer
 		int segmentBytesRead; //we'll use this to hold the number of bytes we read in each segment
-		do //read each segment of the buffer; the buffer may take several segments, since we're not guaranteed to have a buffered reader
-		{
+		do { //read each segment of the buffer; the buffer may take several segments, since we're not guaranteed to have a buffered reader
 			//read as much as we can into this buffer, at the next location, although this may not fill up the buffer
 			segmentBytesRead = inputStream.read(buffer, bufferBytesRead, bufferLength - bufferBytesRead);
 			if(segmentBytesRead >= 0) //if we haven't hit the end of the stream
 				bufferBytesRead += segmentBytesRead; //update the number of bytes we've read for the buffer
-		}
-		while(segmentBytesRead >= 0 && bufferBytesRead < bufferLength); //keep reading segments while we haven't reached the end of the file and we haven't filled up the buffer
+		} while(segmentBytesRead >= 0 && bufferBytesRead < bufferLength); //keep reading segments while we haven't reached the end of the file and we haven't filled up the buffer
 		return bufferBytesRead; //return the number of bytes read
 	}
 
@@ -212,8 +188,7 @@ public class InputStreams
 	 * @see ByteOrderMark
 	 * @see ByteOrderMark#isUnusual()
 	 */
-	public static Charset detectCharset(final InputStream inputStream) throws IOException
-	{
+	public static Charset detectCharset(final InputStream inputStream) throws IOException {
 		return detectCharset(inputStream, null); //detect the charset, returning null if the BOM can't be determined
 	}
 
@@ -230,23 +205,19 @@ public class InputStreams
 	 * @see ByteOrderMark
 	 * @see ByteOrderMark#isUnusual()
 	 */
-	public static Charset detectCharset(final InputStream inputStream, final Charset defaultCharset) throws IOException
-	{
+	public static Charset detectCharset(final InputStream inputStream, final Charset defaultCharset) throws IOException {
 		final int BYTE_ORDER_MARK_LENGTH = 4; //the number of bytes in the largest byte order mark
 		inputStream.mark(BYTE_ORDER_MARK_LENGTH); //we won't read more than the byte order mark
 		final byte[] bytes = new byte[BYTE_ORDER_MARK_LENGTH]; //create an array to hold the byte order mark
 		Arrays.fill(bytes, (byte)0); //fill the array with zeros, in case we can't completely fill it with bytes from the input stream
 		final int byteOrderMarkCount = inputStream.read(bytes); //read as many characters of the byte order mark as we can
-		if(byteOrderMarkCount > 0) //if we read any characters as all
-		{
+		if(byteOrderMarkCount > 0) { //if we read any characters as all
 			ByteOrderMark bom = ByteOrderMark.detectByteOrderMark(bytes); //try to detect the byte order mark
-			if(bom != null) //if we discovered a BOM
-			{
+			if(bom != null) { //if we discovered a BOM
 				bom.checkUsualIO(); //make sure this is a usual 
 				//throw away the BOM
 				inputStream.reset(); //reset the stream back to where we found it
-				for(int i = bom.getLength() - 1; i >= 0; --i) //throw away the correct number of bytes
-				{
+				for(int i = bom.getLength() - 1; i >= 0; --i) { //throw away the correct number of bytes
 					inputStream.read(); //throw away a byte
 				}
 				return bom.toCharset(); //return the charset for this BOM

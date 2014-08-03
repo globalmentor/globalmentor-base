@@ -16,11 +16,10 @@
 
 package com.globalmentor.text;
 
-/**The case of text, such as lowercase or uppercase.
-@author Garret Wilson
-*/
-public enum Case
-{
-	LOWERCASE,
-	UPPERCASE;
+/**
+ * The case of text, such as lowercase or uppercase.
+ * @author Garret Wilson
+ */
+public enum Case {
+	LOWERCASE, UPPERCASE;
 }

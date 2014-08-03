@@ -39,76 +39,48 @@ import com.globalmentor.net.URIPath;
  * 
  * @author Garret Wilson
  */
-public class DefaultTypeConverter implements TypeConverter
-{
+public class DefaultTypeConverter implements TypeConverter {
 
 	/** The default, shared instance of the converter. */
 	public final static DefaultTypeConverter INSTANCE = new DefaultTypeConverter();
 
 	/** Default constructor; used only for the singleton instance and for extension. */
-	protected DefaultTypeConverter()
-	{
+	protected DefaultTypeConverter() {
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public <T> T convert(final Object object, final Class<T> requiredType) throws IllegalArgumentException //TODO search for a string constructor or a static valueOf() method
-	{
+	public <T> T convert(final Object object, final Class<T> requiredType) throws IllegalArgumentException { //TODO search for a string constructor or a static valueOf() method
 		final Class<?> objectType = object.getClass(); //get the type of the object
-		if(requiredType.isAssignableFrom(objectType)) //if we expect this type (this algorithm could be improved to first try to find an exact match and then find a convertible match)
-		{
+		if(requiredType.isAssignableFrom(objectType)) { //if we expect this type (this algorithm could be improved to first try to find an exact match and then find a convertible match)
 			return requiredType.cast(object); //use the object as-is
-		}
-		else
-		//if we expect another object type
-		{
-			if(object instanceof Boolean) //if the object is a Boolean
-			{
-				if(boolean.class.isAssignableFrom(requiredType)) //if the required type is boolean (we already checked for Boolean when we checked to see if the types were the same)
-				{
+		} else { //if we expect another object type
+			if(object instanceof Boolean) { //if the object is a Boolean
+				if(boolean.class.isAssignableFrom(requiredType)) { //if the required type is boolean (we already checked for Boolean when we checked to see if the types were the same)
 					return (T)object; //return the Boolean object
 				}
-			}
-			else if(object instanceof Character) //if the object is a Character
-			{
-				if(char.class.isAssignableFrom(requiredType)) //if the required type is char (we already checked for Character when we checked to see if the types were the same)
-				{
+			} else if(object instanceof Character) { //if the object is a Character
+				if(char.class.isAssignableFrom(requiredType)) { //if the required type is char (we already checked for Character when we checked to see if the types were the same)
 					return (T)object; //return the Character object
 				}
-			}
-			else if(object instanceof Number) //if the object is a Number
-			{
-				if(long.class.isAssignableFrom(requiredType) || Long.class.isAssignableFrom(requiredType)) //if the required type is long or Long 
-				{
+			} else if(object instanceof Number) { //if the object is a Number
+				if(long.class.isAssignableFrom(requiredType) || Long.class.isAssignableFrom(requiredType)) { //if the required type is long or Long 
 					return (T)(object instanceof Long ? object : Long.valueOf(((Number)object).longValue())); //return a Long version of the object
-				}
-				else if(int.class.isAssignableFrom(requiredType) || Integer.class.isAssignableFrom(requiredType)) //if the required type is integer or integer 
-				{
+				} else if(int.class.isAssignableFrom(requiredType) || Integer.class.isAssignableFrom(requiredType)) { //if the required type is integer or integer 
 					return (T)(object instanceof Integer ? object : Integer.valueOf(((Number)object).intValue())); //return an Integer version of the object
-				}
-				else if(double.class.isAssignableFrom(requiredType) || Double.class.isAssignableFrom(requiredType)) //if the required type is double or Double
-				{
+				} else if(double.class.isAssignableFrom(requiredType) || Double.class.isAssignableFrom(requiredType)) { //if the required type is double or Double
 					return (T)(object instanceof Double ? object : Double.valueOf(((Number)object).doubleValue())); //return a Double version of the object
-				}
-				else if(float.class.isAssignableFrom(requiredType) || Float.class.isAssignableFrom(requiredType)) //if the required type is float or Float
-				{
+				} else if(float.class.isAssignableFrom(requiredType) || Float.class.isAssignableFrom(requiredType)) { //if the required type is float or Float
 					return (T)(object instanceof Double ? object : Float.valueOf(((Number)object).floatValue())); //return a Float version of the object
 				}
 				//TODO add BigInteger and BigDecimal types
-			}
-			else if(object instanceof String) //if the object is a string, see if we can convert it to the correct type
-			{
+			} else if(object instanceof String) { //if the object is a string, see if we can convert it to the correct type
 				final String stringObject = (String)object; //cast the value to a String
-				if(requiredType.isArray() && char.class.isAssignableFrom(requiredType.getComponentType())) //if the required type is a character array
-				{
+				if(requiredType.isArray() && char.class.isAssignableFrom(requiredType.getComponentType())) { //if the required type is a character array
 					return (T)stringObject.toCharArray(); //return the string as a character array
-				}
-				else if(Pattern.class.isAssignableFrom(requiredType)) //if the required type is Pattern
-				{
+				} else if(Pattern.class.isAssignableFrom(requiredType)) { //if the required type is Pattern
 					return (T)Pattern.compile(stringObject); //compile a pattern from the string
-				}
-				else if(URIPath.class.isAssignableFrom(requiredType)) //if the required type is URIPath
-				{
+				} else if(URIPath.class.isAssignableFrom(requiredType)) { //if the required type is URIPath
 					return (T)new URIPath(stringObject); //create a URI path from the string
 				}
 			}

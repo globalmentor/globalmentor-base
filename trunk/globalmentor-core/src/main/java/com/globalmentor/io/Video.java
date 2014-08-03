@@ -16,15 +16,15 @@
 
 package com.globalmentor.io;
 
-/**Utilities and constants for working with video content.
-@author Garret Wilson
-*/
-public class Video
-{
+/**
+ * Utilities and constants for working with video content.
+ * @author Garret Wilson
+ */
+public class Video {
 
-	/**The long name extension for MPEG files.*/
-	public final static String MPEG_NAME_EXTENSION="mpeg";
-	/**The short name extension for MPEG files.*/
-	public final static String MPG_NAME_EXTENSION="mpg";
+	/** The long name extension for MPEG files. */
+	public final static String MPEG_NAME_EXTENSION = "mpeg";
+	/** The short name extension for MPEG files. */
+	public final static String MPG_NAME_EXTENSION = "mpg";
 
 }

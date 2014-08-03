@@ -45,39 +45,33 @@ where INT#1 is an intersection type:
  * Illustration of Java Enum-related compile bug, reproduced in JDK 1.7.0_09-b05.
  * @author Garret Wilson
  */
-public class BugEnum
-{
+public class BugEnum {
 
-	public interface Command
-	{
+	public interface Command {
 	}
 
-	public interface CommandMessage<C extends Enum<C> & Command>
-	{
+	public interface CommandMessage<C extends Enum<C> & Command> {
+
 		public C getCommand();
 	}
 
-	public enum TestCommand implements Command
-	{
+	public enum TestCommand implements Command {
 		SUCCESS, FAILURE
 	}
 
-	public static class TestCommandMessage implements CommandMessage<TestCommand>
-	{
+	public static class TestCommandMessage implements CommandMessage<TestCommand> {
+
 		@Override
-		public TestCommand getCommand()
-		{
+		public TestCommand getCommand() {
 			return TestCommand.SUCCESS;
 		}
 	}
 
-	public static <E extends Enum<E>> String getSerializationName(final E e)
-	{
+	public static <E extends Enum<E>> String getSerializationName(final E e) {
 		return e.name().toString().toLowerCase();
 	}
 
-	public static void main(String... args)
-	{
+	public static void main(String... args) {
 		@SuppressWarnings("unused")
 		final CommandMessage<?> testMessage = new TestCommandMessage();
 		//bug:		System.out.println(getSerializationName(testMessage.getCommand()));

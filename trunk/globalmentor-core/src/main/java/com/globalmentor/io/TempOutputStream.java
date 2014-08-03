@@ -46,8 +46,7 @@ import com.globalmentor.log.Log;
  * 
  * @author Garret Wilson
  */
-public class TempOutputStream extends OutputStreamDecorator<OutputStream>
-{
+public class TempOutputStream extends OutputStreamDecorator<OutputStream> {
 
 	/** The temporary file in use, or <code>null</code> if no temporary file is in use (which means the output stream will be a {@link ByteArrayOutputStream}). */
 	private File tempFile = null;
@@ -61,8 +60,7 @@ public class TempOutputStream extends OutputStreamDecorator<OutputStream>
 	 * The threshold number of bytes for switching from memory to a temporary file. If set to zero, this output stream will always use a temporary file.
 	 * @return The threshold number of bytes for switching from memory to a temporary file.
 	 */
-	public int getThreshold()
-	{
+	public int getThreshold() {
 		return threshold;
 	}
 
@@ -73,8 +71,7 @@ public class TempOutputStream extends OutputStreamDecorator<OutputStream>
 	 * Default constructor with default threshold, automatically calling {@link #dispose()} when closed.
 	 * @see #DEFAULT_THRESHOLD
 	 */
-	public TempOutputStream()
-	{
+	public TempOutputStream() {
 		this(true);
 	}
 
@@ -82,8 +79,7 @@ public class TempOutputStream extends OutputStreamDecorator<OutputStream>
 	 * Auto-dispose constructor with default threshold.
 	 * @see #DEFAULT_THRESHOLD
 	 */
-	public TempOutputStream(final boolean autoDispose)
-	{
+	public TempOutputStream(final boolean autoDispose) {
 		this(DEFAULT_THRESHOLD, autoDispose);
 	}
 
@@ -93,8 +89,7 @@ public class TempOutputStream extends OutputStreamDecorator<OutputStream>
 	 * @param threshold The threshold number of bytes for switching from memory to a temporary file.
 	 * @throws IllegalArgumentException if the given threshold is negative.
 	 */
-	public TempOutputStream(final int threshold)
-	{
+	public TempOutputStream(final int threshold) {
 		this(threshold, true);
 	}
 
@@ -103,8 +98,7 @@ public class TempOutputStream extends OutputStreamDecorator<OutputStream>
 	 * @param threshold The threshold number of bytes for switching from memory to a temporary file.
 	 * @throws IllegalArgumentException if the given threshold is negative.
 	 */
-	public TempOutputStream(final int threshold, final boolean autoDispose)
-	{
+	public TempOutputStream(final int threshold, final boolean autoDispose) {
 		super(new ByteArrayOutputStream(Math.min(threshold, 32)), autoDispose); //no need to have the byte array output stream larger than the threshold 
 		this.threshold = checkArgumentNotNegative(threshold);
 	}
@@ -121,24 +115,17 @@ public class TempOutputStream extends OutputStreamDecorator<OutputStream>
 	 * @throws IOException if there is an error retrieving an input stream to the data.
 	 * @see #dispose()
 	 */
-	public synchronized InputStream getInputStream() throws IOException
-	{
+	public synchronized InputStream getInputStream() throws IOException {
 		final OutputStream outputStream = checkOutputStream(); //get our current output stream; this will also throw an exception if our output stream is closed
 		outputStream.flush(); //flush any waiting data
 		final File tempFile = this.tempFile; //get our current temp file, if any
 		this.tempFile = null; //release the temporary file, if any, from this class
 		dispose(); //dispose the output stream, releasing our output stream and effectively closely the output stream; this is safe, because we set our class temp file reference (if any) to null yet kept a local reference to it
-		if(outputStream instanceof ByteArrayOutputStream) //if we were writing to a byte array
-		{
+		if(outputStream instanceof ByteArrayOutputStream) { //if we were writing to a byte array
 			return new ByteArrayInputStream(((ByteArrayOutputStream)outputStream).toByteArray()); //get the bytes from the byte array output stream and return an input stream to them
-		}
-		else if(tempFile != null) //if we are writing to a file
-		{
+		} else if(tempFile != null) { //if we are writing to a file
 			return new TempFileInputStream(tempFile); //return an input stream to the file that will delete the temporary file when finished
-		}
-		else
-		//we should either be using a byte array output stream or a temporary file
-		{
+		} else { //we should either be using a byte array output stream or a temporary file
 			throw impossible("We should have been writing to a byte array output stream or a file.");
 		}
 	}
@@ -155,23 +142,17 @@ public class TempOutputStream extends OutputStreamDecorator<OutputStream>
 	 * @see #getThreshold()
 	 * @see #getInputStream()
 	 */
-	protected synchronized void beforeWrite(final int len) throws IOException
-	{
+	protected synchronized void beforeWrite(final int len) throws IOException {
 		final OutputStream outputStream = checkOutputStream(); //get our current output stream; this will also throw an exception if our output stream is closed
-		if(outputStream instanceof ByteArrayOutputStream) //if we haven't switched to a file, yet
-		{
+		if(outputStream instanceof ByteArrayOutputStream) { //if we haven't switched to a file, yet
 			final ByteArrayOutputStream byteArrayOutputStream = (ByteArrayOutputStream)outputStream; //we're still using a byte array
-			if(byteArrayOutputStream.size() + len >= getThreshold()) //if writing these bytes would put us over the threshold
-			{
+			if(byteArrayOutputStream.size() + len >= getThreshold()) { //if writing these bytes would put us over the threshold
 				final byte[] bytes = byteArrayOutputStream.toByteArray(); //get the accumulated bytes
 				final File file = createTempFile(); //create a new temporary file, but don't change our class state until we know we succeed in writing our current data
 				final FileOutputStream fileOutputStream = new FileOutputStream(file); //get an output stream to the temp file
-				try
-				{
+				try {
 					fileOutputStream.write(bytes); //write the accumulated bytes to the temporary file
-				}
-				catch(final IOException ioException) //if we have any problem transferring the bytes over
-				{
+				} catch(final IOException ioException) { //if we have any problem transferring the bytes over
 					file.delete(); //delete the temporary file so it won't be orphaned; the state hasn't been modified
 					throw ioException;
 				}
@@ -186,8 +167,7 @@ public class TempOutputStream extends OutputStreamDecorator<OutputStream>
 	 * @see #beforeWrite(int)
 	 */
 	@Override
-	public void write(int b) throws IOException
-	{
+	public void write(int b) throws IOException {
 		beforeWrite(1);
 		super.write(b);
 	}
@@ -197,8 +177,7 @@ public class TempOutputStream extends OutputStreamDecorator<OutputStream>
 	 * @see #beforeWrite(int)
 	 */
 	@Override
-	public void write(byte b[]) throws IOException
-	{
+	public void write(byte b[]) throws IOException {
 		beforeWrite(b.length);
 		super.write(b);
 	}
@@ -208,8 +187,7 @@ public class TempOutputStream extends OutputStreamDecorator<OutputStream>
 	 * @see #beforeWrite(int)
 	 */
 	@Override
-	public void write(byte b[], int off, int len) throws IOException
-	{
+	public void write(byte b[], int off, int len) throws IOException {
 		beforeWrite(1);
 		super.write(b, off, len);
 	}
@@ -219,8 +197,7 @@ public class TempOutputStream extends OutputStreamDecorator<OutputStream>
 	 * @throws IllegalArgumentException if the close decorated stream flag is <code>false</code>.
 	 */
 	@Override
-	public synchronized void close(final boolean closeDecoratedStream) throws IOException
-	{
+	public synchronized void close(final boolean closeDecoratedStream) throws IOException {
 		checkArgument(closeDecoratedStream == true, "This decorated output stream does not allow closing with closing the underlying stream.");
 		super.close(closeDecoratedStream);
 	}
@@ -230,29 +207,20 @@ public class TempOutputStream extends OutputStreamDecorator<OutputStream>
 	 * @return A new file for temporarily storing data.
 	 * @throw IOException if there is an error creating a temporary file.
 	 */
-	protected static File createTempFile() throws IOException
-	{
+	protected static File createTempFile() throws IOException {
 		return Files.createTempFile(TempOutputStream.class.getSimpleName(), false); //create a temp file that won't automatically be deleted 
 	}
 
 	/** {@inheritDoc} This version deletes the temporary file, if any. */
 	@Override
-	public synchronized void dispose()
-	{
-		try
-		{
+	public synchronized void dispose() {
+		try {
 			super.dispose();
-		}
-		finally
-		{
-			if(tempFile != null) //if we still have a temporary file
-			{
-				try
-				{
+		} finally {
+			if(tempFile != null) { //if we still have a temporary file
+				try {
 					delete(tempFile); //try to delete the temporary file
-				}
-				catch(final IOException ioException)
-				{
+				} catch(final IOException ioException) {
 					Log.error(ioException);
 				}
 				tempFile = null;

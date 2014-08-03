@@ -16,13 +16,13 @@
 
 package com.globalmentor.model;
 
-/**An object that can be identified by an ID.
-@author Garret Wilson
-*/
-public interface IDed<I>
-{
+/**
+ * An object that can be identified by an ID.
+ * @author Garret Wilson
+ */
+public interface IDed<I> {
 
-	/**@return The identifier, preferably unique, of the object; or <code>null</code> if the object has no ID.*/
+	/** @return The identifier, preferably unique, of the object; or <code>null</code> if the object has no ID. */
 	public I getID();
 
 }

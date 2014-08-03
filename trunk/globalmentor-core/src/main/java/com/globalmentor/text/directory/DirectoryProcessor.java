@@ -43,15 +43,13 @@ import com.globalmentor.model.NameValuePair;
  * @see Profile
  * @see PredefinedProfile
  */
-public class DirectoryProcessor
-{
+public class DirectoryProcessor {
 
 	/** The profile for the predefined types. */
 	private final PredefinedProfile predefinedProfile = new PredefinedProfile();
 
 	/** @return The profile for the predefined types. */
-	protected PredefinedProfile getPredefinedProfile()
-	{
+	protected PredefinedProfile getPredefinedProfile() {
 		return predefinedProfile;
 	}
 
@@ -63,8 +61,7 @@ public class DirectoryProcessor
 	 * @param profileName The name of the profile.
 	 * @param profile The profile to be registered with this profile name.
 	 */
-	public void registerProfile(final String profileName, final Profile profile)
-	{
+	public void registerProfile(final String profileName, final Profile profile) {
 		profileMap.put(profileName.toLowerCase(), profile); //put the profile in the map, keyed to the lowercase version of the profile name
 	}
 
@@ -74,8 +71,7 @@ public class DirectoryProcessor
 	 * @return A profile for this profile name, or <code>null</code> if there is no profile registered for this profile name.
 	 * @see #getPredefinedProfile
 	 */
-	protected Profile getProfile(final String profileName)
-	{
+	protected Profile getProfile(final String profileName) {
 		return profileName != null ? profileMap.get(profileName.toLowerCase()) : getPredefinedProfile(); //get the profile keyed to the lowercase version of the profile name, or return the predefined profile if null was passed
 	}
 
@@ -87,8 +83,7 @@ public class DirectoryProcessor
 	 * @param valueType The value type for which this value factory can create values.
 	 * @param valueFactory The value factory to be registered with this value type.
 	 */
-	public void registerValueFactory(final String valueType, final ValueFactory valueFactory)
-	{
+	public void registerValueFactory(final String valueType, final ValueFactory valueFactory) {
 		valueFactoryMap.put(valueType.toLowerCase(), valueFactory); //put the value factory in the map, keyed to the lowercase version of the type
 	}
 
@@ -97,8 +92,7 @@ public class DirectoryProcessor
 	 * @param valueType The value type for which a value factory should be returned.
 	 * @return A value factory for this value type, or <code>null</code> if there is no value factory registered for this value type.
 	 */
-	protected ValueFactory getValueFactory(final String valueType)
-	{
+	protected ValueFactory getValueFactory(final String valueType) {
 		return valueFactoryMap.get(valueType.toLowerCase()); //get the value factory keyed to the lowercase version of this value type
 	}
 
@@ -118,8 +112,7 @@ public class DirectoryProcessor
 	 * until the block ends or another block begins.
 	 * @param profile The new profile of the directory.
 	 */
-	protected void setProfile(final String profile)
-	{
+	protected void setProfile(final String profile) {
 		defaultProfile = profile; //save the profile
 		useDefaultProfile = true; //show that we should use the default profile
 	}
@@ -128,19 +121,12 @@ public class DirectoryProcessor
 	 * @return The current profile, either the last set profile, the profile of the current "begin:"/"end:" block, or <code>null</code> if there is no profile, in
 	 *         that order.
 	 */
-	protected String getProfile()
-	{
-		if(useDefaultProfile && defaultProfile != null) //if we should use the default profile and there is a profile set
-		{
+	protected String getProfile() {
+		if(useDefaultProfile && defaultProfile != null) { //if we should use the default profile and there is a profile set
 			return defaultProfile; //return the last set profile
-		}
-		else if(profileStack.size() > 0) //if we're in a profile "begin:"/"end:" block
-		{
+		} else if(profileStack.size() > 0) { //if we're in a profile "begin:"/"end:" block
 			return profileStack.getLast(); //return the profile of the current block
-		}
-		else
-		//if no profile is set, and we're not in a profile "begin:"/"end:" block
-		{
+		} else { //if no profile is set, and we're not in a profile "begin:"/"end:" block
 			return defaultProfile; //if there's no profile "begin:"/"end:" block, we'll have to use the default profile, even if it is null
 		}
 	}
@@ -149,8 +135,7 @@ public class DirectoryProcessor
 	 * Pushes the given profile on the stack, and removes the set profile, if any. Suspends the currently set profile, if any.
 	 * @param profile The profile of the new "begin:"/"end:" block block.
 	 */
-	protected void pushProfile(final String profile)
-	{
+	protected void pushProfile(final String profile) {
 		profileStack.addLast(profile); //push the profile onto the stack
 		useDefaultProfile = false; //suspend use of the default profile
 	}
@@ -160,8 +145,7 @@ public class DirectoryProcessor
 	 * @return The profile from the top of the stack.
 	 * @throws NoSuchElementException Thrown if there are no more profiles on the stack.
 	 */
-	protected String popProfile()
-	{
+	protected String popProfile() {
 		useDefaultProfile = false; //suspend use of the default profile
 		return (String)profileStack.removeLast(); //pop the profile from the stack
 	}
@@ -169,8 +153,7 @@ public class DirectoryProcessor
 	/**
 	 * Default constructor. This class automatically registers the predefined profile as a value factory for standard value types.
 	 */
-	public DirectoryProcessor()
-	{
+	public DirectoryProcessor() {
 		//register the predefined profile as a value factory for the standard value types
 		registerValueFactory(URI_VALUE_TYPE, getPredefinedProfile());
 		registerValueFactory(TEXT_VALUE_TYPE, getPredefinedProfile());
@@ -200,8 +183,7 @@ public class DirectoryProcessor
 	 * @throws IOException Thrown if there is an error reading the directory.
 	 * @throws ParseIOException Thrown if there is a an error interpreting the directory.
 	 */
-	public Directory processDirectory(final Reader reader, final Object sourceObject) throws IOException, ParseIOException //TODO remove sourceObject
-	{
+	public Directory processDirectory(final Reader reader, final Object sourceObject) throws IOException, ParseIOException { //TODO remove sourceObject
 		return processDirectory(new LineUnfoldReader(reader)); //create a new line unfold parse reader and use that to process the directory TODO see if the reader is already a LineUnfoldParseReader
 	}
 
@@ -213,21 +195,16 @@ public class DirectoryProcessor
 	 * @throws IOException Thrown if there is an error reading the directory.
 	 * @throws ParseIOException Thrown if there is a an error interpreting the directory.
 	 */
-	public Directory processDirectory(final Reader reader) throws IOException, ParseIOException
-	{
+	public Directory processDirectory(final Reader reader) throws IOException, ParseIOException {
 		final Set<String> checkedProfileNameSet = new HashSet<String>(); //create a set to store the profile names we check
 		final ContentLine[] contentLines = processContentLines(reader); //process the content lines
-		for(int i = 0; i < contentLines.length; ++i) //look at each content line
-		{
+		for(int i = 0; i < contentLines.length; ++i) { //look at each content line
 			final String profileName = contentLines[i].getProfile(); //get this line's profile name
-			if(profileName != null && !checkedProfileNameSet.contains(profileName)) //if this content line is in a profile that we haven't checked
-			{
+			if(profileName != null && !checkedProfileNameSet.contains(profileName)) { //if this content line is in a profile that we haven't checked
 				final Profile profile = getProfile(profileName); //see if we have a profile object for this profile
-				if(profile != null) //if we have a profile object registered
-				{
+				if(profile != null) { //if we have a profile object registered
 					final Directory directory = profile.createDirectory(contentLines); //ask this profile to create a directory
-					if(directory != null) //if the profile created a directory
-					{
+					if(directory != null) { //if the profile created a directory
 						return directory; //return the directory the profile created
 					}
 
@@ -245,51 +222,38 @@ public class DirectoryProcessor
 	 * @throws IOException Thrown if there is an error reading the directory.
 	 * @throws ParseIOException Thrown if there is a an error interpreting the directory.
 	 */
-	public ContentLine[] processContentLines(final Reader reader) throws IOException, ParseIOException
-	{
+	public ContentLine[] processContentLines(final Reader reader) throws IOException, ParseIOException {
 		profileStack = new LinkedList<String>(); //create a new profile stack
 		defaultProfile = null; //show that there is no default profile
 		useDefaultProfile = false; //don't use the default profile
 		final List<ContentLine> contentLineList = new ArrayList<ContentLine>(); //create an array in which to told the content lines
 		ContentLine[] contentLines;
-		while((contentLines = processContentLine(reader)) != null) //process one or more lines of contents, all of which should have the same type, while we haven't reached the end of the reader
-		{
-			for(final ContentLine contentLine : contentLines) //look at each line of content
-			{
+		while((contentLines = processContentLine(reader)) != null) { //process one or more lines of contents, all of which should have the same type, while we haven't reached the end of the reader
+			for(final ContentLine contentLine : contentLines) { //look at each line of content
 				//TODO del Log.trace("just processed content line: ", contentLine);	//TODO del
 				final String typeName = contentLine.getName(); //get the type
 				/*TODO del when works
-									if(NAME_TYPE.equalsIgnoreCase(typeName))	//if this is NAME
-									{
-										if(directory.getName()==null)	//if the directory does not yet have a name
-										{
+									if(NAME_TYPE.equalsIgnoreCase(typeName)) {	//if this is NAME
+										if(directory.getName()==null) {	//if the directory does not yet have a name
 											directory.setName((String)contentLine.getValue());	//get the directory name
 										}
 									}
 				*/
-				if(PROFILE_TYPE.equalsIgnoreCase(typeName)) //if this is PROFILE
-				{
+				if(PROFILE_TYPE.equalsIgnoreCase(typeName)) { //if this is PROFILE
 					final String profile = ((LocaledText)contentLine.getValue()).getText(); //get the profile
 					contentLine.setProfile(profile); //a profile type should have the same profile as the one it sets
 					setProfile(profile); //set the profile to the new profile
-				}
-				else if(BEGIN_TYPE.equalsIgnoreCase(typeName)) //if this is BEGIN:xxx
-				{
+				} else if(BEGIN_TYPE.equalsIgnoreCase(typeName)) { //if this is BEGIN:xxx
 					final String profile = ((LocaledText)contentLine.getValue()).getText(); //get the profile
 					contentLine.setProfile(profile); //a beginning profile type should have the same profile as the one it sets
 					pushProfile(profile); //push the new profile
-				}
-				else if(END_TYPE.equalsIgnoreCase(typeName)) //if this is END:xxx
-				{
+				} else if(END_TYPE.equalsIgnoreCase(typeName)) { //if this is END:xxx
 					final String profile = ((LocaledText)contentLine.getValue()).getText(); //get the profile
 					contentLine.setProfile(profile); //an ending profile type should have the same profile to which it refers
-					try
-					{
+					try {
 						final String oldProfile = popProfile(); //pop the profile from the stack
 						//TODO make sure the old profile is what we expect
-					}
-					catch(final NoSuchElementException noSuchElementException) //if there are no more profiles on the stack
-					{
+					} catch(final NoSuchElementException noSuchElementException) { //if there are no more profiles on the stack
 						throw new ParseIOException(reader, "Profile \"" + profile + "\" END without BEGIN."); //throw an error indicating that there was no beginning to the profile
 					}
 				}
@@ -312,8 +276,7 @@ public class DirectoryProcessor
 	 * @throws IOException Thrown if there is an error reading the directory.
 	 * @throws ParseIOException Thrown if there is a an error interpreting the directory.
 	 */
-	public ContentLine[] processContentLine(final Reader reader) throws IOException, ParseIOException
-	{
+	public ContentLine[] processContentLine(final Reader reader) throws IOException, ParseIOException {
 		String profile = getProfile(); //get the current profile, if there is one
 		String group = null; //we'll store the group here
 		String name = null; //we'll store the name here
@@ -321,66 +284,48 @@ public class DirectoryProcessor
 
 		String token = reachEnd(reader, CONTENT_LINE_DELIMITER_CHARACTERS); //read the next line token; don't throw an exception if the end of the file is reached, because this could be an empty line
 		final int c = reader.read(); //get the delimiter character we encountered
-		if(c < 0) //if we reached the end of the file
-		{
-			if(token.trim().length() > 0) //if there is non-whitespace content before the end of the line, but none of the other delimiters we expect, there's a syntax error in the line
-			{
+		if(c < 0) { //if we reached the end of the file
+			if(token.trim().length() > 0) { //if there is non-whitespace content before the end of the line, but none of the other delimiters we expect, there's a syntax error in the line
 				throw new ParseEOFException(reader); //show that we didn't expect to run out of data here
-			}
-			else
-			//if this was an empty line
-			{
-				if(token.isEmpty()) //if no characters were read before the end of the line
-				{
+			} else { //if this was an empty line
+				if(token.isEmpty()) { //if no characters were read before the end of the line
 					return null; //the end of the reader was reached
-				}
-				else
-				//if only whitespace was read
-				{
+				} else { //if only whitespace was read
 					return new ContentLine[0]; //return an empty content line indicator
 				}
 			}
 		}
 		char character = (char)c;
-		if(character == GROUP_NAME_SEPARATOR_CHAR) //if we just read a group
-		{
+		if(character == GROUP_NAME_SEPARATOR_CHAR) { //if we just read a group
 			//TODO check the syntax of the group
 			group = token; //save the group we read
 			//TODO del Log.trace("found group: ", group);
 			token = reach(reader, GROUPLESS_CONTENT_LINE_DELIMITER_CHARACTERS); //read the next line token after the group, which should be the name
 			character = readCharacter(reader); //get the delimiter character we encountered, and fall through to checking the name
 		}
-		switch(character)
-		//see which delimiter character we encountered
-		{
+		switch(character) { //see which delimiter character we encountered
 			case PARAM_SEPARATOR_CHAR: //if we just read a parameter separator
 			case NAME_VALUE_SEPARATOR_CHAR: //if we just read the character separates the name from the value
 				//TODO check the name
 				name = token; //this is the name
 				//		TODO del Log.trace("found name: ", name);
-				if(character == PARAM_SEPARATOR_CHAR) //if this was the character separating the name from parameters, read the parameters
-				{
+				if(character == PARAM_SEPARATOR_CHAR) { //if this was the character separating the name from parameters, read the parameters
 					paramList = processParameters(reader); //process the parameters
 					confirm(reader, NAME_VALUE_SEPARATOR_CHAR); //read the ':' that we expect to come after the parameters
 					//					reader.readExpectedChar(NAME_VALUE_SEPARATOR_CHAR); //read the ':' that we expect to come after the parameters
-				}
-				else
-				//if there were no parameters
-				{
+				} else { //if there were no parameters
 					paramList = new ArrayList<NameValuePair<String, String>>(); //create an empty list, since we didn't read any parameters
 				}
 				//		TODO del Log.trace("ready to process value");
 				final Object[] values = processValue(profile, group, name, paramList, reader); //process the value and get an object that represents the object
 				check(reader, CRLF); //there should always be a CRLF after the value
 				final ContentLine[] contentLines = new ContentLine[values.length]; //create an array of content lines that we'll fill with new content lines
-				for(int i = 0; i < values.length; ++i) //look at each value
-				{
+				for(int i = 0; i < values.length; ++i) { //look at each value
 					contentLines[i] = new ContentLine(profile, group, name, new ArrayList<NameValuePair<String, String>>(paramList), values[i]); //create a content line with this value, making a copy of the parameter list
 				}
 				return contentLines; //return the array of content lines we created and filled
 			case CR: //if we just read a carriage return
-				if(token.trim().length() > 0) //if there is content before the CRLF, but none of the other delimiters we expect, there's a syntax error in the line
-				{
+				if(token.trim().length() > 0) { //if there is content before the CRLF, but none of the other delimiters we expect, there's a syntax error in the line
 					throw new ParseUnexpectedDataException(new Characters(PARAM_SEPARATOR_CHAR, NAME_VALUE_SEPARATOR_CHAR), character, reader); //show that we didn't expect this character here
 				}
 				check(reader, LF); //there should always be an LF after a CR
@@ -416,25 +361,19 @@ public class DirectoryProcessor
 	 * @throws ParseIOException Thrown if there is a an error interpreting the directory.
 	 * @see NameValuePair
 	 */
-	public List<NameValuePair<String, String>> processParameters(final Reader reader) throws IOException, ParseIOException
-	{
+	public List<NameValuePair<String, String>> processParameters(final Reader reader) throws IOException, ParseIOException {
 		final List<NameValuePair<String, String>> paramList = new ArrayList<NameValuePair<String, String>>(); //create a list of parameters
 		char nextCharacter; //we'll store the last peeked delimiter here each time in the loop
-		do //read each parameter
-		{
+		do { //read each parameter
 			//read the parameter name
 			final String paramName = reach(reader, PARAM_NAME_DELIMITER_CHARACTERS); //get the parameter name, which is usually everything up to the '=' character
 			//TODO check the param name for validity
 			nextCharacter = peek(reader); //see what delimiter will come next
-			if(nextCharacter == PARAM_NAME_VALUE_SEPARATOR_CHAR) //if there is at least one value waiting
-			{
-				do //read the parameter value(s)
-				{
+			if(nextCharacter == PARAM_NAME_VALUE_SEPARATOR_CHAR) { //if there is at least one value waiting
+				do { //read the parameter value(s)
 					reader.skip(1); //skip the delimiter that got us here
 					final String paramValue; //we'll read the value and store it here
-					switch(peek(reader))
-					//see what character is first in the value
-					{
+					switch(peek(reader)) { //see what character is first in the value
 						case DQUOTE: //if the string starts with a quote
 							paramValue = readDelimited(reader, DQUOTE, DQUOTE); //read the value within the quotes 
 							break;
@@ -446,19 +385,14 @@ public class DirectoryProcessor
 					//TODO check the parameter value, here
 					paramList.add(new NameValuePair<String, String>(paramName, paramValue)); //add this name/value pair to our list of parameters
 					nextCharacter = peek(reader); //see what delimiter will come next
-				}
-				while(nextCharacter == PARAM_VALUE_SEPARATOR_CHAR); //keep getting parameter values while there are more parameter value separators
-			}
-			else	//if there is no '='
-			{
+				} while(nextCharacter == PARAM_VALUE_SEPARATOR_CHAR); //keep getting parameter values while there are more parameter value separators
+			} else { //if there is no '='
 				paramList.add(new NameValuePair<String, String>(paramName, null)); //add a name/value pair with null as the value
 			}
-			if(nextCharacter == PARAM_SEPARATOR_CHAR) //if the next character is the character that separates multiple parameters
-			{
+			if(nextCharacter == PARAM_SEPARATOR_CHAR) { //if the next character is the character that separates multiple parameters
 				reader.skip(1); //skip the parameter separator
 			}
-		}
-		while(nextCharacter != NAME_VALUE_SEPARATOR_CHAR); //keep reading parameters until we get to the '=' that separates the name from the value
+		} while(nextCharacter != NAME_VALUE_SEPARATOR_CHAR); //keep reading parameters until we get to the '=' that separates the name from the value
 		return paramList; //return the list of parameters we filled
 	}
 
@@ -490,36 +424,28 @@ public class DirectoryProcessor
 	 * @see NameValuePair
 	 */
 	protected Object[] processValue(final String profileName, final String group, final String name, final List<NameValuePair<String, String>> paramList,
-			final Reader reader) throws IOException, ParseIOException
-	{
+			final Reader reader) throws IOException, ParseIOException {
 		Object[] objects = null; //start out by assuming we can't process the value
 		final Profile profile = getProfile(profileName); //see if we have a profile registered with this profile name
 		String valueType = getParamValue(paramList, VALUE_PARAM_NAME); //get the value type parameter value
-		if(valueType == null) //if the value type wasn't explicitly given
-		{
-			if(profile != null) //if there is a profile for this profile name
-			{
+		if(valueType == null) { //if the value type wasn't explicitly given
+			if(profile != null) { //if there is a profile for this profile name
 				valueType = profile.getValueType(profileName, group, name, paramList); //ask this profile's value factory for the value type
 			}
-			if(valueType == null && profile != getPredefinedProfile()) //if we still don't know the type, and we didn't already check the predefined profile 
-			{
+			if(valueType == null && profile != getPredefinedProfile()) { //if we still don't know the type, and we didn't already check the predefined profile 
 				valueType = getPredefinedProfile().getValueType(profileName, group, name, paramList); //ask the predefined profile for the value type
 			}
 		}
-		if(profile instanceof ValueFactory) //if our profile is a value factory, use the profile as a value factory
-		{
+		if(profile instanceof ValueFactory) { //if our profile is a value factory, use the profile as a value factory
 			objects = ((ValueFactory)profile).createValues(profileName, group, name, paramList, valueType, reader); //create objects for this profile
 		}
-		if(objects == null && valueType != null) //if no objects were created, but we know the value type
-		{
+		if(objects == null && valueType != null) { //if no objects were created, but we know the value type
 			final ValueFactory valueFactory = getValueFactory(valueType); //see if we have a value factory registered with this value type
-			if(valueFactory != null) //if there is a value factory for this value type
-			{
+			if(valueFactory != null) { //if there is a value factory for this value type
 				objects = valueFactory.createValues(profileName, group, name, paramList, valueType, reader); //create objects for this value type
 			}
 		}
-		if(objects == null) //if no objects were created
-		{
+		if(objects == null) { //if no objects were created
 			final String valueString = reach(reader, CR); //everything before the carriage return will constitute the value
 			objects = new String[] { valueString }; //put the single value string in an array of strings and use that for the value objects
 		}

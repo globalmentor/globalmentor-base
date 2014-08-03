@@ -83,8 +83,7 @@ package com.globalmentor.java;
  * @author Garret Wilson
  * 
  */
-public interface Disposable
-{
+public interface Disposable {
 
 	/**
 	 * Uninitializes the object. After calling this method, the object should not be used further. This method can be called multiple times without danger. All

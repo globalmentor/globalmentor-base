@@ -29,12 +29,10 @@ import com.globalmentor.test.AbstractTest;
  * 
  * @author Garret Wilson
  */
-public class TimeTest extends AbstractTest
-{
+public class TimeTest extends AbstractTest {
 
 	@Test
-	public void testFloor()
-	{
+	public void testFloor() {
 		final Time time = new Time();
 		final Time floor = time.floor(Time.Resolution.SECONDS);
 		assertThat(floor.getTime(), equalTo(Maths.floor(time.getTime(), 3))); //round down to seconds

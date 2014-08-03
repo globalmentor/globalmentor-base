@@ -30,8 +30,7 @@ import java.util.concurrent.locks.*;
  * 
  * @author Garret Wilson
  */
-public abstract class AbstractReadWriteLockOperation extends AbstractOperation implements ReadWriteLock
-{
+public abstract class AbstractReadWriteLockOperation extends AbstractOperation implements ReadWriteLock {
 
 	/** The decorated read write lock. */
 	private final ReadWriteLock readWriteLock;
@@ -40,8 +39,7 @@ public abstract class AbstractReadWriteLockOperation extends AbstractOperation i
 	 * Returns the lock used for reading.
 	 * @return the lock used for reading.
 	 */
-	public Lock readLock()
-	{
+	public Lock readLock() {
 		return readWriteLock.readLock();
 	}
 
@@ -49,14 +47,12 @@ public abstract class AbstractReadWriteLockOperation extends AbstractOperation i
 	 * Returns the lock used for writing.
 	 * @return the lock used for writing.
 	 */
-	public Lock writeLock()
-	{
+	public Lock writeLock() {
 		return readWriteLock.writeLock();
 	}
 
 	/** Default constructor using a reentrant read/write lock. */
-	public AbstractReadWriteLockOperation()
-	{
+	public AbstractReadWriteLockOperation() {
 		this(new ReentrantReadWriteLock());
 	}
 
@@ -65,35 +61,26 @@ public abstract class AbstractReadWriteLockOperation extends AbstractOperation i
 	 * @param readWriteLock The lock for controlling access to the properties.
 	 * @throws NullPointerException if the given lock is <code>null</code>.
 	 */
-	public AbstractReadWriteLockOperation(final ReadWriteLock readWriteLock)
-	{
+	public AbstractReadWriteLockOperation(final ReadWriteLock readWriteLock) {
 		this.readWriteLock = checkInstance(readWriteLock, "Read write lock cannot be null.");
 	}
 
 	@Override
-	public TaskState getState()
-	{
+	public TaskState getState() {
 		readLock().lock();
-		try
-		{
+		try {
 			return super.getState();
-		}
-		finally
-		{
+		} finally {
 			readLock().unlock();
 		}
 	}
 
 	@Override
-	public synchronized void setState(final TaskState newState)
-	{
+	public synchronized void setState(final TaskState newState) {
 		writeLock().lock();
-		try
-		{
+		try {
 			super.setState(newState);
-		}
-		finally
-		{
+		} finally {
 			writeLock().unlock();
 		}
 	}

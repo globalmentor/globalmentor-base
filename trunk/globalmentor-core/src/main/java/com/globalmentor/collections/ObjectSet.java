@@ -33,8 +33,8 @@ import static com.globalmentor.text.TextFormatter.*;
  * 
  * @param <E> The type of object contained in the set.
  */
-public class ObjectSet<E> implements Set<E>, ImmutableCollection<E>
-{
+public class ObjectSet<E> implements Set<E>, ImmutableCollection<E> {
+
 	/** The object held in the set. */
 	private E object;
 
@@ -43,55 +43,47 @@ public class ObjectSet<E> implements Set<E>, ImmutableCollection<E>
 	 * @param object The object to hold in the set.
 	 * @throws NullPointerException if the given object is <code>null</code>.
 	 */
-	public ObjectSet(final E object)
-	{
+	public ObjectSet(final E object) {
 		this.object = checkInstance(object, "Object cannot be null.");
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public int size()
-	{
+	public int size() {
 		return 1;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public boolean isEmpty()
-	{
+	public boolean isEmpty() {
 		return false;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public boolean contains(Object o)
-	{
+	public boolean contains(Object o) {
 		return object.equals(o);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public Iterator<E> iterator()
-	{
+	public Iterator<E> iterator() {
 		return new ObjectIterator<E>(object);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public Object[] toArray()
-	{
+	public Object[] toArray() {
 		return new Object[] { object };
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	@SuppressWarnings("unchecked")
-	public <T> T[] toArray(T[] a)
-	{
+	public <T> T[] toArray(T[] a) {
 		a = Arrays.getArray(a, 1); //make sure our array is large enough
 		a[0] = (T)object;
-		if(a.length > 1)
-		{
+		if(a.length > 1) {
 			a[1] = null;
 		}
 		return a;
@@ -99,60 +91,51 @@ public class ObjectSet<E> implements Set<E>, ImmutableCollection<E>
 
 	/** {@inheritDoc} */
 	@Override
-	public boolean add(E e)
-	{
+	public boolean add(E e) {
 		throw new UnsupportedOperationException();
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public boolean remove(Object o)
-	{
+	public boolean remove(Object o) {
 		throw new UnsupportedOperationException();
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public boolean containsAll(Collection<?> c)
-	{
+	public boolean containsAll(Collection<?> c) {
 		final int size = c.size();
 		return size == 0 || (size == 1 && object.equals(c.iterator().next()));
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public boolean addAll(Collection<? extends E> c)
-	{
+	public boolean addAll(Collection<? extends E> c) {
 		throw new UnsupportedOperationException();
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public boolean retainAll(Collection<?> c)
-	{
+	public boolean retainAll(Collection<?> c) {
 		throw new UnsupportedOperationException();
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public boolean removeAll(Collection<?> c)
-	{
+	public boolean removeAll(Collection<?> c) {
 		throw new UnsupportedOperationException();
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void clear()
-	{
+	public void clear() {
 		throw new UnsupportedOperationException();
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public boolean equals(Object o)
-	{
-		if(!(o instanceof Set))
-		{
+	public boolean equals(Object o) {
+		if(!(o instanceof Set)) {
 			return false;
 		}
 		final Set<?> set = (Set<?>)o;
@@ -161,24 +144,19 @@ public class ObjectSet<E> implements Set<E>, ImmutableCollection<E>
 
 	/** {@inheritDoc} */
 	@Override
-	public int hashCode()
-	{
+	public int hashCode() {
 		return object.hashCode();
 	}
 
 	@Override
-	public String toString()
-	{
-		try
-		{
+	public String toString() {
+		try {
 			final StringBuilder stringBuilder = new StringBuilder();
 			stringBuilder.append('[');
 			formatList(stringBuilder, this);
 			stringBuilder.append(']');
 			return stringBuilder.toString();
-		}
-		catch(final IOException ioException)
-		{
+		} catch(final IOException ioException) {
 			throw unexpected(ioException);
 		}
 	}

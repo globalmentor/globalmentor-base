@@ -18,26 +18,26 @@ package com.globalmentor.java;
 
 import java.io.*;
 
-/**Utilities for working with throwbles and exceptions.
-@author Garret Wilson
-*/
-public class Throwables
-{
+/**
+ * Utilities for working with throwbles and exceptions.
+ * @author Garret Wilson
+ */
+public class Throwables {
 
-	/**Returns a string representing the stack trace of the given throwable.
-	This implementation returns a string in the same format as produced by {@link Throwable#printStackTrace(PrintWriter)}.
-	@param throwable The throwable for which a strack trace string should be produced.
-	@return A string representation of the throwable's stack trace.
-	@throws NullPointerException if the given throwable is <code>null</code>.
-	@see Throwable#printStackTrace(PrintWriter)
-	*/
-	public static String getStackTraceString(final Throwable throwable)
-	{
-		final StringWriter stringWriter=new StringWriter();
-		final PrintWriter printWriter=new PrintWriter(stringWriter);
-		throwable.printStackTrace(printWriter);	//print to the print writer which prints to the string writer which prints to the string
-		printWriter.flush();	//flush the output
-		return stringWriter.toString();	//return the printed string
+	/**
+	 * Returns a string representing the stack trace of the given throwable. This implementation returns a string in the same format as produced by
+	 * {@link Throwable#printStackTrace(PrintWriter)}.
+	 * @param throwable The throwable for which a strack trace string should be produced.
+	 * @return A string representation of the throwable's stack trace.
+	 * @throws NullPointerException if the given throwable is <code>null</code>.
+	 * @see Throwable#printStackTrace(PrintWriter)
+	 */
+	public static String getStackTraceString(final Throwable throwable) {
+		final StringWriter stringWriter = new StringWriter();
+		final PrintWriter printWriter = new PrintWriter(stringWriter);
+		throwable.printStackTrace(printWriter); //print to the print writer which prints to the string writer which prints to the string
+		printWriter.flush(); //flush the output
+		return stringWriter.toString(); //return the printed string
 	}
 
 }

@@ -28,8 +28,7 @@ package com.globalmentor.java;
  * 
  * @see <a href="http://www.artima.com/intv/issues3.html">The clone Dilemma</a>
  */
-public interface CloneSupported extends Cloneable
-{
+public interface CloneSupported extends Cloneable {
 
 	/**
 	 * {@inheritDoc} This version is guaranteed not to throw {@link CloneNotSupportedException}.

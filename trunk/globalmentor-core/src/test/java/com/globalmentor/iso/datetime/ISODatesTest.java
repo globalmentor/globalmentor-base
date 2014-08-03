@@ -34,14 +34,12 @@ import com.globalmentor.model.*;
  * @see ISODates
  * 
  */
-public class ISODatesTest
-{
+public class ISODatesTest {
 
 	/** @see ISODates#getDayCounts(Set) */
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testGetDayCounts()
-	{
+	public void testGetDayCounts() {
 		Map<ISODate, Count> dayCounts;
 		//no ranges
 		dayCounts = ISODates.getDayCounts(Collections.<Range<ISODate>> emptySet());
@@ -61,16 +59,14 @@ public class ISODatesTest
 	/** @see ISODates#getDayTotals(ISODate, int, Map) */
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testGetDayTotals()
-	{
+	public void testGetDayTotals() {
 		Map<ISODate, Count> dayCounts;
 		Map<ISODate, Long> dayTotals;
 		//no ranges
 		dayCounts = ISODates.getDayCounts(Collections.<Range<ISODate>> emptySet());
 		dayTotals = ISODates.getDayTotals(new ISODate(2002, 03, 04), 365, dayCounts);
 		assertThat(dayTotals.size(), is(365));
-		for(final Map.Entry<ISODate, Long> dayTotalEntry : dayTotals.entrySet())
-		{
+		for(final Map.Entry<ISODate, Long> dayTotalEntry : dayTotals.entrySet()) {
 			assertThat(dayTotalEntry.getValue(), is(0L));
 		}
 		//a single day

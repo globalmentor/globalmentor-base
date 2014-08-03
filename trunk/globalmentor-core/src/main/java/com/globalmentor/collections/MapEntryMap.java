@@ -29,8 +29,8 @@ import com.globalmentor.model.NameValuePair;
  * @param <K> The type of key contained in the map.
  * @param <V> The type of value contained in the map.
  */
-public class MapEntryMap<K, V> implements Map<K, V>, ImmutableMap<K, V>
-{
+public class MapEntryMap<K, V> implements Map<K, V>, ImmutableMap<K, V> {
+
 	/** The map entry held in the map. */
 	private Map.Entry<K, V> mapEntry;
 
@@ -39,8 +39,7 @@ public class MapEntryMap<K, V> implements Map<K, V>, ImmutableMap<K, V>
 	 * @param key The key to hold in the map.
 	 * @param value The value to hold in the map.
 	 */
-	public MapEntryMap(final K key, final V value)
-	{
+	public MapEntryMap(final K key, final V value) {
 		mapEntry = new NameValuePairMapEntry<K, V>(key, value);
 	}
 
@@ -49,8 +48,7 @@ public class MapEntryMap<K, V> implements Map<K, V>, ImmutableMap<K, V>
 	 * @param nameValuePair The name/value pair the values of which to hold in the map.
 	 * @throws NullPointerException if the given name/value pair is <code>null</code>.
 	 */
-	public MapEntryMap(final NameValuePair<K, V> nameValuePair)
-	{
+	public MapEntryMap(final NameValuePair<K, V> nameValuePair) {
 		mapEntry = new NameValuePairMapEntry<K, V>(nameValuePair);
 	}
 
@@ -59,97 +57,81 @@ public class MapEntryMap<K, V> implements Map<K, V>, ImmutableMap<K, V>
 	 * @param mapEntry The map entry the values of which to hold in the map.
 	 * @throws NullPointerException if the given map entry is <code>null</code>.
 	 */
-	public MapEntryMap(final Map.Entry<K, V> mapEntry)
-	{
+	public MapEntryMap(final Map.Entry<K, V> mapEntry) {
 		this.mapEntry = new NameValuePairMapEntry<K, V>(mapEntry);
 	}
 
 	/** {@inheritDoc} */
-	public int size()
-	{
+	public int size() {
 		return 1;
 	}
 
 	/** {@inheritDoc} */
-	public boolean isEmpty()
-	{
+	public boolean isEmpty() {
 		return false;
 	}
 
 	/** {@inheritDoc} */
-	public boolean containsKey(Object key)
-	{
+	public boolean containsKey(Object key) {
 		return Objects.equals(key, mapEntry.getKey());
 	}
 
 	/** {@inheritDoc} */
-	public boolean containsValue(Object value)
-	{
+	public boolean containsValue(Object value) {
 		return Objects.equals(value, mapEntry.getValue());
 	}
 
 	/** {@inheritDoc} */
-	public V get(Object key)
-	{
+	public V get(Object key) {
 		return Objects.equals(key, mapEntry.getKey()) ? mapEntry.getValue() : null;
 	}
 
 	/** {@inheritDoc} */
-	public V put(K key, V value)
-	{
+	public V put(K key, V value) {
 		throw new UnsupportedOperationException();
 	}
 
 	/** {@inheritDoc} */
-	public V remove(Object key)
-	{
+	public V remove(Object key) {
 		throw new UnsupportedOperationException();
 	}
 
 	/** {@inheritDoc} */
-	public void putAll(Map<? extends K, ? extends V> m)
-	{
+	public void putAll(Map<? extends K, ? extends V> m) {
 		throw new UnsupportedOperationException();
 	}
 
 	/** {@inheritDoc} */
-	public void clear()
-	{
+	public void clear() {
 		throw new UnsupportedOperationException();
 	}
 
 	/** {@inheritDoc} */
-	public Set<K> keySet()
-	{
+	public Set<K> keySet() {
 		return new ObjectSet<K>(mapEntry.getKey());
 	}
 
 	/** {@inheritDoc} */
-	public Collection<V> values()
-	{
+	public Collection<V> values() {
 		return new ObjectSet<V>(mapEntry.getValue());
 	}
 
 	/** {@inheritDoc} */
-	public Set<Map.Entry<K, V>> entrySet()
-	{
+	public Set<Map.Entry<K, V>> entrySet() {
 		return new ObjectSet<Map.Entry<K, V>>(mapEntry);
 	}
 
 	/** {@inheritDoc} */
-	public boolean equals(Object o)
-	{
-		if(!(o instanceof Map))
-		{
+	public boolean equals(Object o) {
+		if(!(o instanceof Map)) {
 			return false;
 		}
-		final Map<?, ?> map = (Map<?, ?>) o;
+		final Map<?, ?> map = (Map<?, ?>)o;
 		return map.size() == 1 && mapEntry.equals(map.entrySet().iterator().next());
 	}
 
 	/** {@inheritDoc} */
-	public int hashCode()
-	{
+	public int hashCode() {
 		return mapEntry.hashCode();
 	}
 

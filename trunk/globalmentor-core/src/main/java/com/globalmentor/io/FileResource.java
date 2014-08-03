@@ -25,46 +25,46 @@ import static com.globalmentor.java.Objects.*;
 
 import com.globalmentor.net.DefaultResource;
 
-/**A resource accessible by a file.
-The file may or may not have the same URI as the resource.
-@author Garret Wilson
-*/
-public class FileResource extends DefaultResource
-{
+/**
+ * A resource accessible by a file. The file may or may not have the same URI as the resource.
+ * @author Garret Wilson
+ */
+public class FileResource extends DefaultResource {
 
-	/**The file this resource represents.*/
+	/** The file this resource represents. */
 	private final File file;
 
-		/**@return The file this resource represents.*/
-		public File getFile() {return file;}
-
-	/**Constructs a resource with a file.
-	The reference URI will be set to the reference URI of the file.
-	@param file The file this resource represents.
-	@throws NullPointerException if the given file or reference URI is <code>null</code>.
-	*/
-	public FileResource(final File file)
-	{
-		this(file, Files.toURI(file));	//construct the resource using the file's URI
+	/** @return The file this resource represents. */
+	public File getFile() {
+		return file;
 	}
 
-	/**Constructs a resource with a file and a reference URI.
-	@param file The file this resource represents.
-	@param referenceURI The reference URI for the new resource.
-	@throws NullPointerException if the given file is <code>null</code>.
-	*/
-	public FileResource(final File file, final URI referenceURI)
-	{
-		super(referenceURI);	//construct the parent class
-		this.file=checkInstance(file, "File cannot be null.");	//save the file
+	/**
+	 * Constructs a resource with a file. The reference URI will be set to the reference URI of the file.
+	 * @param file The file this resource represents.
+	 * @throws NullPointerException if the given file or reference URI is <code>null</code>.
+	 */
+	public FileResource(final File file) {
+		this(file, Files.toURI(file)); //construct the resource using the file's URI
 	}
 
-	/**Retrieves an list of child resources of this resource.
-	@return A list of child resources.
-	*/
-	public List<FileResource> getChildResources()
-	{
-		return emptyList();	//TODO implement
+	/**
+	 * Constructs a resource with a file and a reference URI.
+	 * @param file The file this resource represents.
+	 * @param referenceURI The reference URI for the new resource.
+	 * @throws NullPointerException if the given file is <code>null</code>.
+	 */
+	public FileResource(final File file, final URI referenceURI) {
+		super(referenceURI); //construct the parent class
+		this.file = checkInstance(file, "File cannot be null."); //save the file
+	}
+
+	/**
+	 * Retrieves an list of child resources of this resource.
+	 * @return A list of child resources.
+	 */
+	public List<FileResource> getChildResources() {
+		return emptyList(); //TODO implement
 	}
 
 }

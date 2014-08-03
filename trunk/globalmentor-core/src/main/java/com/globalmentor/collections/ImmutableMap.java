@@ -26,6 +26,5 @@ import java.util.Map;
  * @param <K> The type of key contained in the map.
  * @param <V> The type of value contained in the map.
  */
-public interface ImmutableMap<K, V> extends Map<K, V>
-{
+public interface ImmutableMap<K, V> extends Map<K, V> {
 }

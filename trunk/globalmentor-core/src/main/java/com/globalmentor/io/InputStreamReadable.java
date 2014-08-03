@@ -23,8 +23,7 @@ import java.net.URI;
  * An object that can read information from an input stream.
  * @author Garret Wilson
  */
-public interface InputStreamReadable
-{
+public interface InputStreamReadable {
 
 	/**
 	 * Reads the contents of the given input stream.

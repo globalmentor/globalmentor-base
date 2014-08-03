@@ -23,8 +23,7 @@ import static com.globalmentor.time.Time.*;
  * 
  * @author Garret Wilson
  */
-public class Milliseconds
-{
+public class Milliseconds {
 
 	/**
 	 * Determines the number of milliseconds from the given number of seconds.
@@ -32,8 +31,7 @@ public class Milliseconds
 	 * @return The number of milliseconds for the given number of seconds.
 	 * @see Time#MILLISECONDS_PER_SECOND
 	 */
-	public static long fromSeconds(final long seconds)
-	{
+	public static long fromSeconds(final long seconds) {
 		return seconds * MILLISECONDS_PER_SECOND;
 	}
 
@@ -43,8 +41,7 @@ public class Milliseconds
 	 * @return The number of milliseconds for the given number of minutes.
 	 * @see Time#SECONDS_PER_MINUTE
 	 */
-	public static long fromMinutes(final long minutes)
-	{
+	public static long fromMinutes(final long minutes) {
 		return fromSeconds(minutes * SECONDS_PER_MINUTE);
 	}
 
@@ -54,8 +51,7 @@ public class Milliseconds
 	 * @return The number of milliseconds for the given number of hours.
 	 * @see Time#MINUTES_PER_HOUR
 	 */
-	public static long fromHours(final long hours)
-	{
+	public static long fromHours(final long hours) {
 		return fromMinutes(hours * MINUTES_PER_HOUR);
 	}
 
@@ -65,8 +61,7 @@ public class Milliseconds
 	 * @return The number of milliseconds for the given number of days.
 	 * @see Time#HOURS_PER_DAY
 	 */
-	public static long fromDays(final long days)
-	{
+	public static long fromDays(final long days) {
 		return fromHours(days * HOURS_PER_DAY);
 	}
 

@@ -28,8 +28,7 @@ import com.globalmentor.model.Named;
  * @see <a href="http://en.wikipedia.org/wiki/SI_prefixes">SI prefix</a>
  * @see <a href="http://en.wikipedia.org/wiki/International_System_of_Units">International System of Units</a>
  */
-public enum SIPrefix implements Named<String>
-{
+public enum SIPrefix implements Named<String> {
 
 	YOCTO("yocto", "y", -24), ZEPTO("zepto", "z", -21), ATTO("atto", "a", -18), FEMTO("femto", "f", -15), PICO("pico", "p", -12), NANO("nano", "n", -9), MICRO(
 			"micro", String.valueOf((char)0x03bc), -6), MILLI("milli", "m", -3), CENTI("centi", "c", -2), DECI("deci", "d", -1), NONE("", "", 0), DECA("deca", "da",
@@ -40,8 +39,7 @@ public enum SIPrefix implements Named<String>
 	private final String name;
 
 	/** @return The prefix name. */
-	public String getName()
-	{
+	public String getName() {
 		return name;
 	}
 
@@ -49,8 +47,7 @@ public enum SIPrefix implements Named<String>
 	private final String symbol;
 
 	/** @return The prefix symbol. */
-	public String getSymbol()
-	{
+	public String getSymbol() {
 		return symbol;
 	}
 
@@ -58,8 +55,7 @@ public enum SIPrefix implements Named<String>
 	private final int factorPower;
 
 	/** @return The power of the prefix factor with 10 as the base. */
-	public int getFactorPower()
-	{
+	public int getFactorPower() {
 		return factorPower;
 	}
 
@@ -67,8 +63,7 @@ public enum SIPrefix implements Named<String>
 	private final BigDecimal factor;
 
 	/** @return The power of the prefix. */
-	public BigDecimal getFactor()
-	{
+	public BigDecimal getFactor() {
 		return factor;
 	}
 
@@ -79,8 +74,7 @@ public enum SIPrefix implements Named<String>
 	 * @param factorPower The power of the prefix factor with 10 as the base.
 	 * @throws NullPointerException if the given symbol is <code>null</code>.
 	 */
-	private SIPrefix(final String name, final String symbol, final int factorPower)
-	{
+	private SIPrefix(final String name, final String symbol, final int factorPower) {
 		this.name = checkInstance(name, "Name cannot be null."); //save the name
 		this.symbol = checkInstance(symbol, "Symbol cannot be null."); //save the symbol
 		this.factorPower = factorPower; //save the base 10 power of the factor
@@ -91,8 +85,7 @@ public enum SIPrefix implements Named<String>
 	 * Returns a string representation of the prefix. This version returns the prefix name.
 	 * @see #getName()
 	 */
-	public String toString()
-	{
+	public String toString() {
 		return getName();
 	}
 

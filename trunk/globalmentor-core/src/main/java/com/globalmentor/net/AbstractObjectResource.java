@@ -27,8 +27,7 @@ import java.net.URI;
  * </p>
  * @author Garret Wilson
  */
-public abstract class AbstractObjectResource<C extends AbstractObjectResource<C>> extends DefaultResource implements Comparable<Resource>
-{
+public abstract class AbstractObjectResource<C extends AbstractObjectResource<C>> extends DefaultResource implements Comparable<Resource> {
 
 	/**
 	 * The type of class with which other object resources must be instances of to be equal. This is a private variable to prevent interpretation as a property in
@@ -40,8 +39,7 @@ public abstract class AbstractObjectResource<C extends AbstractObjectResource<C>
 	 * URI constructor.
 	 * @param uri The URI for the new resource.
 	 */
-	public AbstractObjectResource(final URI uri, final Class<? extends C> type)
-	{
+	public AbstractObjectResource(final URI uri, final Class<? extends C> type) {
 		super(uri);
 		this.type = checkInstance(type);
 	}
@@ -52,10 +50,8 @@ public abstract class AbstractObjectResource<C extends AbstractObjectResource<C>
 	 * @see #getType()
 	 * @see #getURI()
 	 */
-	public boolean equals(final Object object)
-	{
-		if(!type.isInstance(object)) //require the specified type
-		{
+	public boolean equals(final Object object) {
+		if(!type.isInstance(object)) { //require the specified type
 			return false;
 		}
 		return super.equals(object);

@@ -19,16 +19,18 @@ package com.globalmentor.io;
 import java.io.IOException;
 import java.io.OutputStream;
 
-/**An output stream that throws away its data.
-@author Garret Wilson
-*/
-public class NullOutputStream extends OutputStream
-{
-	/**Writes the specified byte to this output stream.
-	This version does nothing.
-	@param b The byte to write.
-	@throws IOException if an I/O error occurs.
-	*/
-	public void write(final int b) throws IOException {}
+/**
+ * An output stream that throws away its data.
+ * @author Garret Wilson
+ */
+public class NullOutputStream extends OutputStream {
+
+	/**
+	 * Writes the specified byte to this output stream. This version does nothing.
+	 * @param b The byte to write.
+	 * @throws IOException if an I/O error occurs.
+	 */
+	public void write(final int b) throws IOException {
+	}
 
 }

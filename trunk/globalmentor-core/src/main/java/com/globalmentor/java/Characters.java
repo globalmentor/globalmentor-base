@@ -51,8 +51,7 @@ import com.globalmentor.text.RomanNumerals;
  * @author Garret Wilson
  * @see <a href="http://unicode.org/unicode/standard/reports/tr13/tr13-5.html">Unicode Newline Guidelines</a>
  */
-public final class Characters
-{
+public final class Characters {
 
 	/** A shared instance of an empty array of characters. */
 	public final static char[] EMPTY_ARRAY = new char[0];
@@ -400,8 +399,7 @@ public final class Characters
 	 * @throws NullPointerException if the given characters is <code>null</code>.
 	 * @throws IllegalArgumentException if the given characters contain Unicode surrogate characters.
 	 */
-	public Characters(char... characters)
-	{
+	public Characters(char... characters) {
 		this(characters, 0, characters.length);
 	}
 
@@ -413,18 +411,12 @@ public final class Characters
 	 * @throws NullPointerException if the given characters is <code>null</code>.
 	 * @throws IllegalArgumentException if the given characters contain Unicode surrogate characters.
 	 */
-	public Characters(char[] characters, final int start, final int end)
-	{
-		if(characters.length != 0) //if this is not an empty array of characters
-		{
+	public Characters(char[] characters, final int start, final int end) {
+		if(characters.length != 0) { //if this is not an empty array of characters
 			//create a defensive copy of the input
-			if(start == 0 && end == characters.length) //if we're using the whole array
-			{
+			if(start == 0 && end == characters.length) { //if we're using the whole array
 				characters = characters.clone(); //create a copy of the characters so that we can control the array completely
-			}
-			else
-			//if we're using part of the array
-			{
+			} else { //if we're using part of the array
 				final int length = end - start;
 				final char[] tempCharacters = new char[length]; //create a new array
 				System.arraycopy(characters, start, tempCharacters, 0, length); //copy the characters
@@ -434,42 +426,32 @@ public final class Characters
 			boolean duplicates = false; //start by assuming there are no duplicates
 			final int length = characters.length;
 			final int lastIndex = length - 1;
-			for(int i = lastIndex; i > 0; --i) //check the characters for duplicates; iterate down to the second character
-			{
+			for(int i = lastIndex; i > 0; --i) { //check the characters for duplicates; iterate down to the second character
 				final char c = characters[i];
-				if(c == characters[i - 1]) //because the characters are now sorted, we just check for two of the same character side-by-side
-				{
+				if(c == characters[i - 1]) { //because the characters are now sorted, we just check for two of the same character side-by-side
 					duplicates = true;
 				}
-				if(c >= Character.MIN_SURROGATE && c <= Character.MAX_SURROGATE) //if this is a surrogate character
-				{
+				if(c >= Character.MIN_SURROGATE && c <= Character.MAX_SURROGATE) { //if this is a surrogate character
 					throw new IllegalArgumentException("Characters contain surrogate character: " + getLabel(c) + ".");
 				}
 			}
 			minChar = characters[0];
-			if(minChar >= Character.MIN_SURROGATE && minChar <= Character.MAX_SURROGATE) //check the first character, which we skipped
-			{
+			if(minChar >= Character.MIN_SURROGATE && minChar <= Character.MAX_SURROGATE) { //check the first character, which we skipped
 				throw new IllegalArgumentException("Characters contain surrogate character: " + getLabel(minChar) + ".");
 			}
 			maxChar = characters[lastIndex];
-			if(duplicates) //if there are duplicates, remove them
-			{
+			if(duplicates) { //if there are duplicates, remove them
 				int lastChar = -1;
 				final StringBuilder stringBuilder = new StringBuilder(characters.length);
-				for(final char c : characters)
-				{
-					if(c != lastChar) //if this is not a duplicate (the characters are in order, so duplicates will always be side-by-side)
-					{
+				for(final char c : characters) {
+					if(c != lastChar) { //if this is not a duplicate (the characters are in order, so duplicates will always be side-by-side)
 						stringBuilder.append(c);
 						lastChar = c; //indicate the last character we looked at, so we can prevent duplicates
 					}
 				}
 				characters = toCharArray(stringBuilder); //use the characters in the string builder, which no longer contain duplicates
 			}
-		}
-		else
-		//if there are no characters
-		{
+		} else { //if there are no characters
 			characters = EMPTY_ARRAY; //use a shared empty array to save memory
 			minChar = maxChar = -1;
 		}
@@ -483,16 +465,13 @@ public final class Characters
 	 * @return Characters representing the indicated range.
 	 * @throws IllegalArgumentException if the last character comes before the first character.
 	 */
-	public static Characters range(final char first, final char last)
-	{
-		if(last < first)
-		{
+	public static Characters range(final char first, final char last) {
+		if(last < first) {
 			throw new IllegalArgumentException("Last character in range " + getLabel(last) + " cannot come before first character " + getLabel(first) + ".");
 		}
 		final int length = last - first + 1;
 		final char[] chars = new char[length];
-		for(int i = 0; i < length; ++i)
-		{
+		for(int i = 0; i < length; ++i) {
 			chars[i] = (char)(first + i);
 		}
 		return new Characters(chars);
@@ -504,20 +483,17 @@ public final class Characters
 	 * @throws NullPointerException if the given character sequence is <code>null</code>.
 	 * @throws IllegalArgumentException if the given character sequence contains Unicode surrogate characters.
 	 */
-	public Characters(final CharSequence charSequence)
-	{
+	public Characters(final CharSequence charSequence) {
 		this(toCharArray(charSequence));
 	}
 
 	/** @return <code>true</code> if this object contains no characters. */
-	public boolean isEmpty()
-	{
+	public boolean isEmpty() {
 		return chars.length == 0;
 	}
 
 	/** @return The number of characters. */
-	public int size()
-	{
+	public int size() {
 		return chars.length;
 	}
 
@@ -528,8 +504,7 @@ public final class Characters
 	 * @throws NullPointerException if the given characters is <code>null</code>.
 	 * @throws IllegalArgumentException if the given characters contain Unicode surrogate characters.
 	 */
-	public Characters add(final Characters characters)
-	{
+	public Characters add(final Characters characters) {
 		return add(characters.chars);
 	}
 
@@ -540,8 +515,7 @@ public final class Characters
 	 * @throws NullPointerException if the given characters is <code>null</code>.
 	 * @throws IllegalArgumentException if the given characters contain Unicode surrogate characters.
 	 */
-	public Characters add(final char... characters)
-	{
+	public Characters add(final char... characters) {
 		final int length = characters.length;
 		return length > 0 ? new Characters(toStringBuilder(length).append(characters)) //get a string builder from the characters and append the given characters to create a new object
 				: this; //if nothing is being added, return these characters
@@ -554,8 +528,7 @@ public final class Characters
 	 * @throws NullPointerException if the given character sequence <code>null</code>.
 	 * @throws IllegalArgumentException if the given character sequence contains Unicode surrogate characters.
 	 */
-	public Characters add(final CharSequence charSequence)
-	{
+	public Characters add(final CharSequence charSequence) {
 		final int length = charSequence.length();
 		return length > 0 ? new Characters(toStringBuilder(charSequence.length()).append(charSequence)) //get a string builder from the characters and append the given characters to create a new object
 				: this; //if nothing is being added, return these characters
@@ -567,8 +540,7 @@ public final class Characters
 	 * @return A new object containing these characters without the given characters.
 	 * @throws NullPointerException if the given characters is <code>null</code>.
 	 */
-	public Characters remove(final Characters characters)
-	{
+	public Characters remove(final Characters characters) {
 		return remove(characters.chars);
 	}
 
@@ -578,17 +550,12 @@ public final class Characters
 	 * @return A new object containing these characters without the given characters.
 	 * @throws NullPointerException if the given characters is <code>null</code>.
 	 */
-	public Characters remove(final char... characters)
-	{
-		for(final char character : characters) //see if we have any of the given characters
-		{
-			if(contains(character)) //if there is at least one character to remove
-			{
+	public Characters remove(final char... characters) {
+		for(final char character : characters) { //see if we have any of the given characters
+			if(contains(character)) { //if there is at least one character to remove
 				final StringBuilder stringBuilder = new StringBuilder(chars.length); //create a new string builder with enough room for our current characters
-				for(final char c : chars) //look at all our current characters
-				{
-					if(!Arrays.contains(characters, c)) //if this is not a character to remove
-					{
+				for(final char c : chars) { //look at all our current characters
+					if(!Arrays.contains(characters, c)) { //if this is not a character to remove
 						stringBuilder.append(c); //add this character to our string builder
 					}
 				}
@@ -604,17 +571,12 @@ public final class Characters
 	 * @return A new object containing these characters without the given characters.
 	 * @throws NullPointerException if the given character sequence <code>null</code>.
 	 */
-	public Characters remove(final CharSequence charSequence)
-	{
-		for(int i = charSequence.length() - 1; i >= 0; --i) //see if we have any of the given characters
-		{
-			if(contains(charSequence.charAt(i))) //if there is at least one character to remove
-			{
+	public Characters remove(final CharSequence charSequence) {
+		for(int i = charSequence.length() - 1; i >= 0; --i) { //see if we have any of the given characters
+			if(contains(charSequence.charAt(i))) { //if there is at least one character to remove
 				final StringBuilder stringBuilder = new StringBuilder(chars.length); //create a new string builder with enough room for our current characters
-				for(final char c : chars) //look at all our current characters
-				{
-					if(!CharSequences.contains(charSequence, c)) //if this is not a character to remove
-					{
+				for(final char c : chars) { //look at all our current characters
+					if(!CharSequences.contains(charSequence, c)) { //if this is not a character to remove
 						stringBuilder.append(c); //add this character to our string builder
 					}
 				}
@@ -636,32 +598,25 @@ public final class Characters
 	 * @param charSequence The character sequence to split.
 	 * @return A list of subsequences; the list may not be mutable.
 	 */
-	public List<CharSequence> split(final CharSequence charSequence)
-	{
+	public List<CharSequence> split(final CharSequence charSequence) {
 		ArrayList<CharSequence> subsequences = null; //we'll only create this if we have to
 		final int length = charSequence.length();
 		int start = 0;
-		while(start < length)
-		{
+		while(start < length) {
 			//skip delimiters
-			while(start < length && contains(charSequence.charAt(start)))
-			{
+			while(start < length && contains(charSequence.charAt(start))) {
 				++start;
 			}
-			if(start == length) //if we've reached the end, stop
-			{
+			if(start == length) { //if we've reached the end, stop
 				break;
 			}
 			//gather all non-delimiters to form a token
 			int end = start + 1;
-			while(end < length && !contains(charSequence.charAt(end)))
-			{
+			while(end < length && !contains(charSequence.charAt(end))) {
 				++end;
 			}
-			if(subsequences == null) //if we haven't created any subsequences
-			{
-				if(start == 0 && end == length) //if the whole character sequence is non-delimiters (there were no delimiters) 
-				{
+			if(subsequences == null) { //if we haven't created any subsequences
+				if(start == 0 && end == length) { //if the whole character sequence is non-delimiters (there were no delimiters) 
 					return new ObjectList<CharSequence>(charSequence); //there is only one token to return
 				}
 				subsequences = new ArrayList<CharSequence>(); //if we're really splitting the string, we'll need a new list
@@ -673,8 +628,7 @@ public final class Characters
 	}
 
 	/** @return A string containing these characters. */
-	public String toString()
-	{
+	public String toString() {
 		return new String(chars);
 	}
 
@@ -686,8 +640,7 @@ public final class Characters
 	 * </p>
 	 * @return A string containing an array representation of these characters.
 	 */
-	public String toLabelArrayString()
-	{
+	public String toLabelArrayString() {
 		return appendLabelArrayString(new StringBuilder(chars.length * 8), chars).toString(); //most of the time, each character will just take up five to eight characters
 	}
 
@@ -696,8 +649,7 @@ public final class Characters
 	 * @return A string builder containing these characters.
 	 * @see StringBuilder#append(char[])
 	 */
-	public StringBuilder toStringBuilder()
-	{
+	public StringBuilder toStringBuilder() {
 		return toStringBuilder(16);
 	}
 
@@ -708,8 +660,7 @@ public final class Characters
 	 * @throws IllegalArgumentException if the given capacity is negative.
 	 * @see StringBuilder#append(char[])
 	 */
-	public StringBuilder toStringBuilder(final int extraCapacity)
-	{
+	public StringBuilder toStringBuilder(final int extraCapacity) {
 		return new StringBuilder(chars.length + checkArgumentNotNegative(extraCapacity)).append(chars); //allow room for more characters
 	}
 
@@ -718,20 +669,14 @@ public final class Characters
 	 * @param character The character to check.
 	 * @return <code>true</code> if the character exists in these characters.
 	 */
-	public boolean contains(final char character)
-	{
-		if(character < minChar || character > maxChar) //do quick bounds checking
-		{
+	public boolean contains(final char character) {
+		if(character < minChar || character > maxChar) { //do quick bounds checking
 			return false;
 		}
-		for(final char c : chars) //look at each character
-		{
-			if(c == character) //if we found the character
-			{
+		for(final char c : chars) { //look at each character
+			if(c == character) { //if we found the character
 				return true;
-			}
-			else if(c > character) //if we've gone beyond the character, the character doesn't exist, because the characters are in order
-			{
+			} else if(c > character) { //if we've gone beyond the character, the character doesn't exist, because the characters are in order
 				return false;
 			}
 		}
@@ -745,18 +690,13 @@ public final class Characters
 	 *          of which specifying the top inclusive character of the range.
 	 * @return <code>true</code> if the character is in one of the ranges, else <code>false</code>.
 	 */
-	public static boolean isCharInRange(final char c, final char[][] ranges) //TODO improve code by doing a binary search
-	{
+	public static boolean isCharInRange(final char c, final char[][] ranges) { //TODO improve code by doing a binary search
 		final int rangeCount = ranges.length; //find out how many ranges there are
-		for(int i = 0; i < rangeCount; ++i) //look at each range
-		{
+		for(int i = 0; i < rangeCount; ++i) { //look at each range
 			final char[] range = ranges[i]; //get this range
-			if(c < range[0]) //if the character is lower than the lower bound, it's not in this range---and we've already checked previous ranges
-			{
+			if(c < range[0]) { //if the character is lower than the lower bound, it's not in this range---and we've already checked previous ranges
 				return false; //we've ran out of ranges that might work
-			}
-			else if(c <= range[1]) //if the character is greater than or equal to the lower bound, see if the character is lower than or equal to the upper bound
-			{
+			} else if(c <= range[1]) { //if the character is greater than or equal to the lower bound, see if the character is lower than or equal to the upper bound
 				return true; //the character is within range
 			}
 		}
@@ -768,8 +708,7 @@ public final class Characters
 	 * @param c The character to examine.
 	 * @return <code>true</code> if the character is an ASCII character.
 	 */
-	public static boolean isASCII(final char c)	//TODO reconcile with ASCII.isASCII()
-	{
+	public static boolean isASCII(final char c) { //TODO reconcile with ASCII.isASCII()
 		return c >= 0 && c < 0x80; //see if this character is between 0 and 128, inclusive
 	}
 
@@ -778,8 +717,7 @@ public final class Characters
 	 * @param c The character to examine.
 	 * @return <code>true</code> if the character is an ISO_LATIN_1 digit.
 	 */
-	public final static boolean isLatinDigit(final char c)
-	{
+	public final static boolean isLatinDigit(final char c) {
 		return c >= '0' && c <= '9'; //see if the character falls in the range of the Latin digits
 	}
 
@@ -788,8 +726,7 @@ public final class Characters
 	 * @param c Character to analyze.
 	 * @return <code>true</code> if the character is punctuation.
 	 */
-	public static boolean isPunctuation(final char c)
-	{
+	public static boolean isPunctuation(final char c) {
 		return PUNCTUATION_CHARS.contains(c); //return true if we can find the character in the string of punctuation characters TODO update the list of punctuation characters
 	}
 
@@ -798,8 +735,7 @@ public final class Characters
 	 * @param c The character to examine.
 	 * @return <code>true</code> if the character is a Roman numeral.
 	 */
-	public static boolean isRomanNumeral(final char c)
-	{
+	public static boolean isRomanNumeral(final char c) {
 		return RomanNumerals.getValue(c) >= 0; //see if the character returns a valid Roman numeral value
 	}
 
@@ -808,8 +744,7 @@ public final class Characters
 	 * @param c Character to analyze.
 	 * @return <code>true</code> if the character is whitespace.
 	 */
-	public static boolean isWhitespace(final char c)
-	{
+	public static boolean isWhitespace(final char c) {
 		return WHITESPACE_CHARACTERS.contains(c); //return true if we can find the character in the string of whitespace characters
 	}
 
@@ -818,8 +753,7 @@ public final class Characters
 	 * @param c Character to analyze.
 	 * @return <code>true</code> if the character allows word wrapping.
 	 */
-	public static boolean isWordDelimiter(final char c)
-	{
+	public static boolean isWordDelimiter(final char c) {
 		return WORD_DELIMITER_CHARACTERS.contains(c); //return true if we can find the character in the string of word delimiter characters
 	}
 
@@ -828,8 +762,7 @@ public final class Characters
 	 * @param c Character to analyze.
 	 * @return <code>true</code> if the character allows word wrapping.
 	 */
-	public static boolean isWordWrap(final char c)
-	{
+	public static boolean isWordWrap(final char c) {
 		return WORD_WRAP_CHARS.indexOf(c) >= 0; //return true if we can find the character in the string of word wrap characters
 	}
 
@@ -842,8 +775,7 @@ public final class Characters
 	 * @return The string label representing the character.
 	 * @see #appendLabel(StringBuilder, char)
 	 */
-	public static String getLabel(final int c)
-	{
+	public static String getLabel(final int c) {
 		return appendLabel(new StringBuilder(), c).toString();
 	}
 
@@ -856,8 +788,7 @@ public final class Characters
 	 * @param characters The characters to return as a string of an array.
 	 * @return A string containing an array representation of these characters.
 	 */
-	public static String toLabelArrayString(final char... characters)
-	{
+	public static String toLabelArrayString(final char... characters) {
 		return appendLabelArrayString(new StringBuilder(characters.length * 8), characters).toString(); //most of the time, each character will just take up five to eight characters
 	}
 
@@ -870,8 +801,7 @@ public final class Characters
 	 * @param characters The characters to return as a string of an array.
 	 * @return A string containing an array representation of these characters.
 	 */
-	public static String toLabelArrayString(final CharSequence characters)
-	{
+	public static String toLabelArrayString(final CharSequence characters) {
 		return appendLabelArrayString(new StringBuilder(characters.length() * 8), characters.toString().toCharArray()).toString(); //most of the time, each character will just take up five to eight characters
 	}
 
@@ -880,8 +810,7 @@ public final class Characters
 	 * @param characters The characters to convert to bytes.
 	 * @return An array of bytes representing the given characters in the UTF-8 charset.
 	 */
-	public static byte[] toByteArray(final char[] characters)
-	{
+	public static byte[] toByteArray(final char[] characters) {
 		return toByteArray(characters, UTF_8_CHARSET); //convert the characters using UTF-8
 	}
 
@@ -891,17 +820,13 @@ public final class Characters
 	 * @param charset The charset to use when converting characters to bytes.
 	 * @return An array of bytes representing the given characters in the specified encoding.
 	 */
-	public static byte[] toByteArray(final char[] characters, final Charset charset)
-	{
+	public static byte[] toByteArray(final char[] characters, final Charset charset) {
 		final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(); //create a byte array output stream
 		final Writer writer = new OutputStreamWriter(byteArrayOutputStream, charset); //create a writer for converting characters to bytes
-		try
-		{
+		try {
 			writer.write(characters); //write the characters to the writer in one batch (writing them individually would be extremely inefficient)
 			writer.flush(); //flush everything we've written to the byte output stream
-		}
-		catch(IOException ioException) //we don't expect any errors
-		{
+		} catch(IOException ioException) { //we don't expect any errors
 			throw new AssertionError(ioException);
 		}
 		return byteArrayOutputStream.toByteArray(); //return the bytes we collected from the character conversion
@@ -918,15 +843,12 @@ public final class Characters
 	 * @return The string builder.
 	 * @throws NullPointerException if the given string builder is <code>null</code>.
 	 */
-	public static StringBuilder appendLabelArrayString(final StringBuilder stringBuilder, final char[] characters)
-	{
+	public static StringBuilder appendLabelArrayString(final StringBuilder stringBuilder, final char[] characters) {
 		stringBuilder.append('[');
 		final int last = characters.length - 1;
-		for(int i = 0; i <= last; ++i)
-		{
+		for(int i = 0; i <= last; ++i) {
 			appendLabel(stringBuilder, characters[i]); //append a string for the character
-			if(i != last) //if this is not the last character
-			{
+			if(i != last) { //if this is not the last character
 				stringBuilder.append(',').append(' '); //add delimiters
 			}
 		}
@@ -946,13 +868,9 @@ public final class Characters
 	 * @throws NullPointerException if the given string builder is <code>null</code>.
 	 * @see #appendUnicodeString(StringBuilder, int)
 	 */
-	public static StringBuilder appendLabel(final StringBuilder stringBuilder, final int c)
-	{
-		if(Character.isISOControl(c)) //if this is a control character
-		{
-			switch(c)
-			//see which character this is
-			{
+	public static StringBuilder appendLabel(final StringBuilder stringBuilder, final int c) {
+		if(Character.isISOControl(c)) { //if this is a control character
+			switch(c) { //see which character this is
 				case '\t': //tab
 					stringBuilder.append("'\\t'");
 					break;
@@ -966,10 +884,7 @@ public final class Characters
 					appendUnicodeString(stringBuilder, c); //append a Unicode representation
 					break;
 			}
-		}
-		else
-		//for all other characters
-		{
+		} else { //for all other characters
 			stringBuilder.append('\'');
 			appendChar(stringBuilder, c);
 			stringBuilder.append('\'');
@@ -985,8 +900,7 @@ public final class Characters
 	 * @return The string builder.
 	 * @throws NullPointerException if the given string builder is <code>null</code>.
 	 */
-	public static StringBuilder appendUnicodeString(final StringBuilder stringBuilder, final int c)
-	{
+	public static StringBuilder appendUnicodeString(final StringBuilder stringBuilder, final int c) {
 		stringBuilder.append('U').append('+'); //U+
 		final int length = Character.isSupplementaryCodePoint(c) ? 6 : 4; //allow for supplementary Unicode code points
 		stringBuilder.append(toHexString(c, length).toUpperCase()); //append the hex value of the character
@@ -1000,10 +914,8 @@ public final class Characters
 	 * @throws NullPointerException if the given string is <code>null</code>
 	 * @throws IllegalArgumentException if the string is not composed of a single character.
 	 */
-	public final static Character parseCharacter(final String string)
-	{
-		if(string.length() != 1) //if this string isn't composed of a single character
-		{
+	public final static Character parseCharacter(final String string) {
+		if(string.length() != 1) { //if this string isn't composed of a single character
 			throw new IllegalArgumentException("The string \"" + string + "\" does not represent a single character.");
 		}
 		return Character.valueOf(string.charAt(0)); //return the first and only character in the string

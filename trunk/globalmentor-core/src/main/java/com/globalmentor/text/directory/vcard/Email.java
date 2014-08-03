@@ -29,15 +29,13 @@ import com.globalmentor.text.TextFormatter;
  * 2426</a>, "vCard MIME Directory Profile".
  * @author Garret Wilson
  */
-public class Email
-{
+public class Email {
 
 	/**
 	 * The type of email.
 	 * @author Garret Wilson
 	 */
-	public enum Type
-	{
+	public enum Type {
 		/** An Internet email address. */
 		INTERNET,
 		/** An X.400 addressing type. */
@@ -53,8 +51,7 @@ public class Email
 	private final String address;
 
 	/** @return The email address. */
-	public String getAddress()
-	{
+	public String getAddress() {
 		return address;
 	}
 
@@ -62,8 +59,7 @@ public class Email
 	private final Set<Type> types;
 
 	/** @return The email addressing type. */
-	public Set<Type> getTypes()
-	{
+	public Set<Type> getTypes() {
 		return unmodifiableSet(types);
 	}
 
@@ -71,8 +67,7 @@ public class Email
 	private final Locale locale;
 
 	/** @return The locale that represents the language of the text, or <code>null</code> if no language is indicated. */
-	public Locale getLocale()
-	{
+	public Locale getLocale() {
 		return locale;
 	}
 
@@ -81,8 +76,7 @@ public class Email
 	 * @param address The email address.
 	 * @throws NullPointerException if the address and/or types is <code>null</code>.
 	 */
-	public Email(final String address)
-	{
+	public Email(final String address) {
 		this(address, EnumSet.of(DEFAULT_TYPE)); //construct an email with the default email type
 	}
 
@@ -92,8 +86,7 @@ public class Email
 	 * @param types The email addressing types.
 	 * @throws NullPointerException if the address and/or types is <code>null</code>.
 	 */
-	public Email(final String address, final Set<Type> types)
-	{
+	public Email(final String address, final Set<Type> types) {
 		this(address, types, null); //construct an email with no locale	
 	}
 
@@ -104,16 +97,14 @@ public class Email
 	 * @param locale The locale that represents the language of the text, or <code>null</code> if no language should be indicated.
 	 * @throws NullPointerException if the address and/or types is <code>null</code>.
 	 */
-	public Email(final String address, final Set<Type> types, final Locale locale)
-	{
+	public Email(final String address, final Set<Type> types, final Locale locale) {
 		this.address = checkInstance(address, "Email address cannot be null.");
 		this.types = Sets.immutableSetOf(types);
 		this.locale = locale;
 	}
 
 	/** @return A string to represent the email addressing type. */
-	public String getEmailTypeString()
-	{
+	public String getEmailTypeString() {
 		return getEmailTypeString(getTypes()); //return a string for our email type
 	}
 
@@ -121,14 +112,12 @@ public class Email
 	 * Constructs a string to represent the given email types.
 	 * @param types The email addressing types.
 	 */
-	public static String getEmailTypeString(final Set<Type> types)
-	{
+	public static String getEmailTypeString(final Set<Type> types) {
 		return TextFormatter.formatList(',', types);
 	}
 
 	/** @return A string representation of the email address. */
-	public String toString()
-	{
+	public String toString() {
 		return getAddress() + " (" + getEmailTypeString() + ")"; //return the telephone type appended to the telephone number 
 	}
 }

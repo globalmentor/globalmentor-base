@@ -31,8 +31,7 @@ import com.globalmentor.net.ContentType;
  * "A MIME Content-Type for Directory Information".
  * @author Garret Wilson
  */
-public class Directory
-{
+public class Directory {
 
 	/** The content type for directories: <code>text/directory</code>. */
 	public final static ContentType CONTENT_TYPE = ContentType.create(ContentType.TEXT_PRIMARY_TYPE, "directory");
@@ -160,8 +159,7 @@ public class Directory
 	 * @param name The name of the information.
 	 * @param localeText The value of the information.
 	 */
-	public static ContentLine createContentLine(final String profile, final String group, final String name, final LocaledText localeText)
-	{
+	public static ContentLine createContentLine(final String profile, final String group, final String name, final LocaledText localeText) {
 		return createContentLine(profile, group, name, localeText, localeText.getLocale()); //create and return a content line from the locale text and the locale
 	}
 
@@ -172,8 +170,7 @@ public class Directory
 	 * @param name The name of the information.
 	 * @param value The value of the information.
 	 */
-	public static ContentLine createContentLine(final String profile, final String group, final String name, final Object value)
-	{
+	public static ContentLine createContentLine(final String profile, final String group, final String name, final Object value) {
 		return createContentLine(profile, group, name, value, null);
 	}
 
@@ -186,8 +183,7 @@ public class Directory
 	 * @param locale The value to give to the language parameter, or <code>null</code> if no language should be specified.
 	 * @see #setLanguageParamValue
 	 */
-	public static ContentLine createContentLine(final String profile, final String group, final String name, final Object value, final Locale locale)
-	{
+	public static ContentLine createContentLine(final String profile, final String group, final String name, final Object value, final Locale locale) {
 		final ContentLine contentLine = new ContentLine(profile, group, name, value); //create a content line with the value
 		if(locale != null) //if a locale was specified
 			setLanguageParamValue(contentLine.getParamList(), locale); //set the language of the content line
@@ -200,8 +196,7 @@ public class Directory
 	 * @param value The content line value.
 	 * @return An object representing the text and locale of the value
 	 */
-	public static LocaledText createLocaleTextValue(final List<NameValuePair<String, String>> paramList, final Object value)
-	{
+	public static LocaledText createLocaleTextValue(final List<NameValuePair<String, String>> paramList, final Object value) {
 		final Locale locale = getLanguageParamValue(paramList); //get the locale
 		return new LocaledText(value.toString(), locale); //create and return the locale text
 	}
@@ -214,12 +209,9 @@ public class Directory
 	 * @param paramName The name of the parameter, which will be matched against available parameters in a case insensitive way.
 	 * @return The value of the first matching parameter, or <code>null</code> if there is no matching parameter.
 	 */
-	public static String getParamValue(final List<NameValuePair<String, String>> paramList, final String paramName)
-	{
-		for(final NameValuePair<String, String> parameter : paramList) //for each parameter
-		{
-			if(paramName.equalsIgnoreCase(parameter.getName())) //if this is the correct parameter
-			{
+	public static String getParamValue(final List<NameValuePair<String, String>> paramList, final String paramName) {
+		for(final NameValuePair<String, String> parameter : paramList) { //for each parameter
+			if(paramName.equalsIgnoreCase(parameter.getName())) { //if this is the correct parameter
 				return parameter.getValue(); //return the parameter value
 			}
 		}
@@ -232,13 +224,10 @@ public class Directory
 	 * @param paramName The name of the parameter, which will be matched against available parameters in a case insensitive way.
 	 * @return The values of all matching parameters.
 	 */
-	public static List<String> getParamValues(final List<NameValuePair<String, String>> paramList, final String paramName)
-	{
+	public static List<String> getParamValues(final List<NameValuePair<String, String>> paramList, final String paramName) {
 		final List<String> paramValueList = new ArrayList<String>(paramList.size()); //create a list to hold parameter values, knowing we won't need room for more parameters than the we were given
-		for(final NameValuePair<String, String> parameter : paramList) //for each parameter
-		{
-			if(paramName.equalsIgnoreCase(parameter.getName())) //if this is the correct parameter
-			{
+		for(final NameValuePair<String, String> parameter : paramList) { //for each parameter
+			if(paramName.equalsIgnoreCase(parameter.getName())) { //if this is the correct parameter
 				paramValueList.add(parameter.getValue()); //add the parameter value
 			}
 		}
@@ -251,13 +240,10 @@ public class Directory
 	 * @param paramValue The value of the parameter, which may be <code>null</code>.
 	 * @return The names of all matching parameters.
 	 */
-	public static List<String> getParamNamesByValue(final List<NameValuePair<String, String>> paramList, final String paramValue)
-	{
+	public static List<String> getParamNamesByValue(final List<NameValuePair<String, String>> paramList, final String paramValue) {
 		final List<String> paramNameList = new ArrayList<String>(paramList.size()); //create a list to hold parameter values, knowing we won't need room for more parameters than the we were given
-		for(final NameValuePair<String, String> parameter : paramList) //for each parameter
-		{
-			if(Objects.equals(paramValue, parameter.getValue())) //if this parameter has a matching value
-			{
+		for(final NameValuePair<String, String> parameter : paramList) { //for each parameter
+			if(Objects.equals(paramValue, parameter.getValue())) { //if this parameter has a matching value
 				paramNameList.add(parameter.getName()); //add the parameter name
 			}
 		}
@@ -269,14 +255,11 @@ public class Directory
 	 * @param paramList The list of parameters; a <code>null</code> value indicates that the name/value pair contained only a name.
 	 * @param paramName The name of the parameter, which will be matched against available parameters in a case insensitive way.
 	 */
-	public static void removeParams(final List<NameValuePair<String, String>> paramList, final String paramName)
-	{
+	public static void removeParams(final List<NameValuePair<String, String>> paramList, final String paramName) {
 		final Iterator<NameValuePair<String, String>> paramIterator = paramList.iterator(); //get an iterator to the parameters
-		while(paramIterator.hasNext()) //while there are more parameters
-		{
+		while(paramIterator.hasNext()) { //while there are more parameters
 			final NameValuePair<String, String> parameter = paramIterator.next(); //get the next parameter name/value pair
-			if(paramName.equalsIgnoreCase(parameter.getName())) //if this is the correct parameter
-			{
+			if(paramName.equalsIgnoreCase(parameter.getName())) { //if this is the correct parameter
 				paramIterator.remove(); //remove this parameter
 			}
 		}
@@ -290,8 +273,7 @@ public class Directory
 	 * @see #removeParams(List, String)
 	 * @see #addParam(List, String, String)
 	 */
-	public static void setParamValue(final List<NameValuePair<String, String>> paramList, final String paramName, final String paramValue)
-	{
+	public static void setParamValue(final List<NameValuePair<String, String>> paramList, final String paramName, final String paramValue) {
 		removeParams(paramList, paramName); //remove all parameters with the given name
 		addParam(paramList, paramName, paramValue); //add the param name and value
 	}
@@ -302,8 +284,7 @@ public class Directory
 	 * @param paramName The name of the parameter, which will be matched against available parameters in a case insensitive way.
 	 * @param paramValue The value to give to the added parameter.
 	 */
-	public static void addParam(final List<NameValuePair<String, String>> paramList, final String paramName, final String paramValue)
-	{
+	public static void addParam(final List<NameValuePair<String, String>> paramList, final String paramName, final String paramValue) {
 		paramList.add(new NameValuePair<String, String>(paramName, paramValue)); //create a name value pair with the given name and value
 	}
 
@@ -314,8 +295,7 @@ public class Directory
 	 * @param paramList The list of parameters; a <code>null</code> value indicates that the name/value pair contained only a name.
 	 * @return A locale representing the given language, or <code>null</code> if no language is indicated.
 	 */
-	public static Locale getLanguageParamValue(final List<NameValuePair<String, String>> paramList)
-	{
+	public static Locale getLanguageParamValue(final List<NameValuePair<String, String>> paramList) {
 		final String languageValue = getParamValue(paramList, LANGUAGE_PARAM_NAME); //get the first language parameter
 		return languageValue != null && languageValue.trim().length() > 0 //if there is a language and it isn't just whitespace 
 		? Locales.createLocale(languageValue.trim()) //create a locale from the language value
@@ -327,8 +307,7 @@ public class Directory
 	 * @param paramList The list of parameters; a <code>null</code> value indicates that the name/value pair contained only a name.
 	 * @param locale The value to give to the language parameter.
 	 */
-	public static void setLanguageParamValue(final List<NameValuePair<String, String>> paramList, final Locale locale)
-	{
+	public static void setLanguageParamValue(final List<NameValuePair<String, String>> paramList, final Locale locale) {
 		setParamValue(paramList, LANGUAGE_PARAM_NAME, Locales.getLanguageTag(locale)); //store the language tag representation of the locale as the value of the language parameter 
 	}
 
@@ -352,8 +331,7 @@ public class Directory
 	 * @param text The text value to encode.
 	 * @return The encoded text value.
 	 */
-	public static String encodeTextValue(final String text)
-	{
+	public static String encodeTextValue(final String text) {
 		final StringBuilder stringBuilder = new StringBuilder(text); //create a string buffer to use for escaping values
 		StringBuilders.replace(stringBuilder, CRLF, "\n"); //replace every occurrence of CRLF with "\n" (there may still be lone CRs or LFs); this will get replaced with "\\n" in the next step
 		StringBuilders.replace(stringBuilder, TEXT_MATCH_CHARS, TEXT_REPLACEMENT_STRINGS); //replace characters with their escaped versions
@@ -368,8 +346,7 @@ public class Directory
 	 * @param text The text value to decode.
 	 * @return The decoded text value.
 	 */
-	public static String decodeTextValue(final String text)
-	{
+	public static String decodeTextValue(final String text) {
 		final StringBuilder stringBuilder = new StringBuilder(text); //create a string buffer to use for escaping values
 		StringBuilders.replace(stringBuilder, TEXT_ESCAPE_STRING + TEXT_LINE_BREAK_ESCAPED_LOWERCASE_CHAR, CRLF); //replace an escaped linefeed with CRLF
 		StringBuilders.replace(stringBuilder, TEXT_ESCAPE_STRING + TEXT_ESCAPE_CHAR, String.valueOf(TEXT_ESCAPE_CHAR)); //replace an escaped backslash with '\\'
@@ -381,8 +358,7 @@ public class Directory
 	private LocaledText displayName = null;
 
 	/** @return The display name of the directory. */
-	public LocaledText getDisplayName()
-	{
+	public LocaledText getDisplayName() {
 		return displayName;
 	}
 
@@ -390,8 +366,7 @@ public class Directory
 	 * Sets the display name of the directory.
 	 * @param displayName The new display name of the directory.
 	 */
-	public void setDisplayName(final LocaledText displayName)
-	{
+	public void setDisplayName(final LocaledText displayName) {
 		this.displayName = displayName;
 	}
 
@@ -399,14 +374,12 @@ public class Directory
 	private final List<ContentLine> contentLineList = new ArrayList<ContentLine>();
 
 	/** @return The list of content lines that represent unrecognized and/or unprocessed information. */
-	public List<ContentLine> getContentLineList()
-	{
+	public List<ContentLine> getContentLineList() {
 		return contentLineList;
 	}
 
 	/** Default constructor. */
-	public Directory()
-	{
+	public Directory() {
 	}
 
 }

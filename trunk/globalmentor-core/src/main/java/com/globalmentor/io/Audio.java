@@ -24,8 +24,7 @@ import com.globalmentor.net.ContentType;
  * Utilities and constants for working with audio content.
  * @author Garret Wilson
  */
-public class Audio
-{
+public class Audio {
 
 	/**
 	 * The content type for an Ogg Vorbis file: <code>audio/ogg</code>.
@@ -69,17 +68,13 @@ public class Audio
 	 * @see <a href="http://www.ietf.org/rfc/rfc3534.txt">RFC 3534</a>
 	 * @see <a href="http://wiki.xiph.org/MIME_Types_and_File_Extensions">MIME Types and File Extensions</a>
 	 */
-	public static boolean isAudio(final ContentType mediaType)
-	{
+	public static boolean isAudio(final ContentType mediaType) {
 		final String topLevelType = mediaType.getPrimaryType(); //get the content type top-level type
-		if(ContentType.AUDIO_PRIMARY_TYPE.equals(topLevelType)) //if this is a top-level audio content type
-		{
+		if(ContentType.AUDIO_PRIMARY_TYPE.equals(topLevelType)) { //if this is a top-level audio content type
 			return true; //this is an audio content type
 		}
-		if(ContentType.APPLICATION_PRIMARY_TYPE.equals(topLevelType)) //if this is an application type
-		{
-			if(OGG_VORBIS_CONTENT_TYPE.getSubType().equals(mediaType.getSubType())) //if this is application/ogg
-			{
+		if(ContentType.APPLICATION_PRIMARY_TYPE.equals(topLevelType)) { //if this is an application type
+			if(OGG_VORBIS_CONTENT_TYPE.getSubType().equals(mediaType.getSubType())) { //if this is application/ogg
 				return true; //this is an Ogg Vorbis  audio file
 			}
 		}

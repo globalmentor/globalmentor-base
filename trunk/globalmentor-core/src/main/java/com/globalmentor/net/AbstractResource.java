@@ -25,31 +25,21 @@ import static com.globalmentor.java.Objects.*;
  * Represents an abstract implementation of a resource.
  * @author Garret Wilson
  */
-public abstract class AbstractResource implements Resource
-{
+public abstract class AbstractResource implements Resource {
 
 	/**
 	 * {@inheritDoc} This implementation compares the resource URIs. If neither object has a reference URI, the default identity comparison is performed.
 	 * @see #getURI()
 	 */
-	public boolean equals(final Object object)
-	{
-		if(object instanceof Resource) //if we're being compared with another resource
-		{
+	public boolean equals(final Object object) {
+		if(object instanceof Resource) { //if we're being compared with another resource
 			final URI uri = getURI(); //get the reference URI
-			if(uri != null) //if this resource has a reference URI
-			{
+			if(uri != null) { //if this resource has a reference URI
 				return uri.equals(((Resource)object).getURI()); //compare reference URIs
-			}
-			else
-			//if this resource has no reference URI
-			{
+			} else { //if this resource has no reference URI
 				return super.equals(object); //compare normally
 			}
-		}
-		else
-		//if the object is not a resource
-		{
+		} else { //if the object is not a resource
 			return false; //we can't compare this object to a non-resource object
 		}
 	}
@@ -57,8 +47,7 @@ public abstract class AbstractResource implements Resource
 	/**
 	 * {@inheritDoc} This implementation returns a hashcode value composed from the reference URI, if available.
 	 */
-	public int hashCode()
-	{
+	public int hashCode() {
 		//return the hash code of the reference URI unless there is no reference ID;
 		//  in that case, return the default hash code
 		return getURI() != null ? getURI().hashCode() : super.hashCode();
@@ -70,8 +59,7 @@ public abstract class AbstractResource implements Resource
 	 * @return A reference string representation of the resource.
 	 * @throws NullPointerException if the given resource URI is <code>null</code>.
 	 */
-	public static String toString(final URI resourceURI)
-	{
+	public static String toString(final URI resourceURI) {
 		return new StringBuilder().append(LEFT_POINTING_DOUBLE_ANGLE_QUOTATION_MARK_CHAR).append(checkInstance(resourceURI))
 				.append(RIGHT_POINTING_DOUBLE_ANGLE_QUOTATION_MARK_CHAR).toString();
 	}
@@ -83,8 +71,7 @@ public abstract class AbstractResource implements Resource
 	 * @return A reference string representation of the resource.
 	 * @see #toString(URI)
 	 */
-	public static String toString(final Resource resource)
-	{
+	public static String toString(final Resource resource) {
 		final URI uri = resource.getURI(); //get the URI, if any
 		return uri != null ? toString(uri) : "resource" + Integer.toHexString(resource.hashCode()); //return the URI, if available
 	}
@@ -95,8 +82,7 @@ public abstract class AbstractResource implements Resource
 	 * @return A string representation of the resource.
 	 * @see #toString(Resource)
 	 */
-	public String toString()
-	{
+	public String toString() {
 		return toString(this);
 	}
 

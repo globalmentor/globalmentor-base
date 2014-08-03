@@ -23,14 +23,12 @@ package com.globalmentor.config;
  * 
  * @see Configurator
  */
-public abstract class AbstractConfiguration implements Configuration
-{
+public abstract class AbstractConfiguration implements Configuration {
 
 	/**
 	 * {@inheritDoc} This version does nothing.
 	 */
-	public void dispose()
-	{
+	public void dispose() {
 	}
 
 }

@@ -21,8 +21,7 @@ package com.globalmentor.collections;
  * 
  * @author Garret Wilson
  */
-public interface SuffixTree
-{
+public interface SuffixTree {
 
 	/** @return Whether the suffix tree is explicit, with every suffix ending on a leaf node. */
 	public boolean isExplicit();
@@ -56,21 +55,21 @@ public interface SuffixTree
 	 * 
 	 * @author Garret Wilson
 	 */
-	public interface Node
-	{
+	public interface Node {
+
 		/** @return The index of the node. */
 		public int getIndex();
 
 		/** @return Whether this node is a leaf node in the suffix tree. */
 		public boolean isLeaf();
-		
-		/**@return The parent node of this node, or <code>null</code> if this node has no parent node (i.e. it is the root node).*/
+
+		/** @return The parent node of this node, or <code>null</code> if this node has no parent node (i.e. it is the root node). */
 		public Node getParentNode();
 
 		/** @return The node representing the next smaller suffix, or <code>null</code> if there is no known smaller suffix node. */
 		public Node getSuffixNode();
 
-		/**@return An iterable to the child edges of this node.*/
+		/** @return An iterable to the child edges of this node. */
 		public Iterable<? extends Edge> getChildEdges();
 
 	};
@@ -80,8 +79,7 @@ public interface SuffixTree
 	 * 
 	 * @author Garret Wilson
 	 */
-	public interface Edge
-	{
+	public interface Edge {
 
 		/** @return The parent node representing the root end of the edge. */
 		public Node getParentNode();

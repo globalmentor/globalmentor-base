@@ -26,15 +26,13 @@ import com.globalmentor.text.TextFormatter;
  * Utilities for manipulating bytes.
  * @author Garret Wilson
  */
-public class Bytes
-{
+public class Bytes {
 
 	/** A shared empty array of bytes. */
 	public final static byte[] NO_BYTES = new byte[0];
 
 	/** This class cannot be publicly instantiated. */
-	private Bytes()
-	{
+	private Bytes() {
 	}
 
 	/**
@@ -42,8 +40,7 @@ public class Bytes
 	 * @param bytes The values to convert.
 	 * @return A lowercase string with hexadecimal digits, each pair representing a byte in the byte array.
 	 */
-	public static String toHexString(final byte[] bytes)
-	{
+	public static String toHexString(final byte[] bytes) {
 		return TextFormatter.formatHex(bytes); //format the hex into a string buffer and return the string version
 	}
 
@@ -53,8 +50,7 @@ public class Bytes
 	 * @return A new array of the given length filled with random bytes.
 	 * @throws IllegalArgumentException if the given length is negative.
 	 */
-	public static byte[] createRandom(final int length)
-	{
+	public static byte[] createRandom(final int length) {
 		return createRandom(length, new Random());
 	}
 
@@ -66,8 +62,7 @@ public class Bytes
 	 * @throws NullPointerException if the given random number generator is <code>null</code>.
 	 * @throws IllegalArgumentException if the given length is negative.
 	 */
-	public static byte[] createRandom(final int length, final Random random)
-	{
+	public static byte[] createRandom(final int length, final Random random) {
 		checkArgumentNotNegative(length);
 		final byte[] bytes = new byte[length]; //create a new array of bytes
 		random.nextBytes(bytes); //fill the byte array with random values
@@ -80,16 +75,12 @@ public class Bytes
 	 * @param prefix The prefix to compare with the given bytes.
 	 * @return Whether the given bytes start with the specified prefix.
 	 */
-	public static boolean startsWith(final byte[] bytes, final byte[] prefix)
-	{
-		if(bytes.length < prefix.length) //if the array of bytes is not as long as the specified prefix
-		{
+	public static boolean startsWith(final byte[] bytes, final byte[] prefix) {
+		if(bytes.length < prefix.length) { //if the array of bytes is not as long as the specified prefix
 			return false; //there aren't enough bytes to compare
 		}
-		for(int i = prefix.length - 1; i >= 0; --i) //look at each of the prefix bytes
-		{
-			if(bytes[i] != prefix[i]) //if these bytes don't match
-			{
+		for(int i = prefix.length - 1; i >= 0; --i) { //look at each of the prefix bytes
+			if(bytes[i] != prefix[i]) { //if these bytes don't match
 				return false; //show that there is a mismatch
 			}
 		}

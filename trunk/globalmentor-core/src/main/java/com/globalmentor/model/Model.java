@@ -18,13 +18,15 @@ package com.globalmentor.model;
 
 import static com.globalmentor.java.Classes.*;
 
-/**Indicates that an implementing class is a data model.
-@author Garret Wilson
-*/
+/**
+ * Indicates that an implementing class is a data model.
+ * @author Garret Wilson
+ */
 @Deprecated
 public interface Model //TODO del if not needed extends Modifiable
 {
-	/**The property for the data model for which a component provides a view.*/
-	public final String MODEL_PROPERTY=getFullName(Model.class, "model");
-	
+
+	/** The property for the data model for which a component provides a view. */
+	public final String MODEL_PROPERTY = getFullName(Model.class, "model");
+
 }

@@ -20,26 +20,28 @@ import java.net.URI;
 
 import static com.globalmentor.rdf.crypto.Crypto.*;
 
-/**Crypto digest information.
-@author Garret Wilson
-*/
-public class DigestMethod extends AlgorithmMethod
-{
-	/**@return The local name of the default type of this resource.*/
-	public String getDefaultTypeName() {return DIGEST_METHOD_CLASS_NAME;}
+/**
+ * Crypto digest information.
+ * @author Garret Wilson
+ */
+public class DigestMethod extends AlgorithmMethod {
 
-	/**Default constructor.*/
-	public DigestMethod()
-	{
-		super();	//construct the parent class
+	/** @return The local name of the default type of this resource. */
+	public String getDefaultTypeName() {
+		return DIGEST_METHOD_CLASS_NAME;
 	}
 
-	/**Reference URI constructor.
-	@param referenceURI The reference URI for the new resource.
-	*/
-	public DigestMethod(final URI referenceURI)
-	{
-		super(referenceURI);  //construct the parent class
+	/** Default constructor. */
+	public DigestMethod() {
+		super(); //construct the parent class
+	}
+
+	/**
+	 * Reference URI constructor.
+	 * @param referenceURI The reference URI for the new resource.
+	 */
+	public DigestMethod(final URI referenceURI) {
+		super(referenceURI); //construct the parent class
 	}
 
 }

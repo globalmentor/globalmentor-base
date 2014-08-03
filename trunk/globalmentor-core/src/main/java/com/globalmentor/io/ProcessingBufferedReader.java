@@ -44,8 +44,7 @@ import com.globalmentor.log.Log;
  * @author Garret Wilson
  * @see Reader
  */
-public class ProcessingBufferedReader extends Reader
-{
+public class ProcessingBufferedReader extends Reader {
 
 	//TODO maybe implement locking behavior like java.io.BufferedReader
 
@@ -71,8 +70,7 @@ public class ProcessingBufferedReader extends Reader
 	 * @return The size of buffered data, including undo buffer space.
 	 * @see #getUndoBufferSize()
 	 */
-	public int getBufferSize()
-	{
+	public int getBufferSize() {
 		return bufferSize;
 	}
 
@@ -80,8 +78,7 @@ public class ProcessingBufferedReader extends Reader
 	private int undoBufferSize = DEFAULT_UNDO_BUFFER_SIZE;
 
 	/** @return The size of the extra buffer for unreading data. */
-	public int getUndoBufferSize()
-	{
+	public int getUndoBufferSize() {
 		return undoBufferSize;
 	}
 
@@ -89,8 +86,7 @@ public class ProcessingBufferedReader extends Reader
 	private char[] Buffer = null;
 
 	/** @return The internal buffer used to hold characters. */
-	protected char[] getBuffer()
-	{
+	protected char[] getBuffer() {
 		return Buffer;
 	}
 
@@ -98,11 +94,9 @@ public class ProcessingBufferedReader extends Reader
 	 * Sets the buffer to be used to hold characters.
 	 * @param buffer The new buffer.
 	 */
-	private void setBuffer(final char[] buffer)
-	{
+	private void setBuffer(final char[] buffer) {
 		this.Buffer = buffer; //set the buffer
-		if(Buffer != null) //if a real buffer was set
-		{
+		if(Buffer != null) { //if a real buffer was set
 			initializeIndexes(); //initialize the indexes, such as the read and peek indexes
 		}
 	}
@@ -114,8 +108,7 @@ public class ProcessingBufferedReader extends Reader
 	 * @return Whether or not we've read the last buffer. Technically the last buffer could have been read, but it might have been filled completely, in which
 	 *         case this function would still return <code>false</code>.
 	 */
-	protected boolean isLastBuffer()
-	{
+	protected boolean isLastBuffer() {
 		return lastBuffer;
 	}
 
@@ -123,8 +116,7 @@ public class ProcessingBufferedReader extends Reader
 	 * Sets whether or not the previously-read buffer was the last.
 	 * @param lastBuffer Whether the last buffer has been read.
 	 */
-	protected void setLastBuffer(final boolean lastBuffer)
-	{
+	protected void setLastBuffer(final boolean lastBuffer) {
 		this.lastBuffer = lastBuffer;
 	}
 
@@ -132,8 +124,7 @@ public class ProcessingBufferedReader extends Reader
 	private int readIndex;
 
 	/** @return The index of the next character to be read. */
-	protected int getReadIndex()
-	{
+	protected int getReadIndex() {
 		return readIndex;
 	}
 
@@ -143,8 +134,7 @@ public class ProcessingBufferedReader extends Reader
 	 * @throws IOException if an I/O error occurs.
 	 * @see #updateEnd()
 	 */
-	protected void setReadIndex(final int readIndex) throws IOException
-	{
+	protected void setReadIndex(final int readIndex) throws IOException {
 		this.readIndex = readIndex; //set the read index
 		resetPeek(); //reset peeking
 		updateEnd(); //make sure we haven't reached the end of the data yet
@@ -154,8 +144,7 @@ public class ProcessingBufferedReader extends Reader
 	private int peekIndex;
 
 	/** @return The index of the next character to be peeked. After each read this is set to equal ReadIndex. */
-	protected int getPeekIndex()
-	{
+	protected int getPeekIndex() {
 		return peekIndex;
 	}
 
@@ -163,8 +152,7 @@ public class ProcessingBufferedReader extends Reader
 	 * Sets the index of the next character to be peeked.
 	 * @param peekIndex The index of the next character to be peeked.
 	 */
-	protected void setPeekIndex(final int peekIndex)
-	{
+	protected void setPeekIndex(final int peekIndex) {
 		this.peekIndex = peekIndex;
 	}
 
@@ -172,8 +160,7 @@ public class ProcessingBufferedReader extends Reader
 	private int bufferEndIndex = 0;
 
 	/** @return The index directly after the end of the last character in the buffer. */
-	protected int getBufferEndIndex()
-	{
+	protected int getBufferEndIndex() {
 		return bufferEndIndex;
 	}
 
@@ -181,8 +168,7 @@ public class ProcessingBufferedReader extends Reader
 	 * Sets the index directly after the end of the last character in the buffer.
 	 * @param bufferEndIndex The index directly after the end of the last character in the buffer.
 	 */
-	protected void setBufferEndIndex(final int bufferEndIndex)
-	{
+	protected void setBufferEndIndex(final int bufferEndIndex) {
 		this.bufferEndIndex = bufferEndIndex;
 	}
 
@@ -196,8 +182,7 @@ public class ProcessingBufferedReader extends Reader
 	 * @return The index where a new buffer should be read. Usually equals <code>BufferEndIndex</code>.
 	 * @see ProcessingBufferedReader#getBufferEndIndex
 	 */
-	protected int getFetchBufferIndex()
-	{
+	protected int getFetchBufferIndex() {
 		return fetchBufferIndex;
 	}
 
@@ -206,8 +191,7 @@ public class ProcessingBufferedReader extends Reader
 	 * @param fetchBufferIndex The index where a new buffer should be read.
 	 * @see ProcessingBufferedReader#setBufferEndIndex
 	 */
-	protected void setFetchBufferIndex(final int fetchBufferIndex)
-	{
+	protected void setFetchBufferIndex(final int fetchBufferIndex) {
 		this.fetchBufferIndex = fetchBufferIndex;
 	}
 
@@ -215,8 +199,7 @@ public class ProcessingBufferedReader extends Reader
 	private boolean eof = false;
 
 	/** @return Whether or not the end of the data has been reached. */
-	public boolean isEnd()
-	{
+	public boolean isEnd() {
 		return eof;
 	}
 
@@ -224,8 +207,7 @@ public class ProcessingBufferedReader extends Reader
 	 * Sets whether the end of the data has been reached.
 	 * @param isEnd Whether the end of the data has been reached.
 	 */
-	protected void setEnd(final boolean isEnd)
-	{
+	protected void setEnd(final boolean isEnd) {
 		this.eof = isEnd;
 	}
 
@@ -236,10 +218,8 @@ public class ProcessingBufferedReader extends Reader
 	 * reader is ready.
 	 * </p>
 	 */
-	public boolean ready() throws IOException
-	{
-		if(isEnd()) //if we're at the end, we never block
-		{
+	public boolean ready() throws IOException {
+		if(isEnd()) { //if we're at the end, we never block
 			return true;
 		}
 		return getReadIndex() < getFetchBufferIndex() || getReader().ready();
@@ -247,8 +227,7 @@ public class ProcessingBufferedReader extends Reader
 
 	/** {@inheritDoc} */
 	@Override
-	public boolean markSupported()
-	{
+	public boolean markSupported() {
 		return true;
 	}
 
@@ -256,8 +235,7 @@ public class ProcessingBufferedReader extends Reader
 	private int markIndex = -1;
 
 	/** @return The index in the buffer of the mark, which will be negative if the reader is not marked. */
-	protected int getMarkIndex()
-	{
+	protected int getMarkIndex() {
 		return markIndex;
 	}
 
@@ -267,8 +245,7 @@ public class ProcessingBufferedReader extends Reader
 	 * @see #getUndoBufferSize()
 	 */
 	@Override
-	public void mark(final int readAheadLimit) throws IOException
-	{
+	public void mark(final int readAheadLimit) throws IOException {
 		checkArgument(readAheadLimit <= getUndoBufferSize(), "Mark read-ahead limit of " + readAheadLimit + " not supported; maximum read-ahead limit is "
 				+ getUndoBufferSize() + ".");
 		this.markIndex = getReadIndex(); //mark the current location
@@ -295,10 +272,8 @@ public class ProcessingBufferedReader extends Reader
 	 * @throws IOException if the reader is not currently marked.
 	 * @see #resetPeek()
 	 */
-	public void reset() throws IOException
-	{
-		if(markIndex < 0)
-		{
+	public void reset() throws IOException {
+		if(markIndex < 0) {
 			throw new IOException("Resetting an unmarked reader is not supported.");
 		}
 		setReadIndex(markIndex); //move the read index back to the mark location
@@ -309,8 +284,7 @@ public class ProcessingBufferedReader extends Reader
 	private Reader reader = null;
 
 	/** @return The reader from which we extract the information. */
-	protected Reader getReader()
-	{
+	protected Reader getReader() {
 		return reader;
 	}
 
@@ -318,8 +292,7 @@ public class ProcessingBufferedReader extends Reader
 	 * Constructor to create a {@link ProcessingBufferedReader} from another reader.
 	 * @param reader The reader that contains the data.
 	 */
-	public ProcessingBufferedReader(final Reader reader)
-	{
+	public ProcessingBufferedReader(final Reader reader) {
 		this.reader = reader; //store the reader they passed us
 		createBuffer(); //create our buffer
 	}
@@ -331,8 +304,7 @@ public class ProcessingBufferedReader extends Reader
 	 * @param prereadCharacters The characters that have already been read.
 	 * @throws IOException if <var>prereadCharacters</var> is too long for the buffer.
 	 */
-	public ProcessingBufferedReader(final Reader reader, final CharSequence prereadCharacters) throws IOException
-	{
+	public ProcessingBufferedReader(final Reader reader, final CharSequence prereadCharacters) throws IOException {
 		this(reader); //do the default construction
 		loadBuffer(prereadCharacters); //load the specified characters into the buffer
 	}
@@ -342,8 +314,7 @@ public class ProcessingBufferedReader extends Reader
 	 * @param characters The string that should be used for input.
 	 * @throws IOException if an I/O error occurs.
 	 */
-	public ProcessingBufferedReader(final CharSequence characters) throws IOException
-	{
+	public ProcessingBufferedReader(final CharSequence characters) throws IOException {
 		reader = null; //show that we will not have an input reader to read from; this will be fine, because we'll never have have to fetch any other buffers
 		setBuffer(characters.toString().toCharArray()); //use the characters from the char sequence
 		setBufferEndIndex(characters.length()); //show that the buffer is as long as the string
@@ -355,8 +326,7 @@ public class ProcessingBufferedReader extends Reader
 	/**
 	 * Creates a new buffer and initializes buffer indexes. Any data in previous buffers will be erased.
 	 */
-	protected void createBuffer()
-	{
+	protected void createBuffer() {
 		setBuffer(new char[Math.max(getBufferSize(), getUndoBufferSize())]); //create a new buffer large enough to hold buffered characters and undo characters
 		setBufferEndIndex(0); //show that we're already at the end of this buffer
 		setFetchBufferIndex(0); //show that we should fetch another buffer before getting any information
@@ -367,13 +337,11 @@ public class ProcessingBufferedReader extends Reader
 	 * @param bufferCharacters The characters which should be placed in the buffer.
 	 * @throws IOException if <var>bufferCharacters</var> is too long for the buffer.
 	 */
-	protected void loadBuffer(final CharSequence bufferCharacters) throws IOException
-	{
+	protected void loadBuffer(final CharSequence bufferCharacters) throws IOException {
 		final int charactersLength = bufferCharacters.length(); //find out how many characters there are
 		final int destIndex = getBufferEndIndex(); //we'll start putting new data at the end of the buffer
 		final int roomLeft = getBufferSize() - destIndex; //find out how many characters can physically fit into our buffer
-		if(roomLeft < charactersLength) //if there isn't enough room for our characters
-		{
+		if(roomLeft < charactersLength) { //if there isn't enough room for our characters
 			throw new IOException("Not enough room in buffer for loading specified characters."); //throw an exception
 		}
 		System.arraycopy(bufferCharacters.toString().toCharArray(), 0, getBuffer(), destIndex, charactersLength); //copy the characters to the buffer
@@ -389,8 +357,7 @@ public class ProcessingBufferedReader extends Reader
 	 * @see #createBuffer()
 	 * @see #setBuffer(char[])
 	 */
-	protected void initializeIndexes()
-	{
+	protected void initializeIndexes() {
 		readIndex = 0; //we'll start reading at the first character next time (don't use the setReadIndex() function, because that will try to update the EOF property before all the other index are initialized)
 		peekIndex = getReadIndex(); //we'll start peeking at same place
 	}
@@ -404,14 +371,12 @@ public class ProcessingBufferedReader extends Reader
 	 * @param The number of characters to move the indexes, positive for forwards, negative for backwards.
 	 * @see #fetchBuffer()
 	 */
-	protected void adjustIndexes(final int moveDelta)
-	{
+	protected void adjustIndexes(final int moveDelta) {
 		readIndex += moveDelta; //readjust the read index; do not use setReadIndex() as that will try to check for EOF before all our indexes are updated
 		peekIndex += moveDelta; //readjust the peek index
 		bufferEndIndex += moveDelta; //readjust the end of the buffer
 		fetchBufferIndex += moveDelta; //readjust the index of the location to fetch a new buffer
-		if(markIndex >= 0) //if the mark is still valid 
-		{
+		if(markIndex >= 0) { //if the mark is still valid 
 			markIndex += moveDelta; //move it back as well
 		}
 	}
@@ -423,8 +388,7 @@ public class ProcessingBufferedReader extends Reader
 	 * @param len The number of characters to move.
 	 * @see #fetchBuffer()
 	 */
-	protected void moveBuffer(final int sourceIndex, final int destIndex, final int len)
-	{
+	protected void moveBuffer(final int sourceIndex, final int destIndex, final int len) {
 		System.arraycopy(getBuffer(), sourceIndex, getBuffer(), destIndex, len); //move the data in the buffer
 	}
 
@@ -444,17 +408,13 @@ public class ProcessingBufferedReader extends Reader
 	 * @throws IOException if an I/O error occurs.
 	 * @see #isLastBuffer()
 	 */
-	protected int fetchBuffer() throws IOException
-	{
+	protected int fetchBuffer() throws IOException {
 		//TODO should we check to make sure that we have a valid reader?
-		if(!isEnd() && !isLastBuffer()) //if we're not out of data and we haven't already read the last buffer of information (meaning all previous buffers were completely full)
-		{
-			if(getBufferSize() - getBufferEndIndex() == 0) //if there is no room for more data (the last fetchBuffer() filled the entire buffer), we'll shift the buffer contents down
-			{
+		if(!isEnd() && !isLastBuffer()) { //if we're not out of data and we haven't already read the last buffer of information (meaning all previous buffers were completely full)
+			if(getBufferSize() - getBufferEndIndex() == 0) { //if there is no room for more data (the last fetchBuffer() filled the entire buffer), we'll shift the buffer contents down
 				//first, move any unread characters and undo buffer space to the beginning of the array
 				final int sourceBegin = Math.max(getReadIndex() - getUndoBufferSize(), 0); //reserve a certain amount of space for pushing back, unless we haven't read anything to push back
-				if(sourceBegin > 0) //if we have anything to move back
-				{
+				if(sourceBegin > 0) { //if we have anything to move back
 					final int sourceEnd = getBufferEndIndex(); //we're going to copy everything up to the end of the buffer
 					final int moveDelta = -sourceBegin; //find how much we're going to move the data
 					int destIndex = 0; //we'll copy all of this to the beginning of the array
@@ -464,25 +424,19 @@ public class ProcessingBufferedReader extends Reader
 			}
 			final int destIndex = getBufferEndIndex(); //we'll start putting new data at the end of the buffer
 			final int numCharsToRead = getBufferSize() - destIndex; //find out how many characters can physically fit into our buffer TODO this currently doesn't check to see if the undo buffer was larger than the buffer size
-			if(numCharsToRead > 0) //if we have any room left in our buffer
-			{
+			if(numCharsToRead > 0) { //if we have any room left in our buffer
 				final int numCharactersRead = getReader().read(getBuffer(), destIndex, numCharsToRead); //read characters into our array and find out how many characters we read
-				if(numCharactersRead != END_VALUE) //if we read any characters at all
-				{
+				if(numCharactersRead != END_VALUE) { //if we read any characters at all
 					final int newDataBeginIndex = getFetchBufferIndex(); //we'll count everything after the "fetch buffer" marker as new data, even though it may be data that was read last time
 					setBufferEndIndex(getBufferEndIndex() + numCharactersRead); //update the end of the buffer
 					setFetchBufferIndex(getBufferEndIndex()); //we'll fetch a new buffer when we reach the end of the buffer
 					processBufferedData(newDataBeginIndex); //do whatever processing we need to do with the newly fetched data
 					return numCharactersRead; //return the number of characters read
-				}
-				else
-				//if there were no more characters to read
-				{
+				} else { //if there were no more characters to read
 					setLastBuffer(true); //show that this was the last buffer read (we can't get any more characters from our input reader)
 					return 0; //show that we couldn't fetch any characters
 				}
-			}
-			else
+			} else
 				//if there was no room left in the buffer TODO we'll probably want to enlarge the buffer here
 				return 0; //show that we didn't read any characters; this doesn't mean that we've reached the end of the file; maybe they tried to fetch the buffer twice in a row
 		}
@@ -495,8 +449,7 @@ public class ProcessingBufferedReader extends Reader
 	 * @throws IOException if an I/O error occurs.
 	 * @see #getFetchBufferIndex()
 	 */
-	protected void processBufferedData(final int newDataBeginIndex) throws IOException
-	{
+	protected void processBufferedData(final int newDataBeginIndex) throws IOException {
 	}
 
 	/**
@@ -506,12 +459,9 @@ public class ProcessingBufferedReader extends Reader
 	 * @throws IOException if an I/O error occurs.
 	 * @see #isEnd()
 	 */
-	protected boolean updateEnd() throws IOException
-	{
-		if(!isEnd()) //if we don't think we've hit the end of the file, yet, we'll make sure
-		{
-			if(getReadIndex() >= getFetchBufferIndex()) //if we're at a place where we should fetch a new buffer of information (we should never be *over* this amount, but >= is used just to be redundantly safe)
-			{
+	protected boolean updateEnd() throws IOException {
+		if(!isEnd()) { //if we don't think we've hit the end of the file, yet, we'll make sure
+			if(getReadIndex() >= getFetchBufferIndex()) { //if we're at a place where we should fetch a new buffer of information (we should never be *over* this amount, but >= is used just to be redundantly safe)
 				if(fetchBuffer() == END_VALUE) //fetch another buffer of information; if we were not able to get more information
 					setEnd(true); //show that we're at the end of the file
 			}
@@ -524,18 +474,14 @@ public class ProcessingBufferedReader extends Reader
 	 * @return The character read, as an integer in the range 0 to 16383 (0x00-0xffff), or {@value #END_VALUE} if the end of the stream has been reached.
 	 * @throws IOException if an I/O error occurs.
 	 */
-	public int read() throws IOException
-	{
+	public int read() throws IOException {
 		//TODO fix		resetPeek();	//reset our peek buffer in case any characters were peeked so that the next character read will be accurate
-		if(!isEnd()) //if we're not at the end of the file, yet
-		{
-			if(getReadIndex() >= getFetchBufferIndex()) //if we're at a place where we should fetch a new buffer of information (we should never be *over* this amount, but >= is used just to be redundantly safe)
-			{
+		if(!isEnd()) { //if we're not at the end of the file, yet
+			if(getReadIndex() >= getFetchBufferIndex()) { //if we're at a place where we should fetch a new buffer of information (we should never be *over* this amount, but >= is used just to be redundantly safe)
 				if(fetchBuffer() == END_VALUE) //fetch another buffer of information; if we were not able to get more information
 					setEnd(true); //show that we're at the end of the file
 			}
-			if(!isEnd()) //fetching another buffer could have alerted us to being at the end of the file even though we didn't know it before; if we're not at the end of the file, yet
-			{
+			if(!isEnd()) { //fetching another buffer could have alerted us to being at the end of the file even though we didn't know it before; if we're not at the end of the file, yet
 				final char readChar = getBuffer()[getReadIndex()]; //get the character at our current read position
 				setReadIndex(getReadIndex() + 1); //advance the read index
 				return readChar; //return the character we read
@@ -555,13 +501,10 @@ public class ProcessingBufferedReader extends Reader
 	 * @return The number of characters read, or {@value #END_VALUE} if the end of the stream has been reached.
 	 * @throws IOException if an I/O error occurs.
 	 */
-	public int read(final char[] cbuf, int off, final int len) throws IOException
-	{
-		if(!isEnd()) //if we're not at the end of the file
-		{
+	public int read(final char[] cbuf, int off, final int len) throws IOException {
+		if(!isEnd()) { //if we're not at the end of the file
 			int numCharsRead = 0; //this will store the number of characters actually read; right now, we don't know if we're going to read any characters
-			while(numCharsRead < len) //keep reading characters until we've read as many as they want
-			{
+			while(numCharsRead < len) { //keep reading characters until we've read as many as they want
 				final int numCharsInBuffer = getFetchBufferIndex() - getReadIndex(); //find out how many characters are left in the buffer
 				final int numCharsToReadThisTime = Math.min(len - numCharsRead, numCharsInBuffer); //read the number of characters we need to, or however many are left in the buffer this time
 				final int sourceBegin = getReadIndex(); //find out where to start copying
@@ -569,8 +512,7 @@ public class ProcessingBufferedReader extends Reader
 				numCharsRead += numCharsToReadThisTime; //show that we read at least a little more
 				off += numCharsToReadThisTime; //show that our destination offset also increased
 				setReadIndex(getReadIndex() + numCharsToReadThisTime); //move the read position ahead the number of characters that we're going to read; only do this *after* we've copied in case that setReadIndex() fetches another buffer
-				if(numCharsRead < len) //if we still have more characters to read
-				{
+				if(numCharsRead < len) { //if we still have more characters to read
 					if(!isEnd()) //if we're not at the end of the file, yet (the call to setReadIndex(), above, will have checked)
 						fetchBuffer(); //fetch another buffer of information (actually, going to the end of the buffer would automatically have fetched another buffer, above, so this is redundant but won't considerably hurt performance, because fetchBuffer() will quickly return when it sees the buffer is full) TODO maybe take this out and put a comment about setReadIndex() fetching another buffer if needed
 					else
@@ -580,10 +522,7 @@ public class ProcessingBufferedReader extends Reader
 			}
 			resetPeek(); //reset peeking, as this function always does, whether or not we were able to read any characters
 			return numCharsRead; //return the number of characters we were able to read before reaching the end of the file
-		}
-		else
-		//if we've reached the end of the file
-		{
+		} else { //if we've reached the end of the file
 			resetPeek(); //reset peeking, as this function always does, whether or not we were able to read any characters
 			return END_VALUE; //show that we're at the end of the data
 		}
@@ -594,8 +533,7 @@ public class ProcessingBufferedReader extends Reader
 	 * @param c The character to push back.
 	 * @throws IOException if there is no room to push back characters (the undo buffer is full) or some other I/O error occurs.
 	 */
-	public void unread(int c) throws IOException
-	{
+	public void unread(int c) throws IOException {
 		unskip(1); //back up one position
 		getBuffer()[getReadIndex()] = (char)c; //put the character they provided us in that location
 	}
@@ -607,8 +545,7 @@ public class ProcessingBufferedReader extends Reader
 	 * @param len The number of characters to push back.
 	 * @throws IOException if there is no room to push back characters (the undo buffer is full) or some other I/O error occurs.
 	 */
-	public void unread(char[] cbuf, int off, int len) throws IOException
-	{
+	public void unread(char[] cbuf, int off, int len) throws IOException {
 		unskip(len); //back up the correct number of positions
 		System.arraycopy(cbuf, off, getBuffer(), getReadIndex(), len); //copy the characters into the buffer
 	}
@@ -618,8 +555,7 @@ public class ProcessingBufferedReader extends Reader
 	 * @param cbuf The array of characters to push back.
 	 * @throws IOException if there is no room to push back characters (the undo buffer is full) or some other I/O error occurs.
 	 */
-	public void unread(char[] cbuf) throws IOException
-	{
+	public void unread(char[] cbuf) throws IOException {
 		unread(cbuf, 0, cbuf.length); //unread all the characters in the array, starting at the first character
 	}
 
@@ -630,10 +566,8 @@ public class ProcessingBufferedReader extends Reader
 	 * </p>
 	 * @throws IOException if an I/O error occurs.
 	 */
-	public void close() throws IOException
-	{
-		if(getReader() != null) //if we have a reader
-		{
+	public void close() throws IOException {
+		if(getReader() != null) { //if we have a reader
 			getReader().close();
 		}
 		//TODO we need to decide how to close when we're reading from a string, so that further calls to read() and such will throw an exception
@@ -654,22 +588,16 @@ public class ProcessingBufferedReader extends Reader
 	 * @see #read()
 	 * @see #resetPeek()
 	 */
-	public int peek() throws IOException
-	{
-		if(!isEnd()) //if we're not at the end of the file, yet
-		{
-			if(getPeekIndex() >= getFetchBufferIndex()) //if we're peeking at a place where we should fetch a new buffer of information (we should never be *over* this amount, but >= is used just to be redundantly safe)
-			{
+	public int peek() throws IOException {
+		if(!isEnd()) { //if we're not at the end of the file, yet
+			if(getPeekIndex() >= getFetchBufferIndex()) { //if we're peeking at a place where we should fetch a new buffer of information (we should never be *over* this amount, but >= is used just to be redundantly safe)
 				if(fetchBuffer() == END_VALUE) //fetch another buffer of information; if we couldn't fetch any more information
 					return END_VALUE; //show that we can't peek anymore (but don't set the EOF variable, because our read position is not necessarily at the end of the file)
 			}
 			final char peekedChar = getBuffer()[getPeekIndex()]; //get the character at our current peek position
 			setPeekIndex(getPeekIndex() + 1); //advance the peek index
 			return peekedChar; //return the character we peeked
-		}
-		else
-		//if we are at the end of the file
-		{
+		} else { //if we are at the end of the file
 			return END_VALUE; //show that we can't peek anymore, because we're at the end of the file
 		}
 	}
@@ -686,13 +614,10 @@ public class ProcessingBufferedReader extends Reader
 	 * @return The number of characters peeked, or 0 if the end of the stream has been reached.
 	 * @throws IOException if an I/O error occurs.
 	 */
-	public int peek(char[] cbuf, int off, int len) throws IOException
-	{
+	public int peek(char[] cbuf, int off, int len) throws IOException {
 		int numCharsPeeked = 0; //this will store the number of characters actually peeked; right now, we don't know if we're going to peek any characters
-		if(!isEnd()) //if we're not at the end of the file
-		{
-			while(numCharsPeeked < len) //keep peeking characters until we've peeked as many as they want
-			{
+		if(!isEnd()) { //if we're not at the end of the file
+			while(numCharsPeeked < len) { //keep peeking characters until we've peeked as many as they want
 				final int numCharsInBuffer = getFetchBufferIndex() - getPeekIndex(); //find out how many characters are left in the buffer
 				final int numCharsToPeekThisTime = Math.min(len - numCharsPeeked, numCharsInBuffer); //peek the number of characters we need to, or however many are left in the buffer this time
 				final int sourceBegin = getPeekIndex(); //find out where to start copying
@@ -700,20 +625,16 @@ public class ProcessingBufferedReader extends Reader
 				System.arraycopy(getBuffer(), sourceBegin, cbuf, off, numCharsToPeekThisTime); //copy the characters, or all the characters in this buffer, whichever is less
 				numCharsPeeked += numCharsToPeekThisTime; //show that we peeked at least a little more
 				off += numCharsToPeekThisTime; //show that our destination offset also increased
-				if(numCharsPeeked < len) //if we still have more characters to peek
-				{
+				if(numCharsPeeked < len) { //if we still have more characters to peek
 					//TODO probably move this clause (and all similar ones) to the front of the loop
-					if(getPeekIndex() >= getFetchBufferIndex() && !isLastBuffer()) //if we've peeked to the end of the buffer, and this isn't the last buffer
-					{
+					if(getPeekIndex() >= getFetchBufferIndex() && !isLastBuffer()) { //if we've peeked to the end of the buffer, and this isn't the last buffer
 						fetchBuffer(); //fetch the next buffer TODO note that if they peek *way* ahead of the read index, the fetchBuffer() won't read anymore, and we'll go into an endless loop; check the result of fetchBuffer() here
-					}
-					else
+					} else
 						//if we haven't peeked to the end of the buffer, and we still haven't peeked all we need to
 						break; //show that there's nothing left to peek
 				}
 			}
-			if(numCharsPeeked == 0) //if no characters were peeked
-			{
+			if(numCharsPeeked == 0) { //if no characters were peeked
 				setEnd(true); //show that we've reached the end of the file
 			}
 		}
@@ -726,8 +647,7 @@ public class ProcessingBufferedReader extends Reader
 	 * Does not affect the next character to be read.
 	 * </p>
 	 */
-	public void resetPeek()
-	{
+	public void resetPeek() {
 		setPeekIndex(getReadIndex()); //make the peek index the same as the read index
 	}
 
@@ -741,19 +661,15 @@ public class ProcessingBufferedReader extends Reader
 	 * @return The number of characters actually skipped.
 	 * @throws IOException if an I/O error occurs.
 	 */
-	public long skip(long n) throws IOException
-	{
+	public long skip(long n) throws IOException {
 		long numCharsSkipped = 0; //this will store the number of characters actually skipped; right now, we don't know if we're going to skip any characters
-		if(!isEnd()) //if we're not at the end of the file
-		{
-			while(numCharsSkipped < n) //keep skipping characters until we've skipped enough
-			{
+		if(!isEnd()) { //if we're not at the end of the file
+			while(numCharsSkipped < n) { //keep skipping characters until we've skipped enough
 				final int numCharsInBuffer = getFetchBufferIndex() - getReadIndex(); //find out how many characters are left in the buffer
 				final int numCharsToSkipThisTime = n - numCharsSkipped < numCharsInBuffer ? (int)(n - numCharsSkipped) : numCharsInBuffer; //skip the amount of characters we need to, or however many is left in the buffer this time
 				setReadIndex(getReadIndex() + numCharsToSkipThisTime); //move the read position ahead the number of characters that we're going to skip
 				numCharsSkipped += numCharsToSkipThisTime; //show that we skipped at least a little more
-				if(numCharsSkipped < n) //if we still have more characters to skip
-				{
+				if(numCharsSkipped < n) { //if we still have more characters to skip
 					if(!isEnd()) //if we're not at the end of the file, yet (the call to setReadIndex(), above, will have checked)
 						fetchBuffer(); //fetch another buffer of information (actually, going to the end of the buffer would automatically have fetched another buffer, above, so this is redundant but won't considerably hurt performance, because fetchBuffer() will quickly return when it sees the buffer is full) TODO maybe remove this and put a comment about setReadIndex() fetching another buffer if needed
 					else
@@ -776,13 +692,10 @@ public class ProcessingBufferedReader extends Reader
 	 * @throws IOException if there is no room to push back characters (the undo buffer is full) or some other I/O error occurs.
 	 * @see #unread(char[])
 	 */
-	public void unskip(final int n) throws IOException
-	{
-		if(getReadIndex() - n >= 0) //if we have enough room to back up the requested number of characters
-		{
+	public void unskip(final int n) throws IOException {
+		if(getReadIndex() - n >= 0) { //if we have enough room to back up the requested number of characters
 			setReadIndex(getReadIndex() - n); //back the read index up the specified number of characters, which will reset peeking as well
-		}
-		else
+		} else
 			//if we can't push back more characters TODO we could copy characters forward to make room
 			throw new IOException("Not enough room to push back " + n + " character(s); only room for " + getReadIndex() + "."); //show we had a buffer underrun
 	}

@@ -22,8 +22,7 @@ import java.util.*;
  * Utility methods for building collections using a fluent interface.
  * @author Garret Wilson
  */
-public class CollectionBuilder
-{
+public class CollectionBuilder {
 
 	/**
 	 * Appends the contents of an iterable to a collection. This method functions identical to {@link List#addAll(Collection)}, except that this method returns
@@ -34,8 +33,7 @@ public class CollectionBuilder
 	 * @param iterator The source of the added objects.
 	 * @return The given collection.
 	 */
-	public static <E, C extends Collection<E>> C addAll(final C collection, final Iterable<? extends E> iterable)
-	{
+	public static <E, C extends Collection<E>> C addAll(final C collection, final Iterable<? extends E> iterable) {
 		return addAll(collection, iterable.iterator());
 	}
 
@@ -47,8 +45,7 @@ public class CollectionBuilder
 	 * @param iterator The source of the added objects.
 	 * @return The given collection.
 	 */
-	public static <E, C extends Collection<E>> C addAll(final C collection, final Iterator<? extends E> iterator)
-	{
+	public static <E, C extends Collection<E>> C addAll(final C collection, final Iterator<? extends E> iterator) {
 		Collections.addAll(collection, iterator); //add all the elements from the iterator
 		return collection; //return the collection
 	}
@@ -61,8 +58,7 @@ public class CollectionBuilder
 	 * @param elements The source of the added objects.
 	 * @return The given collection.
 	 */
-	public static <E, C extends Collection<E>> C addAll(final C collection, final E... elements)
-	{
+	public static <E, C extends Collection<E>> C addAll(final C collection, final E... elements) {
 		java.util.Collections.addAll(collection, elements); //add all the elements
 		return collection; //return the collection
 	}

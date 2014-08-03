@@ -30,16 +30,14 @@ import com.globalmentor.java.Comparables;
  * 
  * @param <V> The type of value contained in the valued objects
  */
-public class ValuedComparator<V extends Comparable<V>> extends AbstractSortOrderComparator<Valued<V>>
-{
+public class ValuedComparator<V extends Comparable<V>> extends AbstractSortOrderComparator<Valued<V>> {
 
 	/**
 	 * Sort order constructor.
 	 * @param sortOrder The order in which to perform comparisons.
 	 * @throws NullPointerException if the given sort order is <code>null</code>.
 	 */
-	public ValuedComparator(final SortOrder sortOrder)
-	{
+	public ValuedComparator(final SortOrder sortOrder) {
 		super(sortOrder);
 	}
 
@@ -48,8 +46,7 @@ public class ValuedComparator<V extends Comparable<V>> extends AbstractSortOrder
 	 * @see Valued#getValue()
 	 */
 	@Override
-	protected int compareImpl(final Valued<V> object1, final Valued<V> object2)
-	{
+	protected int compareImpl(final Valued<V> object1, final Valued<V> object2) {
 		return Comparables.compare(object1.getValue(), object2.getValue());
 	}
 

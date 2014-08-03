@@ -21,8 +21,7 @@ package com.globalmentor.model;
  * 
  * @author Garret Wilson
  */
-public interface TypeConverter
-{
+public interface TypeConverter {
 
 	/**
 	 * Converts an object from one type to another. If the object is already of the correct type, no action occurs.

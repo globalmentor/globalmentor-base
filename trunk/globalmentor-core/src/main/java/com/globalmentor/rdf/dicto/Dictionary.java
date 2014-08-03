@@ -23,55 +23,55 @@ import com.globalmentor.rdf.*;
 import static com.globalmentor.rdf.dicto.Dicto.*;
 import com.globalmentor.rdf.dublincore.RDFDublinCore;
 
-/**Class representing a Dictionary Ontology (Dicto) dictionary.
-@author Garret Wilson
-*/
-public class Dictionary extends TypedRDFResource
-{
+/**
+ * Class representing a Dictionary Ontology (Dicto) dictionary.
+ * @author Garret Wilson
+ */
+public class Dictionary extends TypedRDFResource {
 
-	/**@return The namespace URI of the ontology defining the default type of this resource.*/
-	public URI getDefaultTypeNamespaceURI() {return DICTO_NAMESPACE_URI;}
-
-	/**@return The local name of the default type of this resource.*/
-	public String getDefaultTypeName() {return DICTIONARY_CLASS_NAME;}
-
-	/**Default constructor.*/
-	public Dictionary()
-	{
+	/** @return The namespace URI of the ontology defining the default type of this resource. */
+	public URI getDefaultTypeNamespaceURI() {
+		return DICTO_NAMESPACE_URI;
 	}
 
-	/**Constructs an activity with a reference URI.
-	@param referenceURI The reference URI for the new publication.
-	*/
-	public Dictionary(final URI referenceURI)
-	{
-		super(referenceURI);  //construct the parent class
+	/** @return The local name of the default type of this resource. */
+	public String getDefaultTypeName() {
+		return DICTIONARY_CLASS_NAME;
 	}
 
-	/**@return The list of entries for this dictionary.
-	@throws ClassCastException if the value of the interactions property
-		is not a list resource.
-	*/
-	public RDFListResource getEntries()
-	{
-		return (RDFListResource)getPropertyValue(DICTO_NAMESPACE_URI, ENTRIES_PROPERTY_NAME);	//get the dicto:entries property value		
+	/** Default constructor. */
+	public Dictionary() {
 	}
 
-	/**@return The language of the dictionary entries, or <code>null</code> if
-		dictionary language is not indicated.
-	*/
-	public Locale getDictionaryLanguage()
-	{
-		return Dicto.getLanguage(this);	//return the dictionary language
+	/**
+	 * Constructs an activity with a reference URI.
+	 * @param referenceURI The reference URI for the new publication.
+	 */
+	public Dictionary(final URI referenceURI) {
+		super(referenceURI); //construct the parent class
 	}
 
-	/**@return The language of any translations, or <code>null</code> if
-		no translation language is indicated. If there are no translations, this
-		property should return the same as <code>getDictionaryLanguage()</code>.
-	*/
-	public Locale getLanguage()
-	{
-		return RDFDublinCore.getLanguage(this);	//return the language
+	/**
+	 * @return The list of entries for this dictionary.
+	 * @throws ClassCastException if the value of the interactions property is not a list resource.
+	 */
+	public RDFListResource getEntries() {
+		return (RDFListResource)getPropertyValue(DICTO_NAMESPACE_URI, ENTRIES_PROPERTY_NAME); //get the dicto:entries property value		
+	}
+
+	/**
+	 * @return The language of the dictionary entries, or <code>null</code> if dictionary language is not indicated.
+	 */
+	public Locale getDictionaryLanguage() {
+		return Dicto.getLanguage(this); //return the dictionary language
+	}
+
+	/**
+	 * @return The language of any translations, or <code>null</code> if no translation language is indicated. If there are no translations, this property should
+	 *         return the same as <code>getDictionaryLanguage()</code>.
+	 */
+	public Locale getLanguage() {
+		return RDFDublinCore.getLanguage(this); //return the language
 	}
 
 }

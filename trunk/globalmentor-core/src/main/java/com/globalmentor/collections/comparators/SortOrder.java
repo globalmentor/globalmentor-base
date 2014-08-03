@@ -18,17 +18,17 @@ package com.globalmentor.collections.comparators;
 
 import java.util.Comparator;
 
-/**The order in which sorting should be performed.
-@author Garret Wilson
-@see Comparator
-*/
-public enum SortOrder
-{
+/**
+ * The order in which sorting should be performed.
+ * @author Garret Wilson
+ * @see Comparator
+ */
+public enum SortOrder {
 
-	/**Indicates that items should be sorted in increasing order.*/
+	/** Indicates that items should be sorted in increasing order. */
 	ASCENDING,
 
-	/**Indicates that items should be sorted in decreasing order.*/
+	/** Indicates that items should be sorted in decreasing order. */
 	DESCENDING;
 
 }

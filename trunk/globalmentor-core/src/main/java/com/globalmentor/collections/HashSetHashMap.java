@@ -22,12 +22,10 @@ import java.util.*;
  * An implementation of a {@link HashMap} that stores an {@link HashSet} of values for each key, with special methods for retrieving single values.
  * @author Garret Wilson
  */
-public class HashSetHashMap<K, V> extends AbstractDecoratorCollectionMap<K, V, Set<V>>
-{
+public class HashSetHashMap<K, V> extends AbstractDecoratorCollectionMap<K, V, Set<V>> {
 
 	/** Default constructor that decorates a {@link HashMap}. */
-	public HashSetHashMap()
-	{
+	public HashSetHashMap() {
 		super(new HashMap<K, Set<V>>()); //create a new hash map to decorate
 	}
 
@@ -36,16 +34,14 @@ public class HashSetHashMap<K, V> extends AbstractDecoratorCollectionMap<K, V, S
 	 * @param initialCapacity the initial capacity.
 	 * @throws IllegalArgumentException if the initial capacity is negative.
 	 */
-	public HashSetHashMap(final int initialCapacity)
-	{
+	public HashSetHashMap(final int initialCapacity) {
 		super(new HashMap<K, Set<V>>(initialCapacity)); //create a new hash map to decorate
 	}
 
 	/**
 	 * Creates a collection in which to store values. This version returns an {@link HashSet}.
 	 */
-	public Set<V> createCollection()
-	{
+	public Set<V> createCollection() {
 		return new HashSet<V>();
 	}
 }

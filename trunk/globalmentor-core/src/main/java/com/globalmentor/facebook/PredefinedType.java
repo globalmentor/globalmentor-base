@@ -25,17 +25,14 @@ import com.globalmentor.model.IDed;
  * @author Garret Wilson
  * @see <a href="http://ogp.me/">The Open Graph Protocol</a>
  */
-public enum PredefinedType implements IDed<String>
-{
+public enum PredefinedType implements IDed<String> {
 	//note: new predefined types must also be added to a category within getCategory() or an assertion exception will be thrown
 
 	ACTIVITY, SPORT, BAR, COMPANY, CAFE, HOTEL, RESTAURANT, CAUSE, SPORTS_LEAGUE, SPORTS_TEAM, BAND, GOVERNMENT, NON_PROFIT, SCHOOL, UNIVERSITY, ACTOR, ATHLETE, AUTHOR, DIRECTOR, MUSICIAN, POLITICIAN, PROFILE, PUBLIC_FIGURE, CITY, COUNTRY, LANDMARK, STATE_PROVINCE, ALBUM, BOOK, DRINK, FOOD, GAME, MOVIE, PRODUCT, SONG, TV_SHOW, ARTICLE, BLOG, WEBSITE;
 
 	/** @return The predefined category of this predefined type. */
-	public PredefinedCategory getCategory()
-	{
-		switch(this)
-		{
+	public PredefinedCategory getCategory() {
+		switch(this) {
 			case ACTIVITY:
 			case SPORT:
 				return ACTIVITIES;
@@ -94,8 +91,7 @@ public enum PredefinedType implements IDed<String>
 	 * This ID is the official ID given by the Open Graph specification and suitable for serialization.
 	 * </p>
 	 */
-	public String getID()
-	{
+	public String getID() {
 		return toString().toLowerCase(); //all the type IDs are simply the lowercase version of the enum string
 	}
 }

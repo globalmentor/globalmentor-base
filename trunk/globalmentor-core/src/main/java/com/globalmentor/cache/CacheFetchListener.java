@@ -18,19 +18,20 @@ package com.globalmentor.cache;
 
 import java.util.EventListener;
 
-/**Indicates the implementing class can listen for a value being fetched in a cache.
-@param <Q> The type of query used to request data from the cache.
-@param <V> The type of value stored in the cache.
-@see Cache
-@see CacheFetchEvent
-@author Garret Wilson
-*/
-public interface CacheFetchListener<Q, V> extends EventListener
-{
+/**
+ * Indicates the implementing class can listen for a value being fetched in a cache.
+ * @param <Q> The type of query used to request data from the cache.
+ * @param <V> The type of value stored in the cache.
+ * @see Cache
+ * @see CacheFetchEvent
+ * @author Garret Wilson
+ */
+public interface CacheFetchListener<Q, V> extends EventListener {
 
-	/**Called when a value is fetched in the cache.
-	@param cacheFetchEvent The event identifying the value fetched.
-	*/
+	/**
+	 * Called when a value is fetched in the cache.
+	 * @param cacheFetchEvent The event identifying the value fetched.
+	 */
 	public void fetched(final CacheFetchEvent<Q, V> cacheFetchEvent);
 
 }

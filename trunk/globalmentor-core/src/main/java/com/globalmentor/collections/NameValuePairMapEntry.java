@@ -29,16 +29,14 @@ import com.globalmentor.model.NameValuePair;
  * @param <K> The type of key contained in the map.
  * @param <V> The type of value contained in the map.
  */
-public class NameValuePairMapEntry<K, V> extends NameValuePair<K, V> implements Map.Entry<K, V>
-{
+public class NameValuePairMapEntry<K, V> extends NameValuePair<K, V> implements Map.Entry<K, V> {
 
 	/**
 	 * Constructor specifying the name and value.
 	 * @param name The object's new name.
 	 * @param value The object's new value
 	 */
-	public NameValuePairMapEntry(final K name, final V value)
-	{
+	public NameValuePairMapEntry(final K name, final V value) {
 		super(name, value); //construct the parent class
 	}
 
@@ -47,8 +45,7 @@ public class NameValuePairMapEntry<K, V> extends NameValuePair<K, V> implements 
 	 * @param nameValuePair The name/value pair the values of which to hold in the map entry.
 	 * @throws NullPointerException if the given name/value pair is <code>null</code>.
 	 */
-	public NameValuePairMapEntry(final NameValuePair<K, V> nameValuePair)
-	{
+	public NameValuePairMapEntry(final NameValuePair<K, V> nameValuePair) {
 		this(nameValuePair.getName(), nameValuePair.getValue());
 	}
 
@@ -57,31 +54,26 @@ public class NameValuePairMapEntry<K, V> extends NameValuePair<K, V> implements 
 	 * @param mapEntry The map entry the values of which to hold in the map entry.
 	 * @throws NullPointerException if the given map entry is <code>null</code>.
 	 */
-	public NameValuePairMapEntry(final Map.Entry<K, V> mapEntry)
-	{
+	public NameValuePairMapEntry(final Map.Entry<K, V> mapEntry) {
 		this(mapEntry.getKey(), mapEntry.getValue());
 	}
 
 	/** {@inheritDoc} */
-	public K getKey()
-	{
+	public K getKey() {
 		return getName();
 	}
 
 	/** {@inheritDoc} */
-	public V setValue(V value)
-	{
+	public V setValue(V value) {
 		throw new UnsupportedOperationException();
 	}
 
 	/** {@inheritDoc} */
-	public boolean equals(Object o)
-	{
-		if(!(o instanceof Map.Entry))
-		{
+	public boolean equals(Object o) {
+		if(!(o instanceof Map.Entry)) {
 			return false;
 		}
-		final Map.Entry<?, ?> mapEntry = (Map.Entry<?, ?>) o;
+		final Map.Entry<?, ?> mapEntry = (Map.Entry<?, ?>)o;
 		return Objects.equals(getKey(), mapEntry.getKey()) && Objects.equals(getValue(), mapEntry.getValue());
 	}
 

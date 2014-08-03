@@ -29,8 +29,7 @@ import com.globalmentor.io.BOMInputStreamReader;
  * Provides convenience access routines to {@link Properties}.
  * @author Garret Wilson
  */
-public class PropertiesUtilities
-{
+public class PropertiesUtilities {
 
 	/** The name extension for properties files, such as Java properties files. */
 	public final static String PROPERTIES_NAME_EXTENSION = "properties";
@@ -48,8 +47,7 @@ public class PropertiesUtilities
 	 * @return The boolean value of the named property, or false if there is no value or the value does not represent a boolean value.
 	 * @see Properties#getProperty
 	 */
-	public static boolean getBooleanProperty(final Properties properties, final String propertyName)
-	{
+	public static boolean getBooleanProperty(final Properties properties, final String propertyName) {
 		return getBooleanProperty(properties, propertyName, false); //get the boolean version of the property, specifying false as the default
 	}
 
@@ -61,8 +59,7 @@ public class PropertiesUtilities
 	 * @return The boolean value of the named property or, if there is no value or the value does not represent a boolean value, the default value.
 	 * @see Properties#getProperty
 	 */
-	public static boolean getBooleanProperty(final Properties properties, final String propertyName, final boolean defaultValue)
-	{
+	public static boolean getBooleanProperty(final Properties properties, final String propertyName, final boolean defaultValue) {
 		final String propertyValueString = properties.getProperty(propertyName); //get the property value
 		//if the property value isn't null and is case-insensitively equal to the
 		//  "true" string, return true; if not, return the default value
@@ -80,8 +77,7 @@ public class PropertiesUtilities
 	 * @param propertyValue The new boolean value of the property.
 	 * @see Properties#setProperty
 	 */
-	public static void setProperty(final Properties properties, final String propertyName, final boolean propertyValue)
-	{
+	public static void setProperty(final Properties properties, final String propertyName, final boolean propertyValue) {
 		properties.setProperty(propertyName, propertyValue ? TRUE_STRING : FALSE_STRING); //set the property value using either the true string or the false string to represent the value
 	}
 
@@ -93,8 +89,7 @@ public class PropertiesUtilities
 	 * @return The value of the named property or, if there is no value, the default value.
 	 * @see Properties#getProperty
 	 */
-	public static File getFileProperty(final Properties properties, final String propertyName, final File defaultValue)
-	{
+	public static File getFileProperty(final Properties properties, final String propertyName, final File defaultValue) {
 		final String propertyValueString = properties.getProperty(propertyName); //get the property value
 		return propertyValueString != null ? new File(propertyValueString) : defaultValue; //return the value or the default
 	}
@@ -106,8 +101,7 @@ public class PropertiesUtilities
 	 * @param propertyValue The new file value of the property.
 	 * @see Properties#setProperty
 	 */
-	public static void setProperty(final Properties properties, final String propertyName, final File propertyValue)
-	{
+	public static void setProperty(final Properties properties, final String propertyName, final File propertyValue) {
 		properties.setProperty(propertyName, propertyValue.toString()); //set the property value using the given integer
 	}
 
@@ -119,15 +113,11 @@ public class PropertiesUtilities
 	 * @return The integer value of the named property or, if there is no value or the value does not represent a integer value, the default value.
 	 * @see Properties#getProperty
 	 */
-	public static int getIntProperty(final Properties properties, final String propertyName, final int defaultValue)
-	{
+	public static int getIntProperty(final Properties properties, final String propertyName, final int defaultValue) {
 		final String propertyValueString = properties.getProperty(propertyName); //get the property value
-		try
-		{
+		try {
 			return Integer.parseInt(propertyValueString); //parse the integer
-		}
-		catch(NumberFormatException numberFormatException) //if this wasn't a valid integer
-		{
+		} catch(NumberFormatException numberFormatException) { //if this wasn't a valid integer
 			return defaultValue; //return the default value if the value is missing or isn't valid
 		}
 	}
@@ -139,8 +129,7 @@ public class PropertiesUtilities
 	 * @param propertyValue The new integer value of the property.
 	 * @see Properties#setProperty
 	 */
-	public static void setProperty(final Properties properties, final String propertyName, final int propertyValue)
-	{
+	public static void setProperty(final Properties properties, final String propertyName, final int propertyValue) {
 		properties.setProperty(propertyName, Integer.toString(propertyValue)); //set the property value using the given integer
 	}
 
@@ -150,15 +139,10 @@ public class PropertiesUtilities
 	 * @param map The map to convert to a properties object.
 	 * @return A properties object, potentially the same instance, containing entries from the given map.
 	 */
-	public static Properties toProperties(final Map<?, ?> map)
-	{
-		if(map instanceof Properties) //if the map is already a properties object
-		{
+	public static Properties toProperties(final Map<?, ?> map) {
+		if(map instanceof Properties) { //if the map is already a properties object
 			return (Properties)map; //return the map as a properties object
-		}
-		else
-		//if the map is not a properties object
-		{
+		} else { //if the map is not a properties object
 			final Properties properties = new Properties(); //create a new properties object
 			properties.putAll(map); //put all the properties from the map
 			return properties; //return the populated properties object
@@ -183,8 +167,7 @@ public class PropertiesUtilities
 	 * @see Class#getSimpleName()
 	 * @see ClassLoader#getResourceAsStream(String)
 	 */
-	public static Properties loadPropertiesResource(final Class<?> objectClass) throws FileNotFoundException, IOException
-	{
+	public static Properties loadPropertiesResource(final Class<?> objectClass) throws FileNotFoundException, IOException {
 		return loadPropertiesResource(objectClass, objectClass.getSimpleName());
 	}
 
@@ -205,37 +188,28 @@ public class PropertiesUtilities
 	 * @throws IOException if there is an error loading the properties.
 	 * @see ClassLoader#getResourceAsStream(String)
 	 */
-	public static Properties loadPropertiesResource(final Class<?> objectClass, final String baseName) throws FileNotFoundException, IOException
-	{
+	public static Properties loadPropertiesResource(final Class<?> objectClass, final String baseName) throws FileNotFoundException, IOException {
 		final Properties properties = new Properties();
 		//try to load baseName.properties
 		InputStream propertiesStream = objectClass.getResourceAsStream(addNameExtension(baseName, PROPERTIES_NAME_EXTENSION));
-		if(propertiesStream != null)
-		{
+		if(propertiesStream != null) {
 			propertiesStream = new BufferedInputStream(propertiesStream); //buffer the stream
 			final Reader propertiesReader = new BOMInputStreamReader(propertiesStream, ISO_8859_1_CHARSET); //check for a BOM, falling back to the default properties charset
-			try
-			{
+			try {
 				properties.load(propertiesReader);
 				return properties;
-			}
-			finally
-			{
+			} finally {
 				propertiesReader.close();
 			}
 		}
 		//try to load baseName.xml
 		propertiesStream = objectClass.getResourceAsStream(addNameExtension(baseName, XML_NAME_EXTENSION));
-		if(propertiesStream != null)
-		{
+		if(propertiesStream != null) {
 			propertiesStream = new BufferedInputStream(propertiesStream); //buffer the stream
-			try
-			{
+			try {
 				properties.loadFromXML(propertiesStream);
 				return properties;
-			}
-			finally
-			{
+			} finally {
 				propertiesStream.close();
 			}
 		}

@@ -24,8 +24,8 @@ import java.util.*;
  * @param <E> The type of elements in this iterator
  * @author Garret Wilson
  */
-public class ObjectIterator<E> implements Iterator<E>, Iterable<E>
-{
+public class ObjectIterator<E> implements Iterator<E>, Iterable<E> {
+
 	/** The single object being iterated. */
 	protected E object;
 
@@ -36,47 +36,38 @@ public class ObjectIterator<E> implements Iterator<E>, Iterable<E>
 	 * Object constructor.
 	 * @param object The single object over which iteration should occur.
 	 */
-	public ObjectIterator(final E object)
-	{
+	public ObjectIterator(final E object) {
 		this.object = object; //save the object
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public boolean hasNext()
-	{
+	public boolean hasNext() {
 		return hasNext;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public E next()
-	{
-		if(hasNext) //if we haven't returned the object, yet
-		{
+	public E next() {
+		if(hasNext) { //if we haven't returned the object, yet
 			final E next = object; //get the object
 			hasNext = false; //indicate we've retrieved the object
 			object = null; //release the object
 			return next; //return our copy of the object
-		}
-		else
-		//if we've already returned the object
-		{
+		} else { //if we've already returned the object
 			throw new NoSuchElementException("Already returned object.");
 		}
 	}
 
 	/** {@inheritDoc} This implementation does not support removal. */
 	@Override
-	public void remove()
-	{
+	public void remove() {
 		throw new UnsupportedOperationException("This iterator does not support removing the object.");
 	}
 
 	/** {@inheritDoc} This implementation returns <code>this<code>. */
 	@Override
-	public Iterator<E> iterator()
-	{
+	public Iterator<E> iterator() {
 		return this;
 	}
 }

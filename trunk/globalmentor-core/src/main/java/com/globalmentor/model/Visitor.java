@@ -23,8 +23,7 @@ package com.globalmentor.model;
  * 
  * @param <N> The type of node being visited.
  */
-public interface Visitor<N>
-{
+public interface Visitor<N> {
 
 	/**
 	 * Visits the given node.

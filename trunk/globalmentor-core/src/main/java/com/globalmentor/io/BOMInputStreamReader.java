@@ -39,8 +39,7 @@ public class BOMInputStreamReader extends InputStreamReader //TODO create a vers
 	 * @throws IOException if there is an error attempting to read the byte order mark from the input stream.
 	 * @throws UnsupportedEncodingException if the named charset is not supported.
 	 */
-	public BOMInputStreamReader(final InputStream inputStream) throws IOException, UnsupportedEncodingException
-	{
+	public BOMInputStreamReader(final InputStream inputStream) throws IOException, UnsupportedEncodingException {
 		this(inputStream, UTF_8_CHARSET); //default to UTF-8 if we can't determine the charset by the BOM
 	}
 
@@ -51,8 +50,7 @@ public class BOMInputStreamReader extends InputStreamReader //TODO create a vers
 	 * @throws IOException if there is an error attempting to read the byte order mark from the input stream.
 	 * @throws UnsupportedEncodingException if the named charset is not supported.
 	 */
-	public BOMInputStreamReader(final InputStream inputStream, final Charset defaultCharset) throws IOException, UnsupportedEncodingException
-	{
+	public BOMInputStreamReader(final InputStream inputStream, final Charset defaultCharset) throws IOException, UnsupportedEncodingException {
 		super(inputStream, detectCharset(inputStream, defaultCharset)); //construct an input stream reader, guessing the encoding from the BOM if we can
 	}
 

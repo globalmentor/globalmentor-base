@@ -42,8 +42,7 @@ import com.globalmentor.net.*;
  * Utilities for manipulating Java classes.
  * @author Garret Wilson
  */
-public class Classes
-{
+public class Classes {
 
 	/** The set of classes that wrap primitive types. */
 	public final static Set<Class<?>> PRIMITIVE_WRAPPER_CLASSES = Sets.<Class<?>> immutableSetOf(Boolean.class, Byte.class, Character.class, Short.class,
@@ -74,8 +73,7 @@ public class Classes
 	public final static Pattern SETTER_METHOD_NAME_PATTERN = Pattern.compile("(" + SET_SETTER_PREFIX + ")(.+)");
 
 	/** This class cannot be publicly instantiated. */
-	private Classes()
-	{
+	private Classes() {
 	}
 
 	/**
@@ -88,28 +86,18 @@ public class Classes
 	 * @throws ClassNotFoundException if the class represented by the given URI could not be found.
 	 * @see Java#JAVA_URI_SCHEME
 	 */
-	public static Class<?> asClass(final URI resourceURI) throws ClassNotFoundException
-	{
-		if(resourceURI != null && JAVA_URI_SCHEME.equals(resourceURI.getScheme())) //if an java: URI was given
-		{
+	public static Class<?> asClass(final URI resourceURI) throws ClassNotFoundException {
+		if(resourceURI != null && JAVA_URI_SCHEME.equals(resourceURI.getScheme())) { //if an java: URI was given
 			final String classPath = resourceURI.getRawPath(); //get the path to the class
-			if(classPath != null) //if there is a path
-			{
+			if(classPath != null) { //if there is a path
 				checkNotCollectionPath(classPath); //a class URI is not a collection
-				if(classPath.startsWith(ROOT_PATH)) //if the path is absolute
-				{
+				if(classPath.startsWith(ROOT_PATH)) { //if the path is absolute
 					final String className = decode(classPath.substring(ROOT_PATH.length()).replace(PATH_SEPARATOR, PACKAGE_SEPARATOR)); //skip the root path delimiter, replace path separators with package separators, and decode the string before trying to load the class
 					return Class.forName(className);
-				}
-				else
-				//if the path is not absolute
-				{
+				} else { //if the path is not absolute
 					throw new IllegalArgumentException("Java URI " + resourceURI + " does not have an absolute path.");
 				}
-			}
-			else
-			//if there is no path
-			{
+			} else { //if there is no path
 				throw new IllegalArgumentException("Java URI " + resourceURI + " missing path.");
 			}
 		}
@@ -123,8 +111,7 @@ public class Classes
 	 * @return A <code>java:</code> URI based upon the given class.
 	 * @throws NullPointerException if the given class is <code>null</code>.
 	 */
-	public static URI createJavaURI(final Class<?> objectClass)
-	{
+	public static URI createJavaURI(final Class<?> objectClass) {
 		return createJavaURI(objectClass.getName());
 	}
 
@@ -135,8 +122,7 @@ public class Classes
 	 * @return A <code>java:</code> URI based upon the given class.
 	 * @throws NullPointerException if the given class name is <code>null</code>.
 	 */
-	public static URI createJavaURI(final String objectClassName)
-	{
+	public static URI createJavaURI(final String objectClassName) {
 		final String classPath = URIPath.encodeSegment(objectClassName).replace(PACKAGE_SEPARATOR, PATH_SEPARATOR); //get the class path by replacing the package separators with path separators after encoding
 		return URI.create(JAVA_URI_SCHEME + SCHEME_SEPARATOR + ROOT_PATH + classPath); //create and return a new Java URI for the class
 	}
@@ -147,8 +133,7 @@ public class Classes
 	 * @return A content type identifying an object of the given class in the form <code>application/x-java-object;class=<var>package.Class</var></code>.
 	 * @throws IllegalArgumentException if the given object class is <code>null</code>.
 	 */
-	public static ContentType getObjectContentType(final Class<?> objectClass)
-	{
+	public static ContentType getObjectContentType(final Class<?> objectClass) {
 		return ContentType.create(ContentType.APPLICATION_PRIMARY_TYPE, ContentType.X_JAVA_OBJECT, new ContentType.Parameter("class", objectClass.getName())); //create a content type appropriate for this object class TODO use a constant; testing
 	}
 
@@ -163,14 +148,11 @@ public class Classes
 	 * @throws SecurityException If a security manager is present that denies access to the constructor or the caller's class loader is different and denies
 	 *           access to the package of this class.
 	 */
-	public static <T> Constructor<T> getCompatiblePublicConstructor(final Class<T> objectClass, final Class<?>... parameterTypes) throws SecurityException
-	{
+	public static <T> Constructor<T> getCompatiblePublicConstructor(final Class<T> objectClass, final Class<?>... parameterTypes) throws SecurityException {
 		Constructor<T> constructor = getConstructor(objectClass, parameterTypes); //see if we can find an exact constructor
-		if(constructor == null) //if there is no exact constructor
-		{
+		if(constructor == null) { //if there is no exact constructor
 			final Constructor<T>[] compatibleConstructors = getCompatiblePublicConstructors(objectClass, parameterTypes); //get the compatible constructors, if any
-			if(compatibleConstructors.length > 0) //if there is at least one compatible constructor
-			{
+			if(compatibleConstructors.length > 0) { //if there is at least one compatible constructor
 				constructor = compatibleConstructors[0]; //use the first compatible constructor
 			}
 		}
@@ -187,8 +169,7 @@ public class Classes
 	 * @throws SecurityException If a security manager is present that denies access to the constructor or the caller's class loader is different and denies
 	 *           access to the package of this class.
 	 */
-	public static <T> Constructor<T>[] getCompatiblePublicConstructors(final Class<T> objectClass, final Class<?>... parameterTypes) throws SecurityException //casts are used because arrays are not generic-aware
-	{
+	public static <T> Constructor<T>[] getCompatiblePublicConstructors(final Class<T> objectClass, final Class<?>... parameterTypes) throws SecurityException { //casts are used because arrays are not generic-aware
 		return getCompatibleConstructors(objectClass, true, parameterTypes);
 	}
 
@@ -203,14 +184,11 @@ public class Classes
 	 * @throws SecurityException If a security manager is present that denies access to the constructor or the caller's class loader is different and denies
 	 *           access to the package of this class.
 	 */
-	public static <T> Constructor<T> getCompatibleDeclaredConstructor(final Class<T> objectClass, final Class<?>... parameterTypes) throws SecurityException
-	{
+	public static <T> Constructor<T> getCompatibleDeclaredConstructor(final Class<T> objectClass, final Class<?>... parameterTypes) throws SecurityException {
 		Constructor<T> constructor = getDeclaredConstructor(objectClass, parameterTypes); //see if we can find an exact constructor
-		if(constructor == null) //if there is no exact constructor
-		{
+		if(constructor == null) { //if there is no exact constructor
 			final Constructor<T>[] compatibleConstructors = getCompatibleDeclaredConstructors(objectClass, parameterTypes); //get the compatible constructors, if any
-			if(compatibleConstructors.length > 0) //if there is at least one compatible constructor
-			{
+			if(compatibleConstructors.length > 0) { //if there is at least one compatible constructor
 				constructor = compatibleConstructors[0]; //use the first compatible constructor
 			}
 		}
@@ -227,8 +205,7 @@ public class Classes
 	 * @throws SecurityException If a security manager is present that denies access to the constructor or the caller's class loader is different and denies
 	 *           access to the package of this class.
 	 */
-	public static <T> Constructor<T>[] getCompatibleDeclaredConstructors(final Class<T> objectClass, final Class<?>... parameterTypes) throws SecurityException
-	{
+	public static <T> Constructor<T>[] getCompatibleDeclaredConstructors(final Class<T> objectClass, final Class<?>... parameterTypes) throws SecurityException {
 		return getCompatibleConstructors(objectClass, false, parameterTypes);
 	}
 
@@ -245,26 +222,20 @@ public class Classes
 	 */
 	@SuppressWarnings("unchecked")
 	protected static <T> Constructor<T>[] getCompatibleConstructors(final Class<T> objectClass, final boolean requirePublic, final Class<?>... parameterTypes)
-			throws SecurityException //casts are used because arrays are not generic-aware
-	{
+			throws SecurityException { //casts are used because arrays are not generic-aware
 		final int parameterCount = parameterTypes.length; //get the number of requested parameters
 		final Constructor<?>[] constructors = requirePublic ? objectClass.getConstructors() : objectClass.getDeclaredConstructors(); //get all constructors for this class, restricting them to public constructors if requested
 		final List<Constructor<T>> compatibleConstructors = new ArrayList<Constructor<T>>(constructors.length); //create a list sufficiently large to hold all constructors
-		for(final Constructor<?> constructor : constructors) //for each constructor
-		{
+		for(final Constructor<?> constructor : constructors) { //for each constructor
 			final Class<?>[] formalParameterTypes = constructor.getParameterTypes(); //get the formal parameter types
-			if(formalParameterTypes.length == parameterCount) //if this constructor has the correct number of formal parameters
-			{
+			if(formalParameterTypes.length == parameterCount) { //if this constructor has the correct number of formal parameters
 				boolean isCompatible = true; //start out assuming this is a compatible constructor
-				for(int i = parameterCount - 1; isCompatible && i >= 0; --i) //for each parameter, as long we we think this is a compatible constructor
-				{
-					if(!isCompatible(((Class<?>)formalParameterTypes[i]), parameterTypes[i])) //if we can't assign the requested parameter type to the formal parameter type
-					{
+				for(int i = parameterCount - 1; isCompatible && i >= 0; --i) { //for each parameter, as long we we think this is a compatible constructor
+					if(!isCompatible(((Class<?>)formalParameterTypes[i]), parameterTypes[i])) { //if we can't assign the requested parameter type to the formal parameter type
 						isCompatible = false; //this is not a compatible constructor
 					}
 				}
-				if(isCompatible) //if this is a compatible constructor
-				{
+				if(isCompatible) { //if this is a compatible constructor
 					compatibleConstructors.add((Constructor<T>)constructor); //add this constructor to the list
 				}
 			}
@@ -280,59 +251,33 @@ public class Classes
 	 * @param compatibleClass The class the compatibility of which is questioned.
 	 * @return <code>true</code> if the given class is compatible with the object class.
 	 */
-	public static boolean isCompatible(final Class<?> objectClass, final Class<?> compatibleClass)
-	{
-		if(objectClass.isPrimitive()) //if the class is a primitive, we'll have to do special checking
-		{
-			if(objectClass == compatibleClass) //if the classes are the same
-			{
+	public static boolean isCompatible(final Class<?> objectClass, final Class<?> compatibleClass) {
+		if(objectClass.isPrimitive()) { //if the class is a primitive, we'll have to do special checking
+			if(objectClass == compatibleClass) { //if the classes are the same
 				return true; //they are compatible
 			}
-			if(Boolean.TYPE == objectClass) //otherwise, check to see if a non-primitive version of a primitive class was given
-			{
+			if(Boolean.TYPE == objectClass) { //otherwise, check to see if a non-primitive version of a primitive class was given
 				return compatibleClass == Boolean.class;
-			}
-			else if(Byte.TYPE == objectClass)
-			{
+			} else if(Byte.TYPE == objectClass) {
 				return compatibleClass == Byte.class;
-			}
-			else if(Character.TYPE == objectClass)
-			{
+			} else if(Character.TYPE == objectClass) {
 				return compatibleClass == Character.class;
-			}
-			else if(Double.TYPE == objectClass)
-			{
+			} else if(Double.TYPE == objectClass) {
 				return compatibleClass == Double.class;
-			}
-			else if(Float.TYPE == objectClass)
-			{
+			} else if(Float.TYPE == objectClass) {
 				return compatibleClass == Float.class;
-			}
-			else if(Integer.TYPE == objectClass)
-			{
+			} else if(Integer.TYPE == objectClass) {
 				return compatibleClass == Integer.class;
-			}
-			else if(Long.TYPE == objectClass)
-			{
+			} else if(Long.TYPE == objectClass) {
 				return compatibleClass == Long.class;
-			}
-			else if(Short.TYPE == objectClass)
-			{
+			} else if(Short.TYPE == objectClass) {
 				return compatibleClass == Short.class;
-			}
-			else if(Void.TYPE == objectClass)
-			{
+			} else if(Void.TYPE == objectClass) {
 				return false; //no class is compatible with void
-			}
-			else
-			//there should be no other primitive types in Java
-			{
+			} else { //there should be no other primitive types in Java
 				throw new AssertionError("Unrecognized primitive type: " + objectClass);
 			}
-		}
-		else
-		//if the class is not primitive
-		{
+		} else { //if the class is not primitive
 			return objectClass.isAssignableFrom(compatibleClass); //see if we can assign the compatible class to the object class
 		}
 	}
@@ -344,8 +289,7 @@ public class Classes
 	 * @return <code>true</code> if the class is one of the primitive wrapper classes.
 	 * @throws NullPointerException if the given class is <code>null</code>.
 	 */
-	public static boolean isPrimitiveWrapper(final Class<?> objectClass)
-	{
+	public static boolean isPrimitiveWrapper(final Class<?> objectClass) {
 		return PRIMITIVE_WRAPPER_CLASSES.contains(checkInstance(objectClass));
 	}
 
@@ -359,14 +303,10 @@ public class Classes
 	 * @throws SecurityException If a security manager is present that denies access to the constructor or the caller's class loader is different and denies
 	 *           access to the package of this class.
 	 */
-	public static <T> Constructor<T> getDeclaredConstructor(final Class<T> objectClass, final Class<?>... parameterTypes) throws SecurityException
-	{
-		try
-		{
+	public static <T> Constructor<T> getDeclaredConstructor(final Class<T> objectClass, final Class<?>... parameterTypes) throws SecurityException {
+		try {
 			return objectClass.getDeclaredConstructor(parameterTypes); //ask the class for the constructor
-		}
-		catch(final NoSuchMethodException noSuchMethodException) //if the constructor isn't found
-		{
+		} catch(final NoSuchMethodException noSuchMethodException) { //if the constructor isn't found
 			return null; //indicate that the constructor couldn't be found
 		}
 	}
@@ -381,14 +321,10 @@ public class Classes
 	 * @throws SecurityException If a security manager is present that denies access to the constructor or the caller's class loader is different and denies
 	 *           access to the package of this class.
 	 */
-	public static <T> Constructor<T> getConstructor(final Class<T> objectClass, final Class<?>... parameterTypes) throws SecurityException
-	{
-		try
-		{
+	public static <T> Constructor<T> getConstructor(final Class<T> objectClass, final Class<?>... parameterTypes) throws SecurityException {
+		try {
 			return objectClass.getConstructor(parameterTypes); //ask the class for the constructor
-		}
-		catch(final NoSuchMethodException noSuchMethodException) //if the constructor isn't found
-		{
+		} catch(final NoSuchMethodException noSuchMethodException) { //if the constructor isn't found
 			return null; //indicate that the constructor couldn't be found
 		}
 	}
@@ -406,14 +342,11 @@ public class Classes
 	 */
 	@SuppressWarnings("unchecked")
 	//all the constructors of the class should be constructors of the class type, even if the API doesn't indicate that for arrays
-	public static <T> Constructor<T> getDeclaredDefaultConstructor(final Class<T> objectClass) throws SecurityException
-	{
+	public static <T> Constructor<T> getDeclaredDefaultConstructor(final Class<T> objectClass) throws SecurityException {
 		final Constructor<T>[] constructors = (Constructor<T>[])objectClass.getDeclaredConstructors(); //look at each declared constructor, even non-public ones
-		for(int i = constructors.length - 1; i >= 0; --i) //look at each constructor
-		{
+		for(int i = constructors.length - 1; i >= 0; --i) { //look at each constructor
 			final Constructor<T> constructor = constructors[i]; //get a reference to this constructor
-			if(constructor.getParameterTypes().length == 0) //if this constructor has no parameters
-			{
+			if(constructor.getParameterTypes().length == 0) { //if this constructor has no parameters
 				return constructor; //we found the default constructor
 			}
 		}
@@ -432,8 +365,7 @@ public class Classes
 	 * @throws SecurityException Thrown if access to the information is denied.
 	 * @see Class#getConstructors
 	 */
-	public static <T> Constructor<T> getPublicDefaultConstructor(final Class<T> objectClass) throws SecurityException
-	{
+	public static <T> Constructor<T> getPublicDefaultConstructor(final Class<T> objectClass) throws SecurityException {
 		final Constructor<T> defaultConstructor = getDeclaredDefaultConstructor(objectClass);
 		return Modifier.isPublic(defaultConstructor.getModifiers()) ? defaultConstructor : null; //only return the constructor if it is public 
 	}
@@ -452,14 +384,10 @@ public class Classes
 	 *           access to the package of this class.
 	 * @since JDK1.1
 	 */
-	public static Method getMethod(final Class<?> objectClass, final String name, final Class<?>... parameterTypes) throws SecurityException
-	{
-		try
-		{
+	public static Method getMethod(final Class<?> objectClass, final String name, final Class<?>... parameterTypes) throws SecurityException {
+		try {
 			return objectClass.getMethod(name, parameterTypes); //ask the class for the method
-		}
-		catch(final NoSuchMethodException noSuchMethodException) //if the method isn't found
-		{
+		} catch(final NoSuchMethodException noSuchMethodException) { //if the method isn't found
 			return null; //indicate that the method couldn't be found
 		}
 	}
@@ -468,12 +396,12 @@ public class Classes
 	 * Gathers <em>all</em> declared methods in this class and its ancestors that could potentially be accessible to the class, including all public and protected
 	 * methods from the class and all its parents. If a method is declared with the same signature in several places, only the most shallow declaration (that is,
 	 * the one declared in or closest to the given class) will be included. No private methods above the given class will be retrieved. Only concrete methods will
-	 * be returned. Synthetic methods and super covariant methods are ignored. The actual accessibility of methods set via {@link Method#setAccessible(boolean)} will not be changed.
+	 * be returned. Synthetic methods and super covariant methods are ignored. The actual accessibility of methods set via {@link Method#setAccessible(boolean)}
+	 * will not be changed.
 	 * @param objectClass The class from which accessible methods will be gathered, along with its ancestors.
 	 * @return A set of methods potentially accessible to the class.
 	 */
-	public static Collection<Method> gatherAccessibleMethods(final Class<?> objectClass)
-	{
+	public static Collection<Method> gatherAccessibleMethods(final Class<?> objectClass) {
 		final Map<MethodSignature, Method> methods = new HashMap<MethodSignature, Method>();
 		gatherAccessibleMethods(objectClass, methods, true); //gather methods, including private methods just for this class
 		return methods.values();
@@ -489,31 +417,24 @@ public class Classes
 	 * @param methods The map into which the methods will be gathered.
 	 * @param includePrivateMethods Whether private methods should be included; from this class only.
 	 */
-	protected static void gatherAccessibleMethods(final Class<?> objectClass, final Map<MethodSignature, Method> methods, final boolean includePrivateMethods)
-	{
-		for(final Method method : objectClass.getDeclaredMethods()) //look at every method that was declared for this class
-		{
-			if(method.isSynthetic()) //ignore synthetic methods (those generated by the compiler, such as a T getFoo() that is overridden by a String getFoo())
-			{
+	protected static void gatherAccessibleMethods(final Class<?> objectClass, final Map<MethodSignature, Method> methods, final boolean includePrivateMethods) {
+		for(final Method method : objectClass.getDeclaredMethods()) { //look at every method that was declared for this class
+			if(method.isSynthetic()) { //ignore synthetic methods (those generated by the compiler, such as a T getFoo() that is overridden by a String getFoo())
 				continue;
 			}
 			final int modifiers = method.getModifiers();
-			if(Modifier.isAbstract(modifiers)) //skip abstract methods
-			{
+			if(Modifier.isAbstract(modifiers)) { //skip abstract methods
 				continue;
 			}
-			if(Modifier.isPublic(modifiers) || Modifier.isProtected(modifiers) || (includePrivateMethods && Modifier.isPrivate(modifiers))) //public, protected, or private (if requested)
-			{
-				final MethodSignature methodSignature = MethodSignature.forMethod(method, false);	//ignore return type to keep superclass covariance types from overriding subclass versions
-				if(!methods.containsKey(methodSignature)) //skip methods with the same signature
-				{
+			if(Modifier.isPublic(modifiers) || Modifier.isProtected(modifiers) || (includePrivateMethods && Modifier.isPrivate(modifiers))) { //public, protected, or private (if requested)
+				final MethodSignature methodSignature = MethodSignature.forMethod(method, false); //ignore return type to keep superclass covariance types from overriding subclass versions
+				if(!methods.containsKey(methodSignature)) { //skip methods with the same signature
 					methods.put(methodSignature, method);
 				}
 			}
 		}
 		final Class<?> superClass = objectClass.getSuperclass();
-		if(superClass != null) //gather methods up the hierarchy
-		{
+		if(superClass != null) { //gather methods up the hierarchy
 			gatherAccessibleMethods(superClass, methods, false); //don't gather private methods from higher levels
 		}
 	}
@@ -525,8 +446,7 @@ public class Classes
 	 * @param propertyName The property name, such as "propertyName".
 	 * @return The method with the name "get<var>PropertyName</var>", or <code>null</code> if such a method was not found.
 	 */
-	public static Method getGetPropertyMethod(final Class<?> objectClass, final String propertyName)
-	{
+	public static Method getGetPropertyMethod(final Class<?> objectClass, final String propertyName) {
 		return getMethod(objectClass, getGetPropertyMethodName(propertyName)); //return the getter method, if there is one
 	}
 
@@ -538,8 +458,7 @@ public class Classes
 	 * @return The method with the name "is<var>PropertyName</var>" having a {@link Boolean#TYPE} return type, or <code>null</code> if such a method was not
 	 *         found.
 	 */
-	public static Method getIsPropertyMethod(final Class<?> objectClass, final String propertyName)
-	{
+	public static Method getIsPropertyMethod(final Class<?> objectClass, final String propertyName) {
 		final Method method = getMethod(objectClass, getIsPropertyMethodName(propertyName)); //get the getter method, if there is one
 		return method != null && Boolean.TYPE.equals(method.getReturnType()) ? method : null; //if there is such a method, make sure it returns a boolean
 	}
@@ -553,8 +472,7 @@ public class Classes
 	 * @return The method with the name "get<var>PropertyName</var>", or the name "is<var>PropertyName</var>" having a {@link Boolean#TYPE}; or <code>null</code>
 	 *         if such a method was not found.
 	 */
-	public static Method getGetterMethod(final Class<?> objectClass, final String propertyName)
-	{
+	public static Method getGetterMethod(final Class<?> objectClass, final String propertyName) {
 		final Method getPropertyMethod = getMethod(objectClass, getGetPropertyMethodName(propertyName)); //get the getProperty method, if there is one
 		return getPropertyMethod != null ? getPropertyMethod : getIsPropertyMethod(objectClass, propertyName); //if there is no getProperty method, check for a boolean isProperty method
 	}
@@ -568,8 +486,7 @@ public class Classes
 	 * @return The method with the name "set<var>PropertyName</var>" and the given value class as a parameter type, or <code>null</code> if such a method was not
 	 *         found.
 	 */
-	public static Method getSetterMethod(final Class<?> objectClass, final String propertyName, final Class<?> valueClass)
-	{
+	public static Method getSetterMethod(final Class<?> objectClass, final String propertyName, final Class<?> valueClass) {
 		return getMethod(objectClass, getSetPropertyMethodName(propertyName), valueClass); //return the setter method, if there is one
 	}
 
@@ -581,19 +498,14 @@ public class Classes
 	 * @return The method with the name "set<var>PropertyName</var>" and a single parameter assignment-compatible with the given value class, or <code>null</code>
 	 *         if such a method was not found.
 	 */
-	public static Method getCompatibleSetterMethod(final Class<?> objectClass, final String propertyName, final Class<?> valueClass)
-	{
+	public static Method getCompatibleSetterMethod(final Class<?> objectClass, final String propertyName, final Class<?> valueClass) {
 		final String setterMethodName = getSetPropertyMethodName(propertyName); //get the setter name to look for
-		for(final Method method : objectClass.getMethods()) //look at each object method
-		{
-			if(method.getName().equals(setterMethodName)) //if this has the setter name
-			{
+		for(final Method method : objectClass.getMethods()) { //look at each object method
+			if(method.getName().equals(setterMethodName)) { //if this has the setter name
 				final Class<?>[] parameterTypes = method.getParameterTypes(); //get the parameter types for this method
-				if(parameterTypes.length == 1) //if this setter has one parameter
-				{
+				if(parameterTypes.length == 1) { //if this setter has one parameter
 					final Class<?> parameterType = parameterTypes[0]; //get the single parameter type
-					if(isCompatible(parameterType, valueClass)) //if we can assign the value class to the parameter type
-					{
+					if(isCompatible(parameterType, valueClass)) { //if we can assign the value class to the parameter type
 						return method; //return this method
 					}
 				}
@@ -608,8 +520,7 @@ public class Classes
 	 * @return <code>true</code> if the method has a return type but no parameters, and the name of the method is in the form "get<var>PropertyName</var>" or
 	 *         "is<var>PropertyName</var>".
 	 */
-	public static boolean isGetterMethod(final Method method)
-	{
+	public static boolean isGetterMethod(final Method method) {
 		return isGetterMethodName(method.getName()) && method.getReturnType() != null && method.getParameterTypes().length == 0; //see if the method has a getter name with a return type and no parameters
 	}
 
@@ -618,8 +529,7 @@ public class Classes
 	 * @param methodName The method name, such as "getPropertyName" or "isPropertyName".
 	 * @return <code>true</code> if the name of the method is in the form "get<var>PropertyName</var>" or "is<var>PropertyName</var>".
 	 */
-	public static boolean isGetterMethodName(final String methodName)
-	{
+	public static boolean isGetterMethodName(final String methodName) {
 		return GETTER_METHOD_NAME_PATTERN.matcher(methodName).matches(); //see if the method name matches the getter method name pattern
 	}
 
@@ -628,8 +538,7 @@ public class Classes
 	 * @param method The method name to check
 	 * @return <code>true</code> if the method has no return type and a single parameter, and the name of the method is in the form "set<var>PropertyName</var>".
 	 */
-	public static boolean isSetterMethod(final Method method)
-	{
+	public static boolean isSetterMethod(final Method method) {
 		return isSetterMethodName(method.getName()) && method.getReturnType() == null && method.getParameterTypes().length == 1; //see if the method has a setter name with no return type and a single parameter		
 	}
 
@@ -638,8 +547,7 @@ public class Classes
 	 * @param methodName The method name, such as "setPropertyName".
 	 * @return <code>true</code> if the name of the method is in the form "set<var>PropertyName</var>".
 	 */
-	public static boolean isSetterMethodName(final String methodName)
-	{
+	public static boolean isSetterMethodName(final String methodName) {
 		return SETTER_METHOD_NAME_PATTERN.matcher(methodName).matches(); //see if the method name matches the setter method name pattern
 	}
 
@@ -651,13 +559,10 @@ public class Classes
 	 * @see Method#getName()
 	 * @see #isGetterMethod(Method)
 	 */
-	public static String getGetterPropertyName(final Method method)
-	{
+	public static String getGetterPropertyName(final Method method) {
 		String propertyName = getGetterPropertyName(method.getName()); //get the getter property name
-		if(propertyName != null) //if the name is for a getter property
-		{
-			if(method.getReturnType() == null || method.getParameterTypes().length > 0) //if the method has no return type or has parameters
-			{
+		if(propertyName != null) { //if the name is for a getter property
+			if(method.getReturnType() == null || method.getParameterTypes().length > 0) { //if the method has no return type or has parameters
 				propertyName = null; //this is not really a getter method
 			}
 		}
@@ -670,8 +575,7 @@ public class Classes
 	 * @return The property name in the form <var>propertyName</var>, or <code>null</code> if the name of the method is not in the form
 	 *         "get<var>PropertyName</var>" or "is<var>PropertyName</var>".
 	 */
-	public static String getGetterPropertyName(final String methodName)
-	{
+	public static String getGetterPropertyName(final String methodName) {
 		final Matcher matcher = GETTER_METHOD_NAME_PATTERN.matcher(methodName); //match the method name against the getter method name pattern
 		return matcher.matches() ? Java.getVariableName(matcher.group(2)) : null; //if there is a match, return the variable name of the matching group; otherwise return null
 	}
@@ -683,8 +587,7 @@ public class Classes
 	 *         "set<var>PropertyName</var>".
 	 * @see Method#getName()
 	 */
-	public static String getSetterPropertyName(final Method method)
-	{
+	public static String getSetterPropertyName(final Method method) {
 		return getSetterPropertyName(method.getName());
 	}
 
@@ -694,8 +597,7 @@ public class Classes
 	 * @return The property name in the form <var>propertyName</var>, or <code>null</code> if the name of the method is not in the form
 	 *         "set<var>PropertyName</var>".
 	 */
-	public static String getSetterPropertyName(final String methodName)
-	{
+	public static String getSetterPropertyName(final String methodName) {
 		final Matcher matcher = SETTER_METHOD_NAME_PATTERN.matcher(methodName); //match the method name against the setter method name pattern
 		return matcher.matches() ? Java.getVariableName(matcher.group(2)) : null; //if there is a match, return the variable name of the matching group; otherwise return null
 	}
@@ -705,8 +607,7 @@ public class Classes
 	 * @param propertyName The property name, such as "propertyName".
 	 * @return The name of the getter method in the form "get<var>PropertyName</var>".
 	 */
-	public static String getGetPropertyMethodName(final String propertyName)
-	{
+	public static String getGetPropertyMethodName(final String propertyName) {
 		return GET_GETTER_PREFIX + getProperName(propertyName); //return "getPropertyName"
 	}
 
@@ -715,8 +616,7 @@ public class Classes
 	 * @param propertyName The property name, such as "propertyName".
 	 * @return The name of the getter method in the form "is<var>PropertyName</var>".
 	 */
-	public static String getIsPropertyMethodName(final String propertyName)
-	{
+	public static String getIsPropertyMethodName(final String propertyName) {
 		return IS_GETTER_PREFIX + getProperName(propertyName); //return "isPropertyName"
 	}
 
@@ -725,8 +625,7 @@ public class Classes
 	 * @param propertyName The property name, such as "propertyName".
 	 * @return The name of the setter method in the form "set<var>PropertyName</var>".
 	 */
-	public static String getSetPropertyMethodName(final String propertyName)
-	{
+	public static String getSetPropertyMethodName(final String propertyName) {
 		return SET_SETTER_PREFIX + getProperName(propertyName); //return "setPropertyName"
 	}
 
@@ -737,8 +636,7 @@ public class Classes
 	 * @return A full class name plus property name.
 	 * @see Packages#getFullName(Package, String)
 	 */
-	public static String getPropertyName(final String className, final String localName)
-	{
+	public static String getPropertyName(final String className, final String localName) {
 		return className + OBJECT_PREDICATE_SEPARATOR + localName; //return the class name plus the local name separated by a package separator
 	}
 
@@ -749,8 +647,7 @@ public class Classes
 	 * @return A full class name plus property name.
 	 * @see Packages#getFullName(Package, String)
 	 */
-	public static String getPropertyName(final Class<?> objectClass, final String localName)
-	{
+	public static String getPropertyName(final Class<?> objectClass, final String localName) {
 		return getPropertyName(objectClass.getName(), localName);
 	}
 
@@ -761,8 +658,7 @@ public class Classes
 	 * @return A full class name plus method name.
 	 * @see #getPropertyName(Class, String)
 	 */
-	public static String getMethodName(final String className, final String methodLocalName)
-	{
+	public static String getMethodName(final String className, final String methodLocalName) {
 		return getPropertyName(className, methodLocalName); //return the method name as if it were a property
 	}
 
@@ -773,8 +669,7 @@ public class Classes
 	 * @return A full class name plus method name.
 	 * @see #getPropertyName(Class, String)
 	 */
-	public static String getMethodName(final Class<?> objectClass, final String methodlocalName)
-	{
+	public static String getMethodName(final Class<?> objectClass, final String methodlocalName) {
 		return getMethodName(objectClass, methodlocalName);
 	}
 
@@ -786,8 +681,7 @@ public class Classes
 	 * @return A full class name in the package of the given class with the given local name.
 	 * @see Packages#getFullName(Package, String)
 	 */
-	public static String getFullName(final Class<?> objectClass, final String localName)
-	{
+	public static String getFullName(final Class<?> objectClass, final String localName) {
 		return Packages.getFullName(objectClass.getPackage(), localName); //return the package plus the name separated by a package separator
 	}
 
@@ -797,8 +691,7 @@ public class Classes
 	 * @return The local name of the class within its package.
 	 * @see #getSimpleName
 	 */
-	public static String getLocalName(final Class<?> objectClass)
-	{
+	public static String getLocalName(final Class<?> objectClass) {
 		//return the class name, with everything before the last package separator removed
 		return removeBeforeLast(objectClass.getName(), PACKAGE_SEPARATOR);
 	}
@@ -810,8 +703,7 @@ public class Classes
 	 * @return The simple name of the class within its package, if any, and within its enclosing class, if any.
 	 * @see #getLocalName
 	 */
-	public static String getSimpleName(final Class<?> objectClass)
-	{
+	public static String getSimpleName(final Class<?> objectClass) {
 		//return the local name, with everything before the last internal class separator removed
 		return removeBeforeLast(getLocalName(objectClass), INTERNAL_CLASS_SEPARATOR);
 	}
@@ -823,8 +715,7 @@ public class Classes
 	 * @see #getSimpleName(Class)
 	 * @see Java#getVariableName(String)
 	 */
-	public static String getVariableName(final Class<?> objectClass)
-	{
+	public static String getVariableName(final Class<?> objectClass) {
 		return Java.getVariableName(getSimpleName(objectClass)); //get the variable name form of the simple name of the class
 	}
 
@@ -832,8 +723,8 @@ public class Classes
 	 * A comparator that sorts ancestor classes primarily in terms of height (distance from a descendant class), secondarily in terms of concreteness (concrete
 	 * class, abstract class, and then interface), and tertiarily by class name.
 	 */
-	public final static Comparator<NameValuePair<Class<?>, Integer>> CONCRETE_CLASS_HEIGHT_COMPARATOR = new Comparator<NameValuePair<Class<?>, Integer>>()
-	{
+	public final static Comparator<NameValuePair<Class<?>, Integer>> CONCRETE_CLASS_HEIGHT_COMPARATOR = new Comparator<NameValuePair<Class<?>, Integer>>() {
+
 		/**
 		 * Compares two classes based upon the classes and their height or distance from a particular class. Comparison is performed primarily in terms of maximum
 		 * height (distance from a descendant class), secondarily in terms of concreteness (concrete class, abstract class, and then interface), and tertiarialy by
@@ -842,27 +733,22 @@ public class Classes
 		 * @param classHeight2 The second class paired with its distance from a descendant class.
 		 * @return The result of comparing the two classes.
 		 */
-		public int compare(final NameValuePair<Class<?>, Integer> classHeight1, final NameValuePair<Class<?>, Integer> classHeight2)
-		{
+		public int compare(final NameValuePair<Class<?>, Integer> classHeight1, final NameValuePair<Class<?>, Integer> classHeight2) {
 			int result = classHeight1.getValue().intValue() - classHeight2.getValue().intValue(); //get the differences in heights
-			if(result == 0) //if both classes are at the same height
-			{
+			if(result == 0) { //if both classes are at the same height
 				final Class<?> class1 = classHeight1.getClass(); //get the classes
 				final Class<?> class2 = classHeight2.getClass();
-				if(class1.equals(class2)) //if this is the same class
-				{
+				if(class1.equals(class2)) { //if this is the same class
 					return 0; //the two are equal
 				}
 				final boolean isClass1Interface = class1.isInterface(); //see if the classes are interfaces
 				final boolean isClass2Interface = class2.isInterface();
-				if(isClass1Interface != isClass2Interface) //if one is an interface and the other isn't
-				{
+				if(isClass1Interface != isClass2Interface) { //if one is an interface and the other isn't
 					return isClass1Interface ? 1 : -1; //the interface gets the higher ordering
 				}
 				final boolean isClass1Abstract = Modifier.isAbstract(class1.getModifiers()); //see if the classes are abstract
 				final boolean isClass2Abstract = Modifier.isAbstract(class2.getModifiers());
-				if(isClass1Abstract != isClass2Abstract) //if one is abstract and the other isn't
-				{
+				if(isClass1Abstract != isClass2Abstract) { //if one is abstract and the other isn't
 					return isClass1Abstract ? 1 : -1; //the abstract class gets the higher ordering
 				}
 				result = class1.getName().compareTo(class2.getName()); //compare class names
@@ -880,8 +766,7 @@ public class Classes
 	 * @throws NullPointerException if the given object class is <code>null</code>.
 	 * @see #CONCRETE_CLASS_HEIGHT_COMPARATOR
 	 */
-	public static List<Class<?>> getAncestorClasses(final Class<?> objectClass)
-	{
+	public static List<Class<?>> getAncestorClasses(final Class<?> objectClass) {
 		return getAncestorClasses(objectClass, Object.class); //get all classes and interfaces
 	}
 
@@ -894,8 +779,7 @@ public class Classes
 	 * @throws NullPointerException if the given object class is <code>null</code>.
 	 * @see #CONCRETE_CLASS_HEIGHT_COMPARATOR
 	 */
-	public static List<Class<?>> getProperAncestorClasses(final Class<?> objectClass)
-	{
+	public static List<Class<?>> getProperAncestorClasses(final Class<?> objectClass) {
 		return getProperAncestorClasses(objectClass, Object.class); //get all classes and interfaces
 	}
 
@@ -910,8 +794,7 @@ public class Classes
 	 * @throws NullPointerException if the given object class and/or root class is <code>null</code>.
 	 * @see #CONCRETE_CLASS_HEIGHT_COMPARATOR
 	 */
-	public static <R> List<Class<? extends R>> getAncestorClasses(final Class<? extends R> objectClass, final Class<R> rootClass)
-	{
+	public static <R> List<Class<? extends R>> getAncestorClasses(final Class<? extends R> objectClass, final Class<R> rootClass) {
 		return getAncestorClasses(objectClass, rootClass, true, true, true, true,
 				(Comparator<NameValuePair<Class<? extends R>, Integer>>)(Object)CONCRETE_CLASS_HEIGHT_COMPARATOR); //get ancestor classes, including super classes, abstract classes, and interfaces TODO check cast
 	}
@@ -927,8 +810,7 @@ public class Classes
 	 * @throws NullPointerException if the given object class and/or root class is <code>null</code>.
 	 * @see #CONCRETE_CLASS_HEIGHT_COMPARATOR
 	 */
-	public static <R> List<Class<? extends R>> getProperAncestorClasses(final Class<? extends R> objectClass, final Class<R> rootClass)
-	{
+	public static <R> List<Class<? extends R>> getProperAncestorClasses(final Class<? extends R> objectClass, final Class<R> rootClass) {
 		return getAncestorClasses(objectClass, rootClass, false, true, true, true,
 				(Comparator<NameValuePair<Class<? extends R>, Integer>>)(Object)CONCRETE_CLASS_HEIGHT_COMPARATOR); //get ancestor classes, including super classes, abstract classes, and interfaces TODO check cast
 	}
@@ -952,32 +834,24 @@ public class Classes
 	//casts, along with not-type-specific addClass() method, required for compiling with Sun JDK 1.6.0_03-b05; not required for Eclipse 3.4M3
 	public static <R> List<Class<? extends R>> getAncestorClasses(final Class<? extends R> objectClass, final Class<R> rootClass, final boolean includeThisClass,
 			final boolean includeSuperClasses, final boolean includeAbstract, final boolean includeInterfaces,
-			final Comparator<NameValuePair<Class<? extends R>, Integer>> comparator)
-	{
+			final Comparator<NameValuePair<Class<? extends R>, Integer>> comparator) {
 		final Map<Class<? extends R>, NameValuePair<Class<? extends R>, Integer>> classHeightMap = new HashMap<Class<? extends R>, NameValuePair<Class<? extends R>, Integer>>(); //create a new map of class/height pairs
-		if(includeThisClass && rootClass.isAssignableFrom(objectClass)) //if we should include this class
-		{
+		if(includeThisClass && rootClass.isAssignableFrom(objectClass)) { //if we should include this class
 			addClass(objectClass.asSubclass(rootClass), 0, (Map<Class<?>, NameValuePair<Class<?>, Integer>>)(Object)classHeightMap); //add this class to the map at height 0
 		}
 		getAncestorClasses(objectClass, 1, rootClass, includeSuperClasses, includeAbstract, includeInterfaces, classHeightMap); //get all the classes, starting one level above the class
 		final List<Class<? extends R>> classList; //we'll create a list to hold the classes
-		if(comparator != null) //if a comparator was given
-		{
+		if(comparator != null) { //if a comparator was given
 			classList = new ArrayList<Class<? extends R>>(classHeightMap.size()); //create a list to hold the classes
 			final List<NameValuePair<Class<? extends R>, Integer>> classHeightList = new ArrayList<NameValuePair<Class<? extends R>, Integer>>(
 					classHeightMap.values()); //get all the class/height pairs
-			if(comparator != null) //if a comparator was given
-			{
+			if(comparator != null) { //if a comparator was given
 				sort(classHeightList, comparator); //sort the list using the comparator
 			}
-			for(final NameValuePair<Class<? extends R>, Integer> classHeight : classHeightList) //for each class height in the list
-			{
+			for(final NameValuePair<Class<? extends R>, Integer> classHeight : classHeightList) { //for each class height in the list
 				classList.add(classHeight.getName()); //add this class to the list
 			}
-		}
-		else
-		//if no comparator was given
-		{
+		} else { //if no comparator was given
 			classList = new ArrayList<Class<? extends R>>(classHeightMap.keySet()); //create a list from the set of keys			
 		}
 		return classList; //return the list of classes
@@ -998,30 +872,22 @@ public class Classes
 	//casts, along with not-type-specific addClass() method, required for compiling with Sun JDK 1.6.0_03-b05; not required for Eclipse 3.4M3
 	protected static <R> void getAncestorClasses(final Class<? extends R> objectClass, final int height, final Class<R> rootClass,
 			final boolean includeSuperClasses, final boolean includeAbstract, final boolean includeInterfaces,
-			final Map<Class<? extends R>, NameValuePair<Class<? extends R>, Integer>> classHeightMap)
-	{
-		if(includeSuperClasses) //if super classes should be included
-		{
+			final Map<Class<? extends R>, NameValuePair<Class<? extends R>, Integer>> classHeightMap) {
+		if(includeSuperClasses) { //if super classes should be included
 			final Class<?> superClass = objectClass.getSuperclass(); //get the super class
-			if(superClass != null) //if there is a super class
-			{
-				if(rootClass.isAssignableFrom(superClass)) //if the super class extends or implements the root class
-				{
+			if(superClass != null) { //if there is a super class
+				if(rootClass.isAssignableFrom(superClass)) { //if the super class extends or implements the root class
 					final Class<? extends R> superExtendsRootClass = superClass.asSubclass(rootClass); //get the version of the super class that extends the root class
-					if(includeAbstract || !Modifier.isAbstract(superClass.getModifiers())) // make sure we should include abstract classes if this is an abstract class
-					{
+					if(includeAbstract || !Modifier.isAbstract(superClass.getModifiers())) { // make sure we should include abstract classes if this is an abstract class
 						addClass(superExtendsRootClass, height, (Map<Class<?>, NameValuePair<Class<?>, Integer>>)(Object)classHeightMap); //add the super class to the map
 					}
 					getAncestorClasses(superExtendsRootClass, height + 1, rootClass, includeSuperClasses, includeAbstract, includeInterfaces, classHeightMap); //get all the classes of the super class
 				}
 			}
 		}
-		if(includeInterfaces) //if interfaces should be included
-		{
-			for(final Class<?> classInterface : objectClass.getInterfaces()) //look at each implemented interface
-			{
-				if(rootClass.isAssignableFrom(classInterface)) //if this interface extends the root class
-				{
+		if(includeInterfaces) { //if interfaces should be included
+			for(final Class<?> classInterface : objectClass.getInterfaces()) { //look at each implemented interface
+				if(rootClass.isAssignableFrom(classInterface)) { //if this interface extends the root class
 					final Class<? extends R> interfaceExtendsRootClass = classInterface.asSubclass(rootClass); //get the version of the interface that extends the root class
 					addClass(interfaceExtendsRootClass, height, (Map<Class<?>, NameValuePair<Class<?>, Integer>>)(Object)classHeightMap); //add the interface to the map
 					getAncestorClasses(interfaceExtendsRootClass, height + 1, rootClass, includeSuperClasses, includeAbstract, includeInterfaces, classHeightMap); //get all the classes of the interface
@@ -1038,12 +904,9 @@ public class Classes
 	 * @param classHeightMap The map of class/height pairs keyed to the class.
 	 * @throws NullPointerException if the given object class is <code>null</code>.
 	 */
-	private static <R> void addClass(final Class<? extends R> objectClass, final int height, final Map<Class<?>, NameValuePair<Class<?>, Integer>> classHeightMap)
-	//preferred signature, which works on Eclipse 3.4M3 but not on Sun JDK 1.6.0_03-b05:	private static <R> void addClass(final Class<? extends R> objectClass, final int height, final Map<Class<? extends R>, NameValuePair<Class<? extends R>, Integer>> classHeightMap)
-	{
+	private static <R> void addClass(final Class<? extends R> objectClass, final int height, final Map<Class<?>, NameValuePair<Class<?>, Integer>> classHeightMap) { //preferred signature, which works on Eclipse 3.4M3 but not on Sun JDK 1.6.0_03-b05:	private static <R> void addClass(final Class<? extends R> objectClass, final int height, final Map<Class<? extends R>, NameValuePair<Class<? extends R>, Integer>> classHeightMap)
 		final NameValuePair<Class<?>, Integer> oldClassHeight = classHeightMap.get(objectClass); //get the old height
-		if(oldClassHeight == null || oldClassHeight.getValue().intValue() < height) //if there was no old height, or the old height is not as large as the new height
-		{
+		if(oldClassHeight == null || oldClassHeight.getValue().intValue() < height) { //if there was no old height, or the old height is not as large as the new height
 			classHeightMap.put(objectClass, new NameValuePair<Class<?>, Integer>(objectClass, height)); //update the height for the class
 		}
 	}
@@ -1064,17 +927,14 @@ public class Classes
 	 * @return A file object or <code>null</code> if no resource with the given name is found.
 	 * @throws IOException if there is an I/O error accessing the resource.
 	 */
-	public static File getResource(final Class<?> objectClass, final String name) throws IOException
-	{
+	public static File getResource(final Class<?> objectClass, final String name) throws IOException {
 		//TODO del Log.trace("ready to get file to resource", name);
 		File file = resourceFileMap.get(name); //get any cached temporary file
-		if(file == null) //if there is no cached file for this name (there is a benign race condition here; it is better to allow the possibility of multiple temporary files for a single resource than to slow down all accesses to resources while one loads)
-		{
+		if(file == null) { //if there is no cached file for this name (there is a benign race condition here; it is better to allow the possibility of multiple temporary files for a single resource than to slow down all accesses to resources while one loads)
 			//		TODO del Log.trace("must create new file");
 			final URL resourceURL = objectClass.getResource(name); //get a URL to the resource
 			//		TODO del Log.trace("got URL to resource", resourceURL);
-			if(resourceURL != null) //if there is such a resource
-			{
+			if(resourceURL != null) { //if there is such a resource
 				final String filename = getFileName(resourceURL); //get the filename of the URL
 				//			TODO del Log.trace("resource filename:", filename);
 				final String baseName = removeExtension(filename); //get the base name
@@ -1084,20 +944,14 @@ public class Classes
 				file = File.createTempFile(baseName, new StringBuilder().append(FILENAME_EXTENSION_SEPARATOR).append(extension).toString()); //create a temp file with the base name as the prefix and the extension (with separator) as the suffix
 				file.deleteOnExit(); //indicate that the temporary file should be deleted when the JVM exits
 				final InputStream inputStream = resourceURL.openConnection().getInputStream(); //get an input stream to the resource
-				try
-				{
+				try {
 					final OutputStream outputStream = new FileOutputStream(file); //create an output stream to the file
-					try
-					{
+					try {
 						Streams.copy(inputStream, outputStream); //copy the resource input stream to the output stream to the temporary file
-					}
-					finally
-					{
+					} finally {
 						outputStream.close(); //always close the output stream
 					}
-				}
-				finally
-				{
+				} finally {
 					inputStream.close(); //always close the input stream
 				}
 				resourceFileMap.put(name, file); //cache the temporary file, now that the resource has been copied and the streams closed successfully
@@ -1116,11 +970,9 @@ public class Classes
 	 * @throws IOException if there is an error reading the data.
 	 * @throws FileNotFoundException if the indicated resource does not exist.
 	 */
-	public static <T> T readResource(final Class<?> objectClass, final String name, final IO<T> io) throws IOException
-	{
+	public static <T> T readResource(final Class<?> objectClass, final String name, final IO<T> io) throws IOException {
 		final URL url = objectClass.getResource(name); //get a URL to the resource
-		if(url == null) //if the resource doesn't exist
-		{
+		if(url == null) { //if the resource doesn't exist
 			throw new FileNotFoundException("Could not find resource " + name + " for " + objectClass.getName());
 		}
 		return URLs.read(url, io);

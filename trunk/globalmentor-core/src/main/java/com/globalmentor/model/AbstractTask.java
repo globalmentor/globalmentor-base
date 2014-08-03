@@ -21,38 +21,40 @@ import com.globalmentor.event.EventListenerManager;
 
 import static com.globalmentor.java.Objects.*;
 
-/**Abstract implementation of a task performed in a sequence.
-@author Garret Wilson
-*/
-public abstract class AbstractTask extends BoundPropertyObject implements Task
-{
+/**
+ * Abstract implementation of a task performed in a sequence.
+ * @author Garret Wilson
+ */
+public abstract class AbstractTask extends BoundPropertyObject implements Task {
 
-	/**The object managing event listeners.*/
-	private final EventListenerManager eventListenerManager=new EventListenerManager();
+	/** The object managing event listeners. */
+	private final EventListenerManager eventListenerManager = new EventListenerManager();
 
-		/**@return The object managing event listeners.*/
-		protected EventListenerManager getEventListenerManager() {return eventListenerManager;}
+	/** @return The object managing event listeners. */
+	protected EventListenerManager getEventListenerManager() {
+		return eventListenerManager;
+	}
 
-	/**The current state of the task.*/
-	private TaskState state=TaskState.UNSTARTED;
+	/** The current state of the task. */
+	private TaskState state = TaskState.UNSTARTED;
 
-		/**@return The current state of the task.*/
-		public TaskState getState() {return state;}
+	/** @return The current state of the task. */
+	public TaskState getState() {
+		return state;
+	}
 
-		/**Sets the current state of the task.
-		This is a bound property.
-		@param newState The new state of the task.
-		@throws NullPointerException if the given state is <code>null</code>.
-		@see Task#STATE_PROPERTY
-		*/
-		public void setState(final TaskState newState)
-		{
-			if(state!=checkInstance(newState, "State cannot be null."))	//if the value is really changing
-			{
-				final TaskState oldState=state;	//get the current value
-				state=newState;	//update the value
-				firePropertyChange(STATE_PROPERTY, oldState, newState);
-			}
+	/**
+	 * Sets the current state of the task. This is a bound property.
+	 * @param newState The new state of the task.
+	 * @throws NullPointerException if the given state is <code>null</code>.
+	 * @see Task#STATE_PROPERTY
+	 */
+	public void setState(final TaskState newState) {
+		if(state != checkInstance(newState, "State cannot be null.")) { //if the value is really changing
+			final TaskState oldState = state; //get the current value
+			state = newState; //update the value
+			firePropertyChange(STATE_PROPERTY, oldState, newState);
 		}
+	}
 
 }

@@ -20,13 +20,12 @@ package com.globalmentor.io;
  * Unchecked exception indicating that some data encountered was invalid or inappropriate in the context.
  * @author Garret Wilson
  */
-public class IllegalDataException extends RuntimeException
-{
+public class IllegalDataException extends RuntimeException {
+
 	private static final long serialVersionUID = 1L;
 
 	/** Constructs a new exception with no detail message. */
-	public IllegalDataException()
-	{
+	public IllegalDataException() {
 		super();
 	}
 
@@ -34,8 +33,7 @@ public class IllegalDataException extends RuntimeException
 	 * Constructs a new exception with the specified detail message.
 	 * @param message The detail message.
 	 */
-	public IllegalDataException(final String message)
-	{
+	public IllegalDataException(final String message) {
 		super(message);
 	}
 
@@ -45,8 +43,7 @@ public class IllegalDataException extends RuntimeException
 	 * @param cause The cause (which is saved for later retrieval by the {@link Throwable#getCause()} method), or <code>null</code> if the cause is nonexistent or
 	 *          unknown.
 	 */
-	public IllegalDataException(final String message, final Throwable cause)
-	{
+	public IllegalDataException(final String message, final Throwable cause) {
 		super(message, cause);
 	}
 
@@ -55,8 +52,7 @@ public class IllegalDataException extends RuntimeException
 	 * @param cause The cause (which is saved for later retrieval by the {@link Throwable#getCause()} method), or <code>null</code> if the cause is nonexistent or
 	 *          unknown.
 	 */
-	public IllegalDataException(final Throwable cause)
-	{
+	public IllegalDataException(final Throwable cause) {
 		super(cause);
 	}
 

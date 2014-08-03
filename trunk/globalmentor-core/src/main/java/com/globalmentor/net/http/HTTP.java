@@ -36,8 +36,7 @@ import static com.globalmentor.net.URIs.*;
  * @see <a href="http://www.ietf.org/rfc/rfc2616.txt">RFC 2616</a>
  * @author Garret Wilson
  */
-public class HTTP
-{
+public class HTTP {
 
 	/** The HTTP scheme identifier. */
 	public final static String HTTP_URI_SCHEME = "http";
@@ -377,8 +376,7 @@ public class HTTP
 	 * @see #HTTP_URI_SCHEME
 	 * @see #HTTPS_URI_SCHEME
 	 */
-	public static boolean isHTTPURI(final URI uri)
-	{
+	public static boolean isHTTPURI(final URI uri) {
 		final String scheme = uri.getScheme(); //get the URI scheme
 		return scheme != null && isHTTPScheme(scheme);
 	}
@@ -391,8 +389,7 @@ public class HTTP
 	 * @see #HTTP_URI_SCHEME
 	 * @see #HTTPS_URI_SCHEME
 	 */
-	public static boolean isHTTPScheme(final String scheme)
-	{
+	public static boolean isHTTPScheme(final String scheme) {
 		return scheme.equals(HTTP_URI_SCHEME) || scheme.equals(HTTPS_URI_SCHEME); //see if the scheme is "http" or "https"
 	}
 
@@ -406,14 +403,11 @@ public class HTTP
 	 * @see #HTTP_URI_SCHEME
 	 * @see #HTTPS_URI_SCHEME
 	 */
-	public static URI matchSchemeSecurity(URI uri, final URI matchURI)
-	{
+	public static URI matchSchemeSecurity(URI uri, final URI matchURI) {
 		final String uriScheme = uri.getScheme();
 		final String matchURIScheme = matchURI.getScheme();
-		if(!Objects.equals(uriScheme, matchURIScheme)) //if the schemes are different
-		{
-			if(uriScheme != null && isHTTPScheme(uriScheme) && matchURIScheme != null && isHTTPScheme(matchURIScheme)) //if both schemes are HTTP schemes
-			{
+		if(!Objects.equals(uriScheme, matchURIScheme)) { //if the schemes are different
+			if(uriScheme != null && isHTTPScheme(uriScheme) && matchURIScheme != null && isHTTPScheme(matchURIScheme)) { //if both schemes are HTTP schemes
 				uri = changeScheme(uri, matchURIScheme); //set the scheme to match the match URI
 			}
 		}

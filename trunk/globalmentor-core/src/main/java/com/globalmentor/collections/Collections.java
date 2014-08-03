@@ -25,8 +25,7 @@ import static com.globalmentor.text.TextFormatter.*;
  * @author Garret Wilson
  * @see java.util.Collection
  */
-public class Collections
-{
+public class Collections {
 
 	/**
 	 * Adds the string representation of the elements specified by the collection to the specified string collection.
@@ -34,13 +33,10 @@ public class Collections
 	 * @param collection The source of the added strings.
 	 * @return <code>true</code> if the collection changed as a result of the call.
 	 */
-	public static boolean addAll(final Collection<? super String> stringCollection, final Collection<?> collection)
-	{
+	public static boolean addAll(final Collection<? super String> stringCollection, final Collection<?> collection) {
 		boolean changed = false; //assume we won't modify the collection
-		for(final Object object : collection) //for each object in the collection
-		{
-			if(stringCollection.add(object.toString())) //get the string value of the object add it to the collection; if the collection changed
-			{
+		for(final Object object : collection) { //for each object in the collection
+			if(stringCollection.add(object.toString())) { //get the string value of the object add it to the collection; if the collection changed
 				changed = true; //show that we modified the collection				
 			}
 		}
@@ -53,8 +49,7 @@ public class Collections
 	 * @param iterable The source of the added objects.
 	 * @return <code>true</code> if the collection changed as a result of the call.
 	 */
-	public static <T> boolean addAll(final Collection<T> collection, final Iterable<? extends T> iterable)
-	{
+	public static <T> boolean addAll(final Collection<T> collection, final Iterable<? extends T> iterable) {
 		return addAll(collection, iterable.iterator()); //get an iterator and add all the elements
 	}
 
@@ -64,13 +59,10 @@ public class Collections
 	 * @param iterator The source of the added objects.
 	 * @return <code>true</code> if the collection changed as a result of the call.
 	 */
-	public static <T> boolean addAll(final Collection<T> collection, final Iterator<? extends T> iterator)
-	{
+	public static <T> boolean addAll(final Collection<T> collection, final Iterator<? extends T> iterator) {
 		boolean changed = false; //assume we won't modify the collection
-		while(iterator.hasNext()) //while there are more items in the iterator
-		{
-			if(collection.add(iterator.next())) //get the next item from the iterator and add it to the collection; if the collection changed
-			{
+		while(iterator.hasNext()) { //while there are more items in the iterator
+			if(collection.add(iterator.next())) { //get the next item from the iterator and add it to the collection; if the collection changed
 				changed = true; //show that we modified the collection				
 			}
 		}
@@ -83,8 +75,7 @@ public class Collections
 	 * @param iterable The source of the removed objects.
 	 * @return <code>true</code> if the collection changed as a result of the call.
 	 */
-	public static <T> boolean removeAll(final Collection<T> collection, final Iterable<? extends T> iterable)
-	{
+	public static <T> boolean removeAll(final Collection<T> collection, final Iterable<? extends T> iterable) {
 		return removeAll(collection, iterable.iterator()); //get an iterator and remove all the elements
 	}
 
@@ -94,13 +85,10 @@ public class Collections
 	 * @param iterator The source of the removed objects.
 	 * @return <code>true</code> if the collection changed as a result of the call.
 	 */
-	public static <T> boolean removeAll(final Collection<T> collection, final Iterator<? extends T> iterator)
-	{
+	public static <T> boolean removeAll(final Collection<T> collection, final Iterator<? extends T> iterator) {
 		boolean changed = false; //assume we won't modify the collection
-		while(iterator.hasNext()) //while there are more items in the iterator
-		{
-			if(collection.remove(iterator.next())) //get the next item from the iterator and remove it from the collection; if the collection changed
-			{
+		while(iterator.hasNext()) { //while there are more items in the iterator
+			if(collection.remove(iterator.next())) { //get the next item from the iterator and remove it from the collection; if the collection changed
 				changed = true; //show that we modified the collection				
 			}
 		}
@@ -113,12 +101,9 @@ public class Collections
 	 * @param objectClass The class for which to find an implementing object.
 	 * @return <code>true</code> if the collection contains an object that implements the given class, else <code>false</code>.
 	 */
-	public static <T> boolean containsInstance(final Collection<T> collection, final Class<? extends T> objectClass)
-	{
-		for(final T item : collection) //for each item in the collection
-		{
-			if(objectClass.isInstance(item)) //if the next item is an instance of the class
-			{
+	public static <T> boolean containsInstance(final Collection<T> collection, final Class<? extends T> objectClass) {
+		for(final T item : collection) { //for each item in the collection
+			if(objectClass.isInstance(item)) { //if the next item is an instance of the class
 				return true; //show that the collection contains an instance of the the given class
 			}
 		}
@@ -131,8 +116,7 @@ public class Collections
 	 * @param elements The elements with which to initialize the hash set.
 	 * @return A new hash set containing the given elements.
 	 */
-	public static <E> HashSet<E> createHashSet(final E... elements)
-	{
+	public static <E> HashSet<E> createHashSet(final E... elements) {
 		final HashSet<E> hashSet = new HashSet<E>(elements.length); //create a new hash set large enough to store the given elements
 		java.util.Collections.addAll(hashSet, elements); //add all of the given elements to the hash set
 		return hashSet; //return the hash set we created and initialized
@@ -147,8 +131,7 @@ public class Collections
 	 * @see Collection#isEmpty()
 	 * @see Collection#iterator()
 	 */
-	public static <T> T get(final Collection<T> collection)
-	{
+	public static <T> T get(final Collection<T> collection) {
 		return collection.isEmpty() ? null : collection.iterator().next();
 	}
 
@@ -161,10 +144,8 @@ public class Collections
 	 * @see Collection#isEmpty()
 	 * @see Iterable#iterator()
 	 */
-	public static <T> T get(final Iterable<T> iterable)
-	{
-		if(iterable instanceof Collection && ((Collection<T>)iterable).isEmpty()) //if the iterable is an empty collection
-		{
+	public static <T> T get(final Iterable<T> iterable) {
+		if(iterable instanceof Collection && ((Collection<T>)iterable).isEmpty()) { //if the iterable is an empty collection
 			return null; //short circuit the tests; there is nothing to return
 		}
 		final Iterator<T> iterator = iterable.iterator();
@@ -179,16 +160,13 @@ public class Collections
 	 * @param newCollection The elements to set in the collection.
 	 * @return <code>true</code> if the collection changed as a result of the call.
 	 */
-	public static <T> boolean set(final Collection<T> collection, final Collection<? extends T> newCollection)
-	{
+	public static <T> boolean set(final Collection<T> collection, final Collection<? extends T> newCollection) {
 		boolean changed = false;
-		if(!collection.isEmpty())
-		{
+		if(!collection.isEmpty()) {
 			collection.clear(); //clear the contents of the collection
 			changed = true;
 		}
-		if(collection.addAll(newCollection)) //add all the contents of the new collection
-		{
+		if(collection.addAll(newCollection)) { //add all the contents of the new collection
 			changed = true;
 		}
 		return changed;
@@ -202,16 +180,13 @@ public class Collections
 	 * @param newElements The elements to set in the collection.
 	 * @return <code>true</code> if the collection changed as a result of the call.
 	 */
-	public static <T> boolean set(final Collection<T> collection, final T... newElements)
-	{
+	public static <T> boolean set(final Collection<T> collection, final T... newElements) {
 		boolean changed = false;
-		if(!collection.isEmpty())
-		{
+		if(!collection.isEmpty()) {
 			collection.clear(); //clear the contents of the collection
 			changed = true;
 		}
-		if(java.util.Collections.addAll(collection, newElements)) //add all the contents of the new collection
-		{
+		if(java.util.Collections.addAll(collection, newElements)) { //add all the contents of the new collection
 			changed = true;
 		}
 		return changed;
@@ -226,10 +201,8 @@ public class Collections
 	 * @see Collection#isEmpty()
 	 * @see Iterable#iterator()
 	 */
-	public static <T> boolean isEmpty(final Iterable<T> iterable)
-	{
-		if(iterable instanceof Collection) //if the iterable is a collection
-		{
+	public static <T> boolean isEmpty(final Iterable<T> iterable) {
+		if(iterable instanceof Collection) { //if the iterable is a collection
 			return ((Collection<?>)iterable).isEmpty(); //delegate to the collection
 		}
 		final Iterator<T> iterator = iterable.iterator();
@@ -280,12 +253,10 @@ public class Collections
 	//TODO fix  	final T[] emptyArray=createArray();	//create an empty generics-aware array
 	//TODO fix  	return collection.toArray(emptyArray);	//pass the array to the collection, which will create a new array as necessary
 	  	final T[] array;	//we'll create the array and store it here
-	  	if(collection.isEmpty())	//if the collection is empty
-	  	{
+	  	if(collection.isEmpty()) {	//if the collection is empty
 	  		array=createArray();	//create an empty generics-aware array TODO check to make sure this is actually of the correct type
 	  	}
-	  	else	//if the collection is not empty
-	  	{
+	  	else {	//if the collection is not empty
 	  		final T element=collection.iterator().next();	//get the first element in the collection
 	  		final Class<T> elementType	this will not work, as we don't know if this class is representational of all elements in the collection
 	  	}
@@ -300,10 +271,8 @@ public class Collections
 	 * @param iterable The iterable to convert.
 	 * @return A collection with the current contents of the iterable.
 	 */
-	public static <T> Collection<T> toCollection(final Iterable<T> iterable)
-	{
-		if(iterable instanceof Collection) //if the iterable is already a collection
-		{
+	public static <T> Collection<T> toCollection(final Iterable<T> iterable) {
+		if(iterable instanceof Collection) { //if the iterable is already a collection
 			return (Collection<T>)iterable; //return it
 		}
 		final List<T> list = new ArrayList<T>();
@@ -316,8 +285,7 @@ public class Collections
 	 * @param collection The collection to convert to a string.
 	 * @return A string representation of the collection of elements.
 	 */
-	public static <T> String toString(final Collection<T> collection)
-	{
+	public static <T> String toString(final Collection<T> collection) {
 		return toString(collection, ','); //construct a string using a comma
 	}
 
@@ -327,8 +295,7 @@ public class Collections
 	 * @param delimiter The character to place between elements.
 	 * @return A string representation of the collection of elements.
 	 */
-	public static <T> String toString(final Collection<T> collection, final char delimiter)
-	{
+	public static <T> String toString(final Collection<T> collection, final char delimiter) {
 		return formatList(delimiter, collection).toString(); //format the list into a string buffer and return the resulting string
 	}
 
@@ -338,8 +305,7 @@ public class Collections
 	 * @param delimiter The character sequence to place between elements.
 	 * @return A string representation of the collection of elements.
 	 */
-	public static <T> String toString(final Collection<T> collection, final String delimiter)
-	{
+	public static <T> String toString(final Collection<T> collection, final String delimiter) {
 		return formatList(delimiter, collection).toString(); //format the list into a string buffer and return the resulting string
 	}
 

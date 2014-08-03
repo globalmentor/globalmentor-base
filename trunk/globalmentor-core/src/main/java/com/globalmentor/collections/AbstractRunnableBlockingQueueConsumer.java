@@ -31,15 +31,13 @@ import static com.globalmentor.java.Objects.*;
  * @see BlockingQueue#take()
  * @author Garret Wilson
  */
-public abstract class AbstractRunnableBlockingQueueConsumer<E> implements Consumer<E>, Runnable
-{
+public abstract class AbstractRunnableBlockingQueueConsumer<E> implements Consumer<E>, Runnable {
 
 	/** The blocking queue from which elements are being consumed. */
 	private final BlockingQueue<E> blockingQueue;
 
 	/** @return The blocking queue from which elements are being consumed. */
-	protected BlockingQueue<E> getBlockingQueue()
-	{
+	protected BlockingQueue<E> getBlockingQueue() {
 		return blockingQueue;
 	}
 
@@ -48,28 +46,20 @@ public abstract class AbstractRunnableBlockingQueueConsumer<E> implements Consum
 	 * @param blockingQueue The blocking queue from which elements will be consumed.
 	 * @throws NullPointerException if the given blocking queue is <code>null</code>.
 	 */
-	public AbstractRunnableBlockingQueueConsumer(final BlockingQueue<E> blockingQueue)
-	{
+	public AbstractRunnableBlockingQueueConsumer(final BlockingQueue<E> blockingQueue) {
 		this.blockingQueue = checkInstance(blockingQueue, "Blocking queue cannot be null.");
 	}
 
 	/** The main functionality of the consumer, which consumes data from the blocking queue and calls {@link #consume(Object)}. */
-	public void run()
-	{
+	public void run() {
 		started(); //indicate that consumption has started
-		while(!Thread.interrupted()) //keep consuming until interrupted
-		{
-			try
-			{
+		while(!Thread.interrupted()) { //keep consuming until interrupted
+			try {
 				final E element = getBlockingQueue().take(); //take the next element from the queue
 				consume(element); //consume this element
-			}
-			catch(final InterruptedException interruptedException) //if we're interrupted while waiting
-			{
+			} catch(final InterruptedException interruptedException) { //if we're interrupted while waiting
 				break; //break out of the loop
-			}
-			catch(final Throwable throwable) //if any other exception occurs
-			{
+			} catch(final Throwable throwable) { //if any other exception occurs
 				Log.error(throwable); //log the error and continue
 			}
 		}
@@ -77,8 +67,7 @@ public abstract class AbstractRunnableBlockingQueueConsumer<E> implements Consum
 	}
 
 	/** Called when the consumer is started before processing ends. */
-	protected void started()
-	{
+	protected void started() {
 	}
 
 	/**
@@ -88,7 +77,6 @@ public abstract class AbstractRunnableBlockingQueueConsumer<E> implements Consum
 	public abstract void consume(final E element);
 
 	/** Called when the consumer is stopped after processing ends. */
-	protected void stopped()
-	{
+	protected void stopped() {
 	}
 }

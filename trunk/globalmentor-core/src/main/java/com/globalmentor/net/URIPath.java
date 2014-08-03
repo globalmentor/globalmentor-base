@@ -38,8 +38,7 @@ import static com.globalmentor.net.URIs.*;
  * @author Garret Wilson
  * @see <a href="http://www.ietf.org/rfc/rfc3986.txt">Uniform Resource Identifier (URI): Generic Syntax</a>
  */
-public final class URIPath
-{
+public final class URIPath {
 
 	/** The empty path (""). */
 	public final static URIPath EMPTY_URI_PATH = new URIPath("");
@@ -63,8 +62,7 @@ public final class URIPath
 	 * @throws IllegalArgumentException if the given string violates URI RFC 2396.
 	 * @throws IllegalArgumentException if the provided path specifies a URI authority, query, and/or fragment.
 	 */
-	public URIPath(final String path)
-	{
+	public URIPath(final String path) {
 		this(createURIPathURI(checkInstance(path, "Path cannot be null."))); //construct the class with a URI created from the path, compensating for relative paths that contain a colon in the first path segment
 	}
 
@@ -75,8 +73,7 @@ public final class URIPath
 	 * @throws IllegalArgumentException if the provided URI specifies a URI scheme (i.e. the URI is absolute), authority, query, and/or fragment.
 	 * @throws IllegalArgumentException if the given URI is not a path.
 	 */
-	public URIPath(final URI pathURI)
-	{
+	public URIPath(final URI pathURI) {
 		this.uri = checkPathURI(pathURI); //check and store the path URI		
 	}
 
@@ -85,8 +82,7 @@ public final class URIPath
 	 * @return <code>true</code> if the path begins with {@value com.globalmentor.net.URIs#ROOT_PATH}.
 	 * @see #isRelative()
 	 */
-	public boolean isAbsolute()
-	{
+	public boolean isAbsolute() {
 		return uri.getRawPath().startsWith(ROOT_PATH); //see if the path begins with '/'		
 	}
 
@@ -95,8 +91,7 @@ public final class URIPath
 	 * @return <code>true</code> if the path does not begin with {@value com.globalmentor.net.URIs#ROOT_PATH}.
 	 * @see #isAbsolute()
 	 */
-	public boolean isRelative()
-	{
+	public boolean isRelative() {
 		return !isAbsolute(); //see if the path is not absolute		
 	}
 
@@ -106,10 +101,8 @@ public final class URIPath
 	 * @throws IllegalArgumentException if the path is not absolute.
 	 * @see #isAbsolute()
 	 */
-	public URIPath checkAbsolute() throws IllegalArgumentException
-	{
-		if(!isAbsolute()) //if this path is not absolute
-		{
+	public URIPath checkAbsolute() throws IllegalArgumentException {
+		if(!isAbsolute()) { //if this path is not absolute
 			throw new IllegalArgumentException("The path " + this + " is not absolute.");
 		}
 		return this; //return this path
@@ -119,8 +112,7 @@ public final class URIPath
 	 * Determines whether the path is a canonical collection path.
 	 * @return <code>true</code> if the path ends with a slash ('/').
 	 */
-	public boolean isCollection()
-	{
+	public boolean isCollection() {
 		return isCollectionPath(uri.getRawPath()); //see if the raw path is a collection path		
 	}
 
@@ -130,10 +122,8 @@ public final class URIPath
 	 * @throws IllegalArgumentException if the path does not end with a slash ('/').
 	 * @see #isCollection()
 	 */
-	public URIPath checkCollection() throws IllegalArgumentException
-	{
-		if(!isCollection()) //if this path is not a collection
-		{
+	public URIPath checkCollection() throws IllegalArgumentException {
+		if(!isCollection()) { //if this path is not a collection
 			throw new IllegalArgumentException("The path " + this + " is not a collection.");
 		}
 		return this; //return this path
@@ -143,8 +133,7 @@ public final class URIPath
 	 * Determines if this is an empty path.
 	 * @return <code>true</code> if this path is the empty path.
 	 */
-	public boolean isEmpty()
-	{
+	public boolean isEmpty() {
 		return uri.getRawPath().isEmpty(); //return whether the path is empty
 	}
 
@@ -154,10 +143,8 @@ public final class URIPath
 	 * @throws IllegalArgumentException if the path is absolute.
 	 * @see #isRelative()
 	 */
-	public URIPath checkRelative() throws IllegalArgumentException
-	{
-		if(!isRelative()) //if this path is absolute
-		{
+	public URIPath checkRelative() throws IllegalArgumentException {
+		if(!isRelative()) { //if this path is absolute
 			throw new IllegalArgumentException("The path " + this + " is not relative.");
 		}
 		return this; //return this path
@@ -171,8 +158,7 @@ public final class URIPath
 	 * @return A URI path equivalent to this URI path, but in normal form.
 	 * @see URIs#normalize(URI)
 	 */
-	public URIPath normalize()
-	{
+	public URIPath normalize() {
 		final URI normalizedURI = URIs.normalize(uri); //normalize the URI
 		return normalizedURI == uri ? this : new URIPath(normalizedURI); //if the URI was already normalized and we got back the same URI, we're already normalized
 	}
@@ -181,8 +167,7 @@ public final class URIPath
 	 * Determines the current level of this path. This is equivalent to resolving the path {@value URIs#CURRENT_LEVEL_PATH_SEGMENT} to this path.
 	 * @return A path representing the current hierarchical level this path.
 	 */
-	public URIPath getCurrentLevel()
-	{
+	public URIPath getCurrentLevel() {
 		final URI currentLevelURI = URIs.getCurrentLevel(uri); //get the current level as a URI
 		return currentLevelURI.equals(uri) ? this : new URIPath(currentLevelURI); //only create a new URI path if it's a different path than this one
 	}
@@ -191,8 +176,7 @@ public final class URIPath
 	 * Determines the parent level of this path. This is equivalent to resolving the path {@value URIs#PARENT_LEVEL_PATH_SEGMENT} to this path.
 	 * @return A path representing the parent hierarchical level of a hierarchical URI; equivalent to resolving the path ".." to the URI.
 	 */
-	public URIPath getParentLevel()
-	{
+	public URIPath getParentLevel() {
 		final URI parentLevelURI = URIs.getParentLevel(uri); //get the parent level as a URI
 		return parentLevelURI.equals(uri) ? this : new URIPath(parentLevelURI); //only create a new URI path if it's a different path than this one
 	}
@@ -206,8 +190,7 @@ public final class URIPath
 	 * @see #getParentLevel()
 	 * @see #getParentPath()
 	 */
-	public URIPath getParentPath()
-	{
+	public URIPath getParentPath() {
 		return isCollection() ? getParentLevel() : getCurrentLevel(); //if the path ends with a slash, get the parent level; otherwise, get the current level
 	}
 
@@ -218,8 +201,7 @@ public final class URIPath
 	 * @return The resulting path.
 	 * @throws NullPointerException if the given path is <code>null</code>.
 	 */
-	public URIPath relativize(final String path)
-	{
+	public URIPath relativize(final String path) {
 		return relativize(new URIPath(checkInstance(path, "Path cannot be null."))); //convert the String to a URI path and relativize it against this path
 	}
 
@@ -229,8 +211,7 @@ public final class URIPath
 	 * @return The resulting path.
 	 * @throws NullPointerException if the given path is <code>null</code>.
 	 */
-	public URIPath relativize(final URIPath path)
-	{
+	public URIPath relativize(final URIPath path) {
 		return new URIPath(uri.relativize(checkInstance(path, "Path cannot be null.").toURI()).getRawPath()); //relativize the URI form of the given path against the URI form of this path and create a new path from the resulting URI's raw path
 	}
 
@@ -243,11 +224,9 @@ public final class URIPath
 	 * @throws NullPointerException if the given base URI and/or URI is <code>null</code>.
 	 * @throws IllegalArgumentException if the given base URI is not actually a base URI of the given URI.
 	 */
-	public static URIPath relativize(final URI baseURI, final URI uri)
-	{
+	public static URIPath relativize(final URI baseURI, final URI uri) {
 		final URI relativeURI = baseURI.relativize(uri); //get a URI relative to the base URI
-		if(relativeURI.isAbsolute()) //if we couldn't relativize the the URI to the old base URI and come up with a relative URI
-		{
+		if(relativeURI.isAbsolute()) { //if we couldn't relativize the the URI to the old base URI and come up with a relative URI
 			throw new IllegalArgumentException(baseURI.toASCIIString() + " is not a base URI of " + uri);
 		}
 		return new URIPath(relativeURI);
@@ -266,8 +245,7 @@ public final class URIPath
 	 * @throws IllegalArgumentException if the provided path specifies a URI scheme (i.e. the path represents an absolute URI) and/or authority.
 	 * @see #resolve(URIPath)
 	 */
-	public final URIPath resolve(final String path)
-	{
+	public final URIPath resolve(final String path) {
 		return resolve(new URIPath(checkInstance(path, "Path cannot be null."))); //convert the String to a URI path and resolve it against this path
 	}
 
@@ -281,8 +259,7 @@ public final class URIPath
 	 * @throws NullPointerException if the given path is <code>null</code>.
 	 * @see URIs#resolve(URI, String)
 	 */
-	public URIPath resolve(final URIPath path)
-	{
+	public URIPath resolve(final URIPath path) {
 		return new URIPath(URIs.resolve(uri, checkInstance(path, "Path cannot be null.").toURI()).getRawPath()); //resolve the URI form of the given path against the URI form of this path and create a new path from the resulting URI's raw path
 	}
 
@@ -296,8 +273,7 @@ public final class URIPath
 	 * @throws NullPointerException if the given URI is <code>null</code>.
 	 * @see URIs#resolve(URI, URI)
 	 */
-	public URI resolve(final URI uri)
-	{
+	public URI resolve(final URI uri) {
 		return URIs.resolve(this.uri, checkInstance(uri, "URI cannot be null.")); //resolve the URI form of the given path against given URI
 	}
 
@@ -307,8 +283,7 @@ public final class URIPath
 	 * "path/", and "path" will all return "path".
 	 * @return The raw name of the last last path component, the empty string if the path is the empty string, or "/" if the path is the root path.
 	 */
-	public String getRawName()
-	{
+	public String getRawName() {
 		return URIs.getRawName(uri); //get the raw name of our URI
 	}
 
@@ -318,14 +293,12 @@ public final class URIPath
 	 * and "path" will all return "path".
 	 * @return The decoded name of the last last path component, the empty string if the path is the empty string, or "/" if the path is the root path.
 	 */
-	public String getName()
-	{
+	public String getName() {
 		return URIs.getName(uri); //get the name of our URI
 	}
 
 	/** @return A path-only URI containing this URI path. */
-	public URI toURI()
-	{
+	public URI toURI() {
 		return uri;
 	}
 
@@ -333,8 +306,7 @@ public final class URIPath
 	 * @return A URI containing this URI path in the {@value URIs#PATH_SCHEME} scheme.
 	 * @see URIs#PATH_SCHEME
 	 */
-	public URI toPathURI()
-	{
+	public URI toPathURI() {
 		return createURI(PATH_SCHEME, uri.getRawPath());
 	}
 
@@ -344,15 +316,10 @@ public final class URIPath
 	 * @return The path of the URI if the URI is absolute and has the {@value URIs#PATH_SCHEME} scheme, otherwise <code>null</code>.
 	 * @see URIs#PATH_SCHEME
 	 */
-	public static URIPath asPathURIPath(final URI uri)
-	{
-		if(PATH_SCHEME.equals(uri.getScheme())) //if this is a path URI
-		{
+	public static URIPath asPathURIPath(final URI uri) {
+		if(PATH_SCHEME.equals(uri.getScheme())) { //if this is a path URI
 			return getPathURIPath(uri); //create a new URI path from the raw path information of the URI (which may involve several types of processing based upon whether the path is relative or absolute)
-		}
-		else
-		//if this is not a path URI
-		{
+		} else { //if this is not a path URI
 			return null;
 		}
 	}
@@ -362,8 +329,7 @@ public final class URIPath
 	 * to the URI path.
 	 * @return A form of the URI path that indicates a collection.
 	 */
-	public URIPath toCollectionURIPath()
-	{
+	public URIPath toCollectionURIPath() {
 		return isCollection() ? this : new URIPath(uri.getRawPath() + PATH_SEPARATOR); //if the URI path is not already a collection, append a path separator
 	}
 
@@ -372,20 +338,17 @@ public final class URIPath
 	 * is removed from the URI path.
 	 * @return A form of the URI path that is relative.
 	 */
-	public URIPath toRelativeURIPath()
-	{
+	public URIPath toRelativeURIPath() {
 		return isRelative() ? this : new URIPath(uri.getRawPath().substring(1)); //if the URI path is not relative, remove the beginning path separator
 	}
 
 	/** @return A string representation of the raw, encoded path as it would appear in a URI. */
-	public String toString()
-	{
+	public String toString() {
 		return uri.getRawPath(); //return the raw path from the local URI
 	}
 
 	/** @return A string representation of the path with any URI escape sequences decoded. */
-	public String toDecodedString()
-	{
+	public String toDecodedString() {
 		return uri.getPath(); //return the path from the local URI
 	}
 
@@ -393,8 +356,7 @@ public final class URIPath
 	 * Returns the hash code of this object.
 	 * @return The hash code of this object.
 	 */
-	public int hashCode()
-	{
+	public int hashCode() {
 		return uri.hashCode(); //return the URI's hash code
 	}
 
@@ -403,8 +365,7 @@ public final class URIPath
 	 * @param object The object to compare with this object.
 	 * @return <code>true</code> if the given object is considered equal to this object.
 	 */
-	public boolean equals(final Object object)
-	{
+	public boolean equals(final Object object) {
 		return object instanceof URIPath && uri.equals(((URIPath)object).uri); //see if the object is a URI path with the same URI
 	}
 
@@ -416,19 +377,14 @@ public final class URIPath
 	 * @throws NullPointerException if the given path is <code>null</code>.
 	 * @throws IllegalArgumentException if the given string violates URI RFC 2396.
 	 */
-	public static URI createURIPathURI(final String path)
-	{
+	public static URI createURIPathURI(final String path) {
 		//see if this is a relative path that contains a colon in the first segment
 		final int length = path.length(); //get the length of the path
-		for(int i = 0; i < length; ++i) //for each character
-		{
+		for(int i = 0; i < length; ++i) { //for each character
 			final char c = path.charAt(i); //get this character
-			if(c == PATH_SEPARATOR) //if we find a path separator, there was no colon in the first segment of a relative path
-			{
+			if(c == PATH_SEPARATOR) { //if we find a path separator, there was no colon in the first segment of a relative path
 				break; //process the path normally
-			}
-			else if(c == SCHEME_SEPARATOR) //if we find a colon in the first segment of a relative path
-			{
+			} else if(c == SCHEME_SEPARATOR) { //if we find a colon in the first segment of a relative path
 				return PATH_ROOT_URI.relativize(URI.create(PATH_SCHEME + SCHEME_SEPARATOR + PATH_SEPARATOR + path)); //create a URI in the form <path:/path> and relativize it to <path:/>, which will create a URI with the correct path
 			}
 		}
@@ -441,8 +397,7 @@ public final class URIPath
 	 * @param path The path to URI-encode.
 	 * @return A string containing the escaped data.
 	 */
-	public static String encode(final String path)
-	{
+	public static String encode(final String path) {
 		return URIs.encode(path, PATH_CHARACTERS); //encode all non-path characters
 		//TODO important: encode "." and ".."
 	}
@@ -453,8 +408,7 @@ public final class URIPath
 	 * @param pathSegment The path segment to URI-encode.
 	 * @return A string containing the escaped data.
 	 */
-	public static String encodeSegment(final String pathSegment)
-	{
+	public static String encodeSegment(final String pathSegment) {
 		return URIs.encode(pathSegment, PATH_SEGMENT_CHARACTERS); //encode all non-path segment characters
 		//TODO important: encode "." and ".."
 	}
@@ -472,23 +426,19 @@ public final class URIPath
 	 * @see #EMPTY_URI_PATH
 	 * @see #ROOT_URI_PATH
 	 */
-	public List<URIPath> getBasePaths()
-	{
+	public List<URIPath> getBasePaths() {
 		final List<URIPath> basePaths = new ArrayList<URIPath>(); //create a list in which to store the base paths
 		final String string = toString(); //get the string form of the path
-		if(string.isEmpty() || ROOT_PATH.equals(string)) //if this is an empty path or the root path
-		{
+		if(string.isEmpty() || ROOT_PATH.equals(string)) { //if this is an empty path or the root path
 			basePaths.add(this); //add ourselves to the list
 			return basePaths; //return only ourselves
 		}
 		final StringBuilder stringBuilder = new StringBuilder(); //create a string builder to collect the segments of the URI
 		final StringTokenizer tokenizer = new StringTokenizer(string, String.valueOf(PATH_SEPARATOR), true); //tokenize the path, returning the delimiters
-		while(tokenizer.hasMoreTokens()) //while there are more tokens
-		{
+		while(tokenizer.hasMoreTokens()) { //while there are more tokens
 			final String token = tokenizer.nextToken(); //get the next token
 			stringBuilder.append(token); //add the token to the path string builder
-			if(!CharSequences.equals(token, PATH_SEPARATOR)) //if this is not the path separator
-			{
+			if(!CharSequences.equals(token, PATH_SEPARATOR)) { //if this is not the path separator
 				basePaths.add(new URIPath(tokenizer.hasMoreTokens() ? stringBuilder.toString() + PATH_SEPARATOR : stringBuilder.toString())); //append a path separator to the segment string if there is a path separator following this path segment (that's all that can follow this segment, as the path separator is the delimiter)
 			}
 		}

@@ -25,15 +25,13 @@ import static com.globalmentor.java.Objects.*;
  * A class that can filter files based upon a given filename pattern.
  * @author Garret Wilson
  */
-public class FilenamePatternFilter extends AbstractFileFilter
-{
+public class FilenamePatternFilter extends AbstractFileFilter {
 
 	/** The pattern for checking the filename. */
 	private final Pattern filenamePattern;
 
 	/** @return The pattern for checking the filename. */
-	public Pattern getFilenamePattern()
-	{
+	public Pattern getFilenamePattern() {
 		return filenamePattern;
 	}
 
@@ -42,8 +40,7 @@ public class FilenamePatternFilter extends AbstractFileFilter
 	 * @param filenamePatternString The string for creating a pattern for checking the filename.
 	 * @throws PatternSyntaxException If the expression's syntax is invalid
 	 */
-	public FilenamePatternFilter(final String filenamePatternString)
-	{
+	public FilenamePatternFilter(final String filenamePatternString) {
 		this(Pattern.compile(filenamePatternString));
 	}
 
@@ -51,8 +48,7 @@ public class FilenamePatternFilter extends AbstractFileFilter
 	 * Constructor specifying a filename matching pattern.
 	 * @param filenamePattern The pattern for checking the filename.
 	 */
-	public FilenamePatternFilter(final Pattern filenamePattern)
-	{
+	public FilenamePatternFilter(final Pattern filenamePattern) {
 		this.filenamePattern = checkInstance(filenamePattern);
 	}
 
@@ -63,8 +59,7 @@ public class FilenamePatternFilter extends AbstractFileFilter
 	 * </p>
 	 * @see Matcher#matches()
 	 */
-	public boolean accept(final File file)
-	{
+	public boolean accept(final File file) {
 		return getFilenamePattern().matcher(file.getName()).matches();
 	}
 }

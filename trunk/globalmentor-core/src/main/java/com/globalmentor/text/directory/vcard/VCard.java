@@ -19,7 +19,6 @@ package com.globalmentor.text.directory.vcard;
 import java.net.*;
 import java.util.*;
 
-
 import static com.globalmentor.collections.Collections.*;
 import static java.util.Collections.*;
 
@@ -36,8 +35,7 @@ import com.globalmentor.text.directory.*;
  * "vCard MIME Directory Profile".
  * @author Garret Wilson
  */
-public class VCard extends Directory
-{
+public class VCard extends Directory {
 
 	/** The name of the vCard profile. */
 	public final static String VCARD_PROFILE_NAME = "VCARD";
@@ -318,8 +316,7 @@ public class VCard extends Directory
 	private final List<ContentLine> contentLineList = new ArrayList<ContentLine>();
 
 	/** @return The list of content lines that represent unrecognized and/or unprocessed information. */
-	public List<ContentLine> getContentLineList()
-	{
+	public List<ContentLine> getContentLineList() {
 		return contentLineList;
 	}
 
@@ -329,8 +326,7 @@ public class VCard extends Directory
 	private LocaledText formattedName = null;
 
 	/** @return Formatted text corresponding to the name of the object the vCard represents. */
-	public LocaledText getFormattedName()
-	{
+	public LocaledText getFormattedName() {
 		return formattedName;
 	}
 
@@ -338,8 +334,7 @@ public class VCard extends Directory
 	 * Sets the formatted text corresponding to the name of the object the vCard represents.
 	 * @param fn The formatted name.
 	 */
-	public void setFormattedName(final LocaledText fn)
-	{
+	public void setFormattedName(final LocaledText fn) {
 		formattedName = fn;
 	}
 
@@ -347,8 +342,7 @@ public class VCard extends Directory
 	private Name name = null;
 
 	/** @return The components of the name of the object the vCard represents. */
-	public Name getName()
-	{
+	public Name getName() {
 		return name;
 	}
 
@@ -356,8 +350,7 @@ public class VCard extends Directory
 	 * Sets the components of the name of the object the vCard represents.
 	 * @param n The name.
 	 */
-	public void setName(final Name n)
-	{
+	public void setName(final Name n) {
 		name = n;
 	}
 
@@ -365,8 +358,7 @@ public class VCard extends Directory
 	private final List<LocaledText> nicknameList = new ArrayList<LocaledText>();
 
 	/** @return The list of text corresponding to the nickname of the object the vCard represents. */
-	public List<LocaledText> getNicknames()
-	{
+	public List<LocaledText> getNicknames() {
 		return nicknameList;
 	}
 
@@ -374,8 +366,7 @@ public class VCard extends Directory
 	 * Sets the text corresponding to the nickname of the object the vCard represents.
 	 * @param nicknames The nicknames.
 	 */
-	public void setNicknames(final LocaledText... nicknames)
-	{
+	public void setNicknames(final LocaledText... nicknames) {
 		set(nicknameList, nicknames); //set the new values
 	}
 
@@ -383,8 +374,7 @@ public class VCard extends Directory
 	private AbstractISODateTime birthday;
 
 	/** @return The birthday, which may be an {@link ISODate} or an {@link ISODateTime}; or <code>null</code> if no birthday is indicated. */
-	public AbstractISODateTime getBirthday()
-	{
+	public AbstractISODateTime getBirthday() {
 		return birthday;
 	}
 
@@ -392,8 +382,7 @@ public class VCard extends Directory
 	 * Sets the birthday.
 	 * @param birthday The birthday, which may be an {@link ISODate} or an {@link ISODateTime}; or <code>null</code> if no birthday is indicated.
 	 */
-	public void setBirthday(final AbstractISODateTime birthday)
-	{
+	public void setBirthday(final AbstractISODateTime birthday) {
 		this.birthday = birthday;
 	}
 
@@ -403,14 +392,12 @@ public class VCard extends Directory
 	private final List<Address> addressList = new ArrayList<Address>();
 
 	/** @return The list of componentized delivery addresses for the vCard object. */
-	public List<Address> getAddresses()
-	{
+	public List<Address> getAddresses() {
 		return addressList;
 	}
 
 	/** @return The first componentized delivery addresses for the vCard object, or <code>null</code> if there are no addresses. */
-	public Address getAddress()
-	{
+	public Address getAddress() {
 		return get(getAddresses());
 	}
 
@@ -418,8 +405,7 @@ public class VCard extends Directory
 	 * Sets the components of the delivery addresses for the vCard object.
 	 * @param addresses The array of address.
 	 */
-	public void setAddresses(final Address... addresses)
-	{
+	public void setAddresses(final Address... addresses) {
 		set(addressList, addresses); //set the new values
 	}
 
@@ -427,8 +413,7 @@ public class VCard extends Directory
 	private final List<Label> labelList = new ArrayList<Label>();
 
 	/** @return The list of formatted text corresponding to delivery addresses of the object the vCard represents. */
-	public List<Label> getLabels()
-	{
+	public List<Label> getLabels() {
 		return labelList;
 	}
 
@@ -436,8 +421,7 @@ public class VCard extends Directory
 	 * Sets the formatted text corresponding to delivery addresses of the object the vCard represents.
 	 * @param labels The array of delivery address labels.
 	 */
-	public void setLabels(final Label... labels)
-	{
+	public void setLabels(final Label... labels) {
 		set(labelList, labels); //set the new values
 	}
 
@@ -447,8 +431,7 @@ public class VCard extends Directory
 	private final List<Telephone> telephoneList = new ArrayList<Telephone>();
 
 	/** @return The list of telephone numbers for telephony communication with the object the vCard represents. */
-	public List<Telephone> getTelephones()
-	{
+	public List<Telephone> getTelephones() {
 		return telephoneList;
 	}
 
@@ -458,12 +441,9 @@ public class VCard extends Directory
 	 * @return The telephone with a number equal to that given, or <code>null</code> if no telephone could be found with the given number.
 	 * @throws NullPointerException if the given telephone number is <code>null</code>.
 	 */
-	public Telephone getTelephone(final TelephoneNumber telephoneNumber)
-	{
-		for(final Telephone telephone : getTelephones())
-		{
-			if(telephoneNumber.equals(telephone))
-			{
+	public Telephone getTelephone(final TelephoneNumber telephoneNumber) {
+		for(final Telephone telephone : getTelephones()) {
+			if(telephoneNumber.equals(telephone)) {
 				return telephone;
 			}
 		}
@@ -474,8 +454,7 @@ public class VCard extends Directory
 	 * Sets the telephone numbers for telephony communication with the object the vCard represents.
 	 * @param telephones The array of telephones.
 	 */
-	public void setTelephones(final Telephone... telephones)
-	{
+	public void setTelephones(final Telephone... telephones) {
 		set(telephoneList, telephones); //set the new values
 	}
 
@@ -483,23 +462,20 @@ public class VCard extends Directory
 	private final List<Email> emailList = new ArrayList<Email>();
 
 	/** @return The list of electronic mail addresses for communication with the object the vCard represents. */
-	public List<Email> getEmails()
-	{
+	public List<Email> getEmails() {
 		return emailList;
 	}
 
 	/** @return The first electronic mail addresses for communication with the object the vCard represents. */
-	public Email getEmail()
-	{
+	public Email getEmail() {
 		return get(getEmails());
 	}
-	
+
 	/**
 	 * Sets the electronic mail addresses for communication with the object the vCard represents.
 	 * @param emails The array of email addresses.
 	 */
-	public void setEmails(final Email... emails)
-	{
+	public void setEmails(final Email... emails) {
 		set(emailList, emails); //set the new values
 	}
 
@@ -511,8 +487,7 @@ public class VCard extends Directory
 	private LocaledText organizationName = null;
 
 	/** @return The organization name, or <code>null</code> for no name. */
-	public LocaledText getOrganizationName()
-	{
+	public LocaledText getOrganizationName() {
 		return organizationName;
 	}
 
@@ -520,8 +495,7 @@ public class VCard extends Directory
 	 * Sets the organization name.
 	 * @param org The name of the organization, or <code>null</code> for no name.
 	 */
-	public void setOrganizationName(final LocaledText org)
-	{
+	public void setOrganizationName(final LocaledText org) {
 		organizationName = org;
 	}
 
@@ -529,14 +503,12 @@ public class VCard extends Directory
 	private final List<LocaledText> organizationUnits = new ArrayList<LocaledText>();
 
 	/** @return The organizational units. */
-	public List<LocaledText> getOrganizationUnits()
-	{
+	public List<LocaledText> getOrganizationUnits() {
 		return organizationUnits;
 	}
 
 	/** @return The first organizational unit, or <code>null</code> if there are no organizational units. */
-	public LocaledText getOrganizationUnit()
-	{
+	public LocaledText getOrganizationUnit() {
 		return Collections.get(organizationUnits);
 	}
 
@@ -544,8 +516,7 @@ public class VCard extends Directory
 	 * Sets the organizational units.
 	 * @param units The organizational units.
 	 */
-	public void setOrganizationUnits(final LocaledText... units)
-	{
+	public void setOrganizationUnits(final LocaledText... units) {
 		set(organizationUnits, units);
 	}
 
@@ -553,8 +524,7 @@ public class VCard extends Directory
 	private LocaledText title = null;
 
 	/** @return The job title, functional position or function at the, organization or <code>null</code> for no title. */
-	public LocaledText getTitle()
-	{
+	public LocaledText getTitle() {
 		return title;
 	}
 
@@ -562,8 +532,7 @@ public class VCard extends Directory
 	 * Sets the job title.
 	 * @param title The job title, functional position or function at the organization, or <code>null</code> for no title.
 	 */
-	public void setTitle(final LocaledText title)
-	{
+	public void setTitle(final LocaledText title) {
 		this.title = title;
 	}
 
@@ -573,8 +542,7 @@ public class VCard extends Directory
 	/**
 	 * @return The role, occupation, or business category at the organization, or <code>null</code> for no role.
 	 */
-	public LocaledText getRole()
-	{
+	public LocaledText getRole() {
 		return role;
 	}
 
@@ -582,8 +550,7 @@ public class VCard extends Directory
 	 * Sets the role.
 	 * @param role The role, occupation, or business category at the organization, or <code>null</code> for no role.
 	 */
-	public void setRole(final LocaledText role)
-	{
+	public void setRole(final LocaledText role) {
 		this.role = role;
 	}
 
@@ -593,8 +560,7 @@ public class VCard extends Directory
 	private final List<LocaledText> categoryList = new ArrayList<LocaledText>();
 
 	/** @return The list of application category information about the vCard. */
-	public List<LocaledText> getCategories()
-	{
+	public List<LocaledText> getCategories() {
 		return categoryList;
 	}
 
@@ -602,8 +568,7 @@ public class VCard extends Directory
 	 * Adds the application category information about the vCard.
 	 * @param categories The array of categories to add.
 	 */
-	public void addCategories(final LocaledText... categories)
-	{
+	public void addCategories(final LocaledText... categories) {
 		addAll(categoryList, categories); //add the new values
 	}
 
@@ -611,8 +576,7 @@ public class VCard extends Directory
 	 * Sets the application category information about the vCard.
 	 * @param emails The array of categories.
 	 */
-	public void setCategories(final LocaledText... categories)
-	{
+	public void setCategories(final LocaledText... categories) {
 		set(categoryList, categories); //set the new values
 	}
 
@@ -620,14 +584,12 @@ public class VCard extends Directory
 	private final List<LocaledText> noteList = new ArrayList<LocaledText>();
 
 	/** @return The list of supplemental information or a comment that is associated with the vCard. */
-	public List<LocaledText> getNotes()
-	{
+	public List<LocaledText> getNotes() {
 		return noteList;
 	}
 
 	/** @return The first supplemental information or a comment that is associated with the vCard, or <code>null</code> if there is no note. */
-	public LocaledText getNote()
-	{
+	public LocaledText getNote() {
 		return get(noteList);
 	}
 
@@ -635,8 +597,7 @@ public class VCard extends Directory
 	 * Sets the supplemental information or a comment that is associated with the vCard.
 	 * @param notes The array of notes.
 	 */
-	public void setNotes(final LocaledText... notes)
-	{
+	public void setNotes(final LocaledText... notes) {
 		set(noteList, notes); //set the new values
 	}
 
@@ -644,8 +605,7 @@ public class VCard extends Directory
 	private LocaledText sortString = null;
 
 	/** @return The national-language-specific sorting string, or <code>null</code> if there is no sorting string specified. */
-	public LocaledText getSortString()
-	{
+	public LocaledText getSortString() {
 		return sortString;
 	}
 
@@ -653,8 +613,7 @@ public class VCard extends Directory
 	 * Sets the national-language-specific sorting string associated with the vCard.
 	 * @param sortingString The sorting string, or <code>null</code> if there should be no sorting string.
 	 */
-	public void setSortString(final LocaledText sortString)
-	{
+	public void setSortString(final LocaledText sortString) {
 		this.sortString = sortString;
 	}
 
@@ -664,8 +623,7 @@ public class VCard extends Directory
 	private URI url = null;
 
 	/** @return The URL that is associated with the vCard, or <code>null</code> if there is no URL. */
-	public URI getURL()
-	{
+	public URI getURL() {
 		return url;
 	}
 
@@ -673,8 +631,7 @@ public class VCard extends Directory
 	 * Sets the URL that is associated with the vCard.
 	 * @param url The URL, or <code>null</code> if there is no URL.
 	 */
-	public void setURL(final URI url)
-	{
+	public void setURL(final URI url) {
 		this.url = url;
 	}
 
@@ -682,8 +639,7 @@ public class VCard extends Directory
 	private String version = VCARD_VERSION_VALUE;
 
 	/** @return The the version of the vCard specification used to format this vCard, which defaults to "3.0". */
-	public String getVersion()
-	{
+	public String getVersion() {
 		return version;
 	}
 
@@ -691,8 +647,7 @@ public class VCard extends Directory
 	 * Sets the the version of the vCard specification used to format this vCard.
 	 * @param version The version of the vCard specification used to format this vCard.
 	 */
-	public void setVersion(final String version)
-	{
+	public void setVersion(final String version) {
 		this.version = version;
 	}
 

@@ -32,8 +32,7 @@ import com.globalmentor.model.NameValuePair;
  * Utilities for formatting text.
  * @author Garret Wilson
  */
-public class TextFormatter
-{
+public class TextFormatter {
 
 	/**
 	 * Formats an array of bytes into a sequence of hex characters, with each character pair representing the hexadecimal value of the byte.
@@ -42,10 +41,8 @@ public class TextFormatter
 	 * @return A lowercase string with hexadecimal digits, each pair representing a byte in the byte array.
 	 * @throws IOException if there is an error writing to the appendable.
 	 */
-	public static <A extends Appendable> A formatHex(final A appendable, final byte[] bytes) throws IOException //TODO make generic to allow different bases 
-	{
-		for(final byte b : bytes) //for each byte
-		{
+	public static <A extends Appendable> A formatHex(final A appendable, final byte[] bytes) throws IOException { //TODO make generic to allow different bases 
+		for(final byte b : bytes) { //for each byte
 			appendable.append(Integers.toHexString(b, 2)); //convert the byte to a two-character hex string and add it to our appendable TODO make more efficient			
 		}
 		return appendable; //return the appendable we used
@@ -56,14 +53,10 @@ public class TextFormatter
 	 * @param bytes The values to convert.
 	 * @return A lowercase string with hexadecimal digits, each pair representing a byte in the byte array.
 	 */
-	public static String formatHex(final byte[] bytes) //TODO make generic to allow different bases 
-	{
-		try
-		{
+	public static String formatHex(final byte[] bytes) { //TODO make generic to allow different bases 
+		try {
 			return formatHex(new StringBuilder(), bytes).toString();
-		}
-		catch(final IOException ioException)
-		{
+		} catch(final IOException ioException) {
 			throw unexpected(ioException);
 		}
 	}
@@ -80,8 +73,7 @@ public class TextFormatter
 	 * @see Object#toString()
 	 * @see Characters#COMMA_CHAR
 	 */
-	public static <A extends Appendable, T> A formatList(final A appendable, final Iterable<T> items) throws IOException
-	{
+	public static <A extends Appendable, T> A formatList(final A appendable, final Iterable<T> items) throws IOException {
 		return formatList(appendable, COMMA_CHAR, items);
 	}
 
@@ -95,14 +87,10 @@ public class TextFormatter
 	 * @see Object#toString()
 	 * @see Characters#COMMA_CHAR
 	 */
-	public static <T> String formatList(final Iterable<T> items)
-	{
-		try
-		{
+	public static <T> String formatList(final Iterable<T> items) {
+		try {
 			return formatList(new StringBuilder(), items).toString();
-		}
-		catch(final IOException ioException)
-		{
+		} catch(final IOException ioException) {
 			throw unexpected(ioException);
 		}
 	}
@@ -118,17 +106,14 @@ public class TextFormatter
 	 * @throws IOException if there is an error writing to the appendable.
 	 * @see Object#toString()
 	 */
-	public static <A extends Appendable, T> A formatList(final A appendable, final char separator, final Iterable<T> items) throws IOException
-	{
+	public static <A extends Appendable, T> A formatList(final A appendable, final char separator, final Iterable<T> items) throws IOException {
 		final Iterator<T> iterator = items.iterator();
 		boolean hasNext = iterator.hasNext();
-		while(hasNext)
-		{
+		while(hasNext) {
 			final T object = iterator.next();
 			appendable.append(Objects.toString(object)); //append the item
 			hasNext = iterator.hasNext();
-			if(separator != UNDEFINED_CHAR && hasNext) //if we have a separator and there is another item
-			{
+			if(separator != UNDEFINED_CHAR && hasNext) { //if we have a separator and there is another item
 				appendable.append(separator); //append the separator
 			}
 		}
@@ -144,14 +129,10 @@ public class TextFormatter
 	 * @return The string containing the formatted list.
 	 * @see Object#toString()
 	 */
-	public static <T> String formatList(final char separator, final Iterable<T> items)
-	{
-		try
-		{
+	public static <T> String formatList(final char separator, final Iterable<T> items) {
+		try {
 			return formatList(new StringBuilder(), separator, items).toString();
-		}
-		catch(final IOException ioException)
-		{
+		} catch(final IOException ioException) {
 			throw unexpected(ioException);
 		}
 	}
@@ -167,17 +148,14 @@ public class TextFormatter
 	 * @throws IOException if there is an error writing to the appendable.
 	 * @see Object#toString()
 	 */
-	public static <A extends Appendable, T> A formatList(final A appendable, final String separator, final Iterable<T> items) throws IOException
-	{
+	public static <A extends Appendable, T> A formatList(final A appendable, final String separator, final Iterable<T> items) throws IOException {
 		final Iterator<T> iterator = items.iterator();
 		boolean hasNext = iterator.hasNext();
-		while(hasNext)
-		{
+		while(hasNext) {
 			final T object = iterator.next();
 			appendable.append(Objects.toString(object)); //append the item
 			hasNext = iterator.hasNext();
-			if(separator != null && hasNext) //if we have a separator and there is another item
-			{
+			if(separator != null && hasNext) { //if we have a separator and there is another item
 				appendable.append(separator); //append the separator
 			}
 		}
@@ -193,14 +171,10 @@ public class TextFormatter
 	 * @return The string containing the formatted list.
 	 * @see Object#toString()
 	 */
-	public static <T> String formatList(final String separator, final Iterable<T> items)
-	{
-		try
-		{
+	public static <T> String formatList(final String separator, final Iterable<T> items) {
+		try {
 			return formatList(new StringBuilder(), separator, items).toString();
-		}
-		catch(final IOException ioException)
-		{
+		} catch(final IOException ioException) {
 			throw unexpected(ioException);
 		}
 	}
@@ -215,8 +189,7 @@ public class TextFormatter
 	 * @throws IOException if there is an error writing to the appendable.
 	 * @see Object#toString()
 	 */
-	public static <A extends Appendable> A formatList(final A appendable, final char separator, final Object... items) throws IOException
-	{
+	public static <A extends Appendable> A formatList(final A appendable, final char separator, final Object... items) throws IOException {
 		return formatList(appendable, items, separator, null);
 	}
 
@@ -230,8 +203,7 @@ public class TextFormatter
 	 * @see Object#toString()
 	 * @see Characters#COMMA_CHAR
 	 */
-	public static <A extends Appendable> A formatList(final A appendable, final Object... items) throws IOException
-	{
+	public static <A extends Appendable> A formatList(final A appendable, final Object... items) throws IOException {
 		return formatList(appendable, COMMA_CHAR, items);
 	}
 
@@ -265,14 +237,10 @@ public class TextFormatter
 	 * @return The string containing the formatted list.
 	 * @see Object#toString()
 	 */
-	public static String formatList(final char separator, final Object... items)
-	{
-		try
-		{
+	public static String formatList(final char separator, final Object... items) {
+		try {
 			return formatList(new StringBuilder(), separator, items).toString();
-		}
-		catch(final IOException ioException)
-		{
+		} catch(final IOException ioException) {
 			throw unexpected(ioException);
 		}
 	}
@@ -289,17 +257,13 @@ public class TextFormatter
 	 * @throws IOException if there is an error writing to the appendable.
 	 * @see Object#toString()
 	 */
-	public static <A extends Appendable, T> A formatList(final A appendable, final T[] items, final char separator, final T ignoreItem) throws IOException
-	{
+	public static <A extends Appendable, T> A formatList(final A appendable, final T[] items, final char separator, final T ignoreItem) throws IOException {
 		int appendedItemCount = 0;
-		for(final T item : items) //for each item
-		{
-			if(ignoreItem != null && item == ignoreItem) //ignore certain items if requested 
-			{
+		for(final T item : items) { //for each item
+			if(ignoreItem != null && item == ignoreItem) { //ignore certain items if requested 
 				continue;
 			}
-			if(appendedItemCount > 0 && separator != UNDEFINED_CHAR) //if we have already appended items and we have a separator
-			{
+			if(appendedItemCount > 0 && separator != UNDEFINED_CHAR) { //if we have already appended items and we have a separator
 				appendable.append(separator); //append the separator
 			}
 			appendable.append(Objects.toString(item)); //append the item
@@ -318,14 +282,10 @@ public class TextFormatter
 	 * @return The string containing the new information.
 	 * @see Object#toString()
 	 */
-	public static <T> String formatList(final T[] items, final char separator, final T ignoreItem)
-	{
-		try
-		{
+	public static <T> String formatList(final T[] items, final char separator, final T ignoreItem) {
+		try {
 			return formatList(new StringBuilder(), items, separator, ignoreItem).toString();
-		}
-		catch(final IOException ioException)
-		{
+		} catch(final IOException ioException) {
 			throw unexpected(ioException);
 		}
 	}
@@ -340,8 +300,7 @@ public class TextFormatter
 	 * @throws IOException if there is an error writing to the appendable.
 	 * @see Object#toString()
 	 */
-	public static <A extends Appendable> A formatList(final A appendable, final String separator, final Object... items) throws IOException
-	{
+	public static <A extends Appendable> A formatList(final A appendable, final String separator, final Object... items) throws IOException {
 		return formatList(appendable, items, separator, null);
 	}
 
@@ -353,14 +312,10 @@ public class TextFormatter
 	 * @return The string containing the formatted list.
 	 * @see Object#toString()
 	 */
-	public static String formatList(final String separator, final Object... items)
-	{
-		try
-		{
+	public static String formatList(final String separator, final Object... items) {
+		try {
 			return formatList(new StringBuilder(), separator, items).toString();
-		}
-		catch(final IOException ioException)
-		{
+		} catch(final IOException ioException) {
 			throw unexpected(ioException);
 		}
 	}
@@ -377,17 +332,13 @@ public class TextFormatter
 	 * @throws IOException if there is an error writing to the appendable.
 	 * @see Object#toString()
 	 */
-	public static <A extends Appendable, T> A formatList(final A appendable, final T[] items, final String separator, final T ignoreItem) throws IOException
-	{
+	public static <A extends Appendable, T> A formatList(final A appendable, final T[] items, final String separator, final T ignoreItem) throws IOException {
 		int appendedItemCount = 0;
-		for(final T item : items) //for each item
-		{
-			if(ignoreItem != null && item == ignoreItem) //ignore certain items if requested 
-			{
+		for(final T item : items) { //for each item
+			if(ignoreItem != null && item == ignoreItem) { //ignore certain items if requested 
 				continue;
 			}
-			if(appendedItemCount > 0 && separator != null) //if we have already appended items and we have a separator
-			{
+			if(appendedItemCount > 0 && separator != null) { //if we have already appended items and we have a separator
 				appendable.append(separator); //append the separator
 			}
 			appendable.append(Objects.toString(item)); //append the item
@@ -404,8 +355,7 @@ public class TextFormatter
 	 * @return The appendable used for formatting.
 	 * @throws IOException if there is an error writing to the appendable.
 	 */
-	public static <A extends Appendable> A formatAttribute(final A appendable, final Map.Entry<?, ?> attribute) throws IOException
-	{
+	public static <A extends Appendable> A formatAttribute(final A appendable, final Map.Entry<?, ?> attribute) throws IOException {
 		return formatAttribute(appendable, attribute, QUOTATION_MARK_CHAR);
 	}
 
@@ -417,8 +367,7 @@ public class TextFormatter
 	 * @return The appendable used for formatting.
 	 * @throws IOException if there is an error writing to the appendable.
 	 */
-	public static <A extends Appendable> A formatAttribute(final A appendable, final Map.Entry<?, ?> attribute, final char quote) throws IOException
-	{
+	public static <A extends Appendable> A formatAttribute(final A appendable, final Map.Entry<?, ?> attribute, final char quote) throws IOException {
 		return formatAttribute(appendable, attribute, EQUALS_SIGN_CHAR, quote);
 	}
 
@@ -432,8 +381,7 @@ public class TextFormatter
 	 * @throws IOException if there is an error writing to the appendable.
 	 */
 	public static <A extends Appendable> A formatAttribute(final A appendable, final Map.Entry<?, ?> attribute, final char assignment, final char quote)
-			throws IOException
-	{
+			throws IOException {
 		return formatAttribute(appendable, attribute.getKey(), attribute.getValue(), assignment, quote);
 	}
 
@@ -445,8 +393,7 @@ public class TextFormatter
 	 * @return The appendable used for formatting.
 	 * @throws IOException if there is an error writing to the appendable.
 	 */
-	public static <A extends Appendable> A formatAttribute(final A appendable, final NameValuePair<?, ?> attribute) throws IOException
-	{
+	public static <A extends Appendable> A formatAttribute(final A appendable, final NameValuePair<?, ?> attribute) throws IOException {
 		return formatAttribute(appendable, attribute, QUOTATION_MARK_CHAR);
 	}
 
@@ -458,8 +405,7 @@ public class TextFormatter
 	 * @return The appendable used for formatting.
 	 * @throws IOException if there is an error writing to the appendable.
 	 */
-	public static <A extends Appendable> A formatAttribute(final A appendable, final NameValuePair<?, ?> attribute, final char quote) throws IOException
-	{
+	public static <A extends Appendable> A formatAttribute(final A appendable, final NameValuePair<?, ?> attribute, final char quote) throws IOException {
 		return formatAttribute(appendable, attribute, EQUALS_SIGN_CHAR, quote);
 	}
 
@@ -473,8 +419,7 @@ public class TextFormatter
 	 * @throws IOException if there is an error writing to the appendable.
 	 */
 	public static <A extends Appendable> A formatAttribute(final A appendable, final NameValuePair<?, ?> attribute, final char assignment, final char quote)
-			throws IOException
-	{
+			throws IOException {
 		return formatAttribute(appendable, attribute.getName(), attribute.getValue(), assignment, quote);
 	}
 
@@ -487,8 +432,7 @@ public class TextFormatter
 	 * @return The appendable used for formatting.
 	 * @throws IOException if there is an error writing to the appendable.
 	 */
-	public static <A extends Appendable> A formatAttribute(final A appendable, final Object name, final Object value) throws IOException
-	{
+	public static <A extends Appendable> A formatAttribute(final A appendable, final Object name, final Object value) throws IOException {
 		return formatAttribute(appendable, name, value, QUOTATION_MARK_CHAR);
 	}
 
@@ -501,8 +445,7 @@ public class TextFormatter
 	 * @return The appendable used for formatting.
 	 * @throws IOException if there is an error writing to the appendable.
 	 */
-	public static <A extends Appendable> A formatAttribute(final A appendable, final Object name, final Object value, final char quote) throws IOException
-	{
+	public static <A extends Appendable> A formatAttribute(final A appendable, final Object name, final Object value, final char quote) throws IOException {
 		return formatAttribute(appendable, name, value, EQUALS_SIGN_CHAR, quote);
 	}
 
@@ -517,17 +460,14 @@ public class TextFormatter
 	 * @throws IOException if there is an error writing to the appendable.
 	 */
 	public static <A extends Appendable> A formatAttribute(final A appendable, final Object name, final Object value, final char assignment, final char quote)
-			throws IOException
-	{
+			throws IOException {
 		appendable.append(Objects.toString(name)); //name
 		appendable.append(assignment); //=
-		if(quote != UNDEFINED_CHAR) //if the attribute value is quoted
-		{
+		if(quote != UNDEFINED_CHAR) { //if the attribute value is quoted
 			appendable.append(quote); //"
 		}
 		appendable.append(Objects.toString(value)); //value
-		if(quote != UNDEFINED_CHAR) //if the attribute value is quoted
-		{
+		if(quote != UNDEFINED_CHAR) { //if the attribute value is quoted
 			appendable.append(quote); //"
 		}
 		return appendable; //return the appendable we used
@@ -540,8 +480,7 @@ public class TextFormatter
 	 * @return The appendable used for formatting.
 	 * @throws IOException if there is an error writing to the appendable.
 	 */
-	public static <A extends Appendable> A formatAttributes(final A appendable, final NameValuePair<?, ?>... attributes) throws IOException
-	{
+	public static <A extends Appendable> A formatAttributes(final A appendable, final NameValuePair<?, ?>... attributes) throws IOException {
 		return formatAttributes(appendable, COMMA_CHAR, EQUALS_SIGN_CHAR, QUOTATION_MARK_CHAR, emptySet(), attributes); //format the attributes using the standard formatting characters
 	}
 
@@ -557,13 +496,10 @@ public class TextFormatter
 	 * @throws IOException if there is an error writing to the appendable.
 	 */
 	public static <A extends Appendable> A formatAttributes(final A appendable, final char separator, final char assignment, final char quote,
-			final Set<?> unquotedNames, final NameValuePair<?, ?>... attributes) throws IOException
-	{
+			final Set<?> unquotedNames, final NameValuePair<?, ?>... attributes) throws IOException {
 		int appendedItemCount = 0;
-		for(final NameValuePair<?, ?> attribute : attributes) //for each attribute
-		{
-			if(appendedItemCount > 0 && separator != UNDEFINED_CHAR) //if we have already appended items and we have a separator
-			{
+		for(final NameValuePair<?, ?> attribute : attributes) { //for each attribute
+			if(appendedItemCount > 0 && separator != UNDEFINED_CHAR) { //if we have already appended items and we have a separator
 				appendable.append(separator); //append a separator
 			}
 			final Object name = attribute.getName(); //get the attribute name

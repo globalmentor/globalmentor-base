@@ -29,11 +29,9 @@ import com.globalmentor.text.Case;
  * @author Garret Wilson
  * @see Strings
  */
-public class StringBuilders
-{
+public class StringBuilders {
 
-	private StringBuilders()
-	{
+	private StringBuilders() {
 	}
 
 	/**
@@ -44,10 +42,8 @@ public class StringBuilders
 	 * @return The string builder containing the new information.
 	 * @see StringBuilder#append(Object)
 	 */
-	public static StringBuilder append(final StringBuilder stringBuilder, final Object... objects)
-	{
-		for(final Object object : objects) //for each object
-		{
+	public static StringBuilder append(final StringBuilder stringBuilder, final Object... objects) {
+		for(final Object object : objects) { //for each object
 			stringBuilder.append(object); //append this object
 		}
 		return stringBuilder; //return the string builder object
@@ -60,8 +56,7 @@ public class StringBuilders
 	 * @return The string builder containing the new information.
 	 * @throws NullPointerException if the given character sequences is <code>null</code>.
 	 */
-	public static StringBuilder append(final StringBuilder stringBuilder, final CharSequence... charSequences)
-	{
+	public static StringBuilder append(final StringBuilder stringBuilder, final CharSequence... charSequences) {
 		return append(stringBuilder, UNDEFINED_CHAR, charSequences);
 	}
 
@@ -74,16 +69,12 @@ public class StringBuilders
 	 * @return The string builder containing the new information.
 	 * @throws NullPointerException if the given string builder and/or character sequences is <code>null</code>.
 	 */
-	public static StringBuilder append(final StringBuilder stringBuilder, final char delimiter, final CharSequence... charSequences)
-	{
+	public static StringBuilder append(final StringBuilder stringBuilder, final char delimiter, final CharSequence... charSequences) {
 		final int length = charSequences.length; //find out how many character sequences there are
-		if(length > 0) //if there are any character sequences
-		{
-			for(final CharSequence charSequence : charSequences) //for each character sequence
-			{
+		if(length > 0) { //if there are any character sequences
+			for(final CharSequence charSequence : charSequences) { //for each character sequence
 				stringBuilder.append(charSequence); //append this character sequence
-				if(delimiter != UNDEFINED_CHAR) //if we have a delimiter
-				{
+				if(delimiter != UNDEFINED_CHAR) { //if we have a delimiter
 					stringBuilder.append(delimiter); //append the given delimiter
 				}
 			}
@@ -99,8 +90,7 @@ public class StringBuilders
 	 * @param count The number of repetitions of the character.
 	 * @return The string builder with the appended repetitions of the character.
 	 */
-	public static StringBuilder append(final StringBuilder stringBuilder, final char character, int count)
-	{
+	public static StringBuilder append(final StringBuilder stringBuilder, final char character, int count) {
 		insert(stringBuilder, stringBuilder.length(), character, count); //insert the characters at the end of the string builder
 		return stringBuilder; //return the string builder object
 	}
@@ -111,8 +101,7 @@ public class StringBuilders
 	 * @param charSequence The character sequence for which a string builder should be returned.
 	 * @return A string builder with the contents of the given character sequence.
 	 */
-	public static StringBuilder asStringBuilder(final CharSequence charSequence)
-	{
+	public static StringBuilder asStringBuilder(final CharSequence charSequence) {
 		return charSequence instanceof StringBuilder ? (StringBuilder)charSequence : new StringBuilder(charSequence); //return a new or existing string builder
 	}
 
@@ -123,18 +112,12 @@ public class StringBuilders
 	 * @return The string builder.
 	 * @throws NullPointerException if the given string builder is <code>null</code>.
 	 */
-	public static StringBuilder appendChar(final StringBuilder stringBuilder, final int c)
-	{
-		if(Character.isSupplementaryCodePoint(c)) //if this is a supplementary code point
-		{
-			for(final char surrogate : Character.toChars(c)) //add each surrogate
-			{
+	public static StringBuilder appendChar(final StringBuilder stringBuilder, final int c) {
+		if(Character.isSupplementaryCodePoint(c)) { //if this is a supplementary code point
+			for(final char surrogate : Character.toChars(c)) { //add each surrogate
 				stringBuilder.append(surrogate);
 			}
-		}
-		else
-		//if this is not a supplementary code point
-		{
+		} else { //if this is not a supplementary code point
 			stringBuilder.append((char)c); //append the character normally
 		}
 		return stringBuilder;
@@ -145,8 +128,7 @@ public class StringBuilders
 	 * @param stringBuilder The string builder the content of which should be cleared.
 	 * @return The string builder after all content is removed.
 	 */
-	public static StringBuilder clear(final StringBuilder stringBuilder)
-	{
+	public static StringBuilder clear(final StringBuilder stringBuilder) {
 		return stringBuilder.delete(0, stringBuilder.length()); //delete all characters in the string builder
 	}
 
@@ -159,8 +141,7 @@ public class StringBuilders
 	 * @return The string builder with the inserted repetitions of the character.
 	 * @throws StringIndexOutOfBoundsException if the index is negative or greater than the length.
 	 */
-	public static StringBuilder insert(final StringBuilder stringBuilder, final int offset, final char character, final int count)
-	{
+	public static StringBuilder insert(final StringBuilder stringBuilder, final int offset, final char character, final int count) {
 		final char[] buffer = new char[count]; //create a new array of characters
 		for(int i = count - 1; i >= 0; buffer[i--] = character)
 			; //fill the buffer with the specified character
@@ -176,17 +157,12 @@ public class StringBuilders
 	 * @throws IndexOutOfBoundsException if the given destination index is outside the bounds of the string builder.
 	 * @see StringBuilder#insert(int, java.lang.CharSequence)
 	 */
-	public static StringBuilder insert(final StringBuilder stringBuilder, final int offset, CharSequence charSequence)
-	{
+	public static StringBuilder insert(final StringBuilder stringBuilder, final int offset, CharSequence charSequence) {
 		if(charSequence == null) //if the character sequence is null
 			charSequence = "null"; //replace it with the string "null"
-		if(charSequence instanceof String) //if the character sequence is a string
-		{
+		if(charSequence instanceof String) { //if the character sequence is a string
 			return stringBuilder.insert(offset, (String)charSequence); //use the already-made string insertion method
-		}
-		else
-		//if the character sequence is not a string
-		{
+		} else { //if the character sequence is not a string
 			//TODO fix full non-JDK 1.5 support
 			return stringBuilder.insert(offset, charSequence, 0, charSequence.length()); //insert the character sequence into the string builder
 		}
@@ -199,8 +175,7 @@ public class StringBuilders
 	 * @param replaceString The string which will replace the collapseChars.
 	 * @return The new length of the run with collapsed characters.
 	 */
-	public static int collapse(final StringBuilder stringBuilder, final Characters collapseChars, final String replaceString)
-	{
+	public static int collapse(final StringBuilder stringBuilder, final Characters collapseChars, final String replaceString) {
 		return collapse(stringBuilder, collapseChars, replaceString, 0); //collapse the entire string builder
 	}
 
@@ -212,8 +187,7 @@ public class StringBuilders
 	 * @param offset The offset at which to start collapsing.
 	 * @return The new length of the run with collapsed characters.
 	 */
-	public static int collapse(final StringBuilder stringBuilder, final Characters collapseChars, final String replaceString, final int offset)
-	{
+	public static int collapse(final StringBuilder stringBuilder, final Characters collapseChars, final String replaceString, final int offset) {
 		return collapse(stringBuilder, collapseChars, replaceString, offset, stringBuilder.length()); //collapse the rest of the string builder
 	}
 
@@ -226,28 +200,21 @@ public class StringBuilders
 	 * @param length The length of the run of characters to check.
 	 * @return The new length of the run with collapsed characters.
 	 */
-	public static int collapse(final StringBuilder stringBuilder, final Characters collapseChars, final String replaceString, final int offset, final int length)
-	{
+	public static int collapse(final StringBuilder stringBuilder, final Characters collapseChars, final String replaceString, final int offset, final int length) {
 		final int replaceLength = replaceString.length(); //find the length of the replacement string
 		int nextIndex = offset; //start at the requested offset
 		int newLength = length; //find out the resulting length; this will change as we collapse characters
-		while(nextIndex < newLength) //keep going until we reach the endpoint
-		{
-			if(collapseChars.contains(stringBuilder.charAt(nextIndex))) //if this character is one of our remove characters
-			{
+		while(nextIndex < newLength) { //keep going until we reach the endpoint
+			if(collapseChars.contains(stringBuilder.charAt(nextIndex))) { //if this character is one of our remove characters
 				//TODO del Log.trace("found collapse character at index: ", nextIndex);  //TODO del
 				int removeEnd = nextIndex + 1; //start looking at the next character to see how long this run is
-				while(removeEnd < stringBuilder.length() && collapseChars.contains(stringBuilder.charAt(removeEnd))) //while we still have more characters, and the characters we're finding are characters to remove
-				{
+				while(removeEnd < stringBuilder.length() && collapseChars.contains(stringBuilder.charAt(removeEnd))) { //while we still have more characters, and the characters we're finding are characters to remove
 					++removeEnd;
 				}
 				stringBuilder.replace(nextIndex, removeEnd, replaceString); //replace our characters with the given string
 				newLength += replaceLength - (removeEnd - nextIndex); //find out how much the string changed and add this to our length
 				nextIndex += replaceLength; //move to the position after the replacement string
-			}
-			else
-			//if this is not a character to replace
-			{
+			} else { //if this is not a character to replace
 				++nextIndex; //look at the next character in the string
 			}
 		}
@@ -260,8 +227,7 @@ public class StringBuilders
 	 * @throws NullPointerException if the given string builder is <code>null</code>.
 	 * @throws StringIndexOutOfBoundsException if the given string builder has no characters.
 	 */
-	public static void deleteEnd(final StringBuilder stringBuilder)
-	{
+	public static void deleteEnd(final StringBuilder stringBuilder) {
 		stringBuilder.deleteCharAt(stringBuilder.length() - 1); //remove the last character
 	}
 
@@ -272,8 +238,7 @@ public class StringBuilders
 	 * @throws IllegalArgumentException if the given string builder has insuficient characters.
 	 * @throws StringIndexOutOfBoundsException if the given string builder is <code>null</code>.
 	 */
-	public static void deleteEnd(final StringBuilder stringBuilder, final int count)
-	{
+	public static void deleteEnd(final StringBuilder stringBuilder, final int count) {
 		final int length = stringBuilder.length(); //get the length of the string builder
 		stringBuilder.delete(length - count, length); //remove the last character
 	}
@@ -297,8 +262,7 @@ public class StringBuilders
 	 * @throws IllegalArgumentException if neither valid nor invalid characters are given.
 	 */
 	public static StringBuilder escapeHex(final StringBuilder stringBuilder, final Characters validCharacters, final Characters invalidCharacters,
-			final int maxCharacter, final char escapeChar, final int escapeLength, final Case hexCase)
-	{
+			final int maxCharacter, final char escapeChar, final int escapeLength, final Case hexCase) {
 		return escapeHex(stringBuilder, 0, stringBuilder.length(), validCharacters, invalidCharacters, maxCharacter, escapeChar, escapeLength, hexCase); //start at the beginning
 	}
 
@@ -322,8 +286,7 @@ public class StringBuilders
 	 * @throws IllegalArgumentException if neither valid nor invalid characters are given.
 	 */
 	public static StringBuilder escapeHex(final StringBuilder stringBuilder, final int start, final Characters validCharacters,
-			final Characters invalidCharacters, final int maxCharacter, final char escapeChar, final int escapeLength, final Case hexCase) //go to the end
-	{
+			final Characters invalidCharacters, final int maxCharacter, final char escapeChar, final int escapeLength, final Case hexCase) { //go to the end
 		return escapeHex(stringBuilder, start, stringBuilder.length(), validCharacters, invalidCharacters, maxCharacter, escapeChar, escapeLength, hexCase);
 	}
 
@@ -348,16 +311,13 @@ public class StringBuilders
 	 * @throws IllegalArgumentException if neither valid nor invalid characters are given.
 	 */
 	public static StringBuilder escapeHex(final StringBuilder stringBuilder, final int start, final int end, final Characters validCharacters,
-			final Characters invalidCharacters, final int maxCharacter, final char escapeChar, final int escapeLength, final Case hexCase)
-	{
-		for(int characterIndex = end - 1; characterIndex >= start; --characterIndex) //work backwards; this keeps us from having a separate variable for the length, but it also makes it simpler to calculate the next position when we swap out characters
-		{
+			final Characters invalidCharacters, final int maxCharacter, final char escapeChar, final int escapeLength, final Case hexCase) {
+		for(int characterIndex = end - 1; characterIndex >= start; --characterIndex) { //work backwards; this keeps us from having a separate variable for the length, but it also makes it simpler to calculate the next position when we swap out characters
 			final char c = stringBuilder.charAt(characterIndex); //get the current character
 			final boolean encode = (validCharacters != null && !validCharacters.contains(c)) //encode if there is a list of valid characters and this character is not one of them
 					|| (invalidCharacters != null && invalidCharacters.contains(c)) //encode if there is a list of invalid characters and this character is one of them
 					|| (c > maxCharacter); //encode the character if it is past the given upper bound
-			if(encode) //if this a character to escape
-			{
+			if(encode) { //if this a character to escape
 				escapeHex(stringBuilder, characterIndex, c, escapeChar, escapeLength, hexCase); //escape this character in the sequence
 			}
 		}
@@ -375,8 +335,7 @@ public class StringBuilders
 	 * @return A string representing the escaped data that was used as a replacement for the character.
 	 * @throws StringIndexOutOfBoundsException if the given index does not represent a valid location in the string builder.
 	 */
-	public static String escapeHex(final StringBuilder stringBuilder, final int index, final char escapeChar, final int escapeLength)
-	{
+	public static String escapeHex(final StringBuilder stringBuilder, final int index, final char escapeChar, final int escapeLength) {
 		return escapeHex(stringBuilder, index, escapeChar, escapeLength, Case.LOWERCASE);
 	}
 
@@ -391,8 +350,7 @@ public class StringBuilders
 	 * @return A string representing the escaped data that was used as a replacement for the character.
 	 * @throws StringIndexOutOfBoundsException if the given index does not represent a valid location in the string builder.
 	 */
-	public static String escapeHex(final StringBuilder stringBuilder, final int index, final char escapeChar, final int escapeLength, final Case hexCase)
-	{
+	public static String escapeHex(final StringBuilder stringBuilder, final int index, final char escapeChar, final int escapeLength, final Case hexCase) {
 		return escapeHex(stringBuilder, index, stringBuilder.charAt(index), escapeChar, escapeLength, hexCase);
 	}
 
@@ -409,13 +367,11 @@ public class StringBuilders
 	 * @throws StringIndexOutOfBoundsException if the given index does not represent a valid location in the string builder.
 	 */
 	public static String escapeHex(final StringBuilder stringBuilder, final int index, final char c, final char escapeChar, final int escapeLength,
-			final Case hexCase)
-	{
+			final Case hexCase) {
 		final byte[] bytes = String.valueOf(c).getBytes(UTF_8_CHARSET); //convert this character to a sequence of UTF-8 bytes
 		final int byteCount = bytes.length; //find out how many bytes there are
 		final StringBuilder encodeStringBuilder = new StringBuilder(byteCount * 3); //create a string builder to hold three characters for each byte we have (the escape character plus a two-digit encoded value)
-		for(int byteIndex = 0; byteIndex < byteCount; ++byteIndex) //look at each byte
-		{
+		for(int byteIndex = 0; byteIndex < byteCount; ++byteIndex) { //look at each byte
 			encodeStringBuilder.append(escapeChar); //escape character
 			encodeStringBuilder.append(Integers.toHexString(bytes[byteIndex], escapeLength, hexCase)); //hh or HH
 		}
@@ -432,15 +388,12 @@ public class StringBuilders
 	 * @throws NullPointerException if the given string builder is <code>null</code>.
 	 * @throws IllegalArgumentException if the string builder ends with the given escape character.
 	 */
-	public static StringBuilder unescape(final StringBuilder stringBuilder, final char escapeChar)
-	{
-		if(endsWith(stringBuilder, escapeChar)) //if the string builder ends with the escape character (check now so that we don't have to check with each match)
-		{
+	public static StringBuilder unescape(final StringBuilder stringBuilder, final char escapeChar) {
+		if(endsWith(stringBuilder, escapeChar)) { //if the string builder ends with the escape character (check now so that we don't have to check with each match)
 			throw new IllegalArgumentException("String builder  must not end with the escape character.");
 		}
 		int matchIndex = indexOf(stringBuilder, escapeChar, 0); //find the first match character
-		while(matchIndex >= 0) //while there are more matches of the escape character (we know that this isn't the last character in the string, because we already checked to make sure the string doesn't end with the escape character)
-		{
+		while(matchIndex >= 0) { //while there are more matches of the escape character (we know that this isn't the last character in the string, because we already checked to make sure the string doesn't end with the escape character)
 			stringBuilder.deleteCharAt(matchIndex); //delete the escape character
 			matchIndex = indexOf(stringBuilder, escapeChar, matchIndex + 1); //find the next match character, ignoring the following character which is now at the current match position
 		}
@@ -455,8 +408,7 @@ public class StringBuilders
 	 * @param character The character to be added to the character sequence, if needed.
 	 * @return A character sequence that is the requested number of characters longer.
 	 */
-	public static StringBuilder appendForceLength(final StringBuilder stringBuilder, final CharSequence charSequence, final int forceLength, final char character)
-	{
+	public static StringBuilder appendForceLength(final StringBuilder stringBuilder, final CharSequence charSequence, final int forceLength, final char character) {
 		return appendForceLength(stringBuilder, charSequence, forceLength, character, -1);
 	}
 
@@ -471,45 +423,31 @@ public class StringBuilders
 	 * @return A character sequence that is the requested number of characters longer.
 	 */
 	public static StringBuilder appendForceLength(final StringBuilder stringBuilder, final CharSequence charSequence, final int forceLength,
-			final char character, int position)
-	{
+			final char character, int position) {
 		final int originalLength = charSequence.length(); //get the length of the original string
-		if(originalLength == forceLength) //if the string is already the correct length
-		{
+		if(originalLength == forceLength) { //if the string is already the correct length
 			stringBuilder.append(charSequence); //append it as it is
-		}
-		else
-		//if we need to make changes
-		{
-			if(position == -1) //if they want to insert/delete characters at the end of the string
-			{
+		} else { //if we need to make changes
+			if(position == -1) { //if they want to insert/delete characters at the end of the string
 				position = originalLength; //find that position
 			}
 			final int removeEnd;
-			if(originalLength > forceLength) //if the string is too long
-			{
+			if(originalLength > forceLength) { //if the string is too long
 				final int removeCount = originalLength - forceLength; //find out how many characters to remove
-				if(position > originalLength - removeCount) //if our position is too close to the end to successfully remove all characters
-				{
+				if(position > originalLength - removeCount) { //if our position is too close to the end to successfully remove all characters
 					position = originalLength - removeCount; //place our position at just the right place to remove the characters
 				}
 				removeEnd = position + removeCount; //remove the required number of characters
-			}
-			else
-			//if the string is too short
-			{
+			} else { //if the string is too short
 				removeEnd = position; //there is nothing to remove
 			}
-			if(position > 0) //append the first part, if any
-			{
+			if(position > 0) { //append the first part, if any
 				stringBuilder.append(charSequence, 0, position);
 			}
-			if(removeEnd == position) //if nothing is being removed, then we must be adding something
-			{
+			if(removeEnd == position) { //if nothing is being removed, then we must be adding something
 				append(stringBuilder, character, forceLength - originalLength); //append the needed padding characters
 			}
-			if(removeEnd < originalLength) //if there are remaining characters
-			{
+			if(removeEnd < originalLength) { //if there are remaining characters
 				stringBuilder.append(charSequence, removeEnd, originalLength);
 			}
 		}
@@ -522,8 +460,7 @@ public class StringBuilders
 	 * @param c The character to look for.
 	 * @return The index in the string buffer of the given character, or -1 if no occurrence was found.
 	 */
-	public static int indexOf(final StringBuilder stringBuilder, final char c)
-	{
+	public static int indexOf(final StringBuilder stringBuilder, final char c) {
 		return indexOf(stringBuilder, c, 0); //start searching from the beginning
 	}
 
@@ -534,11 +471,9 @@ public class StringBuilders
 	 * @param fromIndex The index at which to start the search.
 	 * @return The index in the string buffer of the given character, or -1 if no occurrence was found.
 	 */
-	public static int indexOf(final StringBuilder stringBuilder, final char c, final int fromIndex) //TODO optimize; this is very inefficient
-	{
+	public static int indexOf(final StringBuilder stringBuilder, final char c, final int fromIndex) { //TODO optimize; this is very inefficient
 		final int length = stringBuilder.length(); //see how many characters are in the string buffer
-		for(int i = fromIndex; i < length; ++i) //look at each character in the string buffer
-		{
+		for(int i = fromIndex; i < length; ++i) { //look at each character in the string buffer
 			if(stringBuilder.charAt(i) == c) //if this character matches the supplied character
 				return i; //return the index at which the character occurs
 		}
@@ -551,8 +486,7 @@ public class StringBuilders
 	 * @param notCharCharacters The characters to check.
 	 * @return The index of the first occurrence of one of the supplied characters, or -1 if none were found.
 	 */
-	public static int notCharIndexOf(final StringBuilder stringBuilder, final Characters notCharCharacters)
-	{
+	public static int notCharIndexOf(final StringBuilder stringBuilder, final Characters notCharCharacters) {
 		return notCharIndexOf(stringBuilder, notCharCharacters, 0); //start looking from the beginning
 	}
 
@@ -562,8 +496,7 @@ public class StringBuilders
 	 * @param c The character to look for.
 	 * @return The index in the string buffer of anything but the given character, or -1 if no non-occurrence was found.
 	 */
-	public static int indexNotOf(final StringBuilder stringBuilder, final char c)
-	{
+	public static int indexNotOf(final StringBuilder stringBuilder, final char c) {
 		return indexNotOf(stringBuilder, c, 0); //start searching from the beginning
 	}
 
@@ -574,11 +507,9 @@ public class StringBuilders
 	 * @param fromIndex The index at which to start the search.
 	 * @return The index in the string buffer of anything but the given character, or -1 if no non-occurrence was found.
 	 */
-	public static int indexNotOf(final StringBuilder stringBuilder, final char c, final int fromIndex)
-	{
+	public static int indexNotOf(final StringBuilder stringBuilder, final char c, final int fromIndex) {
 		final int length = stringBuilder.length(); //see how many characters are in the string buffer
-		for(int i = fromIndex; i < length; ++i) //look at each character in the string buffer
-		{
+		for(int i = fromIndex; i < length; ++i) { //look at each character in the string buffer
 			if(stringBuilder.charAt(i) != c) //if this character doesn't match the supplied character
 				return i; //return the index at which the character occurs
 		}
@@ -592,10 +523,8 @@ public class StringBuilders
 	 * @param fromIndex The index to search from
 	 * @return The index of the first occurrence of one of the supplied characters, or -1 if none were found.
 	 */
-	public static int notCharIndexOf(final StringBuilder stringBuilder, final Characters notCharacters, final int fromIndex)
-	{
-		for(int i = fromIndex; i < stringBuilder.length(); ++i) //look at each character in the string
-		{
+	public static int notCharIndexOf(final StringBuilder stringBuilder, final Characters notCharacters, final int fromIndex) {
+		for(int i = fromIndex; i < stringBuilder.length(); ++i) { //look at each character in the string
 			if(!notCharacters.contains(stringBuilder.charAt(i))) //if this character is not in our character string
 				return i; //return the index we're at
 		}
@@ -608,8 +537,7 @@ public class StringBuilders
 	 * @param delimiters The characters to search for.
 	 * @return The string buffer after removal.
 	 */
-	public static StringBuilder removeFirstCharLength(final StringBuilder stringBuilder, final Characters delimiters)
-	{
+	public static StringBuilder removeFirstCharLength(final StringBuilder stringBuilder, final Characters delimiters) {
 		final int index = CharSequences.charIndexOf(stringBuilder, delimiters); //find the first occurrence of the delimiters
 		if(index >= 0) //if one of the delimiters was found
 			stringBuilder.delete(index, stringBuilder.length()); //remove everything after and including the character
@@ -622,12 +550,9 @@ public class StringBuilders
 	 * @param removeChar The character to remove from the string buffer.
 	 * @return The string buffer after removal.
 	 */
-	public static StringBuilder removeEvery(final StringBuilder stringBuilder, final char removeChar)
-	{
-		for(int i = stringBuilder.length() - 1; i >= 0; --i) //look at each character, from the last to the first
-		{
-			if(stringBuilder.charAt(i) == removeChar) //if we have found a character to remove
-			{
+	public static StringBuilder removeEvery(final StringBuilder stringBuilder, final char removeChar) {
+		for(int i = stringBuilder.length() - 1; i >= 0; --i) { //look at each character, from the last to the first
+			if(stringBuilder.charAt(i) == removeChar) { //if we have found a character to remove
 				stringBuilder.deleteCharAt(i); //delete this character
 			}
 		}
@@ -640,12 +565,9 @@ public class StringBuilders
 	 * @param removeChars The characters to be removed from the string buffer.
 	 * @return The string buffer after removal.
 	 */
-	public static StringBuilder removeEveryChar(final StringBuilder stringBuilder, final String removeChars)
-	{
-		for(int i = stringBuilder.length() - 1; i >= 0; --i) //look at each character, from the last to the first
-		{
-			if(removeChars.indexOf(stringBuilder.charAt(i)) >= 0) //if this character is one of our remove characters
-			{
+	public static StringBuilder removeEveryChar(final StringBuilder stringBuilder, final String removeChars) {
+		for(int i = stringBuilder.length() - 1; i >= 0; --i) { //look at each character, from the last to the first
+			if(removeChars.indexOf(stringBuilder.charAt(i)) >= 0) { //if this character is one of our remove characters
 				stringBuilder.deleteCharAt(i); //delete this character
 			}
 		}
@@ -659,16 +581,13 @@ public class StringBuilders
 	 *          replaced by <code>characterTable[<em>x</em>]</code>).
 	 * @return The number of replacements made.
 	 */
-	public static int replace(final StringBuilder stringBuilder, final char[] conversionTable)
-	{
+	public static int replace(final StringBuilder stringBuilder, final char[] conversionTable) {
 		int replacementCount = 0; //show that we have not yet made any replacements
 		final int conversionTableLength = conversionTable.length; //find out how many characters we recognize
 		//TODO del		final int stringBuilderLength=stringBuilder.length(); //find out how many characters there are to convert
-		for(int i = stringBuilder.length() - 1; i >= 0; --i) //look at each character in the string buffer
-		{
+		for(int i = stringBuilder.length() - 1; i >= 0; --i) { //look at each character in the string buffer
 			final char c = stringBuilder.charAt(i); //get the code of the character candidate for replacement
-			if(c < conversionTableLength) //if this character  has a replacement
-			{
+			if(c < conversionTableLength) { //if this character  has a replacement
 				stringBuilder.setCharAt(i, conversionTable[c]); //replace the character with the one at the index in the lookup table of its character code
 				++replacementCount; //show that we replaced another character
 			}
@@ -683,11 +602,9 @@ public class StringBuilders
 	 *          the second a replacement character.
 	 * @return The number of replacements made.
 	 */
-	public static int replace(final StringBuilder stringBuilder, final char[][] matchReplaceSetArray)
-	{
+	public static int replace(final StringBuilder stringBuilder, final char[][] matchReplaceSetArray) {
 		int replacementCount = 0; //show that we have not replaced any characters, yet
-		for(int matchSetIndex = 0; matchSetIndex < matchReplaceSetArray.length; ++matchSetIndex) //look at every set of match/replace pairs
-		{
+		for(int matchSetIndex = 0; matchSetIndex < matchReplaceSetArray.length; ++matchSetIndex) { //look at every set of match/replace pairs
 			final char matchChar = matchReplaceSetArray[matchSetIndex][0]; //get the match chararacter
 			final char replacementChar = matchReplaceSetArray[matchSetIndex][1]; //get the replacement chararacter
 			replacementCount += replace(stringBuilder, matchChar, replacementChar); //replace every occurrence of this character in the original string, and update our record of how many replacements were made
@@ -702,14 +619,11 @@ public class StringBuilders
 	 * @param replacementChar The character for replacing the match character.
 	 * @return The number of replacements made.
 	 */
-	public static int replace(final StringBuilder stringBuilder, final char matchChar, final char replacementChar)
-	{
+	public static int replace(final StringBuilder stringBuilder, final char matchChar, final char replacementChar) {
 		int replacementCount = 0; //show that we have not replaced any characters, yet
 		final int length = stringBuilder.length(); //get the length of the string buffer
-		for(int i = 0; i < length; ++i) //look at each character in the string buffer
-		{
-			if(matchChar == stringBuilder.charAt(i)) //if this character matches
-			{
+		for(int i = 0; i < length; ++i) { //look at each character in the string buffer
+			if(matchChar == stringBuilder.charAt(i)) { //if this character matches
 				stringBuilder.setCharAt(i, replacementChar); //replace the original character with its replacement
 				++replacementCount; //show that we replaced a character
 			}
@@ -724,23 +638,17 @@ public class StringBuilders
 	 * @param replacementString The string for replacing the match character.
 	 * @return The number of replacements made.
 	 */
-	public static int replace(final StringBuilder stringBuilder, final char matchChar, final String replacementString)
-	{
+	public static int replace(final StringBuilder stringBuilder, final char matchChar, final String replacementString) {
 		int replacementCount = 0; //show that we have not replaced any characters, yet
 		int beginSearchIndex = 0; //we'll start searching from the beginning of the string
 		int nextReplaceIndex; //this will hold the next location of the replaceString each time we search for it
-		while(beginSearchIndex < stringBuilder.length()) //while we haven't examined all the characters
-		{
+		while(beginSearchIndex < stringBuilder.length()) { //while we haven't examined all the characters
 			nextReplaceIndex = indexOf(stringBuilder, matchChar, beginSearchIndex); //search for another occurrence of the character
-			if(nextReplaceIndex >= 0) //if there is another occurrence of the character to replace
-			{
+			if(nextReplaceIndex >= 0) { //if there is another occurrence of the character to replace
 				stringBuilder.replace(nextReplaceIndex, nextReplaceIndex + 1, replacementString); //replace this character with the replacement string
 				beginSearchIndex = nextReplaceIndex + replacementString.length(); //skip over the string we replaced in the input string
 				++replacementCount; //show that we replaced a character
-			}
-			else
-			//if there are no more occurrences of the string to replace
-			{
+			} else { //if there are no more occurrences of the string to replace
 				break; //stop searching for more matches
 			}
 		}
@@ -754,14 +662,11 @@ public class StringBuilders
 	 * @param replacementChar The character for replacing the match characters.
 	 * @return The number of replacements made.
 	 */
-	public static int replace(final StringBuilder stringBuilder, final Characters matchCharacters, final char replacementChar)
-	{
+	public static int replace(final StringBuilder stringBuilder, final Characters matchCharacters, final char replacementChar) {
 		int replacementCount = 0; //show that we have not replaced any characters, yet
 		final int length = stringBuilder.length(); //get the length of the string buffer
-		for(int i = 0; i < length; ++i) //look at each character in the string buffer
-		{
-			if(matchCharacters.contains(stringBuilder.charAt(i))) //if this character matches one of the match characters
-			{
+		for(int i = 0; i < length; ++i) { //look at each character in the string buffer
+			if(matchCharacters.contains(stringBuilder.charAt(i))) { //if this character matches one of the match characters
 				stringBuilder.setCharAt(i, replacementChar); //replace the original character with its replacement
 				++replacementCount; //show that we replaced a character
 			}
@@ -776,23 +681,17 @@ public class StringBuilders
 	 * @param replacementString The string for replacing the match characters.
 	 * @return The number of replacements made.
 	 */
-	public static int replace(final StringBuilder stringBuilder, final Characters matchCharacters, final String replacementString)
-	{
+	public static int replace(final StringBuilder stringBuilder, final Characters matchCharacters, final String replacementString) {
 		int replacementCount = 0; //show that we have not replaced any characters, yet
 		int beginSearchIndex = 0; //we'll start searching from the beginning of the string
 		int nextReplaceIndex; //this will hold the next location of the replaceString each time we search for it
-		while(beginSearchIndex < stringBuilder.length()) //while we haven't examined all the characters
-		{
+		while(beginSearchIndex < stringBuilder.length()) { //while we haven't examined all the characters
 			nextReplaceIndex = charIndexOf(stringBuilder, matchCharacters, beginSearchIndex); //search for another occurrence of the characters
-			if(nextReplaceIndex >= 0) //if there is another occurrence of the character to replace
-			{
+			if(nextReplaceIndex >= 0) { //if there is another occurrence of the character to replace
 				stringBuilder.replace(nextReplaceIndex, nextReplaceIndex + 1, replacementString); //replace this character with the replacement string
 				beginSearchIndex = nextReplaceIndex + replacementString.length(); //skip over the string we replaced in the input string
 				++replacementCount; //show that we replaced a character
-			}
-			else
-			//if there are no more occurrences of the string to replace
-			{
+			} else { //if there are no more occurrences of the string to replace
 				break; //stop searching for more matches
 			}
 		}
@@ -806,34 +705,26 @@ public class StringBuilders
 	 * @param replacementStrings An array of strings to replace the characters appearing at the same indexes as those in <var>matchChars</var>.
 	 * @return The number of replacements made.
 	 */
-	public static int replace(final StringBuilder stringBuilder, final char[] matchChars, final String[] replacementStrings)
-	{
+	public static int replace(final StringBuilder stringBuilder, final char[] matchChars, final String[] replacementStrings) {
 		final int matchCount = matchChars.length; //find out how many match characters there are
 		//we can optimize the process by finding the range of match characters up front, assuming that most characters will not be in the matching character range
 		char minChar = Character.MAX_VALUE; //we'll find the lowest match character 
 		char maxChar = Character.MIN_VALUE; //we'll find the highest match character 
-		for(int matchIndex = matchCount - 1; matchIndex >= 0; --matchIndex) //look at each of the characters to match
-		{
+		for(int matchIndex = matchCount - 1; matchIndex >= 0; --matchIndex) { //look at each of the characters to match
 			final char matchChar = matchChars[matchIndex]; //get this match character
-			if(matchChar < minChar) //if this is a lower character that the lowest
-			{
+			if(matchChar < minChar) { //if this is a lower character that the lowest
 				minChar = matchChar; //this character is the new lowest
 			}
-			if(matchChar > maxChar) //if this is a higher character that the highest
-			{
+			if(matchChar > maxChar) { //if this is a higher character that the highest
 				maxChar = matchChar; //this character is the new highest
 			}
 		}
 		int replacementCount = 0; //show that we have not replaced any characters, yet
-		for(int charIndex = 0; charIndex < stringBuilder.length(); ++charIndex) //look at each character in the string buffer
-		{
+		for(int charIndex = 0; charIndex < stringBuilder.length(); ++charIndex) { //look at each character in the string buffer
 			final char c = stringBuilder.charAt(charIndex); //get this character
-			if(c >= minChar && c <= maxChar) //if this character is within the match range, see if it actually matches
-			{
-				for(int matchIndex = matchCount - 1; matchIndex >= 0; --matchIndex) //look at each of the characters to match
-				{
-					if(c == matchChars[matchIndex]) //if the character matches this match character
-					{
+			if(c >= minChar && c <= maxChar) { //if this character is within the match range, see if it actually matches
+				for(int matchIndex = matchCount - 1; matchIndex >= 0; --matchIndex) { //look at each of the characters to match
+					if(c == matchChars[matchIndex]) { //if the character matches this match character
 						//replace this character with the replacement string
 						stringBuilder.replace(charIndex, charIndex + 1, replacementStrings[matchIndex]);
 						charIndex += replacementStrings[matchIndex].length() - 1; //skip to the last character of the replaced string
@@ -853,23 +744,17 @@ public class StringBuilders
 	 * @param withString The string that will replace replaceString.
 	 * @return The number of replacements made.
 	 */
-	static public int replace(final StringBuilder stringBuilder, final String replaceString, final String withString)
-	{
+	static public int replace(final StringBuilder stringBuilder, final String replaceString, final String withString) {
 		int replacementCount = 0; //show that we have not replaced any characters, yet
 		int beginSearchIndex = 0; //we'll start searching from the beginning of the string
 		int nextReplaceIndex; //this will hold the next location of the replaceString each time we search for it
-		while(beginSearchIndex < stringBuilder.length()) //while we haven't examined all the characters
-		{
+		while(beginSearchIndex < stringBuilder.length()) { //while we haven't examined all the characters
 			nextReplaceIndex = stringBuilder.indexOf(replaceString, beginSearchIndex); //search for another occurrence of the string
-			if(nextReplaceIndex >= 0) //if there is another occurrence of the string to replace
-			{
+			if(nextReplaceIndex >= 0) { //if there is another occurrence of the string to replace
 				stringBuilder.replace(nextReplaceIndex, nextReplaceIndex + replaceString.length(), withString); //replace this string with the replacement string
 				beginSearchIndex = nextReplaceIndex + replaceString.length(); //skip over the string we replaced in the input string
 				++replacementCount; //show that we replaced a character
-			}
-			else
-			//if there are no more occurrences of the string to replace
-			{
+			} else { //if there are no more occurrences of the string to replace
 				break; //stop searching for more matches
 			}
 		}
@@ -887,31 +772,23 @@ public class StringBuilders
 	 * @return The string buffer with all matching character runs replaced.
 	 */
 	public static StringBuilder replaceRuns(final StringBuilder stringBuilder, final char matchChar, final int minRunLength, final int maxRunLength,
-			final char replaceChar)
-	{
+			final char replaceChar) {
 		int nextIndex = 0; //start at the beginning of the string
-		while(nextIndex < stringBuilder.length()) //keep going until we reach the end of the string buffer
-		{
+		while(nextIndex < stringBuilder.length()) { //keep going until we reach the end of the string buffer
 			nextIndex = indexOf(stringBuilder, matchChar, nextIndex); //find the next character match
-			if(nextIndex >= 0) //if we found the character
-			{
+			if(nextIndex >= 0) { //if we found the character
 				int runEndIndex = nextIndex + 1; //we'll use this variable to find the end of the run
 				//advance the runEndIndex until we run out of string buffer or find a non-matching character
 				while(runEndIndex < stringBuilder.length() && stringBuilder.charAt(runEndIndex) == matchChar)
 					++runEndIndex; //keep looking for a non-matching character
 				final int runLength = runEndIndex - nextIndex; //find the length of the run
-				if(runLength >= minRunLength && runLength <= maxRunLength) //if this run size is in our range
-				{
+				if(runLength >= minRunLength && runLength <= maxRunLength) { //if this run size is in our range
 					replace(stringBuilder, nextIndex, runEndIndex, replaceChar); //replace the run with the given character
 					++nextIndex; //skip the character that replaced the run
-				}
-				else
-				//if the run size doesn't meet our criteria
-				{
+				} else { //if the run size doesn't meet our criteria
 					nextIndex = runEndIndex; //skip the run
 				}
-			}
-			else
+			} else
 				//if the character doesn't appear any more in the string
 				break; //stop replacing
 		}
@@ -928,8 +805,7 @@ public class StringBuilders
 	 * @return The string buffer with the specified contents replaced.
 	 * @see StringBuilder#replace
 	 */
-	public static StringBuilder replace(final StringBuilder stringBuilder, final int startIndex, final int endIndex, final char replaceChar)
-	{
+	public static StringBuilder replace(final StringBuilder stringBuilder, final int startIndex, final int endIndex, final char replaceChar) {
 		stringBuilder.setCharAt(startIndex, replaceChar); //replace the character at the starting index
 		if(endIndex - startIndex > 1) //if we're replacing more than one character
 			stringBuilder.delete(startIndex + 1, endIndex); //delete evertything after the starting character up to the end of our replacement section
@@ -942,12 +818,10 @@ public class StringBuilders
 	 * @param string The string to compare.
 	 * @return <code>true</code> if the first characters of the string buffer match those of the given string.
 	 */
-	public static boolean startsWith(final StringBuilder stringBuilder, final String string)
-	{
+	public static boolean startsWith(final StringBuilder stringBuilder, final String string) {
 		if(string.length() > stringBuilder.length()) //if the substring is too long
 			return false; //the substring is too big to start the string buffer
-		for(int i = string.length() - 1; i >= 0; --i) //look at each character of the string
-		{
+		for(int i = string.length() - 1; i >= 0; --i) { //look at each character of the string
 			if(string.charAt(i) != stringBuilder.charAt(i)) //if these characters don't match in the same position
 				return false; //the string doesn't match
 		}
@@ -960,8 +834,7 @@ public class StringBuilders
 	 * @param delimiters The delimiter characters.
 	 * @return The trimmed string buffer.
 	 */
-	public static StringBuilder trim(final StringBuilder stringBuilder, final Characters delimiters)
-	{
+	public static StringBuilder trim(final StringBuilder stringBuilder, final Characters delimiters) {
 		trimBeginning(stringBuilder, delimiters); //trim the beginning of the string builder
 		trimEnd(stringBuilder, delimiters); //trim the end of the string builder
 		return stringBuilder; //return the resulting string buffer
@@ -973,8 +846,7 @@ public class StringBuilders
 	 * @param delimiters The delimiter characters.
 	 * @return The trimmed string buffer.
 	 */
-	public static StringBuilder trimBeginning(final StringBuilder stringBuilder, final Characters delimiters)
-	{
+	public static StringBuilder trimBeginning(final StringBuilder stringBuilder, final Characters delimiters) {
 		int beginIndex;
 		final int length = stringBuilder.length(); //get the length of the original string
 		for(beginIndex = 0; beginIndex < length && delimiters.contains(stringBuilder.charAt(beginIndex)); ++beginIndex)
@@ -990,8 +862,7 @@ public class StringBuilders
 	 * @param delimiter The delimiter character.
 	 * @return The trimmed string buffer.
 	 */
-	public static StringBuilder trimEnd(final StringBuilder stringBuilder, final char delimiter)
-	{
+	public static StringBuilder trimEnd(final StringBuilder stringBuilder, final char delimiter) {
 		int endIndex;
 		final int length = stringBuilder.length(); //get the length of the original string
 		for(endIndex = length; endIndex > 0 && stringBuilder.charAt(endIndex - 1) == delimiter; --endIndex)
@@ -1007,8 +878,7 @@ public class StringBuilders
 	 * @param delimiters The delimiter characters.
 	 * @return The trimmed string buffer.
 	 */
-	public static StringBuilder trimEnd(final StringBuilder stringBuilder, final Characters delimiters)
-	{
+	public static StringBuilder trimEnd(final StringBuilder stringBuilder, final Characters delimiters) {
 		int endIndex;
 		final int length = stringBuilder.length(); //get the length of the original string
 		for(endIndex = length; endIndex > 0 && delimiters.contains(stringBuilder.charAt(endIndex - 1)); --endIndex)

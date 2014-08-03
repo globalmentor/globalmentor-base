@@ -30,15 +30,13 @@ import com.globalmentor.model.Converter;
  * @author Garret Wilson
  * @see Converter
  */
-public class ConverterIterable<I, O> implements Iterable<O>
-{
+public class ConverterIterable<I, O> implements Iterable<O> {
 
 	/** The iterable this class decorates. */
 	private final Iterable<I> iterable;
 
 	/** @return The iterable this class decorates. */
-	protected Iterable<I> getIterable()
-	{
+	protected Iterable<I> getIterable() {
 		return iterable;
 	}
 
@@ -46,8 +44,7 @@ public class ConverterIterable<I, O> implements Iterable<O>
 	private final Converter<I, O> converter;
 
 	/** @return The converter for converting the elements. */
-	public Converter<I, O> getConverter()
-	{
+	public Converter<I, O> getConverter() {
 		return converter;
 	}
 
@@ -56,15 +53,13 @@ public class ConverterIterable<I, O> implements Iterable<O>
 	 * @param iterable The iterable of source objects.
 	 * @throws NullPointerException of if the given iterable and/or converter is <code>null</code>.
 	 */
-	public ConverterIterable(final Iterable<I> iterable, final Converter<I, O> converter)
-	{
+	public ConverterIterable(final Iterable<I> iterable, final Converter<I, O> converter) {
 		this.iterable = checkInstance(iterable);
 		this.converter = checkInstance(converter);
 	}
 
 	@Override
-	public Iterator<O> iterator()
-	{
+	public Iterator<O> iterator() {
 		return new ConverterIterator<I, O>(getIterable().iterator(), converter);
 	}
 

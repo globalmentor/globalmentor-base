@@ -24,16 +24,14 @@ import com.globalmentor.text.*;
  * The class representing an ISO date type. If there is no explicit UTC offset (i.e. this is a floating value), the time is stored internally in terms of UTC.
  * @author Garret Wilson
  */
-public class ISODate extends AbstractISODateTime
-{
+public class ISODate extends AbstractISODateTime {
 
 	/**
 	 * Temporal component constructor.
 	 * @param temporalcomponents The temporal components from which to construct the class.
 	 * @throws NullPointerException if the given temporal components is <code>null</code>.
 	 */
-	protected ISODate(final ISOTemporalComponents temporalComponents)
-	{
+	protected ISODate(final ISOTemporalComponents temporalComponents) {
 		super(temporalComponents, false); //construct the parent class, ignoring the time information
 	}
 
@@ -44,8 +42,7 @@ public class ISODate extends AbstractISODateTime
 	 * @param day The day, 1-31.
 	 * @throws IllegalArgumentException if one of the given arguments is outside the allowed range.
 	 */
-	public ISODate(final int year, final int month, final int day)
-	{
+	public ISODate(final int year, final int month, final int day) {
 		this(new ISOTemporalComponents(year, month, day, -1, -1, -1, -1, 0, 0)); //construct the parent class with only a date in UTC
 	}
 
@@ -56,8 +53,7 @@ public class ISODate extends AbstractISODateTime
 	 *          zone.
 	 * @throws NullPointerException if the given calendar is <code>null</code>.
 	 */
-	public ISODate(final GregorianCalendar calendar)
-	{
+	public ISODate(final GregorianCalendar calendar) {
 		this(calendar.getTime(), calendar.getTimeZone());
 	}
 
@@ -66,8 +62,7 @@ public class ISODate extends AbstractISODateTime
 	 * @param date The date representing the difference, measured in milliseconds, between the current time and midnight, January 1, 1970 UTC.
 	 * @throws NullPointerException if the given date is <code>null</code>.
 	 */
-	public ISODate(final Date date)
-	{
+	public ISODate(final Date date) {
 		this(new ISOTemporalComponents(date)); //construct the class from temporal components
 	}
 
@@ -79,8 +74,7 @@ public class ISODate extends AbstractISODateTime
 	 * @throws NullPointerException if the given date and/or time zone is <code>null</code>.
 	 * @throws IllegalArgumentException if a time zone was provided with an unsupported offset for the given time.
 	 */
-	public ISODate(final Date date, final TimeZone timeZone)
-	{
+	public ISODate(final Date date, final TimeZone timeZone) {
 		this(new ISOTemporalComponents(date, timeZone)); //construct the class from temporal components
 	}
 
@@ -89,8 +83,7 @@ public class ISODate extends AbstractISODateTime
 	 * UTC.
 	 * @param time The difference, measured in milliseconds, between the current time and midnight, January 1, 1970 UTC.
 	 */
-	public ISODate(final long time)
-	{
+	public ISODate(final long time) {
 		this(new ISOTemporalComponents(time)); //construct the class from temporal components
 	}
 
@@ -102,8 +95,7 @@ public class ISODate extends AbstractISODateTime
 	 * @throws NullPointerException if the given time zone is <code>null</code>.
 	 * @throws IllegalArgumentException if a time zone was provided with an unsupported offset for the given time.
 	 */
-	public ISODate(final long time, final TimeZone timeZone)
-	{
+	public ISODate(final long time, final TimeZone timeZone) {
 		this(new ISOTemporalComponents(time, timeZone)); //construct the class from temporal components
 	}
 
@@ -114,8 +106,7 @@ public class ISODate extends AbstractISODateTime
 	 * @throws NullPointerException if the given time zone is <code>null</code>.
 	 * @see #toCalendar(TimeZone)
 	 */
-	public Date toDate(final TimeZone timeZone)
-	{
+	public Date toDate(final TimeZone timeZone) {
 		return toCalendar(timeZone).getTime(); //return the calendar time
 	}
 
@@ -125,8 +116,7 @@ public class ISODate extends AbstractISODateTime
 	 * @return The calendar this object represents in relation to the given time zone.
 	 * @throws NullPointerException if the given time zone is <code>null</code>.
 	 */
-	public GregorianCalendar toCalendar(final TimeZone timeZone)
-	{
+	public GregorianCalendar toCalendar(final TimeZone timeZone) {
 		final GregorianCalendar calendar = new GregorianCalendar(timeZone); //create a Gregorian calendar for the given time zone
 		calendar.clear(); //clear the calendar
 		calendar.set(getYear(), getMonth() - 1, getDay()); //set the calendar date, compensating for Calendar's zero-based month
@@ -135,8 +125,7 @@ public class ISODate extends AbstractISODateTime
 
 	/** {@inheritDoc} */
 	@Override
-	public ISODate toISODate()
-	{
+	public ISODate toISODate() {
 		return this;
 	}
 
@@ -147,14 +136,10 @@ public class ISODate extends AbstractISODateTime
 	 * @throws NullPointerException if the given string is <code>null</code>
 	 * @throws ArgumentSyntaxException if the given string does not have the correct syntax.
 	 */
-	public static ISODate valueOf(final String string) throws ArgumentSyntaxException
-	{
-		try
-		{
+	public static ISODate valueOf(final String string) throws ArgumentSyntaxException {
+		try {
 			return new ISODate(ISOTemporalComponents.parseDateTimeUTCOffset(string, true, false)); //parse temporal components with only a date and use that to create a new date object
-		}
-		catch(final SyntaxException syntaxException) //if the syntax of the string was not correct
-		{
+		} catch(final SyntaxException syntaxException) { //if the syntax of the string was not correct
 			throw new ArgumentSyntaxException(syntaxException);
 		}
 	}
@@ -174,14 +159,10 @@ public class ISODate extends AbstractISODateTime
 	 * @throws NullPointerException if the given string is <code>null</code>
 	 * @throws ArgumentSyntaxException if the given string does not have the correct syntax.
 	 */
-	public static ISODate valueOfLenient(final String string) throws ArgumentSyntaxException
-	{
-		try
-		{
+	public static ISODate valueOfLenient(final String string) throws ArgumentSyntaxException {
+		try {
 			return new ISODate(ISOTemporalComponents.parseDateTimeUTCOffset(string, true, false, true, true, true)); //parse temporal components with only a date and use that to create a new date object, leniently accepting input
-		}
-		catch(final SyntaxException syntaxException) //if the syntax of the string was not correct
-		{
+		} catch(final SyntaxException syntaxException) { //if the syntax of the string was not correct
 			throw new ArgumentSyntaxException(syntaxException);
 		}
 	}
@@ -202,14 +183,10 @@ public class ISODate extends AbstractISODateTime
 	 * @throws NullPointerException if the given string is <code>null</code>
 	 * @throws ArgumentSyntaxException if the given string does not have the correct syntax.
 	 */
-	public static ISODate valueOfLiberal(final String string) throws ArgumentSyntaxException
-	{
-		try
-		{
+	public static ISODate valueOfLiberal(final String string) throws ArgumentSyntaxException {
+		try {
 			return new ISODate(ISOTemporalComponents.parseDateTimeUTCOffset(string, true, false, true, true, false)); //parse temporal components with only a date and use that to create a new date object, liberally accepting input
-		}
-		catch(final SyntaxException syntaxException) //if the syntax of the string was not correct
-		{
+		} catch(final SyntaxException syntaxException) { //if the syntax of the string was not correct
 			throw new ArgumentSyntaxException(syntaxException);
 		}
 	}

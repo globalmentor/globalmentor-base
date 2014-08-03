@@ -25,15 +25,13 @@ import java.util.*;
  * 
  * @author Garret Wilson
  */
-public abstract class AbstractSuffixTree<E extends SuffixTree.Edge> implements SuffixTree
-{
+public abstract class AbstractSuffixTree<E extends SuffixTree.Edge> implements SuffixTree {
 
 	/** Whether the suffix tree is explicit, with every suffix ending on a leaf node. */
 	private final boolean explicit;
 
 	/** @return Whether the suffix tree is explicit, with every suffix ending on a leaf node. */
-	public boolean isExplicit()
-	{
+	public boolean isExplicit() {
 		return explicit;
 	}
 
@@ -44,26 +42,22 @@ public abstract class AbstractSuffixTree<E extends SuffixTree.Edge> implements S
 	private final BitSet leafNodeIndexes = new BitSet();
 
 	@Override
-	public Iterable<Node> getNodes()
-	{
+	public Iterable<Node> getNodes() {
 		return java.util.Collections.unmodifiableList(nodes);
 	}
 
 	@Override
-	public int getNodeCount()
-	{
+	public int getNodeCount() {
 		return nodes.size();
 	}
 
 	@Override
-	public Node getRootNode()
-	{
+	public Node getRootNode() {
 		return getNode(0);
 	}
 
 	@Override
-	public Node getNode(final int nodeIndex)
-	{
+	public Node getNode(final int nodeIndex) {
 		return nodes.get(nodeIndex);
 	}
 
@@ -71,8 +65,7 @@ public abstract class AbstractSuffixTree<E extends SuffixTree.Edge> implements S
 	 * Creates a new node and adds it to the internal list of nodes. This implementation delegates to {@link #createNode()}.
 	 * @return The newly created node.
 	 */
-	protected final AbstractNode addNode()
-	{
+	protected final AbstractNode addNode() {
 		final int nodeIndex = nodes.size();
 		final AbstractNode node = createNode(nodeIndex);
 		nodes.add(nodeIndex, node);
@@ -103,8 +96,7 @@ public abstract class AbstractSuffixTree<E extends SuffixTree.Edge> implements S
 	 * @see AbstractNode#setParentNode(Node)
 	 * @see AbstractNode#setLeaf(boolean)
 	 */
-	protected final E addEdge(final Node parentNode, final Node childNode, final int start, final int end)
-	{
+	protected final E addEdge(final Node parentNode, final Node childNode, final int start, final int end) {
 		final E edge = createEdge(parentNode, childNode, start, end); //create a new edge
 		addEdge(edge); //add the edge
 		((AbstractNode)parentNode).setLeaf(false); //TODO improve generics to prevent casting, or turn off warning
@@ -147,8 +139,7 @@ public abstract class AbstractSuffixTree<E extends SuffixTree.Edge> implements S
 	 * @param length The position at which to split the edge.
 	 * @return The created node splitting the edge.
 	 */
-	protected AbstractNode splitEdge(final E edge, final int length)
-	{
+	protected AbstractNode splitEdge(final E edge, final int length) {
 		removeEdge(edge); //remove the existing edge from our map, because we're going to create two edges to replace it
 		final AbstractNode newNode = addNode(); //create a new node with which to split the edge into two
 		final int split = edge.getStart() + length; //the element location at which to make the split
@@ -161,8 +152,7 @@ public abstract class AbstractSuffixTree<E extends SuffixTree.Edge> implements S
 	 * Constructor.
 	 * @param explicit Whether the suffix tree is explicit, with every suffix ending on a leaf node.
 	 */
-	protected AbstractSuffixTree(final boolean explicit)
-	{
+	protected AbstractSuffixTree(final boolean explicit) {
 		this.explicit = explicit;
 		addNode(); //create the root node
 	}
@@ -172,20 +162,17 @@ public abstract class AbstractSuffixTree<E extends SuffixTree.Edge> implements S
 	 * 
 	 * @author Garret Wilson
 	 */
-	protected abstract class AbstractNode implements SuffixTree.Node
-	{
+	protected abstract class AbstractNode implements SuffixTree.Node {
 
 		private final int index;
 
 		@Override
-		public int getIndex()
-		{
+		public int getIndex() {
 			return index;
 		}
 
 		@Override
-		public boolean isLeaf()
-		{
+		public boolean isLeaf() {
 			return leafNodeIndexes.get(getIndex());
 		}
 
@@ -193,16 +180,14 @@ public abstract class AbstractSuffixTree<E extends SuffixTree.Edge> implements S
 		 * Sets whether this node is a leaf.
 		 * @param leaf Whether this node is a leaf.
 		 */
-		protected void setLeaf(final boolean leaf)
-		{
+		protected void setLeaf(final boolean leaf) {
 			leafNodeIndexes.set(getIndex(), leaf);
 		}
 
 		private Node parentNode = null;
 
 		@Override
-		public Node getParentNode()
-		{
+		public Node getParentNode() {
 			return parentNode;
 		}
 
@@ -211,16 +196,14 @@ public abstract class AbstractSuffixTree<E extends SuffixTree.Edge> implements S
 		 * @param parentNode The node representing the parent of this node.
 		 * @throws NullPointerException if the given node is <code>null</code>.
 		 */
-		protected void setParentNode(final Node parentNode)
-		{
+		protected void setParentNode(final Node parentNode) {
 			this.parentNode = checkInstance(parentNode);
 		}
 
 		private Node suffixNode = null;
 
 		@Override
-		public Node getSuffixNode()
-		{
+		public Node getSuffixNode() {
 			return suffixNode;
 		}
 
@@ -229,8 +212,7 @@ public abstract class AbstractSuffixTree<E extends SuffixTree.Edge> implements S
 		 * @param suffixNode The node representing the next smaller suffix.
 		 * @throws NullPointerException if the given node is <code>null</code>.
 		 */
-		protected void setSuffixNode(final Node suffixNode)
-		{
+		protected void setSuffixNode(final Node suffixNode) {
 			this.suffixNode = checkInstance(suffixNode);
 		}
 
@@ -238,8 +220,7 @@ public abstract class AbstractSuffixTree<E extends SuffixTree.Edge> implements S
 		 * Index constructor. The node defaults to being a leaf node.
 		 * @param index The index of the node.
 		 */
-		public AbstractNode(final int index)
-		{
+		public AbstractNode(final int index) {
 			this.index = index;
 			setLeaf(true); //default to being a leaf node
 		}
@@ -249,8 +230,7 @@ public abstract class AbstractSuffixTree<E extends SuffixTree.Edge> implements S
 		 * @see #getIndex()
 		 */
 		@Override
-		public int hashCode()
-		{
+		public int hashCode() {
 			return getIndex();
 		}
 
@@ -259,14 +239,11 @@ public abstract class AbstractSuffixTree<E extends SuffixTree.Edge> implements S
 		 * @see #getIndex()
 		 */
 		@Override
-		public boolean equals(final Object object)
-		{
-			if(object == this)
-			{
+		public boolean equals(final Object object) {
+			if(object == this) {
 				return true;
 			}
-			if(!(object instanceof Node))
-			{
+			if(!(object instanceof Node)) {
 				return false;
 			}
 			return getIndex() == ((Node)object).getIndex();
@@ -274,12 +251,10 @@ public abstract class AbstractSuffixTree<E extends SuffixTree.Edge> implements S
 
 		/** {@inheritDoc This implementation returns a string in the form <code>(<var>index</var>)*</code>, where '*' indicates a leaf node. */
 		@Override
-		public String toString()
-		{
+		public String toString() {
 			final StringBuilder stringBuilder = new StringBuilder();
 			stringBuilder.append('(').append(getIndex()).append(')');
-			if(isLeaf()) //add a leaf designation if appropriate
-			{
+			if(isLeaf()) { //add a leaf designation if appropriate
 				stringBuilder.append('*');
 			}
 			return stringBuilder.toString();

@@ -24,8 +24,8 @@ import java.io.Reader;
  * Exception class for parsing errors that occur during I/O.
  * @see ParseReader
  */
-public class ParseIOException extends IOException
-{
+public class ParseIOException extends IOException {
+
 	/** The index of the line on which the error occurred, or -1 if the line index is not known. */
 	private final long lineIndex;
 
@@ -33,8 +33,7 @@ public class ParseIOException extends IOException
 	 * @return The index of the line on which the error occurred, or -1 if the line index is not known..
 	 * @see #getCharIndex()
 	 */
-	public long getLineIndex()
-	{
+	public long getLineIndex() {
 		return lineIndex;
 	}
 
@@ -48,8 +47,7 @@ public class ParseIOException extends IOException
 	 * @return The index of the character at which the error occurred on the current line, or -1 if the character index is not known..
 	 * @see #getLineIndex()
 	 */
-	public long getCharIndex()
-	{
+	public long getCharIndex() {
 		return charIndex;
 	}
 
@@ -57,8 +55,7 @@ public class ParseIOException extends IOException
 	private String sourceName = "";
 
 	/** @return The name of the source of this exception, such as a filename, or <code>null</code> if not known. */
-	public String getSourceName()
-	{
+	public String getSourceName() {
 		return sourceName;
 	}
 
@@ -66,8 +63,7 @@ public class ParseIOException extends IOException
 	 * Message constructor with no cause.
 	 * @param message The error message, or <code>null</code> if there is no error message.
 	 */
-	public ParseIOException(final String message)
-	{
+	public ParseIOException(final String message) {
 		this(message, (Throwable)null, -1, -1); //construct the class with no cause or location
 	}
 
@@ -75,8 +71,7 @@ public class ParseIOException extends IOException
 	 * Cause constructor.
 	 * @param cause The cause of the error, or <code>null</code> if there is no cause.
 	 */
-	public ParseIOException(final Throwable cause)
-	{
+	public ParseIOException(final Throwable cause) {
 		this(null, cause, -1, -1); //construct the class with no given message or location
 	}
 
@@ -85,8 +80,7 @@ public class ParseIOException extends IOException
 	 * @param message The error message, or <code>null</code> if there is no error message.
 	 * @param cause The cause of the error, or <code>null</code> if there is no cause.
 	 */
-	public ParseIOException(final String message, final Throwable cause)
-	{
+	public ParseIOException(final String message, final Throwable cause) {
 		this(message, cause, -1, -1); //construct the class with no location known
 	}
 
@@ -96,8 +90,7 @@ public class ParseIOException extends IOException
 	 * @param cause The cause of the error, or <code>null</code> if there is no cause.
 	 * @param sourceName The name of the source of the data (perhaps a filename), or <code>null</code> if not known.
 	 */
-	public ParseIOException(final String message, final Throwable cause, final String sourceName)
-	{
+	public ParseIOException(final String message, final Throwable cause, final String sourceName) {
 		this(message, cause, sourceName, -1, -1); //construct the class with no location known
 	}
 
@@ -108,8 +101,7 @@ public class ParseIOException extends IOException
 	 * @param lineIndex The index of the line in which the error occurred, or -1 if not known.
 	 * @param charIndex The index of the character at which the error occurred on the current line, or -1 if not known.
 	 */
-	public ParseIOException(final String message, final String sourceName, final long lineIndex, final long charIndex)
-	{
+	public ParseIOException(final String message, final String sourceName, final long lineIndex, final long charIndex) {
 		this(message, null, sourceName, lineIndex, charIndex); //construct the class with no cause
 	}
 
@@ -120,8 +112,7 @@ public class ParseIOException extends IOException
 	 * @param lineIndex The index of the line in which the error occurred, or -1 if not known.
 	 * @param charIndex The index of the character at which the error occurred on the current line, or -1 if not known.
 	 */
-	public ParseIOException(final Throwable cause, final String sourceName, final long lineIndex, final long charIndex)
-	{
+	public ParseIOException(final Throwable cause, final String sourceName, final long lineIndex, final long charIndex) {
 		this(null, cause, sourceName, lineIndex, charIndex); //construct the class with no given message
 	}
 
@@ -133,8 +124,7 @@ public class ParseIOException extends IOException
 	 * @see LineNumberReader
 	 * @see ParseReader
 	 */
-	public ParseIOException(final Reader reader, final String message)
-	{
+	public ParseIOException(final Reader reader, final String message) {
 		this(reader, message, (Throwable)null); //construct the class with no cause
 	}
 
@@ -146,8 +136,7 @@ public class ParseIOException extends IOException
 	 * @see LineNumberReader
 	 * @see ParseReader
 	 */
-	public ParseIOException(final Reader reader, final Throwable cause)
-	{
+	public ParseIOException(final Reader reader, final Throwable cause) {
 		this(reader, null, cause); //construct the class with no given message		
 	}
 
@@ -160,8 +149,7 @@ public class ParseIOException extends IOException
 	 * @see LineNumberReader
 	 * @see ParseReader
 	 */
-	public ParseIOException(final Reader reader, final String message, final Throwable cause)
-	{
+	public ParseIOException(final Reader reader, final String message, final Throwable cause) {
 		this(message, cause, getLineIndex(reader), getCharacterIndex(reader)); //construct the class after attempting to get the line and character indexes from the reader
 	}
 
@@ -171,8 +159,7 @@ public class ParseIOException extends IOException
 	 * @param lineIndex The index of the line in which the error occurred, or -1 if not known.
 	 * @param charIndex The index of the character at which the error occurred on the current line, or -1 if not known.
 	 */
-	public ParseIOException(final String message, final long lineIndex, final long charIndex)
-	{
+	public ParseIOException(final String message, final long lineIndex, final long charIndex) {
 		this(message, (Throwable)null, lineIndex, charIndex); //construct the class with no cause
 	}
 
@@ -182,8 +169,7 @@ public class ParseIOException extends IOException
 	 * @param lineIndex The index of the line in which the error occurred, or -1 if not known.
 	 * @param charIndex The index of the character at which the error occurred on the current line, or -1 if not known.
 	 */
-	public ParseIOException(final Throwable cause, final long lineIndex, final long charIndex)
-	{
+	public ParseIOException(final Throwable cause, final long lineIndex, final long charIndex) {
 		this(null, cause, lineIndex, charIndex); //construct the class with no given message
 	}
 
@@ -194,8 +180,7 @@ public class ParseIOException extends IOException
 	 * @param lineIndex The index of the line in which the error occurred, or -1 if not known.
 	 * @param charIndex The index of the character at which the error occurred on the current line, or -1 if not known.
 	 */
-	public ParseIOException(final String message, final Throwable cause, final long lineIndex, final long charIndex)
-	{
+	public ParseIOException(final String message, final Throwable cause, final long lineIndex, final long charIndex) {
 		this(message, cause, null, lineIndex, charIndex); //construct the class with no source
 	}
 
@@ -210,8 +195,7 @@ public class ParseIOException extends IOException
 	 * @see LineNumberReader
 	 * @see ParseReader
 	 */
-	public ParseIOException(final Reader reader, final String message, final String sourceName)
-	{
+	public ParseIOException(final Reader reader, final String message, final String sourceName) {
 		this(reader, message, null, sourceName); //construct the class with no cause
 	}
 
@@ -226,8 +210,7 @@ public class ParseIOException extends IOException
 	 * @see LineNumberReader
 	 * @see ParseReader
 	 */
-	public ParseIOException(final Reader reader, final Throwable cause, final String sourceName)
-	{
+	public ParseIOException(final Reader reader, final Throwable cause, final String sourceName) {
 		this(reader, null, cause, sourceName); //construct the class with no given message		
 	}
 
@@ -243,8 +226,7 @@ public class ParseIOException extends IOException
 	 * @see LineNumberReader
 	 * @see ParseReader
 	 */
-	public ParseIOException(final Reader reader, final String message, final Throwable cause, final String sourceName)
-	{
+	public ParseIOException(final Reader reader, final String message, final Throwable cause, final String sourceName) {
 		this(message, cause, sourceName, getLineIndex(reader), getCharacterIndex(reader)); //construct the class after attempting to get the line and character indexes from the reader
 	}
 
@@ -253,8 +235,7 @@ public class ParseIOException extends IOException
 	 * @param message The error message, or <code>null</code> if there is no error message.
 	 * @param sourceName The name of the source of the data (perhaps a filename), or <code>null</code> if not known.
 	 */
-	public ParseIOException(final String message, final String sourceName)
-	{
+	public ParseIOException(final String message, final String sourceName) {
 		this(message, null, sourceName, -1, -1); //construct the class with no cause or location
 	}
 
@@ -263,8 +244,7 @@ public class ParseIOException extends IOException
 	 * @param cause The cause of the error, or <code>null</code> if there is no cause.
 	 * @param sourceName The name of the source of the data (perhaps a filename), or <code>null</code> if not known.
 	 */
-	public ParseIOException(final Throwable cause, final String sourceName)
-	{
+	public ParseIOException(final Throwable cause, final String sourceName) {
 		this(null, cause, sourceName, -1, -1); //construct the class with no given message or location
 	}
 
@@ -276,8 +256,7 @@ public class ParseIOException extends IOException
 	 * @param lineIndex The index of the line in which the error occurred, or -1 if not known.
 	 * @param charIndex The index of the character at which the error occurred on the current line, or -1 if not known.
 	 */
-	public ParseIOException(final String message, final Throwable cause, final String sourceName, final long lineIndex, final long charIndex)
-	{
+	public ParseIOException(final String message, final Throwable cause, final String sourceName, final long lineIndex, final long charIndex) {
 		super(createMessage(message, cause, sourceName, lineIndex, charIndex), cause); //construct the parent class
 		this.lineIndex = lineIndex;
 		this.charIndex = charIndex;
@@ -293,8 +272,7 @@ public class ParseIOException extends IOException
 	 * @see #getLineIndex(Reader)
 	 * @see #getCharacterIndex(Reader)
 	 */
-	protected static String createMessage(final String message, final Reader reader)
-	{
+	protected static String createMessage(final String message, final Reader reader) {
 		return createMessage(message, null, reader);
 	}
 
@@ -308,8 +286,7 @@ public class ParseIOException extends IOException
 	 * @see #getLineIndex(Reader)
 	 * @see #getCharacterIndex(Reader)
 	 */
-	protected static String createMessage(final String message, final Throwable cause, final Reader reader)
-	{
+	protected static String createMessage(final String message, final Throwable cause, final Reader reader) {
 		return createMessage(message, cause, null, getLineIndex(reader), getCharacterIndex(reader));
 	}
 
@@ -323,37 +300,28 @@ public class ParseIOException extends IOException
 	 * @return A constructed message.
 	 * @throws NullPointerException if the given reader is <code>null</code>.
 	 */
-	protected static String createMessage(String message, final Throwable cause, final String sourceName, final long lineIndex, final long charIndex)
-	{
-		if(message == null && cause != null) //if there is no message, but there is a cause
-		{
+	protected static String createMessage(String message, final Throwable cause, final String sourceName, final long lineIndex, final long charIndex) {
+		if(message == null && cause != null) { //if there is no message, but there is a cause
 			message = cause.getMessage(); //use the cause message
 		}
 		final StringBuilder stringBuilder = new StringBuilder(); //create a string builder
-		if(message != null) //if there is a message
-		{
+		if(message != null) { //if there is a message
 			stringBuilder.append(message); //add the message
 		}
-		if(sourceName != null || lineIndex >= 0 || charIndex >= 0) //if there is a source name or a location known
-		{
-			if(stringBuilder.length() > 0) //if there are already characters in the string builder
-			{
+		if(sourceName != null || lineIndex >= 0 || charIndex >= 0) { //if there is a source name or a location known
+			if(stringBuilder.length() > 0) { //if there are already characters in the string builder
 				stringBuilder.append(' '); //add a separator
 			}
 			stringBuilder.append('('); //(
-			if(sourceName != null) //if there is a source name
-			{
+			if(sourceName != null) { //if there is a source name
 				stringBuilder.append(sourceName); //append the source name
 			}
-			if(lineIndex >= 0) //if there is a line index
-			{
-				if(sourceName != null && !sourceName.isEmpty()) //if there is a source name
-				{
+			if(lineIndex >= 0) { //if there is a line index
+				if(sourceName != null && !sourceName.isEmpty()) { //if there is a source name
 					stringBuilder.append(' '); //add a separator
 				}
 				stringBuilder.append(lineIndex + 1); //append the line number
-				if(charIndex >= 0) //if there is a character index
-				{
+				if(charIndex >= 0) { //if there is a character index
 					stringBuilder.append(':').append(charIndex + 1); //append the character number after a delimiter
 				}
 			}
@@ -370,19 +338,12 @@ public class ParseIOException extends IOException
 	 * @see LineNumberReader
 	 * @see ParseReader
 	 */
-	protected static long getLineIndex(final Reader reader)
-	{
-		if(reader instanceof LineNumberReader) //if this is a line number reader
-		{
+	protected static long getLineIndex(final Reader reader) {
+		if(reader instanceof LineNumberReader) { //if this is a line number reader
 			return ((LineNumberReader)reader).getLineNumber(); //the line number is really the line index
-		}
-		else if(reader instanceof ParseReader) //if this is a parse reader
-		{
+		} else if(reader instanceof ParseReader) { //if this is a parse reader
 			return ((ParseReader)reader).getLineIndex(); //it knows the line index
-		}
-		else
-		//if we don't recognize the reader type
-		{
+		} else { //if we don't recognize the reader type
 			return -1; //we can't find a line index
 		}
 	}
@@ -394,15 +355,10 @@ public class ParseIOException extends IOException
 	 * @throws NullPointerException if the given reader is <code>null</code>.
 	 * @see ParseReader
 	 */
-	protected static long getCharacterIndex(final Reader reader)
-	{
-		if(reader instanceof ParseReader) //if this is a parse reader
-		{
+	protected static long getCharacterIndex(final Reader reader) {
+		if(reader instanceof ParseReader) { //if this is a parse reader
 			return ((ParseReader)reader).getCharIndex(); //it knows the character index
-		}
-		else
-		//if we don't recognize the reader type
-		{
+		} else { //if we don't recognize the reader type
 			return -1; //we can't find a character index
 		}
 	}
@@ -412,11 +368,9 @@ public class ParseIOException extends IOException
 	 * @param stringArray An array of strings to be converted to a string.
 	 */
 	//TODO convert the characters in these strings so that whitespace gets converted to characters
-	static public String convertStringsToMessage(final String[] stringArray)
-	{
+	static public String convertStringsToMessage(final String[] stringArray) {
 		String messageString = ""; //this string will receive the message to return
-		for(int i = 0; i < stringArray.length; ++i) //look at each string in the array
-		{
+		for(int i = 0; i < stringArray.length; ++i) { //look at each string in the array
 			messageString += "\"" + stringArray[i]; //add a double quote character followed by this string
 			if(i < stringArray.length - 1) //if this isn't the last string in the array
 				messageString += "\", "; //show that there will be another string

@@ -62,8 +62,7 @@ public enum SIUnit //TODO add units at http://en.wikipedia.org/wiki/SI_derived_u
 	private final String symbol;
 
 	/** @return The unit symbol, or <code>null</code> if this unit has no symbol. */
-	public String getSymbol()
-	{
+	public String getSymbol() {
 		return symbol;
 	}
 
@@ -71,8 +70,7 @@ public enum SIUnit //TODO add units at http://en.wikipedia.org/wiki/SI_derived_u
 	 * Symbol constructor.
 	 * @param symbol The unit symbol, or <code>null</code> if this unit has no symbol.
 	 */
-	private SIUnit(final String symbol)
-	{
+	private SIUnit(final String symbol) {
 		this.symbol = symbol;
 	}
 
@@ -80,8 +78,7 @@ public enum SIUnit //TODO add units at http://en.wikipedia.org/wiki/SI_derived_u
 	 * Returns a string representation of the unit. This version returns the unit symbol.
 	 * @see #getSymbol()
 	 */
-	public String toString()
-	{
+	public String toString() {
 		return getSymbol();
 	}
 
@@ -93,8 +90,7 @@ public enum SIUnit //TODO add units at http://en.wikipedia.org/wiki/SI_derived_u
 	 * @param value The value to format.
 	 * @return A string representation of the given value in the default local in this unit with the highest available prefix.
 	 */
-	public String format(final long value)
-	{
+	public String format(final long value) {
 		return format(value, Locale.getDefault()); //format using the default locale
 	}
 
@@ -107,8 +103,7 @@ public enum SIUnit //TODO add units at http://en.wikipedia.org/wiki/SI_derived_u
 	 * @param locale The locale used for formatting.
 	 * @return A string representation of the given value in the given local in this unit with the highest available prefix.
 	 */
-	public String format(final long value, final Locale locale)
-	{
+	public String format(final long value, final Locale locale) {
 		return format(value, locale, null); //format with the no minimum prefix
 	}
 
@@ -126,8 +121,7 @@ public enum SIUnit //TODO add units at http://en.wikipedia.org/wiki/SI_derived_u
 	 * @param minPrefix The minimum prefix to use without resorting to {@link SIPrefix#NONE}, or <code>null</code> if there is no minimum prefix.
 	 * @return A string representation of the given value in the default local in this unit with the highest available prefix.
 	 */
-	public String format(final long value, final SIPrefix minPrefix)
-	{
+	public String format(final long value, final SIPrefix minPrefix) {
 		return format(value, Locale.getDefault(), minPrefix); //format using the default locale
 	}
 
@@ -146,8 +140,7 @@ public enum SIUnit //TODO add units at http://en.wikipedia.org/wiki/SI_derived_u
 	 * @param minPrefix The minimum prefix to use without resorting to {@link SIPrefix#NONE}, or <code>null</code> if there is no minimum prefix.
 	 * @return A string representation of the given value in the given local in this unit with the highest available prefix.
 	 */
-	public String format(final long value, final Locale locale, final SIPrefix minPrefix)
-	{
+	public String format(final long value, final Locale locale, final SIPrefix minPrefix) {
 		return format(BigDecimal.valueOf(value), locale, minPrefix);
 	}
 
@@ -159,8 +152,7 @@ public enum SIUnit //TODO add units at http://en.wikipedia.org/wiki/SI_derived_u
 	 * @param value The value to format.
 	 * @return A string representation of the given value in the default local in this unit with the highest available prefix.
 	 */
-	public String format(final BigDecimal value)
-	{
+	public String format(final BigDecimal value) {
 		return format(value, Locale.getDefault()); //format using the default locale
 	}
 
@@ -173,8 +165,7 @@ public enum SIUnit //TODO add units at http://en.wikipedia.org/wiki/SI_derived_u
 	 * @param locale The locale used for formatting.
 	 * @return A string representation of the given value in the given local in this unit with the highest available prefix.
 	 */
-	public String format(final BigDecimal value, final Locale locale)
-	{
+	public String format(final BigDecimal value, final Locale locale) {
 		return format(value, locale, null); //format with the no minimum prefix
 	}
 
@@ -192,8 +183,7 @@ public enum SIUnit //TODO add units at http://en.wikipedia.org/wiki/SI_derived_u
 	 * @param minPrefix The minimum prefix to use without resorting to {@link SIPrefix#NONE}, or <code>null</code> if there is no minimum prefix.
 	 * @return A string representation of the given value in the default local in this unit with the highest available prefix.
 	 */
-	public String format(final BigDecimal value, final SIPrefix minPrefix)
-	{
+	public String format(final BigDecimal value, final SIPrefix minPrefix) {
 		return format(value, Locale.getDefault(), minPrefix); //format using the default locale
 	}
 
@@ -212,17 +202,14 @@ public enum SIUnit //TODO add units at http://en.wikipedia.org/wiki/SI_derived_u
 	 * @param minPrefix The minimum prefix to use without resorting to {@link SIPrefix#NONE}, or <code>null</code> if there is no minimum prefix.
 	 * @return A string representation of the given value in the given local in this unit with the highest available prefix.
 	 */
-	public String format(final BigDecimal value, final Locale locale, final SIPrefix minPrefix) //TODO fix to find the highest absolute prefix
-	{
+	public String format(final BigDecimal value, final Locale locale, final SIPrefix minPrefix) { //TODO fix to find the highest absolute prefix
 		final SIPrefix[] prefixes = SIPrefix.values(); //get the prefix values
 		int prefixIndex = prefixes.length - 1;
 		SIPrefix prefix = prefixes[prefixIndex];
-		while(prefixIndex > 0 && prefix.getFactor().compareTo(value) > 0) //look for the first prefix whose factor is less than the given value
-		{
+		while(prefixIndex > 0 && prefix.getFactor().compareTo(value) > 0) { //look for the first prefix whose factor is less than the given value
 			prefix = prefixes[--prefixIndex]; //look at the previous prefix
 		}
-		if(minPrefix != null && prefix.ordinal() < minPrefix.ordinal()) //if there is a minimum prefix and we're below it
-		{
+		if(minPrefix != null && prefix.ordinal() < minPrefix.ordinal()) { //if there is a minimum prefix and we're below it
 			prefix = SIPrefix.NONE; //don't use a prefix
 		}
 		final NumberFormat numberFormat = NumberFormat.getNumberInstance(locale); //create a number formatter

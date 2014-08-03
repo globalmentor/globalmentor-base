@@ -20,16 +20,16 @@ import static com.globalmentor.java.Classes.*;
 
 import com.globalmentor.beans.*;
 
-/**Represents a task being performed.
-@author Garret Wilson
-*/
-public interface Task extends PropertyBindable, PropertyConstrainable
-{
+/**
+ * Represents a task being performed.
+ * @author Garret Wilson
+ */
+public interface Task extends PropertyBindable, PropertyConstrainable {
 
-	/**The bound property of the task state.*/
-	public final static String STATE_PROPERTY=getPropertyName(Task.class, "state");
+	/** The bound property of the task state. */
+	public final static String STATE_PROPERTY = getPropertyName(Task.class, "state");
 
-	/**@return The current state of the task.*/
+	/** @return The current state of the task. */
 	public TaskState getState();
 
 }

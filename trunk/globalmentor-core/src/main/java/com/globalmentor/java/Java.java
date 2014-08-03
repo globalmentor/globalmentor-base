@@ -22,8 +22,7 @@ import static com.globalmentor.java.StringBuilders.*;
  * Various utilities to assist programming with language-specific Java features.
  * @author Garret Wilson
  */
-public class Java
-{
+public class Java {
 
 	/** The name extension for Java files. */
 	public final static String JAVA_NAME_EXTENSION = "java";
@@ -50,8 +49,7 @@ public class Java
 	public final static String JAVA_URI_SCHEME = "java";
 
 	/** This class cannot be publicly instantiated. */
-	private Java()
-	{
+	private Java() {
 	}
 
 	/**
@@ -64,8 +62,7 @@ public class Java
 	 *         with a <code>null</code> considered less than a non-<code>null</code> value.
 	 * @see Comparable#compareTo
 	 */
-	public final static <T extends Comparable<T>> int compareTo(final T comparable1, final T comparable2)
-	{
+	public final static <T extends Comparable<T>> int compareTo(final T comparable1, final T comparable2) {
 		if(comparable1 != null && comparable2 != null) //if both objects are non-null
 			return comparable1.compareTo(comparable2); //compare the objects
 		else if(comparable1 == comparable2) //if both objects are null (we know at this point that one object is null, so if the objects are equal then both are null)
@@ -81,15 +78,12 @@ public class Java
 	 * @return A proper name appropriate for the given name.
 	 * @see #getVariableName(String)
 	 */
-	public static String getProperName(final String name)
-	{
-		if(!Character.isUpperCase(name.charAt(0))) //if the first letter is not in uppercase
-		{
+	public static String getProperName(final String name) {
+		if(!Character.isUpperCase(name.charAt(0))) { //if the first letter is not in uppercase
 			final StringBuilder stringBuilder = new StringBuilder(name); //create a new string builder containing the name
 			stringBuilder.setCharAt(0, Character.toUpperCase(stringBuilder.charAt(0))); //make sure the first letter is in uppercase
 			return stringBuilder.toString(); //convert the string buffer to a string and return it
-		}
-		else
+		} else
 			//if the first letter is already in uppercase
 			return name; //return the name itself; it's already a proper name
 	}
@@ -100,20 +94,14 @@ public class Java
 	 * @return A variable name appropriate for the given name.
 	 * @see #getProperName(String)
 	 */
-	public static String getVariableName(final String name)
-	{
+	public static String getVariableName(final String name) {
 		final StringBuilder stringBuilder = new StringBuilder(name); //create a new string builder with which to examine and modify the name
 		final int length = stringBuilder.length(); //get the length of the string builder
-		for(int i = 0; i < length; ++i) //for each character
-		{
+		for(int i = 0; i < length; ++i) { //for each character
 			final char character = stringBuilder.charAt(i); //get the current character
-			if(Character.isUpperCase(character)) //if this is an uppercase character TODO check for extended characters
-			{
+			if(Character.isUpperCase(character)) { //if this is an uppercase character TODO check for extended characters
 				stringBuilder.setCharAt(i, Character.toLowerCase(character)); //convert the character to lowercase
-			}
-			else
-			//if the character is already lowercase
-			{
+			} else { //if the character is already lowercase
 				break; //we've converted all the beginning uppercase characters to lowercase
 			}
 		}
@@ -128,8 +116,7 @@ public class Java
 	 * characters.
 	 * @param string A string to convert to a variable
 	 */
-	public static String createVariableName(final String string)
-	{
+	public static String createVariableName(final String string) {
 		final StringBuilder stringBuilder = new StringBuilder(string);
 		replace(stringBuilder, ILLEGAL_VARIABLE_NAME_CHARACTERS, '_'); //replace every '.' and '$' with '_'
 		return stringBuilder.toString();

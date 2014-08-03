@@ -32,14 +32,12 @@ import com.globalmentor.test.AbstractTest;
  * 
  * @author Garret Wilson
  */
-public class URIsTest extends AbstractTest
-{
+public class URIsTest extends AbstractTest {
 
 	/** Illustrates a bug in the JDK in which {@link URI#hashCode()} does not meet it obligations in regard to {@link URI#equals(Object)}. */
 	@Test
 	@Ignore
-	public void testURIHashCode()
-	{
+	public void testURIHashCode() {
 		final URI uri1 = URI.create("http://www.example.com/foo%2Abar");
 		final URI uri2 = URI.create("http://www.example.com/foo%2abar");
 		assertThat("URIs are not equal.", uri1, equalTo(uri2));
@@ -51,8 +49,7 @@ public class URIsTest extends AbstractTest
 	 * @see URIs#plainEncode(URI)
 	 */
 	@Test
-	public void testPlainEncodeDecode()
-	{
+	public void testPlainEncodeDecode() {
 		final List<URI> uris = new ArrayList<URI>();
 		final List<String> encodedURIs = new ArrayList<String>();
 		testPlainEncode(URI.create("http://www.example.com/foo/bar"), "http---www.example.com-foo-bar", uris, encodedURIs); //simple URI
@@ -62,8 +59,7 @@ public class URIsTest extends AbstractTest
 		testPlainEncode(URI.create("http://www.example.com/foo/bar#fooBar"), "http---www.example.com-foo-bar_23fooBar", uris, encodedURIs); //fragments
 		testPlainEncode(URI.create("http://www.example.com/foo!bar"), "http---www.example.com-foo_21bar", uris, encodedURIs); //non-name character
 		testPlainEncode(URI.create("http://www.example.com/foo%2Abar"), "http---www.example.com-foo_252Abar", uris, encodedURIs); //URI-encoded character
-		for(int i = encodedURIs.size() - 1; i >= 0; --i) //look at the encoded URIs, going backwards only for efficiency
-		{
+		for(int i = encodedURIs.size() - 1; i >= 0; --i) { //look at the encoded URIs, going backwards only for efficiency
 			assertThat(URIs.plainDecode(encodedURIs.get(i)), is(uris.get(i))); //make sure they all decode properly
 		}
 	}
@@ -75,8 +71,7 @@ public class URIsTest extends AbstractTest
 	 * @param uris The collected URIs.
 	 * @param encodedURIs The collected encoded URIs.
 	 */
-	protected void testPlainEncode(final URI uri, final String expectedEncodedURI, final List<URI> uris, final List<String> encodedURIs)
-	{
+	protected void testPlainEncode(final URI uri, final String expectedEncodedURI, final List<URI> uris, final List<String> encodedURIs) {
 		assertThat(URIs.plainEncode(uri), is(expectedEncodedURI));
 		uris.add(uri);
 		encodedURIs.add(expectedEncodedURI);

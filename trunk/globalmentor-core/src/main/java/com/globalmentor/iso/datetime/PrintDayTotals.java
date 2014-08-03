@@ -62,32 +62,24 @@ import com.globalmentor.model.*;
  * @author Garret Wilson
  * 
  */
-public class PrintDayTotals
-{
+public class PrintDayTotals {
 
-	public static void main(final String[] args) throws UnsupportedEncodingException, IOException
-	{
+	public static void main(final String[] args) throws UnsupportedEncodingException, IOException {
 		checkArgument(args.length >= 2 && args.length <= 4,
 				"Must have at least a date and number of days with an optional window size and history count: PrintDayTotals date windowSize [maxDays [historyCount]].");
 		//parse the parameters
 		final ISODate date = ISODate.valueOf(args[0]);
 		final int windowSize = Integer.parseInt(args[1]);
 		final long maxDays;
-		if(args.length >= 3)
-		{
+		if(args.length >= 3) {
 			maxDays = Long.parseLong(args[2]);
-		}
-		else
-		{
+		} else {
 			maxDays = -1;
 		}
 		final int historyCount;
-		if(args.length >= 4)
-		{
+		if(args.length >= 4) {
 			historyCount = Integer.parseInt(args[3]);
-		}
-		else
-		{
+		} else {
 			historyCount = windowSize;
 		}
 		//parse the ranges form System.in
@@ -96,8 +88,7 @@ public class PrintDayTotals
 		//we shouldn't close the input stream
 		final LineNumberReader reader = new LineNumberReader(new BOMInputStreamReader(System.in));
 		String line;
-		while((line = reader.readLine()) != null)
-		{
+		while((line = reader.readLine()) != null) {
 			final String[] lineComponents = line.split(",");
 			checkArgument(lineComponents.length == 2, "Expected two components on line {0}: {1}", reader.getLineNumber(), line);
 			ranges.add(new Range<ISODate>(ISODate.valueOf(lineComponents[0]), ISODate.valueOf(lineComponents[1]))); //parse and store the range
@@ -108,36 +99,28 @@ public class PrintDayTotals
 		final Map<ISODate, Long> dayTotals = getDayTotals(date, windowSize, historyCount, dayCounts);
 		//print the results, calculating run totals on the fly
 		long runTotal = 0;
-		for(final Map.Entry<ISODate, Long> dayTotal : dayTotals.entrySet())
-		{
+		for(final Map.Entry<ISODate, Long> dayTotal : dayTotals.entrySet()) {
 			final ISODate day = dayTotal.getKey();
 			final Count count = dayCounts.get(day);
-			if(count != null && count.getCount() > 0) //if we have a positive count
-			{
+			if(count != null && count.getCount() > 0) { //if we have a positive count
 				System.out.print('*'); //positive count indicator
 				runTotal += count.getCount(); //update our run count
-			}
-			else
-			//if we don't have a positive count
-			{
+			} else { //if we don't have a positive count
 				runTotal = 0; //reset our run total
 			}
 			System.out.print(',');
 			final long windowTotal = dayTotal.getValue().longValue();
 			System.out.print(day + ","); //e.g. *,2011-02-03
-			if(count != null)
-			{
+			if(count != null) {
 				System.out.print(count); //e.g. *,2011-02-03,1
 			}
 			System.out.print(',');
-			if(runTotal != 0)
-			{
+			if(runTotal != 0) {
 				System.out.print(runTotal); //e.g. *,2011-02-03,1,5
 			}
 			System.out.print(',');
 			System.out.print(windowTotal); //e.g. ,2011-02-03,1,5,170
-			if(maxDays >= 0) //if we know the maximum number of days, include the days remaining
-			{
+			if(maxDays >= 0) { //if we know the maximum number of days, include the days remaining
 				System.out.print("," + (maxDays - windowTotal)); //e.g. *,2011-02-03,1,5,170,10
 			}
 			System.out.println();

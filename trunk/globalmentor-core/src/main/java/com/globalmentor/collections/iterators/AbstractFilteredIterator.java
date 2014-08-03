@@ -39,8 +39,7 @@ import java.util.*;
  * 
  * @param <E> The type of element returned by the iterator.
  */
-public abstract class AbstractFilteredIterator<E> extends AbstractPrimedIterator<E>
-{
+public abstract class AbstractFilteredIterator<E> extends AbstractPrimedIterator<E> {
 
 	/** The filtered iterator. */
 	private Iterator<E> iterator;
@@ -50,8 +49,7 @@ public abstract class AbstractFilteredIterator<E> extends AbstractPrimedIterator
 	 * @param iterator The decorated iterator to be filtered.
 	 * @throws NullPointerException if the given iterator is <code>null</code>.
 	 */
-	public AbstractFilteredIterator(final Iterator<E> iterator)
-	{
+	public AbstractFilteredIterator(final Iterator<E> iterator) {
 		this.iterator = checkInstance(iterator);
 	}
 
@@ -60,15 +58,11 @@ public abstract class AbstractFilteredIterator<E> extends AbstractPrimedIterator
 	 * @see #isPass(Object)
 	 */
 	@Override
-	protected final E primeNext()
-	{
-		if(iterator != null) //if we still have a decorated iterator
-		{
-			while(iterator.hasNext()) //find the next included element
-			{
+	protected final E primeNext() {
+		if(iterator != null) { //if we still have a decorated iterator
+			while(iterator.hasNext()) { //find the next included element
 				final E element = iterator.next(); //get the next element from the underlying iterator
-				if(isPass(element)) //if this element is included
-				{
+				if(isPass(element)) { //if this element is included
 					return element; //return it as the primed next element
 				}
 			}

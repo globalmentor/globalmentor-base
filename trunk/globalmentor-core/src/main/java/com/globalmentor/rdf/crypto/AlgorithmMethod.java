@@ -21,45 +21,44 @@ import java.net.URI;
 import com.globalmentor.rdf.*;
 import static com.globalmentor.rdf.crypto.Crypto.*;
 
-/**A general Crypto method, such as a digest or encryption method.
-@author Garret Wilson
-*/
-public abstract class AlgorithmMethod extends TypedRDFResource
-{
+/**
+ * A general Crypto method, such as a digest or encryption method.
+ * @author Garret Wilson
+ */
+public abstract class AlgorithmMethod extends TypedRDFResource {
 
-	/**@return The namespace URI of the ontology defining the default type of this resource.*/
-	public URI getDefaultTypeNamespaceURI() {return CRYPTO_NAMESPACE_URI;}
-
-	/**Default constructor.*/
-	public AlgorithmMethod()
-	{
-		super();	//construct the parent class
+	/** @return The namespace URI of the ontology defining the default type of this resource. */
+	public URI getDefaultTypeNamespaceURI() {
+		return CRYPTO_NAMESPACE_URI;
 	}
 
-	/**Reference URI constructor.
-	@param referenceURI The reference URI for the new resource.
-	*/
-	public AlgorithmMethod(final URI referenceURI)
-	{
-		super(referenceURI);  //construct the parent class
+	/** Default constructor. */
+	public AlgorithmMethod() {
+		super(); //construct the parent class
 	}
 
-	/**Sets the <code>crypto:algorithm</code> property of the method.
-	@param algorithm A resource representing the algorithm.
-	*/
-	public void setAlgorithm(final RDFResource algorithm)
-	{
+	/**
+	 * Reference URI constructor.
+	 * @param referenceURI The reference URI for the new resource.
+	 */
+	public AlgorithmMethod(final URI referenceURI) {
+		super(referenceURI); //construct the parent class
+	}
+
+	/**
+	 * Sets the <code>crypto:algorithm</code> property of the method.
+	 * @param algorithm A resource representing the algorithm.
+	 */
+	public void setAlgorithm(final RDFResource algorithm) {
 		setProperty(CRYPTO_NAMESPACE_URI, ALGORITHM_PROPERTY_NAME, algorithm); //add the algorithm resource
 	}
 
-	/**Retrieves the algorithm value of the resource. If this resource has more
-		than one property of <code>crypto:algorithm</code>, it is undefined which
-		of these property values will be returned.
-	@return The algorithm of the resource, or <code>null</code> if there is no
-		algorithm or the algorithm is not a resource.
-	*/
-	public RDFResource getAlgorithm()
-	{
+	/**
+	 * Retrieves the algorithm value of the resource. If this resource has more than one property of <code>crypto:algorithm</code>, it is undefined which of these
+	 * property values will be returned.
+	 * @return The algorithm of the resource, or <code>null</code> if there is no algorithm or the algorithm is not a resource.
+	 */
+	public RDFResource getAlgorithm() {
 		return RDFResources.asResource(getPropertyValue(CRYPTO_NAMESPACE_URI, ALGORITHM_PROPERTY_NAME)); //get the value of the algorithm property as a resource
 	}
 

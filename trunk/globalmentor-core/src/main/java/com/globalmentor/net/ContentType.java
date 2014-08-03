@@ -54,8 +54,7 @@ import com.globalmentor.text.ArgumentSyntaxException;
  * @see <a href="http://www.rfc-editor.org/rfc/rfc2046.txt">RFC 2046</a>
  * @see <a href="http://www.w3.org/TR/xhtml-media-types/">XHTML Media Types</a>
  */
-public class ContentType
-{
+public class ContentType {
 
 	/** The divider character for media type strings. */
 	public final static char TYPE_DIVIDER = '/';
@@ -154,8 +153,7 @@ public class ContentType
 	 * @throws NullPointerException if the given character sequence is <code>null</code>.
 	 * @see #ILLEGAL_TOKEN_CHARACTERS
 	 */
-	public final static boolean isToken(final CharSequence charSequence)
-	{
+	public final static boolean isToken(final CharSequence charSequence) {
 		return isASCIINonControl(charSequence) && notContains(charSequence, ILLEGAL_TOKEN_CHARACTERS);
 	}
 
@@ -168,10 +166,8 @@ public class ContentType
 	 * @throws ArgumentSyntaxException if the given character sequence is not a content type token.
 	 * @see #isToken(CharSequence)
 	 */
-	protected final static <CS extends CharSequence> CS checkToken(final CS charSequence)
-	{
-		if(!isToken(charSequence))
-		{
+	protected final static <CS extends CharSequence> CS checkToken(final CS charSequence) {
+		if(!isToken(charSequence)) {
 			throw new ArgumentSyntaxException("Content type token " + charSequence + " must consist only of non-space and non-control ASCII characters.");
 		}
 		return charSequence;
@@ -180,24 +176,21 @@ public class ContentType
 	private final String primaryType;
 
 	/** @return The primary type of the content type. */
-	public String getPrimaryType()
-	{
+	public String getPrimaryType() {
 		return primaryType;
 	}
 
 	private final String subType;
 
 	/** @return The subtype of the content type. */
-	public String getSubType()
-	{
+	public String getSubType() {
 		return subType;
 	}
 
 	private final Set<Parameter> parameters;
 
 	/** @return The set of parameters, which may be empty, but will never be <code>null</code>. */
-	public Set<Parameter> getParameters()
-	{
+	public Set<Parameter> getParameters() {
 		return parameters;
 	}
 
@@ -213,8 +206,7 @@ public class ContentType
 	 * @throws NullPointerException if the given primary type, subtype, and/or parameters is <code>null</code>.
 	 * @throws ArgumentSyntaxException if the primary type or subtype does not have the valid syntax.
 	 */
-	private ContentType(final String primaryType, final String subType, final Set<Parameter> parameters)
-	{
+	private ContentType(final String primaryType, final String subType, final Set<Parameter> parameters) {
 		this.primaryType = checkToken(primaryType);
 		this.subType = checkToken(subType);
 		this.parameters = checkInstance(parameters);
@@ -226,29 +218,23 @@ public class ContentType
 	 * @return A new content type object parsed from the string.
 	 * @throws ArgumentSyntaxException Thrown if the string is not a syntactically correct content type.
 	 */
-	public static ContentType create(final CharSequence charSequence) throws ArgumentSyntaxException
-	{
+	public static ContentType create(final CharSequence charSequence) throws ArgumentSyntaxException {
 		final Matcher matcher = PATTERN.matcher(charSequence);
-		if(!matcher.matches())
-		{
+		if(!matcher.matches()) {
 			throw new ArgumentSyntaxException("Invalid content type syntax", charSequence);
 		}
 		final String primaryType = matcher.group(PATTERN_PRIMARY_TYPE_GROUP);
 		final String subType = matcher.group(PATTERN_SUBTYPE_GROUP);
 		Set<Parameter> parameters = emptySet();
 		final String parameterString = matcher.group(PATTERN_PARAMETERS_GROUP);
-		if(parameterString != null) //if there are parameters
-		{
+		if(parameterString != null) { //if there are parameters
 			parameters = new HashSet<Parameter>(); //create a new hash set
 			final Matcher parameterMatcher = PARAMETERS_PATTERN.matcher(parameterString);
-			while(parameterMatcher.find())
-			{
+			while(parameterMatcher.find()) {
 				final String parameterName = parameterMatcher.group(PARAMETERS_PATTERN_NAME_GROUP);
 				String parameterValue = parameterMatcher.group(PARAMETERS_PATTERN_VALUE_GROUP);
-				if(startsWith(parameterValue, QUOTATION_MARK_CHAR)) //if this is a quoted value
-				{
-					if(parameterValue.length() < 3 || !endsWith(parameterValue, QUOTATION_MARK_CHAR))
-					{
+				if(startsWith(parameterValue, QUOTATION_MARK_CHAR)) { //if this is a quoted value
+					if(parameterValue.length() < 3 || !endsWith(parameterValue, QUOTATION_MARK_CHAR)) {
 						throw new ArgumentSyntaxException("Illegally quoted content type parameter: " + parameterValue, parameterValue);
 					}
 					parameterValue = parameterValue.substring(1, parameterValue.length() - 1); //remove the surrounding quotes
@@ -269,8 +255,7 @@ public class ContentType
 	 * @return A new content type object constructed from the given information.
 	 * @throws ArgumentSyntaxException if the primary type or subtype does not have the valid syntax.
 	 */
-	public static ContentType create(final String primaryType, final String subType, final Parameter... parameters)
-	{
+	public static ContentType create(final String primaryType, final String subType, final Parameter... parameters) {
 		return new ContentType(primaryType, subType, immutableSetOf(parameters)); //create a new content type from the given values, creating an immutable copy of the parameters
 	}
 
@@ -283,8 +268,7 @@ public class ContentType
 	 * @throws NullPointerException if the given parameters set is <code>null</code>.
 	 * @throws ArgumentSyntaxException if the primary type or subtype does not have the valid syntax.
 	 */
-	public static ContentType getInstance(final String primaryType, final String subType, final Set<Parameter> parameters)
-	{
+	public static ContentType getInstance(final String primaryType, final String subType, final Set<Parameter> parameters) {
 		return new ContentType(primaryType, subType, immutableSetOf(parameters)); //create a new content type from the given values, creating an immutable copy of the parameters
 	}
 
@@ -294,13 +278,10 @@ public class ContentType
 	 * @return The (always unquoted) value associated with the given name, or <code>null</code> if there is no parameter with the given name.
 	 * @throws NullPointerException if the given parameter name is <code>null</code>.
 	 */
-	public String getParameter(final String name)
-	{
+	public String getParameter(final String name) {
 		checkInstance(name);
-		for(final Parameter parameter : getParameters())
-		{
-			if(equalsIgnoreCase(parameter.getName(), name))
-			{
+		for(final Parameter parameter : getParameters()) {
+			if(equalsIgnoreCase(parameter.getName(), name)) {
 				return parameter.getValue();
 			}
 		}
@@ -314,8 +295,7 @@ public class ContentType
 	 * @return <code>true</code> if the content type has the same primary type and subtype as that given.
 	 * @see #WILDCARD_SUBTYPE
 	 */
-	public boolean match(final String primaryType, final String subType)
-	{
+	public boolean match(final String primaryType, final String subType) {
 		final String contentTypeSubType = getSubType(); //get the content type's subtype
 		return equalsIgnoreCase(getPrimaryType(), primaryType)
 				&& (equalsIgnoreCase(contentTypeSubType, subType) || WILDCARD_SUBTYPE.equals(contentTypeSubType) || WILDCARD_SUBTYPE.equals(subType)); //check the primary type and subtype and wildcards
@@ -330,8 +310,7 @@ public class ContentType
 	 * @return <code>true</code> if the content type has the same primary type and subtype as that given, along with a class parameter.
 	 * @see #WILDCARD_SUBTYPE
 	 */
-	public boolean match(final String primaryType, final String subType, final Class<?> objectClass)
-	{
+	public boolean match(final String primaryType, final String subType, final Class<?> objectClass) {
 		return match(primaryType, subType) && objectClass.getName().equals(getParameter("string")); //see if the primary type and subtype match, and that "class" parameter indicates this class TODO use a constant
 	}
 
@@ -342,15 +321,13 @@ public class ContentType
 	 * @return <code>true</code> if the content type has the same primary type and subtype as that given, along with a class parameter.
 	 * @see #WILDCARD_SUBTYPE
 	 */
-	public boolean match(final Class<?> objectClass)
-	{
+	public boolean match(final Class<?> objectClass) {
 		return match(APPLICATION_PRIMARY_TYPE, X_JAVA_OBJECT); //check for application/x-java-object and class name
 	}
 
 	/** @return A string representation of the the base content type, that is, the same primary and subtype as the content type, but with no parameters. */
 	@Deprecated
-	public String getBaseType() //for compatibility with javax.activiation.MimeType; remove in favor of getBaseContentType()
-	{
+	public String getBaseType() { //for compatibility with javax.activiation.MimeType; remove in favor of getBaseContentType()
 		return toString(getPrimaryType(), getSubType());
 	}
 
@@ -359,8 +336,7 @@ public class ContentType
 	 * If this content type is already a base content type, this content type is returned.
 	 * @return A content type with the same primary and subtype as the content type, but with no parameters.
 	 */
-	public ContentType getBaseContentType()
-	{
+	public ContentType getBaseContentType() {
 		return getParameters().isEmpty() ? this : new ContentType(getPrimaryType(), getSubType(), Collections.<Parameter> emptySet()); //if this content type is already just the base type, return that
 	}
 
@@ -369,8 +345,7 @@ public class ContentType
 	 * @param contentType The content type with which to compare this content type.
 	 * @return <code>true</code> if the primary types and base types of the two content types are equal.
 	 */
-	public boolean hasBaseType(final ContentType contentType)
-	{
+	public boolean hasBaseType(final ContentType contentType) {
 		return hasBaseType(contentType.getPrimaryType(), contentType.getSubType());
 	}
 
@@ -381,8 +356,7 @@ public class ContentType
 	 * @return <code>true</code> if the content type has the same primary type and subtype as that given.
 	 * @throws NullPointerException if the primary type and/or subtype is <code>null</code>.
 	 */
-	public boolean hasBaseType(final String primaryType, final String subType)
-	{
+	public boolean hasBaseType(final String primaryType, final String subType) {
 		return equalsIgnoreCase(getPrimaryType(), primaryType) && equalsIgnoreCase(getSubType(), subType); //check the primary type and subtype
 	}
 
@@ -391,8 +365,7 @@ public class ContentType
 	 * @param suffixes The suffix strings that will be checked, after they are combined into a single suffix, each part prepended with '+'.
 	 * @return <code>true</code> if the content type's subtype has the given suffixes.
 	 */
-	public boolean hasSubTypeSuffix(final String... suffixes) //TODO implement case insensitivity
-	{
+	public boolean hasSubTypeSuffix(final String... suffixes) { //TODO implement case insensitivity
 		return getSubType().endsWith(createSubTypeSuffix(suffixes)); //see if the content type subtype ends with the given suffixes
 	}
 
@@ -403,20 +376,15 @@ public class ContentType
 	 * @param newParameter The new parameter to add or replace.
 	 * @return
 	 */
-	public ContentType withParameter(final Parameter newParameter)
-	{
+	public ContentType withParameter(final Parameter newParameter) {
 		final Set<Parameter> newParameters = new HashSet<ContentType.Parameter>(getParameters().size());
-		for(final Parameter parameter : getParameters())
-		{
-			if(equalsIgnoreCase(parameter.getName(), newParameter.getName())) //if this is the same parameter name
-			{
-				if(parameter.getValue().equals(newParameter.getValue())) //if the parameter values are the same
-				{
+		for(final Parameter parameter : getParameters()) {
+			if(equalsIgnoreCase(parameter.getName(), newParameter.getName())) { //if this is the same parameter name
+				if(parameter.getValue().equals(newParameter.getValue())) { //if the parameter values are the same
 					return this; //just use the same content type, because nothing will change; otherwise
 				}
 				//if the parameter values are different
-				else
-				{
+				else {
 					continue; //skip this parameter; we'll add it manually afterwards
 				}
 			}
@@ -435,8 +403,7 @@ public class ContentType
 	 * @see #getParameters()
 	 */
 	@Override
-	public int hashCode()
-	{
+	public int hashCode() {
 		return Objects.getHashCode(toLowerCase(getPrimaryType()).toString(), toLowerCase(getSubType()).toString(), getParameters());
 	}
 
@@ -450,14 +417,11 @@ public class ContentType
 	 * @see #toString()
 	 */
 	@Override
-	public boolean equals(final Object object)
-	{
-		if(this == object) //if the objects are the same identical object
-		{
+	public boolean equals(final Object object) {
+		if(this == object) { //if the objects are the same identical object
 			return true; //identical objects are always equal
 		}
-		if(!(object instanceof ContentType))
-		{
+		if(!(object instanceof ContentType)) {
 			return false;
 		}
 		final ContentType contentType = (ContentType)object;
@@ -467,8 +431,7 @@ public class ContentType
 
 	/** {@inheritDoc} This version returns the canonical representation of the content type according to RFC 2045 */
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return toString(getPrimaryType(), getSubType(), getParameters());
 	}
 
@@ -479,8 +442,7 @@ public class ContentType
 	 * @param parameters Optional name-value pairs representing parameters of the content type.
 	 * @return A string representing the type in the form "<var>primaryType</var>/<var>subType</var>[; <var>parameters</var>]".
 	 */
-	public static String toString(final String primaryType, final String subType, final Parameter... parameters)
-	{
+	public static String toString(final String primaryType, final String subType, final Parameter... parameters) {
 		return toString(primaryType, subType, immutableSetOf(parameters));
 	}
 
@@ -492,23 +454,19 @@ public class ContentType
 	 * @return A string representing the type in the form "<var>primaryType</var>/<var>subType</var>[; <var>parameters</var>]".
 	 * @throws NullPointerException if the given parameters set is <code>null</code>.
 	 */
-	public static String toString(final String primaryType, final String subType, final Set<Parameter> parameters)
-	{
+	public static String toString(final String primaryType, final String subType, final Set<Parameter> parameters) {
 		final StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append(primaryType).append(TYPE_DIVIDER).append(subType); //primaryType/subType
-		for(final Parameter parameter : parameters) //for each parameter
-		{
+		for(final Parameter parameter : parameters) { //for each parameter
 			final String parameterValue = parameter.getValue(); //get the parameter value
 			final boolean hasSpecialCharacters = CharSequences.contains(parameterValue, SPECIAL_CHARACTERS); //see if there are any special characters
 
 			stringBuilder.append(PARAMETER_DELIMITER_CHAR).append(SPACE_CHAR).append(parameter.getName()).append(PARAMETER_ASSIGNMENT_CHAR); //; name=value
-			if(hasSpecialCharacters) //quote the value string if necessary
-			{
+			if(hasSpecialCharacters) { //quote the value string if necessary
 				stringBuilder.append(STRING_QUOTE_CHAR);
 			}
 			stringBuilder.append(parameterValue);
-			if(hasSpecialCharacters) //quote the value string if necessary
-			{
+			if(hasSpecialCharacters) { //quote the value string if necessary
 				stringBuilder.append(STRING_QUOTE_CHAR);
 			}
 		}
@@ -520,11 +478,9 @@ public class ContentType
 	 * @param suffixes The suffix strings to combine into a suffix.
 	 * @return A suffix composed of the given suffix strings.
 	 */
-	public static String createSubTypeSuffix(final String... suffixes)
-	{
+	public static String createSubTypeSuffix(final String... suffixes) {
 		final StringBuilder stringBuilder = new StringBuilder();
-		for(final String suffix : suffixes) //for each suffix
-		{
+		for(final String suffix : suffixes) { //for each suffix
 			stringBuilder.append(SUBTYPE_SUFFIX_DELIMITER_CHAR).append(suffix); //+suffix
 		}
 		return stringBuilder.toString(); //return the suffix we constructed
@@ -540,8 +496,8 @@ public class ContentType
 	 * </p>
 	 * @author Garret Wilson
 	 */
-	public static class Parameter extends NameValuePair<String, String>
-	{
+	public static class Parameter extends NameValuePair<String, String> {
+
 		/**
 		 * Constructor specifying the name and value.
 		 * @param name The parameter name.
@@ -550,32 +506,26 @@ public class ContentType
 		 * @throws ArgumentSyntaxException if the name is not a token; or the value contains a a space, non-ASCII, or control character.
 		 * @see ContentType#isToken(CharSequence)
 		 */
-		public Parameter(final String name, final String value)
-		{
+		public Parameter(final String name, final String value) {
 			super(checkToken(name), value); //make sure the name is a token
-			if(contains(value, SPACE_CHAR) || !isASCIINonControl(value)) //special characters are allowed in the value; but not spaces, non-ASCII, or control characters
-			{
+			if(contains(value, SPACE_CHAR) || !isASCIINonControl(value)) { //special characters are allowed in the value; but not spaces, non-ASCII, or control characters
 				throw new ArgumentSyntaxException("Content type parameter value " + value + " must consist only of non-space and non-control ASCII characters.", value);
 			}
 		}
 
 		/** {@inheritDoc} This version returns a consistent hash code for all cases of a parameter name. */
 		@Override
-		public int hashCode()
-		{
+		public int hashCode() {
 			return Objects.getHashCode(toLowerCase(getName()).toString(), getValue());
 		}
 
 		/** {@inheritDoc} This version compares names in a case-insensitive manner. */
 		@Override
-		public boolean equals(final Object object)
-		{
-			if(this == object)
-			{
+		public boolean equals(final Object object) {
+			if(this == object) {
 				return true;
 			}
-			if(!(object instanceof Parameter))
-			{
+			if(!(object instanceof Parameter)) {
 				return false;
 			}
 			final Parameter parameter = (Parameter)object;

@@ -24,21 +24,18 @@ import com.globalmentor.java.Objects;
  * A convenience tuple for a name and a value. The class allows identification (though not necessarily unique) through its name object.
  * @author Garret Wilson
  */
-public class NameValuePair<N, V> extends DefaultNamed<N> implements IDed<N>, Valued<V>
-{
+public class NameValuePair<N, V> extends DefaultNamed<N> implements IDed<N>, Valued<V> {
 
 	/** The value of the object. */
 	final private V value;
 
 	/** @return The value of the object. */
-	public V getValue()
-	{
+	public V getValue() {
 		return value;
 	}
 
 	/** @return The name of the name-value pair, allowing identification. */
-	public N getID()
-	{
+	public N getID() {
 		return getName();
 	}
 
@@ -47,8 +44,7 @@ public class NameValuePair<N, V> extends DefaultNamed<N> implements IDed<N>, Val
 	 * @param newName The object's new name.
 	 * @param newValue The object's new value
 	 */
-	public NameValuePair(final N newName, final V newValue)
-	{
+	public NameValuePair(final N newName, final V newValue) {
 		super(newName); //construct the parent class
 		value = newValue; //set the value
 	}
@@ -58,15 +54,12 @@ public class NameValuePair<N, V> extends DefaultNamed<N> implements IDed<N>, Val
 	 * @param The map entry the values of which to use in creating this name/value pair.
 	 * @throws NullPointerException if the given map entry is <code>null</code>.
 	 */
-	public NameValuePair(final Map.Entry<N, V> mapEntry)
-	{
+	public NameValuePair(final Map.Entry<N, V> mapEntry) {
 		this(mapEntry.getKey(), mapEntry.getValue());
 	}
 
-
 	@Override
-	public int hashCode()
-	{
+	public int hashCode() {
 		return Objects.getHashCode(getName(), getValue()); //calculate a hash code from the name and value
 	}
 
@@ -78,14 +71,11 @@ public class NameValuePair<N, V> extends DefaultNamed<N> implements IDed<N>, Val
 	 * @see #getValue()
 	 */
 	@Override
-	public boolean equals(final Object object)
-	{
-		if(this==object)
-		{
+	public boolean equals(final Object object) {
+		if(this == object) {
 			return true;
 		}
-		if(!(object instanceof NameValuePair))
-		{
+		if(!(object instanceof NameValuePair)) {
 			return false;
 		}
 		//compare the names and values, taking into account that one or the other may be null
@@ -113,8 +103,7 @@ public class NameValuePair<N, V> extends DefaultNamed<N> implements IDed<N>, Val
 	*/
 
 	/** @return A string representation of this object in the format "name=\"value\"". */
-	public String toString()
-	{
+	public String toString() {
 		final V value = getValue(); //get the value
 		return getName() + "=" + (value != null ? "\"" + value + "\"" : value); //return a string constructed from the name and the value
 	}

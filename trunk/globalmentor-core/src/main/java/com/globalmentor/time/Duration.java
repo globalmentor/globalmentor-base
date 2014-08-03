@@ -23,8 +23,7 @@ import com.globalmentor.java.Longs;
  * 
  * @author Garret Wilson
  */
-public class Duration implements Comparable<Duration>
-{
+public class Duration implements Comparable<Duration> {
 
 	/** The shared duration instance indicating a zero duration. */
 	public final static Duration NO_DURATION = new Duration(0);
@@ -36,8 +35,7 @@ public class Duration implements Comparable<Duration>
 	private final long time;
 
 	/** @return The duration time in milliseconds. */
-	public long getTime()
-	{
+	public long getTime() {
 		return time;
 	}
 
@@ -45,8 +43,7 @@ public class Duration implements Comparable<Duration>
 	 * Duration time constructor.
 	 * @param time The duration time in milliseconds.
 	 */
-	private Duration(final long time)
-	{
+	private Duration(final long time) {
 		this.time = time;
 	}
 
@@ -54,10 +51,8 @@ public class Duration implements Comparable<Duration>
 	 * Duration time factory.
 	 * @param time The duration time in milliseconds.
 	 */
-	public static Duration of(final long time)
-	{
-		if(time == 0)
-		{
+	public static Duration of(final long time) {
+		if(time == 0) {
 			return NO_DURATION;
 		}
 		return new Duration(time);
@@ -69,8 +64,7 @@ public class Duration implements Comparable<Duration>
 	 * @return A duration object representing this duration plus the given duration.
 	 * @throws NullPointerException if the given duration is <code>null</code>.
 	 */
-	public Duration add(final Duration duration)
-	{
+	public Duration add(final Duration duration) {
 		final long time = duration.getTime(); //if the duration is 0, we can just return this duration
 		return time == 0 ? this : Duration.of(getTime() + time);
 	}
@@ -81,41 +75,34 @@ public class Duration implements Comparable<Duration>
 	 * @return A duration object representing this duration minus the given duration.
 	 * @throws NullPointerException if the given duration is <code>null</code>.
 	 */
-	public Duration subtract(final Duration duration)
-	{
+	public Duration subtract(final Duration duration) {
 		final long time = duration.getTime(); //if the duration is 0, we can just return this duration
 		return time == 0 ? this : Duration.of(getTime() - time);
 	}
 
 	@Override
-	public int hashCode()
-	{
+	public int hashCode() {
 		return Longs.hashCode(time);
 	}
 
 	@Override
-	public boolean equals(final Object object)
-	{
-		if(object == this)
-		{
+	public boolean equals(final Object object) {
+		if(object == this) {
 			return true;
 		}
-		if(!(object instanceof Duration))
-		{
+		if(!(object instanceof Duration)) {
 			return false;
 		}
 		return getTime() == ((Duration)object).getTime();
 	}
 
 	@Override
-	public int compareTo(final Duration duration)
-	{
+	public int compareTo(final Duration duration) {
 		return Longs.compare(getTime(), duration.getTime());
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return String.valueOf(getTime());
 	}
 }

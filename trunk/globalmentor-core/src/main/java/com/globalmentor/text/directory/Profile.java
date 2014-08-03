@@ -29,8 +29,7 @@ import com.globalmentor.model.NameValuePair;
  * name.
  * @author Garret Wilson
  */
-public interface Profile
-{
+public interface Profile {
 
 	/**
 	 * Determines the value type of the given content line value.

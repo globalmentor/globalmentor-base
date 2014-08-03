@@ -28,13 +28,11 @@ import org.junit.Test;
  * Tests of {@link ContentType}.
  * @author Garret Wilson
  */
-public class ContentTypeTest extends AbstractTest
-{
+public class ContentTypeTest extends AbstractTest {
 
 	/** Tests of {@link ContentType#create(CharSequence)}. */
 	@Test
-	public void testParseContentTypes()
-	{
+	public void testParseContentTypes() {
 		//simple
 		assertThat(ContentType.create("text/plain").getPrimaryType(), is("text"));
 		assertThat(ContentType.create("text/plain").getSubType(), is("plain"));
@@ -51,8 +49,7 @@ public class ContentTypeTest extends AbstractTest
 
 	/** Tests equality, including parameter order and case insensitivity of content type names. */
 	@Test
-	public void testEquality()
-	{
+	public void testEquality() {
 		//parsing versus construction
 		assertEquals(ContentType.create("text", "plain"), ContentType.create("text/plain"));
 		assertEquals(ContentType.create("text", "plain", new ContentType.Parameter("charset", "us-ascii"), new ContentType.Parameter("foo", "bar")),
@@ -67,38 +64,32 @@ public class ContentTypeTest extends AbstractTest
 	}
 
 	@Test(expected = ArgumentSyntaxException.class)
-	public void testMissingDelimiter()
-	{
+	public void testMissingDelimiter() {
 		ContentType.create("text");
 	}
 
 	@Test(expected = ArgumentSyntaxException.class)
-	public void testMissingSubType()
-	{
+	public void testMissingSubType() {
 		ContentType.create("text/");
 	}
 
 	@Test(expected = ArgumentSyntaxException.class)
-	public void testMissingParameters()
-	{
+	public void testMissingParameters() {
 		ContentType.create("text/plain;");
 	}
 
 	@Test(expected = ArgumentSyntaxException.class)
-	public void testMissingParameterDelimiter()
-	{
+	public void testMissingParameterDelimiter() {
 		ContentType.create("text/plain; charset");
 	}
 
 	@Test(expected = ArgumentSyntaxException.class)
-	public void testMissingParameterValue()
-	{
+	public void testMissingParameterValue() {
 		ContentType.create("text/plain; charset=");
 	}
 
 	@Test(expected = ArgumentSyntaxException.class)
-	public void testMissingSecondParameter()
-	{
+	public void testMissingSecondParameter() {
 		ContentType.create("text/plain; charset=us-ascii;");
 	}
 }

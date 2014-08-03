@@ -27,15 +27,13 @@ import static com.globalmentor.java.Objects.*;
  * @param <V> The type of value represented by the resource.
  * @author Garret Wilson
  */
-public abstract class AbstractValueResource<V> implements ValueResource<V>
-{
+public abstract class AbstractValueResource<V> implements ValueResource<V> {
 
 	/** The class representing the type of value represented by the resource. */
 	private final Class<V> valueClass;
 
 	/** @return The class representing the type of value represented by the resource. */
-	public Class<V> getValueClass()
-	{
+	public Class<V> getValueClass() {
 		return valueClass;
 	}
 
@@ -43,8 +41,7 @@ public abstract class AbstractValueResource<V> implements ValueResource<V>
 	private final V value;
 
 	/** @return The non-<code>null</code> value represented by the resource. */
-	public V getValue()
-	{
+	public V getValue() {
 		return value;
 	}
 
@@ -54,8 +51,7 @@ public abstract class AbstractValueResource<V> implements ValueResource<V>
 	 * @param value The non-<code>null</code> value represented by the resource.
 	 * @throws NullPointerException if the given value class and/or value is <code>null</code>.
 	 */
-	public AbstractValueResource(final Class<V> valueClass, final V value)
-	{
+	public AbstractValueResource(final Class<V> valueClass, final V value) {
 		this.valueClass = checkInstance(valueClass, "Value class cannot be null.");
 		this.value = checkInstance(value, "Value cannot be null.");
 	}

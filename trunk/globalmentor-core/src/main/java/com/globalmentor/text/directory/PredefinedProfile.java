@@ -51,12 +51,10 @@ import com.globalmentor.util.Base64;
  * @see Directory#BOOLEAN_VALUE_TYPE
  * @see Directory#FLOAT_VALUE_TYPE
  */
-public class PredefinedProfile extends AbstractProfile implements ValueFactory, ValueSerializer
-{
+public class PredefinedProfile extends AbstractProfile implements ValueFactory, ValueSerializer {
 
 	/** Default constructor. */
-	public PredefinedProfile()
-	{
+	public PredefinedProfile() {
 		//register the predefined types in our map
 		registerValueType(SOURCE_TYPE, URI_VALUE_TYPE); //SOURCE: uri		
 		registerValueType(NAME_TYPE, TEXT_VALUE_TYPE); //NAME: text		
@@ -105,26 +103,16 @@ public class PredefinedProfile extends AbstractProfile implements ValueFactory, 
 	 * @see Double
 	 */
 	public Object[] createValues(final String profile, final String group, final String name, final List<NameValuePair<String, String>> paramList,
-			final String valueType, final Reader reader) throws IOException, ParseIOException
-	{
-		if(TEXT_VALUE_TYPE.equalsIgnoreCase(valueType)) //text
-		{
+			final String valueType, final Reader reader) throws IOException, ParseIOException {
+		if(TEXT_VALUE_TYPE.equalsIgnoreCase(valueType)) { //text
 			return processTextValueList(reader, paramList); //process the text value
-		}
-		else if(URI_VALUE_TYPE.equalsIgnoreCase(valueType)) //uri
-		{
+		} else if(URI_VALUE_TYPE.equalsIgnoreCase(valueType)) { //uri
 			return new Object[] { processURIValue(reader) }; //process the URI value type			
-		}
-		else if(DATE_VALUE_TYPE.equalsIgnoreCase(valueType)) //date
-		{
+		} else if(DATE_VALUE_TYPE.equalsIgnoreCase(valueType)) { //date
 			return new Object[] { ISODate.valueOfLiberal(reach(reader, CR)) };
-		}
-		else if(TIME_VALUE_TYPE.equalsIgnoreCase(valueType)) //time
-		{
+		} else if(TIME_VALUE_TYPE.equalsIgnoreCase(valueType)) { //time
 			return new Object[] { ISOTime.valueOf(reach(reader, CR)) };
-		}
-		else if(DATE_TIME_VALUE_TYPE.equalsIgnoreCase(valueType)) //date-time
-		{
+		} else if(DATE_TIME_VALUE_TYPE.equalsIgnoreCase(valueType)) { //date-time
 			return new Object[] { ISODateTime.valueOfLiberal(reach(reader, CR)) };
 		}
 		return null; //show that we can't create a value
@@ -145,20 +133,17 @@ public class PredefinedProfile extends AbstractProfile implements ValueFactory, 
 	 * @throws ParseIOException Thrown if there is a an error interpreting the directory.
 	 */
 	public static LocaledText[] processTextValueList(final Reader reader, final List<NameValuePair<String, String>> paramList) throws IOException,
-			ParseIOException
-	{
+			ParseIOException {
 		final Locale locale = getLanguageParamValue(paramList); //get the language, if any
 		final List<LocaledText> localeTextList = new ArrayList<LocaledText>(); //create a new list to hold the locale text objects we find
 		char delimiter; //we'll store the last delimiter peeked		
-		do
-		{
+		do {
 			final String string = processTextValue(reader, paramList); //read a string
 			//		TODO del Log.trace("read text string: ", string);	//TODO del
 			localeTextList.add(new LocaledText(string, locale)); //add the text to our list			
 			delimiter = peek(reader); //see what character is next
 			//		TODO del Log.trace("next delimiter: ", delimiter);	//TODO del			
-		}
-		while(delimiter == VALUE_SEPARATOR_CHAR); //keep getting strings while we are still running into value separators
+		} while(delimiter == VALUE_SEPARATOR_CHAR); //keep getting strings while we are still running into value separators
 		return localeTextList.toArray(new LocaledText[localeTextList.size()]); //convert the list of locale text objects to an array and return the array
 	}
 
@@ -181,13 +166,11 @@ public class PredefinedProfile extends AbstractProfile implements ValueFactory, 
 	 * @throws IOException Thrown if there is an error reading the directory.
 	 * @throws ParseIOException Thrown if there is a an error interpreting the directory.
 	 */
-	public static String processTextValue(Reader reader, final List<NameValuePair<String, String>> paramList) throws IOException, ParseIOException
-	{
+	public static String processTextValue(Reader reader, final List<NameValuePair<String, String>> paramList) throws IOException, ParseIOException {
 		Characters delimiters = TEXT_VALUE_DELIMITER_CHARACTERS; //we'll start out assuming the normal delimiters
 		//check for the non-standard base64 encoding used by producers such as Nokia
 		final String encoding = getParamValue(paramList, ENCODING_PARAM_NAME); //see if an encoding is indicated
-		if(B_ENCODING_TYPE.equalsIgnoreCase(encoding) || BASE64_ENCODING_TYPE.equalsIgnoreCase(encoding)) //if the text is encoded as binary (Nokia does this, for unknown reasons)
-		{
+		if(B_ENCODING_TYPE.equalsIgnoreCase(encoding) || BASE64_ENCODING_TYPE.equalsIgnoreCase(encoding)) { //if the text is encoded as binary (Nokia does this, for unknown reasons)
 			final String base64String = reach(reader, CR); //read the text TODO could some implementations have multiple encoded values, separated by commas?
 			final byte[] bytes = Base64.decode(base64String); //decode the text into bytes
 			final String encodedString = new String(bytes, UTF_8_CHARSET); //hope that the bytes represent UTF-8; using base64 for text is non-standard and undocumented
@@ -196,21 +179,16 @@ public class PredefinedProfile extends AbstractProfile implements ValueFactory, 
 		}
 		final StringBuilder stringBuilder = new StringBuilder(); //create a string builder to hold whatever string we're processing
 		char delimiter; //we'll store the last delimiter peeked		
-		do
-		{
+		do {
 			//		TODO del Log.trace("string buffer so far: ", stringBuffer);	//TODO del			
 			stringBuilder.append(reach(reader, delimiters)); //read all undelimited characters until we find a delimiter
 			delimiter = peek(reader); //see what the delimiter will be
-			switch(delimiter)
-			//see which delimiter we found
-			{
+			switch(delimiter) { //see which delimiter we found
 				case TEXT_ESCAPE_CHAR: //if this is an escape character ('\\')
 				{
 					reader.skip(1); //skip the delimiter
 					final char escapedChar = readCharacter(reader); //read the character after the escape character
-					switch(escapedChar)
-					//see what character comes after this one
-					{
+					switch(escapedChar) { //see what character comes after this one
 						case TEXT_LINE_BREAK_ESCAPED_LOWERCASE_CHAR: //"\n"
 						case TEXT_LINE_BREAK_ESCAPED_UPPERCASE_CHAR: //"\N"
 							stringBuilder.append('\n'); //append a single newline character
@@ -232,8 +210,7 @@ public class PredefinedProfile extends AbstractProfile implements ValueFactory, 
 				default: //if we peeked anything else (there shouldn't be anything else unless there is a logic error)
 					throw new AssertionError("The only possible values should have been " + TEXT_VALUE_DELIMITER_CHARACTERS + "; found " + Characters.getLabel(delimiter));
 			}
-		}
-		while(delimiter != VALUE_SEPARATOR_CHAR && delimiter != CR); //keep collecting parts of the string until we encounter a ',' or a CR
+		} while(delimiter != VALUE_SEPARATOR_CHAR && delimiter != CR); //keep collecting parts of the string until we encounter a ',' or a CR
 		//TODO check the text value
 		//	TODO del Log.trace("returning string: ", stringBuffer);	//TODO del			
 		return stringBuilder.toString(); //return the string we've collected so far
@@ -249,15 +226,11 @@ public class PredefinedProfile extends AbstractProfile implements ValueFactory, 
 	 * @throws IOException Thrown if there is an error reading the directory.
 	 * @throws ParseIOException Thrown if there is a an error interpreting the directory.
 	 */
-	public static URI processURIValue(final Reader reader) throws IOException, ParseIOException
-	{
+	public static URI processURIValue(final Reader reader) throws IOException, ParseIOException {
 		final String uriString = reach(reader, CR); //read the string representing the URI
-		try
-		{
+		try {
 			return new URI(uriString); //create a URI
-		}
-		catch(URISyntaxException uriSyntaxException) //if the URI was not syntactically correct
-		{
+		} catch(URISyntaxException uriSyntaxException) { //if the URI was not syntactically correct
 			throw new ParseIOException(reader, uriSyntaxException);
 		}
 	}
@@ -287,15 +260,11 @@ public class PredefinedProfile extends AbstractProfile implements ValueFactory, 
 	 * </dl>
 	 */
 	public boolean serializeValue(final String profile, final String group, final String name, final List<NameValuePair<String, String>> paramList,
-			final Object value, final String valueType, final Writer writer) throws IOException
-	{
-		if(TEXT_VALUE_TYPE.equalsIgnoreCase(valueType)) //text
-		{
+			final Object value, final String valueType, final Writer writer) throws IOException {
+		if(TEXT_VALUE_TYPE.equalsIgnoreCase(valueType)) { //text
 			serializeTextValue(((LocaledText)value).getText(), writer); //serialize the text
 			return true; //show that we serialized the value 
-		}
-		else if(URI_VALUE_TYPE.equalsIgnoreCase(valueType)) //uri
-		{
+		} else if(URI_VALUE_TYPE.equalsIgnoreCase(valueType)) { //uri
 			writer.write(((URI)value).toString()); //write the URI
 			return true; //show that we serialized the value 
 		}
@@ -311,8 +280,7 @@ public class PredefinedProfile extends AbstractProfile implements ValueFactory, 
 	 * @param writer The writer to which the directory information should be written.
 	 * @throws IOException Thrown if there is an error writing to the directory.
 	 */
-	public void serializeTextValue(final String text, final Writer writer) throws IOException
-	{
+	public void serializeTextValue(final String text, final Writer writer) throws IOException {
 		writer.write(encodeTextValue(text)); //write the encoded string
 	}
 
@@ -322,17 +290,13 @@ public class PredefinedProfile extends AbstractProfile implements ValueFactory, 
 	 * This version creates a basic <code>Directory</code> object.
 	 * </p>
 	 */
-	public Directory createDirectory(final ContentLine[] contentLines)
-	{
+	public Directory createDirectory(final ContentLine[] contentLines) {
 		final Directory directory = new Directory(); //create a basic directory object
-		for(int i = 0; i < contentLines.length; ++i) //look at each content line
-		{
+		for(int i = 0; i < contentLines.length; ++i) { //look at each content line
 			final ContentLine contentLine = contentLines[i]; //get a reference to this content line
 			final String typeName = contentLine.getName(); //get this content line's type name
-			if(NAME_TYPE.equalsIgnoreCase(typeName)) //if this is NAME
-			{
-				if(directory.getDisplayName() == null) //if the directory does not yet have a display name
-				{
+			if(NAME_TYPE.equalsIgnoreCase(typeName)) { //if this is NAME
+				if(directory.getDisplayName() == null) { //if the directory does not yet have a display name
 					directory.setDisplayName((LocaledText)contentLine.getValue()); //set the directory display name
 					continue; //don't process this content line further
 				}

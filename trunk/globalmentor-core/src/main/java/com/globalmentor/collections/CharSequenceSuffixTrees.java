@@ -26,8 +26,7 @@ import com.globalmentor.model.ObjectHolder;
  * 
  * @author Garret Wilson
  */
-public class CharSequenceSuffixTrees
-{
+public class CharSequenceSuffixTrees {
 
 	/**
 	 * Determines the longest subsequence that is repeated in the given subsequence.
@@ -39,21 +38,17 @@ public class CharSequenceSuffixTrees
 	 * @return The longest repeated subsequence in the given character sequence, or <code>null</code> if no subsequence is repeated.
 	 * @throws NullPointerException if the given character sequence is <code>null</code>.
 	 */
-	public static CharSequence getLongestRepeatedSubsequence(final CharSequence charSequence)
-	{
+	public static CharSequence getLongestRepeatedSubsequence(final CharSequence charSequence) {
 		final CharSequenceSuffixTree suffixTree = CharSequenceSuffixTree.create(charSequence); //create a suffix tree
 		final ObjectHolder<String> result = new ObjectHolder<String>(); //create an object to hold the resulting string
-		visit(suffixTree, new AbstractCharSequenceVisitor()
-		{
+		visit(suffixTree, new AbstractCharSequenceVisitor() {
+
 			int maxLength = 0; //keep track of the longest length
 
 			@Override
-			public boolean visit(final SuffixTree suffixTree, final CharSequenceNode node, final CharSequenceEdge parentEdge, final CharSequence charSequence)
-			{
-				if(!node.isLeaf()) //ignore leaf nodes---they aren't repeated sequences
-				{
-					if(charSequence.length() > maxLength) //if this depth is farther than any before
-					{
+			public boolean visit(final SuffixTree suffixTree, final CharSequenceNode node, final CharSequenceEdge parentEdge, final CharSequence charSequence) {
+				if(!node.isLeaf()) { //ignore leaf nodes---they aren't repeated sequences
+					if(charSequence.length() > maxLength) { //if this depth is farther than any before
 						maxLength = charSequence.length(); //update our max length
 						result.setObject(charSequence.toString()); //make a copy and keep track of the resulting string
 					}
@@ -75,23 +70,18 @@ public class CharSequenceSuffixTrees
 	 * @return The longest repeated subsequence in the given character sequence, or <code>null</code> if no subsequence is repeated.
 	 * @throws NullPointerException if the given character sequence is <code>null</code>.
 	 */
-	public static CharSequence getLongestSequentialRepeatedSubsequence(final CharSequence charSequence)
-	{
+	public static CharSequence getLongestSequentialRepeatedSubsequence(final CharSequence charSequence) {
 		final CharSequenceSuffixTree suffixTree = CharSequenceSuffixTree.create(charSequence); //create a suffix tree
 		final ObjectHolder<String> result = new ObjectHolder<String>(); //create an object to hold the resulting string
-		visit(suffixTree, new AbstractCharSequenceVisitor()
-		{
+		visit(suffixTree, new AbstractCharSequenceVisitor() {
+
 			int maxLength = 0; //keep track of the longest length
 
 			@Override
-			public boolean visit(final SuffixTree suffixTree, final CharSequenceNode node, final CharSequenceEdge parentEdge, final CharSequence charSequence)
-			{
-				if(!node.isLeaf()) //ignore leaf nodes---they aren't repeated sequences
-				{
-					if(charSequence.length() > maxLength) //if this depth is farther than any before, see if the repeat sequence is sequential
-					{
-						if(parentEdge.getChildNode().startsWith(charSequence)) //if the same sequence appears starting with the edge's child node
-						{
+			public boolean visit(final SuffixTree suffixTree, final CharSequenceNode node, final CharSequenceEdge parentEdge, final CharSequence charSequence) {
+				if(!node.isLeaf()) { //ignore leaf nodes---they aren't repeated sequences
+					if(charSequence.length() > maxLength) { //if this depth is farther than any before, see if the repeat sequence is sequential
+						if(parentEdge.getChildNode().startsWith(charSequence)) { //if the same sequence appears starting with the edge's child node
 							maxLength = charSequence.length(); //update our max length
 							result.setObject(charSequence.toString()); //make a copy and keep track of the sequentially repeated sequence
 						}
@@ -109,14 +99,13 @@ public class CharSequenceSuffixTrees
 	 * 
 	 * @author Garret Wilson
 	 */
-	public static abstract class AbstractCharSequenceVisitor implements Visitor<CharSequenceNode, CharSequenceEdge>
-	{
+	public static abstract class AbstractCharSequenceVisitor implements Visitor<CharSequenceNode, CharSequenceEdge> {
+
 		/** The string builder to keep track of the current sequence. */
 		final StringBuilder sequenceBuilder;
 
 		/** Default constructor starting an empty sequence. */
-		public AbstractCharSequenceVisitor()
-		{
+		public AbstractCharSequenceVisitor() {
 			this("");
 		}
 
@@ -125,8 +114,7 @@ public class CharSequenceSuffixTrees
 		 * @param charSequence The initial character sequence.
 		 * @throws NullPointerException if the given character sequence is <code>null</code>.
 		 */
-		public AbstractCharSequenceVisitor(final CharSequence charSequence)
-		{
+		public AbstractCharSequenceVisitor(final CharSequence charSequence) {
 			sequenceBuilder = new StringBuilder(charSequence);
 		}
 
@@ -135,10 +123,8 @@ public class CharSequenceSuffixTrees
 		 * .
 		 */
 		@Override
-		public final boolean visit(final SuffixTree suffixTree, final CharSequenceNode node, final CharSequenceEdge parentEdge, final int length)
-		{
-			if(parentEdge != null) //if this isn't the root node
-			{
+		public final boolean visit(final SuffixTree suffixTree, final CharSequenceNode node, final CharSequenceEdge parentEdge, final int length) {
+			if(parentEdge != null) { //if this isn't the root node
 				sequenceBuilder.replace(length - parentEdge.getLength(), sequenceBuilder.length(), parentEdge.getSubSequence().toString()); //append this edge's subsequence to our current position (the string builder will be filled sequentially)
 			}
 			return visit(suffixTree, node, parentEdge, sequenceBuilder); //visit the node with the current sequence

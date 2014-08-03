@@ -23,8 +23,7 @@ import java.io.*;
  * is still required.
  * @author Garret Wilson
  */
-public abstract class AbstractFileFilter implements FileFilter, FilenameFilter
-{
+public abstract class AbstractFileFilter implements FileFilter, FilenameFilter {
 
 	/**
 	 * {@inheritDoc}
@@ -32,8 +31,7 @@ public abstract class AbstractFileFilter implements FileFilter, FilenameFilter
 	 * This implementation delegates to {@link #accept(File)}.
 	 * </p>
 	 */
-	public final boolean accept(final File directory, final String name)
-	{
+	public final boolean accept(final File directory, final String name) {
 		return accept(new File(directory, name));
 	}
 

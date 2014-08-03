@@ -25,8 +25,7 @@ import static com.globalmentor.java.Objects.*;
  * </p>
  * @author Garret Wilson
  */
-public class RunnableOperation extends AbstractOperation
-{
+public class RunnableOperation extends AbstractOperation {
 
 	/** The decorated runnable. */
 	private final Runnable runnable;
@@ -36,15 +35,13 @@ public class RunnableOperation extends AbstractOperation
 	 * @param runnable The runnable to be decorated by this operation.
 	 * @throws NullPointerException if the given runnable is <code>null</code>.
 	 */
-	public RunnableOperation(final Runnable runnable)
-	{
+	public RunnableOperation(final Runnable runnable) {
 		this.runnable = checkInstance(runnable);
 	}
 
 	/** {@inheritDoc} This method delegates to the decorated runnabled {@link Runnable#run()} method. */
 	@Override
-	public void execute()
-	{
+	public void execute() {
 		runnable.run(); //run the runnable
 	}
 

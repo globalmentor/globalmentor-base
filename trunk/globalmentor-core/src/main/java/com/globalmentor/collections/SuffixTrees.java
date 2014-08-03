@@ -28,8 +28,7 @@ import com.globalmentor.collections.SuffixTree.*;
  * 
  * @author Garret Wilson
  */
-public class SuffixTrees
-{
+public class SuffixTrees {
 
 	/**
 	 * Prints a character representation of the tree and its branches, starting from the root node.
@@ -37,8 +36,7 @@ public class SuffixTrees
 	 * @param printStream The destination to which the tree should be printed.
 	 * @throws NullPointerException if the given suffix tree and/or print stream is <code>null</code>.
 	 */
-	public static void print(final SuffixTree suffixTree, final PrintStream printStream)
-	{
+	public static void print(final SuffixTree suffixTree, final PrintStream printStream) {
 		print(suffixTree, printStream, suffixTree.getRootNode(), 0); //print the root edges at a level of zero
 	}
 
@@ -50,10 +48,8 @@ public class SuffixTrees
 	 * @param level The zero-based level of the tree from the root.
 	 * @throws NullPointerException if the given suffix tree, print stream, and/or node is <code>null</code>.
 	 */
-	protected static void print(final SuffixTree suffixTree, final PrintStream printStream, final Node node, final int level)
-	{
-		for(final Edge edge : node.getChildEdges()) //look at all the child edges
-		{
+	protected static void print(final SuffixTree suffixTree, final PrintStream printStream, final Node node, final int level) {
+		for(final Edge edge : node.getChildEdges()) { //look at all the child edges
 			print(suffixTree, printStream, edge, level); //print each edge at the requested level
 		}
 	}
@@ -66,8 +62,7 @@ public class SuffixTrees
 	 * @param level The zero-based level of the tree from the root.
 	 * @throws NullPointerException if the given suffix tree and/or print stream and/or edge is <code>null</code>.
 	 */
-	protected static void print(final SuffixTree suffixTree, final PrintStream printStream, final Edge edge, final int level)
-	{
+	protected static void print(final SuffixTree suffixTree, final PrintStream printStream, final Edge edge, final int level) {
 		printStream.println(Strings.createString('\t', level) + edge.toString()); //indent and print the edge
 		print(suffixTree, printStream, edge.getChildNode(), level + 1); //print the edge's child edges at one more level down
 	}
@@ -82,8 +77,7 @@ public class SuffixTrees
 	 * @throws NullPointerException if the given suffix tree and/or visitor is <code>null</code>.
 	 */
 	@SuppressWarnings("unchecked")
-	public static <N extends Node, E extends Edge> boolean visit(final SuffixTree suffixTree, final Visitor<N, E> visitor)
-	{
+	public static <N extends Node, E extends Edge> boolean visit(final SuffixTree suffixTree, final Visitor<N, E> visitor) {
 		return visit(checkInstance(suffixTree), (N)suffixTree.getRootNode(), null, 0, checkInstance(visitor));
 	}
 
@@ -99,10 +93,8 @@ public class SuffixTrees
 	 * @return <code>true</code> if visiting completed all the nodes.
 	 */
 	public static <N extends Node, E extends Edge> boolean visit(final SuffixTree suffixTree, final N node, final E parentEdge, final int length,
-			final Visitor<N, E> visitor)
-	{
-		if(!visitor.visit(suffixTree, node, parentEdge, length)) //visit this node, stopping if requested
-		{
+			final Visitor<N, E> visitor) {
+		if(!visitor.visit(suffixTree, node, parentEdge, length)) { //visit this node, stopping if requested
 			return false;
 		}
 		return visitChildren(suffixTree, node, length, visitor); //visit the children
@@ -119,13 +111,9 @@ public class SuffixTrees
 	 * @return <code>true</code> if visiting completed all the nodes.
 	 */
 	@SuppressWarnings("unchecked")
-	public static <N extends Node, E extends Edge> boolean visitChildren(final SuffixTree suffixTree, final N node, final int length,
-			final Visitor<N, E> visitor)
-	{
-		for(final Edge childEdge : node.getChildEdges()) //iterate the child edges
-		{
-			if(!visit(suffixTree, (N)childEdge.getChildNode(), (E)childEdge, length + childEdge.getLength(), visitor)) //visit each child node, stopping if requested
-			{
+	public static <N extends Node, E extends Edge> boolean visitChildren(final SuffixTree suffixTree, final N node, final int length, final Visitor<N, E> visitor) {
+		for(final Edge childEdge : node.getChildEdges()) { //iterate the child edges
+			if(!visit(suffixTree, (N)childEdge.getChildNode(), (E)childEdge, length + childEdge.getLength(), visitor)) { //visit each child node, stopping if requested
 				return false;
 			}
 		}
@@ -141,8 +129,8 @@ public class SuffixTrees
 	 * @param <N> The type of node.
 	 * @param <E> The type of edge.
 	 */
-	public interface Visitor<N extends Node, E extends Edge>
-	{
+	public interface Visitor<N extends Node, E extends Edge> {
+
 		/**
 		 * Visits the given node.
 		 * @param suffixTree The suffix tree being visited.

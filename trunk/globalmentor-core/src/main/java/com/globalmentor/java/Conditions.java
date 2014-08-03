@@ -30,8 +30,7 @@ import com.globalmentor.config.ConfigurationException;
  * 
  * @author Garret Wilson
  */
-public class Conditions
-{
+public class Conditions {
 
 	/**
 	 * Checks the results of an expression to see if an argument is correct, and throws an {@link IllegalArgumentException} if the value is <code>false</code>.
@@ -41,8 +40,7 @@ public class Conditions
 	 * @param test The result of the test.
 	 * @throws IllegalArgumentException if the given value is <code>false</code>.
 	 */
-	public static void checkArgument(final boolean test)
-	{
+	public static void checkArgument(final boolean test) {
 		checkArgument(test, null); //check the test with no description
 	}
 
@@ -61,13 +59,10 @@ public class Conditions
 	 *           format element(s) that use it.
 	 * @see MessageFormat#format(String, Object...)
 	 */
-	public static void checkArgument(final boolean test, String description, final Object... arguments)
-	{
-		if(!test)
-		{
+	public static void checkArgument(final boolean test, String description, final Object... arguments) {
+		if(!test) {
 			//format the message if appropriate
-			if(description != null && arguments.length > 0)
-			{
+			if(description != null && arguments.length > 0) {
 				description = MessageFormat.format(description, arguments);
 			}
 			throw new IllegalArgumentException(description);
@@ -83,8 +78,7 @@ public class Conditions
 	 * @param return The given object.
 	 * @throws IllegalArgumentException if the given object is <code>null</code>.
 	 */
-	public static <T> T checkArgumentNotNull(final T object)
-	{
+	public static <T> T checkArgumentNotNull(final T object) {
 		return checkArgumentNotNull(object, null); //check the object with no description
 	}
 
@@ -104,13 +98,10 @@ public class Conditions
 	 *           format element(s) that use it.
 	 * @see MessageFormat#format(String, Object...)
 	 */
-	public static <T> T checkArgumentNotNull(final T object, String description, final Object... arguments)
-	{
-		if(object == null)
-		{
+	public static <T> T checkArgumentNotNull(final T object, String description, final Object... arguments) {
+		if(object == null) {
 			//format the message if appropriate
-			if(description != null && arguments.length > 0)
-			{
+			if(description != null && arguments.length > 0) {
 				description = MessageFormat.format(description, arguments);
 			}
 			throw new IllegalArgumentException(description);
@@ -128,10 +119,8 @@ public class Conditions
 	 * @throws IllegalArgumentException if the value is less than the range minimum.
 	 * @return The given value.
 	 */
-	public static int checkArgumentMinimum(final int value, final int rangeMin)
-	{
-		if(value < rangeMin) //if the value not within the range
-		{
+	public static int checkArgumentMinimum(final int value, final int rangeMin) {
+		if(value < rangeMin) { //if the value not within the range
 			throw new IllegalArgumentException("Value " + value + " cannot be less than " + rangeMin);
 		}
 		return value; //return the value, which has been determined to be within the range
@@ -147,10 +136,8 @@ public class Conditions
 	 * @throws IllegalArgumentException if the value is less than the range minimum.
 	 * @return The given value.
 	 */
-	public static long checkArgumentMinimum(final long value, final long rangeMin)
-	{
-		if(value < rangeMin) //if the value not within the range
-		{
+	public static long checkArgumentMinimum(final long value, final long rangeMin) {
+		if(value < rangeMin) { //if the value not within the range
 			throw new IllegalArgumentException("Value " + value + " cannot be less than " + rangeMin);
 		}
 		return value; //return the value, which has been determined to be within the range
@@ -166,8 +153,7 @@ public class Conditions
 	 * @return The given value.
 	 * @see #checkArgumentMinimum(int, int)
 	 */
-	public static int checkArgumentNotNegative(final int value)
-	{
+	public static int checkArgumentNotNegative(final int value) {
 		return checkArgumentMinimum(value, 0);
 	}
 
@@ -181,8 +167,7 @@ public class Conditions
 	 * @return The given value.
 	 * @see #checkArgumentMinimum(int, int)
 	 */
-	public static int checkArgumentPositive(final int value)
-	{
+	public static int checkArgumentPositive(final int value) {
 		return checkArgumentMinimum(value, 1);
 	}
 
@@ -196,8 +181,7 @@ public class Conditions
 	 * @return The given value.
 	 * @see #checkArgumentMinimum(long, long)
 	 */
-	public static long checkArgumentNotNegative(final long value)
-	{
+	public static long checkArgumentNotNegative(final long value) {
 		return checkArgumentMinimum(value, 0);
 	}
 
@@ -211,8 +195,7 @@ public class Conditions
 	 * @return The given value.
 	 * @see #checkArgumentMinimum(long, long)
 	 */
-	public static long checkArgumentPositive(final long value)
-	{
+	public static long checkArgumentPositive(final long value) {
 		return checkArgumentMinimum(value, 1);
 	}
 
@@ -227,10 +210,8 @@ public class Conditions
 	 * @return The given value.
 	 * @throws IllegalArgumentException if the value is less than the range minimum or greater than the range maximum.
 	 */
-	public static int checkArgumentRange(final int value, final int rangeMin, final int rangeMax)
-	{
-		if(value < rangeMin || value > rangeMax) //if the value not within the range
-		{
+	public static int checkArgumentRange(final int value, final int rangeMin, final int rangeMax) {
+		if(value < rangeMin || value > rangeMax) { //if the value not within the range
 			throw new IllegalArgumentException("Value " + value + " is not within the range " + rangeMin + " to " + rangeMax);
 		}
 		return value; //return the value, which has been determined to be within the range
@@ -249,18 +230,14 @@ public class Conditions
 	 * @throws IllegalArgumentException if the from value is less than the range minimum or greater than the range maximum; or if the to value is less than the
 	 *           from value or greater than the range maximum.
 	 */
-	public static void checkArgumentRange(final int from, final int to, final int rangeMin, final int rangeMax)
-	{
-		if(to < from)
-		{
+	public static void checkArgumentRange(final int from, final int to, final int rangeMin, final int rangeMax) {
+		if(to < from) {
 			throw new IllegalArgumentException("Range from value " + from + " cannot be less than range to value " + to);
 		}
-		if(from < rangeMin) //if the from value is below the range
-		{
+		if(from < rangeMin) { //if the from value is below the range
 			throw new IllegalArgumentException("Range from value " + from + " is not within the range " + rangeMin + " to " + rangeMax);
 		}
-		if(to < rangeMax) //if the to value is above the range
-		{
+		if(to < rangeMax) { //if the to value is above the range
 			throw new IllegalArgumentException("Range to value " + to + " is not within the range " + rangeMin + " to " + rangeMax);
 		}
 	}
@@ -276,10 +253,8 @@ public class Conditions
 	 * @return The given value.
 	 * @throws IllegalArgumentException if the value is less than the range minimum or greater than the range maximum.
 	 */
-	public static long checkArgumentRange(final long value, final long rangeMin, final long rangeMax)
-	{
-		if(value < rangeMin || value > rangeMax) //if the value not within the range
-		{
+	public static long checkArgumentRange(final long value, final long rangeMin, final long rangeMax) {
+		if(value < rangeMin || value > rangeMax) { //if the value not within the range
 			throw new IllegalArgumentException("Value " + value + " is not within the range " + rangeMin + " to " + rangeMax);
 		}
 		return value; //return the value, which has been determined to be within the range
@@ -290,8 +265,7 @@ public class Conditions
 	 * @param test The result of the test.
 	 * @throws ConfigurationException if the given value is <code>false</code>.
 	 */
-	public static void checkConfiguration(final boolean test)
-	{
+	public static void checkConfiguration(final boolean test) {
 		checkArgument(test, null); //check the test with no description
 	}
 
@@ -307,13 +281,10 @@ public class Conditions
 	 *           format element(s) that use it.
 	 * @see MessageFormat#format(String, Object...)
 	 */
-	public static void checkConfiguration(final boolean test, String description, final Object... arguments)
-	{
-		if(!test)
-		{
+	public static void checkConfiguration(final boolean test, String description, final Object... arguments) {
+		if(!test) {
 			//format the message if appropriate
-			if(description != null && arguments.length > 0)
-			{
+			if(description != null && arguments.length > 0) {
 				description = MessageFormat.format(description, arguments);
 			}
 			throw new ConfigurationException(description);
@@ -327,8 +298,7 @@ public class Conditions
 	 * @return The given variable.
 	 * @throws ConfigurationException if the given variable is <code>null</code>.
 	 */
-	public static <T> T checkConfigurationNotNull(final T variable)
-	{
+	public static <T> T checkConfigurationNotNull(final T variable) {
 		return checkConfigurationNotNull(variable, null); //check for null with no description
 	}
 
@@ -340,10 +310,8 @@ public class Conditions
 	 * @return The given variable.
 	 * @throws NullPointerException if the given variable is <code>null</code>.
 	 */
-	public static <T> T checkConfigurationNotNull(final T variable, final String description)
-	{
-		if(variable == null) //if the variable is null
-		{
+	public static <T> T checkConfigurationNotNull(final T variable, final String description) {
+		if(variable == null) { //if the variable is null
 			throw new ConfigurationException(description);
 		}
 		return variable; //return the variable
@@ -359,8 +327,7 @@ public class Conditions
 	 * @return The given index.
 	 * @throws IndexOutOfBoundsException if the index is less than zero, or equal to or greater than given length.
 	 */
-	public static int checkIndexBounds(final int index, final int length)
-	{
+	public static int checkIndexBounds(final int index, final int length) {
 		return checkIndexBounds(index, 0, length);
 	}
 
@@ -374,8 +341,7 @@ public class Conditions
 	 * @return The given index.
 	 * @throws IndexOutOfBoundsException if the index is less than zero, or equal to or greater than given length.
 	 */
-	public static long checkIndexBounds(final long index, final long length)
-	{
+	public static long checkIndexBounds(final long index, final long length) {
 		return checkIndexBounds(index, 0, length);
 	}
 
@@ -390,10 +356,8 @@ public class Conditions
 	 * @return The given index.
 	 * @throws IndexOutOfBoundsException if the index is less than the range minimum, or equal to or greater than the range maximum.
 	 */
-	public static int checkIndexBounds(final int index, final int rangeMin, final int rangeMax)
-	{
-		if(index < rangeMin || index >= rangeMax) //if the index not within its bounds
-		{
+	public static int checkIndexBounds(final int index, final int rangeMin, final int rangeMax) {
+		if(index < rangeMin || index >= rangeMax) { //if the index not within its bounds
 			throw new IndexOutOfBoundsException("Index out of bounds: " + index);
 		}
 		return index; //return the index, which has been determined to be in bounds
@@ -410,10 +374,8 @@ public class Conditions
 	 * @return The given index.
 	 * @throws IndexOutOfBoundsException if the index is less than the range minimum, or equal to or greater than the range maximum.
 	 */
-	public static long checkIndexBounds(final long index, final long rangeMin, final long rangeMax)
-	{
-		if(index < rangeMin || index >= rangeMax) //if the index not within its bounds
-		{
+	public static long checkIndexBounds(final long index, final long rangeMin, final long rangeMax) {
+		if(index < rangeMin || index >= rangeMax) { //if the index not within its bounds
 			throw new IndexOutOfBoundsException("Index out of bounds: " + index);
 		}
 		return index; //return the index, which has been determined to be in bounds
@@ -424,8 +386,7 @@ public class Conditions
 	 * @param state The state to check.
 	 * @throws IllegalStateException if the given state is <code>false</code>.
 	 */
-	public static void checkState(final boolean state)
-	{
+	public static void checkState(final boolean state) {
 		checkState(state, null);
 	}
 
@@ -435,10 +396,8 @@ public class Conditions
 	 * @param description A description of the state to be used when generating an exception, or <code>null</code> for no description.
 	 * @throws IllegalStateException if the given state is <code>false</code>.
 	 */
-	public static void checkState(final boolean state, final String description)
-	{
-		if(!state)
-		{
+	public static void checkState(final boolean state, final String description) {
+		if(!state) {
 			throw new IllegalStateException(description);
 		}
 	}
@@ -455,8 +414,7 @@ public class Conditions
 	 * @param message The detail message, or <code>null</code> if there is no detail message.
 	 * @return A throwable indicating an unexpected condition.
 	 */
-	public static IllegalStateException unexpected(final String message)
-	{
+	public static IllegalStateException unexpected(final String message) {
 		return unexpected(message, null);
 	}
 
@@ -472,8 +430,7 @@ public class Conditions
 	 * @param cause The throwable cause of the unexpected condition, or <code>null</code> if a throwable cause is nonexistent or unknown.
 	 * @return A throwable indicating an unexpected condition.
 	 */
-	public static IllegalStateException unexpected(final Throwable cause)
-	{
+	public static IllegalStateException unexpected(final Throwable cause) {
 		return unexpected(null, cause);
 	}
 
@@ -490,8 +447,7 @@ public class Conditions
 	 * @param cause The throwable cause of the unexpected condition, or <code>null</code> if a throwable cause is nonexistent or unknown.
 	 * @return A throwable indicating an unexpected condition.
 	 */
-	public static IllegalStateException unexpected(final String message, final Throwable cause)
-	{
+	public static IllegalStateException unexpected(final String message, final Throwable cause) {
 		return new IllegalStateException(message, cause);
 	}
 
@@ -508,8 +464,7 @@ public class Conditions
 	 * </p>
 	 * @return A throwable indicating an impossible condition.
 	 */
-	public static AssertionError impossible()
-	{
+	public static AssertionError impossible() {
 		return impossible((String)null);
 	}
 
@@ -527,8 +482,7 @@ public class Conditions
 	 * @param message The detail message, or <code>null</code> if there is no detail message.
 	 * @return A throwable indicating an impossible condition.
 	 */
-	public static AssertionError impossible(final String message)
-	{
+	public static AssertionError impossible(final String message) {
 		return impossible(message, null);
 	}
 
@@ -546,8 +500,7 @@ public class Conditions
 	 * @param cause The throwable cause of the impossible condition, or <code>null</code> if a throwable cause is nonexistent or unknown.
 	 * @return A throwable indicating an impossible condition.
 	 */
-	public static AssertionError impossible(final Throwable cause)
-	{
+	public static AssertionError impossible(final Throwable cause) {
 		return impossible(null, cause);
 	}
 
@@ -566,11 +519,9 @@ public class Conditions
 	 * @param cause The throwable cause of the impossible condition, or <code>null</code> if a throwable cause is nonexistent or unknown.
 	 * @return A throwable indicating an impossible condition.
 	 */
-	public static AssertionError impossible(final String message, final Throwable cause)
-	{
+	public static AssertionError impossible(final String message, final Throwable cause) {
 		AssertionError impossible = message != null ? new AssertionError(message) : new AssertionError();
-		if(cause != null)
-		{
+		if(cause != null) {
 			impossible = (AssertionError)impossible.initCause(cause);
 		}
 		return impossible;

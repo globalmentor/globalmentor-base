@@ -29,8 +29,7 @@ import static com.globalmentor.time.TimeZones.*;
  * The class representing an ISO UTC offset type.
  * @author Garret Wilson
  */
-public class ISOUTCOffset implements ISOTemporal
-{
+public class ISOUTCOffset implements ISOTemporal {
 
 	/** The shared UTC offset representing Coordinated Universal Time (UTC), +00:00. */
 	public final static ISOUTCOffset UTC = new ISOUTCOffset(0, 0);
@@ -39,8 +38,7 @@ public class ISOUTCOffset implements ISOTemporal
 	private final int hours;
 
 	/** @return The offset hours. */
-	public int getHours()
-	{
+	public int getHours() {
 		return hours;
 	}
 
@@ -48,8 +46,7 @@ public class ISOUTCOffset implements ISOTemporal
 	private final int minutes;
 
 	/** @return The offset minutes. */
-	public int getMinutes()
-	{
+	public int getMinutes() {
 		return minutes;
 	}
 
@@ -59,8 +56,7 @@ public class ISOUTCOffset implements ISOTemporal
 	 * @param minutes The offset minutes.
 	 * @throws IllegalArgumentException if the given offset minutes is negative.
 	 */
-	public ISOUTCOffset(final int hours, final int minutes)
-	{
+	public ISOUTCOffset(final int hours, final int minutes) {
 		this.hours = hours; //save the hours
 		this.minutes = checkArgumentNotNegative(minutes); //save the minutes, but don't allow negative offset minutes
 	}
@@ -72,15 +68,11 @@ public class ISOUTCOffset implements ISOTemporal
 	 * @throws NullPointerException if the given string is <code>null</code>
 	 * @throws ArgumentSyntaxException if the given string does not have the correct syntax.
 	 */
-	public static ISOUTCOffset valueOf(final String string) throws ArgumentSyntaxException
-	{
-		try
-		{
+	public static ISOUTCOffset valueOf(final String string) throws ArgumentSyntaxException {
+		try {
 			final ISOTemporalComponents temporalComponents = ISOTemporalComponents.parseDateTimeUTCOffset(string, false, false); //parse temporal components for only the UTC offset
 			return temporalComponents.asUTCOffset(); //return the UTC offset from the temporal components
-		}
-		catch(final SyntaxException syntaxException) //if the syntax of the string was not correct
-		{
+		} catch(final SyntaxException syntaxException) { //if the syntax of the string was not correct
 			throw new ArgumentSyntaxException(syntaxException);
 		}
 	}
@@ -89,14 +81,11 @@ public class ISOUTCOffset implements ISOTemporal
 	 * Returns the UTC offset as a time zone.
 	 * @return A time zone object representing the UTC offset.
 	 */
-	public TimeZone toTimeZone()
-	{
+	public TimeZone toTimeZone() {
 		final StringBuilder timeZoneIDStringBuilder = new StringBuilder(); //create a new string builder
 		timeZoneIDStringBuilder.append(GMT_ID); //start with "GMT"
-		if(hours != 0 || minutes > 0) //if this is not exactly GMT
-		{
-			if(hours >= 0) //if there is a nonnegative hour offset
-			{
+		if(hours != 0 || minutes > 0) { //if this is not exactly GMT
+			if(hours >= 0) { //if there is a nonnegative hour offset
 				timeZoneIDStringBuilder.append('+'); //show that  this is a positive offset
 			}
 			timeZoneIDStringBuilder.append(Integer.toString(hours)); //append the offset hours
@@ -111,8 +100,7 @@ public class ISOUTCOffset implements ISOTemporal
 	 * @param stringBuild The string builder to which the lexical representation will be appended.
 	 * @return The string builder.
 	 */
-	public StringBuilder append(final StringBuilder stringBuilder)
-	{
+	public StringBuilder append(final StringBuilder stringBuilder) {
 		stringBuilder.append(hours < 0 ? '-' : '+'); //show whether this is a a positive or negative offset
 		stringBuilder.append(Integers.toString(Math.abs(hours), 10, 2)); //append the offset hours, using two digits
 		stringBuilder.append(TIME_DELIMITER); //append ':'
@@ -124,8 +112,7 @@ public class ISOUTCOffset implements ISOTemporal
 	 * Returns the canonical lexical representation of this UTC offset in the form "+/-hh:mm".
 	 * @return The canonical lexical representation of this UTC offset.
 	 */
-	public String toString()
-	{
+	public String toString() {
 		return append(new StringBuilder()).toString(); //append the lexical representation to a new string builder and return the resulting string
 	}
 

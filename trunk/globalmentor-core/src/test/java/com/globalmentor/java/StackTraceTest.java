@@ -25,21 +25,18 @@ import org.junit.Test;
  * Tests of a stack trace.
  * @author Garret Wilson
  */
-public class StackTraceTest
-{
+public class StackTraceTest {
 
 	private final StackTrace classVariableStackTrace = new StackTrace();
 
 	@Test
-	public void testStackElements()
-	{
+	public void testStackElements() {
 		final StackTraceElement[] stackTraceElements = new Throwable().getStackTrace();
 		assertThat("Stack trace elements not the length expected.", new StackTrace().getStackTraceElements().size(), equalTo(stackTraceElements.length));
 	}
 
 	@Test
-	public void testEqualsMethod()
-	{
+	public void testEqualsMethod() {
 		final StackTrace methodStackTrace1 = new StackTrace();
 		final StackTrace methodStackTrace2 = new StackTrace();
 		assertTrue(methodStackTrace1.isCurrentMethodIntersected(methodStackTrace2));

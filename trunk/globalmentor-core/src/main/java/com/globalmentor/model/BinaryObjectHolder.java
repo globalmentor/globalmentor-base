@@ -20,15 +20,16 @@ import java.util.Map;
 
 //TODO delete class when possible
 
-/**An object that can have arbitrary byte arrays attached to it.
-@author Garret Wilson
-*/
+/**
+ * An object that can have arbitrary byte arrays attached to it.
+ * @author Garret Wilson
+ */
 public interface BinaryObjectHolder //TODO we want to rename this to AttachmentOwner or something?
 {
 
-	/**@return A map of binary objects, each an array of bytes keyed to some ID
-		string.
-	*/
+	/**
+	 * @return A map of binary objects, each an array of bytes keyed to some ID string.
+	 */
 	public Map getBinaryObjectMap();
 
 }

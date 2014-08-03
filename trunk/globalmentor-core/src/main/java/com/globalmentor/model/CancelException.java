@@ -20,13 +20,12 @@ package com.globalmentor.model;
  * Unchecked exception for indicating that some operation should be canceled.
  * @author Garret Wilson
  */
-public class CancelException extends RuntimeException
-{
+public class CancelException extends RuntimeException {
+
 	private static final long serialVersionUID = 1L;
 
 	/** Constructs a new exception with no detail message. */
-	public CancelException()
-	{
+	public CancelException() {
 		super();
 	}
 
@@ -34,8 +33,7 @@ public class CancelException extends RuntimeException
 	 * Constructs a new exception with the specified detail message.
 	 * @param message The detail message.
 	 */
-	public CancelException(final String message)
-	{
+	public CancelException(final String message) {
 		super(message);
 	}
 
@@ -45,8 +43,7 @@ public class CancelException extends RuntimeException
 	 * @param cause The cause (which is saved for later retrieval by the {@link Throwable#getCause()} method), or <code>null</code> if the cause is nonexistent or
 	 *          unknown.
 	 */
-	public CancelException(final String message, final Throwable cause)
-	{
+	public CancelException(final String message, final Throwable cause) {
 		super(message, cause);
 	}
 
@@ -55,8 +52,7 @@ public class CancelException extends RuntimeException
 	 * @param cause The cause (which is saved for later retrieval by the {@link Throwable#getCause()} method), or <code>null</code> if the cause is nonexistent or
 	 *          unknown.
 	 */
-	public CancelException(final Throwable cause)
-	{
+	public CancelException(final Throwable cause) {
 		super(cause);
 	}
 }

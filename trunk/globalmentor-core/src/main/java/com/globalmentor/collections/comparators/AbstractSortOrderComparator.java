@@ -24,15 +24,13 @@ import static com.globalmentor.java.Objects.*;
  * @author Garret Wilson
  * @see SortOrder
  */
-public abstract class AbstractSortOrderComparator<T> implements SortOrderComparator<T>
-{
+public abstract class AbstractSortOrderComparator<T> implements SortOrderComparator<T> {
 
 	/** The order in which to perform comparisons. */
 	private final SortOrder sortOrder;
 
 	/** @return The order in which to perform comparisons. */
-	public SortOrder getSortOrder()
-	{
+	public SortOrder getSortOrder() {
 		return sortOrder;
 	}
 
@@ -41,8 +39,7 @@ public abstract class AbstractSortOrderComparator<T> implements SortOrderCompara
 	 * @param sortOrder The order in which to perform comparisons.
 	 * @throws NullPointerException if the given sort order is <code>null</code>.
 	 */
-	public AbstractSortOrderComparator(final SortOrder sortOrder)
-	{
+	public AbstractSortOrderComparator(final SortOrder sortOrder) {
 		this.sortOrder = checkInstance(sortOrder, "Sort order cannot be null.");
 	}
 
@@ -50,15 +47,12 @@ public abstract class AbstractSortOrderComparator<T> implements SortOrderCompara
 	 * {@inheritDoc} This implementation performs an identity comparison and then delegates to {@link #compareImpl(Object, Object)}, returning a negative version
 	 * of the result if {@link #getSortOrder()} is {@link SortOrder#DESCENDING}.
 	 */
-	public final int compare(final T object1, final T object2)
-	{
-		if(object1 == object2) //if the resources are identical
-		{
+	public final int compare(final T object1, final T object2) {
+		if(object1 == object2) { //if the resources are identical
 			return 0; //identical resources are always equal
 		}
 		int result = compareImpl(object1, object2); //perform the comparison
-		if(result != 0 && getSortOrder() == SortOrder.DESCENDING) //if the objects aren't identical and we are comparing in reverse order
-		{
+		if(result != 0 && getSortOrder() == SortOrder.DESCENDING) { //if the objects aren't identical and we are comparing in reverse order
 			result = -result; //switch the result
 		}
 		return result;

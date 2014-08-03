@@ -18,16 +18,15 @@ package com.globalmentor.collections.comparators;
 
 import java.util.Comparator;
 
+/**
+ * A comparator that can sort in ascending or descending order.
+ * @param <T> The type of objects that may be compared by this comparator.
+ * @author Garret Wilson
+ * @see SortOrder
+ */
+public interface SortOrderComparator<T> extends Comparator<T> {
 
-/**A comparator that can sort in ascending or descending order.
-@param <T> The type of objects that may be compared by this comparator.
-@author Garret Wilson
-@see SortOrder
-*/
-public interface SortOrderComparator<T> extends Comparator<T>
-{
-
-	/**@return The order in which to perform comparisons.*/
+	/** @return The order in which to perform comparisons. */
 	public SortOrder getSortOrder();
 
 }

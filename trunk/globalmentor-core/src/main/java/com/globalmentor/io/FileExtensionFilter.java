@@ -22,44 +22,45 @@ import static java.util.Collections.*;
 
 import static com.globalmentor.io.Files.*;
 
-/**A class that can filter files based upon extension.
-@author Garret Wilson
-*/
-public class FileExtensionFilter implements FileFilter, FilenameFilter
-{
-	/**The extensions to include.*/
-	private final Set<String> extensionSet=new HashSet<String>();
+/**
+ * A class that can filter files based upon extension.
+ * @author Garret Wilson
+ */
+public class FileExtensionFilter implements FileFilter, FilenameFilter {
 
-		/**@return The extensions to include.*/
-		protected Set<String> getExtensionSet() {return extensionSet;}
+	/** The extensions to include. */
+	private final Set<String> extensionSet = new HashSet<String>();
 
-	/**Constructor specifying extensions to include.
-	@param extensions The extensions to include.
-	*/
-	public FileExtensionFilter(final String... extensions)
-	{
-		addAll(extensionSet, extensions);	//add all the extensions to the extension set
+	/** @return The extensions to include. */
+	protected Set<String> getExtensionSet() {
+		return extensionSet;
 	}
 
-	/**Tests if a specified file should be included in a file list.
-	This version accepts a file if the extension is included in the extension set.
-	@param directory The directory in which the file was found.
-	@param name the name of the file.
-	@return  <code>true</code> if and only if the name should be
-		included in the file list; <code>false</code> otherwise.
-	*/
-	public boolean accept(final File directory, final String name)
-	{
-		return getExtensionSet().contains(getExtension(name));	//see if the extension set contains the extension of the filename
+	/**
+	 * Constructor specifying extensions to include.
+	 * @param extensions The extensions to include.
+	 */
+	public FileExtensionFilter(final String... extensions) {
+		addAll(extensionSet, extensions); //add all the extensions to the extension set
 	}
 
-  /**Tests whether or not the specified abstract pathname should be included in a pathname list.
-	This version accepts a file if the extension is included in the extension set.
-	@param  file  The abstract pathname to be tested.
-	@return <code>true</code> if and only if <code>pathname</code> should be included
-	*/
-  public boolean accept(final File file)
-  {
-		return getExtensionSet().contains(getExtension(file));	//see if the extension set contains the extension of the file  	
-  }
+	/**
+	 * Tests if a specified file should be included in a file list. This version accepts a file if the extension is included in the extension set.
+	 * @param directory The directory in which the file was found.
+	 * @param name the name of the file.
+	 * @return <code>true</code> if and only if the name should be included in the file list; <code>false</code> otherwise.
+	 */
+	public boolean accept(final File directory, final String name) {
+		return getExtensionSet().contains(getExtension(name)); //see if the extension set contains the extension of the filename
+	}
+
+	/**
+	 * Tests whether or not the specified abstract pathname should be included in a pathname list. This version accepts a file if the extension is included in the
+	 * extension set.
+	 * @param file The abstract pathname to be tested.
+	 * @return <code>true</code> if and only if <code>pathname</code> should be included
+	 */
+	public boolean accept(final File file) {
+		return getExtensionSet().contains(getExtension(file)); //see if the extension set contains the extension of the file  	
+	}
 }

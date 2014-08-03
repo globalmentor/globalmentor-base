@@ -29,8 +29,7 @@ import com.globalmentor.java.Bytes;
  * @author Garret Wilson
  * @see <a href="http://www.w3.org/TR/REC-xml/#sec-guessing">XML 1.0 Fourth Edition: Autodetection of Character Encodings (Non-Normative)</a>
  */
-public enum ByteOrderMark
-{
+public enum ByteOrderMark {
 
 	/** UTF-8 BOM */
 	UTF_8((byte)0xEF, (byte)0xBB, (byte)0xBF),
@@ -51,14 +50,12 @@ public enum ByteOrderMark
 	private final byte[] bytes;
 
 	/** The bytes of this byte order mark. */
-	public byte[] getBytes()
-	{
+	public byte[] getBytes() {
 		return bytes.clone(); //clone the bytes so that the authoritative copy cannot be modified
 	}
 
 	/** @return The number of bytes in this byte order mark. */
-	public int getLength()
-	{
+	public int getLength() {
 		return bytes.length;
 	}
 
@@ -67,8 +64,7 @@ public enum ByteOrderMark
 	 * @see #UTF_32_UNUSUAL_ORDER1
 	 * @see #UTF_32_UNUSUAL_ORDER2
 	 */
-	public boolean isUnusual()
-	{
+	public boolean isUnusual() {
 		return this == UTF_32_UNUSUAL_ORDER1 || this == UTF_32_UNUSUAL_ORDER2;
 	}
 
@@ -78,10 +74,8 @@ public enum ByteOrderMark
 	 * @throws IOException if this is an unusual byte order mark.
 	 * @see #isUnusual()
 	 */
-	public ByteOrderMark checkUsualIO() throws IOException
-	{
-		if(isUnusual())
-		{
+	public ByteOrderMark checkUsualIO() throws IOException {
+		if(isUnusual()) {
 			throw new IOException("The byte order mark " + this + " is unsupported.");
 		}
 		return this;
@@ -92,8 +86,7 @@ public enum ByteOrderMark
 	 * @param bytes The bytes that represent this BOM
 	 * @throws NullPointerException if the given bytes is <code>null</code>.
 	 */
-	private ByteOrderMark(final byte... bytes)
-	{
+	private ByteOrderMark(final byte... bytes) {
 		this.bytes = checkInstance(bytes, "Bytes cannot be null");
 	}
 
@@ -102,12 +95,9 @@ public enum ByteOrderMark
 	 * @param bytes The array of bytes potentially starting with a byte order mark.
 	 * @return The byte order mark detected, or <code>null</code> if no byte order mark is present.
 	 */
-	public static ByteOrderMark detectByteOrderMark(final byte[] bytes)
-	{
-		for(final ByteOrderMark bom : values()) //check each BOM manually
-		{
-			if(Bytes.startsWith(bytes, bom.bytes)) //if the bytes starts with the BOM's bytes (trusting the comparison method not to modify the bytes, as we pass in our private array)
-			{
+	public static ByteOrderMark detectByteOrderMark(final byte[] bytes) {
+		for(final ByteOrderMark bom : values()) { //check each BOM manually
+			if(Bytes.startsWith(bytes, bom.bytes)) { //if the bytes starts with the BOM's bytes (trusting the comparison method not to modify the bytes, as we pass in our private array)
 				return bom;
 			}
 		}
@@ -125,11 +115,9 @@ public enum ByteOrderMark
 	 * @throws UnsupportedOperationException if this byte order mark has no corresponding charset.
 	 * @see #isUnusual()
 	 */
-	public Charset toCharset()
-	{
+	public Charset toCharset() {
 		final String charsetName;
-		switch(this)
-		{
+		switch(this) {
 			case UTF_8:
 				return UTF_8_CHARSET; //we already have the UTF-8 charset; short circuit and return it
 			case UTF_16BE:

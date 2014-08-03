@@ -31,8 +31,7 @@ import static com.globalmentor.net.http.HTTP.*;
  * @author Garret Wilson
  * @see URL
  */
-public class URLs
-{
+public class URLs {
 
 	/**
 	 * Checks to see if a file exists at the location specified by the URL.
@@ -50,27 +49,19 @@ public class URLs
 	 * @param url The URL of the file to check.
 	 * @return <code>false</code> if it can be determined that no file exists at the given URL, otherwise <code>true</code>.
 	 */
-	public static boolean exists(final URL url)
-	{
+	public static boolean exists(final URL url) {
 		final String protocol = url.getProtocol(); //get the protocol of the URL
-		if(FILE_SCHEME.equals(protocol)) //if this is the file protocol
-		{
+		if(FILE_SCHEME.equals(protocol)) { //if this is the file protocol
 			return getFile(url).exists(); //create a file from the URL and see if it exists
-		}
-		else if(HTTP_URI_SCHEME.equals(protocol) || HTTPS_URI_SCHEME.equals(protocol)) //if this is the HTTP protocol
-		{
-			try
-			{
+		} else if(HTTP_URI_SCHEME.equals(protocol) || HTTPS_URI_SCHEME.equals(protocol)) { //if this is the HTTP protocol
+			try {
 				final URLConnection urlConnection = url.openConnection(); //open a connection to the URL
-				if(urlConnection instanceof HttpURLConnection) //if this is an HTTP connection
-				{
+				if(urlConnection instanceof HttpURLConnection) { //if this is an HTTP connection
 					//if this URL returned a 404 Not Found response code
 					if(((HttpURLConnection)urlConnection).getResponseCode() == HttpURLConnection.HTTP_NOT_FOUND)
 						return false; //show that the file does not exist
 				}
-			}
-			catch(IOException ioException) //if we can't even make a connection to the URL
-			{
+			} catch(IOException ioException) { //if we can't even make a connection to the URL
 				return false; //show that the file doesn't exist
 			}
 		}
@@ -82,8 +73,7 @@ public class URLs
 	 * @param url The URL for which to return a file.
 	 * @return A <code>File</code> object representing the file path of the URL with no query string.
 	 */
-	public static File getFile(final URL url)
-	{
+	public static File getFile(final URL url) {
 		return new File(url.getPath()); //create a new File from the URL path
 	}
 
@@ -93,8 +83,7 @@ public class URLs
 	 * @return The name of the file in the URL.
 	 * @see #getFile(URL)
 	 */
-	public static String getFileName(final URL url)
-	{
+	public static String getFileName(final URL url) {
 		return getFile(url).getName(); //return the name of the file we construct from the URL
 	}
 
@@ -103,8 +92,7 @@ public class URLs
 	 * @param url The URL for which to return a media type.
 	 * @return The default media type for the URL's file extension, or <code>null</code> if no known media type is associated with this URL's extension.
 	 */
-	public static ContentType getMediaType(final URL url)
-	{
+	public static ContentType getMediaType(final URL url) {
 		return Files.getExtensionContentType(Files.getExtension(getFile(url))); //return the media type based on the extension of the URL filename
 	}
 
@@ -118,15 +106,11 @@ public class URLs
 	 * @see URL
 	 * @deprecated
 	 */
-	public static URL createURL(Object contextObject, final String filename) throws MalformedURLException
-	{
+	public static URL createURL(Object contextObject, final String filename) throws MalformedURLException {
 		URL url = null; //we'll use this variable to store the new URL we create
-		try
-		{
-			if(contextObject != null) //if we know where we're getting its data from
-			{
-				if(contextObject instanceof URL) //if the data is coming from a URL
-				{
+		try {
+			if(contextObject != null) { //if we know where we're getting its data from
+				if(contextObject instanceof URL) { //if the data is coming from a URL
 					final URL contextURL = (URL)contextObject; //cast the contect object to a URL
 					url = new URL(contextURL, filename); //create a new URL from the old one
 					//Since in Java 1.2 new URL("file://...", "#...") causes the filename
@@ -136,8 +120,7 @@ public class URLs
 					// 	Timothy Prinzing.
 
 					if(filename != null && FILE_SCHEME.equals(url.getProtocol()) //if there is an href, it starts with "#", and the document base is a file
-							&& filename.length() > 0 && filename.charAt(0) == FRAGMENT_SEPARATOR)
-					{
+							&& filename.length() > 0 && filename.charAt(0) == FRAGMENT_SEPARATOR) {
 						final String baseFile = contextURL.getFile(); //get the context base URL as a file string
 						final String newFile = url.getFile(); //get a string from the URL we created
 						if(baseFile != null && newFile != null && !newFile.startsWith(baseFile)) //if the URL doesn't already start with the base URL
@@ -148,9 +131,7 @@ public class URLs
 			}
 			if(url == null) //if we haven't found a URL, yet
 				url = new URL(filename); //try to create one directly from the filename they give us
-		}
-		catch(MalformedURLException e) //if the location isn't a valid URL
-		{
+		} catch(MalformedURLException e) { //if the location isn't a valid URL
 			url = new File(filename).toURL(); //create a file object and convert that to a URL
 			//TODO check for MalformedURLException
 		}
@@ -165,8 +146,7 @@ public class URLs
 	 * @throws MalformedURLException Thrown if a directory URL cannot be created.
 	 * @deprecated
 	 */
-	public static URL getDirectoryURL(final URL url) throws MalformedURLException
-	{
+	public static URL getDirectoryURL(final URL url) throws MalformedURLException {
 		return new URL(url, "."); //create a new URL from the directory of the URL G***use a constant here
 	}
 
@@ -183,13 +163,11 @@ public class URLs
 	 * @throws IOException Thrown if an I/O error occurred.
 	 * @see InputStreamLocator
 	 */
-	public static InputStream getInputStream(final URL url) throws IOException
-	{
+	public static InputStream getInputStream(final URL url) throws IOException {
 		return url.openConnection().getInputStream(); //open a connection to the URL and return an input stream to that connection
 		/*TODO fix; but this doesn't report back the new URL
 				final URLConnection urlConnection=page.openConnection();	//open a connection to the URL
-				if(urlConnection instanceof HttpURLConnection)	//if this is an HTTP URL connection
-				{
+				if(urlConnection instanceof HttpURLConnection) {	//if this is an HTTP URL connection
 					HttpURLConnection hconn = (HttpURLConnection) conn;
 			    hconn.setInstanceFollowRedirects(false);
 			    int response = hconn.getResponseCode();
@@ -217,14 +195,12 @@ public class URLs
 	 * @throws MalformedURLException Thrown if a relative URL cannot be determined from the context URL.
 	 * @deprecated
 	 */
-	public static String getRelativePath(final URL contextURL, final URL url) throws MalformedURLException
-	{
+	public static String getRelativePath(final URL contextURL, final URL url) throws MalformedURLException {
 		//TODO fix this to work with the new URI relativize
 		final URL directoryURL = getDirectoryURL(contextURL); //get the directory URL of the context URL
 		final String directoryURLPath = directoryURL.getPath(); //get the path of the context URL
 		final String urlPath = url.getPath(); //get the path of the URL
-		if(urlPath.startsWith(directoryURLPath)) //if the directory URL path is at the beginning of the URL path
-		{
+		if(urlPath.startsWith(directoryURLPath)) { //if the directory URL path is at the beginning of the URL path
 			final String relativePath = urlPath.substring(directoryURLPath.length()); //get everything after the directory URL
 			return relativePath; //return the relative path
 		}
@@ -240,15 +216,11 @@ public class URLs
 	 * @throws IllegalArgumentException if the given URL not formatted strictly according to to RFC 2396 and cannot be converted to a URI.
 	 * @throws IOException if there is an error reading the data.
 	 */
-	public static <T> T read(final URL url, final IO<T> io) throws IOException
-	{
+	public static <T> T read(final URL url, final IO<T> io) throws IOException {
 		final InputStream bufferedInputStream = new BufferedInputStream(url.openStream()); //create a buffered input stream to the resource
-		try
-		{
+		try {
 			return io.read(bufferedInputStream, toURI(url)); //read the object
-		}
-		finally
-		{
+		} finally {
 			bufferedInputStream.close(); //always close the input stream
 		}
 	}
@@ -260,15 +232,11 @@ public class URLs
 	 * @throws IOException Thrown if there is an error loading the bytes.
 	 * @see InputStreams#getBytes(InputStream)
 	 */
-	public static byte[] readBytes(final URL url) throws IOException
-	{
+	public static byte[] readBytes(final URL url) throws IOException {
 		final InputStream urlInputStream = url.openConnection().getInputStream(); //create an input stream to the URL
-		try
-		{
+		try {
 			return InputStreams.getBytes(urlInputStream); //convert the URL to an array of bytes
-		}
-		finally
-		{
+		} finally {
 			urlInputStream.close(); //always close the URL input stream
 		}
 	}
@@ -280,8 +248,7 @@ public class URLs
 	 * @return A string containing the contents of the URL.
 	 * @throws IOException if there is an error loading the bytes.
 	 */
-	public static String readString(final URL url, final Charset charset) throws IOException
-	{
+	public static String readString(final URL url, final Charset charset) throws IOException {
 		final byte[] bytes = readBytes(url); //load the contents of the URL
 		return new String(bytes, charset); //convert the bytes into a string, using the given encoding
 	}
@@ -299,14 +266,10 @@ public class URLs
 	 * @see URL#toURI()
 	 * @see URIs#canonicalize(URI)
 	 */
-	public static URI toURI(final URL url)
-	{
-		try
-		{
+	public static URI toURI(final URL url) {
+		try {
 			return URIs.canonicalize(url.toURI());
-		}
-		catch(final URISyntaxException uriSyntaxException)
-		{
+		} catch(final URISyntaxException uriSyntaxException) {
 			throw new IllegalArgumentException(uriSyntaxException);
 		}
 	}
@@ -317,15 +280,11 @@ public class URLs
 	 * @param outputStream The destination of the URL contents.
 	 * @throws IOException Thrown if there is an error copying the URL.
 	 */
-	public static void write(final URL url, final OutputStream outputStream) throws IOException
-	{
+	public static void write(final URL url, final OutputStream outputStream) throws IOException {
 		final InputStream bufferedInputStream = new BufferedInputStream(url.openConnection().getInputStream()); //created a buffered input stream to the URL
-		try
-		{
+		try {
 			Streams.copy(bufferedInputStream, outputStream); //copy the contents of the input stream to the output stream
-		}
-		finally
-		{
+		} finally {
 			bufferedInputStream.close(); //always close the file input stream
 		}
 	}

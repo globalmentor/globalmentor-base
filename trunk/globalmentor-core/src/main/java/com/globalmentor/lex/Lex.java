@@ -22,8 +22,7 @@ import com.globalmentor.java.Enums;
  * Constants and utilities for lexical analysis.
  * @author Garret Wilson
  */
-public class Lex
-{
+public class Lex {
 
 	/**
 	 * Returns a serialized form of an identifier. Usually the identifier is an {@link Enum}, resulting in a special token serialized form.
@@ -33,14 +32,10 @@ public class Lex
 	 * @see Enums#getSerializationName(Enum)
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public static String serialize(final Identifier identifier)
-	{
-		if(identifier instanceof Enum<?>)
-		{
+	public static String serialize(final Identifier identifier) {
+		if(identifier instanceof Enum<?>) {
 			return Enums.getSerializationName((Enum)identifier);
-		}
-		else
-		{
+		} else {
 			return identifier.toString();
 		}
 	}
@@ -58,10 +53,8 @@ public class Lex
 	 * @see Enums#getSerializedEnum(Class, String)
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public static <I extends Identifier> I deserialize(final Class<I> identifierClass, final String lexicalForm)
-	{
-		if(Enum.class.isAssignableFrom(identifierClass))
-		{
+	public static <I extends Identifier> I deserialize(final Class<I> identifierClass, final String lexicalForm) {
+		if(Enum.class.isAssignableFrom(identifierClass)) {
 			return (I)Enums.getSerializedEnum((Class<? extends Enum>)identifierClass, lexicalForm);
 		}
 		throw new IllegalArgumentException("No known way to deserialize identifier type " + identifierClass);
