@@ -30,8 +30,7 @@ import com.globalmentor.time.Duration;
  * 
  * @author Garret Wilson
  */
-public class Profiler
-{
+public class Profiler {
 
 	/** The operation manager for managing probe operations. */
 	private final static OperationManager probeOperationManager = new OperationManager();
@@ -40,8 +39,7 @@ public class Profiler
 	private static StackProbeOperation stackProbeOperation = null;
 
 	/** @return The current configured stack probe operation, or <code>null</code> if no stack probe operation is configured. */
-	public static synchronized StackProbeOperation getStackProbeOperation()
-	{
+	public static synchronized StackProbeOperation getStackProbeOperation() {
 		return stackProbeOperation;
 	}
 
@@ -49,10 +47,8 @@ public class Profiler
 	 * Determines the current stack probe operation. If no stack probe operation is configured, one is created.
 	 * @return The current configured stack probe operation.
 	 */
-	public static synchronized StackProbeOperation determineStackProbeOperation()
-	{
-		if(stackProbeOperation == null)
-		{
+	public static synchronized StackProbeOperation determineStackProbeOperation() {
+		if(stackProbeOperation == null) {
 			stackProbeOperation = new StackProbeOperation();
 		}
 		return stackProbeOperation;
@@ -64,8 +60,7 @@ public class Profiler
 	 * @throws NullPointerException if the given stack probe operation is <code>null</code>.
 	 * @throws IllegalStateException if a stack probe operation is underway.
 	 */
-	public static synchronized void setStackProbeOperation(final StackProbeOperation stackProbeOperation)
-	{
+	public static synchronized void setStackProbeOperation(final StackProbeOperation stackProbeOperation) {
 		checkState(stackProbeCount == 0, "Stack probe operation cannot be changed once started.");
 		Profiler.stackProbeOperation = checkInstance(stackProbeOperation);
 	}
@@ -80,10 +75,8 @@ public class Profiler
 	 * </p>
 	 * @see #stopStackProbe()
 	 */
-	public synchronized static void startStackProbe()
-	{
-		if(stackProbeCount == 0) //if we haven't started a stack probe
-		{
+	public synchronized static void startStackProbe() {
+		if(stackProbeCount == 0) { //if we haven't started a stack probe
 			probeOperationManager.schedule(determineStackProbeOperation(), Duration.of(100), true); //schedule a stack probe operation every 100ms, creating one if necessary
 		}
 		++stackProbeCount;
@@ -97,11 +90,9 @@ public class Profiler
 	 * @throws IllegalStateException if this method is called before {@link #startStackProbe()} is called.
 	 * @see #startStackProbe()
 	 */
-	public synchronized static void stopStackProbe()
-	{
+	public synchronized static void stopStackProbe() {
 		checkState(stackProbeCount > 0, "Stack probe stop not paired with start.");
-		if(--stackProbeCount == 0) //if we get the correct number of stop requests
-		{
+		if(--stackProbeCount == 0) { //if we get the correct number of stop requests
 			stackProbeOperation.cancel(); //cancel the stack probe operation
 			stackProbeOperation = null;
 		}

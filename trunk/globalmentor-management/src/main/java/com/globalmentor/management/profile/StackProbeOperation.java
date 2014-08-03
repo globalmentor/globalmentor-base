@@ -38,8 +38,7 @@ import com.globalmentor.model.*;
  * 
  * @author Garret Wilson
  */
-public class StackProbeOperation extends AbstractReadWriteLockOperation
-{
+public class StackProbeOperation extends AbstractReadWriteLockOperation {
 
 	/** The running count of class+method names. */
 	private final ReadWriteLockMap<String, Count> classMethodCounts = new DecoratorReadWriteLockMap<String, Count>(new HashMap<String, Count>(), this);
@@ -62,8 +61,7 @@ public class StackProbeOperation extends AbstractReadWriteLockOperation
 	 * @param parentPackage The package to be ignored.
 	 * @throws NullPointerException if the given package is <code>null</code>.
 	 */
-	public void addIgnoreParentPackage(final Package parentPackage)
-	{
+	public void addIgnoreParentPackage(final Package parentPackage) {
 		addIgnoreParentPackage(parentPackage.getName());
 	}
 
@@ -72,106 +70,79 @@ public class StackProbeOperation extends AbstractReadWriteLockOperation
 	 * @param packageName The name of the package to be ignored.
 	 * @throws NullPointerException if the given package name is <code>null</code>.
 	 */
-	public void addIgnoreParentPackage(final String packageName)
-	{
+	public void addIgnoreParentPackage(final String packageName) {
 		checkInstance(packageName);
 		writeLock().lock();
-		try
-		{
+		try {
 			ignoreParentPackageNames.add(packageName); //add the package name
 			includePackageNames.remove(packageName); //if we're ignoring it, it shouldn't be included anymore
 			final Iterator<String> includePackageNameIterator = includePackageNames.iterator();
-			while(includePackageNameIterator.hasNext()) //remove child package names we've added because they weren't ignored
-			{
+			while(includePackageNameIterator.hasNext()) { //remove child package names we've added because they weren't ignored
 				final String includePackageName = includePackageNameIterator.next();
-				if(isInsidePackage(packageName, includePackageName)) //if this package is inside an ignored package, it can't be included
-				{
+				if(isInsidePackage(packageName, includePackageName)) { //if this package is inside an ignored package, it can't be included
 					includePackageNameIterator.remove();
 				}
 			}
-		}
-		finally
-		{
+		} finally {
 			writeLock().unlock();
 		}
 	}
 
 	@Override
-	protected void execute() throws CancelException
-	{
+	protected void execute() throws CancelException {
 		final long threadID = Thread.currentThread().getId();
 		final ThreadInfo[] threadInfos = threadMXBean.dumpAllThreads(false, false); //get info on all current threads
-		for(final ThreadInfo threadInfo : threadInfos) //look at info on each thread
-		{
-			if(threadInfo.getThreadId() == threadID) //ignore ourselves
-			{
+		for(final ThreadInfo threadInfo : threadInfos) { //look at info on each thread
+			if(threadInfo.getThreadId() == threadID) { //ignore ourselves
 				continue;
 			}
-			if(threadInfo.isSuspended()) //ignore suspended threads (not likely; Thread.suspend() is deprecated)
-			{
+			if(threadInfo.isSuspended()) { //ignore suspended threads (not likely; Thread.suspend() is deprecated)
 				continue;
 			}
 			final Thread.State threadState = threadInfo.getThreadState();
-			if(threadState != Thread.State.RUNNABLE) //ignore threads that are new, blocked, waiting, etc.
-			{
+			if(threadState != Thread.State.RUNNABLE) { //ignore threads that are new, blocked, waiting, etc.
 				continue;
 			}
 			final StackTrace stackTrace = new StackTrace(threadInfo.getStackTrace()); //get a stack trace for this thread
 			//				if(!executeStackTrace.isTopMethodIntersected(stackTrace)) //ignore the stack trace from this method---that is, ignore our own thread and all stack probes
-			for(final StackTraceElement stackTraceElement : stackTrace.getStackTraceElements())
-			{
+			for(final StackTraceElement stackTraceElement : stackTrace.getStackTraceElements()) {
 				final String className = stackTraceElement.getClassName();
 				final String packageName = getPackageName(className);
 				Boolean isPackageIncluded = null;
 				readLock().lock(); //first see if we know whether this package is included
-				try
-				{
-					if(ignoreParentPackageNames.contains(packageName))
-					{
+				try {
+					if(ignoreParentPackageNames.contains(packageName)) {
 						isPackageIncluded = Boolean.FALSE;
-					}
-					else if(includePackageNames.contains(packageName))
-					{
+					} else if(includePackageNames.contains(packageName)) {
 						isPackageIncluded = Boolean.TRUE;
 					}
-				}
-				finally
-				{
+				} finally {
 					readLock().unlock();
 				}
-				if(isPackageIncluded == null) //if we don't know whether this package is included, look at all its parent classes to see if any are ignored; if not, the package is included 
-				{
+				if(isPackageIncluded == null) { //if we don't know whether this package is included, look at all its parent classes to see if any are ignored; if not, the package is included 
 					writeLock().lock();
-					try
-					{
-						for(final String parentPackageName : getParentPackageNames(packageName)) //look at all the parent packages
-						{
-							if(ignoreParentPackageNames.contains(parentPackageName)) //if this parent package is ignored
-							{
+					try {
+						for(final String parentPackageName : getParentPackageNames(packageName)) { //look at all the parent packages
+							if(ignoreParentPackageNames.contains(parentPackageName)) { //if this parent package is ignored
 								isPackageIncluded = Boolean.FALSE;
 								ignoreParentPackageNames.add(packageName); //we now know we can exclude the package itself for next time
 								break; //stop looking
 							}
 						}
-						if(isPackageIncluded == null) //at this point, if the package wasn't excluded, we can explicitly include it
-						{
+						if(isPackageIncluded == null) { //at this point, if the package wasn't excluded, we can explicitly include it
 							isPackageIncluded = Boolean.TRUE;
 							includePackageNames.add(packageName); //we know we can include the package itself for next time
 						}
-					}
-					finally
-					{
+					} finally {
 						writeLock().unlock();
 					}
 				}
 				assert isPackageIncluded != null;
-				if(isPackageIncluded.booleanValue()) //if we determined we can include this package
-				{
+				if(isPackageIncluded.booleanValue()) { //if we determined we can include this package
 					final String classMethodName = getMethodName(stackTraceElement.getClassName(), stackTraceElement.getMethodName());
 					incrementCounterMapCount(classMethodCounts, classMethodName); //increment the number of times we've seen this method
 					final int lineNumber = stackTraceElement.getLineNumber();
-					if(lineNumber >= 0) //update our record of line numbers
-					{
+					if(lineNumber >= 0) { //update our record of line numbers
 						classMethodLineNumbers.addItem(classMethodName, lineNumber);
 					}
 				}
@@ -180,16 +151,12 @@ public class StackProbeOperation extends AbstractReadWriteLockOperation
 	}
 
 	/** Retrieves a list of collected class+method names and their associated counts, in the order of highest to lowest occurrence. */
-	public synchronized List<NameValuePair<String, Count>> getSortedStackProbeCounts()
-	{
+	public synchronized List<NameValuePair<String, Count>> getSortedStackProbeCounts() {
 		final List<NameValuePair<String, Count>> stackProbeCounts;
 		readLock().lock();
-		try
-		{
+		try {
 			stackProbeCounts = Maps.getKeyValuesCloned(classMethodCounts, new ArrayList<NameValuePair<String, Count>>()); //get the stack probe counts
-		}
-		finally
-		{
+		} finally {
 			readLock().unlock();
 		}
 		sort(stackProbeCounts, new ValuedComparator<Count>(SortOrder.DESCENDING)); //sort the stack probe counts in order of highest to lowest count
@@ -203,27 +170,21 @@ public class StackProbeOperation extends AbstractReadWriteLockOperation
 	 * @throws NullPointerException if the given appendable is <code>null</code>.
 	 * @throws IOException if there is an error printing to the given appendable.
 	 */
-	public <A extends Appendable> A printStackProbeCounts(final A appendable) throws IOException
-	{
+	public <A extends Appendable> A printStackProbeCounts(final A appendable) throws IOException {
 		readLock().lock();
-		try
-		{
-			for(final NameValuePair<String, Count> classMethodCountEntry : getSortedStackProbeCounts())
-			{
+		try {
+			for(final NameValuePair<String, Count> classMethodCountEntry : getSortedStackProbeCounts()) {
 				formatAttribute(appendable, classMethodCountEntry, UNDEFINED_CHAR); //name=value
 				final String classMethodName = classMethodCountEntry.getName();
 				final Set<Integer> lineNumbers = classMethodLineNumbers.get(classMethodName);
-				if(lineNumbers != null) //if we have any line numbers
-				{
+				if(lineNumbers != null) { //if we have any line numbers
 					appendable.append(' ').append('(');
 					formatList(appendable, lineNumbers); //format the list of line numbers
 					appendable.append(')');
 				}
 				appendable.append('\n');
 			}
-		}
-		finally
-		{
+		} finally {
 			readLock().unlock();
 		}
 		return appendable;
@@ -236,8 +197,7 @@ public class StackProbeOperation extends AbstractReadWriteLockOperation
 	 * </p>
 	 * @return A default stack probe operation useful for a client application, ignoring packages normally found on a client.
 	 */
-	public static StackProbeOperation forClient()
-	{
+	public static StackProbeOperation forClient() {
 		final StackProbeOperation stackProbeOperation = new StackProbeOperation();
 		stackProbeOperation.addIgnoreParentPackage("java");
 		stackProbeOperation.addIgnoreParentPackage("javax");
@@ -253,8 +213,7 @@ public class StackProbeOperation extends AbstractReadWriteLockOperation
 	 * </p>
 	 * @return A default stack probe operation useful for a server application, ignoring packages normally found on a server.
 	 */
-	public static StackProbeOperation forServer()
-	{
+	public static StackProbeOperation forServer() {
 		final StackProbeOperation stackProbeOperation = forClient(); //start out with a default client stack probe operation
 		stackProbeOperation.addIgnoreParentPackage("org.apache.catalina");
 		stackProbeOperation.addIgnoreParentPackage("org.apache.coyote");
