@@ -32,7 +32,6 @@ import com.globalmentor.rdf.RDF;
 import com.globalmentor.rdf.dicto.Dicto;
 import com.globalmentor.rdf.rdfs.RDFS;
 import com.globalmentor.rdf.version.RDFVersion;
-import com.globalmentor.rdf.xeb.RDFXEB;
 import com.globalmentor.rdf.xpackage.XMLOntology;
 import com.globalmentor.rdf.xpackage.XPackage;
 import com.globalmentor.text.xml.XML;
@@ -92,7 +91,6 @@ public abstract class AbstractNamespaceLabelManager extends MapDecorator<URI, St
 		tempNamespaceURILabelMap.put(XLink.XLINK_NAMESPACE_URI, XLink.XLINK_NAMESPACE_PREFIX); //XLink
 		tempNamespaceURILabelMap.put(XML.XML_NAMESPACE_URI, XML.XML_NAMESPACE_PREFIX); //XML
 		tempNamespaceURILabelMap.put(XML.XMLNS_NAMESPACE_URI, XML.XMLNS_NAMESPACE_PREFIX); //XML namespaces
-		tempNamespaceURILabelMap.put(RDFXEB.XEB_NAMESPACE_URI, RDFXEB.XEB_NAMESPACE_PREFIX); //XEbook
 		tempNamespaceURILabelMap.put(XPackage.XPACKAGE_NAMESPACE_URI, XPackage.XPACKAGE_NAMESPACE_PREFIX); //XPackage
 		tempNamespaceURILabelMap.put(XMLOntology.XML_ONTOLOGY_NAMESPACE_URI, XMLOntology.XML_ONTOLOGY_NAMESPACE_PREFIX); //XPackage XML ontology
 		//TODO del		tempNamespaceURIPrefixMap.put(FileOntologyConstants.FILE_ONTOLOGY_NAMESPACE_URI, FileOntologyConstants.FILE_ONTOLOGY_NAMESPACE_PREFIX); //XPackage file ontology

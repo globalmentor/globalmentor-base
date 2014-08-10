@@ -20,9 +20,7 @@ import java.net.URI;
 
 import javax.xml.parsers.*;
 
-import com.globalmentor.io.*;
-import com.globalmentor.net.ContentType;
-import com.globalmentor.net.ContentTypeConstants;
+import com.globalmentor.net.*;
 
 import static com.globalmentor.text.xml.oeb.css.OEBCSS.*;
 import static com.globalmentor.text.xml.XML.*;
@@ -31,7 +29,7 @@ import static com.globalmentor.text.xml.xhtml.XHTML.*;
 import org.w3c.dom.*;
 
 /**
- * Constants and utilties for working with the Open eBook (OEB) format.
+ * Constants and utilities for working with the Open eBook (OEB) format.
  * @author Garret Wilson
  */
 public class OEB {
