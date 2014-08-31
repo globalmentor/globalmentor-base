@@ -219,8 +219,8 @@ public enum ByteOrderMark {
 	}
 
 	/**
-	 * Determines the byte order mark (BOM) needed to represent the given charset. For charsets that do not specify endianness, big-endian is assumed. TODO verify
-	 * that Java defaults to big-endian for output streams; see http://stackoverflow.com/q/25594576/421049
+	 * Determines the byte order mark (BOM) needed to represent the given charset. For charsets that do not specify endianness, big-endian is assumed as per the
+	 * {@link Charset} documentation.
 	 * @param charset The charset for which a byte order mark should be returned.
 	 * @return The byte order mark for the given character set, or <code>null</code> if there is no byte order mark to represent the given character set.
 	 * @throws NullPointerException if the given charset is <code>null</code>.

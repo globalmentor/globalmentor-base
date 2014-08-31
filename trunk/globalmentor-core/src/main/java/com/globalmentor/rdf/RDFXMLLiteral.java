@@ -18,8 +18,9 @@ package com.globalmentor.rdf;
 
 import java.io.*;
 
+import static com.globalmentor.io.Charsets.*;
 import static com.globalmentor.rdf.RDF.*;
-import static com.globalmentor.text.CharacterEncoding.*;
+
 import com.globalmentor.text.xml.*;
 
 import org.w3c.dom.*;
@@ -102,7 +103,7 @@ public class RDFXMLLiteral extends RDFTypedLiteral<DocumentFragment> {
 	protected static DocumentFragment createDocumentFragment(final String lexicalForm) {
 		final String xmlDocumentLexicalForm = "<dummy>" + lexicalForm + "</dummy>"; //wrap the lexical form in a dummy element
 		try {
-			final Document document = XML.createDocumentBuilder(true).parse(new ByteArrayInputStream(xmlDocumentLexicalForm.getBytes(UTF_8))); //parse the document, recognizing namespaces
+			final Document document = XML.createDocumentBuilder(true).parse(new ByteArrayInputStream(xmlDocumentLexicalForm.getBytes(UTF_8_CHARSET))); //parse the document, recognizing namespaces
 			return XML.extractChildren(document.getDocumentElement()); //extract the children of the document element to a document fragment and return that fragment
 		} catch(final IOException ioException) { //there should never be an I/O exception reading from a string
 			throw new AssertionError(ioException);
