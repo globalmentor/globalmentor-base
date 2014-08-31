@@ -100,7 +100,7 @@ public class ContentTypeConstants //TODO transfer these constants to specific re
 	/** Submitted URL-encoded form data; see <a href="http://www.rfc-editor.org/rfc/rfc1867.txt">RFC 1867</a>. */
 	public static final String X_WWW_FORM_URLENCODED = ContentType.SUBTYPE_EXTENSION_PREFIX + "www-form-urlencoded";
 	/** An XML application. */
-	//G***fix	public static final String APPLICATION_XML=APPLICATION+DIVIDER+XML;
+	//TODO fix	public static final String APPLICATION_XML=APPLICATION+DIVIDER+XML;
 	/** An XEB book file, <code>x-xebook+rdf+xml</code>. */
 	public static final String X_XEBOOK_RDF_XML_SUBTYPE = ContentType.SUBTYPE_EXTENSION_PREFIX + "xebook" + ContentType.SUBTYPE_SUFFIX_DELIMITER_CHAR
 			+ RDF_XML_SUBTYPE_SUFFIX;

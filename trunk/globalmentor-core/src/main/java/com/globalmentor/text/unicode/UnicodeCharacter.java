@@ -248,7 +248,7 @@ public class UnicodeCharacter implements Comparable<UnicodeCharacter> {
 	 * @return The numeric value numerator of the character, or <code>Float.NaN</code> if the character has no numeric value.
 	 */
 	public float getNumericValue() {
-		return isNumericValueFraction()/*G***del if we don't need && getNumericValueNumerator()!=Float.NaN*/? getNumericValueNumerator()
+		return isNumericValueFraction()/*TODO del if we don't need && getNumericValueNumerator()!=Float.NaN*/? getNumericValueNumerator()
 				: getNumericValueNumerator() / getNumericValueDenominator();
 	}
 

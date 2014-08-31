@@ -209,7 +209,7 @@ public class RDFResourceIOKit<R extends RDFResource> extends AbstractIOKit<R> {
 			//get the designated resource from the data model
 			final RDFResource resource = RDFResources.getResourceByType(rdf, getNamespaceURI(), getClassName());
 			if(resource == null) { //if there is no such type of resource
-				throw new IOException("No resource found of type " + RDFResources.createReferenceURI(getNamespaceURI(), getClassName())); //G***i18n
+				throw new IOException("No resource found of type " + RDFResources.createReferenceURI(getNamespaceURI(), getClassName())); //TODO i18n
 			}
 			return (R)resource; //return the resource we read TODO make sure the resource is of the correct type somehow 
 		} catch(URISyntaxException uriSyntaxException) { //if any of the URIs were incorrect

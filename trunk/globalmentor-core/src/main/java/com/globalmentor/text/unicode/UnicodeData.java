@@ -281,13 +281,13 @@ public class UnicodeData {
 	 * @throws IOException Thrown if there was an error parsing the Unicode data.
 	 */
 	protected static UnicodeCharacter parseLine(String unidataLine) throws IOException {
-		//G***del		UnicodeCharacter unicodeCharacter=null;	//we'll create this when we find the code value
+		//TODO del		UnicodeCharacter unicodeCharacter=null;	//we'll create this when we find the code value
 		unidataLine += FIELD_DELIMITER; //since the Unicode data file doesn't have an ending delimiter, add one so that StringTokenizer will recognize the last field
 		final UnicodeCharacter unicodeCharacter = new UnicodeCharacter(); //create a new Unicode character that will hold the data we parse from this line
 		final StringTokenizer fieldTokenizer = new StringTokenizer(unidataLine, String.valueOf(FIELD_DELIMITER), true); //create an object to tokenize the line of Unicode data, and return the delimiters as well (because otherwise two consecutive delimiters will be skipped)
 		int fieldIndex = 0; //show which field we are processing
 		boolean expectingToken = true; //show that we're expecting a token first of all
-		//G***del		for(fieldIndex=0; fieldTokenizer.hasMoreTokens(); ++fieldIndex)	//keep getting more tokens as long as there are fields
+		//TODO del		for(fieldIndex=0; fieldTokenizer.hasMoreTokens(); ++fieldIndex)	//keep getting more tokens as long as there are fields
 		while(fieldTokenizer.hasMoreTokens()) { //while there are more fields on this line
 			String fieldValue = fieldTokenizer.nextToken(); //get the next field value
 			if(fieldValue.equals(String.valueOf(FIELD_DELIMITER))) { //if this is a delimiter
@@ -301,7 +301,7 @@ public class UnicodeData {
 				//if this is a token
 				expectingToken = false; //show that we're no longer expecting a token, since we just received one
 			try {
-				//G***del System.out.println("Field "+fieldIndex+": \""+fieldValue+"\".");	//G***del
+				//TODO del System.out.println("Field "+fieldIndex+": \""+fieldValue+"\".");	//TODO del
 				switch(fieldIndex) { //see which field this is
 					case FIELD_CODE_VALUE:
 						unicodeCharacter.setCodeValue(Integer.parseInt(fieldValue, 16)); //decode the hexadecimal code value
@@ -323,7 +323,7 @@ public class UnicodeData {
 						final StringTokenizer mappingTokenizer = new StringTokenizer(fieldValue, String.valueOf(MAPPING_DELIMITER)); //create an object to tokenize the mappings in this field
 						while(mappingTokenizer.hasMoreTokens()) { //while there are more mappings in this field
 							final String characterDecompositionToken = mappingTokenizer.nextToken(); //get the next character decomposition token
-							//G***del System.out.println("  Character decomposition token: \""+characterDecompositionToken+"\".");	//G***del
+							//TODO del System.out.println("  Character decomposition token: \""+characterDecompositionToken+"\".");	//TODO del
 							if(characterDecompositionToken.charAt(0) == CHARACTER_DECOMPOSITION_TAG_BEGIN) { //if this is the beginning of a character decomposition tag
 								if(unicodeCharacter.getCharacterDecompositionTag().length() > 0) //if we've already found a formatting tag
 									throw new IOException("Multiple character decomposition formatting tags present."); //show that we don't recognize multiple formatting tags
@@ -397,8 +397,8 @@ public class UnicodeData {
 	 * @param value The value to convert.
 	 * @return four-digit hex version of the given value
 	 */
-	/*G***del when works
-		public static String convertValueToFourDigitHexString(final int value) {	//G***move this to UnicodeUtilities or something
+	/*TODO del when works
+		public static String convertValueToFourDigitHexString(final int value) {	//TODO move this to UnicodeUtilities or something
 			final String hexString="0000"+Integer.toHexString(value).toUpperCase();	//create a hex string in uppercase with leading zeros
 			return hexString.substring(hexString.length()-4);	//return only the last four digits
 		}

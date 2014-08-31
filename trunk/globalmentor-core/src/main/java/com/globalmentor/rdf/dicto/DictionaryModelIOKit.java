@@ -99,8 +99,8 @@ public class DictionaryModelIOKit extends AbstractIOKit<ResourceModel<Dictionary
 	 */
 	public void save(final ResourceModel<Dictionary> model, final OutputStream outputStream) throws IOException {
 		throw new IOException("Dictionary save is not yet implemented");
-		/*G***fix when needed
-				//G***create a BOMWriter that does both steps
+		/*TODO fix when needed
+				//TODO create a BOMWriter that does both steps
 
 				outputStream.write(CharacterEncodingConstants.BOM_UTF_8);	//write the UTF-8 byte order mark
 				final Writer writer=new OutputStreamWriter(outputStream, CharacterEncodingConstants.UTF_8);	//create a UTF-8 writer
@@ -109,7 +109,7 @@ public class DictionaryModelIOKit extends AbstractIOKit<ResourceModel<Dictionary
 				try
 				{
 					textPane.getEditorKit().write(writer, document, 0, document.getLength());	//have the editor kit write the document to the writer
-		//		G***del when works			textPane.getEditorKit().write(outputStream, document, 0, document.getLength());	//have the editor kit write the document to the output stream
+		//		TODO del when works			textPane.getEditorKit().write(outputStream, document, 0, document.getLength());	//have the editor kit write the document to the output stream
 				}
 				catch(BadLocationException badLocationException)
 				{

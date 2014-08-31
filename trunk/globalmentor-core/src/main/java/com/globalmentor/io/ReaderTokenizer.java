@@ -132,7 +132,7 @@ public class ReaderTokenizer implements Iterator<String>, Iterable<String> {
 	/**
 	 * @return The next primed token, or <code>null</code> if there is no next token or the token has not been primed.
 	 */
-	//G***del		protected String getPrimedToken() {return nextToken;}
+	//TODO del		protected String getPrimedToken() {return nextToken;}
 
 	/**
 	 * Reader constructor with default token delimiters and no group delimiters.

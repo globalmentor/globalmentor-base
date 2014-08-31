@@ -98,7 +98,7 @@ public class TypedRDFResourceIO<T extends RDFResource> extends AbstractRDFXMLIO<
 		readRDF(rdf, inputStream, baseURI); //read RDF from the input stream
 		final RDFResource resource = getResourceByType(rdf, getResourceNamespaceURI(), getResourceClassName()); //load the correct resource
 		if(resource == null) { //if there is no resource
-			throw new IOException("No resource found in namespace " + getResourceNamespaceURI() + " with class name " + getResourceClassName() + "."); //G***i18n
+			throw new IOException("No resource found in namespace " + getResourceNamespaceURI() + " with class name " + getResourceClassName() + "."); //TODO i18n
 		}
 		return getObjectClass().cast(resource); //cast the resource to the correct type and return it
 	}

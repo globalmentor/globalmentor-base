@@ -171,35 +171,35 @@ public class Prose {
 							return CONTENTS_HEADING;
 						}
 						//if this is a preface heading
-						else if(containsOnlyIgnoreCase(line, new String[] { "preface" }, new String[] {})) { //G***use a constant
+						else if(containsOnlyIgnoreCase(line, new String[] { "preface" }, new String[] {})) { //TODO use a constant
 							return PREFACE_HEADING;
 						}
 						//if this is a foreword heading
-						else if(containsOnlyIgnoreCase(line, new String[] { "foreword" }, new String[] {})) { //G***use a constant
+						else if(containsOnlyIgnoreCase(line, new String[] { "foreword" }, new String[] {})) { //TODO use a constant
 							return FOREWORD_HEADING;
 						}
 						//if this is an introduction heading
-						else if(containsOnlyIgnoreCase(line, new String[] { "index" }, new String[] {})) { //G***use a constant
+						else if(containsOnlyIgnoreCase(line, new String[] { "index" }, new String[] {})) { //TODO use a constant
 							return INTRODUCTION_HEADING;
 						}
 						//if this is an afterword heading
-						else if(containsOnlyIgnoreCase(line, new String[] { "afterword" }, new String[] {})) { //G***use a constant
+						else if(containsOnlyIgnoreCase(line, new String[] { "afterword" }, new String[] {})) { //TODO use a constant
 							return AFTERWORD_HEADING;
 						}
 						//if this is a bibliography heading
-						else if(containsOnlyIgnoreCase(line, new String[] { "bibliography" }, new String[] {})) { //G***use a constant
+						else if(containsOnlyIgnoreCase(line, new String[] { "bibliography" }, new String[] {})) { //TODO use a constant
 							return BIBLIOGRAPHY_HEADING;
 						}
 						//if this is a  glossary heading
-						else if(containsOnlyIgnoreCase(line, new String[] { "glossary" }, new String[] {})) { //G***use a constant
+						else if(containsOnlyIgnoreCase(line, new String[] { "glossary" }, new String[] {})) { //TODO use a constant
 							return GLOSSARY_HEADING;
 						}
 						//if this is an index heading
-						else if(containsOnlyIgnoreCase(line, new String[] { "index" }, new String[] {})) { //G***use a constant
+						else if(containsOnlyIgnoreCase(line, new String[] { "index" }, new String[] {})) { //TODO use a constant
 							return INDEX_HEADING;
 						}
 						//if this is a gospel heading
-						if(containsOnlyIgnoreCase(line, new String[] { "Gospel", "According to" }, new String[] {})) { //G***use constants
+						if(containsOnlyIgnoreCase(line, new String[] { "Gospel", "According to" }, new String[] {})) { //TODO use constants
 							return GOSPEL_HEADING;
 						}
 					}

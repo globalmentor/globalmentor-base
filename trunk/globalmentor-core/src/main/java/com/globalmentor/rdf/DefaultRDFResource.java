@@ -62,7 +62,7 @@ public class DefaultRDFResource extends BoundPropertyResource implements RDFReso
 	 * The list of properties, each of which is a <code>RDFPropertyValuePair</code>, with the name being the property predicate and the value being the property
 	 * value.
 	 */
-	protected ArrayList<RDFPropertyValuePair> propertyList = new ArrayList<RDFPropertyValuePair>(); //G***should this really be protected, and not private? currently only used by RDFSequenceResource
+	protected ArrayList<RDFPropertyValuePair> propertyList = new ArrayList<RDFPropertyValuePair>(); //TODO should this really be protected, and not private? currently only used by RDFSequenceResource
 
 	/** @return The number of properties this resource has. */
 	public int getPropertyCount() {
@@ -661,7 +661,7 @@ public class DefaultRDFResource extends BoundPropertyResource implements RDFReso
 	 * @see RDFS#getLabel(RDFResource)
 	 */
 	//TODO fix compare and Comparable; maybe remove, and use custom Comparable elsewhere (as in Collections.sort())
-	public int compareTo(final RDFResource resource) { //G***is it correct to compare on different things? will this violate comparison rules? (e.g. two RDFResources with labels may compare differently than each of them compared against a normal Resource)
+	public int compareTo(final RDFResource resource) { //TODO is it correct to compare on different things? will this violate comparison rules? (e.g. two RDFResources with labels may compare differently than each of them compared against a normal Resource)
 	//TODO del when works		if(resource instanceof RDFResource)	//if this resource is an RDF resource
 		{
 			final RDFLiteral label1 = RDFS.getLabel(this); //see if this resource has a label

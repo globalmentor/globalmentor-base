@@ -142,12 +142,12 @@ public class RDFXMLGenerator //TODO fix bug that doesn't serialize property valu
 	/**
 	 * Whether we're in the mode that allows us to put off serialization of some resources until the very end.
 	 */
-	//G***fix	private boolean isSerializationDeferable=true;
+	//TODO fix	private boolean isSerializationDeferable=true;
 
 	/** Indicates literals should be serialized as attributes by default. */
-	//G***del	public static final boolean LITERAL_ATTRIBUTE_SERIALIZATION=1;
+	//TODO del	public static final boolean LITERAL_ATTRIBUTE_SERIALIZATION=1;
 	/** Indicates literals should be serialized as elements by default. */
-	//G***del	public static final boolean LITERAL_ELEMENT_SERIALIZATION=2;
+	//TODO del	public static final boolean LITERAL_ELEMENT_SERIALIZATION=2;
 
 	/** Whether literals are serialized as attributes, if possible. */
 	private boolean literalAttributeSerialization = true;
@@ -510,9 +510,9 @@ public class RDFXMLGenerator //TODO fix bug that doesn't serialize property valu
 	 * @param propertyValue The property value for which an element should be created.
 	 * @return The XML element that represents the given RDF property.
 	 */
-	//G***del rdf if we don't need
+	//TODO del rdf if we don't need
 	protected Element createPropertyElement(final Document document, final RDFResource propertyResource, final RDFObject propertyValue) {
-		//G***del		final URI namespaceURI; //we'll store here the namespace URI of the property element
+		//TODO del		final URI namespaceURI; //we'll store here the namespace URI of the property element
 		final String qualifiedName; //we'll store here the qualified name of the property element
 		//if we know the namespace URI and local name of the property
 		//TODO replace all this code with the new utility method getLabel(RDFResource)
@@ -545,8 +545,8 @@ public class RDFXMLGenerator //TODO fix bug that doesn't serialize property valu
 			} else { //if this is a normal property resource value
 				final RDFResource valueResource = (RDFResource)propertyValue; //cast the value to a resource
 				final Set<RDFResource> referenceSet = getReferenceSet(valueResource); //find out which resources reference this property value
-				//G***if we're only serializing a single resource tree, the commented-out code on this line will result in missing nodes; maybe allow a setFlatSerialization option later, but that may be too flat---maybe have a setSortOfFlat()...				if(valueResource.getReferenceURI()==null) //if this is a blank node
-				/*G***fix or delete
+				//TODO if we're only serializing a single resource tree, the commented-out code on this line will result in missing nodes; maybe allow a setFlatSerialization option later, but that may be too flat---maybe have a setSortOfFlat()...				if(valueResource.getReferenceURI()==null) //if this is a blank node
+				/*TODO fix or delete
 							if(!isSerialized(valueResource)) {	//if we haven't serialized the property value resource, yet
 									//if more than one resource references this resource, don't try to
 									//	choose which one gets an inline reference---defer serialization
@@ -635,7 +635,7 @@ public class RDFXMLGenerator //TODO fix bug that doesn't serialize property valu
 	 * @param namespaceURI The namespace URI for which a prefix should be returned
 	 * @return A prefix for use with the given namespace.
 	 */
-	/*G***del when works
+	/*TODO del when works
 		protected String getPrefix(final String namespaceURI)
 		{
 			String prefix=(String)namespacePrefixMap.get(namespaceURI);  //get the prefix keyed by the namespace
@@ -643,7 +643,7 @@ public class RDFXMLGenerator //TODO fix bug that doesn't serialize property valu
 
 			}
 
-			//G***fix to detect unknown namespaces and assign new prefixes
+			//TODO fix to detect unknown namespaces and assign new prefixes
 		  return (String)namespacePrefixMap.get(namespaceURI);  //return a prefix keyed by the namespace
 		}
 	*/

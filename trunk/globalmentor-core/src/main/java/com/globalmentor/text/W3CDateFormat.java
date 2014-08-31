@@ -73,7 +73,7 @@ public class W3CDateFormat extends SimpleDateFormat {
 	/**
 	 * Pattern for complete date plus hours, minutes, seconds and a decimal fraction of a second: YYYY-MM-DDThh:mm:ss.sTZD (e.g. 1997-07-16T19:20:30.45+01:00)
 	 */
-	//G***testing 	private static final String DATE_TIME_PATTERN=DATE_HOURS_MINUTES_SECONDS_PATTERN;
+	//TODO testing 	private static final String DATE_TIME_PATTERN=DATE_HOURS_MINUTES_SECONDS_PATTERN;
 	private static final String DATE_TIME_PATTERN = DATE_PATTERN + "'T'HH:mm:ss.SSSZ";
 
 	/** The style to use for formatting. */

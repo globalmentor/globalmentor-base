@@ -147,7 +147,7 @@ public class URLs {
 	 * @deprecated
 	 */
 	public static URL getDirectoryURL(final URL url) throws MalformedURLException {
-		return new URL(url, "."); //create a new URL from the directory of the URL G***use a constant here
+		return new URL(url, "."); //create a new URL from the directory of the URL TODO use a constant here
 	}
 
 	/**

@@ -71,7 +71,7 @@ public class ResourceManager {
 	 * @return The resource, loaded from the URL.
 	 */
 	protected Object getResource(final URL url) {
-		return null; //G***create default functionality to simply return a byte array
+		return null; //TODO create default functionality to simply return a byte array
 	}
 
 }

@@ -141,7 +141,7 @@ public abstract class AbstractFileRDFStorage extends AbstractRDFStorage {
 	public void retrieve(final URI uri) throws IOException {
 		if(isBackupUsed()) { //if backup files are used
 			final File storageFile = new File(uri); //get the file to represent the URI
-			final File backupFile = Files.getBackupFile(storageFile); //get the expected backup file G***can't we just remove this parameter and use the default?
+			final File backupFile = Files.getBackupFile(storageFile); //get the expected backup file TODO can't we just remove this parameter and use the default?
 			Files.ensureExistsFromBackup(storageFile, backupFile); //check to see if the file exists; if not, try to use the backup file instead
 		}
 		super.retrieve(uri); //attempt to retrieve the file normally		

@@ -65,7 +65,7 @@ public class Digest extends TypedRDFResource {
 	 * @see #setDigestMethod(DigestMethod)
 	 */
 	public void setDigestMethodAlgorithm(final RDFResource algorithm) {
-		final DigestMethod digestMethod = new DigestMethod(); //create a new digest method G***can we somehow use the existing RDF data model, if there is one?
+		final DigestMethod digestMethod = new DigestMethod(); //create a new digest method TODO can we somehow use the existing RDF data model, if there is one?
 		digestMethod.setAlgorithm(algorithm); //set the algorithm of the digest method
 		setDigestMethod(digestMethod); //set the digest method to the one we created
 	}

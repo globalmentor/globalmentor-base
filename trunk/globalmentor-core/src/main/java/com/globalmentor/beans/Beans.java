@@ -75,10 +75,10 @@ public class Beans {
 	public static void xmlEncode(final Object object, final File file, final boolean createBackup) throws FileNotFoundException {
 		//TODO it would be better to write to a temporary file and only copy if the write was successful
 		if(createBackup && file.exists()) { //if we should make a backup, and the file exists
-			final File backupFile = new File(file.toString() + ".backup"); //create a file with the same name with a ".backup" appended G***use a constant here
+			final File backupFile = new File(file.toString() + ".backup"); //create a file with the same name with a ".backup" appended TODO use a constant here
 			if(backupFile.exists()) //if the backup file exists
 				backupFile.delete(); //delete the backup file
-			file.renameTo(backupFile); //rename the file to the backup file G***should we copy instead here?
+			file.renameTo(backupFile); //rename the file to the backup file TODO should we copy instead here?
 		}
 		//create an output stream to the file, make it buffered, and create an XML encoder to write to the stream
 		final XMLEncoder xmlEncoder = createUpgradedXMLEncoder(new BufferedOutputStream(new FileOutputStream(file)));

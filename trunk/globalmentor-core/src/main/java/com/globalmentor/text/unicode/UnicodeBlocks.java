@@ -106,7 +106,7 @@ public class UnicodeBlocks {
 		try {
 			String blockLine = lineNumberReader.readLine(); //read the first line of text
 			while(blockLine != null) { //while there are more lines left
-				//G***del Log.trace("Block line: "+blockLine);
+				//TODO del Log.trace("Block line: "+blockLine);
 				final UnicodeBlock block = parseLine(blockLine); //parse this line
 				if(block != null) //if this is not a comment
 					blockSet.add(block); //add the resulting Unicode block to our set
@@ -134,14 +134,14 @@ public class UnicodeBlocks {
 			final StringTokenizer rangeTokenizer = new StringTokenizer(fields[0].toString(), String.valueOf('.'), false); //create an object to tokenize the block range TODO use a constant string instead of creating one each time
 			if(rangeTokenizer.hasMoreTokens()) { //if there are more fields on this line
 				final String startCodeValue = rangeTokenizer.nextToken().trim(); //get the start code value and trim it
-				//G***del Log.trace("Start: "+startCodeValue);
+				//TODO del Log.trace("Start: "+startCodeValue);
 				final int startCode = Integer.parseInt(startCodeValue, 16); //convert the hex value to a character
 				if(rangeTokenizer.hasMoreTokens()) { //if there are more fields on this line
 					final String endCodeValue = rangeTokenizer.nextToken().trim(); //get the end code value and trim it
-					//G***del Log.trace("End: "+endCodeValue);
+					//TODO del Log.trace("End: "+endCodeValue);
 					final int endCode = Integer.parseInt(endCodeValue, 16); //convert the hex value to a character
 					final String name = fields[1].toString().trim(); //get the block name and trim it
-					//G***del Log.trace("Name: "+name);
+					//TODO del Log.trace("Name: "+name);
 					return new UnicodeBlock(name, startCode, endCode); //create a new Unicode block and return it
 				}
 			}
