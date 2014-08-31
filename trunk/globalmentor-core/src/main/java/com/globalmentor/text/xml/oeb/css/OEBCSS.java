@@ -31,7 +31,7 @@ import static com.globalmentor.text.xml.stylesheets.css.XMLCSS.*;
 public class OEBCSS {
 
 	/** An OEB 1.0 CSS document. */
-	public final static String X_OEB1_CSS_SUBTYPE = ContentType.SUBTYPE_EXTENSION_PREFIX + "oeb1-css";
+	public static final String X_OEB1_CSS_SUBTYPE = ContentType.SUBTYPE_EXTENSION_PREFIX + "oeb1-css";
 
 	/** A reference to a set containing the OEB 1.0 CSS property names. */
 	private static Reference<Set<String>> oeb1CSSPropertySetReference = null;

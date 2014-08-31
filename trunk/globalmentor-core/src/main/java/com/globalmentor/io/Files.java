@@ -56,7 +56,7 @@ import static com.globalmentor.text.Text.*;
 public class Files {
 
 	/** The character used to separate an extension from the rest of a filename. */
-	public final static char FILENAME_EXTENSION_SEPARATOR = '.';
+	public static final char FILENAME_EXTENSION_SEPARATOR = '.';
 
 	/**
 	 * The character to use for escaping reserved characters.
@@ -68,24 +68,24 @@ public class Files {
 	 * Note that, as '^' is not a valid URI character, it will be escaped again using '%' if such a filename is included in a URI.
 	 * </p>
 	 */
-	public final static char FILENAME_ESCAPE_CHAR = '^';
+	public static final char FILENAME_ESCAPE_CHAR = '^';
 
 	/** The extension for backup files. */
-	private final static String BACKUP_EXTENSION = "bak";
+	private static final String BACKUP_EXTENSION = "bak";
 	/** The default prefix for temporary files. */
-	private final static String TEMP_PREFIX = "temp-";
+	private static final String TEMP_PREFIX = "temp-";
 	/** The extension for temporary files. */
-	private final static String TEMP_EXTENSION = "tmp";
+	private static final String TEMP_EXTENSION = "tmp";
 
 	/** Path separator characters used on several systems. */
-	public final static Characters FILE_PATH_SEPARATOR_CHARACTERS = new Characters('\\', '/');
+	public static final Characters FILE_PATH_SEPARATOR_CHARACTERS = new Characters('\\', '/');
 
 	/**
 	 * The characters which may not be used in POSIX filenames.
 	 * @see <a href="http://hypermail.idiosynkrasia.net/linux-kernel/archived/2001/week50/1017.html">Linux Kernal Mailing List 2001:50:1017</a>
 	 * @see #encodeFilename(String)
 	 */
-	public final static Characters POSIX_FILENAME_RESERVED_CHARACTERS = new Characters('\u0000', '/');
+	public static final Characters POSIX_FILENAME_RESERVED_CHARACTERS = new Characters('\u0000', '/');
 
 	/**
 	 * The characters which may not be used in Windows filenames.
@@ -93,7 +93,7 @@ public class Files {
 	 * @see <a href="http://hypermail.idiosynkrasia.net/linux-kernel/archived/2001/week50/1017.html">Linux Kernal Mailing List 2001:50:1017</a>
 	 * @see #encodeFilename(String)
 	 */
-	public final static Characters WINDOWS_FILENAME_RESERVED_CHARACTERS = new Characters('\u0000', '<', '>', ':', '"', '/', '\\', '|', '?', '*');
+	public static final Characters WINDOWS_FILENAME_RESERVED_CHARACTERS = new Characters('\u0000', '<', '>', ':', '"', '/', '\\', '|', '?', '*');
 
 	/**
 	 * The characters which may not be used as the last character of Windows filenames.
@@ -101,7 +101,7 @@ public class Files {
 	 * @see <a href="http://hypermail.idiosynkrasia.net/linux-kernel/archived/2001/week50/1017.html">Linux Kernal Mailing List 2001:50:1017</a>
 	 * @see #encodeFilename(String)
 	 */
-	public final static Characters WINDOWS_FILENAME_RESERVED_FINAL_CHARACTERS = new Characters('.', ' ');
+	public static final Characters WINDOWS_FILENAME_RESERVED_FINAL_CHARACTERS = new Characters('.', ' ');
 
 	/**
 	 * The characters which may not be used in various file system filenames.
@@ -109,7 +109,7 @@ public class Files {
 	 * @see <a href="http://hypermail.idiosynkrasia.net/linux-kernel/archived/2001/week50/1017.html">Linux Kernal Mailing List 2001:50:1017</a>
 	 * @see #encodeFilename(String)
 	 */
-	public final static Characters CROSS_PLATFORM_FILENAME_RESERVED_CHARACTERS = new Characters('\u0000', '<', '>', ':', '"', '/', '\\', '|', '?', '*');
+	public static final Characters CROSS_PLATFORM_FILENAME_RESERVED_CHARACTERS = new Characters('\u0000', '<', '>', ':', '"', '/', '\\', '|', '?', '*');
 
 	/**
 	 * The characters which may not be used as the last character of various file system filenames.
@@ -117,48 +117,48 @@ public class Files {
 	 * @see <a href="http://hypermail.idiosynkrasia.net/linux-kernel/archived/2001/week50/1017.html">Linux Kernal Mailing List 2001:50:1017</a>
 	 * @see #encodeFilename(String)
 	 */
-	public final static Characters CROSS_PLATFORM_FILENAME_RESERVED_FINAL_CHARACTERS = new Characters('.', ' ');
+	public static final Characters CROSS_PLATFORM_FILENAME_RESERVED_FINAL_CHARACTERS = new Characters('.', ' ');
 
 	/** The prefix used by Unix to designate a hidden file. */
-	public final static String UNIX_HIDDEN_FILENAME_PREFIX = ".";
+	public static final String UNIX_HIDDEN_FILENAME_PREFIX = ".";
 
 	/**
 	 * The filename of the NTFS recycle bin folder.
 	 * @see <a href="http://support.microsoft.com/kb/171694">Differences Between the Recycle Bin and the Recycler Folder</a>
 	 */
-	public final static String NTFS_RECYCLER_DIRECTORY_FILENAME = "RECYCLER";
+	public static final String NTFS_RECYCLER_DIRECTORY_FILENAME = "RECYCLER";
 
 	/**
 	 * The NTFS delimiter for separating Alternate Data Stream identifiers from the rest of the filename.
 	 * @see <a href="http://support.microsoft.com/kb/105763">How To Use NTFS Alternate Data Streams</a>
 	 */
-	public final static char NTFS_ADS_DELIMITER = ':';
+	public static final char NTFS_ADS_DELIMITER = ':';
 
 	/**
 	 * The name of the hidden system folder on Windows used by System Restore to store its information and restore points.
 	 * @see <a href="http://support.microsoft.com/kb/309531">How to gain access to the System Volume Information folder</a>
 	 */
-	public final static String WINDOWS_SYSTEM_VOLUME_INFORMATION_DIRECTORY_FILENAME = "System Volume Information";
+	public static final String WINDOWS_SYSTEM_VOLUME_INFORMATION_DIRECTORY_FILENAME = "System Volume Information";
 
 	//file extensions for certain media types TODO move to respective classes 
 	/** The extension for Common Gateway Interface (CGI) files. */
-	public final static String CGI_EXTENSION = "cgi";
+	public static final String CGI_EXTENSION = "cgi";
 	/** The extension for Microsoft Word files. */
-	public final static String DOC_EXTENSION = "doc";
+	public static final String DOC_EXTENSION = "doc";
 	/** The extension for iCalendar files. */
-	public final static String ICAL_EXTENSION = "ical";
+	public static final String ICAL_EXTENSION = "ical";
 	/** An extension for Java Server Page (JSP) files. */
-	public final static String JSP_EXTENSION = "jsp";
+	public static final String JSP_EXTENSION = "jsp";
 	/** The extension for Adobe PDF files. */
-	public final static String PDF_EXTENSION = "pdf";
+	public static final String PDF_EXTENSION = "pdf";
 	/** The extension for vCard files. */
-	public final static String VCF_EXTENSION = "vcf";
+	public static final String VCF_EXTENSION = "vcf";
 
 	/** The shared file filter that accepts all files. */
-	public final static FileFilter WILDCARD_FILE_FILTER = new WildcardFileFilter();
+	public static final FileFilter WILDCARD_FILE_FILTER = new WildcardFileFilter();
 
 	/** A singleton read-only map of lowercase file extensions and the corresponding content types they represent. */
-	public final static Map<String, ContentType> FILE_EXTENSION_CONTENT_TYPE_MAP; //TODO convert to lazy weak referenced map
+	public static final Map<String, ContentType> FILE_EXTENSION_CONTENT_TYPE_MAP; //TODO convert to lazy weak referenced map
 
 	static {
 		final Map<String, ContentType> tempFileExtensionContentTypeMap = new HashMap<String, ContentType>(); //create a new hash map in which to store extensions, and add the default extensions
@@ -231,10 +231,10 @@ public class Files {
 	}
 
 	/** The characters recognized as wildcards in filenames. */
-	public final static Characters FILENAME_WILDCARD_CHARACTERS = new Characters(RegularExpressions.ZERO_OR_ONE_CHAR, RegularExpressions.ZERO_OR_MORE_CHAR);
+	public static final Characters FILENAME_WILDCARD_CHARACTERS = new Characters(RegularExpressions.ZERO_OR_ONE_CHAR, RegularExpressions.ZERO_OR_MORE_CHAR);
 
 	/** The characters to encode for patterns in a wildcard filename. */
-	private final static Characters FILENAME_NON_WILDCARD_PATTERN_RESTRICTED_CHARACTERS = RegularExpressions.RESTRICTED.remove(FILENAME_WILDCARD_CHARACTERS);
+	private static final Characters FILENAME_NON_WILDCARD_PATTERN_RESTRICTED_CHARACTERS = RegularExpressions.RESTRICTED.remove(FILENAME_WILDCARD_CHARACTERS);
 
 	/**
 	 * Lists files in the given path, the filename of which which may contain wildcards.
@@ -817,7 +817,7 @@ public class Files {
 		return ensureExistsFromBackup(file, getBackupFile(file)); //check to see if the file exists, using the default filename for the backup file
 	}
 
-	protected final static char REPLACEMENT_CHAR = '_'; //the character to use to replace any other character  TODO maybe move these up and/or rename
+	protected static final char REPLACEMENT_CHAR = '_'; //the character to use to replace any other character  TODO maybe move these up and/or rename
 
 	/**
 	 * Escape all reserved filename characters to a two-digit <em>uppercase</em> hex representation using '^' as an escape character so that the filename can be

@@ -31,21 +31,21 @@ import com.globalmentor.text.ArgumentSyntaxException;
 public class EmailAddress implements Resource, Comparable<EmailAddress> {
 
 	/** The delimiter separating the local part from the domain. */
-	public final static char LOCAL_PART_DOMAIN_DELIMITER = '@';
+	public static final char LOCAL_PART_DOMAIN_DELIMITER = '@';
 
 	/**
 	 * A regular expression pattern for matching the local part of an email addresses according to RFC 2822. This pattern is derived from the regular expression
 	 * provided at <a href="http://www.email-unlimited.com/stuff/email_address_validator.htm">Email Address Validation</a>.
 	 * @see <a href="http://www.email-unlimited.com/stuff/email_address_validator.htm">Email Address Validation</a>
 	 */
-	public final static Pattern LOCAL_PART_PATTERN = Pattern.compile("[-!#$%&'*+/0-9=?A-Z^_a-z{|}~](?:\\.?[-!#$%&'*+/0-9=?A-Z^_a-z{|}~])*");
+	public static final Pattern LOCAL_PART_PATTERN = Pattern.compile("[-!#$%&'*+/0-9=?A-Z^_a-z{|}~](?:\\.?[-!#$%&'*+/0-9=?A-Z^_a-z{|}~])*");
 
 	/**
 	 * A regular expression pattern for matching the domain of an email addresses according to RFC 2822. This pattern is derived from the regular expression
 	 * provided at <a href="http://www.email-unlimited.com/stuff/email_address_validator.htm">Email Address Validation</a>.
 	 * @see <a href="http://www.email-unlimited.com/stuff/email_address_validator.htm">Email Address Validation</a>
 	 */
-	public final static Pattern DOMAIN_PATTERN = Pattern.compile("[a-zA-Z](?:-?[a-zA-Z0-9])*(?:\\.[a-zA-Z](?:-?[a-zA-Z0-9])*)+");
+	public static final Pattern DOMAIN_PATTERN = Pattern.compile("[a-zA-Z](?:-?[a-zA-Z0-9])*(?:\\.[a-zA-Z](?:-?[a-zA-Z0-9])*)+");
 
 	/**
 	 * A regular expression pattern for matching email addresses according to RFC 2822. The pattern has two matching groups: the local part, and the domain, in
@@ -58,12 +58,12 @@ public class EmailAddress implements Resource, Comparable<EmailAddress> {
 	 * @see #LOCAL_PART_DOMAIN_DELIMITER
 	 * @see #DOMAIN_PATTERN
 	 */
-	public final static Pattern EMAIL_ADDRESS_PATTERN = Pattern
+	public static final Pattern EMAIL_ADDRESS_PATTERN = Pattern
 			.compile("(" + LOCAL_PART_PATTERN + ")" + LOCAL_PART_DOMAIN_DELIMITER + "(" + DOMAIN_PATTERN + ")");
 	/** The group for returning the local part of an email address from a matcher derived from {@link #EMAIL_ADDRESS_PATTERN}. */
-	public final static int EMAIL_ADDRESS_PATTERN_LOCAL_PART_GROUP = 1;
+	public static final int EMAIL_ADDRESS_PATTERN_LOCAL_PART_GROUP = 1;
 	/** The group for returning the domain of an email address from a matcher derived from {@link #EMAIL_ADDRESS_PATTERN}. */
-	public final static int EMAIL_ADDRESS_PATTERN_DOMAIN_GROUP = 2;
+	public static final int EMAIL_ADDRESS_PATTERN_DOMAIN_GROUP = 2;
 
 	/** The local part of the email address. */
 	private final String localPart;

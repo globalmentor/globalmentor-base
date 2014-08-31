@@ -54,114 +54,114 @@ import com.globalmentor.text.RomanNumerals;
 public final class Characters {
 
 	/** A shared instance of an empty array of characters. */
-	public final static char[] EMPTY_ARRAY = new char[0];
+	public static final char[] EMPTY_ARRAY = new char[0];
 
 	/** The character with Unicode code point zero. */
-	public final static char NULL_CHAR = 0x0000;
+	public static final char NULL_CHAR = 0x0000;
 	/** A backspace. */
-	public final static char BACKSPACE_CHAR = 0x0008;
+	public static final char BACKSPACE_CHAR = 0x0008;
 	/** A horizontal tab (0009;&lt;control&gt;;Cc;0;S;;;;;N;CHARACTER TABULATION;;;;). */
-	public final static char CHARACTER_TABULATION_CHAR = 0x0009;
+	public static final char CHARACTER_TABULATION_CHAR = 0x0009;
 	/** A line feed (LF). */
-	public final static char LINE_FEED_CHAR = 0x000A;
+	public static final char LINE_FEED_CHAR = 0x000A;
 	/** A vertical tab (000B;&lt;control&gt;;Cc;0;S;;;;;N;LINE TABULATION;;;;). */
-	public final static char LINE_TABULATION_CHAR = 0x000B;
+	public static final char LINE_TABULATION_CHAR = 0x000B;
 	/** A form feed (FF). */
-	public final static char FORM_FEED_CHAR = 0x000C;
+	public static final char FORM_FEED_CHAR = 0x000C;
 	/** A carriage return. */
-	public final static char CARRIAGE_RETURN_CHAR = 0x000D;
+	public static final char CARRIAGE_RETURN_CHAR = 0x000D;
 	/** Data Link Escape control character (0010;&lt;control&gt;;Cc;0;BN;;;;;N;DATA LINK ESCAPE;;;;). */
-	public final static char DATA_LINK_ESCAPE_CHAR = 0x0010;
+	public static final char DATA_LINK_ESCAPE_CHAR = 0x0010;
 	/** The information separator four character. */
-	public final static char INFORMATION_SEPARATOR_FOUR_CHAR = 0x001C;
+	public static final char INFORMATION_SEPARATOR_FOUR_CHAR = 0x001C;
 	/** The information separator three character. */
-	public final static char INFORMATION_SEPARATOR_THREE_CHAR = 0x001D;
+	public static final char INFORMATION_SEPARATOR_THREE_CHAR = 0x001D;
 	/** The information separator two character. */
-	public final static char INFORMATION_SEPARATOR_TWO_CHAR = 0x001E;
+	public static final char INFORMATION_SEPARATOR_TWO_CHAR = 0x001E;
 	/** The information separator one character. */
-	public final static char INFORMATION_SEPARATOR_ONE_CHAR = 0x001F;
+	public static final char INFORMATION_SEPARATOR_ONE_CHAR = 0x001F;
 	/** A unit separator character. */
-	public final static char UNIT_SEPARATOR_CHAR = 0x001F;
+	public static final char UNIT_SEPARATOR_CHAR = 0x001F;
 	/** A space character. */
-	public final static char SPACE_CHAR = 0x0020;
+	public static final char SPACE_CHAR = 0x0020;
 	/** A quotation mark character. */
-	public final static char QUOTATION_MARK_CHAR = 0x0022;
+	public static final char QUOTATION_MARK_CHAR = 0x0022;
 	/** The percent sign. */
-	public final static char PERCENT_SIGN_CHAR = 0x0025;
+	public static final char PERCENT_SIGN_CHAR = 0x0025;
 	/** An apostrophe character. */
-	public final static char APOSTROPHE_CHAR = 0x0027;
+	public static final char APOSTROPHE_CHAR = 0x0027;
 	/** A plus sign character. */
-	public final static char PLUS_SIGN_CHAR = 0x002B;
+	public static final char PLUS_SIGN_CHAR = 0x002B;
 	/** A comma character. */
-	public final static char COMMA_CHAR = 0x002C;
+	public static final char COMMA_CHAR = 0x002C;
 	/** A hyphen or minus character. */
-	public final static char HYPHEN_MINUS_CHAR = 0x002D;
+	public static final char HYPHEN_MINUS_CHAR = 0x002D;
 	/** A colon character. */
-	public final static char COLON_CHAR = 0x003A;
+	public static final char COLON_CHAR = 0x003A;
 	/** A semicolon character. */
-	public final static char SEMICOLON_CHAR = 0x003B;
+	public static final char SEMICOLON_CHAR = 0x003B;
 	/** A less-than sign character (003C;LESS-THAN SIGN;Sm;0;ON;;;;;Y;;;;;). */
-	public final static char LESS_THAN_CHAR = 0x003C;
+	public static final char LESS_THAN_CHAR = 0x003C;
 	/** An equals sign character (003D;EQUALS SIGN;Sm;0;ON;;;;;N;;;;;). */
-	public final static char EQUALS_SIGN_CHAR = 0x003D;
+	public static final char EQUALS_SIGN_CHAR = 0x003D;
 	/** A greater-than sign character (003E;GREATER-THAN SIGN;Sm;0;ON;;;;;Y;;;;;). */
-	public final static char GREATER_THAN_CHAR = 0x003E;
+	public static final char GREATER_THAN_CHAR = 0x003E;
 	/** A question mark character (003F;QUESTION MARK;Po;0;ON;;;;;N;;;;;). */
-	public final static char QUESTION_MARK_CHAR = 0x003F;
+	public static final char QUESTION_MARK_CHAR = 0x003F;
 	/** A grave accent character. */
-	public final static char GRAVE_ACCENT_CHAR = 0x0060;
+	public static final char GRAVE_ACCENT_CHAR = 0x0060;
 	/** A tilde character (007E;TILDE;Sm;0;ON;;;;;N;;;;;). */
-	public final static char TILDE_CHAR = 0x007E;
+	public static final char TILDE_CHAR = 0x007E;
 	/** A next line (NEL) control character. */
-	public final static char NEXT_LINE_CHAR = 0x0085;
+	public static final char NEXT_LINE_CHAR = 0x0085;
 	/** A start of string control character. */
-	public final static char START_OF_STRING_CHAR = 0x0098;
+	public static final char START_OF_STRING_CHAR = 0x0098;
 	/** A string terminator control character. */
-	public final static char STRING_TERMINATOR_CHAR = 0x009C;
+	public static final char STRING_TERMINATOR_CHAR = 0x009C;
 	/** Unicode no-break space (NBSP). */
-	public final static char NO_BREAK_SPACE_CHAR = 0x00A0;
+	public static final char NO_BREAK_SPACE_CHAR = 0x00A0;
 	/** The copyright symbol. */
-	public final static char COPYRIGHT_SIGN = 0x00A9;
+	public static final char COPYRIGHT_SIGN = 0x00A9;
 	/** A left-pointing guillemet character. */
-	public final static char LEFT_POINTING_DOUBLE_ANGLE_QUOTATION_MARK_CHAR = 0x00AB;
+	public static final char LEFT_POINTING_DOUBLE_ANGLE_QUOTATION_MARK_CHAR = 0x00AB;
 	/**
 	 * The pilcrow or paragraph sign.
 	 * @see #PARAGRAPH_SIGN_CHAR
 	 */
-	public final static char PILCROW_SIGN_CHAR = 0x00B6;
+	public static final char PILCROW_SIGN_CHAR = 0x00B6;
 	/**
 	 * The paragraph sign.
 	 * @see #PILCROW_SIGN_CHAR
 	 */
-	public final static char PARAGRAPH_SIGN_CHAR = PILCROW_SIGN_CHAR;
+	public static final char PARAGRAPH_SIGN_CHAR = PILCROW_SIGN_CHAR;
 	/** A middle dot character. */
-	public final static char MIDDLE_DOT_CHAR = 0x00B7;
+	public static final char MIDDLE_DOT_CHAR = 0x00B7;
 	/** A right-pointing guillemet character. */
-	public final static char RIGHT_POINTING_DOUBLE_ANGLE_QUOTATION_MARK_CHAR = 0x00BB;
+	public static final char RIGHT_POINTING_DOUBLE_ANGLE_QUOTATION_MARK_CHAR = 0x00BB;
 	/** An uppercase oe ligature. */
-	public final static char LATIN_CAPITAL_LIGATURE_OE_CHAR = 0x0152;
+	public static final char LATIN_CAPITAL_LIGATURE_OE_CHAR = 0x0152;
 	/** A lowercase oe ligature. */
-	public final static char LATIN_SMALL_LIGATURE_OE_CHAR = 0x0153;
+	public static final char LATIN_SMALL_LIGATURE_OE_CHAR = 0x0153;
 	/** A Y umlaut. */
-	public final static char LATIN_CAPITAL_LETTER_Y_WITH_DIAERESIS_CHAR = 0x0178;
+	public static final char LATIN_CAPITAL_LETTER_Y_WITH_DIAERESIS_CHAR = 0x0178;
 	/** A zero-width space (ZWSP) that may expand during justification. */
-	public final static char ZERO_WIDTH_SPACE_CHAR = 0x200B;
+	public static final char ZERO_WIDTH_SPACE_CHAR = 0x200B;
 	/** A zero-width non-joiner (200C;ZERO WIDTH NON-JOINER;Cf;0;BN;;;;;N;;;;;). */
-	public final static char ZERO_WIDTH_NON_JOINER_CHAR = 0x200C;
+	public static final char ZERO_WIDTH_NON_JOINER_CHAR = 0x200C;
 	/** A zero-width joiner (200D;ZERO WIDTH JOINER;Cf;0;BN;;;;;N;;;;;). */
-	public final static char ZERO_WIDTH_JOINER_CHAR = 0x200D;
+	public static final char ZERO_WIDTH_JOINER_CHAR = 0x200D;
 	/** A left-to-right mark (200E;LEFT-TO-RIGHT MARK;Cf;0;L;;;;;N;;;;;). */
-	public final static char LEFT_TO_RIGHT_MARK_CHAR = 0x200E;
+	public static final char LEFT_TO_RIGHT_MARK_CHAR = 0x200E;
 	/** A right-to-right mark (200F;RIGHT-TO-LEFT MARK;Cf;0;R;;;;;N;;;;;). */
-	public final static char RIGHT_TO_LEFT_MARK_CHAR = 0x200F;
+	public static final char RIGHT_TO_LEFT_MARK_CHAR = 0x200F;
 	/** A zero-width non-breaking space&mdash;word joiner (WJ). */
-	public final static char WORD_JOINER_CHAR = 0x2060;
+	public static final char WORD_JOINER_CHAR = 0x2060;
 	/** A left single quote. */
-	public final static char LEFT_SINGLE_QUOTATION_MARK_CHAR = 0x2018;
+	public static final char LEFT_SINGLE_QUOTATION_MARK_CHAR = 0x2018;
 	/** A right single quote. */
-	public final static char RIGHT_SINGLE_QUOTATION_MARK_CHAR = 0x2019;
+	public static final char RIGHT_SINGLE_QUOTATION_MARK_CHAR = 0x2019;
 	/** A single low-9 quotation mark. */
-	public final static char SINGLE_LOW_9_QUOTATION_MARK_CHAR = 0x201A;
+	public static final char SINGLE_LOW_9_QUOTATION_MARK_CHAR = 0x201A;
 	/*TODO fix and add to FORMAT_CHARS 
 		202A;LEFT-TO-RIGHT EMBEDDING;Cf;0;LRE;;;;;N;;;;;
 		202B;RIGHT-TO-LEFT EMBEDDING;Cf;0;RLE;;;;;N;;;;;
@@ -179,85 +179,85 @@ public final class Characters {
 	FFFB;INTERLINEAR ANNOTATION TERMINATOR;Cf;0;BN;;;;;N;;;;;
 	*/
 	/** A single high-reversed-9 quotation mark. */
-	public final static char SINGLE_HIGH_REVERSED_9_QUOTATION_MARK_CHAR = 0x201B;
+	public static final char SINGLE_HIGH_REVERSED_9_QUOTATION_MARK_CHAR = 0x201B;
 	/** A left double quote. */
-	public final static char LEFT_DOUBLE_QUOTATION_MARK_CHAR = 0x201C;
+	public static final char LEFT_DOUBLE_QUOTATION_MARK_CHAR = 0x201C;
 	/** A right double quote. */
-	public final static char RIGHT_DOUBLE_QUOTATION_MARK_CHAR = 0x201D;
+	public static final char RIGHT_DOUBLE_QUOTATION_MARK_CHAR = 0x201D;
 	/** A double low-9 quotation mark. */
-	public final static char DOUBLE_LOW_9_QUOTATION_MARK_CHAR = 0x201E;
+	public static final char DOUBLE_LOW_9_QUOTATION_MARK_CHAR = 0x201E;
 	/** A double high-reversed-9 quotation mark. */
-	public final static char DOUBLE_HIGH_REVERSED_9_QUOTATION_MARK_CHAR = 0x201F;
+	public static final char DOUBLE_HIGH_REVERSED_9_QUOTATION_MARK_CHAR = 0x201F;
 	/** Unicode en dash character. */
-	public final static char EN_DASH_CHAR = 0x2013;
+	public static final char EN_DASH_CHAR = 0x2013;
 	/** Unicode em dash character. */
-	public final static char EM_DASH_CHAR = 0x2014;
+	public static final char EM_DASH_CHAR = 0x2014;
 	/** Unicode bullet character. */
-	public final static char BULLET_CHAR = 0x2022;
+	public static final char BULLET_CHAR = 0x2022;
 	/** Unicode horizontal ellipsis. */
-	public final static char HORIZONTAL_ELLIPSIS_CHAR = 0x2026;
+	public static final char HORIZONTAL_ELLIPSIS_CHAR = 0x2026;
 	/** A line separator character (2028;LINE SEPARATOR;Zl;0;WS;;;;;N;;;;;). */
-	public final static char LINE_SEPARATOR_CHAR = 0x2028;
+	public static final char LINE_SEPARATOR_CHAR = 0x2028;
 	/** A paragraph separator character (2029;PARAGRAPH SEPARATOR;Zp;0;B;;;;;N;;;;;). */
-	public final static char PARAGRAPH_SEPARATOR_CHAR = 0x2029;
+	public static final char PARAGRAPH_SEPARATOR_CHAR = 0x2029;
 	/** A left-pointing single guillemet character. */
-	public final static char SINGLE_LEFT_POINTING_ANGLE_QUOTATION_MARK_CHAR = 0x2039;
+	public static final char SINGLE_LEFT_POINTING_ANGLE_QUOTATION_MARK_CHAR = 0x2039;
 	/** A right-pointing single guillemet character. */
-	public final static char SINGLE_RIGHT_POINTING_ANGLE_QUOTATION_MARK_CHAR = 0x203A;
+	public static final char SINGLE_RIGHT_POINTING_ANGLE_QUOTATION_MARK_CHAR = 0x203A;
 	/** Trademark character. */
-	public final static char TRADE_MARK_SIGN_CHAR = 0x2122;
+	public static final char TRADE_MARK_SIGN_CHAR = 0x2122;
 	/** Infinity symbol (221E;INFINITY;Sm;0;ON;;;;;N;;;;;). */
-	public final static char INFINITY_CHAR = 0x2122;
+	public static final char INFINITY_CHAR = 0x2122;
 	/** A left-pointing angle bracket character (2329;LEFT-POINTING ANGLE BRACKET;Ps;0;ON;3008;;;;Y;BRA;;;;). */
-	public final static char LEFT_POINTING_ANGLE_BRACKET = 0x2329;
+	public static final char LEFT_POINTING_ANGLE_BRACKET = 0x2329;
 	/** A right-pointing angle bracket character (232A;RIGHT-POINTING ANGLE BRACKET;Pe;0;ON;3009;;;;Y;KET;;;;). */
-	public final static char RIGHT_POINTING_ANGLE_BRACKET = 0x232A;
+	public static final char RIGHT_POINTING_ANGLE_BRACKET = 0x232A;
 
 	/** The symbol for NULL (2400;SYMBOL FOR NULL;So;0;ON;;;;;N;GRAPHIC FOR NULL;;;;). */
-	public final static char NULL_SYMBOL = 0x2400;
+	public static final char NULL_SYMBOL = 0x2400;
 	/** The symbol for line feed (240A;SYMBOL FOR LINE FEED;So;0;ON;;;;;N;GRAPHIC FOR LINE FEED;;;;). */
-	public final static char LINE_FEED_SYMBOL = 0x240A;
+	public static final char LINE_FEED_SYMBOL = 0x240A;
 	/** The symbol for vertical tab (240B;SYMBOL FOR VERTICAL TABULATION;So;0;ON;;;;;N;GRAPHIC FOR VERTICAL TABULATION;;;;). */
-	public final static char VERTICAL_TAB_SYMBOL = 0x240B;
+	public static final char VERTICAL_TAB_SYMBOL = 0x240B;
 	/** The symbol for form feed (240C;SYMBOL FOR FORM FEED;So;0;ON;;;;;N;GRAPHIC FOR FORM FEED;;;;). */
-	public final static char FORM_FEED_SYMBOL = 0x240C;
+	public static final char FORM_FEED_SYMBOL = 0x240C;
 	/** The symbol for carriage return (240D;SYMBOL FOR CARRIAGE RETURN;So;0;ON;;;;;N;GRAPHIC FOR CARRIAGE RETURN;;;;). */
-	public final static char CARRIAGE_RETURN_SYMBOL = 0x240D;
+	public static final char CARRIAGE_RETURN_SYMBOL = 0x240D;
 	/** The symbol for end of transmission (2404;SYMBOL FOR END OF TRANSMISSION;So;0;ON;;;;;N;GRAPHIC FOR END OF TRANSMISSION;;;;). */
-	public final static char END_OF_TRANSMISSION_SYMBOL = 0x2404;
+	public static final char END_OF_TRANSMISSION_SYMBOL = 0x2404;
 	/** The symbol for space (2420;SYMBOL FOR SPACE;So;0;ON;;;;;N;GRAPHIC FOR SPACE;;;;). */
-	public final static char SPACE_SYMBOL = 0x2420;
+	public static final char SPACE_SYMBOL = 0x2420;
 	/** The blank symbol (2422;BLANK SYMBOL;So;0;ON;;;;;N;BLANK;;;;). */
-	public final static char BLANK_SYMBOL = 0x2422;
+	public static final char BLANK_SYMBOL = 0x2422;
 
 	/** A reversed double prime quotation mark. */
-	public final static char REVERSED_DOUBLE_PRIME_QUOTATION_MARK_CHAR = 0x301D;
+	public static final char REVERSED_DOUBLE_PRIME_QUOTATION_MARK_CHAR = 0x301D;
 	/** A double prime quotation mark. */
-	public final static char DOUBLE_PRIME_QUOTATION_MARK_CHAR = 0x301E;
+	public static final char DOUBLE_PRIME_QUOTATION_MARK_CHAR = 0x301E;
 	/** A low double prime quotation mark. */
-	public final static char LOW_DOUBLE_PRIME_QUOTATION_MARK_CHAR = 0x301F;
+	public static final char LOW_DOUBLE_PRIME_QUOTATION_MARK_CHAR = 0x301F;
 	/** A full width quotation mark. */
-	public final static char FULLWIDTH_QUOTATION_MARK_CHAR = 0xFF02;
+	public static final char FULLWIDTH_QUOTATION_MARK_CHAR = 0xFF02;
 	/**
 	 * A zero-width no-breaking space (ZWNBSP)&mdash;the Byte Order Mark (BOM) (FEFF;ZERO WIDTH NO-BREAK SPACE;Cf;0;BN;;;;;N;BYTE ORDER MARK;;;;). For
 	 * non-breaking purposes, deprecated in favor of <code>WORD_JOINER_CHAR</code>.
 	 * @see #WORD_JOINER_CHAR
 	 */
-	public final static char ZERO_WIDTH_NO_BREAK_SPACE_CHAR = 0xFEFF;
+	public static final char ZERO_WIDTH_NO_BREAK_SPACE_CHAR = 0xFEFF;
 	/**
 	 * The Byte Order Mark (BOM).
 	 * @see #ZERO_WIDTH_NO_BREAK_SPACE_CHAR
 	 */
-	public final static char BOM_CHAR = ZERO_WIDTH_NO_BREAK_SPACE_CHAR;
+	public static final char BOM_CHAR = ZERO_WIDTH_NO_BREAK_SPACE_CHAR;
 	/** A character for a placeholder in text for an otherwise unspecified object. */
-	public final static char OBJECT_REPLACEMENT_CHAR = 0xFFFC;
+	public static final char OBJECT_REPLACEMENT_CHAR = 0xFFFC;
 	/** Represents a character that is unknown or unrepresentable in Unicode. */
-	public final static char REPLACEMENT_CHAR = 0xFFFD;
+	public static final char REPLACEMENT_CHAR = 0xFFFD;
 	/** An invalid, undefined Unicode character which is "guaranteed not to be a Unicode character at all. */
-	public final static char UNDEFINED_CHAR = 0xFFFF;
+	public static final char UNDEFINED_CHAR = 0xFFFF;
 
 	/** Unicode control characters (0x0000-0x001F, 0x007F-0x09F). */
-	public final static String CONTROL_CHARS = "" + (char)0x0000 + (char)0x0001 + (char)0x0002 + (char)0x0003 + (char)0x0004 + (char)0x0005 + (char)0x0006
+	public static final String CONTROL_CHARS = "" + (char)0x0000 + (char)0x0001 + (char)0x0002 + (char)0x0003 + (char)0x0004 + (char)0x0005 + (char)0x0006
 			+ (char)0x0007 + (char)0x0008 + (char)0x0009 + (char)0x000A + (char)0x000B + (char)0x000C + (char)0x000D + (char)0x000E + (char)0x000F + (char)0x0010
 			+ (char)0x0011 + (char)0x0012 + (char)0x0013 + (char)0x0014 + (char)0x0015 + (char)0x0016 + (char)0x0017 + (char)0x0018 + (char)0x0019 + (char)0x001A
 			+ (char)0x001B + (char)0x001C + (char)0x001D + (char)0x001E + (char)0x001F + (char)0x007F + (char)0x0080 + (char)0x0081 + (char)0x0082 + (char)0x0083
@@ -266,21 +266,21 @@ public final class Characters {
 			+ (char)0x0098 + (char)0x0099 + (char)0x009A + (char)0x009B + (char)0x009C + (char)0x009D + (char)0x009E + (char)0x009F;
 
 	/** Unicode paragraph separator characters. */
-	public final static String PARAGRAPH_SEPARATOR_CHARS = "" + LINE_FEED_CHAR + CARRIAGE_RETURN_CHAR + INFORMATION_SEPARATOR_FOUR_CHAR
+	public static final String PARAGRAPH_SEPARATOR_CHARS = "" + LINE_FEED_CHAR + CARRIAGE_RETURN_CHAR + INFORMATION_SEPARATOR_FOUR_CHAR
 			+ INFORMATION_SEPARATOR_THREE_CHAR + INFORMATION_SEPARATOR_TWO_CHAR + NEXT_LINE_CHAR + PARAGRAPH_SEPARATOR_CHAR;
 
 	/** Unicode segment separator characters. */
-	public final static String SEGMENT_SEPARATOR_CHARS = "" + CHARACTER_TABULATION_CHAR + LINE_TABULATION_CHAR + INFORMATION_SEPARATOR_ONE_CHAR;
+	public static final String SEGMENT_SEPARATOR_CHARS = "" + CHARACTER_TABULATION_CHAR + LINE_TABULATION_CHAR + INFORMATION_SEPARATOR_ONE_CHAR;
 
 	/**
 	 * Unicode newline characters.
 	 * @see <a href="http://unicode.org/unicode/standard/reports/tr13/tr13-5.html">Unicode Newline Guidelines</a>
 	 */
-	public final static Characters NEWLINE_CHARACTERS = new Characters(CARRIAGE_RETURN_CHAR, LINE_FEED_CHAR, NEXT_LINE_CHAR, LINE_SEPARATOR_CHAR, FORM_FEED_CHAR,
+	public static final Characters NEWLINE_CHARACTERS = new Characters(CARRIAGE_RETURN_CHAR, LINE_FEED_CHAR, NEXT_LINE_CHAR, LINE_SEPARATOR_CHAR, FORM_FEED_CHAR,
 			LINE_SEPARATOR_CHAR, PARAGRAPH_SEPARATOR_CHAR);
 
 	/** Unicode whitespace characters. */
-	public final static Characters WHITESPACE_CHARACTERS = NEWLINE_CHARACTERS.add(CHARACTER_TABULATION_CHAR, SPACE_CHAR); //TODO finish
+	public static final Characters WHITESPACE_CHARACTERS = NEWLINE_CHARACTERS.add(CHARACTER_TABULATION_CHAR, SPACE_CHAR); //TODO finish
 
 	/*TODO add
 				  * U0085 NEL
@@ -298,50 +298,50 @@ public final class Characters {
 	/**
 	 * Unicode formatting characters; Unicode characters marked with "Cf", such as <code>WORD_JOINER</code>.
 	 */
-	public final static String FORMAT_CHARS = "" + ZERO_WIDTH_NON_JOINER_CHAR + ZERO_WIDTH_JOINER_CHAR + LEFT_TO_RIGHT_MARK_CHAR + RIGHT_TO_LEFT_MARK_CHAR
+	public static final String FORMAT_CHARS = "" + ZERO_WIDTH_NON_JOINER_CHAR + ZERO_WIDTH_JOINER_CHAR + LEFT_TO_RIGHT_MARK_CHAR + RIGHT_TO_LEFT_MARK_CHAR
 			+ WORD_JOINER_CHAR + ZERO_WIDTH_NO_BREAK_SPACE_CHAR;
 
 	/** Characters considered to be end-of-line markers (e.g. CR and LF). */
-	public final static Characters EOL_CHARACTERS = new Characters(CARRIAGE_RETURN_CHAR, LINE_FEED_CHAR);
+	public static final Characters EOL_CHARACTERS = new Characters(CARRIAGE_RETURN_CHAR, LINE_FEED_CHAR);
 
 	/**
 	 * Characters that do not contain visible "content", and may be trimmed from ends of a string. These include whitespace, control characters, and formatting
 	 * characters.
 	 */
-	public final static Characters TRIM_CHARACTERS = WHITESPACE_CHARACTERS.add(CONTROL_CHARS).add(FORMAT_CHARS);
+	public static final Characters TRIM_CHARACTERS = WHITESPACE_CHARACTERS.add(CONTROL_CHARS).add(FORMAT_CHARS);
 
 	/**
 	 * A regular expression pattern for the class of trim characters.
 	 * @see #TRIM_CHARS
 	 */
-	//TODO del if not needed	public final static Pattern TRIM_PATTERN=Pattern.compile("["+TRIM_CHARS+"]");
+	//TODO del if not needed	public static final Pattern TRIM_PATTERN=Pattern.compile("["+TRIM_CHARS+"]");
 
 	/**
 	 * Characters that delimit a list separated by trim characters, commas, and/or semicolons.
 	 * @see #TRIM_CHARACTERS
 	 */
-	public final static String LIST_DELIMITER_CHARS = TRIM_CHARACTERS + ",;";
+	public static final String LIST_DELIMITER_CHARS = TRIM_CHARACTERS + ",;";
 
 	/**
 	 * A regular expression character class pattern for the class of list delimiter characters.
 	 * @see #LIST_DELIMITER_CHARS
 	 */
-	//TODO del if not needed	public final static Pattern LIST_DELIMITER_CLASS_PATTERN=Pattern.compile(createCharacterClass(LIST_DELIMITER_CHARS));
+	//TODO del if not needed	public static final Pattern LIST_DELIMITER_CLASS_PATTERN=Pattern.compile(createCharacterClass(LIST_DELIMITER_CHARS));
 
 	/** Characters that could be considered the start of a quotation. */
-	public final static String LEFT_QUOTE_CHARS = "" + QUOTATION_MARK_CHAR + APOSTROPHE_CHAR + REVERSED_DOUBLE_PRIME_QUOTATION_MARK_CHAR
+	public static final String LEFT_QUOTE_CHARS = "" + QUOTATION_MARK_CHAR + APOSTROPHE_CHAR + REVERSED_DOUBLE_PRIME_QUOTATION_MARK_CHAR
 			+ DOUBLE_PRIME_QUOTATION_MARK_CHAR + LOW_DOUBLE_PRIME_QUOTATION_MARK_CHAR + FULLWIDTH_QUOTATION_MARK_CHAR + LEFT_SINGLE_QUOTATION_MARK_CHAR
 			+ LEFT_DOUBLE_QUOTATION_MARK_CHAR + LEFT_POINTING_DOUBLE_ANGLE_QUOTATION_MARK_CHAR + SINGLE_LOW_9_QUOTATION_MARK_CHAR + DOUBLE_LOW_9_QUOTATION_MARK_CHAR
 			+ SINGLE_LEFT_POINTING_ANGLE_QUOTATION_MARK_CHAR;
 
 	/** Characters that could be considered the end of a quotation. */
-	public final static String RIGHT_QUOTE_CHARS = "" + QUOTATION_MARK_CHAR + APOSTROPHE_CHAR + REVERSED_DOUBLE_PRIME_QUOTATION_MARK_CHAR
+	public static final String RIGHT_QUOTE_CHARS = "" + QUOTATION_MARK_CHAR + APOSTROPHE_CHAR + REVERSED_DOUBLE_PRIME_QUOTATION_MARK_CHAR
 			+ DOUBLE_PRIME_QUOTATION_MARK_CHAR + LOW_DOUBLE_PRIME_QUOTATION_MARK_CHAR + FULLWIDTH_QUOTATION_MARK_CHAR + RIGHT_SINGLE_QUOTATION_MARK_CHAR
 			+ RIGHT_DOUBLE_QUOTATION_MARK_CHAR + RIGHT_POINTING_DOUBLE_ANGLE_QUOTATION_MARK_CHAR + SINGLE_HIGH_REVERSED_9_QUOTATION_MARK_CHAR
 			+ DOUBLE_HIGH_REVERSED_9_QUOTATION_MARK_CHAR + SINGLE_RIGHT_POINTING_ANGLE_QUOTATION_MARK_CHAR;
 
 	/** Characters that start or end quotations. */
-	public final static String QUOTE_CHARS = "" + QUOTATION_MARK_CHAR + APOSTROPHE_CHAR + REVERSED_DOUBLE_PRIME_QUOTATION_MARK_CHAR
+	public static final String QUOTE_CHARS = "" + QUOTATION_MARK_CHAR + APOSTROPHE_CHAR + REVERSED_DOUBLE_PRIME_QUOTATION_MARK_CHAR
 			+ DOUBLE_PRIME_QUOTATION_MARK_CHAR + LOW_DOUBLE_PRIME_QUOTATION_MARK_CHAR + FULLWIDTH_QUOTATION_MARK_CHAR + LEFT_SINGLE_QUOTATION_MARK_CHAR
 			+ RIGHT_SINGLE_QUOTATION_MARK_CHAR + LEFT_DOUBLE_QUOTATION_MARK_CHAR + RIGHT_DOUBLE_QUOTATION_MARK_CHAR + LEFT_POINTING_DOUBLE_ANGLE_QUOTATION_MARK_CHAR
 			+ RIGHT_POINTING_DOUBLE_ANGLE_QUOTATION_MARK_CHAR + SINGLE_LOW_9_QUOTATION_MARK_CHAR + SINGLE_HIGH_REVERSED_9_QUOTATION_MARK_CHAR
@@ -349,37 +349,37 @@ public final class Characters {
 			+ SINGLE_RIGHT_POINTING_ANGLE_QUOTATION_MARK_CHAR;
 
 	/** Characters used to punctuate phrases and sentences. */
-	public final static Characters PHRASE_PUNCTUATION_CHARACTERS = new Characters('.', ',', ':', ';', '?', '!'); //TODO use constants here
+	public static final Characters PHRASE_PUNCTUATION_CHARACTERS = new Characters('.', ',', ':', ';', '?', '!'); //TODO use constants here
 
 	/** Punctuation that expects a character to follow at some point. */
-	public final static Characters DEPENDENT_PUNCTUATION_CHARACTERS = new Characters(COLON_CHAR, ';', COMMA_CHAR, HYPHEN_MINUS_CHAR, EM_DASH_CHAR, EN_DASH_CHAR); //TODO use a constant
+	public static final Characters DEPENDENT_PUNCTUATION_CHARACTERS = new Characters(COLON_CHAR, ';', COMMA_CHAR, HYPHEN_MINUS_CHAR, EM_DASH_CHAR, EN_DASH_CHAR); //TODO use a constant
 
 	/** Left punctuation used to group characters. */
-	public final static Characters LEFT_GROUP_PUNCTUATION_CHARACTERS = new Characters('(', '[', '{', '<'); //TODO use constants
+	public static final Characters LEFT_GROUP_PUNCTUATION_CHARACTERS = new Characters('(', '[', '{', '<'); //TODO use constants
 
 	/** Right punctuation used to group characters. */
-	public final static Characters RIGHT_GROUP_PUNCTUATION_CHARACTERS = new Characters(')', ']', '}', '>'); //TODO use constants
+	public static final Characters RIGHT_GROUP_PUNCTUATION_CHARACTERS = new Characters(')', ']', '}', '>'); //TODO use constants
 
 	/** Punctuation used to group characters. */
-	public final static Characters GROUP_PUNCTUATION_CHARACTERS = LEFT_GROUP_PUNCTUATION_CHARACTERS.add(RIGHT_GROUP_PUNCTUATION_CHARACTERS);
+	public static final Characters GROUP_PUNCTUATION_CHARACTERS = LEFT_GROUP_PUNCTUATION_CHARACTERS.add(RIGHT_GROUP_PUNCTUATION_CHARACTERS);
 
 	/**
 	 * Characters used to punctuate phrases and sentences, as well as general punctuation such as quotes.
 	 */
-	public final static Characters PUNCTUATION_CHARS = PHRASE_PUNCTUATION_CHARACTERS.add(GROUP_PUNCTUATION_CHARACTERS).add(QUOTE_CHARS).add(HYPHEN_MINUS_CHAR)
+	public static final Characters PUNCTUATION_CHARS = PHRASE_PUNCTUATION_CHARACTERS.add(GROUP_PUNCTUATION_CHARACTERS).add(QUOTE_CHARS).add(HYPHEN_MINUS_CHAR)
 			.add(EM_DASH_CHAR).add(EN_DASH_CHAR);
 
 	/** Characters that separate words. */
-	public final static Characters WORD_DELIMITER_CHARACTERS = WHITESPACE_CHARACTERS.add(PUNCTUATION_CHARS); //TODO this needs fixed
+	public static final Characters WORD_DELIMITER_CHARACTERS = WHITESPACE_CHARACTERS.add(PUNCTUATION_CHARS); //TODO this needs fixed
 
 	/**
 	 * A regular expression pattern for the class of word delimiter characters.
 	 * @see #WORD_DELIMITER_CHARS
 	 */
-	//TODO fix; these characters must be escaped, or this Pattern.toString() will run into an endless loop!	public final static Pattern WORD_DELIMITER_PATTERN=Pattern.compile("["+WORD_DELIMITER_CHARS+"]");
+	//TODO fix; these characters must be escaped, or this Pattern.toString() will run into an endless loop!	public static final Pattern WORD_DELIMITER_PATTERN=Pattern.compile("["+WORD_DELIMITER_CHARS+"]");
 
 	/** Characters that allow words to wrap. */
-	public final static String WORD_WRAP_CHARS = WHITESPACE_CHARACTERS + "-/"; //TODO use constants
+	public static final String WORD_WRAP_CHARS = WHITESPACE_CHARACTERS + "-/"; //TODO use constants
 
 	/** The set of sorted characters, with no duplicates or surrogates. */
 	private final char[] chars;
@@ -391,7 +391,7 @@ public final class Characters {
 	private final int maxChar;
 
 	/** The shared instance of no characters. */
-	public final static Characters NONE = new Characters();
+	public static final Characters NONE = new Characters();
 
 	/**
 	 * Characters constructor. Duplicates are ignored.
@@ -717,7 +717,7 @@ public final class Characters {
 	 * @param c The character to examine.
 	 * @return <code>true</code> if the character is an ISO_LATIN_1 digit.
 	 */
-	public final static boolean isLatinDigit(final char c) {
+	public static final boolean isLatinDigit(final char c) {
 		return c >= '0' && c <= '9'; //see if the character falls in the range of the Latin digits
 	}
 
@@ -914,7 +914,7 @@ public final class Characters {
 	 * @throws NullPointerException if the given string is <code>null</code>
 	 * @throws IllegalArgumentException if the string is not composed of a single character.
 	 */
-	public final static Character parseCharacter(final String string) {
+	public static final Character parseCharacter(final String string) {
 		if(string.length() != 1) { //if this string isn't composed of a single character
 			throw new IllegalArgumentException("The string \"" + string + "\" does not represent a single character.");
 		}

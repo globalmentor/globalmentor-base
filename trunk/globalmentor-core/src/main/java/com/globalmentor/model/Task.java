@@ -27,7 +27,7 @@ import com.globalmentor.beans.*;
 public interface Task extends PropertyBindable, PropertyConstrainable {
 
 	/** The bound property of the task state. */
-	public final static String STATE_PROPERTY = getPropertyName(Task.class, "state");
+	public static final String STATE_PROPERTY = getPropertyName(Task.class, "state");
 
 	/** @return The current state of the task. */
 	public TaskState getState();

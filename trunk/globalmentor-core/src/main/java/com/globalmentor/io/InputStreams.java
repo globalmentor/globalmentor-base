@@ -32,7 +32,7 @@ import com.globalmentor.java.Bytes;
 public class InputStreams {
 
 	/** The shared instance of an input stream with no content. */
-	public final static InputStream EMPTY_INPUT_STREAM = new EmptyInputStream();
+	public static final InputStream EMPTY_INPUT_STREAM = new EmptyInputStream();
 
 	/**
 	 * Loads the contents of an input stream into an array of bytes. This is accomplished by creating a series of smaller buffers and, once the end of the stream

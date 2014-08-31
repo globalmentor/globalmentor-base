@@ -38,10 +38,10 @@ import com.globalmentor.text.directory.*;
 public class VCard extends Directory {
 
 	/** The name of the vCard profile. */
-	public final static String VCARD_PROFILE_NAME = "VCARD";
+	public static final String VCARD_PROFILE_NAME = "VCARD";
 
 	/** The delimiter separating components of a vCard structured type (';'). */
-	public final static char STRUCTURED_TEXT_VALUE_DELIMITER = 59;
+	public static final char STRUCTURED_TEXT_VALUE_DELIMITER = 59;
 
 	//defined types
 
@@ -51,18 +51,18 @@ public class VCard extends Directory {
 	 * The required type to specify the formatted text corresponding to the name of the object the vCard represents.
 	 * @see Directory#TEXT_VALUE_TYPE
 	 */
-	public final static String FN_TYPE = "FN";
+	public static final String FN_TYPE = "FN";
 
 	/**
 	 * The structured text type to specify the components of the name of the object the vCard represents.
 	 */
-	public final static String N_TYPE = "N";
+	public static final String N_TYPE = "N";
 
 	/**
 	 * The type to specify the text corresponding to the nickname of the object the vCard represents.
 	 * @see Directory#TEXT_VALUE_TYPE
 	 */
-	public final static String NICKNAME_TYPE = "NICKNAME";
+	public static final String NICKNAME_TYPE = "NICKNAME";
 
 	/**
 	 * The type to specify an image or photograph information that annotates some aspect of the object the vCard represents.
@@ -70,42 +70,42 @@ public class VCard extends Directory {
 	 * @see #BINARY_VALUE_TYPE
 	 * @see Directory#URI_VALUE_TYPE
 	 */
-	public final static String PHOTO_TYPE = "PHOTO";
+	public static final String PHOTO_TYPE = "PHOTO";
 
 	/**
 	 * The type to specify the birth date of the object the vCard represents.
 	 * @see Directory#DATE_VALUE_TYPE
 	 * @see Directory#DATE_TIME_VALUE_TYPE
 	 */
-	public final static String BDAY_TYPE = "BDAY";
+	public static final String BDAY_TYPE = "BDAY";
 
 	//delivery addressing types
 
 	/**
 	 * The structured text type to specify the components of the delivery address for the vCard object.
 	 */
-	public final static String ADR_TYPE = "ADR";
+	public static final String ADR_TYPE = "ADR";
 
 	/** A domestic delivery address. */
-	public final static String ADR_DOM_PARAM_VALUE = "dom";
+	public static final String ADR_DOM_PARAM_VALUE = "dom";
 	/** An international delivery address. */
-	public final static String ADR_INTL_PARAM_VALUE = "intl";
+	public static final String ADR_INTL_PARAM_VALUE = "intl";
 	/** A postal delivery address. */
-	public final static String ADR_POSTAL_PARAM_VALUE = "postal";
+	public static final String ADR_POSTAL_PARAM_VALUE = "postal";
 	/** A parcel delivery address. */
-	public final static String ADR_PARCEL_PARAM_VALUE = "parcel";
+	public static final String ADR_PARCEL_PARAM_VALUE = "parcel";
 	/** A delivery address for a residence. */
-	public final static String ADR_HOME_PARAM_VALUE = "home";
+	public static final String ADR_HOME_PARAM_VALUE = "home";
 	/** A delivery address for a place of work. */
-	public final static String ADR_WORK_PARAM_VALUE = "work";
+	public static final String ADR_WORK_PARAM_VALUE = "work";
 	/** The preferred delivery address. */
-	public final static String ADR_PREF_PARAM_VALUE = "pref";
+	public static final String ADR_PREF_PARAM_VALUE = "pref";
 
 	/**
 	 * The type to specify the formatted text corresponding to delivery address of the object the vCard represents.
 	 * @see Directory#TEXT_VALUE_TYPE
 	 */
-	public final static String LABEL_TYPE = "LABEL";
+	public static final String LABEL_TYPE = "LABEL";
 
 	//telecommunications addressing types
 
@@ -113,55 +113,55 @@ public class VCard extends Directory {
 	 * The type to specify the telephone number for telephony communication with the object the vCard represents.
 	 * @see #PHONE_NUMBER_VALUE_TYPE
 	 */
-	public final static String TEL_TYPE = "TEL";
+	public static final String TEL_TYPE = "TEL";
 
 	/** A telephone number associated with a residence. */
-	public final static String TEL_HOME_PARAM_VALUE = "home";
+	public static final String TEL_HOME_PARAM_VALUE = "home";
 	/** A telephone number that has voice messaging support. */
-	public final static String TEL_MSG_PARAM_VALUE = "msg";
+	public static final String TEL_MSG_PARAM_VALUE = "msg";
 	/** A telephone number associated with a place of work. */
-	public final static String TEL_WORK_PARAM_VALUE = "work";
+	public static final String TEL_WORK_PARAM_VALUE = "work";
 	/** A preferred-use telephone number. */
-	public final static String TEL_PREF_PARAM_VALUE = "pref";
+	public static final String TEL_PREF_PARAM_VALUE = "pref";
 	/** A voice telephone number. */
-	public final static String TEL_VOICE_PARAM_VALUE = "voice";
+	public static final String TEL_VOICE_PARAM_VALUE = "voice";
 	/** A facsimile telephone number. */
-	public final static String TEL_FAX_PARAM_VALUE = "fax";
+	public static final String TEL_FAX_PARAM_VALUE = "fax";
 	/** A cellular telephone number. */
-	public final static String TEL_CELL_PARAM_VALUE = "cell";
+	public static final String TEL_CELL_PARAM_VALUE = "cell";
 	/** A video conferencing telephone number. */
-	public final static String TEL_VIDEO_PARAM_VALUE = "video";
+	public static final String TEL_VIDEO_PARAM_VALUE = "video";
 	/** A paging device telephone number. */
-	public final static String TEL_PAGER_PARAM_VALUE = "pager";
+	public static final String TEL_PAGER_PARAM_VALUE = "pager";
 	/** A bulletin board system telephone number. */
-	public final static String TEL_BBS_PARAM_VALUE = "bbs";
+	public static final String TEL_BBS_PARAM_VALUE = "bbs";
 	/** A modem-connected telephone number. */
-	public final static String TEL_MODEM_PARAM_VALUE = "modem";
+	public static final String TEL_MODEM_PARAM_VALUE = "modem";
 	/** A car-phone telephone number. */
-	public final static String TEL_CAR_PARAM_VALUE = "car";
+	public static final String TEL_CAR_PARAM_VALUE = "car";
 	/** An ISDN service telephone number. */
-	public final static String TEL_ISDN_PARAM_VALUE = "isdn";
+	public static final String TEL_ISDN_PARAM_VALUE = "isdn";
 	/** A personal communication services telephone number. */
-	public final static String TEL_PCS_PARAM_VALUE = "pcs";
+	public static final String TEL_PCS_PARAM_VALUE = "pcs";
 
 	/**
 	 * The type to specify the electronic mail address for communication with the object the vCard represents.
 	 * @see Directory#TEXT_VALUE_TYPE
 	 */
-	public final static String EMAIL_TYPE = "EMAIL";
+	public static final String EMAIL_TYPE = "EMAIL";
 
 	/** An Internet email address. */
-	public final static String EMAIL_INTERNET_PARAM_VALUE = "internet";
+	public static final String EMAIL_INTERNET_PARAM_VALUE = "internet";
 	/** An X.400 addressing type. */
-	public final static String EMAIL_X400_PARAM_VALUE = "x400";
+	public static final String EMAIL_X400_PARAM_VALUE = "x400";
 	/** A preferred-use email address. */
-	public final static String EMAIL_PREF_PARAM_VALUE = "pref";
+	public static final String EMAIL_PREF_PARAM_VALUE = "pref";
 
 	/**
 	 * The type to specify the type of electronic mail software that is used by the individual associated with the vCard.
 	 * @see Directory#TEXT_VALUE_TYPE
 	 */
-	public final static String MAILER_TYPE = "MAILER";
+	public static final String MAILER_TYPE = "MAILER";
 
 	//geographical types
 
@@ -169,13 +169,13 @@ public class VCard extends Directory {
 	 * The type to specify information related to the time zone of the object the vCard represents.
 	 * @see #UTC_OFFSET_VALUE_TYPE
 	 */
-	public final static String TZ_TYPE = "TZ";
+	public static final String TZ_TYPE = "TZ";
 
 	/**
 	 * The structured type to specify information related to the global positioning of the object the vCard represents.
 	 * @see Directory#FLOAT_VALUE_TYPE
 	 */
-	public final static String GEO_TYPE = "GEO";
+	public static final String GEO_TYPE = "GEO";
 
 	//organizational types
 
@@ -183,13 +183,13 @@ public class VCard extends Directory {
 	 * The type to specify the job title, functional position or function of the object the vCard represents.
 	 * @see Directory#TEXT_VALUE_TYPE
 	 */
-	public final static String TITLE_TYPE = "TITLE";
+	public static final String TITLE_TYPE = "TITLE";
 
 	/**
 	 * The type to specify information concerning the role, occupation, or business category of the object the vCard represents.
 	 * @see Directory#TEXT_VALUE_TYPE
 	 */
-	public final static String ROLE_TYPE = "ROLE";
+	public static final String ROLE_TYPE = "ROLE";
 
 	/**
 	 * The type to specify a graphic image of a logo associated with the object the vCard represents.
@@ -197,7 +197,7 @@ public class VCard extends Directory {
 	 * @see #BINARY_VALUE_TYPE
 	 * @see Directory#URI_VALUE_TYPE
 	 */
-	public final static String LOGO_TYPE = "LOGO";
+	public static final String LOGO_TYPE = "LOGO";
 
 	/**
 	 * The type to specify information about another person who will act on behalf of the individual or resource associated with the vCard.
@@ -205,12 +205,12 @@ public class VCard extends Directory {
 	 * @see Directory#URI_VALUE_TYPE
 	 * @see #VCARD_VALUE_TYPE
 	 */
-	public final static String AGENT_TYPE = "AGENT";
+	public static final String AGENT_TYPE = "AGENT";
 
 	/**
 	 * The structured text type to specify the organizational name and units associated with the vCard.
 	 */
-	public final static String ORG_TYPE = "ORG";
+	public static final String ORG_TYPE = "ORG";
 
 	//explanatory types
 
@@ -218,32 +218,32 @@ public class VCard extends Directory {
 	 * The type to specify application category information about the vCard.
 	 * @see Directory#TEXT_VALUE_TYPE
 	 */
-	public final static String CATEGORIES_TYPE = "CATEGORIES";
+	public static final String CATEGORIES_TYPE = "CATEGORIES";
 
 	/**
 	 * The type to specify supplemental information or a comment that is associated with the vCard.
 	 * @see Directory#TEXT_VALUE_TYPE
 	 */
-	public final static String NOTE_TYPE = "NOTE";
+	public static final String NOTE_TYPE = "NOTE";
 
 	/**
 	 * The type to specify the identifier for the product that created the vCard object.
 	 * @see Directory#TEXT_VALUE_TYPE
 	 */
-	public final static String PRODID_TYPE = "PRODID";
+	public static final String PRODID_TYPE = "PRODID";
 
 	/**
 	 * The type to specify revision information about the current vCard.
 	 * @see Directory#DATE_TIME_VALUE_TYPE
 	 * @see Directory#DATE_VALUE_TYPE
 	 */
-	public final static String REV_TYPE = "REF";
+	public static final String REV_TYPE = "REF";
 
 	/**
 	 * The type to specify the family name or given name text to be used for national-language-specific sorting of the FN and N types.
 	 * @see Directory#TEXT_VALUE_TYPE
 	 */
-	public final static String SORT_STRING_TYPE = "SORT-STRING";
+	public static final String SORT_STRING_TYPE = "SORT-STRING";
 
 	/**
 	 * The type To specify a digital sound content information that annotates some aspect of the vCard. By default this type is used to specify the proper
@@ -252,28 +252,28 @@ public class VCard extends Directory {
 	 * @see #BINARY_VALUE_TYPE
 	 * @see Directory#URI_VALUE_TYPE
 	 */
-	public final static String SOUND_TYPE = "SOUND";
+	public static final String SOUND_TYPE = "SOUND";
 
 	/**
 	 * The type to specify a value that represents a globally unique identifier corresponding to the individual or resource associated with the vCard.
 	 * @see Directory#TEXT_VALUE_TYPE
 	 */
-	public final static String UID_TYPE = "UID";
+	public static final String UID_TYPE = "UID";
 
 	/**
 	 * The type to specify a uniform resource locator associated with the object that the vCard refers to.
 	 * @see Directory#URI_VALUE_TYPE
 	 */
-	public final static String URL_TYPE = "URL";
+	public static final String URL_TYPE = "URL";
 
 	/**
 	 * The type to specify the version of the vCard specification used to format this vCard ("3.0").
 	 * @see Directory#TEXT_VALUE_TYPE
 	 */
-	public final static String VERSION_TYPE = "VERSION";
+	public static final String VERSION_TYPE = "VERSION";
 
 	/** The version of the vCard directory profile used in this implementation: "3.0". */
-	public final static String VCARD_VERSION_VALUE = "3.0";
+	public static final String VCARD_VERSION_VALUE = "3.0";
 
 	//security types
 
@@ -281,14 +281,14 @@ public class VCard extends Directory {
 	 * The type to specify the access classification for a vCard object.
 	 * @see Directory#TEXT_VALUE_TYPE
 	 */
-	public final static String CLASS_TYPE = "CLASS";
+	public static final String CLASS_TYPE = "CLASS";
 
 	/**
 	 * The type to specify a public key or authentication certificate associated with the object that the vCard represents.
 	 * @see Directory#B_ENCODING_TYPE
 	 * @see #BINARY_VALUE_TYPE
 	 */
-	public final static String KEY_TYPE = "KEY";
+	public static final String KEY_TYPE = "KEY";
 
 	//value types
 
@@ -296,21 +296,21 @@ public class VCard extends Directory {
 	 * An inline, encoded binary value, encoded in the "B" encoding format.
 	 * @see Directory#B_ENCODING_TYPE
 	 */
-	public final static String BINARY_VALUE_TYPE = "BINARY";
+	public static final String BINARY_VALUE_TYPE = "BINARY";
 
 	/** The type specifying another vCard. */
-	public final static String VCARD_VALUE_TYPE = "vcard";
+	public static final String VCARD_VALUE_TYPE = "vcard";
 
 	/** The telephone number value type. */
-	public final static String PHONE_NUMBER_VALUE_TYPE = "phone-number";
+	public static final String PHONE_NUMBER_VALUE_TYPE = "phone-number";
 
 	/** The type specifying a signed offset from UTC. */
-	public final static String UTC_OFFSET_VALUE_TYPE = "utc-offset";
+	public static final String UTC_OFFSET_VALUE_TYPE = "utc-offset";
 
 	//parameters
 
 	/** The type parameter. */
-	public final static String TYPE_PARAM_NAME = "type";
+	public static final String TYPE_PARAM_NAME = "type";
 
 	/** The list of content lines that represent unrecognized and/or unprocessed information. */
 	private final List<ContentLine> contentLineList = new ArrayList<ContentLine>();

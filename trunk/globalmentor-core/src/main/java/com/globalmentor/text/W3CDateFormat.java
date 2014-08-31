@@ -57,24 +57,24 @@ public class W3CDateFormat extends SimpleDateFormat {
 	};
 
 	/** Pattern for year: YYYY (e.g. 1997) */
-	private final static String YEAR_PATTERN = "yyyy";
+	private static final String YEAR_PATTERN = "yyyy";
 	/** Pattern for year and month: YYYY-MM (e.g. 1997-07) */
-	private final static String YEAR_MONTH_PATTERN = YEAR_PATTERN + "-MM";
+	private static final String YEAR_MONTH_PATTERN = YEAR_PATTERN + "-MM";
 	/** Pattern for complete date: YYYY-MM-DD (e.g. 1997-07-16) */
-	private final static String DATE_PATTERN = YEAR_MONTH_PATTERN + "-dd";
+	private static final String DATE_PATTERN = YEAR_MONTH_PATTERN + "-dd";
 	/**
 	 * Pattern for complete date plus hours and minutes: YYYY-MM-DDThh:mmTZD (e.g. 1997-07-16T19:20+01:00)
 	 */
-	private final static String DATE_HOURS_MINUTES_PATTERN = DATE_PATTERN + "'T'HH:mmZ";
+	private static final String DATE_HOURS_MINUTES_PATTERN = DATE_PATTERN + "'T'HH:mmZ";
 	/**
 	 * Pattern for complete date plus hours, minutes and seconds: YYYY-MM-DDThh:mm:ssTZD (e.g. 1997-07-16T19:20:30+01:00)
 	 */
-	private final static String DATE_HOURS_MINUTES_SECONDS_PATTERN = DATE_PATTERN + "'T'HH:mm:ssZ";
+	private static final String DATE_HOURS_MINUTES_SECONDS_PATTERN = DATE_PATTERN + "'T'HH:mm:ssZ";
 	/**
 	 * Pattern for complete date plus hours, minutes, seconds and a decimal fraction of a second: YYYY-MM-DDThh:mm:ss.sTZD (e.g. 1997-07-16T19:20:30.45+01:00)
 	 */
-	//G***testing 	private final static String DATE_TIME_PATTERN=DATE_HOURS_MINUTES_SECONDS_PATTERN;
-	private final static String DATE_TIME_PATTERN = DATE_PATTERN + "'T'HH:mm:ss.SSSZ";
+	//G***testing 	private static final String DATE_TIME_PATTERN=DATE_HOURS_MINUTES_SECONDS_PATTERN;
+	private static final String DATE_TIME_PATTERN = DATE_PATTERN + "'T'HH:mm:ss.SSSZ";
 
 	/** The style to use for formatting. */
 	private final Style style;
@@ -99,7 +99,7 @@ public class W3CDateFormat extends SimpleDateFormat {
 	}
 
 	/** The formatting patterns used, in order. */
-	private final static String[] patterns = { YEAR_PATTERN, YEAR_MONTH_PATTERN, DATE_PATTERN, DATE_HOURS_MINUTES_PATTERN, DATE_HOURS_MINUTES_SECONDS_PATTERN,
+	private static final String[] patterns = { YEAR_PATTERN, YEAR_MONTH_PATTERN, DATE_PATTERN, DATE_HOURS_MINUTES_PATTERN, DATE_HOURS_MINUTES_SECONDS_PATTERN,
 			DATE_TIME_PATTERN };
 
 	/**

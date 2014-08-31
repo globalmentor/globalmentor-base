@@ -36,38 +36,38 @@ import static com.globalmentor.java.Objects.*;
 public class Text {
 
 	/** The MIME subtype of <code>text/plain</code>. */
-	public final static String PLAIN_SUBTYPE = "plain";
+	public static final String PLAIN_SUBTYPE = "plain";
 
 	/** The content type for plain text: <code>text/plain</code>. */
 	public static final ContentType PLAIN_CONTENT_TYPE = ContentType.create(ContentType.TEXT_PRIMARY_TYPE, PLAIN_SUBTYPE);
 
 	/** The name extension for text files. */
-	public final static String TXT_NAME_EXTENSION = "txt";
+	public static final String TXT_NAME_EXTENSION = "txt";
 
 	/**
 	 * The string representing the CR EOL character sequence.
 	 * @see {@link Characters#CARRIAGE_RETURN_CHAR}
 	 */
-	public final static String CARRIAGE_RETURN_STRING = new StringBuilder().append(CARRIAGE_RETURN_CHAR).toString();
+	public static final String CARRIAGE_RETURN_STRING = new StringBuilder().append(CARRIAGE_RETURN_CHAR).toString();
 
 	/**
 	 * The string representing the LF EOL character sequence.
 	 * @see {@link Characters#LINE_FEED_CHAR}
 	 */
-	public final static String LINE_FEED_STRING = new StringBuilder().append(LINE_FEED_CHAR).toString();
+	public static final String LINE_FEED_STRING = new StringBuilder().append(LINE_FEED_CHAR).toString();
 
 	/**
 	 * The pattern that can split a line based upon linefeeds.
 	 * @see {@link Characters#LINE_FEED_CHAR}
 	 */
-	public final static Pattern LINE_FEED_PATTERN = Pattern.compile(LINE_FEED_STRING);
+	public static final Pattern LINE_FEED_PATTERN = Pattern.compile(LINE_FEED_STRING);
 
 	/**
 	 * The string representing the CRLF EOL sequence.
 	 * @see {@link Characters#CARRIAGE_RETURN_CHAR}
 	 * @see {@link Characters#LINE_FEED_CHAR}
 	 */
-	public final static String CRLF_STRING = CARRIAGE_RETURN_STRING + LINE_FEED_STRING;
+	public static final String CRLF_STRING = CARRIAGE_RETURN_STRING + LINE_FEED_STRING;
 
 	/**
 	 * Compares two strings for order in ascending order using the specified collator. Returns a negative integer, zero, or a positive integer as the first
@@ -130,7 +130,7 @@ public class Text {
 	 * @throws NullPointerException if the given string is <code>null</code>.
 	 * @see <a href="http://www.ecma-international.org/publications/standards/Ecma-048.htm">ECMA-48: Control Functions for Coded Character Sets</a>
 	 */
-	public final static String createControlString(final String string) {
+	public static final String createControlString(final String string) {
 		return START_OF_STRING_CHAR + checkInstance(string, "String cannot be null.") + STRING_TERMINATOR_CHAR; //wrap the string with a SOS/ST pair
 	}
 

@@ -57,7 +57,7 @@ public class CountedFilterIterator<E> extends IteratorDecorator<E> { //TODO refa
 	}
 
 	/** The constant object representing no next object available. */
-	protected final static Object NO_NEXT_OBJECT = new Object();
+	protected static final Object NO_NEXT_OBJECT = new Object();
 
 	/**
 	 * The value that has been retrieved and has passed the filter and is waiting to be returned, or <code>NO_NEXT_OBJECT</code> if there is no primed next

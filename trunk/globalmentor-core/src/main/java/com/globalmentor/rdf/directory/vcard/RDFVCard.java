@@ -42,38 +42,38 @@ import static com.globalmentor.rdf.RDFResources.*;
 public class RDFVCard extends RDFDirectory {
 
 	/** The recommended prefix to the vCard namespace. */
-	public final static String VCARD_NAMESPACE_PREFIX = "vcard";
+	public static final String VCARD_NAMESPACE_PREFIX = "vcard";
 
 	/** The URI to the vCard namespace. */
-	public final static URI VCARD_NAMESPACE_URI = URI.create("http://www.w3.org/2006/vcard/ns#");
+	public static final URI VCARD_NAMESPACE_URI = URI.create("http://www.w3.org/2006/vcard/ns#");
 
 	//vCard type names
 	/** Specifies the components of the name of the object the vCard represents. The local name of <code>vcard:N</code>. */
-	public final static String N_TYPE_NAME = N_TYPE;
+	public static final String N_TYPE_NAME = N_TYPE;
 
 	//vCard property names
 
 	/** Specifies the electronic mail address for communication with the object the vCard represents. The local name of <code>vcard:email</code>. */
-	public final static String EMAIL_PROPERTY_NAME = getVariableName(EMAIL_TYPE);
+	public static final String EMAIL_PROPERTY_NAME = getVariableName(EMAIL_TYPE);
 
 	/** Specifies the formatted text corresponding to the name of the object the vCard represents. The local name of <code>vcard:fn</code>. */
-	public final static String FN_PROPERTY_NAME = getVariableName(FN_TYPE);
+	public static final String FN_PROPERTY_NAME = getVariableName(FN_TYPE);
 
 	/** Specifies the components of the name of the object the vCard represents. The local name of <code>vcard:n</code>. */
-	public final static String N_PROPERTY_NAME = getVariableName(N_TYPE);
+	public static final String N_PROPERTY_NAME = getVariableName(N_TYPE);
 	/** Specifies the family name component of the name of the object the vCard represents. The local name of <code>vcard:familyName</code>. */
-	public final static String FAMILY_NAME_PROPERTY_NAME = "familyName";
+	public static final String FAMILY_NAME_PROPERTY_NAME = "familyName";
 	/** Specifies the given name component of the name of the object the vCard represents. The local name of <code>vcard:givenName</code>. */
-	public final static String GIVEN_NAME_PROPERTY_NAME = "givenName";
+	public static final String GIVEN_NAME_PROPERTY_NAME = "givenName";
 	/** Specifies additional name component of the name of the object the vCard represents. The local name of <code>vcard:additionalName</code>. */
-	public final static String ADDITIONAL_NAME_PROPERTY_NAME = "additionalName";
+	public static final String ADDITIONAL_NAME_PROPERTY_NAME = "additionalName";
 	/** Specifies the honorific prefix component of the name of the object the vCard represents. The local name of <code>vcard:honorificPrefix</code>. */
-	public final static String HONORIFIC_PREFIX_PROPERTY_NAME = "honorificPrefix";
+	public static final String HONORIFIC_PREFIX_PROPERTY_NAME = "honorificPrefix";
 	/** Specifies the honorific suffix component of the name of the object the vCard represents. The local name of <code>vcard:honorificSuffixes</code>. */
-	public final static String HONORIFIC_SUFFIX_PROPERTY_NAME = "honorificSuffix";
+	public static final String HONORIFIC_SUFFIX_PROPERTY_NAME = "honorificSuffix";
 
 	/** The number of components of the vCard N type. */
-	//TODO del if not needed	private final static int N_COMPONENT_COUNT=5;
+	//TODO del if not needed	private static final int N_COMPONENT_COUNT=5;
 
 	/**
 	 * Sets the {@link #N_PROPERTY_NAME} name information for a resource.
@@ -117,7 +117,7 @@ public class RDFVCard extends RDFDirectory {
 	}
 
 	/** The property URIs for the name components. */
-	private final static URI[] N_COMPONENT_PROPERTY_URIS = new URI[] { createReferenceURI(VCARD_NAMESPACE_URI, FAMILY_NAME_PROPERTY_NAME),
+	private static final URI[] N_COMPONENT_PROPERTY_URIS = new URI[] { createReferenceURI(VCARD_NAMESPACE_URI, FAMILY_NAME_PROPERTY_NAME),
 			createReferenceURI(VCARD_NAMESPACE_URI, GIVEN_NAME_PROPERTY_NAME), createReferenceURI(VCARD_NAMESPACE_URI, ADDITIONAL_NAME_PROPERTY_NAME),
 			createReferenceURI(VCARD_NAMESPACE_URI, HONORIFIC_PREFIX_PROPERTY_NAME), createReferenceURI(VCARD_NAMESPACE_URI, HONORIFIC_SUFFIX_PROPERTY_NAME) };
 

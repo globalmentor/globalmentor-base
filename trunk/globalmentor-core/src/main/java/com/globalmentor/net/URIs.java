@@ -45,132 +45,132 @@ import com.globalmentor.text.*;
 public class URIs {
 
 	/** The shared static empty array of URIs. */
-	public final static URI[] NO_URIS = new URI[0];
+	public static final URI[] NO_URIS = new URI[0];
 
 	/** The file scheme identifier. */
-	public final static String FILE_SCHEME = "file";
+	public static final String FILE_SCHEME = "file";
 
 	/** The FTP scheme identifier. */
-	public final static String FTP_SCHEME = "ftp";
+	public static final String FTP_SCHEME = "ftp";
 
 	/** The email address scheme identifier. */
-	public final static String MAILTO_SCHEME = "mailto";
+	public static final String MAILTO_SCHEME = "mailto";
 
 	/** The info scheme identifier. */
-	public final static String INFO_SCHEME = "info";
+	public static final String INFO_SCHEME = "info";
 
 	/** The delimiter separating the info scheme namespace from the rest of the info scheme-specific part. */
-	public final static char INFO_SCHEME_NAMESPACE_DELIMITER = '/';
+	public static final char INFO_SCHEME_NAMESPACE_DELIMITER = '/';
 
 	/** The path scheme identifier for representing relative and absolute URI paths. */
-	public final static String PATH_SCHEME = "path";
+	public static final String PATH_SCHEME = "path";
 
 	/** The resource scheme identifier "resource". */
-	public final static String RESOURCE_SCHEME = "resource";
+	public static final String RESOURCE_SCHEME = "resource";
 
 	/** The URN scheme identifier "urn". */
-	public final static String URN_SCHEME = "urn";
+	public static final String URN_SCHEME = "urn";
 
 	/** The colon character (':') that separates a URI schema from the rest of the URI. */
-	public final static char SCHEME_SEPARATOR = ':';
+	public static final char SCHEME_SEPARATOR = ':';
 
 	/** The prefix string that introduces an authority. */
-	public final static String AUTHORITY_PREFIX = "//";
+	public static final String AUTHORITY_PREFIX = "//";
 
 	/** The at sign ('@') that separates user information from a host in a URI. */
-	public final static char USER_INFO_SEPARATOR = '@';
+	public static final char USER_INFO_SEPARATOR = '@';
 
 	/** The colon character (':') that separates a host from a port. */
-	public final static char PORT_SEPARATOR = ':';
+	public static final char PORT_SEPARATOR = ':';
 
 	/** The slash character ('/') that separates components in a URI path. */
-	public final static char PATH_SEPARATOR = '/';
+	public static final char PATH_SEPARATOR = '/';
 
 	/**
 	 * The URI path segment that represents the current hierarchical level of a hierarchical URI.
 	 */
-	public final static String CURRENT_LEVEL_PATH_SEGMENT = ".";
+	public static final String CURRENT_LEVEL_PATH_SEGMENT = ".";
 
 	/**
 	 * The URI path segment that represents the parent hierarchical level of a hierarchical URI.
 	 */
-	public final static String PARENT_LEVEL_PATH_SEGMENT = "..";
+	public static final String PARENT_LEVEL_PATH_SEGMENT = "..";
 
 	/** The character used to separate an extension from the rest of a name. */
-	public final static char NAME_EXTENSION_SEPARATOR = '.';
+	public static final char NAME_EXTENSION_SEPARATOR = '.';
 
 	/** The character that separates the query from the rest of a URI. */
-	public final static char QUERY_SEPARATOR = '?';
+	public static final char QUERY_SEPARATOR = '?';
 
 	/** The character that separates each name-value pair in a query. */
-	public final static char QUERY_NAME_VALUE_PAIR_DELIMITER = '&';
+	public static final char QUERY_NAME_VALUE_PAIR_DELIMITER = '&';
 
 	/** The character that represents assigning a value to a name in a query. */
-	public final static char QUERY_NAME_VALUE_ASSIGNMENT = '=';
+	public static final char QUERY_NAME_VALUE_ASSIGNMENT = '=';
 
 	/** The pound character ('#') that separates a fragment from the rest of a URI. */
-	public final static char FRAGMENT_SEPARATOR = '#';
+	public static final char FRAGMENT_SEPARATOR = '#';
 
 	/** The domain "localhost". */
-	public final static String LOCALHOST_DOMAIN = "localhost"; //TODO eventually make a separate Domain class
+	public static final String LOCALHOST_DOMAIN = "localhost"; //TODO eventually make a separate Domain class
 
 	/** The path to root, consisting of a single path separator ("/"). */
-	public final static String ROOT_PATH = String.valueOf(PATH_SEPARATOR);
+	public static final String ROOT_PATH = String.valueOf(PATH_SEPARATOR);
 
 	/** The character separating a <code>mailto</code> URI username from the domain. */
-	public final static char MAILTO_USERNAME_DOMAIN_SEPARATOR = '@'; //TODO reuse EmailAddress definition
+	public static final char MAILTO_USERNAME_DOMAIN_SEPARATOR = '@'; //TODO reuse EmailAddress definition
 
 	/** Alphabetic characters as defined by RFC 2396. */
-	public final static Characters ALPHA_CHARACTERS = Characters.range('a', 'z').add(Characters.range('A', 'Z')); //count 52
+	public static final Characters ALPHA_CHARACTERS = Characters.range('a', 'z').add(Characters.range('A', 'Z')); //count 52
 
 	/** Digit characters as defined by RFC 2396. */
-	public final static Characters DIGIT_CHARACTERS = Characters.range('0', '9'); //count 10
+	public static final Characters DIGIT_CHARACTERS = Characters.range('0', '9'); //count 10
 
 	/** Safe characters as defined by RFC 2396. */
-	public final static Characters SAFE_CHARACTERS = new Characters('$', '-', '_', '@', '.', '&'); //count 6
+	public static final Characters SAFE_CHARACTERS = new Characters('$', '-', '_', '@', '.', '&'); //count 6
 
 	/** Extra characters as defined by RFC 2396. */
-	public final static Characters EXTRA_CHARACTERS = new Characters('!', '*', '"', '\'', '(', ')', ','); //count 7
+	public static final Characters EXTRA_CHARACTERS = new Characters('!', '*', '"', '\'', '(', ')', ','); //count 7
 
 	/** The character to use for escaping URI data as defined by RFC 2396. */
-	public final static char ESCAPE_CHAR = '%'; //count 1
+	public static final char ESCAPE_CHAR = '%'; //count 1
 
 	/** Reserved characters as defined by RFC 2396. */
-	public final static Characters RESERVED_CHARACTERS = new Characters('=', ';', '/', '#', '?', ':', ' '); //count 7
+	public static final Characters RESERVED_CHARACTERS = new Characters('=', ';', '/', '#', '?', ':', ' '); //count 7
 
 	/** Characters that can appear in a URI as defined by RFC 2396. */
-	public final static Characters URI_CHARACTERS = ALPHA_CHARACTERS.add(DIGIT_CHARACTERS).add(SAFE_CHARACTERS).add(EXTRA_CHARACTERS).add(ESCAPE_CHAR)
+	public static final Characters URI_CHARACTERS = ALPHA_CHARACTERS.add(DIGIT_CHARACTERS).add(SAFE_CHARACTERS).add(EXTRA_CHARACTERS).add(ESCAPE_CHAR)
 			.add(RESERVED_CHARACTERS); //count 83
 
 	/** Characters that can appear in a URI path with no escape sequences. */
-	public final static Characters NORMAL_CHARACTERS = ALPHA_CHARACTERS.add(DIGIT_CHARACTERS).add(SAFE_CHARACTERS).add(EXTRA_CHARACTERS); //length 76
+	public static final Characters NORMAL_CHARACTERS = ALPHA_CHARACTERS.add(DIGIT_CHARACTERS).add(SAFE_CHARACTERS).add(EXTRA_CHARACTERS); //length 76
 
 	/** Unreserved characters defined by RFC 3986. */
-	public final static Characters UNRESERVED_CHARACTERS = ALPHA_CHARACTERS.add(DIGIT_CHARACTERS).add('-', '.', '_', '~');
+	public static final Characters UNRESERVED_CHARACTERS = ALPHA_CHARACTERS.add(DIGIT_CHARACTERS).add('-', '.', '_', '~');
 
 	/** General delimiter characters defined by RFC 3986. */
-	public final static Characters GEN_DELIM_CHARACTERS = new Characters(':', '/', '?', '#', '[', ']', '@');
+	public static final Characters GEN_DELIM_CHARACTERS = new Characters(':', '/', '?', '#', '[', ']', '@');
 
 	/** Subdelimiter characters defined by RFC 3986. */
-	public final static Characters SUB_DELIM_CHARACTERS = new Characters('!', '$', '&', '\'', '(', ')', '*', '+', ',', ';', '=');
+	public static final Characters SUB_DELIM_CHARACTERS = new Characters('!', '$', '&', '\'', '(', ')', '*', '+', ',', ';', '=');
 
 	/** Path segment characters defined by RFC 3986. */
-	public final static Characters PATH_SEGMENT_CHARACTERS = UNRESERVED_CHARACTERS.add(SUB_DELIM_CHARACTERS).add(':', '@');
+	public static final Characters PATH_SEGMENT_CHARACTERS = UNRESERVED_CHARACTERS.add(SUB_DELIM_CHARACTERS).add(':', '@');
 
 	/** Path characters defined by RFC 3986. */
-	public final static Characters PATH_CHARACTERS = PATH_SEGMENT_CHARACTERS.add('/');
+	public static final Characters PATH_CHARACTERS = PATH_SEGMENT_CHARACTERS.add('/');
 
 	/**
 	 * The sequence "//" which is supposed to be present in file URIs (e.g. <code>file:///mnt/sdcard/...</code>) but which isn't present in Java file URIs.
 	 * @see <a href="http://blogs.msdn.com/b/ie/archive/2006/12/06/file-uris-in-windows.aspx">File URIs in Windows.</p>
 	 */
-	public final static String FILE_URI_PATH_ROOT_PREFIX = ROOT_PATH + PATH_SEPARATOR;
+	public static final String FILE_URI_PATH_ROOT_PREFIX = ROOT_PATH + PATH_SEPARATOR;
 
 	/**
 	 * The maximum URL length allowed by Microsoft Internet Explorer for HTTP GET.
 	 * @see <a href="http://support.microsoft.com/default.aspx?scid=kb;EN-US;q208427">Maximum URL length is 2,083 characters in Internet Explorer</a>
 	 */
-	public final static int MICROSOFT_INTERNET_EXPLORER_MAXIMUM_URI_LENGTH = 2083;
+	public static final int MICROSOFT_INTERNET_EXPLORER_MAXIMUM_URI_LENGTH = 2083;
 
 	/**
 	 * Creates a string of type <code>text/uri-list</code> as defined in <a href="http://www.ietf.org/rfc/rfc2483.txt">RFC 2483</a>,
@@ -191,7 +191,7 @@ public class URIs {
 	 * @throws NullPointerException if the given URI and/or scheme is <code>null</code>.
 	 * @throws IllegalArgumentException if the scheme of the given URI does not match the given scheme.
 	 */
-	public final static URI checkScheme(final URI uri, final String scheme) {
+	public static final URI checkScheme(final URI uri, final String scheme) {
 		if(!scheme.equals(uri.getScheme())) { //if the URI's scheme doesn't match the given scheme
 			throw new IllegalArgumentException("Scheme of URI " + uri + " must be " + scheme);
 		}
@@ -220,7 +220,7 @@ public class URIs {
 	 * @throws IllegalArgumentException if the scheme of the given URI is not {@value URIs#INFO_SCHEME} and/or the info namespace does not match the given info
 	 *           namespace.
 	 */
-	public final static URI checkInfoNamespace(final URI uri, final String infoNamespace) {
+	public static final URI checkInfoNamespace(final URI uri, final String infoNamespace) {
 		if(!checkScheme(uri, INFO_SCHEME).getRawSchemeSpecificPart().startsWith(infoNamespace + INFO_SCHEME_NAMESPACE_DELIMITER)) { //check for the info scheme; if the scheme-specific part is not what was expected
 			throw new IllegalArgumentException("Info namespace of URI " + uri + " must be " + infoNamespace);
 		}
@@ -234,7 +234,7 @@ public class URIs {
 	 * @throws NullPointerException if the given URI is <code>null</code>.
 	 * @throws IllegalArgumentException if the given URI is not a valid {@value URIs#INFO_SCHEME} scheme URI.
 	 */
-	public final static String getInfoNamespace(final URI uri) {
+	public static final String getInfoNamespace(final URI uri) {
 		final String ssp = checkScheme(uri, INFO_SCHEME).getRawSchemeSpecificPart(); //get the raw scheme-specific part after checking to make sure this is an info URI
 		final int namespaceDelimiterIndex = ssp.indexOf(INFO_SCHEME_NAMESPACE_DELIMITER); //get the index of the info URI namespace delimiter
 		if(namespaceDelimiterIndex < 1) { //if there is no namespace delimiter, or there are no namespace characters
@@ -250,7 +250,7 @@ public class URIs {
 	 * @throws NullPointerException if the given URI is <code>null</code>.
 	 * @throws IllegalArgumentException if the given URI is not a valid {@value URIs#INFO_SCHEME} scheme URI.
 	 */
-	public final static String getInfoIdentifier(final URI uri) {
+	public static final String getInfoIdentifier(final URI uri) {
 		return decode(getInfoRawIdentifier(uri)); //decode the raw identifier of the info URI
 	}
 
@@ -261,7 +261,7 @@ public class URIs {
 	 * @throws NullPointerException if the given URI is <code>null</code>.
 	 * @throws IllegalArgumentException if the given URI is not a valid {@value URIs#INFO_SCHEME} scheme URI.
 	 */
-	public final static String getInfoRawIdentifier(final URI uri) {
+	public static final String getInfoRawIdentifier(final URI uri) {
 		final String ssp = checkScheme(uri, INFO_SCHEME).getRawSchemeSpecificPart(); //get the raw scheme-specific part after checking to make sure this is an info URI
 		final int namespaceDelimiterIndex = ssp.indexOf(INFO_SCHEME_NAMESPACE_DELIMITER); //get the index of the info URI namespace delimiter
 		if(namespaceDelimiterIndex < 1) { //if there is no namespace delimiter, or there are no namespace characters
@@ -277,7 +277,7 @@ public class URIs {
 	 * @return The <code>true</code> if the given URI has a scheme of {@value URIs#INFO_SCHEME} and has the indicated info namespace.
 	 * @throws NullPointerException if the given URI and/or info namespace is <code>null</code>.
 	 */
-	public final static boolean isInfoNamespace(final URI uri, final String infoNamespace) {
+	public static final boolean isInfoNamespace(final URI uri, final String infoNamespace) {
 		return INFO_SCHEME.equals(uri.getScheme()) && uri.getRawSchemeSpecificPart().startsWith(infoNamespace + INFO_SCHEME_NAMESPACE_DELIMITER); //check for the info scheme and the info namespace
 	}
 
@@ -290,7 +290,7 @@ public class URIs {
 	 * @throws NullPointerException if the given URI is <code>null</code>.
 	 * @throws IllegalArgumentException if the given URI is not a valid {@value #PATH_SCHEME} scheme URI.
 	 */
-	public final static String getPathRawPath(final URI uri) {
+	public static final String getPathRawPath(final URI uri) {
 		String rawPath = checkScheme(uri, PATH_SCHEME).getRawPath(); //get the raw path of the URI, ensuring that it is a "path:" URI
 		if(rawPath == null) { //if Java sees no path, it must be a relative path; extract it manually
 			rawPath = uri.getRawSchemeSpecificPart(); //the raw path is the scheme-specific part
@@ -309,7 +309,7 @@ public class URIs {
 	 * @throws NullPointerException if the given URI is <code>null</code>.
 	 * @throws IllegalArgumentException if the given URI is not a valid {@value #PATH_SCHEME} scheme URI.
 	 */
-	public final static URIPath getPathURIPath(final URI uri) {
+	public static final URIPath getPathURIPath(final URI uri) {
 		return new URIPath(getPathRawPath(uri)); //get the raw path and create a URIPath from that
 	}
 
@@ -1657,7 +1657,7 @@ public class URIs {
 	}
 
 	/** The prefix used in the scheme-specific part by Java for Windows UNC paths in file URIs. */
-	public final static String WINDOWS_UNC_PATH_URI_SSP_PREFIX = ROOT_PATH + PATH_SEPARATOR + PATH_SEPARATOR + PATH_SEPARATOR;
+	public static final String WINDOWS_UNC_PATH_URI_SSP_PREFIX = ROOT_PATH + PATH_SEPARATOR + PATH_SEPARATOR + PATH_SEPARATOR;
 
 	/**
 	 * Determines whether the given URI is a UNC file path URI in the form <code>file:////server/file.ext</code>.
@@ -2202,7 +2202,7 @@ public class URIs {
 	}
 
 	/** Characters that can appear in a URI path with no escape sequences. */
-	//TODO del	protected final static String COMPRESS_CHARS=ALPHA_CHARS+DIGIT_CHARS;	//length 49
+	//TODO del	protected static final String COMPRESS_CHARS=ALPHA_CHARS+DIGIT_CHARS;	//length 49
 	/**
 	 * Compresses a URI into a shorter string representation. The resulting string consists only of URI <code>xalpha</code> characters with no escape sequences.
 	 * @param uri The URI to compress.
@@ -2231,13 +2231,13 @@ public class URIs {
 	*/
 
 	/** URI alphabetic and digit characters. */
-	private final static Characters COMPRESS_NORMAL_CHARS = ALPHA_CHARACTERS.add(DIGIT_CHARACTERS); //"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789" count 62
+	private static final Characters COMPRESS_NORMAL_CHARS = ALPHA_CHARACTERS.add(DIGIT_CHARACTERS); //"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789" count 62
 
 	/** Characters that will be compressed. */
-	private final static String OTHER_CHARS = SAFE_CHARACTERS.add(EXTRA_CHARACTERS).add(ESCAPE_CHAR).add(RESERVED_CHARACTERS).toString(); //"$-_@.&!*\"'(),%=;/#?: " count 21
+	private static final String OTHER_CHARS = SAFE_CHARACTERS.add(EXTRA_CHARACTERS).add(ESCAPE_CHAR).add(RESERVED_CHARACTERS).toString(); //"$-_@.&!*\"'(),%=;/#?: " count 21
 
 	/** Characters that can appear in a URI path with no escape sequences. */
-	private final static String COMPRESS_ENCODE_CHARS = "-_()@"; //count 5
+	private static final String COMPRESS_ENCODE_CHARS = "-_()@"; //count 5
 
 	/**
 	 * Compresses a URI into a shorter string representation.
@@ -2303,19 +2303,19 @@ public class URIs {
 	 * The character used for escaping characters in a URI plain encoding.
 	 * @see #plainEncode(URI)
 	 */
-	public final static char PLAIN_ENCODING_ESCAPE_CHAR = '_';
+	public static final char PLAIN_ENCODING_ESCAPE_CHAR = '_';
 
 	/**
 	 * The character used for replacing certain characters in a URI plain encoding.
 	 * @see #plainEncode(URI)
 	 */
-	public final static char PLAIN_ENCODING_REPLACE_CHAR = '-';
+	public static final char PLAIN_ENCODING_REPLACE_CHAR = '-';
 
 	/** The characters that, at least initially, should not be encoded. Path separators will be replaced with {@value #PLAIN_ENCODING_REPLACE_CHAR}. */
-	protected final static Characters PLAIN_ENCODE_INITIAL_UNRESERVED_CHARACTERS = ALPHA_CHARACTERS.add(DIGIT_CHARACTERS).add('.', PATH_SEPARATOR);
+	protected static final Characters PLAIN_ENCODE_INITIAL_UNRESERVED_CHARACTERS = ALPHA_CHARACTERS.add(DIGIT_CHARACTERS).add('.', PATH_SEPARATOR);
 
 	/** The characters that are allowed in a URI plain encoding. */
-	public final static Characters PLAIN_ENCODE_CHARACTERS = PLAIN_ENCODE_INITIAL_UNRESERVED_CHARACTERS.remove(PATH_SEPARATOR).add(PLAIN_ENCODING_ESCAPE_CHAR,
+	public static final Characters PLAIN_ENCODE_CHARACTERS = PLAIN_ENCODE_INITIAL_UNRESERVED_CHARACTERS.remove(PATH_SEPARATOR).add(PLAIN_ENCODING_ESCAPE_CHAR,
 			PLAIN_ENCODING_REPLACE_CHAR);
 
 	/**

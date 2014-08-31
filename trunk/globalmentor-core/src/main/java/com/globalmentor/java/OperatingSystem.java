@@ -27,24 +27,24 @@ import static com.globalmentor.java.Strings.*;
 public class OperatingSystem {
 
 	/** The property specifying the line separator character for the platform. */
-	public final static String LINE_SEPARATOR_PROPERTY = "line.separator";
+	public static final String LINE_SEPARATOR_PROPERTY = "line.separator";
 	/** The temporary directory name. */
-	public final static String JAVA_IO_TMPDIR_PROPERTY = "java.io.tmpdir";
+	public static final String JAVA_IO_TMPDIR_PROPERTY = "java.io.tmpdir";
 	/** The name of the operating system. */
-	public final static String OS_NAME_PROPERTY = "os.name";
+	public static final String OS_NAME_PROPERTY = "os.name";
 	/** The operating system architecture. */
-	public final static String OS_ARCH_PROPERTY = "os.arch";
+	public static final String OS_ARCH_PROPERTY = "os.arch";
 	/** The operating system version. */
-	public final static String OS_VERSION_PROPERTY = "os.version";
+	public static final String OS_VERSION_PROPERTY = "os.version";
 	/** The user name property. */
-	public final static String USER_NAME_PROPERTY = "user.name";
+	public static final String USER_NAME_PROPERTY = "user.name";
 	/** The property for the user's home directory. */
-	public final static String USER_HOME_PROPERTY = "user.home";
+	public static final String USER_HOME_PROPERTY = "user.home";
 	/** The property for the user's current directory. */
-	public final static String USER_DIR_PROPERTY = "user.dir";
+	public static final String USER_DIR_PROPERTY = "user.dir";
 
 	/** The string, "windows", which is a case-insensitive substring of a Windows operating system identification string. */
-	public final static String WINDOWS = "windows";
+	public static final String WINDOWS = "windows";
 
 	/**
 	 * Returns the system line separator string.

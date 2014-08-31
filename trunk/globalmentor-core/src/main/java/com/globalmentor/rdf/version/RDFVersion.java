@@ -27,14 +27,14 @@ import com.globalmentor.rdf.*;
 public class RDFVersion {
 
 	/** The recommended prefix to the version ontology namespace. */
-	public final static String VERSION_NAMESPACE_PREFIX = "ver";
+	public static final String VERSION_NAMESPACE_PREFIX = "ver";
 	/** The URI to the version namespace. */
-	public final static URI VERSION_NAMESPACE_URI = URI.create("http://globalmentor.com/namespaces/2003/version#");
+	public static final URI VERSION_NAMESPACE_URI = URI.create("http://globalmentor.com/namespaces/2003/version#");
 
 	//version ontology property names
 
 	/** The version of a resource. The local name of ver:version. */
-	public final static String VERSION_PROPERTY_NAME = "version";
+	public static final String VERSION_PROPERTY_NAME = "version";
 
 	/**
 	 * Adds a <code>ver:version</code> property with the given value to the resource.

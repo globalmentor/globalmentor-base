@@ -50,7 +50,7 @@ import com.globalmentor.text.xml.xlink.XLink;
 public abstract class AbstractNamespaceLabelManager extends MapDecorator<URI, String> {
 
 	/** The set of known namespace URIs. */
-	public final static Set<URI> KNOWN_NAMESPACE_URIS;
+	public static final Set<URI> KNOWN_NAMESPACE_URIS;
 
 	static { //add the default namespaces
 		final Set<URI> knownNamespaceURIs = new HashSet<URI>(); //create a temporary set to fill
@@ -67,7 +67,7 @@ public abstract class AbstractNamespaceLabelManager extends MapDecorator<URI, St
 	}
 
 	/** The default map of namespace-label mappings. */
-	public final static Map<URI, String> DEFAULT_NAMESPACE_URI_LABEL_MAP;
+	public static final Map<URI, String> DEFAULT_NAMESPACE_URI_LABEL_MAP;
 
 	static { //add the default labels
 		final Map<URI, String> tempNamespaceURILabelMap = new HashMap<URI, String>(); //create a temporary map to fill

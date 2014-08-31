@@ -39,7 +39,7 @@ public class Strings {
 	}
 
 	/** A shared empty array of strings. */
-	public final static String[] NO_STRINGS = new String[0];
+	public static final String[] NO_STRINGS = new String[0];
 
 	//TODO move most of the methods that reference CharSequences to that class
 	//TODO convert StringBuffer code to StringBuilder
@@ -59,7 +59,7 @@ public class Strings {
 	 * @return A string created from the given characters.
 	 * @throws NullPointerException if the given chars is <code>null</code>.
 	 */
-	public final static String stringOf(final char... chars) {
+	public static final String stringOf(final char... chars) {
 		if(chars.length == 0) {
 			return ""; //return the shared empty string
 		}
@@ -86,7 +86,7 @@ public class Strings {
 	 *         <code>null</code>.
 	 * @see String#equalsIgnoreCase(String)
 	 */
-	public final static boolean equalsIgnoreCase(final String string1, final String string2) {
+	public static final boolean equalsIgnoreCase(final String string1, final String string2) {
 		//if the first string isn't null, compare it to the second; otherwise, see if the second string is null as well
 		return string1 != null ? string1.equalsIgnoreCase(string2) : string2 == null;
 	}

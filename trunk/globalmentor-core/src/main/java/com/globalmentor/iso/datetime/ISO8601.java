@@ -23,16 +23,16 @@ package com.globalmentor.iso.datetime;
 public class ISO8601 {
 
 	/** The delimiter that introduces a time component in a temporal. */
-	public final static char TIME_BEGIN = 'T';
+	public static final char TIME_BEGIN = 'T';
 	/** The delimiter that separates year components in a temporal. */
-	public final static char DATE_DELIMITER = '-';
+	public static final char DATE_DELIMITER = '-';
 	/** The delimiter that separates time components in a temporal. */
-	public final static char TIME_DELIMITER = ':';
+	public static final char TIME_DELIMITER = ':';
 	/** The delimiter that separates time subseconds from seconds. */
-	public final static char TIME_SUBSECONDS_DELIMITER = '.';
+	public static final char TIME_SUBSECONDS_DELIMITER = '.';
 	/** The UTC designator for "Zulu Time", 'Z'. */
-	public final static char UTC_DESIGNATOR = 'Z';
+	public static final char UTC_DESIGNATOR = 'Z';
 	/** The signs of a number. */
-	public final static char[] SIGNS = { '-', '+' };
+	public static final char[] SIGNS = { '-', '+' };
 
 }

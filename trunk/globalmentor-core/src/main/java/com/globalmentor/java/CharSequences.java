@@ -899,7 +899,7 @@ public class CharSequences {
 	 * @return <code>true</code> if there are no other characters but the specified character, <code>false</code> if there are other characters or if the string
 	 *         is the empty string.
 	 */
-	public final static boolean isAll(final CharSequence charSequence, final char c) {
+	public static final boolean isAll(final CharSequence charSequence, final char c) {
 		if(charSequence.length() == 0) //if this is an empty string
 			return false; //there are no characters to check
 		for(int i = charSequence.length() - 1; i >= 0; --i) { //look at each character in the string
@@ -916,7 +916,7 @@ public class CharSequences {
 	 * @return <code>true</code> if there are no other characters but the specified characters, <code>false</code> if there are other characters or if the
 	 *         character sequence is empty.
 	 */
-	public final static boolean isAllChars(final CharSequence charSequence, final Characters characters) {
+	public static final boolean isAllChars(final CharSequence charSequence, final Characters characters) {
 		if(charSequence.length() == 0) //if this is an empty string
 			return false; //there are no characters to check
 		for(int i = charSequence.length() - 1; i >= 0; --i) { //look at each character in the string
@@ -932,7 +932,7 @@ public class CharSequences {
 	 * @param charSequence The character sequence to examine.
 	 * @return <code>true</code> if the character sequence is capitalized.
 	 */
-	public final static boolean isCapitalized(final CharSequence charSequence) {
+	public static final boolean isCapitalized(final CharSequence charSequence) {
 		return charSequence.length() > 0 && Character.isUpperCase(charSequence.charAt(0)); //determine if the first character is capitalized
 	}
 
@@ -941,7 +941,7 @@ public class CharSequences {
 	 * @param charSequence The character sequence to examine.
 	 * @return <code>true</code> if all the characters in the sequence are digits.
 	 */
-	public final static boolean isDigits(final CharSequence charSequence) {
+	public static final boolean isDigits(final CharSequence charSequence) {
 		if(charSequence.length() == 0) //if this is an empty string
 			return false; //there are no characters to check
 		for(int i = charSequence.length() - 1; i >= 0; --i) { //look at each letter in the string
@@ -956,7 +956,7 @@ public class CharSequences {
 	 * @param charSequence The character sequence to examine.
 	 * @return <code>true</code> if all the characters in the sequence are ISO_LATIN_1 digits.
 	 */
-	public final static boolean isLatinDigits(final CharSequence charSequence) {
+	public static final boolean isLatinDigits(final CharSequence charSequence) {
 		if(charSequence.length() == 0) //if this is an empty string
 			return false; //there are no characters to check
 		for(int i = charSequence.length() - 1; i >= 0; --i) { //look at each letter in the string
@@ -971,7 +971,7 @@ public class CharSequences {
 	 * @param charSequence The character sequence to examine.
 	 * @return <code>true</code> if all the characters in the sequence are letters.
 	 */
-	public final static boolean isLetters(final CharSequence charSequence) {
+	public static final boolean isLetters(final CharSequence charSequence) {
 		if(charSequence.length() == 0) //if this is an empty string
 			return false; //there are no characters to check
 		for(int i = charSequence.length() - 1; i >= 0; --i) { //look at each letter in the string
@@ -986,7 +986,7 @@ public class CharSequences {
 	 * @param charSequence The character sequence to examine.
 	 * @return <code>true</code> if all the characters in the sequence are letters and digits.
 	 */
-	public final static boolean isLettersDigits(final CharSequence charSequence) {
+	public static final boolean isLettersDigits(final CharSequence charSequence) {
 		if(charSequence.length() == 0) //if this is an empty string
 			return false; //there are no characters to check
 		for(int i = charSequence.length() - 1; i >= 0; --i) { //look at each letter in the string
@@ -1003,7 +1003,7 @@ public class CharSequences {
 	 * @param characters Extra characters to allow.
 	 * @return <code>true</code> if all the characters in the sequence are letters, digits, and/or allowed characters.
 	 */
-	public final static boolean isLettersDigitsCharacters(final CharSequence charSequence, final String characters) {
+	public static final boolean isLettersDigitsCharacters(final CharSequence charSequence, final String characters) {
 		if(charSequence.length() == 0) //if this is an empty string
 			return false; //there are no characters to check
 		for(int i = charSequence.length() - 1; i >= 0; --i) { //look at each letter in the string
@@ -1019,7 +1019,7 @@ public class CharSequences {
 	 * @param charSequence The character sequence to examine.
 	 * @return <code>true</code> if all the characters represent a number.
 	 */
-	public final static boolean isNumber(final CharSequence charSequence) { //TODO use a regex, and verify format
+	public static final boolean isNumber(final CharSequence charSequence) { //TODO use a regex, and verify format
 		if(charSequence.length() == 0) //if this is an empty string
 			return false; //there are no characters to check
 		for(int i = charSequence.length() - 1; i >= 0; --i) { //look at each letter in the string
@@ -1035,7 +1035,7 @@ public class CharSequences {
 	 * @param charSequence The character sequence to examine.
 	 * @return <code>true</code> if all the characters in the sequence are roman numerals.
 	 */
-	public final static boolean isRomanNumerals(final CharSequence charSequence) {
+	public static final boolean isRomanNumerals(final CharSequence charSequence) {
 		if(charSequence.length() == 0) //if this is an empty string
 			return false; //there are no characters to check
 		for(int i = charSequence.length() - 1; i >= 0; --i) { //look at each character in the string
@@ -1050,7 +1050,7 @@ public class CharSequences {
 	 * @param charSequence The character sequence to examine.
 	 * @return <code>true</code> if all the letters in the sequence are capitalized.
 	 */
-	public final static boolean isUpperCase(final CharSequence charSequence) {
+	public static final boolean isUpperCase(final CharSequence charSequence) {
 		if(charSequence.length() == 0) //if this is an empty string
 			return false; //there are no characters to check
 		for(int i = charSequence.length() - 1; i >= 0; --i) { //look at each letter in the string

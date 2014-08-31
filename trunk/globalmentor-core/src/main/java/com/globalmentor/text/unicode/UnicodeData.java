@@ -45,10 +45,10 @@ import com.globalmentor.java.Integers;
 public class UnicodeData {
 
 	/** The name of the Unicode data text file. */
-	protected final static String UNICODE_DATA_FILENAME = "UnicodeData.txt";
+	protected static final String UNICODE_DATA_FILENAME = "UnicodeData.txt";
 
 	/** The map of soft references to Unicode characters, each keyed to a Unicode integer value. */
-	protected final static Map<Integer, Reference<UnicodeCharacter>> unicodeCharacterReferenceMap = new HashMap<Integer, Reference<UnicodeCharacter>>(); //TODO create a SoftValueHashMap to use here
+	protected static final Map<Integer, Reference<UnicodeCharacter>> unicodeCharacterReferenceMap = new HashMap<Integer, Reference<UnicodeCharacter>>(); //TODO create a SoftValueHashMap to use here
 
 	/**
 	 * Looks up a cached Unicode character.
@@ -85,37 +85,37 @@ public class UnicodeData {
 
 	//Unicode data file fields
 	/** The number of fields in the file. */
-	public final static int MAX_FIELD = 14;
-	public final static int FIELD_CODE_VALUE = 0;
-	public final static int FIELD_CHARACTER_NAME = 1;
-	public final static int FIELD_GENERAL_CATEGORY = 2;
-	public final static int FIELD_CANONICAL_COMBINING_CLASS = 3;
-	public final static int FIELD_BIDIRECTIONAL_CATEGORY = 4;
-	public final static int FIELD_CHARACTER_DECOMPOSITION_MAPPINGS = 5;
-	public final static int FIELD_DECIMAL_DIGIT_VALUE = 6;
-	public final static int FIELD_DIGIT_VALUE = 7;
-	public final static int FIELD_NUMERIC_VALUE = 8;
-	public final static int FIELD_MIRRORED = 9;
-	public final static int FIELD_UNICODE10_NAME = 10;
-	public final static int FIELD_10646_COMMENT_FIELD = 11;
-	public final static int FIELD_UPPERCASE_MAPPING = 12;
-	public final static int FIELD_LOWERCASE_MAPPING = 13;
-	public final static int FIELD_TITLECASE_MAPPING = 14;
+	public static final int MAX_FIELD = 14;
+	public static final int FIELD_CODE_VALUE = 0;
+	public static final int FIELD_CHARACTER_NAME = 1;
+	public static final int FIELD_GENERAL_CATEGORY = 2;
+	public static final int FIELD_CANONICAL_COMBINING_CLASS = 3;
+	public static final int FIELD_BIDIRECTIONAL_CATEGORY = 4;
+	public static final int FIELD_CHARACTER_DECOMPOSITION_MAPPINGS = 5;
+	public static final int FIELD_DECIMAL_DIGIT_VALUE = 6;
+	public static final int FIELD_DIGIT_VALUE = 7;
+	public static final int FIELD_NUMERIC_VALUE = 8;
+	public static final int FIELD_MIRRORED = 9;
+	public static final int FIELD_UNICODE10_NAME = 10;
+	public static final int FIELD_10646_COMMENT_FIELD = 11;
+	public static final int FIELD_UPPERCASE_MAPPING = 12;
+	public static final int FIELD_LOWERCASE_MAPPING = 13;
+	public static final int FIELD_TITLECASE_MAPPING = 14;
 
 	/** The <code>true</code> value for the mirrored field. */
-	public final static String MIRRORED_YES = "Y";
+	public static final String MIRRORED_YES = "Y";
 
 	/** The <code>false</code> value for the mirrored field. */
-	public final static String MIRRORED_NO = "N";
+	public static final String MIRRORED_NO = "N";
 
 	/** The data file's field delimiter character. */
-	public final static char FIELD_DELIMITER = ';';
+	public static final char FIELD_DELIMITER = ';';
 
 	/** The delimiter between mapppings. */
-	public final static char MAPPING_DELIMITER = ' ';
+	public static final char MAPPING_DELIMITER = ' ';
 
 	/** The character which divides a fraction. */
-	public final static char FRACTION_DIVIDER = '/';
+	public static final char FRACTION_DIVIDER = '/';
 
 	/**
 	 * Returns character data for the given Unicode code value.

@@ -35,16 +35,16 @@ import org.w3c.dom.*;
 public class OEB {
 
 	/** The public ID for the OEBPS 1.0 package. */
-	public final static String OEB10_PACKAGE_PUBLIC_ID = "+//ISBN 0-9673008-1-9//DTD OEB 1.0 Package//EN";
+	public static final String OEB10_PACKAGE_PUBLIC_ID = "+//ISBN 0-9673008-1-9//DTD OEB 1.0 Package//EN";
 	/** The default system ID for the OEBPS 1.0 package. */
-	public final static String OEB10_PACKAGE_SYSTEM_ID = "http://openebook.org/dtds/oeb-1.0/oebpkg1.dtd";
+	public static final String OEB10_PACKAGE_SYSTEM_ID = "http://openebook.org/dtds/oeb-1.0/oebpkg1.dtd";
 	/** The name extension for the OEBPS 1.0 package. */
-	public final static String OEB1_PACKAGE_NAME_EXTENSION = "opf";
+	public static final String OEB1_PACKAGE_NAME_EXTENSION = "opf";
 
 	/** The public ID for the OEBPS 1.0.1 package. */
-	public final static String OEB101_PACKAGE_PUBLIC_ID = "+//ISBN 0-9673008-1-9//DTD OEB 1.0.1 Package//EN";
+	public static final String OEB101_PACKAGE_PUBLIC_ID = "+//ISBN 0-9673008-1-9//DTD OEB 1.0.1 Package//EN";
 	/** The default system ID for the OEBPS 1.0.1 package. */
-	public final static String OEB101_PACKAGE_SYSTEM_ID = "http://openebook.org/dtds/oeb-1.0.1/oebpkg101.dtd";
+	public static final String OEB101_PACKAGE_SYSTEM_ID = "http://openebook.org/dtds/oeb-1.0.1/oebpkg101.dtd";
 
 	/** The recommended prefix to the OEB 1.0 package namespace. */
 	public static final String OEB1_PACKAGE_NAMESPACE_PREFIX = "oebpackage";
@@ -52,71 +52,71 @@ public class OEB {
 	public static final URI OEB1_PACKAGE_NAMESPACE_URI = URI.create("http://openebook.org/namespaces/oeb-package/1.0/");
 
 	//The OEB 1.0 XML package element names.*/
-	public final static String PKG_ELEMENT_PACKAGE = "package";
-	public final static String PKG_ELEMENT_PACKAGE_ATTRIBUTE_UNIQUE_IDENTIFIER = "unique-identifier";
-	public final static String PKG_ELEMENT_METADATA = "metadata";
-	public final static String PKG_ELEMENT_METADATA_DC_METADATA = "dc-metadata";
-	public final static String PKG_ELEMENT_MANIFEST_DC_METADATA_DC_TITLE = "dc:Title";
-	public final static String PKG_ELEMENT_MANIFEST_DC_METADATA_DC_CREATOR = "dc:Creator";
-	public final static String PKG_METADATA_DC_METADATA_DC_CREATOR_ATTRIBUTE_ROLE = "role";
-	public final static String PKG_ELEMENT_MANIFEST_DC_METADATA_DC_SUBJECT = "dc:Subject";
-	public final static String PKG_ELEMENT_MANIFEST_DC_METADATA_DC_DESCRIPTION = "dc:Description";
-	public final static String PKG_ELEMENT_MANIFEST_DC_METADATA_DC_PUBLISHER = "dc:Publisher";
-	public final static String PKG_ELEMENT_MANIFEST_DC_METADATA_DC_CONTRIBUTOR = "dc:Contributor";
-	public final static String PKG_ELEMENT_MANIFEST_DC_METADATA_DC_DATE = "dc:Date";
-	public final static String PKG_ELEMENT_MANIFEST_DC_METADATA_DC_TYPE = "dc:Type";
-	public final static String PKG_ELEMENT_MANIFEST_DC_METADATA_DC_FORMAT = "dc:Format";
-	public final static String PKG_ELEMENT_MANIFEST_DC_METADATA_DC_IDENTIFIER = "dc:Identifier";
-	public final static String PKG_METADATA_DC_METADATA_DC_IDENTIFIER_ATTRIBUTE_ID = "id";
-	public final static String PKG_METADATA_DC_METADATA_DC_IDENTIFIER_ATTRIBUTE_SCHEME = "scheme";
-	public final static String PKG_ELEMENT_MANIFEST_DC_METADATA_DC_SOURCE = "dc:Source";
-	public final static String PKG_ELEMENT_MANIFEST_DC_METADATA_DC_LANGUAGE = "dc:Language";
-	public final static String PKG_ELEMENT_MANIFEST_DC_METADATA_DC_RELATION = "dc:Relation";
-	public final static String PKG_ELEMENT_MANIFEST_DC_METADATA_DC_COVERAGE = "dc:Coverage";
-	public final static String PKG_ELEMENT_MANIFEST_DC_METADATA_DC_RIGHTS = "dc:Rights";
-	public final static String PKG_ELEMENT_MANIFEST = "manifest";
-	public final static String PKG_ELEMENT_MANIFEST_ITEM = "item";
-	public final static String PKG_MANIFEST_ITEM_ATTRIBUTE_ID = "id";
-	public final static String PKG_MANIFEST_ITEM_ATTRIBUTE_HREF = "href";
-	public final static String PKG_MANIFEST_ITEM_ATTRIBUTE_MEDIA_TYPE = "media-type";
-	public final static String PKG_MANIFEST_ITEM_ATTRIBUTE_FALLBACK = "fallback";
-	public final static String PKG_ELEMENT_SPINE = "spine";
-	public final static String PKG_ELEMENT_SPINE_ITEMREF = "itemref";
-	public final static String PKG_SPINE_ITEMREF_ATTRIBUTE_IDREF = "idref";
-	public final static String PKG_ELEMENT_GUIDE = "guide";
-	public final static String PKG_ELEMENT_TOURS = "tours";
-	public final static String PKG_ELEMENT_GUIDE_REFERENCE = "reference";
-	public final static String PKG_GUIDE_REFERENCE_ATTRIBUTE_TYPE = "type";
-	public final static String PKG_GUIDE_REFERENCE_ATTRIBUTE_TITLE = "title";
-	public final static String PKG_GUIDE_REFERENCE_ATTRIBUTE_HREF = "href";
+	public static final String PKG_ELEMENT_PACKAGE = "package";
+	public static final String PKG_ELEMENT_PACKAGE_ATTRIBUTE_UNIQUE_IDENTIFIER = "unique-identifier";
+	public static final String PKG_ELEMENT_METADATA = "metadata";
+	public static final String PKG_ELEMENT_METADATA_DC_METADATA = "dc-metadata";
+	public static final String PKG_ELEMENT_MANIFEST_DC_METADATA_DC_TITLE = "dc:Title";
+	public static final String PKG_ELEMENT_MANIFEST_DC_METADATA_DC_CREATOR = "dc:Creator";
+	public static final String PKG_METADATA_DC_METADATA_DC_CREATOR_ATTRIBUTE_ROLE = "role";
+	public static final String PKG_ELEMENT_MANIFEST_DC_METADATA_DC_SUBJECT = "dc:Subject";
+	public static final String PKG_ELEMENT_MANIFEST_DC_METADATA_DC_DESCRIPTION = "dc:Description";
+	public static final String PKG_ELEMENT_MANIFEST_DC_METADATA_DC_PUBLISHER = "dc:Publisher";
+	public static final String PKG_ELEMENT_MANIFEST_DC_METADATA_DC_CONTRIBUTOR = "dc:Contributor";
+	public static final String PKG_ELEMENT_MANIFEST_DC_METADATA_DC_DATE = "dc:Date";
+	public static final String PKG_ELEMENT_MANIFEST_DC_METADATA_DC_TYPE = "dc:Type";
+	public static final String PKG_ELEMENT_MANIFEST_DC_METADATA_DC_FORMAT = "dc:Format";
+	public static final String PKG_ELEMENT_MANIFEST_DC_METADATA_DC_IDENTIFIER = "dc:Identifier";
+	public static final String PKG_METADATA_DC_METADATA_DC_IDENTIFIER_ATTRIBUTE_ID = "id";
+	public static final String PKG_METADATA_DC_METADATA_DC_IDENTIFIER_ATTRIBUTE_SCHEME = "scheme";
+	public static final String PKG_ELEMENT_MANIFEST_DC_METADATA_DC_SOURCE = "dc:Source";
+	public static final String PKG_ELEMENT_MANIFEST_DC_METADATA_DC_LANGUAGE = "dc:Language";
+	public static final String PKG_ELEMENT_MANIFEST_DC_METADATA_DC_RELATION = "dc:Relation";
+	public static final String PKG_ELEMENT_MANIFEST_DC_METADATA_DC_COVERAGE = "dc:Coverage";
+	public static final String PKG_ELEMENT_MANIFEST_DC_METADATA_DC_RIGHTS = "dc:Rights";
+	public static final String PKG_ELEMENT_MANIFEST = "manifest";
+	public static final String PKG_ELEMENT_MANIFEST_ITEM = "item";
+	public static final String PKG_MANIFEST_ITEM_ATTRIBUTE_ID = "id";
+	public static final String PKG_MANIFEST_ITEM_ATTRIBUTE_HREF = "href";
+	public static final String PKG_MANIFEST_ITEM_ATTRIBUTE_MEDIA_TYPE = "media-type";
+	public static final String PKG_MANIFEST_ITEM_ATTRIBUTE_FALLBACK = "fallback";
+	public static final String PKG_ELEMENT_SPINE = "spine";
+	public static final String PKG_ELEMENT_SPINE_ITEMREF = "itemref";
+	public static final String PKG_SPINE_ITEMREF_ATTRIBUTE_IDREF = "idref";
+	public static final String PKG_ELEMENT_GUIDE = "guide";
+	public static final String PKG_ELEMENT_TOURS = "tours";
+	public static final String PKG_ELEMENT_GUIDE_REFERENCE = "reference";
+	public static final String PKG_GUIDE_REFERENCE_ATTRIBUTE_TYPE = "type";
+	public static final String PKG_GUIDE_REFERENCE_ATTRIBUTE_TITLE = "title";
+	public static final String PKG_GUIDE_REFERENCE_ATTRIBUTE_HREF = "href";
 
 	/** An OEB 1.x publication zip file MIME subtype. */
-	public final static String X_OEB_PUBLICATION_ZIP_SUBTYPE = ContentType.SUBTYPE_EXTENSION_PREFIX + "oeb-publication"
+	public static final String X_OEB_PUBLICATION_ZIP_SUBTYPE = ContentType.SUBTYPE_EXTENSION_PREFIX + "oeb-publication"
 			+ ContentType.SUBTYPE_SUFFIX_DELIMITER_CHAR + XML_SUBTYPE_SUFFIX + ContentType.SUBTYPE_SUFFIX_DELIMITER_CHAR + ContentTypeConstants.ZIP_SUBTYPE_SUFFIX;
 	/** An OEB 1.x publication document MIME subtype. */
-	public final static String X_OEB1_DOCUMENT_SUBTYPE = ContentType.SUBTYPE_EXTENSION_PREFIX + "oeb1-document";
+	public static final String X_OEB1_DOCUMENT_SUBTYPE = ContentType.SUBTYPE_EXTENSION_PREFIX + "oeb1-document";
 	/** An OEB 1.x package MIME subtype. */
-	public final static String X_OEB1_PACKAGE_XML_SUBTYPE = ContentType.SUBTYPE_EXTENSION_PREFIX + "oeb1-package" + ContentType.SUBTYPE_SUFFIX_DELIMITER_CHAR
+	public static final String X_OEB1_PACKAGE_XML_SUBTYPE = ContentType.SUBTYPE_EXTENSION_PREFIX + "oeb1-package" + ContentType.SUBTYPE_SUFFIX_DELIMITER_CHAR
 			+ XML_SUBTYPE_SUFFIX;
 
 	/** The media type of an OEB 1.0 package. */
-	public final static ContentType OEB10_PACKAGE_MEDIA_TYPE = ContentType.create(ContentType.APPLICATION_PRIMARY_TYPE, X_OEB1_PACKAGE_XML_SUBTYPE);
+	public static final ContentType OEB10_PACKAGE_MEDIA_TYPE = ContentType.create(ContentType.APPLICATION_PRIMARY_TYPE, X_OEB1_PACKAGE_XML_SUBTYPE);
 
 	/** The media type of an OEB 1.0 document. */
-	public final static ContentType OEB10_DOCUMENT_MEDIA_TYPE = ContentType.create(ContentType.TEXT_PRIMARY_TYPE, X_OEB1_DOCUMENT_SUBTYPE);
+	public static final ContentType OEB10_DOCUMENT_MEDIA_TYPE = ContentType.create(ContentType.TEXT_PRIMARY_TYPE, X_OEB1_DOCUMENT_SUBTYPE);
 
 	/** The media type of an OEB 1.0 CSS document. */
-	public final static ContentType OEB10_CSS_MEDIA_TYPE = ContentType.create(ContentType.TEXT_PRIMARY_TYPE, X_OEB1_CSS_SUBTYPE);
+	public static final ContentType OEB10_CSS_MEDIA_TYPE = ContentType.create(ContentType.TEXT_PRIMARY_TYPE, X_OEB1_CSS_SUBTYPE);
 
 	/** The public ID for OEBPS 1.0. */
-	public final static String OEB10_DOCUMENT_PUBLIC_ID = "+//ISBN 0-9673008-1-9//DTD OEB 1.0 Document//EN";
+	public static final String OEB10_DOCUMENT_PUBLIC_ID = "+//ISBN 0-9673008-1-9//DTD OEB 1.0 Document//EN";
 	/** The default system ID for OEBPS 1.0. */
-	public final static String OEB10_DOCUMENT_SYSTEM_ID = "http://openebook.org/dtds/oeb-1.0/oebdoc1.dtd";
+	public static final String OEB10_DOCUMENT_SYSTEM_ID = "http://openebook.org/dtds/oeb-1.0/oebdoc1.dtd";
 
 	/** The public ID for OEBPS 1.0.1. */
-	public final static String OEB101_DOCUMENT_PUBLIC_ID = "+//ISBN 0-9673008-1-9//DTD OEB 1.0.1 Document//EN";
+	public static final String OEB101_DOCUMENT_PUBLIC_ID = "+//ISBN 0-9673008-1-9//DTD OEB 1.0.1 Document//EN";
 	/** The default system ID for OEBPS 1.0.1. */
-	public final static String OEB101_DOCUMENT_SYSTEM_ID = "http://openebook.org/dtds/oeb-1.0.1/oebdoc101.dtd";
+	public static final String OEB101_DOCUMENT_SYSTEM_ID = "http://openebook.org/dtds/oeb-1.0.1/oebdoc101.dtd";
 
 	/** The recommended prefix to the OEB 1.0 namespace. */
 	public static final String OEB1_DOCUMENT_NAMESPACE_PREFIX = "oeb1";
@@ -125,7 +125,7 @@ public class OEB {
 	public static final URI OEB1_DOCUMENT_NAMESPACE_URI = URI.create("http://openebook.org/namespaces/oeb-document/1.0/");
 
 	//Property names for OEB1
-	public final static String OEB_CSS_PROP_OEB_COLUMN_NUMBER = "oeb-column-number";
+	public static final String OEB_CSS_PROP_OEB_COLUMN_NUMBER = "oeb-column-number";
 
 	/**
 	 * Creates a default OEB 1 document.

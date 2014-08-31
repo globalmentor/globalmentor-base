@@ -23,8 +23,8 @@ package com.globalmentor.io;
 public class Archive {
 
 	/** The name extension for rar compressed files. */
-	public final static String RAR_NAME_EXTENSION = "rar";
+	public static final String RAR_NAME_EXTENSION = "rar";
 	/** The name extension for zip files. */
-	public final static String ZIP_NAME_EXTENSION = "zip";
+	public static final String ZIP_NAME_EXTENSION = "zip";
 
 }

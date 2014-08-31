@@ -29,7 +29,7 @@ import static com.globalmentor.java.Arrays.*;
 public class Iterators {
 
 	/** The singleton immutable empty iterator. */
-	public final static Iterator<?> EMPTY_ITERATOR = new EmptyIterator<Object>();
+	public static final Iterator<?> EMPTY_ITERATOR = new EmptyIterator<Object>();
 
 	/** @return The immutable empty iterator. */
 	@SuppressWarnings("unchecked")
@@ -38,7 +38,7 @@ public class Iterators {
 	} //return the singleton empty iterator cast to the correct type
 
 	/** The singleton immutable empty iterable. */
-	public final static Iterable<?> EMPTY_ITERABLE = new EmptyIterable<Object>();
+	public static final Iterable<?> EMPTY_ITERABLE = new EmptyIterable<Object>();
 
 	/** @return The immutable empty iterable. */
 	@SuppressWarnings("unchecked")

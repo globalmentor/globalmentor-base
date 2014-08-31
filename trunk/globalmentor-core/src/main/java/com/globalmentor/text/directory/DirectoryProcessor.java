@@ -168,12 +168,12 @@ public class DirectoryProcessor {
 	/**
 	 * The delimiter characters separating the main components of a content line with no group provided (';', ':', CR, and LF).
 	 */
-	protected final static Characters GROUPLESS_CONTENT_LINE_DELIMITER_CHARACTERS = new Characters(PARAM_SEPARATOR_CHAR, NAME_VALUE_SEPARATOR_CHAR, CR, LF);
+	protected static final Characters GROUPLESS_CONTENT_LINE_DELIMITER_CHARACTERS = new Characters(PARAM_SEPARATOR_CHAR, NAME_VALUE_SEPARATOR_CHAR, CR, LF);
 
 	/**
 	 * The delimiter characters separating the main components of a content line ('.', ';', ':', CR, and LF).
 	 */
-	protected final static Characters CONTENT_LINE_DELIMITER_CHARACTERS = GROUPLESS_CONTENT_LINE_DELIMITER_CHARACTERS.add(GROUP_NAME_SEPARATOR_CHAR);
+	protected static final Characters CONTENT_LINE_DELIMITER_CHARACTERS = GROUPLESS_CONTENT_LINE_DELIMITER_CHARACTERS.add(GROUP_NAME_SEPARATOR_CHAR);
 
 	/**
 	 * Processes the content lines from a directory of type <code>text/directory</code>.
@@ -340,14 +340,14 @@ public class DirectoryProcessor {
 	 * After reading the parameter name, we expect either a parameter name-value separator ('=') indicating a value, the parameter separator (';') indicating more
 	 * parameters, or the line name/value separator (':'), indicating we've finished parameters.
 	 */
-	protected final static Characters PARAM_NAME_DELIMITER_CHARACTERS = new Characters(PARAM_NAME_VALUE_SEPARATOR_CHAR, PARAM_SEPARATOR_CHAR,
+	protected static final Characters PARAM_NAME_DELIMITER_CHARACTERS = new Characters(PARAM_NAME_VALUE_SEPARATOR_CHAR, PARAM_SEPARATOR_CHAR,
 			NAME_VALUE_SEPARATOR_CHAR);
 
 	/**
 	 * After reading the parameter value, we expect either a parameter separator (';') the parameter value separator (',') indicating more values, or the line
 	 * name/value separator (':'), indicating we've finished parameters.
 	 */
-	protected final static Characters PARAM_VALUE_DELIMITER_CHARACTERS = new Characters(PARAM_SEPARATOR_CHAR, PARAM_VALUE_SEPARATOR_CHAR,
+	protected static final Characters PARAM_VALUE_DELIMITER_CHARACTERS = new Characters(PARAM_SEPARATOR_CHAR, PARAM_VALUE_SEPARATOR_CHAR,
 			NAME_VALUE_SEPARATOR_CHAR);
 
 	/**

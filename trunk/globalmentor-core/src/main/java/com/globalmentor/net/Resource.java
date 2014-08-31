@@ -25,7 +25,7 @@ import java.net.URI;
 public interface Resource {
 
 	/** The Java property name of a resource's URI. */
-	public final static String URI_PROPERTY_NAME = "uri";
+	public static final String URI_PROPERTY_NAME = "uri";
 
 	/** @return The resource identifier URI, or <code>null</code> if the identifier is not known. */
 	public URI getURI();

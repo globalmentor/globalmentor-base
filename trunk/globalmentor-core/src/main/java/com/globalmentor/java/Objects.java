@@ -29,7 +29,7 @@ import static com.globalmentor.java.Java.*;
 public class Objects {
 
 	/** A shared object array that contains no elements. */
-	public final static Object[] NO_OBJECTS = new Object[0];
+	public static final Object[] NO_OBJECTS = new Object[0];
 
 	/** This class cannot be publicly instantiated. */
 	private Objects() {
@@ -160,7 +160,7 @@ public class Objects {
 	 *         <code>null</code>.
 	 * @see Object#equals(Object)
 	 */
-	public final static boolean equals(final Object object1, final Object object2) {
+	public static final boolean equals(final Object object1, final Object object2) {
 		//if the first object isn't null, compare it to the second; otherwise, see if the second object is null as well
 		return object1 != null ? object1.equals(object2) : object2 == null;
 	}
@@ -329,7 +329,7 @@ public class Objects {
 	 * @param object An object to be represented by a string.
 	 * @return The string representation of the object or {@value Java#NULL_KEYWORD} if the object is <code>null</code>.
 	 */
-	public final static String toString(final Object object) {
+	public static final String toString(final Object object) {
 		return object != null ? object.toString() : NULL_KEYWORD; //return the object's string representation or "null"
 	}
 

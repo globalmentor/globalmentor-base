@@ -44,22 +44,22 @@ import com.globalmentor.text.ArgumentSyntaxException;
 public class SSN {
 
 	/** The length of the area number. */
-	public final static int AREA_NUMBER_LENGTH = 3;
+	public static final int AREA_NUMBER_LENGTH = 3;
 
 	/** The length of the group number. */
-	public final static int GROUP_NUMBER_LENGTH = 2;
+	public static final int GROUP_NUMBER_LENGTH = 2;
 
 	/** The length of the serial number. */
-	public final static int SERIAL_NUMBER_LENGTH = 4;
+	public static final int SERIAL_NUMBER_LENGTH = 4;
 
 	/** The canonical delimiter for social security numbers. */
-	public final static char DELIMITER = '-';
+	public static final char DELIMITER = '-';
 
 	/**
 	 * A regular expression pattern matching a SSN in the form "XXXXXXXXX" or "XXX-XX-XXXX". Three regular expression groups (1, 2, and 3; or 4, 5, and 6;
 	 * depending on format) are formed representing the area number, the group number, and the serial number.
 	 */
-	public final static Pattern PATTERN = Pattern.compile("(?:(\\d{3})(\\d{2})(\\d{4}))|(?:(\\d{3})\\-(\\d{2})\\-(\\d{4}))");
+	public static final Pattern PATTERN = Pattern.compile("(?:(\\d{3})(\\d{2})(\\d{4}))|(?:(\\d{3})\\-(\\d{2})\\-(\\d{4}))");
 
 	/** The area number. */
 	private final int areaNumber;

@@ -28,7 +28,7 @@ import static java.util.Calendar.*;
 public class Calendars {
 
 	/** The number of days in a week. */
-	public final static int WEEK_DAY_COUNT = 7;
+	public static final int WEEK_DAY_COUNT = 7;
 
 	/**
 	 * Adds or subtracts the specified amount of time to the given calendar field, based on the calendar's rules, and returns the given calendar.

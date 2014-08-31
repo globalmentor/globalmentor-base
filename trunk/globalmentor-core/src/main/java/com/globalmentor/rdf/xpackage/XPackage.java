@@ -38,21 +38,21 @@ import org.w3c.dom.*;
 public class XPackage {
 
 	/** The recommended prefix to the XPackage ontology namespace. */
-	public final static String XPACKAGE_NAMESPACE_PREFIX = "xpackage";
+	public static final String XPACKAGE_NAMESPACE_PREFIX = "xpackage";
 	/** The URI to the XPackage namespace. */
-	public final static URI XPACKAGE_NAMESPACE_URI = URI.create("http://xpackage.org/namespaces/xpackage#");
+	public static final URI XPACKAGE_NAMESPACE_URI = URI.create("http://xpackage.org/namespaces/xpackage#");
 
 	//XPackage package description document names
 	/** The local name of the XPackage xpackage:description element. */
-	public final static String ELEMENT_DESCRIPTION = "description";
+	public static final String ELEMENT_DESCRIPTION = "description";
 
 	//XPackage ontology property names
 	/** The alternate of a resource. The local name of xpackage:alternate. */
-	public final static String ALTERNATE_PROPERTY_NAME = "alternate";
+	public static final String ALTERNATE_PROPERTY_NAME = "alternate";
 	/** The location of a resource. The local name of xpackage:location. */
-	public final static String LOCATION_PROPERTY_NAME = "location";
+	public static final String LOCATION_PROPERTY_NAME = "location";
 	/** The icon of a resource. The local name of xpackage:icon. */
-	public final static String ICON_PROPERTY_NAME = "icon";
+	public static final String ICON_PROPERTY_NAME = "icon";
 
 	/**
 	 * Adds an alternate to a resource.

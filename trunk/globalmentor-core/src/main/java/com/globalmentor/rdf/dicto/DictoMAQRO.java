@@ -25,14 +25,14 @@ import java.net.URI;
 public class DictoMAQRO {
 
 	/** The recommended prefix to the Dicto MAQRO ontology namespace. */
-	public final static String DICTO_MAQRO_NAMESPACE_PREFIX = "dictomaqro";
+	public static final String DICTO_MAQRO_NAMESPACE_PREFIX = "dictomaqro";
 	/** The URI to the Dicto MAQRO namespace. */
-	public final static URI DICTO_MAQRO_NAMESPACE_URI = URI.create("http://garretwilson.com/namespaces/2004/dictomaqro#");
+	public static final URI DICTO_MAQRO_NAMESPACE_URI = URI.create("http://garretwilson.com/namespaces/2004/dictomaqro#");
 
 	//Dicto MAQRO property names
 	/** The property to be used when forming MAQRO question queries. The local name of dictomaqro:queryProperty. */
-	public final static String QUERY_PROPERTY_PROPERTY_NAME = "queryProperty";
+	public static final String QUERY_PROPERTY_PROPERTY_NAME = "queryProperty";
 	/** The property to be used when forming MAQRO question choices. The local name of dictomaqro:choiceProperty. */
-	public final static String CHOICE_PROPERTY_PROPERTY_NAME = "choiceProperty";
+	public static final String CHOICE_PROPERTY_PROPERTY_NAME = "choiceProperty";
 
 }

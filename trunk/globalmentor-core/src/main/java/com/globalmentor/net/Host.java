@@ -30,10 +30,10 @@ import com.globalmentor.model.DefaultComparableNamed;
 public class Host extends DefaultComparableNamed<String> {
 
 	/** Shared representation of <code>localhost</code>. */
-	public final static Host LOCALHOST = new Host("localhost");
+	public static final Host LOCALHOST = new Host("localhost");
 
 	/** Shared representation of an example host, <code>example.com</code>. */
-	public final static Host EXAMPLE_COM = new Host("example.com");
+	public static final Host EXAMPLE_COM = new Host("example.com");
 
 	/** The port of the host, or <code>-1</code> if no port is specified. */
 	private final int port;

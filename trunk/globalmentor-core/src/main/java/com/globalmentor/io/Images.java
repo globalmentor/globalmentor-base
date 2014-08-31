@@ -23,18 +23,18 @@ package com.globalmentor.io;
 public class Images {
 
 	/** The name extension for bitmap files. */
-	public final static String BMP_NAME_EXTENSION = "bmp";
+	public static final String BMP_NAME_EXTENSION = "bmp";
 	/** The name extension for GIF files. */
-	public final static String GIF_NAME_EXTENSION = "gif";
+	public static final String GIF_NAME_EXTENSION = "gif";
 	/** The long name extension for JPEG files. */
-	public final static String JPEG_NAME_EXTENSION = "jpeg";
+	public static final String JPEG_NAME_EXTENSION = "jpeg";
 	/** The short name extension for JPEG files. */
-	public final static String JPG_NAME_EXTENSION = "jpg";
+	public static final String JPG_NAME_EXTENSION = "jpg";
 	/** The name extension for PNG files. */
-	public final static String PNG_NAME_EXTENSION = "png";
+	public static final String PNG_NAME_EXTENSION = "png";
 	/** The short name extension for TIFF files. */
-	public final static String TIF_NAME_EXTENSION = "tif";
+	public static final String TIF_NAME_EXTENSION = "tif";
 	/** The long name extension for TIFF files. */
-	public final static String TIFF_NAME_EXTENSION = "tiff";
+	public static final String TIFF_NAME_EXTENSION = "tiff";
 
 }

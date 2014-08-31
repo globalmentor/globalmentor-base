@@ -32,7 +32,7 @@ import static com.globalmentor.time.TimeZones.*;
 public class ISOUTCOffset implements ISOTemporal {
 
 	/** The shared UTC offset representing Coordinated Universal Time (UTC), +00:00. */
-	public final static ISOUTCOffset UTC = new ISOUTCOffset(0, 0);
+	public static final ISOUTCOffset UTC = new ISOUTCOffset(0, 0);
 
 	/** The offset hours. */
 	private final int hours;

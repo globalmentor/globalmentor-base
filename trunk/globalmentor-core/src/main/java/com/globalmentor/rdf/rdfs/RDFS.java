@@ -27,32 +27,32 @@ import com.globalmentor.rdf.*;
 public class RDFS {
 
 	/** The recommended prefix to the RDFS namespace. */
-	public final static String RDFS_NAMESPACE_PREFIX = "rdfs";
+	public static final String RDFS_NAMESPACE_PREFIX = "rdfs";
 
 	/** The URI to the RDFS namespace. */
-	public final static URI RDFS_NAMESPACE_URI = URI.create("http://www.w3.org/2000/01/rdf-schema#");
+	public static final URI RDFS_NAMESPACE_URI = URI.create("http://www.w3.org/2000/01/rdf-schema#");
 
 	//RDFS core classes
 	/** The class name of rdfs:Class. */
-	public final static String CLASS_CLASS_NAME = "Class";
+	public static final String CLASS_CLASS_NAME = "Class";
 	/** The class name of rdfs:Resource. */
-	public final static String RESOURCE_CLASS_NAME = "Resource";
+	public static final String RESOURCE_CLASS_NAME = "Resource";
 
 	//RDFS core properties
 	/** The property name of rdfs:isDefinedBy. */
-	public final static String IS_DEFINED_BY_PROPERTY_NAME = "isDefinedBy";
+	public static final String IS_DEFINED_BY_PROPERTY_NAME = "isDefinedBy";
 	/** The property name of rdfs:seeAlso. */
-	public final static String SEE_ALSO_PROPERTY_NAME = "seeAlso";
+	public static final String SEE_ALSO_PROPERTY_NAME = "seeAlso";
 	/** The property name of rdfs:subClassOf. */
-	public final static String SUB_CLASS_OF_PROPERTY_NAME = "subClassOf";
+	public static final String SUB_CLASS_OF_PROPERTY_NAME = "subClassOf";
 	/** The property name of rdfs:subPropertyOf. */
-	public final static String SUB_PROPERTY_OF_PROPERTY_NAME = "subPropertyOf";
+	public static final String SUB_PROPERTY_OF_PROPERTY_NAME = "subPropertyOf";
 
 	//RDFS documentation properties
 	/** The property name of rdfs:comment. */
-	public final static String COMMENT_PROPERTY_NAME = "comment";
+	public static final String COMMENT_PROPERTY_NAME = "comment";
 	/** The property name of rdfs:label. */
-	public final static String LABEL_PROPERTY_NAME = "label";
+	public static final String LABEL_PROPERTY_NAME = "label";
 
 	/**
 	 * Adds an <code>rdfs:comment</code> property to the resource.

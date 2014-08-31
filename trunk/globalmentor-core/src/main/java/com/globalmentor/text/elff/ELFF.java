@@ -38,34 +38,34 @@ import com.globalmentor.model.NameValuePair;
 public class ELFF {
 
 	/** The latest ELFF version. */
-	public final static String LATEST_VERSION = "1.0";
+	public static final String LATEST_VERSION = "1.0";
 
 	/** The version of the extended log file format used. */
-	public final static String VERSION_DIRECTIVE = "Version";
+	public static final String VERSION_DIRECTIVE = "Version";
 	/** Specifies the fields recorded in the log. */
-	public final static String FIELDS_DIRECTIVE = "Fields";
+	public static final String FIELDS_DIRECTIVE = "Fields";
 	/** Identifies the software which generated the log. */
-	public final static String SOFTWARE_DIRECTIVE = "Software";
+	public static final String SOFTWARE_DIRECTIVE = "Software";
 	/** The date and time at which the log was started. */
-	public final static String START_DATE_DIRECTIVE = "Start-Date";
+	public static final String START_DATE_DIRECTIVE = "Start-Date";
 	/** The date and time at which the log was finished. */
-	public final static String END_DATE_DIRECTIVE = "End-Date";
+	public static final String END_DATE_DIRECTIVE = "End-Date";
 	/** The date and time at which the entry was added. */
-	public final static String DATE_DIRECTIVE = "Date";
+	public static final String DATE_DIRECTIVE = "Date";
 	/** Comment information. */
-	public final static String REMARK_DIRECTIVE = "Remark";
+	public static final String REMARK_DIRECTIVE = "Remark";
 
 	/** The pattern for formatting an ELFF date value. */
-	public final static String DATE_FORMAT_PATTERN = "yyyy-MM-dd";
+	public static final String DATE_FORMAT_PATTERN = "yyyy-MM-dd";
 
 	/** The pattern for formatting an ELFF time value. */
-	public final static String TIME_FORMAT_PATTERN = "HH:mm:ss:SSS";
+	public static final String TIME_FORMAT_PATTERN = "HH:mm:ss:SSS";
 
 	/** The pattern for formatting an ELFF date+time value. */
-	public final static String DATE_TIME_FORMAT_PATTERN = DATE_FORMAT_PATTERN + ' ' + TIME_FORMAT_PATTERN;
+	public static final String DATE_TIME_FORMAT_PATTERN = DATE_FORMAT_PATTERN + ' ' + TIME_FORMAT_PATTERN;
 
 	/** The value to represent null in a field. */
-	public final static String NULL_FIELD_VALUE = "-";
+	public static final String NULL_FIELD_VALUE = "-";
 
 	/** The fields used in this ELFF log. */
 	private final Field<?>[] fields;
@@ -279,7 +279,7 @@ public class ELFF {
 	 * @param string The string to encode.
 	 * @return The encoded string.
 	 */
-	public final static String encodeString(final String string) {
+	public static final String encodeString(final String string) {
 
 		final StringBuilder stringBuilder = new StringBuilder(string); //create a new string builder
 		//TODO reconcile with ELFF specification; WebTrends URL-encodes strings		replace(stringBuilder, '"', "\"");	//replace each quote with two quotes

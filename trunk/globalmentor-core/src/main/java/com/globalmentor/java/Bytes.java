@@ -29,7 +29,7 @@ import com.globalmentor.text.TextFormatter;
 public class Bytes {
 
 	/** A shared empty array of bytes. */
-	public final static byte[] NO_BYTES = new byte[0];
+	public static final byte[] NO_BYTES = new byte[0];
 
 	/** This class cannot be publicly instantiated. */
 	private Bytes() {

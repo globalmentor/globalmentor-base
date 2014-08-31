@@ -48,7 +48,7 @@ public class DirectorySerializer {
 	 * @see #getSingleValueNames()
 	 * @see <a href="http://tools.ietf.org/html/rfc3676#section-4.3">RFC 3676 4.3. Usenet Signature Convention</a>
 	 */
-	public final static String CONTENT_LINE_TEXT_COMBINE_STRING = stringOf(LINE_FEED_CHAR, HYPHEN_MINUS_CHAR, HYPHEN_MINUS_CHAR, LINE_FEED_CHAR);
+	public static final String CONTENT_LINE_TEXT_COMBINE_STRING = stringOf(LINE_FEED_CHAR, HYPHEN_MINUS_CHAR, HYPHEN_MINUS_CHAR, LINE_FEED_CHAR);
 
 	/** The names of contact lines that should be reduced to single content lines. */
 	private Set<String> singleValueNames = emptySet();

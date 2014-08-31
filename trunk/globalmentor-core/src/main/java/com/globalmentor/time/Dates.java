@@ -26,7 +26,7 @@ import java.util.GregorianCalendar;
 public class Dates {
 
 	/** The origin of Microsoft Excel date serial values, 31 December 1899. */
-	protected final static Date EXCEL_EPOCH_DATE = new GregorianCalendar(1899, GregorianCalendar.DECEMBER, 31).getTime();
+	protected static final Date EXCEL_EPOCH_DATE = new GregorianCalendar(1899, GregorianCalendar.DECEMBER, 31).getTime();
 
 	/**
 	 * Converts a Java date to Microsoft Excel representation, defined as the fractional number of days past 31 December 1899.

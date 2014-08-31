@@ -75,15 +75,15 @@ public class RTN {
 	}
 
 	/** The length of a routing transit number. */
-	public final static int LENGTH = 9;
+	public static final int LENGTH = 9;
 
 	/**
 	 * A regular expression pattern matching a RTN in the form "XXXXXXXXX". The first matching group matches the first two category/federal reserve digits.
 	 */
-	public final static Pattern PATTERN = Pattern.compile("(\\d{2})\\d{7}");
+	public static final Pattern PATTERN = Pattern.compile("(\\d{2})\\d{7}");
 
 	/** The weights used in calculating the checksum of an RTN. */
-	public final static int[] CHECKSUM_WEIGHTS = new int[] { 3, 7, 1, 3, 7, 1, 3, 7, 1 };
+	public static final int[] CHECKSUM_WEIGHTS = new int[] { 3, 7, 1, 3, 7, 1, 3, 7, 1 };
 
 	/** The ID value indicating the category and optionally reserve bank. */
 	private final int categoryID;

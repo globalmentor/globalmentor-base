@@ -42,7 +42,7 @@ import com.globalmentor.test.AbstractTest;
 public class CharSequenceSuffixTreeTest extends AbstractTest {
 
 	/** Interesting test string to use for creating suffix trees. */
-	private final static Set<String> TEST_STRINGS = Sets.immutableSetOf("xabxa", "bananas", "bookkeeper", "mississippi", "dooodah",
+	private static final Set<String> TEST_STRINGS = Sets.immutableSetOf("xabxa", "bananas", "bookkeeper", "mississippi", "dooodah",
 			"I at once heard the rickety crickety creaking of the bridge.");
 
 	/**

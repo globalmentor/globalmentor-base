@@ -59,16 +59,16 @@ import static com.globalmentor.java.Objects.*;
 public class AsynchronousWriter extends Writer {
 
 	/** The predefined, shared character buffer that, when produced, indicates that the underlying writer should flush. */
-	protected final static char[] FLUSH_INDICATOR = new char[0];
+	protected static final char[] FLUSH_INDICATOR = new char[0];
 
 	/** The predefined, shared character buffer that, when produced, indicates that the underlying writer should close. */
-	protected final static char[] CLOSE_INDICATOR = new char[0];
+	protected static final char[] CLOSE_INDICATOR = new char[0];
 
 	/**
 	 * The predefined, shared character buffer that, when produced, indicates that all queued writes should be drained. As the appearance of this indicator
 	 * indicates that the queue has already been drained, it functions as sort of a signaling no-op.
 	 */
-	protected final static char[] DRAIN_INDICATOR = new char[0];
+	protected static final char[] DRAIN_INDICATOR = new char[0];
 
 	/** The underlying writer to which information will be asynchronously written. */
 	private final Writer writer;

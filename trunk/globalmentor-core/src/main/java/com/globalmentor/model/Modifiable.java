@@ -25,7 +25,7 @@ import static com.globalmentor.java.Classes.*;
 public interface Modifiable {
 
 	/** The name of the modified property, if it is bound in any modifiable object. */
-	public final static String MODIFIED_PROPERTY = getPropertyName(Modifiable.class, "modified");
+	public static final String MODIFIED_PROPERTY = getPropertyName(Modifiable.class, "modified");
 
 	/** @return Whether the object has been modified. */
 	public boolean isModified();

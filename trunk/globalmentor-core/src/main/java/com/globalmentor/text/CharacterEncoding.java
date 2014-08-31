@@ -32,32 +32,32 @@ public class CharacterEncoding //TODO remove BOM storage, and then replace class
 
 	//character encoding families
 	/** The eight-bit UTF-8 character encoding (to which the big-endian/little-endian byte order does not apply). */
-	public final static String UTF_8 = "utf-8";
+	public static final String UTF_8 = "utf-8";
 	/** The general 16-bit UTF-16 character encoding (which requires an initial Byte Order Mark). */
-	public final static String UTF_16 = "utf-16";
+	public static final String UTF_16 = "utf-16";
 	/** The 32-bit UCS-4 character encoding. */
-	public final static String UCS_4 = "UCS-4";
+	public static final String UCS_4 = "UCS-4";
 	/** The EBCDIC character encoding. */
-	public final static String EBCDIC = "ebcdic";
+	public static final String EBCDIC = "ebcdic";
 	/** The ISO-LATIN-1 character encoding. */
-	public final static String ISO_8859_1 = "iso-8859-1";
+	public static final String ISO_8859_1 = "iso-8859-1";
 	/** The Cp1252 character encoding. */
-	public final static String CP1252 = "cp1252";
+	public static final String CP1252 = "cp1252";
 	//Byte Order Marks recognized
 	/** An array signifying no byte order mark. */
-	public final static byte[] NO_BOM = new byte[0];
+	public static final byte[] NO_BOM = new byte[0];
 	/** UTF-8 */
-	public final static byte[] BOM_UTF_8 = { (byte)0xEF, (byte)0xBB, (byte)0xBF };
+	public static final byte[] BOM_UTF_8 = { (byte)0xEF, (byte)0xBB, (byte)0xBF };
 	/** UTF-16, big-endian */
-	public final static byte[] BOM_UTF_16_BIG_ENDIAN = { (byte)0xFE, (byte)0xFF };
+	public static final byte[] BOM_UTF_16_BIG_ENDIAN = { (byte)0xFE, (byte)0xFF };
 	/** UTF-16, little-endian */
-	public final static byte[] BOM_UTF_16_LITTLE_ENDIAN = { (byte)0xFF, (byte)0xFE };
+	public static final byte[] BOM_UTF_16_LITTLE_ENDIAN = { (byte)0xFF, (byte)0xFE };
 	/** UTF-32, big-endian */
-	public final static byte[] BOM_UTF_32_BIG_ENDIAN = { (byte)0x00, (byte)0x00, (byte)0xFE, (byte)0xFF };
+	public static final byte[] BOM_UTF_32_BIG_ENDIAN = { (byte)0x00, (byte)0x00, (byte)0xFE, (byte)0xFF };
 	/** UTF-32, little-endian */
-	public final static byte[] BOM_UTF_32_LITTLE_ENDIAN = { (byte)0xFF, (byte)0xFE, (byte)0x00, (byte)0x00 };
+	public static final byte[] BOM_UTF_32_LITTLE_ENDIAN = { (byte)0xFF, (byte)0xFE, (byte)0x00, (byte)0x00 };
 	/** A UTF-8 encoding. */
-	public final static CharacterEncoding UTF_8_ENCODING = new CharacterEncoding(UTF_8, (Endian)null);
+	public static final CharacterEncoding UTF_8_ENCODING = new CharacterEncoding(UTF_8, (Endian)null);
 
 	/** Whether a character encoding is little-endiand or big-endian. */
 	public enum Endian {

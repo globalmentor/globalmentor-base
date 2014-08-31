@@ -38,16 +38,16 @@ import com.globalmentor.log.Log;
 public class VCardCat extends AbstractApplication {
 
 	/** The application URI. */
-	public final static URI APPLICATION_URI = URI.create("http://globalmentor.com/software/vcardcat");
+	public static final URI APPLICATION_URI = URI.create("http://globalmentor.com/software/vcardcat");
 
 	/** The application title. */
-	public final static String TITLE = "VCardCat" + TRADE_MARK_SIGN_CHAR;
+	public static final String TITLE = "VCardCat" + TRADE_MARK_SIGN_CHAR;
 
 	/** The application copyright. */
-	public final static String COPYRIGHT = "Copyright " + COPYRIGHT_SIGN + " 2011 GlobalMentor, Inc. All Rights Reserved."; //TODO i18n
+	public static final String COPYRIGHT = "Copyright " + COPYRIGHT_SIGN + " 2011 GlobalMentor, Inc. All Rights Reserved."; //TODO i18n
 
 	/** The version of the application. */
-	public final static String VERSION = "1.0-SNAPSHOT build 2010-04-23";
+	public static final String VERSION = "1.0-SNAPSHOT build 2010-04-23";
 
 	/** Application command-line parameters. */
 	public enum Parameter implements Identifier {

@@ -57,93 +57,93 @@ import com.globalmentor.text.ArgumentSyntaxException;
 public class ContentType {
 
 	/** The divider character for media type strings. */
-	public final static char TYPE_DIVIDER = '/';
+	public static final char TYPE_DIVIDER = '/';
 	/** The delimiter character separating parameters from the base content type and from each other. */
-	public final static char PARAMETER_DELIMITER_CHAR = ';';
+	public static final char PARAMETER_DELIMITER_CHAR = ';';
 	/** The character used to assign parameter values. */
-	public final static char PARAMETER_ASSIGNMENT_CHAR = '=';
+	public static final char PARAMETER_ASSIGNMENT_CHAR = '=';
 	/** The character for quoting a string, such as a parameter value with special characters. */
-	public final static char STRING_QUOTE_CHAR = '"';
+	public static final char STRING_QUOTE_CHAR = '"';
 	/** The wildcard character. */
-	public final static char TYPE_WILDCARD_CHAR = '*';
+	public static final char TYPE_WILDCARD_CHAR = '*';
 	/** The wildcard subtype, matching any subtype. */
-	public final static String WILDCARD_SUBTYPE = String.valueOf(TYPE_WILDCARD_CHAR);
+	public static final String WILDCARD_SUBTYPE = String.valueOf(TYPE_WILDCARD_CHAR);
 	/** The <code>tspecials</code> characters of RFC 2046, which require a string to be quoted in a parameter value. */
-	public final static Characters SPECIAL_CHARACTERS = new Characters('(', ')', '<', '>', '@', ',', ';', ':', '\\', '"', '/', '[', ']', '?', '=');
+	public static final Characters SPECIAL_CHARACTERS = new Characters('(', ')', '<', '>', '@', ',', ';', ':', '\\', '"', '/', '[', ']', '?', '=');
 	/** The characters of RFC 2046 which are considered illegal in tokens; control characters and non-ASCII characters are not included. */
-	public final static Characters ILLEGAL_TOKEN_CHARACTERS = SPECIAL_CHARACTERS.add(SPACE_CHAR);
+	public static final Characters ILLEGAL_TOKEN_CHARACTERS = SPECIAL_CHARACTERS.add(SPACE_CHAR);
 
 	/**
 	 * A pattern for checking the basic form of parameters. The pattern may be repeated and the two matching groups are the name and value. This pattern does not
 	 * take into account all aspects of a regular expression, e.g. special characters.
 	 */
-	public final static Pattern PARAMETERS_PATTERN = Pattern.compile(";\\s+([\\x21-\\x7F&&[^=;]]+)=([\\x21-\\x7F&&[^=;]]+)");
+	public static final Pattern PARAMETERS_PATTERN = Pattern.compile(";\\s+([\\x21-\\x7F&&[^=;]]+)=([\\x21-\\x7F&&[^=;]]+)");
 	/**
 	 * The parameters pattern matching group for the parameter name.
 	 * @see #PARAMETERS_PATTERN
 	 */
-	public final static int PARAMETERS_PATTERN_NAME_GROUP = 1;
+	public static final int PARAMETERS_PATTERN_NAME_GROUP = 1;
 	/**
 	 * The parameters pattern matching group for the parameter name.
 	 * @see #PARAMETERS_PATTERN
 	 */
-	public final static int PARAMETERS_PATTERN_VALUE_GROUP = 2;
+	public static final int PARAMETERS_PATTERN_VALUE_GROUP = 2;
 
 	/**
 	 * A pattern for checking the basic form of regular expressions. This pattern does not take into account all aspects of a regular expression, e.g. special
 	 * characters. The parameters group will be <code>null</code> if there are no parameters as tll
 	 */
-	public final static Pattern PATTERN = Pattern.compile("([\\x21-\\x7F&&[^/;]]+)/([\\x21-\\x7F&&[^/;]]+)((?:" + PARAMETERS_PATTERN.toString() + ")+)?");
+	public static final Pattern PATTERN = Pattern.compile("([\\x21-\\x7F&&[^/;]]+)/([\\x21-\\x7F&&[^/;]]+)((?:" + PARAMETERS_PATTERN.toString() + ")+)?");
 	/**
 	 * The pattern matching group for the primary type.
 	 * @see #PATTERN
 	 */
-	public final static int PATTERN_PRIMARY_TYPE_GROUP = 1;
+	public static final int PATTERN_PRIMARY_TYPE_GROUP = 1;
 	/**
 	 * The pattern matching group for the subtype.
 	 * @see #PATTERN
 	 */
-	public final static int PATTERN_SUBTYPE_GROUP = 2;
+	public static final int PATTERN_SUBTYPE_GROUP = 2;
 	/**
 	 * The pattern matching group for all the parameters, with delimiters.
 	 * @see #PATTERN
 	 */
-	public final static int PATTERN_PARAMETERS_GROUP = 3;
+	public static final int PATTERN_PARAMETERS_GROUP = 3;
 
 	//discrete top-level media types
-	public final static String TEXT_PRIMARY_TYPE = "text";
-	public final static String IMAGE_PRIMARY_TYPE = "image";
-	public final static String AUDIO_PRIMARY_TYPE = "audio";
-	public final static String VIDEO_PRIMARY_TYPE = "video";
-	public final static String APPLICATION_PRIMARY_TYPE = "application";
+	public static final String TEXT_PRIMARY_TYPE = "text";
+	public static final String IMAGE_PRIMARY_TYPE = "image";
+	public static final String AUDIO_PRIMARY_TYPE = "audio";
+	public static final String VIDEO_PRIMARY_TYPE = "video";
+	public static final String APPLICATION_PRIMARY_TYPE = "application";
 	//composite top-level media types
-	public final static String MULTIPART_PRIMARY_TYPE = "multipart";
-	public final static String MESSAGE_PRIMARY_TYPE = "message";
+	public static final String MULTIPART_PRIMARY_TYPE = "multipart";
+	public static final String MESSAGE_PRIMARY_TYPE = "message";
 	/** The pseudo top-level type used by Java {@link URLConnection} to indicate unknown content by <code>content/unknown</code>. */
-	public final static String CONTENT_PRIMARY_TYPE = "content";
+	public static final String CONTENT_PRIMARY_TYPE = "content";
 
 	/** The separator character that begins a non-standard extension type. */
-	public final static String SUBTYPE_EXTENSION_PREFIX = "x-";
+	public static final String SUBTYPE_EXTENSION_PREFIX = "x-";
 	/** The separator character that delimits a subtype suffix. */
-	public final static char SUBTYPE_SUFFIX_DELIMITER_CHAR = '+';
+	public static final char SUBTYPE_SUFFIX_DELIMITER_CHAR = '+';
 
 	//parameters
 	/** The character set parameters. */
-	public final static String CHARSET_PARAMETER = "charset";
+	public static final String CHARSET_PARAMETER = "charset";
 
 	//content media types
 	/** The pseudo subtype used by Java {@link URLConnection} to indicate unknown content by <code>content/unknown</code>. */
-	public final static String UNKNOWN_SUBTYPE = "unknown";
+	public static final String UNKNOWN_SUBTYPE = "unknown";
 
 	//application media types
 	/** A stream of bytes. */
-	public final static String OCTET_STREAM_SUBTYPE = "octet-stream";
+	public static final String OCTET_STREAM_SUBTYPE = "octet-stream";
 
 	/** A Java object. */
-	public final static String X_JAVA_OBJECT = SUBTYPE_EXTENSION_PREFIX + "java-object";
+	public static final String X_JAVA_OBJECT = SUBTYPE_EXTENSION_PREFIX + "java-object";
 
 	/** The shared <code>application/octet-stream</code> content type. */
-	public final static ContentType APPLICATION_OCTET_STREAM_CONTENT_TYPE = create(APPLICATION_PRIMARY_TYPE, OCTET_STREAM_SUBTYPE);
+	public static final ContentType APPLICATION_OCTET_STREAM_CONTENT_TYPE = create(APPLICATION_PRIMARY_TYPE, OCTET_STREAM_SUBTYPE);
 
 	/**
 	 * Determines if the given character sequence is a content type token, that is, consisting only of non-control ASCII characters with no special characters or
@@ -153,7 +153,7 @@ public class ContentType {
 	 * @throws NullPointerException if the given character sequence is <code>null</code>.
 	 * @see #ILLEGAL_TOKEN_CHARACTERS
 	 */
-	public final static boolean isToken(final CharSequence charSequence) {
+	public static final boolean isToken(final CharSequence charSequence) {
 		return isASCIINonControl(charSequence) && notContains(charSequence, ILLEGAL_TOKEN_CHARACTERS);
 	}
 
@@ -166,7 +166,7 @@ public class ContentType {
 	 * @throws ArgumentSyntaxException if the given character sequence is not a content type token.
 	 * @see #isToken(CharSequence)
 	 */
-	protected final static <CS extends CharSequence> CS checkToken(final CS charSequence) {
+	protected static final <CS extends CharSequence> CS checkToken(final CS charSequence) {
 		if(!isToken(charSequence)) {
 			throw new ArgumentSyntaxException("Content type token " + charSequence + " must consist only of non-space and non-control ASCII characters.");
 		}

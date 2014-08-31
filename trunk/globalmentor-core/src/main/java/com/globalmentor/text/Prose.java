@@ -51,35 +51,35 @@ public class Prose {
 	preface
 	*/
 	/** Indicates no heading. */
-	public final static int NO_HEADING = 0; //TODO convert all these to enums
+	public static final int NO_HEADING = 0; //TODO convert all these to enums
 	//ordered hierarchical headings, with lower number indicating higher in the hierarchy
-	public final static int VOLUME_HEADING = 1;
-	public final static int BOOK_HEADING = 2;
-	public final static int PART_HEADING = 3;
-	public final static int CHAPTER_HEADING = 4;
-	public final static int ACT_HEADING = 5;
-	public final static int SCENE_HEADING = 6;
-	public final static int ARTICLE_HEADING = 7;
-	public final static int SUB_HEADING = 8;
-	public final static int TITLE_HEADING = 9;
+	public static final int VOLUME_HEADING = 1;
+	public static final int BOOK_HEADING = 2;
+	public static final int PART_HEADING = 3;
+	public static final int CHAPTER_HEADING = 4;
+	public static final int ACT_HEADING = 5;
+	public static final int SCENE_HEADING = 6;
+	public static final int ARTICLE_HEADING = 7;
+	public static final int SUB_HEADING = 8;
+	public static final int TITLE_HEADING = 9;
 	/** The significant ordered heading with the highest value. */
-	public final static int MAX_SIGNIFICANT_HEADING = SCENE_HEADING;
+	public static final int MAX_SIGNIFICANT_HEADING = SCENE_HEADING;
 	/** The ordered heading with the highest value. */
-	public final static int MAX_HEADING = TITLE_HEADING;
+	public static final int MAX_HEADING = TITLE_HEADING;
 	//these are non-hierarchical headings, always considered to be the highest
 	//  in the hierarchy; they have negative values not only for convenience, but
 	//  also to indicate that they always take precedence over the ordered
 	//  headings
-	public final static int CONTENTS_HEADING = -1;
-	public final static int PREFACE_HEADING = -2;
-	public final static int FOREWORD_HEADING = -3;
-	public final static int INTRODUCTION_HEADING = -4;
-	public final static int AFTERWORD_HEADING = -5;
-	public final static int BIBLIOGRAPHY_HEADING = -6;
-	public final static int GLOSSARY_HEADING = -7;
-	public final static int INDEX_HEADING = -8;
-	public final static int GOSPEL_HEADING = -9;
-	public final static int PAGE_BREAK_HEADING = -10;
+	public static final int CONTENTS_HEADING = -1;
+	public static final int PREFACE_HEADING = -2;
+	public static final int FOREWORD_HEADING = -3;
+	public static final int INTRODUCTION_HEADING = -4;
+	public static final int AFTERWORD_HEADING = -5;
+	public static final int BIBLIOGRAPHY_HEADING = -6;
+	public static final int GLOSSARY_HEADING = -7;
+	public static final int INDEX_HEADING = -8;
+	public static final int GOSPEL_HEADING = -9;
+	public static final int PAGE_BREAK_HEADING = -10;
 
 	/**
 	 * Checks to see which type of heading is represented by the given text.

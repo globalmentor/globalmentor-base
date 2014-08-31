@@ -28,19 +28,19 @@ public class JNLP {
 	public static final ContentType CONTENT_TYPE = ContentType.create(ContentType.APPLICATION_PRIMARY_TYPE, "x-java-jnlp-file");
 
 	/** The name of the JNLP servlet or JSP file. */
-	public final static String JNLP_SERVLET_NAME = "jnlp";
+	public static final String JNLP_SERVLET_NAME = "jnlp";
 
 	/** The title of the application to pass to the JNLP servlet. */
-	public final static String TITLE_PARAM = "title";
+	public static final String TITLE_PARAM = "title";
 	/** The vendor of the application to pass to the JNLP servlet. */
-	public final static String VENDOR_PARAM = "vendor";
+	public static final String VENDOR_PARAM = "vendor";
 	/** A context-relative URL fragment that will generate an equivalent JNLP file, to pass to the JNLP servlet. */
-	public final static String HREF_PARAM = "href";
+	public static final String HREF_PARAM = "href";
 	/** An array of resource jar URL strings to pass to the JNLP servlet. */
-	public final static String JARS_PARAM = "jars";
+	public static final String JARS_PARAM = "jars";
 	/** The name of the application main class to pass to the JNLP servlet. */
-	public final static String APPLICATION_PARAM = "application";
+	public static final String APPLICATION_PARAM = "application";
 	/** An array of application arguments to pass to the JNLP servlet. */
-	public final static String ARGUMENTS_PARAM = "arguments";
+	public static final String ARGUMENTS_PARAM = "arguments";
 
 }

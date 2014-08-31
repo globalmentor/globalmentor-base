@@ -41,16 +41,16 @@ import static com.globalmentor.net.URIs.*;
 public final class URIPath {
 
 	/** The empty path (""). */
-	public final static URIPath EMPTY_URI_PATH = new URIPath("");
+	public static final URIPath EMPTY_URI_PATH = new URIPath("");
 
 	/** The path to root, consisting of a single path separator ("/"). */
-	public final static URIPath ROOT_URI_PATH = new URIPath(ROOT_PATH);
+	public static final URIPath ROOT_URI_PATH = new URIPath(ROOT_PATH);
 
 	/**
 	 * The root path in the {@value URIs#PATH_SCHEME} scheme; used for creating URI paths using {@link URI#relativize(URI)} for initial relative segments
 	 * containing a colon.
 	 */
-	private final static URI PATH_ROOT_URI = URI.create(PATH_SCHEME + SCHEME_SEPARATOR + PATH_SEPARATOR); //path:/
+	private static final URI PATH_ROOT_URI = URI.create(PATH_SCHEME + SCHEME_SEPARATOR + PATH_SEPARATOR); //path:/
 
 	/** The local URI form of the path. */
 	private final URI uri;

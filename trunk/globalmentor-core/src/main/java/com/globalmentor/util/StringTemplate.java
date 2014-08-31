@@ -30,7 +30,7 @@ import static com.globalmentor.java.Objects.*;
 public class StringTemplate {
 
 	/** The parameter indicating that a string argument should be expected. */
-	public final static Parameter STRING_PARAMETER = new Parameter() {};
+	public static final Parameter STRING_PARAMETER = new Parameter() {};
 
 	/** The array of template components. */
 	private final Object[] components;

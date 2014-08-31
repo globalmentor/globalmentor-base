@@ -31,31 +31,31 @@ import com.globalmentor.rdf.*;
 public class Crypto implements RDFResourceFactory {
 
 	/** The recommended prefix to the Crypto namespace. */
-	public final static String CRYPTO_NAMESPACE_PREFIX = "crypto";
+	public static final String CRYPTO_NAMESPACE_PREFIX = "crypto";
 	/** The URI to the Crypto namespace. */
-	public final static URI CRYPTO_NAMESPACE_URI = URI.create("http://globalmentor.com/namespaces/2003/crypto#");
+	public static final URI CRYPTO_NAMESPACE_URI = URI.create("http://globalmentor.com/namespaces/2003/crypto#");
 
 	//Crypto ontology class names
 	/** The local name of crypto:Digest. */
-	public final static String DIGEST_CLASS_NAME = "Digest";
+	public static final String DIGEST_CLASS_NAME = "Digest";
 	/** The local name of crypto:DigestMethod. */
-	public final static String DIGEST_METHOD_CLASS_NAME = "DigestMethod";
+	public static final String DIGEST_METHOD_CLASS_NAME = "DigestMethod";
 
 	//general Crypto property names
 	/** An algorithm. The local name of crypto:algorithm. */
-	public final static String ALGORITHM_PROPERTY_NAME = "algorithm";
+	public static final String ALGORITHM_PROPERTY_NAME = "algorithm";
 	/** The digest of a resouce. The local name of crypto:digest. */
-	public final static String DIGEST_PROPERTY_NAME = "digest";
+	public static final String DIGEST_PROPERTY_NAME = "digest";
 
 	//Crypto digest property names
 	/** The digest method of a digest. The local name of crypto:digestMethod. */
-	public final static String DIGEST_METHOD_PROPERTY_NAME = "digestMethod";
+	public static final String DIGEST_METHOD_PROPERTY_NAME = "digestMethod";
 	/** The digest value of a digest. The local name of crypto:digestValue. */
-	public final static String DIGEST_VALUE_PROPERTY_NAME = "digestValue";
+	public static final String DIGEST_VALUE_PROPERTY_NAME = "digestValue";
 
 	//Crypto algorithms
 	/** The URI identifier of the SHA1 message digest algorithm. */
-	public final static URI SHA1_ALGORITHM_URI = URI.create("http://www.w3.org/2000/09/xmldsig#sha1"); //TODO create a constant for the XML digital signature base URI and create the other URIs by resolving against that URI
+	public static final URI SHA1_ALGORITHM_URI = URI.create("http://www.w3.org/2000/09/xmldsig#sha1"); //TODO create a constant for the XML digital signature base URI and create the other URIs by resolving against that URI
 
 	/**
 	 * Sets the <code>crypto:digest</code> property of a resource.

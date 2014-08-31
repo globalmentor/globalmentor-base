@@ -44,10 +44,10 @@ import com.globalmentor.java.Objects;
 public class BoundPropertyObject implements PropertyBindable, PropertyConstrainable {
 
 	/** A convenience static empty array of property change listeners. */
-	protected final static PropertyChangeListener[] NO_PROPERTY_CHANGE_LISTENERS = new PropertyChangeListener[0];
+	protected static final PropertyChangeListener[] NO_PROPERTY_CHANGE_LISTENERS = new PropertyChangeListener[0];
 
 	/** A convenience static empty array of vetoable change listeners. */
-	protected final static VetoableChangeListener[] NO_VETOABLE_CHANGE_LISTENERS = new VetoableChangeListener[0];
+	protected static final VetoableChangeListener[] NO_VETOABLE_CHANGE_LISTENERS = new VetoableChangeListener[0];
 
 	/** Lazily-created support that keeps track of {@link PropertyChangeListener}s that have been registered, and handles firing of events. */
 	private PropertyChangeSupport propertyChangeSupport = null;

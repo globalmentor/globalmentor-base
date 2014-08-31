@@ -35,7 +35,7 @@ public class WeakHashSet<E> extends AbstractSet<E> implements Set<E> {
 	private final transient WeakHashMap<E, Object> map;
 
 	/** The dummy value used in the weak hash map. */
-	private final static Object DUMMY_VALUE = new Object();
+	private static final Object DUMMY_VALUE = new Object();
 
 	/**
 	 * Constructs a new, empty set. The backing {@link WeakHashMap} instance has default initial capacity (16) and load factor (0.75).

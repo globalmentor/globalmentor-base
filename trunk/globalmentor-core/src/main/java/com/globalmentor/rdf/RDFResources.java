@@ -38,7 +38,7 @@ import org.w3c.dom.*;
 public class RDFResources {
 
 	/** The start of a reference URI from the rdf:li element qualified name (i.e. "rdfNamespaceURI#li_"), which we'll use to check for items. */
-	protected final static String RDF_LI_REFERENCE_PREFIX = createReferenceURI(RDF_NAMESPACE_URI, CONTAINER_MEMBER_PREFIX).toString();
+	protected static final String RDF_LI_REFERENCE_PREFIX = createReferenceURI(RDF_NAMESPACE_URI, CONTAINER_MEMBER_PREFIX).toString();
 
 	/**
 	 * Adds a <code>rdf:type</code> property to the resource.

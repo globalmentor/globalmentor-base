@@ -37,17 +37,17 @@ import com.globalmentor.rdf.*;
 public class RDFDirectory {
 
 	/** The recommended prefix to the directory namespace. */
-	public final static String DIRECTORY_NAMESPACE_PREFIX = "directory";
+	public static final String DIRECTORY_NAMESPACE_PREFIX = "directory";
 
 	/** The URI to the directory namespace. */
-	public final static URI DIRECTORY_NAMESPACE_URI = URI.create("http://globalmentor.com/namespaces/directory#");
+	public static final URI DIRECTORY_NAMESPACE_URI = URI.create("http://globalmentor.com/namespaces/directory#");
 
 	//directory property names
 	/**
 	 * Identifies data in multiple languages according to <a href="http://www.ietf.org/rfc/rfc1766.txt">RFC 1766</a> (now <a
 	 * href="http://www.ietf.org/rfc/rfc3066.txt">RFC 3066</a>). The local name of <code>directory:language</code>.
 	 */
-	public final static String LANGUAGE_PROPERTY_NAME = getVariableName(LANGUAGE_PARAM_NAME);
+	public static final String LANGUAGE_PROPERTY_NAME = getVariableName(LANGUAGE_PARAM_NAME);
 
 	/**
 	 * Retrieves vCard text from a given RDF object. If the object is an {@link RDFLiteral}, the lexical form of the literal will be returned. If the object is an

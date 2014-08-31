@@ -29,60 +29,60 @@ import static com.globalmentor.java.Objects.*;
 public class Field<T> extends FieldIdentifier {
 
 	/** The date at which the transaction completed. */
-	public final static Field<Date> DATE_FIELD = new Field<Date>("date", FieldType.DATE);
+	public static final Field<Date> DATE_FIELD = new Field<Date>("date", FieldType.DATE);
 
 	/** The time at which the transaction completed. */
-	public final static Field<Date> TIME_FIELD = new Field<Date>("time", FieldType.TIME);
+	public static final Field<Date> TIME_FIELD = new Field<Date>("time", FieldType.TIME);
 
 	/** The time taken for transaction to complete in seconds. */
-	public final static Field<Double> TIME_TAKEN_FIELD = new Field<Double>("time-taken", FieldType.FIXED);
+	public static final Field<Double> TIME_TAKEN_FIELD = new Field<Double>("time-taken", FieldType.FIXED);
 
 	/** The bytes transferred. */
-	public final static Field<Integer> BYTES_FIELD = new Field<Integer>("bytes", FieldType.INTEGER);
+	public static final Field<Integer> BYTES_FIELD = new Field<Integer>("bytes", FieldType.INTEGER);
 
 	/** Whether a cache hit occurred; 0 indicates a cache miss. */
-	public final static Field<Integer> CACHED_FIELD = new Field<Integer>("cached", FieldType.INTEGER);
+	public static final Field<Integer> CACHED_FIELD = new Field<Integer>("cached", FieldType.INTEGER);
 
 	/** The client IP address. */
-	public final static Field<String> CLIENT_IP_FIELD = new Field<String>(FieldIdentifierPrefix.CLIENT, "ip", FieldType.ADDRESS);
+	public static final Field<String> CLIENT_IP_FIELD = new Field<String>(FieldIdentifierPrefix.CLIENT, "ip", FieldType.ADDRESS);
 
 	/** The client's username to the server. */
-	public final static Field<String> CLIENT_SERVER_USERNAME_FIELD = new Field<String>(FieldIdentifierPrefix.CLIENT_SERVER, "username", FieldType.STRING);
+	public static final Field<String> CLIENT_SERVER_USERNAME_FIELD = new Field<String>(FieldIdentifierPrefix.CLIENT_SERVER, "username", FieldType.STRING);
 
 	/** The host accessed by the client. */
-	public final static Field<String> CLIENT_SERVER_HOST_FIELD = new Field<String>(FieldIdentifierPrefix.CLIENT_SERVER, "host", FieldType.STRING);
+	public static final Field<String> CLIENT_SERVER_HOST_FIELD = new Field<String>(FieldIdentifierPrefix.CLIENT_SERVER, "host", FieldType.STRING);
 
 	/** The method used by the client to the server. */
-	public final static Field<String> CLIENT_SERVER_METHOD_FIELD = new Field<String>(FieldIdentifierPrefix.CLIENT_SERVER, "method", FieldType.STRING);
+	public static final Field<String> CLIENT_SERVER_METHOD_FIELD = new Field<String>(FieldIdentifierPrefix.CLIENT_SERVER, "method", FieldType.STRING);
 
 	/** The URI path accessed by the client. */
-	public final static Field<String> CLIENT_SERVER_URI_STEM_FIELD = new Field<String>(FieldIdentifierPrefix.CLIENT_SERVER, "uri-stem", FieldType.STRING);
+	public static final Field<String> CLIENT_SERVER_URI_STEM_FIELD = new Field<String>(FieldIdentifierPrefix.CLIENT_SERVER, "uri-stem", FieldType.STRING);
 
 	/** The query string accessed by the client. */
-	public final static Field<String> CLIENT_SERVER_URI_QUERY_FIELD = new Field<String>(FieldIdentifierPrefix.CLIENT_SERVER, "uri-query", FieldType.STRING);
+	public static final Field<String> CLIENT_SERVER_URI_QUERY_FIELD = new Field<String>(FieldIdentifierPrefix.CLIENT_SERVER, "uri-query", FieldType.STRING);
 
 	/** The HTTP response status returned to the client. */
-	public final static Field<Integer> SERVER_CLIENT_STATUS_FIELD = new Field<Integer>(FieldIdentifierPrefix.SERVER_CLIENT, "status", FieldType.INTEGER);
+	public static final Field<Integer> SERVER_CLIENT_STATUS_FIELD = new Field<Integer>(FieldIdentifierPrefix.SERVER_CLIENT, "status", FieldType.INTEGER);
 
 	/** The bytes transferred from server to client. */
-	public final static Field<Integer> CLIENT_SERVER_BYTES_FIELD = new Field<Integer>(FieldIdentifierPrefix.SERVER_CLIENT, "bytes", FieldType.INTEGER);
+	public static final Field<Integer> CLIENT_SERVER_BYTES_FIELD = new Field<Integer>(FieldIdentifierPrefix.SERVER_CLIENT, "bytes", FieldType.INTEGER);
 
 	/** The version of the client accessing the server. */
-	public final static Field<String> CLIENT_SERVER_VERSION_FIELD = new Field<String>(FieldIdentifierPrefix.CLIENT_SERVER, "version", FieldType.STRING);
+	public static final Field<String> CLIENT_SERVER_VERSION_FIELD = new Field<String>(FieldIdentifierPrefix.CLIENT_SERVER, "version", FieldType.STRING);
 
 	/** The user-agent header of the client accessing the server. */
-	public final static Field<String> CLIENT_SERVER_USER_AGENT_HEADER_FIELD = new Field<String>(FieldIdentifierPrefix.CLIENT_SERVER, "User-Agent", true,
+	public static final Field<String> CLIENT_SERVER_USER_AGENT_HEADER_FIELD = new Field<String>(FieldIdentifierPrefix.CLIENT_SERVER, "User-Agent", true,
 			FieldType.STRING);
 
 	/** The cookie header of the client accessing the server. */
-	public final static Field<String> CLIENT_SERVER_COOKIE_HEADER_FIELD = new Field<String>(FieldIdentifierPrefix.CLIENT_SERVER, "Cookie", true, FieldType.STRING);
+	public static final Field<String> CLIENT_SERVER_COOKIE_HEADER_FIELD = new Field<String>(FieldIdentifierPrefix.CLIENT_SERVER, "Cookie", true, FieldType.STRING);
 
 	/** The referrer header of the client accessing the server. */
-	public final static Field<String> CLIENT_SERVER_REFERER_HEADER_FIELD = new Field<String>(FieldIdentifierPrefix.CLIENT_SERVER, "Referer", true,
+	public static final Field<String> CLIENT_SERVER_REFERER_HEADER_FIELD = new Field<String>(FieldIdentifierPrefix.CLIENT_SERVER, "Referer", true,
 			FieldType.STRING);
 
 	/** The WebTrends DCS identification field. */
-	public final static Field<String> DCS_ID_FIELD = new Field<String>(FieldIdentifierPrefix.DCS, "id", FieldType.STRING);
+	public static final Field<String> DCS_ID_FIELD = new Field<String>(FieldIdentifierPrefix.DCS, "id", FieldType.STRING);
 
 	/** The type of value stored in the field. */
 	private final FieldType type;

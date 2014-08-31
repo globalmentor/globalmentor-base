@@ -28,23 +28,23 @@ import com.globalmentor.java.Characters;
 public class ASCII {
 
 	/** The value of the first uppercase letter. */
-	public final static short UPPERCASE_LETTER_FIRST = 'A';
+	public static final short UPPERCASE_LETTER_FIRST = 'A';
 	/** The value of the last uppercase letter. */
-	public final static short UPPERCASE_LETTER_LAST = 'Z';
+	public static final short UPPERCASE_LETTER_LAST = 'Z';
 
 	/** The value of the first lowercase letter. */
-	public final static short LOWERCASE_LETTER_FIRST = 'a';
+	public static final short LOWERCASE_LETTER_FIRST = 'a';
 	/** The value of the last lowercase letter. */
-	public final static short LOWERCASE_LETTER_LAST = 'z';
+	public static final short LOWERCASE_LETTER_LAST = 'z';
 
 	/** The difference in value between lowercase (higher values) and uppercase (lower values) ASCII letters. */
-	public final static short LOWERCASE_UPPERCASE_LETTER_DIFFERENCE = LOWERCASE_LETTER_FIRST - UPPERCASE_LETTER_FIRST;
+	public static final short LOWERCASE_UPPERCASE_LETTER_DIFFERENCE = LOWERCASE_LETTER_FIRST - UPPERCASE_LETTER_FIRST;
 
 	/** The highest ASCII code point value that is a control character. */
-	public final static char MAX_CONTROL_VALUE = 31;
+	public static final char MAX_CONTROL_VALUE = 31;
 
 	/** The highest ASCII code point value. */
-	public final static char MAX_VALUE = 127;
+	public static final char MAX_VALUE = 127;
 
 	/**
 	 * Indicates whether a given character is within the ASCII range.

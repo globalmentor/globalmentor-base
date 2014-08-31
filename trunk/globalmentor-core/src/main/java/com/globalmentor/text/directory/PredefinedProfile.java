@@ -148,7 +148,7 @@ public class PredefinedProfile extends AbstractProfile implements ValueFactory, 
 	}
 
 	/** The delimiters that can divide a text value: '\\' ',' and CR. */
-	protected final static Characters TEXT_VALUE_DELIMITER_CHARACTERS = new Characters(TEXT_ESCAPE_CHAR, VALUE_SEPARATOR_CHAR, CR);
+	protected static final Characters TEXT_VALUE_DELIMITER_CHARACTERS = new Characters(TEXT_ESCAPE_CHAR, VALUE_SEPARATOR_CHAR, CR);
 
 	/**
 	 * Processes a single text value.

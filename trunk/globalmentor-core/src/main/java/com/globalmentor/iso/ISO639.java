@@ -26,14 +26,14 @@ package com.globalmentor.iso;
 public class ISO639 {
 
 	/** Arabic */
-	public final static String ARABIC_CODE = "ar";
+	public static final String ARABIC_CODE = "ar";
 	/** Farsi */
-	public final static String FARSI_CODE = "fa";
+	public static final String FARSI_CODE = "fa";
 	/** Hebrew */
-	public final static String HEBREW_CODE = "he";
+	public static final String HEBREW_CODE = "he";
 	/** The obsolete code for Hebrew, used by Java. */
-	public final static String HEBREW_OBSOLETE_CODE = "iw";
+	public static final String HEBREW_OBSOLETE_CODE = "iw";
 	/** Urdu */
-	public final static String URDU_CODE = "ur";
+	public static final String URDU_CODE = "ur";
 
 }

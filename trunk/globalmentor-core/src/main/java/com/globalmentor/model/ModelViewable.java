@@ -33,28 +33,28 @@ import com.globalmentor.java.Java;
 public interface ModelViewable {
 
 	/** The name of the bound view property. */
-	public final static String MODEL_VIEW_PROPERTY = ModelViewable.class.getName() + Java.PACKAGE_SEPARATOR + "modelView";
+	public static final String MODEL_VIEW_PROPERTY = ModelViewable.class.getName() + Java.PACKAGE_SEPARATOR + "modelView";
 
 	/**
 	 * Represents no view of the data. This should only be used for error conditions and when the data is not being viewed.
 	 */
-	public final static int NO_MODEL_VIEW = 0;
+	public static final int NO_MODEL_VIEW = 0;
 	/** The view in which the data is shown in a tree structure. */
-	public final static int TREE_MODEL_VIEW = 1;
+	public static final int TREE_MODEL_VIEW = 1;
 	/** The view in which the data is shown in a graph structure. */
-	public final static int GRAPH_MODEL_VIEW = 2;
+	public static final int GRAPH_MODEL_VIEW = 2;
 	/** The view in which the data is shown as it would be in its final form. */
-	public final static int WYSIWYG_MODEL_VIEW = 3;
+	public static final int WYSIWYG_MODEL_VIEW = 3;
 	/** The view in which a sequence of items is shown, perhaps as a card deck. */
-	public final static int SEQUENCE_MODEL_VIEW = 4;
+	public static final int SEQUENCE_MODEL_VIEW = 4;
 	/** The view in which a list of items is shown. */
-	public final static int LIST_MODEL_VIEW = 5;
+	public static final int LIST_MODEL_VIEW = 5;
 	/** The view in which the data is shown as a brief overview. */
-	public final static int SUMMARY_MODEL_VIEW = 6;
+	public static final int SUMMARY_MODEL_VIEW = 6;
 	/** The view in which any source data used to generate the data is shown. */
-	public final static int SOURCE_MODEL_VIEW = 7;
+	public static final int SOURCE_MODEL_VIEW = 7;
 	/** The view in which configuration and settings data is shown. */
-	public final static int CONFIGURATION_MODEL_VIEW = 8;
+	public static final int CONFIGURATION_MODEL_VIEW = 8;
 
 	/** @return An array of supported model views. */
 	public int[] getSupportedModelViews();

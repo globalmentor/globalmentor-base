@@ -23,8 +23,8 @@ package com.globalmentor.io;
 public class Video {
 
 	/** The long name extension for MPEG files. */
-	public final static String MPEG_NAME_EXTENSION = "mpeg";
+	public static final String MPEG_NAME_EXTENSION = "mpeg";
 	/** The short name extension for MPEG files. */
-	public final static String MPG_NAME_EXTENSION = "mpg";
+	public static final String MPG_NAME_EXTENSION = "mpg";
 
 }

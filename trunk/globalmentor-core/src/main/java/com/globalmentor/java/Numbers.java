@@ -26,9 +26,9 @@ import java.math.BigInteger;
 public class Numbers {
 
 	/** The double value representing 1/3. */
-	public final static double ONE_THIRD_DOUBLE = 1.0d / 3.0d;
+	public static final double ONE_THIRD_DOUBLE = 1.0d / 3.0d;
 	/** The double value representing 2/3. */
-	public final static double TWO_THIRDS_DOUBLE = 2.0d / 3.0d;
+	public static final double TWO_THIRDS_DOUBLE = 2.0d / 3.0d;
 
 	/**
 	 * Returns the value of the given number if the number is integral.

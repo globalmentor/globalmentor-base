@@ -30,10 +30,10 @@ import static com.globalmentor.java.Objects.*;
 public class TimeZones {
 
 	/** The ID for indicating the GMT zone. */
-	public final static String GMT_ID = "GMT";
+	public static final String GMT_ID = "GMT";
 
 	/** The shared time zone representing Greenwich Mean Time (GMT). */
-	public final static TimeZone GMT = TimeZone.getTimeZone(GMT_ID);
+	public static final TimeZone GMT = TimeZone.getTimeZone(GMT_ID);
 
 	/**
 	 * Retrieves a time zone based upon a UTC offset for the given date. This method cannot return with certain a time zone valid for other dates, as sufficient

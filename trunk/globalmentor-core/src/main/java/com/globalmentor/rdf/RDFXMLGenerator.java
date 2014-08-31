@@ -145,9 +145,9 @@ public class RDFXMLGenerator //TODO fix bug that doesn't serialize property valu
 	//G***fix	private boolean isSerializationDeferable=true;
 
 	/** Indicates literals should be serialized as attributes by default. */
-	//G***del	public final static boolean LITERAL_ATTRIBUTE_SERIALIZATION=1;
+	//G***del	public static final boolean LITERAL_ATTRIBUTE_SERIALIZATION=1;
 	/** Indicates literals should be serialized as elements by default. */
-	//G***del	public final static boolean LITERAL_ELEMENT_SERIALIZATION=2;
+	//G***del	public static final boolean LITERAL_ELEMENT_SERIALIZATION=2;
 
 	/** Whether literals are serialized as attributes, if possible. */
 	private boolean literalAttributeSerialization = true;

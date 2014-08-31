@@ -32,13 +32,13 @@ import com.globalmentor.io.BOMInputStreamReader;
 public class PropertiesUtilities {
 
 	/** The name extension for properties files, such as Java properties files. */
-	public final static String PROPERTIES_NAME_EXTENSION = "properties";
+	public static final String PROPERTIES_NAME_EXTENSION = "properties";
 
 	/** A string representation of boolean <code>true</code>. */
-	public final static String TRUE_STRING = String.valueOf(true);
+	public static final String TRUE_STRING = String.valueOf(true);
 
 	/** A string representation of boolean <code>false</code>. */
-	public final static String FALSE_STRING = String.valueOf(false);
+	public static final String FALSE_STRING = String.valueOf(false);
 
 	/**
 	 * Retrieves a property as a boolean value.

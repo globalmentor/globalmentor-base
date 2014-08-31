@@ -28,38 +28,38 @@ public class Charsets {
 
 	//canonical name
 	/** The canonical name of the eight-bit UTF-8 charset (to which the big-endian/little-endian byte order does not apply). */
-	public final static String UTF_8_NAME = "UTF-8";
+	public static final String UTF_8_NAME = "UTF-8";
 	/** The canonical name of the general 16-bit UTF-16 charset (which requires an initial Byte Order Mark). */
-	public final static String UTF_16_NAME = "UTF-16";
+	public static final String UTF_16_NAME = "UTF-16";
 	/** The canonical name of the 16-bit UTF-16 big-endian charset. */
-	public final static String UTF_16BE_NAME = "UTF-16BE";
+	public static final String UTF_16BE_NAME = "UTF-16BE";
 	/** The canonical name of the 16-bit UTF-16 little-endian charset. */
-	public final static String UTF_16LE_NAME = "UTF-16LE";
+	public static final String UTF_16LE_NAME = "UTF-16LE";
 	/** The canonical name of the 32-bit UTF-32 charset. */
-	public final static String UTF_32_NAME = "UTF-32";
+	public static final String UTF_32_NAME = "UTF-32";
 	/** The canonical name of the 32-bit UTF-32 big-endian charset. */
-	public final static String UTF_32BE_NAME = "UTF-32BE";
+	public static final String UTF_32BE_NAME = "UTF-32BE";
 	/** The canonical name of the 32-bit UTF-32 little-endian charset. */
-	public final static String UTF_32LE_NAME = "UTF-32LE";
+	public static final String UTF_32LE_NAME = "UTF-32LE";
 	/** The canonical name of the US-ASCII charset. */
-	public final static String US_ASCII_NAME = "US-ASCII";
+	public static final String US_ASCII_NAME = "US-ASCII";
 	/** The canonical name of the ISO-8859-1 charset. */
-	public final static String ISO_8859_1_NAME = "ISO-8859-1";
+	public static final String ISO_8859_1_NAME = "ISO-8859-1";
 	/** The canonical name of the Cp1252 charset. */
-	public final static String WINDOWS_1252_NAME = "windows-1252";
+	public static final String WINDOWS_1252_NAME = "windows-1252";
 
 	/** The ISO-8859-1 charset. */
-	public final static Charset ISO_8859_1_CHARSET = Charset.forName(ISO_8859_1_NAME);
+	public static final Charset ISO_8859_1_CHARSET = Charset.forName(ISO_8859_1_NAME);
 	/** The UTF-8 charset. */
-	public final static Charset UTF_8_CHARSET = Charset.forName(UTF_8_NAME);
+	public static final Charset UTF_8_CHARSET = Charset.forName(UTF_8_NAME);
 	/** The UTF-16 charset. */
-	public final static Charset UTF_16_CHARSET = Charset.forName(UTF_16_NAME);
+	public static final Charset UTF_16_CHARSET = Charset.forName(UTF_16_NAME);
 	/** The UTF-16LE charset. */
-	public final static Charset UTF_16LE_CHARSET = Charset.forName(UTF_16LE_NAME);
+	public static final Charset UTF_16LE_CHARSET = Charset.forName(UTF_16LE_NAME);
 	/** The UTF-16BE charset. */
-	public final static Charset UTF_16BE_CHARSET = Charset.forName(UTF_16BE_NAME);
+	public static final Charset UTF_16BE_CHARSET = Charset.forName(UTF_16BE_NAME);
 	/** The US-ASCII charset. */
-	public final static Charset US_ASCII_CHARSET = Charset.forName(US_ASCII_NAME);
+	public static final Charset US_ASCII_CHARSET = Charset.forName(US_ASCII_NAME);
 
 	/**
 	 * Determines the byte order mark (BOM) needed to represent the given charset. For charsets that do not specify endianness, big-endian is assumed.

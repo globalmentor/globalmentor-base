@@ -29,11 +29,11 @@ package com.globalmentor.io;
 public class UTF8 {
 
 	/** The largest code point value that can be encoded in one byte. */
-	public final static int MAX_ENCODED_BYTE_COUNT1 = 0x7F;
+	public static final int MAX_ENCODED_BYTE_COUNT1 = 0x7F;
 	/** The largest code point value that can be encoded in two bytes. */
-	public final static int MAX_ENCODED_BYTE_COUNT2 = 0x07FF;
+	public static final int MAX_ENCODED_BYTE_COUNT2 = 0x07FF;
 	/** The largest code point value that can be encoded in three bytes. */
-	public final static int MAX_ENCODED_BYTE_COUNT3 = 0xFFFF;
+	public static final int MAX_ENCODED_BYTE_COUNT3 = 0xFFFF;
 
 	/**
 	 * Determines how many bytes are needed to encode a single character in UTF-8.

@@ -25,28 +25,28 @@ import static com.globalmentor.java.StringBuilders.*;
 public class Java {
 
 	/** The name extension for Java files. */
-	public final static String JAVA_NAME_EXTENSION = "java";
+	public static final String JAVA_NAME_EXTENSION = "java";
 
 	/** The string representing the null keyword. */
-	public final static String NULL_KEYWORD = "null";
+	public static final String NULL_KEYWORD = "null";
 
 	/** The character used to separate internal classes in Java class names. */
-	public final static char INTERNAL_CLASS_SEPARATOR = '$';
+	public static final char INTERNAL_CLASS_SEPARATOR = '$';
 
 	/** The character used to separate packages in Java class names. */
-	public final static char PACKAGE_SEPARATOR = '.';
+	public static final char PACKAGE_SEPARATOR = '.';
 
 	/** The character used to separate an object and its predicate in an identifier string. */
-	public final static char OBJECT_PREDICATE_SEPARATOR = '.';
+	public static final char OBJECT_PREDICATE_SEPARATOR = '.';
 
 	/**
 	 * The system property name that represents whether internationalization is turned on.
 	 * @see javax.swing.text.DefaultStyledDocument
 	 */
-	public final static String I18N_PROPERTY_NAME = "i18n";
+	public static final String I18N_PROPERTY_NAME = "i18n";
 
 	/** The Java URI scheme identifier. */
-	public final static String JAVA_URI_SCHEME = "java";
+	public static final String JAVA_URI_SCHEME = "java";
 
 	/** This class cannot be publicly instantiated. */
 	private Java() {
@@ -62,7 +62,7 @@ public class Java {
 	 *         with a <code>null</code> considered less than a non-<code>null</code> value.
 	 * @see Comparable#compareTo
 	 */
-	public final static <T extends Comparable<T>> int compareTo(final T comparable1, final T comparable2) {
+	public static final <T extends Comparable<T>> int compareTo(final T comparable1, final T comparable2) {
 		if(comparable1 != null && comparable2 != null) //if both objects are non-null
 			return comparable1.compareTo(comparable2); //compare the objects
 		else if(comparable1 == comparable2) //if both objects are null (we know at this point that one object is null, so if the objects are equal then both are null)
@@ -109,7 +109,7 @@ public class Java {
 	}
 
 	/** Illegal variable characters to be replaced when creating a valid variable name. */
-	private final static Characters ILLEGAL_VARIABLE_NAME_CHARACTERS = new Characters(PACKAGE_SEPARATOR, INTERNAL_CLASS_SEPARATOR);
+	private static final Characters ILLEGAL_VARIABLE_NAME_CHARACTERS = new Characters(PACKAGE_SEPARATOR, INTERNAL_CLASS_SEPARATOR);
 
 	/**
 	 * Creates a safe Java variable name by replacing all illegal characters with the underscore ('_') character. This version only checks for the '.' and '$'

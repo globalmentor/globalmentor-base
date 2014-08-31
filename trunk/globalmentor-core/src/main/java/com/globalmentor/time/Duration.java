@@ -26,10 +26,10 @@ import com.globalmentor.java.Longs;
 public class Duration implements Comparable<Duration> {
 
 	/** The shared duration instance indicating a zero duration. */
-	public final static Duration NO_DURATION = new Duration(0);
+	public static final Duration NO_DURATION = new Duration(0);
 
 	/** The shared duration instance indicating the max possible duration. */
-	public final static Duration MAX_DURATION = new Duration(Long.MAX_VALUE);
+	public static final Duration MAX_DURATION = new Duration(Long.MAX_VALUE);
 
 	/** The duration time in milliseconds. */
 	private final long time;

@@ -54,7 +54,7 @@ public class Address {
 	}
 
 	/** The default delivery address type. */
-	public final static Set<Type> DEFAULT_TYPES = EnumSet.of(Type.INTL, Type.POSTAL, Type.PARCEL, Type.WORK);
+	public static final Set<Type> DEFAULT_TYPES = EnumSet.of(Type.INTL, Type.POSTAL, Type.PARCEL, Type.WORK);
 
 	/** The delivery address types. */
 	private final Set<Type> types;

@@ -65,7 +65,7 @@ public class TempOutputStream extends OutputStreamDecorator<OutputStream> {
 	}
 
 	/** The default threshold number of bytes for switching from memory to a temporary file. */
-	public final static int DEFAULT_THRESHOLD = 1 << 16;
+	public static final int DEFAULT_THRESHOLD = 1 << 16;
 
 	/**
 	 * Default constructor with default threshold, automatically calling {@link #dispose()} when closed.

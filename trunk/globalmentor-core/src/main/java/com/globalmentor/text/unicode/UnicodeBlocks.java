@@ -33,10 +33,10 @@ import static com.globalmentor.java.CharSequences.*;
 public class UnicodeBlocks {
 
 	/** The default name used by Unicode to store block data. */
-	protected final static String BLOCKS_FILENAME = "Blocks.txt";
+	protected static final String BLOCKS_FILENAME = "Blocks.txt";
 
 	/** The data file's field delimiter character. */
-	public final static char FIELD_DELIMITER = ';';
+	public static final char FIELD_DELIMITER = ';';
 
 	/** A reference to a cached unmodifiable set of Unicode blocks. */
 	private static Reference<SortedSet<UnicodeBlock>> blockSetReference = null;

@@ -30,9 +30,9 @@ import static com.globalmentor.java.Characters.*;
 public class MessageDigests {
 
 	/** The MD5 digest algorithm. */
-	public final static String MD5_ALGORITHM = "MD5";
+	public static final String MD5_ALGORITHM = "MD5";
 	/** The SHA digest algorithm. */
-	public final static String SHA_ALGORITHM = "SHA";
+	public static final String SHA_ALGORITHM = "SHA";
 
 	/**
 	 * Computes a digest for the given character sequences using the UTF-8 charset.

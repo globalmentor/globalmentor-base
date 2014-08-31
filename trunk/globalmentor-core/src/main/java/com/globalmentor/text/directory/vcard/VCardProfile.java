@@ -317,7 +317,7 @@ public class VCardProfile extends AbstractProfile implements ValueFactory, Value
 	 * indicate line breaks in structured text values. This value will be converted to a standard '\n' newline character.
 	 * </p>
 	 */
-	protected final static Characters STRUCTURED_TEXT_VALUE_DELIMITER_CHARACTERS = new Characters(TEXT_ESCAPE_CHAR, STRUCTURED_TEXT_VALUE_DELIMITER,
+	protected static final Characters STRUCTURED_TEXT_VALUE_DELIMITER_CHARACTERS = new Characters(TEXT_ESCAPE_CHAR, STRUCTURED_TEXT_VALUE_DELIMITER,
 			VALUE_SEPARATOR_CHAR, CR, LINE_SEPARATOR_CHAR);
 
 	/**
@@ -528,10 +528,10 @@ public class VCardProfile extends AbstractProfile implements ValueFactory, Value
 	}
 
 	/** The characters that must be escaped in structured text: '\n', '\\', and ','. */
-	private final static char[] STRUCTURED_TEXT_MATCH_CHARS = new char[] { '\n', '\\', ';', ',' };
+	private static final char[] STRUCTURED_TEXT_MATCH_CHARS = new char[] { '\n', '\\', ';', ',' };
 
 	/** The strings to replace the characters to be escaped in structured text. */
-	private final static String[] STRUCTURED_TEXT_REPLACEMENT_STRINGS = new String[] { "\\n", "\\", "\\;", "\\," };
+	private static final String[] STRUCTURED_TEXT_REPLACEMENT_STRINGS = new String[] { "\\n", "\\", "\\;", "\\," };
 
 	/**
 	 * Serializes a structured text field value.

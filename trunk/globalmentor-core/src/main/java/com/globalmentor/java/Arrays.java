@@ -26,7 +26,7 @@ import java.lang.reflect.Array;
 public class Arrays {
 
 	/** An object array that contains no elements. */
-	public final static Object[] EMPTY_OBJECT_ARRAY = new Object[] {};
+	public static final Object[] EMPTY_OBJECT_ARRAY = new Object[] {};
 
 	/**
 	 * Creates a new array and appends the value to the contents of the given array.

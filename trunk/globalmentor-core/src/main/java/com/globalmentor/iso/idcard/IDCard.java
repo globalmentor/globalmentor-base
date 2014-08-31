@@ -31,7 +31,7 @@ import com.globalmentor.util.*;
 public class IDCard {
 
 	/** The list of ranges indicating products, in increasing order of priority. The list is only thread-safe for reading. */
-	protected final static List<NameValuePair<Range<Integer>, Product>> iinRangeProducts = new ArrayList<NameValuePair<Range<Integer>, Product>>();
+	protected static final List<NameValuePair<Range<Integer>, Product>> iinRangeProducts = new ArrayList<NameValuePair<Range<Integer>, Product>>();
 
 	/**
 	 * Determines the product from the given Primary Account Number.
@@ -39,7 +39,7 @@ public class IDCard {
 	 * @return The product this PAN represents, or <code>null</code> if a corresponding product could not be determined.
 	 * @throws NullPointerException if the given PAN is <code>null</code>.
 	 */
-	public final static Product getProduct(final PAN pan) {
+	public static final Product getProduct(final PAN pan) {
 		final Integer iin = new Integer(pan.getIIN()); //get the PAN as an Integer
 		for(final NameValuePair<Range<Integer>, Product> iinRangeProduct : iinRangeProducts) { //for each product range
 			if(iinRangeProduct.getName().contains(iin)) { //if the IIN is in this range

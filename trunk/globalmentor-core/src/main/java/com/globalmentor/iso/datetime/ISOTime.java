@@ -32,7 +32,7 @@ import static com.globalmentor.java.StringBuilders.*;
 public class ISOTime implements ISOTemporal {
 
 	/** The shared time representing midnight UTC, the time 00:00:00+00:00. */
-	public final static ISOTime MIDNIGHT_UTC = new ISOTime(0, 0, 0, 0, ISOUTCOffset.UTC);
+	public static final ISOTime MIDNIGHT_UTC = new ISOTime(0, 0, 0, 0, ISOUTCOffset.UTC);
 
 	/** The hours, 0-23. */
 	private final int hours;

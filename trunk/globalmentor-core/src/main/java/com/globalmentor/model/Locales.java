@@ -32,14 +32,14 @@ import static com.globalmentor.text.RegularExpressions.*;
 public class Locales {
 
 	/** The character used to separate components in a locale: '_'. */
-	public final static char LOCALE_SEPARATOR = '_';
+	public static final char LOCALE_SEPARATOR = '_';
 
 	/**
 	 * The character '-' used to separate components in language tags as defined in <a href="http://www.ietf.org/rfc/rfc14646.txt">RFC 4646</a>,
 	 * "Tags for the Identifying".
 	 * @see <a href="http://www.ietf.org/rfc/rfc4646.txt">RFC 4646</a>
 	 */
-	public final static char LANGUAGE_TAG_SEPARATOR = '-';
+	public static final char LANGUAGE_TAG_SEPARATOR = '-';
 
 	/**
 	 * The pattern that matches one of three language tag delimiters:
@@ -49,7 +49,7 @@ public class Locales {
 	 * </ul>
 	 * @see <a href="http://www.ietf.org/rfc/rfc4646.txt">RFC 4646</a>
 	 */
-	private final static Pattern LANGUAGE_TAG_DELIMITER_PATTERN = Pattern.compile(createCharacterClass(LOCALE_SEPARATOR, LANGUAGE_TAG_SEPARATOR));
+	private static final Pattern LANGUAGE_TAG_DELIMITER_PATTERN = Pattern.compile(createCharacterClass(LOCALE_SEPARATOR, LANGUAGE_TAG_SEPARATOR));
 
 	/**
 	 * Constructs a locale object from a locale string with a language, an optional country code, and an optional variant. These components can be separated by

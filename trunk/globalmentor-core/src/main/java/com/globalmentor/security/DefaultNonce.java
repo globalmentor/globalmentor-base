@@ -33,13 +33,13 @@ import com.globalmentor.text.SyntaxException;
 public class DefaultNonce implements Nonce {
 
 	/** The character that delimits fields in the nonce. */
-	public final static char DELIMITER = ':';
+	public static final char DELIMITER = ':';
 
 	/** The string version of the character that delimits fields in the nonce. */
-	protected final static String DELIMITER_STRING = String.valueOf(DELIMITER);
+	protected static final String DELIMITER_STRING = String.valueOf(DELIMITER);
 
 	/** The shared random number factory. */
-	protected final static Random RANDOM = new Random();
+	protected static final Random RANDOM = new Random();
 
 	/** The private key stored in the nonce. */
 	private final String privateKey;

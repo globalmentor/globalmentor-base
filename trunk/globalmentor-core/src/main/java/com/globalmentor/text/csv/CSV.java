@@ -32,25 +32,25 @@ import static com.globalmentor.java.Characters.*;
 public class CSV {
 
 	/** CSV subtype. */
-	public final static String CSV_SUBTYPE = "csv";
+	public static final String CSV_SUBTYPE = "csv";
 
 	/** The content type for CSV: <code>text/csv</code>. */
 	public static final ContentType CSV_CONTENT_TYPE = ContentType.create(ContentType.TEXT_PRIMARY_TYPE, CSV_SUBTYPE);
 
 	/** The name extension for Comma Separated Value (CSV) files. */
-	public final static String CSV_NAME_EXTENSION = "csv";
+	public static final String CSV_NAME_EXTENSION = "csv";
 
 	/** The character that delimits CSV fields. */
-	public final static char FIELD_DELIMITER_CHAR = COMMA_CHAR;
+	public static final char FIELD_DELIMITER_CHAR = COMMA_CHAR;
 
 	/** The string that delimits records. */
-	public final static String RECORD_DELIMITER_STRING = "" + CARRIAGE_RETURN_CHAR + LINE_FEED_CHAR;
+	public static final String RECORD_DELIMITER_STRING = "" + CARRIAGE_RETURN_CHAR + LINE_FEED_CHAR;
 
 	/** Characters that require a field to be quoted. */
-	public final static Characters RESTRICTED_CHARACTERS = new Characters(RECORD_DELIMITER_STRING.toCharArray()).add(FIELD_DELIMITER_CHAR, QUOTATION_MARK_CHAR);
+	public static final Characters RESTRICTED_CHARACTERS = new Characters(RECORD_DELIMITER_STRING.toCharArray()).add(FIELD_DELIMITER_CHAR, QUOTATION_MARK_CHAR);
 
 	/** A quote character that has been escaped. */
-	public final static String ESCAPED_QUOTATION_MARK_STRING = "" + QUOTATION_MARK_CHAR + QUOTATION_MARK_CHAR;
+	public static final String ESCAPED_QUOTATION_MARK_STRING = "" + QUOTATION_MARK_CHAR + QUOTATION_MARK_CHAR;
 
 	/**
 	 * Appends a record to the given file with no headers. The information is encoded using UTF-8.

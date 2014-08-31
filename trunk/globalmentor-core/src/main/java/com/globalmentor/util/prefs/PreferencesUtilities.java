@@ -28,7 +28,7 @@ import static com.globalmentor.java.Java.*;
 public class PreferencesUtilities {
 
 	/** The character used to separate elements in preference paths. */
-	protected final static char PATH_SEPARATOR = '/';
+	protected static final char PATH_SEPARATOR = '/';
 
 	/**
 	 * Constructs a name for a preference based upon a given class and preference name, in the form "<var>classname</var>.<var>name</var>".
@@ -36,7 +36,7 @@ public class PreferencesUtilities {
 	 * @param name The locall name of the preference.
 	 * @return A name suitable for storing the preference for the class.
 	 */
-	public final static String getPreferenceName(final Class<?> c, final String name) {
+	public static final String getPreferenceName(final Class<?> c, final String name) {
 		//use the lowercase local name of the class, because uppercase letters get a '/' character inserted 
 		return getLocalName(c).toLowerCase() + '.' + name; //return the lowercase version of the classname with the name appended, separated by a period
 	}

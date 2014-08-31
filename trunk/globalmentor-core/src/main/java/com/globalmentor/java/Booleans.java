@@ -31,7 +31,7 @@ public class Booleans {
 	 * @param booleanObject The object for which a boolean value should be returned.
 	 * @return <code>true</code> if the object is an instance of {@link Boolean} and contains the value <code>true</code>, else <code>false</code>.
 	 */
-	public final static boolean booleanValue(final Object booleanObject) {
+	public static final boolean booleanValue(final Object booleanObject) {
 		return booleanObject instanceof Boolean ? ((Boolean)booleanObject).booleanValue() : false; //return false for null or any other non-Boolean object
 	}
 
@@ -42,7 +42,7 @@ public class Booleans {
 	 * @throws NullPointerException if the given string is <code>null</code>
 	 * @throws IllegalArgumentException if the string neither "true" nor "false".
 	 */
-	public final static Boolean parseBoolean(final String string) {
+	public static final Boolean parseBoolean(final String string) {
 		if(string.equals(Boolean.TRUE.toString())) { //"true"
 			return Boolean.TRUE; //return true
 		} else if(string.equals(Boolean.FALSE.toString())) { //"false"

@@ -34,13 +34,13 @@ import com.globalmentor.text.ArgumentSyntaxException;
 public class PAN implements Comparable<PAN> {
 
 	/** The length of the Issuer Identification Number (IIN). */
-	public final static int IIN_LENGTH = 6;
+	public static final int IIN_LENGTH = 6;
 
 	/** The maximum length of the individual account identification. */
-	public final static int MAX_IAD_LENGTH = 12;
+	public static final int MAX_IAD_LENGTH = 12;
 
 	/** The minimum length of a Primary Account Number (PAN), including the Issuer Identification Number (IIN) plus a check digit. */
-	protected final static int MIN_PAN_LENGTH = IIN_LENGTH + 1;
+	protected static final int MIN_PAN_LENGTH = IIN_LENGTH + 1;
 
 	/** The Major Industry Identifier (MII). */
 	private final int mii;

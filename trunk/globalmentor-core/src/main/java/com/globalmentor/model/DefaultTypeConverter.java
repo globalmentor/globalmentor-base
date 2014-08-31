@@ -42,7 +42,7 @@ import com.globalmentor.net.URIPath;
 public class DefaultTypeConverter implements TypeConverter {
 
 	/** The default, shared instance of the converter. */
-	public final static DefaultTypeConverter INSTANCE = new DefaultTypeConverter();
+	public static final DefaultTypeConverter INSTANCE = new DefaultTypeConverter();
 
 	/** Default constructor; used only for the singleton instance and for extension. */
 	protected DefaultTypeConverter() {

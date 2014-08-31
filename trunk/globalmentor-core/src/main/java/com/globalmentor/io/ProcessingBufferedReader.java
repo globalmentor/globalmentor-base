@@ -52,13 +52,13 @@ public class ProcessingBufferedReader extends Reader {
 	 * The value which indicates the end of the data has been reached.
 	 * @see #read()
 	 */
-	public final static int END_VALUE = -1;
+	public static final int END_VALUE = -1;
 
 	/** The default size of the buffer for unreading data. */
-	public final static int DEFAULT_UNDO_BUFFER_SIZE = 256;
+	public static final int DEFAULT_UNDO_BUFFER_SIZE = 256;
 
 	/** The default size of buffered data. */
-	public final static int DEFAULT_BUFFER_SIZE = 8192;
+	public static final int DEFAULT_BUFFER_SIZE = 8192;
 
 	/**
 	 * The size of buffered data, including undo buffer space.

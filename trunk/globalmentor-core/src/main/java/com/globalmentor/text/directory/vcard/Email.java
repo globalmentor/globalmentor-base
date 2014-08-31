@@ -45,7 +45,7 @@ public class Email {
 	}
 
 	/** The default email type. */
-	public final static Type DEFAULT_TYPE = Type.INTERNET;
+	public static final Type DEFAULT_TYPE = Type.INTERNET;
 
 	/** The email address. */
 	private final String address;

@@ -33,7 +33,7 @@ public class Luhn {
 	 * @throws NullPointerException if the given sequence of digits is <code>null</code>.
 	 * @throws IllegalArgumentException if one of the the given digits is not a character between '0' to '9', inclusive.
 	 */
-	public final static boolean isDigitsCheck(final CharSequence digits) {
+	public static final boolean isDigitsCheck(final CharSequence digits) {
 		final int length = digits.length(); //get the length of digits
 		final int lastDigitIndex = length - 1; //get the index of the last digit
 		return length > 0 ? getCheckDigit(digits, 0, lastDigitIndex) == digits.charAt(lastDigitIndex) : false;
@@ -46,7 +46,7 @@ public class Luhn {
 	 * @throws NullPointerException if the given sequence of digits is <code>null</code>.
 	 * @throws IllegalArgumentException if one of the the given digits is not a character between '0' to '9', inclusive.
 	 */
-	public final static char getCheckDigit(final CharSequence digits) {
+	public static final char getCheckDigit(final CharSequence digits) {
 		return getCheckDigit(digits, 0, digits.length()); //calculate a check digit for the entire sequence of digits
 	}
 
@@ -61,7 +61,7 @@ public class Luhn {
 	 * @throws IndexOutOfBoundsException if the given range references one or more indexes outside the character sequence.
 	 * @throws IllegalArgumentException if one of the the given digits is not a character between '0' to '9', inclusive.
 	 */
-	public final static char getCheckDigit(final CharSequence digits, final int start, final int end) {
+	public static final char getCheckDigit(final CharSequence digits, final int start, final int end) {
 		final int length = end - start; //get the length of the digits
 		final int[] digitValues = new int[length]; //create an array of values
 		for(int i = start; i < end; ++i) { //for each digit character
@@ -77,7 +77,7 @@ public class Luhn {
 	 * @throws NullPointerException if the given array of values is <code>null</code>.
 	 * @throws IllegalArgumentException if one of the the given digit values is 10 or greater.
 	 */
-	public final static int getCheckDigitValue(final int[] digitValues) {
+	public static final int getCheckDigitValue(final int[] digitValues) {
 		int length = digitValues.length; //get the length of values
 		if(length > 0) { //if there are values
 			int sum = 0; //start out with no sum
@@ -102,7 +102,7 @@ public class Luhn {
 	 * @return The sum of the decimal digits of the doubled value.
 	 * @throws IllegalArgumentException if the given digit value is 10 or greater.
 	 */
-	public final static int doubleAdd(final int digitValue) {
+	public static final int doubleAdd(final int digitValue) {
 		if(digitValue < 5) { //if doubling would remain under 10
 			return digitValue << 1; //double the value; there's nothing to add
 		} else if(digitValue < 10) { //for all other values under 10

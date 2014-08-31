@@ -37,11 +37,11 @@ public class Audio {
 	public static final ContentType MPEG_CONTENT_TYPE = ContentType.create(AUDIO_PRIMARY_TYPE, "mpeg");
 
 	/** The name extension for audio files. */
-	public final static String AU_NAME_EXTENSION = "au";
+	public static final String AU_NAME_EXTENSION = "au";
 	/** The extension for MPEG 2 layer 3 (MP3) files. */
-	public final static String MP3_NAME_EXTENSION = "mp3";
+	public static final String MP3_NAME_EXTENSION = "mp3";
 	/** The extension for Ogg Vorbis files. */
-	public final static String OGG_NAME_EXTENSION = "ogg";
+	public static final String OGG_NAME_EXTENSION = "ogg";
 	/**
 	 * The name extension for Microsoft Windows Wave format.
 	 * <p>
@@ -51,7 +51,7 @@ public class Audio {
 	 * @see <a href="http://tools.ietf.org/html/draft-ema-vpim-wav-00">Waveform Audio File Format MIME Sub-type Registration</a>
 	 * @see <a href="http://www.rfc-editor.org/rfc/rfc2361.txt">RFC 2361 - WAVE and AVI Codec Registries</a>
 	 */
-	public final static String WAV_NAME_EXTENSION = "wav";
+	public static final String WAV_NAME_EXTENSION = "wav";
 
 	/**
 	 * Determines if the given content type represents an audio file.

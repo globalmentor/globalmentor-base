@@ -45,32 +45,32 @@ import com.globalmentor.net.*;
 public class Classes {
 
 	/** The set of classes that wrap primitive types. */
-	public final static Set<Class<?>> PRIMITIVE_WRAPPER_CLASSES = Sets.<Class<?>> immutableSetOf(Boolean.class, Byte.class, Character.class, Short.class,
+	public static final Set<Class<?>> PRIMITIVE_WRAPPER_CLASSES = Sets.<Class<?>> immutableSetOf(Boolean.class, Byte.class, Character.class, Short.class,
 			Integer.class, Long.class, Float.class, Double.class);
 
 	/** The name extension for Java class files. */
-	public final static String CLASS_NAME_EXTENSION = "class";
+	public static final String CLASS_NAME_EXTENSION = "class";
 
 	/** The getter prefix "get". */
-	public final static String GET_GETTER_PREFIX = "get";
+	public static final String GET_GETTER_PREFIX = "get";
 
 	/** The getter prefix "is". */
-	public final static String IS_GETTER_PREFIX = "is";
+	public static final String IS_GETTER_PREFIX = "is";
 
 	/** The getter prefix "set". */
-	public final static String SET_SETTER_PREFIX = "set";
+	public static final String SET_SETTER_PREFIX = "set";
 
 	/**
 	 * The pattern recognizing a getter method name: "get" or "is" followed by any other characters (assuming they are Java characters), with the prefix in
 	 * matching group 1 and the property name in matching group 2.
 	 */
-	public final static Pattern GETTER_METHOD_NAME_PATTERN = Pattern.compile("(" + GET_GETTER_PREFIX + '|' + IS_GETTER_PREFIX + ")(.+)");
+	public static final Pattern GETTER_METHOD_NAME_PATTERN = Pattern.compile("(" + GET_GETTER_PREFIX + '|' + IS_GETTER_PREFIX + ")(.+)");
 
 	/**
 	 * The pattern recognizing a setter method name: "set" followed by any other characters (assuming they are Java characters), with the prefix in matching group
 	 * 1 and the property name in matching group 2.
 	 */
-	public final static Pattern SETTER_METHOD_NAME_PATTERN = Pattern.compile("(" + SET_SETTER_PREFIX + ")(.+)");
+	public static final Pattern SETTER_METHOD_NAME_PATTERN = Pattern.compile("(" + SET_SETTER_PREFIX + ")(.+)");
 
 	/** This class cannot be publicly instantiated. */
 	private Classes() {
@@ -723,7 +723,7 @@ public class Classes {
 	 * A comparator that sorts ancestor classes primarily in terms of height (distance from a descendant class), secondarily in terms of concreteness (concrete
 	 * class, abstract class, and then interface), and tertiarily by class name.
 	 */
-	public final static Comparator<NameValuePair<Class<?>, Integer>> CONCRETE_CLASS_HEIGHT_COMPARATOR = new Comparator<NameValuePair<Class<?>, Integer>>() {
+	public static final Comparator<NameValuePair<Class<?>, Integer>> CONCRETE_CLASS_HEIGHT_COMPARATOR = new Comparator<NameValuePair<Class<?>, Integer>>() {
 
 		/**
 		 * Compares two classes based upon the classes and their height or distance from a particular class. Comparison is performed primarily in terms of maximum
@@ -914,7 +914,7 @@ public class Classes {
 	//TODO make a soft reference that deletes the file when garbage-collected
 
 	/** The shared, thread-safe map of temporary files keyed to resource names. */
-	private final static Map<String, File> resourceFileMap = new ConcurrentHashMap<String, File>();
+	private static final Map<String, File> resourceFileMap = new ConcurrentHashMap<String, File>();
 
 	/**
 	 * Provides access to a resouce in the classpath via a file object. The rules for searching resources associated with a given class are implemented by the

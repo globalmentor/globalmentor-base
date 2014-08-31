@@ -28,19 +28,19 @@ import com.globalmentor.rdf.*;
 public class XMLOntology {
 
 	/** The recommended prefix to the XML ontology namespace. */
-	public final static String XML_ONTOLOGY_NAMESPACE_PREFIX = "x";
+	public static final String XML_ONTOLOGY_NAMESPACE_PREFIX = "x";
 	/** The URI to the XML ontology namespace. */
-	public final static URI XML_ONTOLOGY_NAMESPACE_URI = URI.create("http://xpackage.org/namespaces/xml#");
+	public static final URI XML_ONTOLOGY_NAMESPACE_URI = URI.create("http://xpackage.org/namespaces/xml#");
 
 	//XML ontology property names
 	/** The DTD of a resource. The local name of <code>x:dtd</code>. */
-	public final static String DTD_PROPERTY_NAME = "dtd";
+	public static final String DTD_PROPERTY_NAME = "dtd";
 	/** The namespace of a resource. The local name of <code>x:namespace</code>. */
-	public final static String NAMESPACE_PROPERTY_NAME = "namespace";
+	public static final String NAMESPACE_PROPERTY_NAME = "namespace";
 	/** The style of a resource. The local name of <code>x:style</code>. */
-	public final static String STYLE_PROPERTY_NAME = "style";
+	public static final String STYLE_PROPERTY_NAME = "style";
 	/** The transformation stylesheet of a resource. The local name of <code>x:transform</code>. */
-	public final static String TRANSFORM_PROPERTY_NAME = "transform";
+	public static final String TRANSFORM_PROPERTY_NAME = "transform";
 
 	/**
 	 * Retrieves an iterable to the XML style resources, represented by <code>x:style</code> properties.

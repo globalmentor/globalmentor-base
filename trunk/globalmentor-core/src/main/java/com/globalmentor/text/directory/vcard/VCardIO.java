@@ -61,7 +61,7 @@ public class VCardIO implements IO<VCard> {
 	}
 
 	/** The profile to handle vCards. */
-	protected final static VCardProfile VCARD_PROFILE = new VCardProfile();
+	protected static final VCardProfile VCARD_PROFILE = new VCardProfile();
 
 	/** {@inheritDoc} */
 	public VCard read(final InputStream inputStream, final URI baseURI) throws IOException {

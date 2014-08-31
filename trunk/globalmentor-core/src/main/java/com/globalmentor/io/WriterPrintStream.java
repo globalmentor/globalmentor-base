@@ -30,7 +30,7 @@ import static com.globalmentor.java.OperatingSystem.*;
 public class WriterPrintStream extends PrintStream {
 
 	/** The system line separator characters in use when the class is created. */
-	private final static String LINE_SEPARATOR = getLineSeparator();
+	private static final String LINE_SEPARATOR = getLineSeparator();
 
 	/** The writer to which print stream information will be written. */
 	private final Writer writer;

@@ -68,7 +68,7 @@ public class Telephone extends TelephoneNumber {
 	}
 
 	/** The default telephone type. */
-	public final static Type DEFAULT_TYPE = Type.VOICE;
+	public static final Type DEFAULT_TYPE = Type.VOICE;
 
 	/** The intended use. */
 	private final Set<Type> types;

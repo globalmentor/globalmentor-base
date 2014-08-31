@@ -23,37 +23,37 @@ package com.globalmentor.text.xml.oeb;
 public class OEBGuide {
 
 	/** The book cover(s), jacket information, etc. */
-	public final static String COVER = "cover";
+	public static final String COVER = "cover";
 	/** The page with possibly title, author, publisher, and other metadata. */
-	public final static String TITLE_PAGE = "title-page";
+	public static final String TITLE_PAGE = "title-page";
 	/** The table of contents. */
-	public final static String TOC = "toc";
+	public static final String TOC = "toc";
 	/** Back-of-book style index. */
-	public final static String INDEX = "index";
+	public static final String INDEX = "index";
 	/** Glossary. */
-	public final static String GLOSSARY = "glossary";
+	public static final String GLOSSARY = "glossary";
 	/** Acknowledgements. */
-	public final static String ACKNOWLEDGEMENTS = "acknowledgements";
+	public static final String ACKNOWLEDGEMENTS = "acknowledgements";
 	/** Bibliography. */
-	public final static String BIBLIOGRAPHY = "bibliography";
+	public static final String BIBLIOGRAPHY = "bibliography";
 	/** Colophon. */
-	public final static String COLOPHON = "colophon";
+	public static final String COLOPHON = "colophon";
 	/** Copyright page. */
-	public final static String COPYRIGHT_PAGE = "copyright-page";
+	public static final String COPYRIGHT_PAGE = "copyright-page";
 	/** Dedication. */
-	public final static String DEDICATION = "dedication";
+	public static final String DEDICATION = "dedication";
 	/** Epigraph */
-	public final static String EPIGRAPH = "epigraph";
+	public static final String EPIGRAPH = "epigraph";
 	/** Foreward. */
-	public final static String FOREWARD = "foreword";
+	public static final String FOREWARD = "foreword";
 	/** List of illustrations */
-	public final static String LIST_OF_ILLUSTRATIONS = "loi";
+	public static final String LIST_OF_ILLUSTRATIONS = "loi";
 	/** List of tables. */
-	public final static String LIST_OF_TABLES = "lot";
+	public static final String LIST_OF_TABLES = "lot";
 	/** Notes. */
-	public final static String NOTES = "notes";
+	public static final String NOTES = "notes";
 	/** Preface. */
-	public final static String PREFACE = "preface";
+	public static final String PREFACE = "preface";
 
 	/**
 	 * The type of guide, usually one of the constants defined in <code>OEBGuideConstants</code>.
