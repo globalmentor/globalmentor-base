@@ -33,7 +33,7 @@ import com.globalmentor.time.Duration;
 public class Profiler {
 
 	/** The operation manager for managing probe operations. */
-	private final static OperationManager probeOperationManager = new OperationManager();
+	private static final OperationManager probeOperationManager = new OperationManager();
 
 	/** The operation to use for probing the stack, or <code>null</code> if no stack probe operation has been specified. */
 	private static StackProbeOperation stackProbeOperation = null;
