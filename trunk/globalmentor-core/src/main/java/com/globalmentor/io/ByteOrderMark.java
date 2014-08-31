@@ -20,14 +20,19 @@ import static com.globalmentor.io.Charsets.*;
 import static com.globalmentor.java.Objects.*;
 
 import java.io.IOException;
+import java.nio.ByteOrder;
 import java.nio.charset.Charset;
 
 import com.globalmentor.java.Bytes;
+import com.globalmentor.model.ObjectHolder;
 
 /**
  * The Byte Order Mark (BOM) designations for different character encodings.
+ * <p>
+ * This implementation only supports UTF-8, UTF-16, and UTF-32 BOM variants.
+ * </p>
  * @author Garret Wilson
- * @see <a href="http://www.w3.org/TR/REC-xml/#sec-guessing">XML 1.0 Fourth Edition: Autodetection of Character Encodings (Non-Normative)</a>
+ * @see <a href="http://www.unicode.org/faq/utf_bom.html#BOM">Unicode Byte Order Mark (BOM) FAQ</a>
  */
 public enum ByteOrderMark {
 
@@ -37,14 +42,17 @@ public enum ByteOrderMark {
 	UTF_16BE((byte)0xFE, (byte)0xFF),
 	/** UTF-16, little-endian BOM */
 	UTF_16LE((byte)0xFF, (byte)0xFE),
-	/** UTF-32, big-endian BOM */
+	/** UTF-32, big-endian (1234 order) BOM */
 	UTF_32BE((byte)0x00, (byte)0x00, (byte)0xFE, (byte)0xFF),
-	/** UTF-32, little-endian BOM */
+	/** UTF-32, little-endian (4321 order) BOM */
 	UTF_32LE((byte)0xFF, (byte)0xFE, (byte)0x00, (byte)0x00),
-	/** UTF-32, unusual octet order 1 BOM */
+	/** UTF-32, unusual octet order 1 (2143 order) BOM */
 	UTF_32_UNUSUAL_ORDER1((byte)0x00, (byte)0x00, (byte)0xFF, (byte)0xFE),
-	/** UTF-32, unusual octet order 2 BOM */
+	/** UTF-32, unusual octet order 2 (3412 order) BOM */
 	UTF_32_UNUSUAL_ORDER2((byte)0xFE, (byte)0xFF, (byte)0x00, (byte)0x00);
+
+	/** The maximum number of bytes used by any of the byte order marks in this implementation. */
+	public static final int MAX_BYTE_COUNT = 4;
 
 	/** The bytes of this byte order mark. */
 	private final byte[] bytes;
@@ -81,6 +89,65 @@ public enum ByteOrderMark {
 		return this;
 	}
 
+	/** @return The minimum number of bytes used for each character in the charset represented by this byte order mark. */
+	public int getMinimumBytesPerCharacter() {
+		switch(this) {
+			case UTF_8:
+				return 1;
+			case UTF_16BE:
+			case UTF_16LE:
+				return 2;
+			case UTF_32BE:
+			case UTF_32LE:
+			case UTF_32_UNUSUAL_ORDER1:
+			case UTF_32_UNUSUAL_ORDER2:
+				return 4;
+			default:
+				throw new AssertionError();
+		}
+	}
+
+	/** @return The byte order of this byte order mark, or <code>null</code> if there is one byte per character or the byte order is unusual. */
+	public ByteOrder getByteOrder() {
+		switch(this) {
+			case UTF_16BE:
+			case UTF_32BE:
+				return ByteOrder.BIG_ENDIAN;
+			case UTF_16LE:
+			case UTF_32LE:
+				return ByteOrder.LITTLE_ENDIAN;
+			case UTF_8:
+			case UTF_32_UNUSUAL_ORDER1:
+			case UTF_32_UNUSUAL_ORDER2:
+				return null;
+			default:
+				throw new AssertionError();
+		}
+	}
+
+	/**
+	 * The index, of a group of encoded bytes for this identified byte order, of the least significant byte. For example, this method would return <code>0</code>
+	 * and <code>1</code> for UTF-16LE and UTF-16BE, respectively. The index will be less than {@link #getMinimumBytesPerCharacter()}.
+	 * @return The index of the least significant byte within an encoded group for this identified byte order.
+	 */
+	public int getLeastSignificantByteIndex() {
+		switch(this) {
+			case UTF_8:
+			case UTF_16LE:
+			case UTF_32LE:
+				return 0;
+			case UTF_16BE:
+			case UTF_32_UNUSUAL_ORDER2:
+				return 1;
+			case UTF_32_UNUSUAL_ORDER1:
+				return 2;
+			case UTF_32BE:
+				return 3;
+			default:
+				throw new AssertionError();
+		}
+	}
+
 	/**
 	 * Bytes constructor.
 	 * @param bytes The bytes that represent this BOM
@@ -95,13 +162,60 @@ public enum ByteOrderMark {
 	 * @param bytes The array of bytes potentially starting with a byte order mark.
 	 * @return The byte order mark detected, or <code>null</code> if no byte order mark is present.
 	 */
-	public static ByteOrderMark detectByteOrderMark(final byte[] bytes) {
+	public static ByteOrderMark detect(final byte[] bytes) {
 		for(final ByteOrderMark bom : values()) { //check each BOM manually
 			if(Bytes.startsWith(bytes, bom.bytes)) { //if the bytes starts with the BOM's bytes (trusting the comparison method not to modify the bytes, as we pass in our private array)
 				return bom;
 			}
 		}
 		return null; //no matching BOM was found
+	}
+
+	/**
+	 * Determines an imputed Byte Order Mark by detecting a BOM in the actual bytes or, if a true BOM is not present, by comparing the bytes to expected
+	 * characters. Regardless of the number of expected characters given, only those characters necessary for detecting the byte order will be used.
+	 * @param bytes The array of bytes representing the possible Byte Order Mark and possible expected characters.
+	 * @param expectedChars The characters expected, regardless of the encoding method used. At least four characters should included.
+	 * @param actualBOM Receives the actual byte order mark present, if any.
+	 * @return The character encoding object from the given Byte Order Mark, or if no Byte Order Mark is present, the character encoding assumed by comparing
+	 *         bytes to the expected characters, or <code>null</code> if neither method can determine a character encoding.
+	 * @see <a href="http://www.w3.org/TR/2008/REC-xml-20081126/#sec-guessing-no-ext-info">XML 1.0 (Fifth Edition): F.1 Detection Without External Encoding
+	 *      Information)</a>
+	 */
+	public static ByteOrderMark impute(final byte[] bytes, final CharSequence expectedChars, final ObjectHolder<ByteOrderMark> actualBOM) { //TODO maybe allow a default eight-bit encoding to be specified
+		ByteOrderMark bom = ByteOrderMark.detect(bytes); //check the byte order mark by itself; if there is no BOM, this will return null
+		if(bom != null) { //if we found a byte order mark
+			actualBOM.setObject(bom); //show that we actually found a byte order mark
+		} else { //if no byte order mark was found, try to compare characters with what is expected
+			if(bytes.length >= 4 && expectedChars.length() >= 1) { //if there are at least four bytes in the array, and we have at least one character to compare them with
+				final char expected0 = expectedChars.charAt(0); //find the first character they were expecting
+				if(bytes[0] == 0x00 && bytes[1] == 0x00 && bytes[2] == 0x00 && bytes[3] == (byte)expected0) { //00 00 00 X1: UCS-4, big-endian (1234 order)
+					bom = UTF_32BE;
+				} else if(bytes[0] == (byte)expected0 && bytes[1] == 0x00 && bytes[2] == 0x00 && bytes[3] == 0x00) { //X1 00 00 00: UCS-4, little-endian (4321 order)
+					bom = UTF_32LE;
+				} else if(bytes[0] == 0x00 && bytes[1] == 0x00 && bytes[2] == (byte)expected0 && bytes[3] == 0x00) { //00 00 X1 00: UCS-4, 2143 order
+					bom = UTF_32_UNUSUAL_ORDER1;
+				} else if(bytes[0] == 0x00 && bytes[1] == (byte)expected0 && bytes[2] == 0x00 && bytes[3] == 0x00) { //00 X1 00 00 UCS-4, 3412 order
+					bom = UTF_32_UNUSUAL_ORDER2;
+				}
+				if(expectedChars.length() >= 2) { //if we have at least two character with which to compare the bytes in the array
+					final char expected1 = expectedChars.charAt(1); //find the second character they were expecting
+					if(bytes[0] == 0x00 && bytes[1] == (byte)expected0 && bytes[2] == 0x00 && bytes[3] == (byte)expected1) { //00 X1 00 X2: UTF-16, big-endian, no Byte Order Mark
+						bom = UTF_16BE;
+					} else if(bytes[0] == (byte)expected0 && bytes[1] == 0x00 && bytes[2] == (byte)expected1 && bytes[3] == 0x00) { //X1 00 X2 00: UTF-16, little-endian, no Byte Order Mark
+						bom = UTF_16LE;
+					}
+					if(expectedChars.length() >= 4) { //if we have at least four character with which to compare the bytes in the array
+						final char expected3 = expectedChars.charAt(2); //find the third character they were expecting
+						final char expected4 = expectedChars.charAt(3); //find the fourth character they were expecting
+						if(bytes[0] == (byte)expected0 && bytes[1] == (byte)expected1 && bytes[2] == (byte)expected3 && bytes[3] == (byte)expected4) { //X1 X2 X3 X4: UTF-8 (or similar), no Byte Order Mark
+							bom = UTF_8;
+						}
+					}
+				}
+			}
+		}
+		return bom; //return whatever BOM was found (which may be null)
 	}
 
 	/**

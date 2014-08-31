@@ -49,4 +49,9 @@ public class ObjectHolder<T> extends AbstractObjectDecorator<T> {
 		super(object); //construct the parent class
 	}
 
+	/** @return <code>true</code> if the object being held is not equal to <code>null</code>. */
+	public boolean isPresent() {
+		return getObject() != null;
+	}
+
 }

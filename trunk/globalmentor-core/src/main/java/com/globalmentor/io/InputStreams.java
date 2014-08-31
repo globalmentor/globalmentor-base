@@ -212,7 +212,7 @@ public class InputStreams {
 		Arrays.fill(bytes, (byte)0); //fill the array with zeros, in case we can't completely fill it with bytes from the input stream
 		final int byteOrderMarkCount = inputStream.read(bytes); //read as many characters of the byte order mark as we can
 		if(byteOrderMarkCount > 0) { //if we read any characters as all
-			ByteOrderMark bom = ByteOrderMark.detectByteOrderMark(bytes); //try to detect the byte order mark
+			ByteOrderMark bom = ByteOrderMark.detect(bytes); //try to detect the byte order mark
 			if(bom != null) { //if we discovered a BOM
 				bom.checkUsualIO(); //make sure this is a usual 
 				//throw away the BOM
