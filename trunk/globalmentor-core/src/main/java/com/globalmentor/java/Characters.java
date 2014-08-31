@@ -17,13 +17,15 @@
 package com.globalmentor.java;
 
 import java.io.*;
+
+import static java.nio.charset.StandardCharsets.*;
 import static java.util.Arrays.*;
+
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static com.globalmentor.io.Charsets.*;
 import static com.globalmentor.java.CharSequences.*;
 import static com.globalmentor.java.Integers.*;
 import static com.globalmentor.java.Conditions.*;
@@ -811,7 +813,7 @@ public final class Characters {
 	 * @return An array of bytes representing the given characters in the UTF-8 charset.
 	 */
 	public static byte[] toByteArray(final char[] characters) {
-		return toByteArray(characters, UTF_8_CHARSET); //convert the characters using UTF-8
+		return toByteArray(characters, UTF_8); //convert the characters using UTF-8
 	}
 
 	/**

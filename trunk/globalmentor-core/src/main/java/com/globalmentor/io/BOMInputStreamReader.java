@@ -19,8 +19,8 @@ package com.globalmentor.io;
 import java.io.*;
 import java.nio.charset.Charset;
 
-import static com.globalmentor.io.Charsets.*;
 import static com.globalmentor.io.InputStreams.*;
+import static java.nio.charset.StandardCharsets.*;
 
 /**
  * A reader that attempts to auto-detect the charset of an input stream from the beginning byte order mark (BOM).
@@ -40,7 +40,7 @@ public class BOMInputStreamReader extends InputStreamReader //TODO create a vers
 	 * @throws UnsupportedEncodingException if the named charset is not supported.
 	 */
 	public BOMInputStreamReader(final InputStream inputStream) throws IOException, UnsupportedEncodingException {
-		this(inputStream, UTF_8_CHARSET); //default to UTF-8 if we can't determine the charset by the BOM
+		this(inputStream, UTF_8); //default to UTF-8 if we can't determine the charset by the BOM
 	}
 
 	/**

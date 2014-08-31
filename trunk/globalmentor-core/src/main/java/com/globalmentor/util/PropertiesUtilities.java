@@ -16,9 +16,9 @@
 
 package com.globalmentor.util;
 
-import static com.globalmentor.io.Charsets.*;
 import static com.globalmentor.net.URIs.*;
 import static com.globalmentor.text.xml.XML.*;
+import static java.nio.charset.StandardCharsets.*;
 
 import java.io.*;
 import java.util.*;
@@ -194,7 +194,7 @@ public class PropertiesUtilities {
 		InputStream propertiesStream = objectClass.getResourceAsStream(addNameExtension(baseName, PROPERTIES_NAME_EXTENSION));
 		if(propertiesStream != null) {
 			propertiesStream = new BufferedInputStream(propertiesStream); //buffer the stream
-			final Reader propertiesReader = new BOMInputStreamReader(propertiesStream, ISO_8859_1_CHARSET); //check for a BOM, falling back to the default properties charset
+			final Reader propertiesReader = new BOMInputStreamReader(propertiesStream, ISO_8859_1); //check for a BOM, falling back to the default properties charset
 			try {
 				properties.load(propertiesReader);
 				return properties;

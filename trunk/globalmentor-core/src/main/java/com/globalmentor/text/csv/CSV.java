@@ -21,8 +21,8 @@ import java.io.*;
 import com.globalmentor.java.Characters;
 import com.globalmentor.net.ContentType;
 
-import static com.globalmentor.io.Charsets.*;
 import static com.globalmentor.java.Characters.*;
+import static java.nio.charset.StandardCharsets.*;
 
 /**
  * Constant values for Comma Separated Value (CSV) files.
@@ -72,7 +72,7 @@ public class CSV {
 	public static void appendRecord(final File file, final String[] headers, final Object[] objects) throws IOException {
 		final boolean exists = file.exists(); //see if the file exists
 		//create a writer to the file, encoding in UTF-8
-		final BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file, true), UTF_8_CHARSET));
+		final BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file, true), UTF_8));
 		try {
 			if(!exists && headers != null) { //if the file didn't exist and there headers
 				CSVSerializer.serialize(bufferedWriter, (Object[])headers); //write the headers

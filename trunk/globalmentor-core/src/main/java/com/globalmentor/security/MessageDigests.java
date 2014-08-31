@@ -19,9 +19,8 @@ package com.globalmentor.security;
 import java.nio.charset.Charset;
 import java.security.*;
 
-import static com.globalmentor.io.Charsets.*;
-
 import static com.globalmentor.java.Characters.*;
+import static java.nio.charset.StandardCharsets.*;
 
 /**
  * Utility methods for working with message digests.
@@ -62,7 +61,7 @@ public class MessageDigests {
 	 * @return The array of bytes for the resulting hash value.
 	 */
 	public static byte[] digest(final MessageDigest messageDigest, final char[] characters) {
-		return digest(messageDigest, UTF_8_CHARSET, characters); //digest the characters using UTF-8
+		return digest(messageDigest, UTF_8, characters); //digest the characters using UTF-8
 	}
 
 	/**
@@ -84,7 +83,7 @@ public class MessageDigests {
 	 * @return The message digest.
 	 */
 	public static MessageDigest update(final MessageDigest messageDigest, final CharSequence... charSequences) {
-		return update(messageDigest, UTF_8_CHARSET, charSequences); //update the digest using UTF-8
+		return update(messageDigest, UTF_8, charSequences); //update the digest using UTF-8
 	}
 
 	/**
@@ -108,7 +107,7 @@ public class MessageDigests {
 	 * @return The message digest.
 	 */
 	public static MessageDigest update(final MessageDigest messageDigest, final char[] characters) {
-		return update(messageDigest, UTF_8_CHARSET, characters); //update the digest using UTF-8
+		return update(messageDigest, UTF_8, characters); //update the digest using UTF-8
 	}
 
 	/**

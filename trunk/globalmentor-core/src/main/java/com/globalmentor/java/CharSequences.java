@@ -17,8 +17,8 @@
 package com.globalmentor.java;
 
 import static com.globalmentor.java.Characters.*;
-import static com.globalmentor.io.Charsets.*;
 import static java.lang.Math.*;
+import static java.nio.charset.StandardCharsets.*;
 
 import java.text.Normalizer;
 import java.util.Collection;
@@ -488,7 +488,7 @@ public class CharSequences {
 			}
 			decodedBytes[byteArrayIndex++] = b; //add the byte to the buffer and keep going
 		}
-		return new String(decodedBytes, 0, byteArrayIndex, UTF_8_CHARSET); //consider the bytes as a series of UTF-8 encoded characters.
+		return new String(decodedBytes, 0, byteArrayIndex, UTF_8); //consider the bytes as a series of UTF-8 encoded characters.
 	}
 
 	/**

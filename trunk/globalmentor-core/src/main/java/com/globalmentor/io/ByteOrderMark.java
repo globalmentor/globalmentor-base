@@ -22,6 +22,7 @@ import static com.globalmentor.java.Objects.*;
 import java.io.IOException;
 import java.nio.ByteOrder;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 import com.globalmentor.java.Bytes;
 import com.globalmentor.model.ObjectHolder;
@@ -258,16 +259,14 @@ public enum ByteOrderMark {
 	 * @see #isUnusual()
 	 */
 	public Charset toCharset() {
-		final String charsetName;
+		final String charsetName; //we'll skip the name and short-circuit the process for charsets we already have constructed
 		switch(this) {
 			case UTF_8:
-				return UTF_8_CHARSET; //we already have the UTF-8 charset; short circuit and return it
+				return StandardCharsets.UTF_8;
 			case UTF_16BE:
-				charsetName = UTF_16BE_NAME;
-				break;
+				return StandardCharsets.UTF_16BE;
 			case UTF_16LE:
-				charsetName = UTF_16LE_NAME;
-				break;
+				return StandardCharsets.UTF_16LE;
 			case UTF_32BE:
 				charsetName = UTF_32BE_NAME;
 				break;

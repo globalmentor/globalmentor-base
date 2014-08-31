@@ -19,12 +19,14 @@ package com.globalmentor.text.unicode;
 import java.io.*;
 import java.lang.ref.*;
 import java.util.*;
+
+import static java.nio.charset.StandardCharsets.*;
 import static java.util.Collections.*;
+
 import java.util.StringTokenizer;
 
 import com.globalmentor.log.Log;
 
-import static com.globalmentor.io.Charsets.*;
 import static com.globalmentor.text.unicode.UnicodeBlocks.*;
 import static com.globalmentor.text.unicode.UnicodeConstants.*;
 
@@ -160,7 +162,7 @@ public class UnicodeData {
 		//get an input stream to our Unicode data resource file
 		final InputStream inputStream = UnicodeData.class.getResourceAsStream(UNICODE_DATA_FILENAME);
 		//buffer the input stream and turn it into an ASCII reader
-		return new InputStreamReader(new BufferedInputStream(inputStream), ISO_8859_1_CHARSET);
+		return new InputStreamReader(new BufferedInputStream(inputStream), ISO_8859_1);
 	}
 
 	/**

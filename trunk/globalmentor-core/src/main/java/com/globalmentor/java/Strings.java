@@ -20,11 +20,10 @@ import java.io.*;
 import java.net.URI;
 import java.nio.charset.Charset;
 
-import static com.globalmentor.io.Charsets.*;
-
-import com.globalmentor.io.Charsets;
 import com.globalmentor.io.IO;
+
 import static com.globalmentor.java.Characters.*;
+import static java.nio.charset.StandardCharsets.*;
 
 /**
  * Various text manipulating functions. These methods work on {@link String} objects, which are immutable heavyweight objects that must be recreated with every
@@ -99,7 +98,7 @@ public class Strings {
 	 * @throws UnsupportedEncodingException Thrown if the given encoding is not supported.
 	 */
 	public static byte[] getASCIIZBytes(final String string, final int length) throws UnsupportedEncodingException {
-		return getASCIIZBytes(string, length, UTF_8_CHARSET); //return the bytes, encoded using UTF-8
+		return getASCIIZBytes(string, length, UTF_8); //return the bytes, encoded using UTF-8
 	}
 
 	/**
@@ -855,15 +854,14 @@ public class Strings {
 	}
 
 	/**
-	 * Writes an object to a string using the given I/O support, converting bytes to a string using the {@value Charsets#UTF_8_CHARSET}.
+	 * Writes an object to a string using the given I/O support, converting bytes to a string using the UTF-8 charset.
 	 * @param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
 	 * @param object The object to write to a string.
 	 * @param io The I/O support for writing the object.
 	 * @throws IOException if there is an error writing the data.
-	 * @throws UnsupportedEncodingException if the {@value Charsets#UTF_8_CHARSET} character encoding is not supported.
 	 */
 	public static <T> String write(final URI baseURI, final T object, final IO<T> io) throws IOException {
-		return write(baseURI, object, io, UTF_8_CHARSET); //write and convert to a string using UTF_8
+		return write(baseURI, object, io, UTF_8); //write and convert to a string using UTF_8
 	}
 
 	/**
@@ -873,7 +871,6 @@ public class Strings {
 	 * @param io The I/O support for writing the object.
 	 * @param charset The encoding with which to interpret the written bytes.
 	 * @throws IOException if there is an error writing the data.
-	 * @throws UnsupportedEncodingException if the named character encoding is not supported.
 	 */
 	public static <T> String write(final URI baseURI, final T object, final IO<T> io, final Charset charset) throws IOException {
 		final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(); //create a new byte array output stream

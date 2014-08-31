@@ -16,9 +16,9 @@
 
 package com.globalmentor.java;
 
-import static com.globalmentor.io.Charsets.*;
 import static com.globalmentor.java.CharSequences.*;
 import static com.globalmentor.java.Characters.*;
+import static java.nio.charset.StandardCharsets.*;
 
 import com.globalmentor.text.Case;
 
@@ -368,7 +368,7 @@ public class StringBuilders {
 	 */
 	public static String escapeHex(final StringBuilder stringBuilder, final int index, final char c, final char escapeChar, final int escapeLength,
 			final Case hexCase) {
-		final byte[] bytes = String.valueOf(c).getBytes(UTF_8_CHARSET); //convert this character to a sequence of UTF-8 bytes
+		final byte[] bytes = String.valueOf(c).getBytes(UTF_8); //convert this character to a sequence of UTF-8 bytes
 		final int byteCount = bytes.length; //find out how many bytes there are
 		final StringBuilder encodeStringBuilder = new StringBuilder(byteCount * 3); //create a string builder to hold three characters for each byte we have (the escape character plus a two-digit encoded value)
 		for(int byteIndex = 0; byteIndex < byteCount; ++byteIndex) { //look at each byte

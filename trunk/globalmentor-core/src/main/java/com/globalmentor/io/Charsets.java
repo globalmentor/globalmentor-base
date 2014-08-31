@@ -16,17 +16,21 @@
 
 package com.globalmentor.io;
 
-import java.nio.charset.Charset;
+import java.nio.charset.*;
 
 /**
  * Utilities for working with charsets.
+ * <p>
+ * In most cases, rather that using the names provided here, consider using {@link Charset#name()} for one of the predefined charsets in
+ * {@link StandardCharsets}.
+ * </p>
  * @author Garret Wilson
  * @see <a href="http://www.iana.org/assignments/character-sets">IANA Charset Registry</a>
  * @see <a href="http://www.w3.org/TR/REC-xml/#sec-guessing">XML 1.0 Fourth Edition: Autodetection of Character Encodings (Non-Normative)</a>
+ * @see StandardCharsets
  */
 public class Charsets {
 
-	//canonical name
 	/** The canonical name of the eight-bit UTF-8 charset (to which the big-endian/little-endian byte order does not apply). */
 	public static final String UTF_8_NAME = "UTF-8";
 	/** The canonical name of the general 16-bit UTF-16 charset (which requires an initial Byte Order Mark). */
@@ -47,18 +51,5 @@ public class Charsets {
 	public static final String ISO_8859_1_NAME = "ISO-8859-1";
 	/** The canonical name of the Cp1252 charset. */
 	public static final String WINDOWS_1252_NAME = "windows-1252";
-
-	/** The ISO-8859-1 charset. */
-	public static final Charset ISO_8859_1_CHARSET = Charset.forName(ISO_8859_1_NAME);
-	/** The UTF-8 charset. */
-	public static final Charset UTF_8_CHARSET = Charset.forName(UTF_8_NAME);
-	/** The UTF-16 charset. */
-	public static final Charset UTF_16_CHARSET = Charset.forName(UTF_16_NAME);
-	/** The UTF-16LE charset. */
-	public static final Charset UTF_16LE_CHARSET = Charset.forName(UTF_16LE_NAME);
-	/** The UTF-16BE charset. */
-	public static final Charset UTF_16BE_CHARSET = Charset.forName(UTF_16BE_NAME);
-	/** The US-ASCII charset. */
-	public static final Charset US_ASCII_CHARSET = Charset.forName(US_ASCII_NAME);
 
 }

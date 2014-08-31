@@ -23,9 +23,9 @@ import java.util.regex.Pattern;
 import com.globalmentor.java.Characters;
 import com.globalmentor.java.Objects;
 
-import static com.globalmentor.io.Charsets.*;
 import static com.globalmentor.java.Characters.*;
 import static com.globalmentor.net.URIs.*;
+import static java.nio.charset.StandardCharsets.*;
 
 /**
  * Constants and utilities relating to the HyperText Transfer Protocol (HTTP) as defined by <a href="http://www.ietf.org/rfc/rfc2616.txt">RFC 2616</a>,
@@ -49,7 +49,7 @@ public class HTTP {
 	public static final int DEFAULT_SECURE_PORT = 443;
 
 	/** The charset used for HTTP. */
-	public static final Charset HTTP_CHARSET = US_ASCII_CHARSET;
+	public static final Charset CHARSET = US_ASCII;
 
 	/** The HTTP header indicating the allowed methods. */
 	public static final String ALLOW_HEADER = "Allow";

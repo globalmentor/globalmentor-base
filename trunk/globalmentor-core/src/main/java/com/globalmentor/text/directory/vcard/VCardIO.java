@@ -24,8 +24,8 @@ import com.globalmentor.io.*;
 import com.globalmentor.text.directory.*;
 
 import static com.globalmentor.collections.Sets.*;
-import static com.globalmentor.io.Charsets.*;
 import static com.globalmentor.text.directory.vcard.VCard.*;
+import static java.nio.charset.StandardCharsets.*;
 import static java.util.Collections.emptySet;
 
 /**
@@ -67,7 +67,7 @@ public class VCardIO implements IO<VCard> {
 	public VCard read(final InputStream inputStream, final URI baseURI) throws IOException {
 		final DirectoryProcessor directoryProcessor = new DirectoryProcessor(); //create a new directory processor
 		directoryProcessor.registerProfile(VCARD_PROFILE_NAME, VCARD_PROFILE); //register the vCard profile with the vCard processor
-		final Reader reader = new InputStreamReader(inputStream, UTF_8_CHARSET); //assume the vCard is stored in UTF-8
+		final Reader reader = new InputStreamReader(inputStream, UTF_8); //assume the vCard is stored in UTF-8
 		final Directory directory = directoryProcessor.processDirectory(reader, baseURI); //process the directory
 		//TODO del Log.trace("parsed directory: ", directory);
 		if(!(directory instanceof VCard)) { //if the directory is not a VCard
@@ -82,7 +82,7 @@ public class VCardIO implements IO<VCard> {
 		final DirectorySerializer directorySerializer = new DirectorySerializer(); //create a new directory serializer
 		directorySerializer.setSingleValueNames(getSerializationSingleValueNames()); //set the single-value names, if any
 		directorySerializer.registerProfile(VCARD_PROFILE_NAME, VCARD_PROFILE); //register the vCard profile with the vCard serializer
-		final Writer writer = new OutputStreamWriter(outputStream, UTF_8_CHARSET); //write the vCard using UTF-8
+		final Writer writer = new OutputStreamWriter(outputStream, UTF_8); //write the vCard using UTF-8
 		directorySerializer.serializeContentLines(contentLines, writer); //serialize the content lines of the vCard TODO maybe allow the serializer to find a profile and convert to content lines automatically
 		writer.flush(); //flush all our output, because the calling class will close the input stream, not the writer we created		
 	}

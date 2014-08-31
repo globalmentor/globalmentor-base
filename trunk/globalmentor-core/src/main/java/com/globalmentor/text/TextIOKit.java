@@ -16,7 +16,7 @@
 
 package com.globalmentor.text;
 
-import static com.globalmentor.io.Charsets.*;
+import static java.nio.charset.StandardCharsets.*;
 
 import java.io.*;
 import java.net.*;
@@ -84,7 +84,7 @@ public class TextIOKit extends AbstractIOKit<StringBuilder> {
 	 */
 	public void save(final StringBuilder model, final OutputStream outputStream) throws IOException {
 		outputStream.write(ByteOrderMark.UTF_8.getBytes()); //write the UTF-8 byte order mark
-		final Writer writer = new OutputStreamWriter(outputStream, UTF_8_CHARSET); //create a UTF-8 writer
+		final Writer writer = new OutputStreamWriter(outputStream, UTF_8); //create a UTF-8 writer
 		writer.write(model.toString()); //write the text to the writer
 		writer.flush(); //flush the data to the output stream
 	}

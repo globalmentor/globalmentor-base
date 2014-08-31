@@ -20,10 +20,10 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 
-import static com.globalmentor.io.Charsets.*;
 import static com.globalmentor.io.ReaderParser.*;
 import static com.globalmentor.text.ABNF.*;
 import static com.globalmentor.text.directory.Directory.*;
+import static java.nio.charset.StandardCharsets.*;
 
 import com.globalmentor.io.*;
 import com.globalmentor.iso.datetime.ISODate;
@@ -173,7 +173,7 @@ public class PredefinedProfile extends AbstractProfile implements ValueFactory, 
 		if(B_ENCODING_TYPE.equalsIgnoreCase(encoding) || BASE64_ENCODING_TYPE.equalsIgnoreCase(encoding)) { //if the text is encoded as binary (Nokia does this, for unknown reasons)
 			final String base64String = reach(reader, CR); //read the text TODO could some implementations have multiple encoded values, separated by commas?
 			final byte[] bytes = Base64.decode(base64String); //decode the text into bytes
-			final String encodedString = new String(bytes, UTF_8_CHARSET); //hope that the bytes represent UTF-8; using base64 for text is non-standard and undocumented
+			final String encodedString = new String(bytes, UTF_8); //hope that the bytes represent UTF-8; using base64 for text is non-standard and undocumented
 			reader = new StringReader(encodedString + CR); //replace the reader with the new, decoded content, adding a CR to mimic the original data
 			delimiters = new Characters(CR); //because the text was Base64-encoded, it won't separate values using commas or escape characters---that was the purpose of the Base64 encoding
 		}
