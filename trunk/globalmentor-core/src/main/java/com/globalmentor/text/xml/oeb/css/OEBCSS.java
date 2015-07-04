@@ -21,8 +21,8 @@ import java.util.*;
 
 import com.globalmentor.net.ContentType;
 
+import static com.globalmentor.text.css.CSS.*;
 import static com.globalmentor.text.xml.oeb.OEB.*;
-import static com.globalmentor.text.xml.stylesheets.css.XMLCSS.*;
 
 /**
  * Utilities for working with OEB CSS.

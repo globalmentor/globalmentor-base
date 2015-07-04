@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.globalmentor.text.xml.stylesheets.css;
+package com.globalmentor.text.css;
 
 import com.globalmentor.lex.Identifier;
 
@@ -23,7 +23,7 @@ import com.globalmentor.lex.Identifier;
  * @author Garret Wilson
  * @see <a href="http://www.w3.org/TR/CSS21/ui.html">CSS 2.1 User Interface: Cursors</a>
  */
-public enum XMLCSSCursor implements Identifier {
+public enum CSSCursor implements Identifier {
 
 	/** The UA determines the cursor to display based on the current context. */
 	AUTO,

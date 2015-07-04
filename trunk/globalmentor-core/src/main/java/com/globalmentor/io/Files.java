@@ -28,10 +28,10 @@ import com.globalmentor.javascript.JavaScript;
 import com.globalmentor.net.*;
 import com.globalmentor.rdf.RDF;
 import com.globalmentor.text.*;
+import com.globalmentor.text.css.CSS;
 import com.globalmentor.text.csv.CSV;
 import com.globalmentor.text.xml.XML;
 import com.globalmentor.text.xml.oeb.OEB;
-import com.globalmentor.text.xml.stylesheets.css.XMLCSS;
 import com.globalmentor.text.xml.xhtml.XHTML;
 
 import static com.globalmentor.io.InputStreams.*;
@@ -167,7 +167,7 @@ public class Files {
 		tempFileExtensionContentTypeMap.put(Images.BMP_NAME_EXTENSION, ContentType.create(ContentType.IMAGE_PRIMARY_TYPE, X_BITMAP_SUBTYPE));
 		tempFileExtensionContentTypeMap.put(Classes.CLASS_NAME_EXTENSION, ContentType.create(ContentType.APPLICATION_PRIMARY_TYPE, JAVA_SUBTYPE));
 		tempFileExtensionContentTypeMap.put(CSV.CSV_NAME_EXTENSION, CSV.CSV_CONTENT_TYPE);
-		tempFileExtensionContentTypeMap.put(XMLCSS.CSS_NAME_EXTENSION, XMLCSS.TEXT_CSS_CONTENT_TYPE); //text/css
+		tempFileExtensionContentTypeMap.put(CSS.CSS_NAME_EXTENSION, CSS.TEXT_CSS_CONTENT_TYPE); //text/css
 		//		tempFileExtensionContentTypeMap.put(Dicto.DICTO_NAME_EXTENSION, ContentType.getInstance(ContentType.APPLICATION_PRIMARY_TYPE, X_DICTO_RDF_XML_SUBTYPE));
 		tempFileExtensionContentTypeMap.put(DOC_EXTENSION, ContentType.create(ContentType.APPLICATION_PRIMARY_TYPE, MSWORD_SUBTYPE));
 		tempFileExtensionContentTypeMap.put(Images.GIF_NAME_EXTENSION, ContentType.create(ContentType.IMAGE_PRIMARY_TYPE, GIF_SUBTYPE)); //image/gif
