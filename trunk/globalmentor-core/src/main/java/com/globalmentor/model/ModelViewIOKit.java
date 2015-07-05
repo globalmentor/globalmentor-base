@@ -22,7 +22,7 @@ import com.globalmentor.io.IOKit;
 
 /**
  * An implementation for loading information into a view or saving information from a view using a model's I/O kit.
- * @author GarretWilson
+ * @author Garret Wilson
  * @see ModelIOKit
  */
 @Deprecated

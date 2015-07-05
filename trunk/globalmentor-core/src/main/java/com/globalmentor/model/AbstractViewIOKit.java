@@ -23,7 +23,7 @@ import com.globalmentor.io.*;
 
 /**
  * Absract implementation of loading information into a view or saving information from a view.
- * @author GarretWilson
+ * @author Garret Wilson
  * @see Modifiable
  */
 public abstract class AbstractViewIOKit<M> extends DefaultURIAccessible implements ViewIOKit<M> {

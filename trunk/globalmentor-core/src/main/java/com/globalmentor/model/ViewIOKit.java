@@ -23,7 +23,7 @@ import com.globalmentor.io.URIAccessible;
 
 /**
  * Represents an implementation for loading information into a view or saving information from a view.
- * @author GarretWilson
+ * @author Garret Wilson
  * @see Modifiable
  */
 public interface ViewIOKit<M> extends URIAccessible {
