@@ -28,9 +28,7 @@ import static com.globalmentor.net.URIs.*;
 import com.globalmentor.collections.MapDecorator;
 import com.globalmentor.foaf.FOAF;
 import com.globalmentor.net.http.webdav.ApacheWebDAV;
-import com.globalmentor.rdf.RDF;
 import com.globalmentor.rdf.dicto.Dicto;
-import com.globalmentor.rdf.rdfs.RDFS;
 import com.globalmentor.rdf.version.RDFVersion;
 import com.globalmentor.text.xml.XML;
 import com.globalmentor.text.xml.oeb.OEB;
@@ -67,7 +65,7 @@ public abstract class AbstractNamespaceLabelManager extends MapDecorator<URI, St
 	/** The default map of namespace-label mappings. */
 	public static final Map<URI, String> DEFAULT_NAMESPACE_URI_LABEL_MAP;
 
-	static { //add the default labels
+	static { //add the default labels TODO move definitions to resource file
 		final Map<URI, String> tempNamespaceURILabelMap = new HashMap<URI, String>(); //create a temporary map to fill
 		//add default labels for special namespace URIs
 		tempNamespaceURILabelMap.put(Dicto.DICTO_NAMESPACE_URI, Dicto.DICTO_NAMESPACE_PREFIX); //Dicto
@@ -79,8 +77,8 @@ public abstract class AbstractNamespaceLabelManager extends MapDecorator<URI, St
 		tempNamespaceURILabelMap.put(URI.create("http://marmox.net/namespaces/content#"), "content"); //Marmox content
 		//TODO del		tempNamespaceURIPrefixMap.put(PLOOP.PLOOP_PROPERTY_NAMESPACE_URI, PLOOP.PLOOP_PROPERTY_NAMESPACE_PREFIX); //PLOOP property
 		//TODO fix		tempNamespaceURILabelMap.put(URI.create(QTIConstants.QTI_1_1_NAMESPACE_URI), QTIConstants.QTI_NAMESPACE_PREFIX); //QTI
-		tempNamespaceURILabelMap.put(RDF.RDF_NAMESPACE_URI, RDF.RDF_NAMESPACE_PREFIX); //RDF
-		tempNamespaceURILabelMap.put(RDFS.RDFS_NAMESPACE_URI, RDFS.RDFS_NAMESPACE_PREFIX); //RDFS
+		tempNamespaceURILabelMap.put(URI.create("http://www.w3.org/1999/02/22-rdf-syntax-ns#"), "rdf"); //RDF
+		tempNamespaceURILabelMap.put(URI.create("http://www.w3.org/2000/01/rdf-schema#"), "rdfs"); //RDFS
 		//TODO add SOAP
 		//TODO del		tempNamespaceURILabelMap.put(VCard.VCARD_NAMESPACE_URI, VCard.VCARD_NAMESPACE_PREFIX); //vCard
 		tempNamespaceURILabelMap.put(RDFVersion.VERSION_NAMESPACE_URI, RDFVersion.VERSION_NAMESPACE_PREFIX); //version

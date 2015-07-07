@@ -16,11 +16,22 @@
 
 package com.globalmentor.rdf;
 
+import com.globalmentor.net.ContentType;
+
 /**
  * Constants used in RDF+XML serializations.
  * @author Garret Wilson
  */
 public class RDFXML {
+
+	/** The name extension for Resource Description Framework (RDF) files serialized in XML. */
+	public static final String NAME_EXTENSION = "rdf";
+
+	/**
+	 * The content type for RDF serialized in XML: <code>application/rdf+xml</code>.
+	 * @see <a href="https://www.ietf.org/rfc/rfc3870.txt">RFC 3870: application/rdf+xml Media Type Registration</a>
+	 */
+	public static final ContentType CONTENT_TYPE = ContentType.create(ContentType.APPLICATION_PRIMARY_TYPE, "rdf+xml");
 
 	//RDF XML elements
 	/** The name of the enclosing RDF element. */

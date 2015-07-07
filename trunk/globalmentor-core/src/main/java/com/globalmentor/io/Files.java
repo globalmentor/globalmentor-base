@@ -160,7 +160,7 @@ public class Files {
 	/** A singleton read-only map of lowercase file extensions and the corresponding content types they represent. */
 	public static final Map<String, ContentType> FILE_EXTENSION_CONTENT_TYPE_MAP; //TODO convert to lazy weak referenced map
 
-	static {
+	static {	//TODO move definitions to a resource file
 		final Map<String, ContentType> tempFileExtensionContentTypeMap = new HashMap<String, ContentType>(); //create a new hash map in which to store extensions, and add the default extensions
 		tempFileExtensionContentTypeMap.put("asi", ContentType.create(ContentType.APPLICATION_PRIMARY_TYPE, "x-qti-assessment"));
 		tempFileExtensionContentTypeMap.put(Audio.AU_NAME_EXTENSION, ContentType.create(ContentType.AUDIO_PRIMARY_TYPE, BASIC_SUBTYPE));
@@ -193,7 +193,7 @@ public class Files {
 		tempFileExtensionContentTypeMap.put(Archive.RAR_NAME_EXTENSION, ContentType.create(ContentType.APPLICATION_PRIMARY_TYPE, X_RAR_COMPRESSED_SUBTYPTE));
 		tempFileExtensionContentTypeMap.put(Images.TIF_NAME_EXTENSION, ContentType.create(ContentType.IMAGE_PRIMARY_TYPE, TIFF_SUBTYPE));
 		tempFileExtensionContentTypeMap.put(Images.TIFF_NAME_EXTENSION, ContentType.create(ContentType.IMAGE_PRIMARY_TYPE, TIFF_SUBTYPE));
-		tempFileExtensionContentTypeMap.put(RDF.RDF_NAME_EXTENSION, ContentType.create(ContentType.APPLICATION_PRIMARY_TYPE, "rdf+xml")); //RFC 3870; move to RDF class
+		tempFileExtensionContentTypeMap.put("rdf", ContentType.create(ContentType.APPLICATION_PRIMARY_TYPE, "rdf+xml"));
 		tempFileExtensionContentTypeMap.put("turf", ContentType.create(ContentType.TEXT_PRIMARY_TYPE, "urf"));
 		tempFileExtensionContentTypeMap.put(Text.TXT_NAME_EXTENSION, Text.PLAIN_CONTENT_TYPE);
 		tempFileExtensionContentTypeMap.put(VCF_EXTENSION, ContentType.create(ContentType.TEXT_PRIMARY_TYPE, DIRECTORY_SUBTYPE));
