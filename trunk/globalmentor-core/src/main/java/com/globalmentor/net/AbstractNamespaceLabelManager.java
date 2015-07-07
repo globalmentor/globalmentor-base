@@ -28,8 +28,6 @@ import static com.globalmentor.net.URIs.*;
 import com.globalmentor.collections.MapDecorator;
 import com.globalmentor.foaf.FOAF;
 import com.globalmentor.net.http.webdav.ApacheWebDAV;
-import com.globalmentor.rdf.dicto.Dicto;
-import com.globalmentor.rdf.version.RDFVersion;
 import com.globalmentor.text.xml.XML;
 import com.globalmentor.text.xml.oeb.OEB;
 import com.globalmentor.text.xml.schema.XMLSchema;
@@ -68,7 +66,7 @@ public abstract class AbstractNamespaceLabelManager extends MapDecorator<URI, St
 	static { //add the default labels TODO move definitions to resource file
 		final Map<URI, String> tempNamespaceURILabelMap = new HashMap<URI, String>(); //create a temporary map to fill
 		//add default labels for special namespace URIs
-		tempNamespaceURILabelMap.put(Dicto.DICTO_NAMESPACE_URI, Dicto.DICTO_NAMESPACE_PREFIX); //Dicto
+		tempNamespaceURILabelMap.put(URI.create("http://globalmentor.com/namespaces/2003/dicto#"), "dicto"); //Dicto
 		tempNamespaceURILabelMap.put(URI.create("http://purl.org/dc/elements/1.1/"), "dc"); //Dublin Core
 		tempNamespaceURILabelMap.put(FOAF.FOAF_NAMESPACE_URI, FOAF.FOAF_NAMESPACE_PREFIX); //FOAF
 		//TODO convert to URF		tempNamespaceURILabelMap.put(MAQRO.MAQRO_NAMESPACE_URI, MAQRO.MAQRO_NAMESPACE_PREFIX); //MAQRO
@@ -81,7 +79,7 @@ public abstract class AbstractNamespaceLabelManager extends MapDecorator<URI, St
 		tempNamespaceURILabelMap.put(URI.create("http://www.w3.org/2000/01/rdf-schema#"), "rdfs"); //RDFS
 		//TODO add SOAP
 		//TODO del		tempNamespaceURILabelMap.put(VCard.VCARD_NAMESPACE_URI, VCard.VCARD_NAMESPACE_PREFIX); //vCard
-		tempNamespaceURILabelMap.put(RDFVersion.VERSION_NAMESPACE_URI, RDFVersion.VERSION_NAMESPACE_PREFIX); //version
+		tempNamespaceURILabelMap.put(URI.create("http://globalmentor.com/namespaces/2003/version#"), "ver"); //version
 		tempNamespaceURILabelMap.put(XMLSchema.XML_SCHEMA_NAMESPACE_URI, XMLSchema.XML_SCHEMA_NAMESPACE_PREFIX); //XML Schema
 		tempNamespaceURILabelMap.put(XHTML.XHTML_NAMESPACE_URI, XHTML.XHTML_NAMESPACE_PREFIX); //XHTML
 		tempNamespaceURILabelMap.put(XLink.XLINK_NAMESPACE_URI, XLink.XLINK_NAMESPACE_PREFIX); //XLink
