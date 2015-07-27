@@ -20,10 +20,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
 
-import com.globalmentor.net.http.HTTPForbiddenException;
-import com.globalmentor.net.http.HTTPNotFoundException;
-import com.globalmentor.net.http.HTTPPreconditionFailedException;
-
 import static com.globalmentor.java.Objects.*;
 
 /**
@@ -87,42 +83,4 @@ public class ResourceIOException extends IOException {
 		return DefaultResource.toString(getResourceURI()) + ' ' + super.toString();
 	}
 
-	/**
-	 * Translates a given error into a resource I/O exception. If the exception is already a {@link ResourceIOException} it is returned unmodified. This version
-	 * makes the following translations:
-	 * <dl>
-	 * <dt>{@link FileNotFoundException}</dt>
-	 * <dd>{@link ResourceNotFoundException}</dd>
-	 * <dt>{@link HTTPForbiddenException}</dt>
-	 * <dd>{@link ResourceForbiddenException}</dd>
-	 * <dt>{@link HTTPNotFoundException}</dt>
-	 * <dd>{@link ResourceNotFoundException}</dd>
-	 * <dt>{@link HTTPPreconditionFailedException}</dt>
-	 * <dd>{@link ResourceStateException}</dd>
-	 * </dl>
-	 * @param throwable The error which should be translated to a resource I/O exception.
-	 * @param resourceURI The URI of the resource to which the exception is related.
-	 * @return A resource I/O exception based upon the given throwable.
-	 */
-	public static ResourceIOException toResourceIOException(final Throwable throwable, final URI resourceURI) {
-		if(throwable instanceof ResourceIOException) { //resource I/O exception
-			return (ResourceIOException)throwable; //cast the throwable to a resource I/O exception
-		}
-		//file exceptions
-		else if(throwable instanceof FileNotFoundException) {
-			return new ResourceNotFoundException(resourceURI, throwable);
-		}
-		//HTTP exceptions
-		else if(throwable instanceof HTTPForbiddenException) {
-			return new ResourceForbiddenException(resourceURI, throwable);
-		} else if(throwable instanceof HTTPNotFoundException) {
-			return new ResourceNotFoundException(resourceURI, throwable);
-		} else if(throwable instanceof HTTPPreconditionFailedException) {
-			return new ResourceStateException(resourceURI, throwable);
-		}
-		//default
-		else {
-			return new ResourceIOException(resourceURI, throwable); //create a default resource I/O exception
-		}
-	}
 }

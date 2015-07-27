@@ -21,8 +21,6 @@ import java.net.URI;
 
 import com.globalmentor.beans.BoundPropertyObject;
 import static com.globalmentor.net.URIs.*;
-import com.globalmentor.net.http.*;
-import static com.globalmentor.net.http.HTTP.*;
 
 /**
  * Default implementation of a class that allows access to resources by providing input streams and indicating a base URI against which relative URIs should be
@@ -31,14 +29,6 @@ import static com.globalmentor.net.http.HTTP.*;
  * @deprecated
  */
 public class DefaultURIAccessible extends BoundPropertyObject implements URIAccessible {
-
-	/** The client used to access HTTP URIs. */
-	private final HTTPClient httpClient;
-
-	/** @return The client used to access HTTP URIs. */
-	protected HTTPClient getHTTPClient() {
-		return httpClient;
-	}
 
 	/** The username, or <code>null</code> for no user information. */
 	private String username = null; //TODO later transfer this stuff to an authenticator plugin
@@ -101,14 +91,6 @@ public class DefaultURIAccessible extends BoundPropertyObject implements URIAcce
 	}
 
 	/**
-	 * HTTP client default constructor.
-	 * @param httpClient The client used to access HTTP URIs.
-	 */
-	public DefaultURIAccessible(final HTTPClient httpClient) {
-		this(null, null, httpClient); //construct the class with the given HTTP client
-	}
-
-	/**
 	 * URI input stream locator constructor.
 	 * @param uriInputStreamable The implementation to use for accessing a URI for input, or <code>null</code> if the default implementation should be used.
 	 */
@@ -125,24 +107,13 @@ public class DefaultURIAccessible extends BoundPropertyObject implements URIAcce
 	}
 
 	/**
-	 * URI input and output stream locator constructor.
-	 * @param uriInputStreamable The implementation to use for accessing a URI for input, or <code>null</code> if the default implementation should be used.
-	 * @param uriOutputStreamable The implementation to use for accessing a URI for output, or <code>null</code> if the default implementation should be used.
-	 */
-	public DefaultURIAccessible(final URIInputStreamable uriInputStreamable, final URIOutputStreamable uriOutputStreamable) {
-		this(uriInputStreamable, uriOutputStreamable, HTTPClient.getInstance()); //construct the class with the default HTTP client
-	}
-
-	/**
 	 * Full constructor.
 	 * @param uriInputStreamable The implementation to use for accessing a URI for input, or <code>null</code> if the default implementation should be used.
 	 * @param uriOutputStreamable The implementation to use for accessing a URI for output, or <code>null</code> if the default implementation should be used.
-	 * @param httpClient The client used to access HTTP URIs.
 	 */
-	protected DefaultURIAccessible(final URIInputStreamable uriInputStreamable, final URIOutputStreamable uriOutputStreamable, final HTTPClient httpClient) {
+	protected DefaultURIAccessible(final URIInputStreamable uriInputStreamable, final URIOutputStreamable uriOutputStreamable) {
 		this.uriInputStreamable = uriInputStreamable; //save the URI input stream locator
 		this.uriOutputStreamable = uriOutputStreamable; //save the URI output stream locator
-		this.httpClient = httpClient; //save the HTTP client
 	}
 
 	/**
@@ -154,9 +125,6 @@ public class DefaultURIAccessible extends BoundPropertyObject implements URIAcce
 	public InputStream getInputStream(final URI uri) throws IOException {
 		if(uriInputStreamable != null) { //if we have a delegate input streamable
 			return uriInputStreamable.getInputStream(uri); //delegate to the stored implementation
-		}
-		if(isHTTPURI(uri)) { //if this is an HTTP URI, try to use an HTTP resource with our HTTP client
-			return new HTTPResource(uri, getHTTPClient()).getInputStream(); //get an HTTP resource using our HTTP client and get an input stream to the resource 
 		}
 		return uri.toURL().openConnection().getInputStream(); //convert the URI to a URL, open a connection to it, and get an input stream to it
 	}
@@ -174,8 +142,6 @@ public class DefaultURIAccessible extends BoundPropertyObject implements URIAcce
 		final String scheme = uri.getScheme(); //see what type of URI this is
 		if(FILE_SCHEME.equals(scheme)) { //if this is a file URI
 			return new FileOutputStream(new File(uri)); //create and return an output stream to the file
-		} else if(isHTTPURI(uri)) { //if this is an HTTP URI, try to use an HTTP resource with our HTTP client
-			return new HTTPResource(uri, getHTTPClient()).getOutputStream(); //get an HTTP resource using our HTTP client and get an output stream to the resource 
 		}
 		return uri.toURL().openConnection().getOutputStream(); //convert the URI to a URL, open a connection to it, and get an output stream to it
 	}

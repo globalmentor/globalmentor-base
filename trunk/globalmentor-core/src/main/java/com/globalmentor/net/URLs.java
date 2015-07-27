@@ -21,10 +21,8 @@ import java.net.*;
 import java.nio.charset.Charset;
 
 import com.globalmentor.io.*;
-import com.globalmentor.net.http.HTTP;
 
 import static com.globalmentor.net.URIs.*;
-import static com.globalmentor.net.http.HTTP.*;
 
 /**
  * Various URL manipulating functions.
@@ -32,41 +30,6 @@ import static com.globalmentor.net.http.HTTP.*;
  * @see URL
  */
 public class URLs {
-
-	/**
-	 * Checks to see if a file exists at the location specified by the URL.
-	 * <p>
-	 * The following protocols are supported:
-	 * </p>
-	 * <ul>
-	 * <li>{@value URIs#FILE_SCHEME}</li>
-	 * <li>{@value HTTP#HTTP_URI_SCHEME}</li>
-	 * <li>{@value HTTP#HTTPS_URI_SCHEME}</li>
-	 * </ul>
-	 * <p>
-	 * URLs using other protocols are assumed to exist.
-	 * </p>
-	 * @param url The URL of the file to check.
-	 * @return <code>false</code> if it can be determined that no file exists at the given URL, otherwise <code>true</code>.
-	 */
-	public static boolean exists(final URL url) {
-		final String protocol = url.getProtocol(); //get the protocol of the URL
-		if(FILE_SCHEME.equals(protocol)) { //if this is the file protocol
-			return getFile(url).exists(); //create a file from the URL and see if it exists
-		} else if(HTTP_URI_SCHEME.equals(protocol) || HTTPS_URI_SCHEME.equals(protocol)) { //if this is the HTTP protocol
-			try {
-				final URLConnection urlConnection = url.openConnection(); //open a connection to the URL
-				if(urlConnection instanceof HttpURLConnection) { //if this is an HTTP connection
-					//if this URL returned a 404 Not Found response code
-					if(((HttpURLConnection)urlConnection).getResponseCode() == HttpURLConnection.HTTP_NOT_FOUND)
-						return false; //show that the file does not exist
-				}
-			} catch(IOException ioException) { //if we can't even make a connection to the URL
-				return false; //show that the file doesn't exist
-			}
-		}
-		return true; //if we don't know that it doesn't assume the file exists
-	}
 
 	/**
 	 * Retrieves a <code>File</code> representing the file of the URL.

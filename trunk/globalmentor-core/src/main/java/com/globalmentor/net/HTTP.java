@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.globalmentor.net.http;
+package com.globalmentor.net;
 
 import java.net.URI;
 import java.nio.charset.Charset;

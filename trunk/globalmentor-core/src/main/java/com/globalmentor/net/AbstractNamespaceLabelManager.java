@@ -27,7 +27,6 @@ import static com.globalmentor.net.URIs.*;
 
 import com.globalmentor.collections.MapDecorator;
 import com.globalmentor.foaf.FOAF;
-import com.globalmentor.net.http.webdav.ApacheWebDAV;
 import com.globalmentor.text.xml.XML;
 import com.globalmentor.text.xml.oeb.OEB;
 import com.globalmentor.text.xml.schema.XMLSchema;
@@ -48,7 +47,7 @@ public abstract class AbstractNamespaceLabelManager extends MapDecorator<URI, St
 
 	static { //add the default namespaces
 		final Set<URI> knownNamespaceURIs = new HashSet<URI>(); //create a temporary set to fill
-		knownNamespaceURIs.add(ApacheWebDAV.APACHE_WEBDAV_PROPERTY_NAMESPACE_URI); //Apache WebDAV properties
+		knownNamespaceURIs.add(URI.create("http://apache.org/dav/props/")); //Apache WebDAV properties
 		knownNamespaceURIs.add(URI.create("http://example.com/example/")); //example
 		knownNamespaceURIs.add(FOAF.FOAF_NAMESPACE_URI); //FOAF
 		//TODO move many of these out into application-specific initializations
