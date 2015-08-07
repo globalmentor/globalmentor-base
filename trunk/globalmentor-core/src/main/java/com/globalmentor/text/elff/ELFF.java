@@ -33,7 +33,7 @@ import com.globalmentor.model.NameValuePair;
 /**
  * Access to a log in the Extended Log File Format (ELFF). This class is thread-safe and can be used to concurrently generate log information.
  * @author Garret Wilson
- * @see <a href="file:///D:/reference/W3C/ELFF/WD-logfile.html">W3C Extended Log File Format</a>
+ * @see <a href="http://www.w3.org/TR/WD-logfile.html">W3C Extended Log File Format</a>
  */
 public class ELFF {
 
