@@ -24,7 +24,6 @@ import static java.util.Collections.*;
 
 import com.globalmentor.event.ProgressListener;
 import com.globalmentor.java.*;
-import com.globalmentor.javascript.JavaScript;
 import com.globalmentor.net.*;
 import com.globalmentor.text.*;
 import com.globalmentor.text.css.CSS;
@@ -177,7 +176,7 @@ public class Files {
 		tempFileExtensionContentTypeMap.put(Java.JAVA_NAME_EXTENSION, ContentType.create(ContentType.TEXT_PRIMARY_TYPE, JAVA_SUBTYPE));
 		tempFileExtensionContentTypeMap.put(Images.JPEG_NAME_EXTENSION, ContentType.create(ContentType.IMAGE_PRIMARY_TYPE, JPEG_SUBTYPE));
 		tempFileExtensionContentTypeMap.put(Images.JPG_NAME_EXTENSION, ContentType.create(ContentType.IMAGE_PRIMARY_TYPE, JPEG_SUBTYPE));
-		tempFileExtensionContentTypeMap.put(JavaScript.JS_NAME_EXTENSION, JavaScript.JAVASCRIPT_CONTENT_TYPE);
+		tempFileExtensionContentTypeMap.put("js", ContentType.create(ContentType.APPLICATION_PRIMARY_TYPE, "javascript"));
 		tempFileExtensionContentTypeMap.put("marmox", ContentType.create(ContentType.APPLICATION_PRIMARY_TYPE, "x-marmox-page+rdf+xml"));
 		tempFileExtensionContentTypeMap.put("mact", ContentType.create(ContentType.APPLICATION_PRIMARY_TYPE, "x-mentor-activity+turf"));
 		tempFileExtensionContentTypeMap.put(Audio.MP3_NAME_EXTENSION, ContentType.create(ContentType.AUDIO_PRIMARY_TYPE, MPEG_SUBTYPE)); //RFC 3003
