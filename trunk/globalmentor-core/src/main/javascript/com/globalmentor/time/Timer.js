@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-var com = com || {}; //create the com.globalmentor.clicktime.interview package
+var com = com || {}; //create the com.globalmentor.time package
 com.globalmentor = com.globalmentor || {};
 com.globalmentor.time = com.globalmentor.time || {};
 
