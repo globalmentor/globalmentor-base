@@ -16,6 +16,8 @@
 
 package com.globalmentor.text.unicode;
 
+import static com.globalmentor.text.Unicode.*;
+
 /**
  * Describes a named range of Unicode characters.
  * @author Garret Wilson
@@ -100,6 +102,6 @@ public class UnicodeBlock implements Comparable<UnicodeBlock> {
 
 	/** @return A string representation of this block in the format "name [0000-0000]". */
 	public String toString() {
-		return getName() + " [" + UnicodeCharacter.getCodePointString(getStartCode()) + '-' + UnicodeCharacter.getCodePointString(getEndCode()) + ']';
+		return getName() + " [" + getCodePointString(getStartCode()) + '-' + getCodePointString(getEndCode()) + ']';
 	}
 }

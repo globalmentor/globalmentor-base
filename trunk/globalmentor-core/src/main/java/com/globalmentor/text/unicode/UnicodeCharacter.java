@@ -16,8 +16,7 @@
 
 package com.globalmentor.text.unicode;
 
-import com.globalmentor.java.Integers;
-
+import static com.globalmentor.text.Unicode.*;
 import static com.globalmentor.text.unicode.UnicodeConstants.*;
 
 /**
@@ -396,18 +395,6 @@ public class UnicodeCharacter implements Comparable<UnicodeCharacter> {
 	public UnicodeCharacter(final int newCodeValue, final String newCharacterName) {
 		this(newCodeValue); //do the default construction
 		setCharacterName(newCharacterName); //set the character name
-	}
-
-	/**
-	 * Creates a string representation of a given Unicode code point in the form "U+XXXX[XX]".
-	 * @param codeValue The Unicode code point to represent.
-	 * @return A string representation of the Unicode code point in the form "U+XXXX[XX]"
-	 */
-	public static String getCodePointString(final int codeValue) {
-		final StringBuilder stringBuilder = new StringBuilder("U+"); //create a string buffer
-		//append the code value, using six digits if needed
-		stringBuilder.append(Integers.toHexString(codeValue, codeValue <= 0xFFFF ? 4 : 6).toUpperCase());
-		return stringBuilder.toString(); //return the string we constructed		
 	}
 
 	/**

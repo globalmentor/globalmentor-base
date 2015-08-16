@@ -25,7 +25,7 @@ import java.util.Collection;
 
 import com.globalmentor.io.UTF8;
 import com.globalmentor.text.Case;
-import com.globalmentor.text.unicode.UnicodeCharacter;
+import com.globalmentor.text.Unicode;
 
 /**
  * Various text manipulating functions. These methods work on objects that implement the {@link CharSequence} interface. To avoid creation of new strings, some
@@ -481,7 +481,7 @@ public class CharSequences {
 				}
 			} else { //if this is not an escaped character
 				if(c > UTF8.MAX_ENCODED_BYTE_COUNT1) { //if this character is larger than the largest UTF-8 encoding for a single byte, the character sequence was not encoded correctly
-					throw new IllegalArgumentException("Invalid encoded character " + UnicodeCharacter.getCodePointString(c) + " at index " + i
+					throw new IllegalArgumentException("Invalid encoded character " + Unicode.getCodePointString(c) + " at index " + i
 							+ " in character sequence \"" + charSequence + "\".");
 				}
 				b = (byte)c; //add this character to the result with no change
