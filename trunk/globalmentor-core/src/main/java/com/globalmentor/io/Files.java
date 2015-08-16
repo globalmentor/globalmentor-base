@@ -27,7 +27,6 @@ import com.globalmentor.java.*;
 import com.globalmentor.net.*;
 import com.globalmentor.text.*;
 import com.globalmentor.text.css.CSS;
-import com.globalmentor.text.csv.CSV;
 import com.globalmentor.text.xml.XML;
 import com.globalmentor.text.xml.oeb.OEB;
 import com.globalmentor.text.xml.xhtml.XHTML;
@@ -164,7 +163,7 @@ public class Files {
 		tempFileExtensionContentTypeMap.put(Audio.AU_NAME_EXTENSION, ContentType.create(ContentType.AUDIO_PRIMARY_TYPE, BASIC_SUBTYPE));
 		tempFileExtensionContentTypeMap.put(Images.BMP_NAME_EXTENSION, ContentType.create(ContentType.IMAGE_PRIMARY_TYPE, X_BITMAP_SUBTYPE));
 		tempFileExtensionContentTypeMap.put(Classes.CLASS_NAME_EXTENSION, ContentType.create(ContentType.APPLICATION_PRIMARY_TYPE, JAVA_SUBTYPE));
-		tempFileExtensionContentTypeMap.put(CSV.CSV_NAME_EXTENSION, CSV.CSV_CONTENT_TYPE);
+		tempFileExtensionContentTypeMap.put("csv", ContentType.create(ContentType.TEXT_PRIMARY_TYPE, "csv"));
 		tempFileExtensionContentTypeMap.put(CSS.CSS_NAME_EXTENSION, CSS.TEXT_CSS_CONTENT_TYPE); //text/css
 		//		tempFileExtensionContentTypeMap.put(Dicto.DICTO_NAME_EXTENSION, ContentType.getInstance(ContentType.APPLICATION_PRIMARY_TYPE, X_DICTO_RDF_XML_SUBTYPE));
 		tempFileExtensionContentTypeMap.put(DOC_EXTENSION, ContentType.create(ContentType.APPLICATION_PRIMARY_TYPE, MSWORD_SUBTYPE));
