@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.globalmentor.text.unicode;
+package com.globalmentor.unicode;
 
 import java.io.*;
 import java.lang.ref.Reference;

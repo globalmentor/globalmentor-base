@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.globalmentor.text.unicode;
+package com.globalmentor.unicode;
 
 /**
  * Contains constants for mapping the Adobe Symbol font to Unicode. Implemented by referencing "Encoding Symbol Font" table provided by Oscar van Vlijmen (<a

@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package com.globalmentor.text.unicode;
+package com.globalmentor.unicode;
 
 import static com.globalmentor.text.Unicode.*;
-import static com.globalmentor.text.unicode.UnicodeConstants.*;
+import static com.globalmentor.unicode.UnicodeConstants.*;
 
 /**
  * Represents a character in the Unicode database. Created for Unicode 3.0.0.

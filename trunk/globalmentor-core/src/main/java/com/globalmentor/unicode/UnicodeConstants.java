@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.globalmentor.text.unicode;
+package com.globalmentor.unicode;
 
 /**
  * Constants used in Unicode 3.0.

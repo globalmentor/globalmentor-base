@@ -14,22 +14,20 @@
  * limitations under the License.
  */
 
-package com.globalmentor.text.unicode;
+package com.globalmentor.unicode;
 
 import java.io.*;
 import java.lang.ref.*;
 import java.util.*;
 
+import static com.globalmentor.unicode.UnicodeBlocks.*;
+import static com.globalmentor.unicode.UnicodeConstants.*;
 import static java.nio.charset.StandardCharsets.*;
 import static java.util.Collections.*;
 
 import java.util.StringTokenizer;
 
 import com.globalmentor.log.Log;
-
-import static com.globalmentor.text.unicode.UnicodeBlocks.*;
-import static com.globalmentor.text.unicode.UnicodeConstants.*;
-
 import com.globalmentor.java.Integers;
 
 /**
