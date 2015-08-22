@@ -26,11 +26,6 @@ import static com.globalmentor.java.Objects.*;
 import static com.globalmentor.net.URIs.*;
 
 import com.globalmentor.collections.MapDecorator;
-import com.globalmentor.text.xml.XML;
-import com.globalmentor.text.xml.oeb.OEB;
-import com.globalmentor.text.xml.schema.XMLSchema;
-import com.globalmentor.text.xml.xhtml.XHTML;
-import com.globalmentor.text.xml.xlink.XLink;
 
 /**
  * Map managing namespace URIs and labels for serialization. Mapping labels to the <code>null</code> namespace or to the <code>null</code> label is allowed.
@@ -68,7 +63,7 @@ public abstract class AbstractNamespaceLabelManager extends MapDecorator<URI, St
 		tempNamespaceURILabelMap.put(URI.create("http://purl.org/dc/elements/1.1/"), "dc"); //Dublin Core
 		tempNamespaceURILabelMap.put(URI.create("http://xmlns.com/foaf/0.1/"), "foaf"); //FOAF
 		//TODO convert to URF		tempNamespaceURILabelMap.put(MAQRO.MAQRO_NAMESPACE_URI, MAQRO.MAQRO_NAMESPACE_PREFIX); //MAQRO
-		tempNamespaceURILabelMap.put(OEB.OEB1_DOCUMENT_NAMESPACE_URI, OEB.OEB1_DOCUMENT_NAMESPACE_PREFIX); //OEB 1
+		tempNamespaceURILabelMap.put(URI.create("http://openebook.org/namespaces/oeb-document/1.0/"), "oeb1"); //OEB 1
 		tempNamespaceURILabelMap.put(URI.create("http://globalmentor.com/namespaces/marmot#"), "marmot"); //Marmot TODO link to Marmot constants when Marmot is included in normal libraries
 		tempNamespaceURILabelMap.put(URI.create("http://marmox.net/namespaces/content#"), "content"); //Marmox content
 		//TODO del		tempNamespaceURIPrefixMap.put(PLOOP.PLOOP_PROPERTY_NAMESPACE_URI, PLOOP.PLOOP_PROPERTY_NAMESPACE_PREFIX); //PLOOP property
@@ -78,11 +73,11 @@ public abstract class AbstractNamespaceLabelManager extends MapDecorator<URI, St
 		//TODO add SOAP
 		//TODO del		tempNamespaceURILabelMap.put(VCard.VCARD_NAMESPACE_URI, VCard.VCARD_NAMESPACE_PREFIX); //vCard
 		tempNamespaceURILabelMap.put(URI.create("http://globalmentor.com/namespaces/2003/version#"), "ver"); //version
-		tempNamespaceURILabelMap.put(XMLSchema.XML_SCHEMA_NAMESPACE_URI, XMLSchema.XML_SCHEMA_NAMESPACE_PREFIX); //XML Schema
-		tempNamespaceURILabelMap.put(XHTML.XHTML_NAMESPACE_URI, XHTML.XHTML_NAMESPACE_PREFIX); //XHTML
-		tempNamespaceURILabelMap.put(XLink.XLINK_NAMESPACE_URI, XLink.XLINK_NAMESPACE_PREFIX); //XLink
-		tempNamespaceURILabelMap.put(XML.XML_NAMESPACE_URI, XML.XML_NAMESPACE_PREFIX); //XML
-		tempNamespaceURILabelMap.put(XML.XMLNS_NAMESPACE_URI, XML.XMLNS_NAMESPACE_PREFIX); //XML namespaces
+		tempNamespaceURILabelMap.put(URI.create("http://www.w3.org/2001/XMLSchema"), "xsd"); //XML Schema
+		tempNamespaceURILabelMap.put(URI.create("http://www.w3.org/1999/xhtml"), "xhtml"); //XHTML
+		tempNamespaceURILabelMap.put(URI.create("http://www.w3.org/1999/xlink"), "xlink"); //XLink
+		tempNamespaceURILabelMap.put(URI.create("http://www.w3.org/XML/1998/namespace"), "xml"); //XML
+		tempNamespaceURILabelMap.put(URI.create("http://www.w3.org/2000/xmlns/"), "xmlns"); //XML namespaces
 		//TODO del		tempNamespaceURIPrefixMap.put(FileOntologyConstants.FILE_ONTOLOGY_NAMESPACE_URI, FileOntologyConstants.FILE_ONTOLOGY_NAMESPACE_PREFIX); //XPackage file ontology
 		//TODO add XPackage Unicode ontology
 		//TODO del		tempNamespaceURIPrefixMap.put(MIMEOntologyConstants.MIME_ONTOLOGY_NAMESPACE_URI, MIMEOntologyConstants.MIME_ONTOLOGY_NAMESPACE_PREFIX); //XPackage MIME ontology

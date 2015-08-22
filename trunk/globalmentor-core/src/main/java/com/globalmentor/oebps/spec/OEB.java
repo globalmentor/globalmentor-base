@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.globalmentor.text.xml.oeb;
+package com.globalmentor.oebps.spec;
 
 import java.net.URI;
 
@@ -22,7 +22,7 @@ import javax.xml.parsers.*;
 
 import com.globalmentor.net.*;
 
-import static com.globalmentor.text.xml.oeb.css.OEBCSS.*;
+import static com.globalmentor.oebps.spec.OEBCSS.*;
 import static com.globalmentor.text.xml.XML.*;
 import static com.globalmentor.text.xml.xhtml.XHTML.*;
 

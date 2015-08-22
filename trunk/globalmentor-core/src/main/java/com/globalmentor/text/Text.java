@@ -23,7 +23,6 @@ import java.util.regex.Pattern;
 import com.globalmentor.collections.comparators.SortOrder;
 import com.globalmentor.java.Characters;
 import com.globalmentor.net.ContentType;
-import com.globalmentor.text.xml.XML;
 
 import static com.globalmentor.java.CharSequences.*;
 import static com.globalmentor.java.Characters.*;
@@ -141,6 +140,9 @@ public class Text {
 	 * </p>
 	 * <ul>
 	 * <li><code>text/*</code></li>
+	 * </ul>
+	 * <p>This method once did but does not currently consider the following media types to be text:</p>
+	 * <ul>
 	 * <li><code>application/xml</code></li>
 	 * <li><code>application/*+xml</code></li>
 	 * <li><code>application/xml-external-parsed-entity</code></li>
@@ -148,15 +150,15 @@ public class Text {
 	 * </ul>
 	 * @param contentType The content type of a resource, or <code>null</code> for no content type.
 	 * @return <code>true</code> if the given content type is one of several text media types.
-	 * @see XML#isXML(ContentType)
-	 * @see XML#isXMLExternalParsedEntity(ContentType)
 	 */
 	public static boolean isText(final ContentType contentType) {
 		if(contentType != null) { //if a content type is given
 			if(ContentType.TEXT_PRIMARY_TYPE.equals(contentType.getPrimaryType())) { //if this is "text/*"
 				return true; //text/* is a text content type
 			}
+			/*TODO bring back if needed; see if this causes problems in Guise; application/xml could be considered non-text xml; see www.grauw.nl/blog/entry/489
 			return XML.isXML(contentType) || XML.isXMLExternalParsedEntity(contentType); //return whether this is an XML document or external parsed entity content type; all XML content types are text content types
+			*/
 		}
 		return false; //this is not a media type we recognize as being HTML
 	}

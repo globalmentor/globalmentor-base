@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.globalmentor.text.xml.oeb;
+package com.globalmentor.oebps.spec;
 
 /**
  * Represents a guide in OEB 1.x.
@@ -44,8 +44,8 @@ public class OEBGuide {
 	public static final String DEDICATION = "dedication";
 	/** Epigraph */
 	public static final String EPIGRAPH = "epigraph";
-	/** Foreward. */
-	public static final String FOREWARD = "foreword";
+	/** Foreword. */
+	public static final String FOREWORD = "foreword";
 	/** List of illustrations */
 	public static final String LIST_OF_ILLUSTRATIONS = "loi";
 	/** List of tables. */

@@ -26,10 +26,6 @@ import com.globalmentor.event.ProgressListener;
 import com.globalmentor.java.*;
 import com.globalmentor.net.*;
 import com.globalmentor.text.*;
-import com.globalmentor.text.css.CSS;
-import com.globalmentor.text.xml.XML;
-import com.globalmentor.text.xml.oeb.OEB;
-import com.globalmentor.text.xml.xhtml.XHTML;
 
 import static com.globalmentor.io.InputStreams.*;
 import static com.globalmentor.java.CharSequences.*;
@@ -157,20 +153,20 @@ public class Files {
 	/** A singleton read-only map of lowercase file extensions and the corresponding content types they represent. */
 	public static final Map<String, ContentType> FILE_EXTENSION_CONTENT_TYPE_MAP; //TODO convert to lazy weak referenced map
 
-	static {	//TODO move definitions to a resource file
+	static { //TODO move definitions to a resource file
 		final Map<String, ContentType> tempFileExtensionContentTypeMap = new HashMap<String, ContentType>(); //create a new hash map in which to store extensions, and add the default extensions
 		tempFileExtensionContentTypeMap.put("asi", ContentType.create(ContentType.APPLICATION_PRIMARY_TYPE, "x-qti-assessment"));
 		tempFileExtensionContentTypeMap.put(Audio.AU_NAME_EXTENSION, ContentType.create(ContentType.AUDIO_PRIMARY_TYPE, BASIC_SUBTYPE));
 		tempFileExtensionContentTypeMap.put(Images.BMP_NAME_EXTENSION, ContentType.create(ContentType.IMAGE_PRIMARY_TYPE, X_BITMAP_SUBTYPE));
 		tempFileExtensionContentTypeMap.put(Classes.CLASS_NAME_EXTENSION, ContentType.create(ContentType.APPLICATION_PRIMARY_TYPE, JAVA_SUBTYPE));
 		tempFileExtensionContentTypeMap.put("csv", ContentType.create(ContentType.TEXT_PRIMARY_TYPE, "csv"));
-		tempFileExtensionContentTypeMap.put(CSS.CSS_NAME_EXTENSION, CSS.TEXT_CSS_CONTENT_TYPE); //text/css
+		tempFileExtensionContentTypeMap.put("css", ContentType.create(ContentType.TEXT_PRIMARY_TYPE, "css")); //text/css
 		//		tempFileExtensionContentTypeMap.put(Dicto.DICTO_NAME_EXTENSION, ContentType.getInstance(ContentType.APPLICATION_PRIMARY_TYPE, X_DICTO_RDF_XML_SUBTYPE));
 		tempFileExtensionContentTypeMap.put(DOC_EXTENSION, ContentType.create(ContentType.APPLICATION_PRIMARY_TYPE, MSWORD_SUBTYPE));
 		tempFileExtensionContentTypeMap.put(Images.GIF_NAME_EXTENSION, ContentType.create(ContentType.IMAGE_PRIMARY_TYPE, GIF_SUBTYPE)); //image/gif
-		tempFileExtensionContentTypeMap.put(XHTML.HTM_NAME_EXTENSION, XHTML.HTML_CONTENT_TYPE); //TODO make sure changing this to text/html doesn't cause other methods to fail; nevertheless, we can't assume all .html files are XHTML (i.e. valid XML)
-		tempFileExtensionContentTypeMap.put(XHTML.HTML_NAME_EXTENSION, XHTML.HTML_CONTENT_TYPE);
-		tempFileExtensionContentTypeMap.put(XHTML.XHTML_NAME_EXTENSION, XHTML.XHTML_CONTENT_TYPE);
+		tempFileExtensionContentTypeMap.put("htm", ContentType.create(ContentType.TEXT_PRIMARY_TYPE, "html")); //TODO make sure changing this to text/html doesn't cause other methods to fail; nevertheless, we can't assume all .html files are XHTML (i.e. valid XML)
+		tempFileExtensionContentTypeMap.put("html", ContentType.create(ContentType.TEXT_PRIMARY_TYPE, "html"));
+		tempFileExtensionContentTypeMap.put("xhtml", ContentType.create(ContentType.APPLICATION_PRIMARY_TYPE, "xhtml" + ContentType.SUBTYPE_SUFFIX_DELIMITER_CHAR + "xml"));
 		tempFileExtensionContentTypeMap.put(ICAL_EXTENSION, ContentType.create(ContentType.TEXT_PRIMARY_TYPE, CALENDAR_SUBTYPE));
 		tempFileExtensionContentTypeMap.put(Java.JAVA_NAME_EXTENSION, ContentType.create(ContentType.TEXT_PRIMARY_TYPE, JAVA_SUBTYPE));
 		tempFileExtensionContentTypeMap.put(Images.JPEG_NAME_EXTENSION, ContentType.create(ContentType.IMAGE_PRIMARY_TYPE, JPEG_SUBTYPE));
@@ -182,8 +178,8 @@ public class Files {
 		tempFileExtensionContentTypeMap.put(Video.MPEG_NAME_EXTENSION, ContentType.create(ContentType.VIDEO_PRIMARY_TYPE, MPEG_SUBTYPE));
 		tempFileExtensionContentTypeMap.put(Video.MPG_NAME_EXTENSION, ContentType.create(ContentType.VIDEO_PRIMARY_TYPE, MPEG_SUBTYPE));
 		tempFileExtensionContentTypeMap.put(Audio.OGG_NAME_EXTENSION, Audio.OGG_VORBIS_CONTENT_TYPE); //audio/ogg (RFC 5334)
-		tempFileExtensionContentTypeMap.put(OEB.OEB1_PACKAGE_NAME_EXTENSION,
-				ContentType.create(ContentType.APPLICATION_PRIMARY_TYPE, OEB.X_OEB1_PACKAGE_XML_SUBTYPE)); //opf
+		tempFileExtensionContentTypeMap.put("opf", ContentType.create(ContentType.APPLICATION_PRIMARY_TYPE,
+				ContentType.SUBTYPE_EXTENSION_PREFIX + "oeb1-package" + ContentType.SUBTYPE_SUFFIX_DELIMITER_CHAR + "xml")); //opf
 		tempFileExtensionContentTypeMap.put(PDF_EXTENSION, ContentType.create(ContentType.APPLICATION_PRIMARY_TYPE, PDF_SUBTYPE)); //pdf
 		tempFileExtensionContentTypeMap.put(Images.PNG_NAME_EXTENSION, ContentType.create(ContentType.IMAGE_PRIMARY_TYPE, PNG_SUBTYPE));
 		tempFileExtensionContentTypeMap.put("qti", ContentType.create(ContentType.APPLICATION_PRIMARY_TYPE, "x-qti")); //TODO use a constant here
@@ -196,7 +192,7 @@ public class Files {
 		tempFileExtensionContentTypeMap.put(VCF_EXTENSION, ContentType.create(ContentType.TEXT_PRIMARY_TYPE, DIRECTORY_SUBTYPE));
 		tempFileExtensionContentTypeMap.put(Audio.WAV_NAME_EXTENSION, ContentType.create(ContentType.AUDIO_PRIMARY_TYPE, X_WAV_SUBTYPE));
 		//		tempFileExtensionContentTypeMap.put(RDFXEB.XEB_NAME_EXTENSION, ContentType.getInstance(ContentType.APPLICATION_PRIMARY_TYPE, X_XEBOOK_RDF_XML_SUBTYPE));
-		tempFileExtensionContentTypeMap.put(XML.XML_NAME_EXTENSION, XML.CONTENT_TYPE);
+		tempFileExtensionContentTypeMap.put("xml", ContentType.create(ContentType.TEXT_PRIMARY_TYPE, "xml"));
 		tempFileExtensionContentTypeMap.put(Archive.ZIP_NAME_EXTENSION, ContentType.create(ContentType.APPLICATION_PRIMARY_TYPE, ZIP_SUBTYPE));
 		FILE_EXTENSION_CONTENT_TYPE_MAP = unmodifiableMap(tempFileExtensionContentTypeMap); //store read-only access to the map		
 	}

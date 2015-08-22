@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package com.globalmentor.text.xml.oeb.css;
+package com.globalmentor.oebps.spec;
 
 import java.lang.ref.*;
 import java.util.*;
 
 import com.globalmentor.net.ContentType;
 
-import static com.globalmentor.text.css.CSS.*;
-import static com.globalmentor.text.xml.oeb.OEB.*;
+import static com.globalmentor.oebps.spec.OEB.*;
+import static com.globalmentor.w3c.spec.CSS.*;
 
 /**
  * Utilities for working with OEB CSS.

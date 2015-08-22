@@ -16,8 +16,6 @@
 
 package com.globalmentor.net;
 
-import com.globalmentor.text.xml.XML;
-
 /**
  * Constant values related to MIME media types, as originally defined in <a href="http://www.rfc-editor.org/rfc/rfc2046.txt">RFC 2046</a>,
  * "MIME Part 2: Media Types".
@@ -29,8 +27,6 @@ public class ContentTypeConstants //TODO transfer these constants to specific re
 
 	//subtype suffixes
 
-	/** The suffix for RDF application types. */
-	public static final String RDF_XML_SUBTYPE_SUFFIX = "rdf" + ContentType.SUBTYPE_SUFFIX_DELIMITER_CHAR + XML.XML_SUBTYPE_SUFFIX;
 	/** The suffix for TURF application types. */
 	public static final String TURF_SUBTYPE_SUFFIX = "turf";
 	/** The suffix for URF TURF application types. */
@@ -73,17 +69,8 @@ public class ContentTypeConstants //TODO transfer these constants to specific re
 	public static final String X_WAV_SUBTYPE = ContentType.SUBTYPE_EXTENSION_PREFIX + "wav";
 
 	//application media types
-	/** A Dictionary Ontology (Dicto) dictionary. */
-	public static final String X_DICTO_RDF_XML_SUBTYPE = ContentType.SUBTYPE_EXTENSION_PREFIX + "dicto" + ContentType.SUBTYPE_SUFFIX_DELIMITER_CHAR
-			+ RDF_XML_SUBTYPE_SUFFIX;
 	/** A Java application. */
 	public static final String JAVA_SUBTYPE = "java";
-	/** A MAQRO activity. */
-	public static final String X_MAQRO_RDF_XML_SUBTYPE = ContentType.SUBTYPE_EXTENSION_PREFIX + "maqro" + ContentType.SUBTYPE_SUFFIX_DELIMITER_CHAR
-			+ RDF_XML_SUBTYPE_SUFFIX; //TODO del; use MAQRO version
-	/** A MAQRO question. */
-	public static final String X_QRO_RDF_XML_SUBTYPE = ContentType.SUBTYPE_EXTENSION_PREFIX + "qro" + ContentType.SUBTYPE_SUFFIX_DELIMITER_CHAR
-			+ RDF_XML_SUBTYPE_SUFFIX;
 	/**
 	 * A Microsoft Word document; see <a
 	 * href="http://www.iana.org/assignments/media-types/application/msword">http://www.iana.org/assignments/media-types/application/msword</a>.
@@ -101,11 +88,6 @@ public class ContentTypeConstants //TODO transfer these constants to specific re
 	public static final String X_WWW_FORM_URLENCODED = ContentType.SUBTYPE_EXTENSION_PREFIX + "www-form-urlencoded";
 	/** An XML application. */
 	//TODO fix	public static final String APPLICATION_XML=APPLICATION+DIVIDER+XML;
-	/** An XEB book file, <code>x-xebook+rdf+xml</code>. */
-	public static final String X_XEBOOK_RDF_XML_SUBTYPE = ContentType.SUBTYPE_EXTENSION_PREFIX + "xebook" + ContentType.SUBTYPE_SUFFIX_DELIMITER_CHAR
-			+ RDF_XML_SUBTYPE_SUFFIX;
-	/** An XEB book zip file, <code>x-xebook+rdf+xml+zip</code>. */
-	public static final String X_XEBOOK_RDF_XML_ZIP_SUBTYPE = X_XEBOOK_RDF_XML_SUBTYPE + ContentType.SUBTYPE_SUFFIX_DELIMITER_CHAR + ZIP_SUBTYPE_SUFFIX;
 	/** A Zip file. */
 	public static final String ZIP_SUBTYPE = "zip";
 
