@@ -140,9 +140,6 @@ public class Text {
 	 * </p>
 	 * <ul>
 	 * <li><code>text/*</code></li>
-	 * </ul>
-	 * <p>This method once did but does not currently consider the following media types to be text:</p>
-	 * <ul>
 	 * <li><code>application/xml</code></li>
 	 * <li><code>application/*+xml</code></li>
 	 * <li><code>application/xml-external-parsed-entity</code></li>
@@ -156,9 +153,18 @@ public class Text {
 			if(ContentType.TEXT_PRIMARY_TYPE.equals(contentType.getPrimaryType())) { //if this is "text/*"
 				return true; //text/* is a text content type
 			}
-			/*TODO bring back if needed; see if this causes problems in Guise; application/xml could be considered non-text xml; see www.grauw.nl/blog/entry/489
-			return XML.isXML(contentType) || XML.isXMLExternalParsedEntity(contentType); //return whether this is an XML document or external parsed entity content type; all XML content types are text content types
-			*/
+			//TODO improve; see if removing this causes problems in Guise; application/xml could be considered non-text xml; see www.grauw.nl/blog/entry/489
+			if(ContentType.APPLICATION_PRIMARY_TYPE.equals(contentType.getPrimaryType())) { //if this is "application/*"
+				final String subType = contentType.getSubType(); //get the subtype
+				if("xml".equals(subType) //see if the subtype is "xml"
+						|| contentType.hasSubTypeSuffix("xml")) {	//see if the subtype has an XML suffix
+					return true;	//application/*+xml is considered text
+				}
+				if("xml-external-parsed-entity".equals(subType) //if the subtype is /xml-external-parsed-entity
+						|| contentType.hasSubTypeSuffix("xml-external-parsed-entity")) {	//or if the subtype has an XML external parsed entity suffix
+					return true;	//application/*+xml-external-parsed-entity is considered text
+				}
+			}
 		}
 		return false; //this is not a media type we recognize as being HTML
 	}
