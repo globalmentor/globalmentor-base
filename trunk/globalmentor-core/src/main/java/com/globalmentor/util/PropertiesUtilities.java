@@ -17,7 +17,7 @@
 package com.globalmentor.util;
 
 import static com.globalmentor.net.URIs.*;
-import static com.globalmentor.text.xml.XML.*;
+import static com.globalmentor.w3c.spec.XML.*;
 import static java.nio.charset.StandardCharsets.*;
 
 import java.io.*;
