@@ -20,40 +20,7 @@ package com.globalmentor.oebps.spec;
  * Represents a guide in OEB 1.x.
  * @author Garret Wilson
  */
-public class OEBGuide {
-
-	/** The book cover(s), jacket information, etc. */
-	public static final String COVER = "cover";
-	/** The page with possibly title, author, publisher, and other metadata. */
-	public static final String TITLE_PAGE = "title-page";
-	/** The table of contents. */
-	public static final String TOC = "toc";
-	/** Back-of-book style index. */
-	public static final String INDEX = "index";
-	/** Glossary. */
-	public static final String GLOSSARY = "glossary";
-	/** Acknowledgements. */
-	public static final String ACKNOWLEDGEMENTS = "acknowledgements";
-	/** Bibliography. */
-	public static final String BIBLIOGRAPHY = "bibliography";
-	/** Colophon. */
-	public static final String COLOPHON = "colophon";
-	/** Copyright page. */
-	public static final String COPYRIGHT_PAGE = "copyright-page";
-	/** Dedication. */
-	public static final String DEDICATION = "dedication";
-	/** Epigraph */
-	public static final String EPIGRAPH = "epigraph";
-	/** Foreword. */
-	public static final String FOREWORD = "foreword";
-	/** List of illustrations */
-	public static final String LIST_OF_ILLUSTRATIONS = "loi";
-	/** List of tables. */
-	public static final String LIST_OF_TABLES = "lot";
-	/** Notes. */
-	public static final String NOTES = "notes";
-	/** Preface. */
-	public static final String PREFACE = "preface";
+public class OEBGuide {	//TODO move to separate, future OEB implementation library
 
 	/**
 	 * The type of guide, usually one of the constants defined in <code>OEBGuideConstants</code>.
