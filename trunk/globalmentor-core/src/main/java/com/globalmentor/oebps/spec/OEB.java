@@ -23,9 +23,9 @@ import javax.xml.parsers.*;
 import com.globalmentor.net.*;
 
 import static com.globalmentor.oebps.spec.OEBCSS.*;
-import static com.globalmentor.text.xml.XML.*;
-import static com.globalmentor.text.xml.xhtml.XHTML.*;
 import static com.globalmentor.w3c.spec.XML.*;
+import static com.globalmentor.xml.XML.*;
+import static com.globalmentor.xml.xhtml.XHTML.*;
 
 import org.w3c.dom.*;
 
