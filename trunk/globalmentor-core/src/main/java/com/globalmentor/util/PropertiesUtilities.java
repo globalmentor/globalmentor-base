@@ -17,7 +17,6 @@
 package com.globalmentor.util;
 
 import static com.globalmentor.net.URIs.*;
-import static com.globalmentor.w3c.spec.XML.*;
 import static java.nio.charset.StandardCharsets.*;
 
 import java.io.*;
@@ -203,7 +202,7 @@ public class PropertiesUtilities {
 			}
 		}
 		//try to load baseName.xml
-		propertiesStream = objectClass.getResourceAsStream(addNameExtension(baseName, XML_NAME_EXTENSION));
+		propertiesStream = objectClass.getResourceAsStream(addNameExtension(baseName, "xml"));	//TODO decide whether to create duplicate XML_NAME_EXTENSION constant inside globalmentor-core 
 		if(propertiesStream != null) {
 			propertiesStream = new BufferedInputStream(propertiesStream); //buffer the stream
 			try {
