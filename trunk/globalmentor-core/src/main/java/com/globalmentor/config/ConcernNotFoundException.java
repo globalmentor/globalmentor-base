@@ -1,5 +1,5 @@
 /*
- * Copyright © 1996-2008 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * Copyright © 1996-2015 GlobalMentor, Inc. <http://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,17 +17,16 @@
 package com.globalmentor.config;
 
 /**
- * An unchecked illegal state exception to indicate that the system is not configured correctly for some operation. For example, this exception might be thrown
- * if no appropriate parser is available or a particular character encoding is not supported.
+ * An unchecked illegal state exception to indicate that a particular concern could not be located.
  * @author Garret Wilson
  */
-public class ConfigurationException extends IllegalStateException {
+public class ConcernNotFoundException extends IllegalStateException {
 
 	/**
 	 * Message constructor.
 	 * @param message An explanation of why the input could not be parsed, or <code>null</code> if a default message should be used.
 	 */
-	public ConfigurationException(final String message) {
+	public ConcernNotFoundException(final String message) {
 		this(message, null); //construct the class with no cause
 	}
 
@@ -35,7 +34,7 @@ public class ConfigurationException extends IllegalStateException {
 	 * Cause constructor.
 	 * @param cause The cause error or <code>null</code> if the cause is nonexistent or unknown.
 	 */
-	public ConfigurationException(final Throwable cause) {
+	public ConcernNotFoundException(final Throwable cause) {
 		this(null, cause); //construct the class with no message
 	}
 
@@ -44,7 +43,7 @@ public class ConfigurationException extends IllegalStateException {
 	 * @param message An explanation of why the input could not be parsed, or <code>null</code> if a default message should be used.
 	 * @param cause The cause error or <code>null</code> if the cause is nonexistent or unknown.
 	 */
-	public ConfigurationException(final String message, final Throwable cause) {
+	public ConcernNotFoundException(final String message, final Throwable cause) {
 		super(message, cause); //construct the class
 	}
 

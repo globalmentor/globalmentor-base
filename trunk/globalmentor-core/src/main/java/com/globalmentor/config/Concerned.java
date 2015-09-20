@@ -1,5 +1,5 @@
 /*
- * Copyright © 2009-2011 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * Copyright © 2009 GlobalMentor, Inc. <http://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,18 +17,19 @@
 package com.globalmentor.config;
 
 /**
- * An abstract base class for a configuration.
- * 
+ * An object that can retrieve <a href="https://en.wikipedia.org/wiki/Concern_%28computer_science%29>concerns</a>s.
  * @author Garret Wilson
- * 
- * @see Configurator
+ * @see Concern
+ * @see Concerns
  */
-public abstract class AbstractConfiguration implements Configuration {
+public interface Concerned {
 
 	/**
-	 * {@inheritDoc} This version does nothing.
+	 * Returns the concern for the given concern type.
+	 * @param <C> The type of concern to retrieve.
+	 * @param concernClass The class of concern to retrieve.
+	 * @return The concern associated with the given class, or <code>null</code> if there was no concern for that class.
 	 */
-	public void dispose() {
-	}
+	public <C extends Concern> C getConcern(final Class<C> concernClass);
 
 }

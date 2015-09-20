@@ -19,7 +19,7 @@ package com.globalmentor.java;
 import java.io.UnsupportedEncodingException;
 import java.text.MessageFormat;
 
-import com.globalmentor.config.ConfigurationException;
+import com.globalmentor.model.ConfigurationException;
 
 /**
  * Various checks on objects. Some of these methods indicate <dfn>preconditions</dfn> on objects given as arguments in a method.
