@@ -16,7 +16,6 @@
 
 package com.globalmentor.net;
 
-import com.globalmentor.test.AbstractTest;
 import com.globalmentor.text.ArgumentSyntaxException;
 
 import static com.globalmentor.collections.Sets.*;
@@ -28,7 +27,7 @@ import org.junit.Test;
  * Tests of {@link ContentType}.
  * @author Garret Wilson
  */
-public class ContentTypeTest extends AbstractTest {
+public class ContentTypeTest {
 
 	/** Tests of {@link ContentType#create(CharSequence)}. */
 	@Test

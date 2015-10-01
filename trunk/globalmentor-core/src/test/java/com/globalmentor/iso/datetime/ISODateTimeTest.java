@@ -26,8 +26,6 @@ import java.util.GregorianCalendar;
 import org.junit.*;
 
 import com.globalmentor.iso.datetime.ISODateTime;
-//import com.globalmentor.log.Log;
-import com.globalmentor.test.AbstractTest;
 import com.globalmentor.time.Milliseconds;
 
 /**
@@ -35,7 +33,7 @@ import com.globalmentor.time.Milliseconds;
  * 
  * @author Garret Wilson
  */
-public class ISODateTimeTest extends AbstractTest {
+public class ISODateTimeTest {
 
 	@Test
 	public void testRoundTrip() {
@@ -54,7 +52,6 @@ public class ISODateTimeTest extends AbstractTest {
 			assertThat(datetime1.getISOTime().getMicroseconds(), equalTo(calendar.get(Calendar.MILLISECOND) * 1000));
 			assertThat("Constructed datetime's milliseconds doesn't equal the input time.", datetime1.getTime(), equalTo(time));
 			final String datetime1String = datetime1.toString();
-			//Log.debug(datetime1String);
 			final ISODateTime datetime2 = ISODateTime.valueOf(datetime1String); //create a new datetime from the string representation
 			assertThat(datetime2.getYear(), equalTo(calendar.get(Calendar.YEAR)));
 			assertThat(datetime2.getMonth(), equalTo(calendar.get(Calendar.MONTH) + 1)); //Calendar's months are one-based
@@ -65,7 +62,6 @@ public class ISODateTimeTest extends AbstractTest {
 			assertThat(datetime2.getISOTime().getMicroseconds(), equalTo(calendar.get(Calendar.MILLISECOND) * 1000));
 			final String datetime2String = datetime1.toString();
 			assertThat("Round-trip datetime string equal beginning datetime string.", datetime2String, equalTo(datetime2String));
-			//Log.debug(datetime2String);
 			assertThat("Round-trip datetime doesn't equal beginning time.", datetime2.getTime(), equalTo(time));
 		}
 	}

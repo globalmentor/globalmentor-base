@@ -25,8 +25,6 @@ import static com.globalmentor.collections.Collections.*;
 import static com.globalmentor.java.Objects.*;
 
 import com.globalmentor.collections.*;
-import com.globalmentor.log.Log;
-import com.globalmentor.util.*;
 
 /**
  * An abstract cache that requires a subclass implementing data retrieval methods.
@@ -317,7 +315,7 @@ public abstract class AbstractCache<K, Q extends AbstractCache.Query<K>, V, D ex
 				retrieveData(query); //perform the fetch
 			} catch(final IOException ioException) {
 				cacheFetchListenerMap.remove(query.getKey()); //remove all the listeners so that they won't cause memory leaks TODO report the error to the listeners
-				Log.warn(ioException); //TODO del when error reporting is implemented
+				//TODO fix log: Log.warn(ioException); //TODO del when error reporting is implemented
 			}
 		}
 	}

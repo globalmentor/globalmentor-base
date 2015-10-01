@@ -23,7 +23,6 @@ import com.globalmentor.collections.*;
 import com.globalmentor.io.*;
 
 import com.globalmentor.java.Characters;
-import com.globalmentor.log.Log;
 import com.globalmentor.model.NameValuePair;
 import static com.globalmentor.java.CharSequences.*;
 import static com.globalmentor.java.Objects.*;
@@ -1820,7 +1819,7 @@ public class URIs {
 					try {
 						resolvedFile = resolvedFile.getCanonicalFile(); //try to get the canonical form of the file 
 					} catch(final IOException ioException) { //if we had a problem getting the canonical form
-						Log.warn("Error getting canonical form of file: " + resolvedFile, ioException);
+						//TODO fix log: Log.warn("Error getting canonical form of file: " + resolvedFile, ioException);
 					}
 					resolvedURI = Files.toURI(resolvedFile); //update the resolved URI to the new resolved file 
 				}

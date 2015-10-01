@@ -20,8 +20,6 @@ import static com.globalmentor.java.Conditions.checkArgument;
 
 import java.io.*;
 
-import com.globalmentor.log.Log;
-
 /**
  * A reader that buffers data and allows this data to be processed before handing it to the consumer. This class also allows marking and resetting, as well as
  * peeking upcoming buffered characters.

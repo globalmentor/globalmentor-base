@@ -28,9 +28,7 @@ import org.junit.Test;
 
 import com.globalmentor.collections.CharSequenceSuffixTree.*;
 import com.globalmentor.collections.SuffixTree.*;
-//import com.globalmentor.log.Log;
 import com.globalmentor.model.Count;
-import com.globalmentor.test.AbstractTest;
 
 /**
  * Tests for constructing a suffix tree based upon a character sequence.
@@ -39,7 +37,7 @@ import com.globalmentor.test.AbstractTest;
  * 
  * @see <a href="http://marknelson.us/1996/08/01/suffix-trees/">Mark Nelson: Fast String Searching With Suffix Trees</a>
  */
-public class CharSequenceSuffixTreeTest extends AbstractTest {
+public class CharSequenceSuffixTreeTest {
 
 	/** Interesting test string to use for creating suffix trees. */
 	private static final Set<String> TEST_STRINGS = Sets.immutableSetOf("xabxa", "bananas", "bookkeeper", "mississippi", "dooodah",
@@ -158,7 +156,6 @@ public class CharSequenceSuffixTreeTest extends AbstractTest {
 			final CharSequence suffix = stringBuilder.subSequence(0, length); //get our collected suffix up to the parent node
 			final CharSequence expectedSuffix = suffixTree.getCharSequence().subSequence(suffixTree.getCharSequence().length() - length,
 					suffixTree.getCharSequence().length()); //get what we would have expected if we were looking directly at the underlying character sequence
-			//Log.debug("Suffix:", suffix);
 			assertThat("Bad suffix at position " + length + " for leaf node " + node + ".", suffix, equalTo(expectedSuffix));
 			Count.incrementCounterMapCount(suffixLengthCountMap, length); //show that we found a suffix of this length (at the end we should only have one of each)
 		}

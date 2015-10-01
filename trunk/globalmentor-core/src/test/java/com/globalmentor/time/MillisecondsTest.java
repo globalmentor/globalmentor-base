@@ -20,14 +20,12 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import com.globalmentor.test.AbstractTest;
-
 /**
  * Tests for millisecond processing.
  * 
  * @author Garret Wilson
  */
-public class MillisecondsTest extends AbstractTest {
+public class MillisecondsTest {
 
 	@Test
 	public void testSeconds() {

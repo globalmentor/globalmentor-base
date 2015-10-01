@@ -18,7 +18,6 @@ package com.globalmentor.collections;
 
 import java.util.concurrent.BlockingQueue;
 
-import com.globalmentor.log.Log;
 import com.globalmentor.model.Consumer;
 
 import static com.globalmentor.java.Objects.*;
@@ -60,7 +59,7 @@ public abstract class AbstractRunnableBlockingQueueConsumer<E> implements Consum
 			} catch(final InterruptedException interruptedException) { //if we're interrupted while waiting
 				break; //break out of the loop
 			} catch(final Throwable throwable) { //if any other exception occurs
-				Log.error(throwable); //log the error and continue
+				//TODO fix log: Log.error(throwable); //log the error and continue
 			}
 		}
 		stopped(); //indicate that consuming is finished

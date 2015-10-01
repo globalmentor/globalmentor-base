@@ -22,7 +22,6 @@ import java.util.*;
 import java.util.concurrent.*;
 
 import com.globalmentor.java.Objects;
-import com.globalmentor.log.Log;
 import com.globalmentor.time.*;
 
 /**
@@ -183,7 +182,6 @@ public class OperationManager {
 	/**
 	 * Worker for processing scheduled operations. This implementation ignores canceled operations and logs any errors.
 	 * @author Garret Wilson
-	 * @see Log#error(Object...)
 	 */
 	public static class ScheduledOperationWorker implements Runnable {
 
@@ -218,7 +216,7 @@ public class OperationManager {
 								try {
 									operation.run(); //run the operation
 								} catch(final Throwable throwable) { //if the operation causes an error
-									Log.error(throwable);
+									//TODO fix log: Log.error(throwable);
 								}
 								if(scheduledOperation.isRepeated() && !operation.isCanceled()) { //if the scheduled operation should be repeated (if the operation has already been canceled, don't bother---remove it already)
 									scheduledOperation.resetScheduledTime(); //reset the scheduled time of the operation and leave it for next time
@@ -245,7 +243,7 @@ public class OperationManager {
 				} catch(final InterruptedException interruptedException) { //if we're interrupted while waiting
 					break; //break out of the loop
 				} catch(final Throwable throwable) { //if any other exception occurs
-					Log.error(throwable); //log the error and continue
+					//TODO fix log: Log.error(throwable); //log the error and continue
 				}
 			}
 		}

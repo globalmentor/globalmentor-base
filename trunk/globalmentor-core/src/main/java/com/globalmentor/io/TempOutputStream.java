@@ -21,8 +21,6 @@ import static com.globalmentor.java.Conditions.*;
 
 import java.io.*;
 
-import com.globalmentor.log.Log;
-
 /**
  * An output stream used for the temporary collection of bytes. The bytes are collected in memory using a {@link ByteArrayOutputStream}. If the collected bytes
  * rise above a configured threshold, bytes are collected instead in a temporary file that is removed when the output stream is closed. No additional buffering
@@ -221,7 +219,7 @@ public class TempOutputStream extends OutputStreamDecorator<OutputStream> {
 				try {
 					delete(tempFile); //try to delete the temporary file
 				} catch(final IOException ioException) {
-					Log.error(ioException);
+					//TODO fix log; fix/consolidate Disposable: Log.error(ioException);
 				}
 				tempFile = null;
 			}

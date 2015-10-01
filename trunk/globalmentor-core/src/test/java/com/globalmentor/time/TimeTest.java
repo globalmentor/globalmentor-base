@@ -22,14 +22,13 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 import com.globalmentor.java.Maths;
-import com.globalmentor.test.AbstractTest;
 
 /**
  * Tests for the time class
  * 
  * @author Garret Wilson
  */
-public class TimeTest extends AbstractTest {
+public class TimeTest {
 
 	@Test
 	public void testFloor() {

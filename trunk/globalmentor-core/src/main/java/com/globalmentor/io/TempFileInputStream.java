@@ -22,8 +22,6 @@ import static com.globalmentor.java.Objects.*;
 
 import java.io.*;
 
-import com.globalmentor.log.Log;
-
 /**
  * An input stream to a file that, when closed, deletes the file.
  * 
@@ -72,7 +70,7 @@ public class TempFileInputStream extends InputStreamDecorator<FileInputStream> {
 				try {
 					delete(tempFile); //try to delete the temporary file
 				} catch(final IOException ioException) {
-					Log.error(ioException);
+					//TODO fix log; fix/consolidate Disposable: Log.error(ioException);
 				}
 				tempFile = null;
 			}

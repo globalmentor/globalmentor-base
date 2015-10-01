@@ -18,7 +18,6 @@ package com.globalmentor.collections;
 
 import java.util.*;
 
-import com.globalmentor.log.Log;
 import com.globalmentor.model.ObjectProcessor;
 
 /**
@@ -125,7 +124,7 @@ public class ThreadedQueue implements Runnable, ObjectProcessor {
 			try {
 				thread.join(); //wait for the thread to end
 			} catch(InterruptedException interruptedException) {
-				Log.warn(interruptedException); //TODO fix; do we need to loop until we've really joined the thread?
+				//TODO fix log: Log.warn(interruptedException); //TODO fix; do we need to loop until we've really joined the thread?
 			}
 		}
 	}
@@ -173,7 +172,7 @@ public class ThreadedQueue implements Runnable, ObjectProcessor {
 			try {
 				process(); //process the objects
 			} catch(Throwable throwable) { //don't let any exceptions or anything else shut down the thread; only allow it to be stopped normally
-				Log.warn(throwable); //there's not much we can do here, but this shouldn't happen unless there is a logic error, so create a warning
+				//TODO fix log: Log.warn(throwable); //there's not much we can do here, but this shouldn't happen unless there is a logic error, so create a warning
 			}
 		}
 	}

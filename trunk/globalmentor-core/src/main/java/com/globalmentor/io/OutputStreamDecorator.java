@@ -19,7 +19,6 @@ package com.globalmentor.io;
 import java.io.*;
 
 import com.globalmentor.java.Disposable;
-import com.globalmentor.log.Log;
 
 import static com.globalmentor.java.Objects.*;
 
@@ -174,7 +173,7 @@ public class OutputStreamDecorator<O extends OutputStream> extends OutputStream 
 			try {
 				outputStream.close();
 			} catch(final IOException ioException) {
-				Log.error(ioException);
+				//TODO fix log; fix/consolidate Disposable: Log.error(ioException);
 			}
 			outputStream = null; //release the decorated output stream
 		}

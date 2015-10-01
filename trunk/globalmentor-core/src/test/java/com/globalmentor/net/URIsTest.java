@@ -25,14 +25,12 @@ import java.util.*;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.globalmentor.test.AbstractTest;
-
 /**
  * Various tests for URI utilities.
  * 
  * @author Garret Wilson
  */
-public class URIsTest extends AbstractTest {
+public class URIsTest {
 
 	/** Illustrates a bug in the JDK in which {@link URI#hashCode()} does not meet it obligations in regard to {@link URI#equals(Object)}. */
 	@Test

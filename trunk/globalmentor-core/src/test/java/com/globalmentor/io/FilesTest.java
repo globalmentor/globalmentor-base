@@ -26,14 +26,12 @@ import java.net.URI;
 
 import org.junit.*;
 
-import com.globalmentor.test.AbstractTest;
-
 /**
  * Tests the {@link Files} utility class.
  * 
  * @author Garret Wilson
  */
-public class FilesTest extends AbstractTest {
+public class FilesTest {
 
 	private static File tempFile;
 
