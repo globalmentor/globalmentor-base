@@ -29,15 +29,6 @@
 		</dependency>
 
 		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-			<version>1.2.16</version>
-			<!-- this artifact is only needed if Log4j logging is used with the com.globalmentor.log package, 
-				and must be explicitly included in any such projects -->
-			<optional>true</optional>
-		</dependency>
-
-		<dependency>
 			<groupId>com.google.code.findbugs</groupId>
 			<artifactId>jsr305</artifactId>
 			<version>3.0.0</version>
