@@ -41,9 +41,6 @@
 			<resource>
 				<directory>src/main/javascript</directory>
 			</resource>
-			<resource>
-				<directory>src/main/resources</directory>
-			</resource>
 		</resources>
 
 		<plugins>
