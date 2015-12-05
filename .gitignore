@@ -1,11 +1,4 @@
-trunk/globalmentor-android/bin
-trunk/globalmentor-android/gen
 trunk/globalmentor-core/.classpath
 trunk/globalmentor-core/.project
 trunk/globalmentor-core/.settings
 trunk/globalmentor-core/target
-trunk/globalmentor-rdf/.classpath
-trunk/globalmentor-rdf/.project
-trunk/globalmentor-rdf/.settings
-trunk/globalmentor-rdf/target
-trunk/ploop/target
