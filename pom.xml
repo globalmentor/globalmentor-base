@@ -78,14 +78,14 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-javadoc-plugin</artifactId>
-						<version>2.8</version>
+						<version>2.10.3</version>
 						<configuration>
 							<bottom><![CDATA[<em>Copyright © 1996-2012 GlobalMentor, Inc. All Rights Reserved.</em>]]></bottom>
 							<quiet>true</quiet>
 						</configuration>
 						<executions>
 							<execution>
-								<id>attach-javadocs</id>
+								<id>package-javadocs</id>
 								<goals>
 									<goal>jar</goal>
 								</goals>
