@@ -2181,7 +2181,7 @@ public class URIs {
 	 * @see #isUNCFileURI(URI)
 	 * @see URI#relativize(URI)
 	 * @see #resolve(URI, URI)
-	 * @throws IllegalArgumentException if <code>oldBaseURI</code> is not a base URI of <var>uri</var>.
+	 * @throws IllegalArgumentException if <code><var>oldBaseURI</var></code> is not a base URI of <code><var>uri</var></code>.
 	 */
 	public static URI changeBase(final URI uri, final URI oldBaseURI, final URI newBaseURI) {
 		if(oldBaseURI.equals(newBaseURI)) { //if the old and new base URIs are the same
