@@ -30,7 +30,8 @@ public interface PropertyConstrainable {
 	 * The same listener object may be added more than once, and will be called as many times as it is added.
 	 * </p>
 	 * <p>
-	 * If <code>listener</code> is <code>null</code>, no exception is thrown and no action is taken.<;p>
+	 * If <code>listener</code> is <code>null</code>, no exception is thrown and no action is taken.
+	 * </p>
 	 * @param listener The <code>VetoableChangeListener</code> to be added.
 	 */
 	public void addVetoableChangeListener(final VetoableChangeListener listener);
@@ -48,7 +49,7 @@ public interface PropertyConstrainable {
 	public void removeVetoableChangeListener(final VetoableChangeListener listener);
 
 	/**
-	 * Adds a vetoable change listener for a specific property. The listener will be invoked only when a call to {@link #fireVetoableChange(String, int, int)}
+	 * Adds a vetoable change listener for a specific property. The listener will be invoked only when a call to {@link BoundPropertyObject#fireVetoableChange(String, int, int)}
 	 * names that specific property.
 	 * <p>
 	 * The same listener object may be added more than once. For each property, the listener will be invoked the number of times it was added for that property.

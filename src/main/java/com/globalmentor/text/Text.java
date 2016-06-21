@@ -45,26 +45,26 @@ public class Text {
 
 	/**
 	 * The string representing the CR EOL character sequence.
-	 * @see {@link Characters#CARRIAGE_RETURN_CHAR}
+	 * @see Characters#CARRIAGE_RETURN_CHAR
 	 */
 	public static final String CARRIAGE_RETURN_STRING = new StringBuilder().append(CARRIAGE_RETURN_CHAR).toString();
 
 	/**
 	 * The string representing the LF EOL character sequence.
-	 * @see {@link Characters#LINE_FEED_CHAR}
+	 * @see Characters#LINE_FEED_CHAR
 	 */
 	public static final String LINE_FEED_STRING = new StringBuilder().append(LINE_FEED_CHAR).toString();
 
 	/**
 	 * The pattern that can split a line based upon linefeeds.
-	 * @see {@link Characters#LINE_FEED_CHAR}
+	 * @see Characters#LINE_FEED_CHAR
 	 */
 	public static final Pattern LINE_FEED_PATTERN = Pattern.compile(LINE_FEED_STRING);
 
 	/**
 	 * The string representing the CRLF EOL sequence.
-	 * @see {@link Characters#CARRIAGE_RETURN_CHAR}
-	 * @see {@link Characters#LINE_FEED_CHAR}
+	 * @see Characters#CARRIAGE_RETURN_CHAR
+	 * @see Characters#LINE_FEED_CHAR
 	 */
 	public static final String CRLF_STRING = CARRIAGE_RETURN_STRING + LINE_FEED_STRING;
 
@@ -79,6 +79,7 @@ public class Text {
 	 * This method matches the semantics of {@link Collator#compare(String, String)}, except that this method allows <code>null</code> arguments.
 	 * @param string1 The first string to be compared, or <code>null</code> if the string is not available.
 	 * @param string2 The second string to be compared, or <code>null</code> if the string is not available.
+	 * @param collator The collator used to perform comparisons.
 	 * @return A negative integer, zero, or a positive integer as the first argument is less than, equal to, or greater than the second.
 	 * @throws NullPointerException if the given collator is <code>null</code>.
 	 * @throws ClassCastException if the arguments' types prevent them from being compared.
@@ -91,13 +92,14 @@ public class Text {
 	/**
 	 * Compares two strings for order using the specified collator with the specified sort order. Returns a negative integer, zero, or a positive integer as the
 	 * first argument is less than, equal to, or greater than the second. Identical strings are always considered equal. This method functions exactly as if the
-	 * two stringss were compared using {@link Collator#compare(String, String)}, except:
+	 * two strings were compared using {@link Collator#compare(String, String)}, except:
 	 * <ul>
 	 * <li>Identical strings are recognized as such without delegating to the actual {@link Collator#compare(String, String)} method.</li>
 	 * <li>This method allows <code>null</code> arguments, considering a <code>null</code> string to be lower than a non-<code>null</code> string.</li>
 	 * </ul>
 	 * @param string1 The first string to be compared, or <code>null</code> if the string is not available.
 	 * @param string2 The second string to be compared, or <code>null</code> if the string is not available.
+	 * @param collator The collator used to perform comparisons.
 	 * @param sortOrder The order in which to perform comparisons.
 	 * @return A negative integer, zero, or a positive integer as the first argument is less than, equal to, or greater than the second.
 	 * @throws NullPointerException if the given collator and/or sort order is <code>null</code>.

@@ -57,7 +57,7 @@ package com.globalmentor.java;
  * 
  * <pre>
  * <code>
- * @Override
+ * &#64;Override
  * protected void finalize() throws Throwable
  * {
  *   try

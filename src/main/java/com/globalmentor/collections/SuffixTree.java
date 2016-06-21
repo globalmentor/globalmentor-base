@@ -34,7 +34,6 @@ public interface SuffixTree {
 
 	/**
 	 * Retrieves the root node of the tree. This is a convenience method to retrieve the node with index zero.
-	 * @param nodeIndex The index of the node to retrieve.
 	 * @return The identified node.
 	 */
 	public Node getRootNode();

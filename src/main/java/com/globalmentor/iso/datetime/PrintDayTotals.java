@@ -37,13 +37,13 @@ import com.globalmentor.model.*;
  * Ranges are in the form <code><var>from</var>,<var>to</var></code>, e.g.:
  * </p>
  * 
- * <blockquote><code>2010-01-02,2010-01-05<br/>2010-03-10,2010-04-04</code></blockquote>
+ * <blockquote><code>2010-01-02,2010-01-05<br>2010-03-10,2010-04-04</code></blockquote>
  * 
  * <p>
  * Output has five or six columns, depending on whether a maximum number of days was indicated:
  * <code><var>positive-count-flag</var>,<var>date</var>,<var>count</var>,<var>run-total</var>,<var>window-total</var>,<var>difference</var></code>, e.g.:
  * </p>
- * <blockquote><code>*,2013-02-18,1,1,136,44<br/>*,2013-02-19,1,2,136,44<br/>*,2013-02-20,,,135,45</code></blockquote>
+ * <blockquote><code>*,2013-02-18,1,1,136,44<br>*,2013-02-19,1,2,136,44<br>*,2013-02-20,,,135,45</code></blockquote>
  * 
  * <p>
  * If no <var>historyCount</var> is given, the value will default to <var>windowSize</var>.

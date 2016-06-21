@@ -161,7 +161,7 @@ public class URIs {
 
 	/**
 	 * The sequence "//" which is supposed to be present in file URIs (e.g. <code>file:///mnt/sdcard/...</code>) but which isn't present in Java file URIs.
-	 * @see <a href="http://blogs.msdn.com/b/ie/archive/2006/12/06/file-uris-in-windows.aspx">File URIs in Windows.</p>
+	 * @see <a href="http://blogs.msdn.com/b/ie/archive/2006/12/06/file-uris-in-windows.aspx">File URIs in Windows.</a>
 	 */
 	public static final String FILE_URI_PATH_ROOT_PREFIX = ROOT_PATH + PATH_SEPARATOR;
 
@@ -429,7 +429,7 @@ public class URIs {
 	 * Returns the raw name of the resource at the given URI's path, which will be the raw name of the last path component. If the path is a collection (i.e. it
 	 * ends with slash), the component before the last slash will be returned. As examples, "/path/name.ext" and "name.ext" will return "name.ext". "/path/",
 	 * "path/", and "path" will all return "path". This method correctly handles {@value URIs#INFO_SCHEME} URIs.
-	 * @param URI The URI the path of which will be examined.
+	 * @param uri The URI the path of which will be examined.
 	 * @return The name of the last last path component, the empty string if the path is the empty string, "/" if the path is the root path, or <code>null</code>
 	 *         if the URI has no path.
 	 * @throws NullPointerException if the given URI is <code>null</code>.
@@ -445,7 +445,7 @@ public class URIs {
 	 * "/path/", "path/", and "path" will all return "path". An empty name is never returned; <code>null</code> will be returned instead. The path name is first
 	 * extracted from the URI's raw path and then decoded so that encoded {@value URIs#PATH_SEPARATOR} characters will not prevent correct parsing. This method
 	 * correctly handles {@value URIs#INFO_SCHEME} URIs.
-	 * @param URI The URI the path of which will be examined.
+	 * @param uri The URI the path of which will be examined.
 	 * @return The name of the last path component, the empty string if the path is the empty string, "/" if the path is the root path, or <code>null</code> if
 	 *         the URI has no path.
 	 * @throws NullPointerException if the given URI is <code>null</code>.
@@ -558,7 +558,7 @@ public class URIs {
 	/**
 	 * Extracts the extension from a URI's name. This this the preferred method for extracting an extension from a URI, as this method correctly parses the raw
 	 * form of the URI path to find the extension before decoding.
-	 * @param URI The URI to examine.
+	 * @param uri The URI to examine.
 	 * @return The extension of the URI's name (not including '.'), or <code>null</code> if no extension is present.
 	 * @see #getName(URI)
 	 */
@@ -569,7 +569,7 @@ public class URIs {
 
 	/**
 	 * Extracts the raw, encoded extension from a URI's name.
-	 * @param URI The URI to examine.
+	 * @param uri The URI to examine.
 	 * @return The raw, encoded extension of the URI's name (not including '.'), or <code>null</code> if no extension is present.
 	 * @see #getRawName(URI)
 	 */
@@ -612,7 +612,7 @@ public class URIs {
 	/**
 	 * Removes the extension, if any, of a URI name and returns a new URI with no extension. This is a convenience method that delegates to
 	 * {@link #changeRawNameExtension(URI, String)}.
-	 * @param URI The URI to examine.
+	 * @param uri The URI to examine.
 	 * @return The URI with no extension.
 	 */
 	public static URI removeRawNameExtension(final URI uri) {
@@ -680,6 +680,7 @@ public class URIs {
 	 * Constructs an absolute path from the given elements in the form: <code>/<var>element1</var>/<var>element2</var></code>. Each element in the path is
 	 * URI-encoded using UTF-8.
 	 * @param absolute <code>true</code> if the path should be absolute and therefore should begin with '/'.
+	 * @param collection <code>true</code> if the path should be a collection and therefore end with `/`.
 	 * @param pathElements <code>true</code> if the path represents a collection and therefore should end with '/'.
 	 * @return A path constructed according to the given rules.
 	 * @throws IllegalArgumentException if there are no path elements and an absolute non-collection or non-absolute collection is requested.
@@ -713,7 +714,7 @@ public class URIs {
 	}
 
 	/**
-	 * Constructs a query string for a URI by URI-encoding each name-value pair, separating them with '&', and prepending the entire string (if there is at least
+	 * Constructs a query string for a URI by URI-encoding each name-value pair, separating them with '&amp;', and prepending the entire string (if there is at least
 	 * one parameter) with '?'.
 	 * @param params The name-value pairs representing the query parameters.
 	 * @return A string representing the constructed query, or the empty string if there were no parameters.
@@ -789,7 +790,7 @@ public class URIs {
 	}
 
 	/**
-	 * Constructs a query string for a URI by URI-encoding each name-value pair, separating them with '&'. Parameters are allowed to have <code>null</code>
+	 * Constructs a query string for a URI by URI-encoding each name-value pair, separating them with '&amp;'. Parameters are allowed to have <code>null</code>
 	 * values, in which case no '=' delimiter will be used.
 	 * @param params The name-value pairs representing the query parameters.
 	 * @return A string representing the constructed query, or the empty string if there were no parameters.
@@ -995,6 +996,7 @@ public class URIs {
 	/**
 	 * Creates a URI from the given path, verifying that the string contains only a path.
 	 * @param path The string version of a path to convert to a URI form of that same path.
+	 * @return The URI constructed.
 	 * @throws NullPointerException if the given path is <code>null</code>.
 	 * @throws IllegalArgumentException if the provided path specifies a URI scheme (i.e. the URI is absolute) and/or authority.
 	 * @see #isPathURI(URI)
@@ -1846,6 +1848,7 @@ public class URIs {
 	 * </p>
 	 * @param uri The URI to which to add a fragment identifier, or <code>null</code> if a URI should be created from just the fragment.
 	 * @param fragment The unencoded fragment to add to the end of the URI.
+	 * @return The URI constructed.
 	 * @throws IllegalArgumentException if the a URI cannot be constructed from the given information.
 	 * @see #encode(String)
 	 * @see URI#create(String)
@@ -1866,6 +1869,7 @@ public class URIs {
 	 * </p>
 	 * @param uri The URI to which to add a fragment identifier, or <code>null</code> if a URI should be created from just the fragment.
 	 * @param rawFragment The raw, encoded fragment to add to the end of the URI.
+	 * @return The URI constructed.
 	 * @throws IllegalArgumentException if the a URI cannot be constructed from the given information.
 	 * @see URI#create(String)
 	 */
@@ -1922,6 +1926,7 @@ public class URIs {
 	 * </p>
 	 * @param scheme The name of the URI scheme.
 	 * @param rawSchemeSpecificPart The raw, encoded scheme-specific part, or <code>null</code> if there is no scheme-specific part.
+	 * @return The URI constructed.
 	 * @throws IllegalArgumentException if the a URI cannot be constructed from the given strings.
 	 */
 	public static URI createURI(final String scheme, final String rawSchemeSpecificPart) throws IllegalArgumentException {
@@ -1936,6 +1941,7 @@ public class URIs {
 	 * @param scheme The name of the URI scheme.
 	 * @param rawSchemeSpecificPart The raw, encoded scheme-specific part, or <code>null</code> if there is no scheme-specific part.
 	 * @param rawFragment The raw, encoded fragment at the end of the URI, or <code>null</code> if there is no fragment.
+	 * @return The URI constructed.
 	 * @throws IllegalArgumentException if the a URI cannot be constructed from the given strings.
 	 */
 	public static URI createURI(final String scheme, final String rawSchemeSpecificPart, final String rawFragment) throws IllegalArgumentException {
@@ -1964,6 +1970,7 @@ public class URIs {
 	 * @param path The path, or <code>null</code> if there is no path.
 	 * @param rawQuery The raw, encoded URI query, or <code>null</code> if there is no query.
 	 * @param rawFragment The raw, encoded fragment at the end of the URI, or <code>null</code> if there is no fragment.
+	 * @return The URI constructed.
 	 * @throws IllegalArgumentException if the a URI cannot be constructed from the given strings.
 	 */
 	public static URI createURI(final String scheme, final String rawUserInfo, final String host, final int port, final URIPath path, final String rawQuery,
@@ -1983,6 +1990,7 @@ public class URIs {
 	 * @param rawPath The raw, encoded path, or <code>null</code> if there is no path.
 	 * @param rawQuery The raw, encoded URI query, or <code>null</code> if there is no query.
 	 * @param rawFragment The raw, encoded fragment at the end of the URI, or <code>null</code> if there is no fragment.
+	 * @return The URI constructed.
 	 * @throws IllegalArgumentException if the a URI cannot be constructed from the given strings.
 	 */
 	public static URI createURI(final String scheme, final String rawUserInfo, final String host, final int port, final String rawPath, final String rawQuery,
@@ -2173,7 +2181,7 @@ public class URIs {
 	 * @see #isUNCFileURI(URI)
 	 * @see URI#relativize(URI)
 	 * @see #resolve(URI, URI)
-	 * @throws IllegalArgumentException if <var>oldBaseURI</code> is not a base URI of <var>uri</var>.
+	 * @throws IllegalArgumentException if <code>oldBaseURI</code> is not a base URI of <var>uri</var>.
 	 */
 	public static URI changeBase(final URI uri, final URI oldBaseURI, final URI newBaseURI) {
 		if(oldBaseURI.equals(newBaseURI)) { //if the old and new base URIs are the same

@@ -160,6 +160,7 @@ public class ContentType {
 	/**
 	 * Checks to ensure that the given character sequence is a content type token, that is, consisting only of non-control ASCII characters with no special
 	 * characters or spaces.
+	 * @param <CS> The type of the char sequence.
 	 * @param charSequence The character sequence to check.
 	 * @return The given character sequence.
 	 * @throws NullPointerException if the given character sequence is <code>null</code>.
@@ -374,7 +375,7 @@ public class ContentType {
 	 * has a parameter with the same name but with a different value, the parameter will be replaced with the one given. Otherwise, the parameter will be added to
 	 * the parameters. Parameter name comparisons are case-insensitive.
 	 * @param newParameter The new parameter to add or replace.
-	 * @return
+	 * @return The new content type instance with the given parameter.
 	 */
 	public ContentType withParameter(final Parameter newParameter) {
 		final Set<Parameter> newParameters = new HashSet<ContentType.Parameter>(getParameters().size());

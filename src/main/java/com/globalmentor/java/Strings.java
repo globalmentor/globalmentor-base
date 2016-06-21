@@ -95,6 +95,7 @@ public class Strings {
 	 * too long for the given length, it is truncated.
 	 * @param string The string to store in bytes.
 	 * @param length The length of bytes to return.
+	 * @return The array of bytes containing the bytes of the given string.
 	 * @throws UnsupportedEncodingException Thrown if the given encoding is not supported.
 	 */
 	public static byte[] getASCIIZBytes(final String string, final int length) throws UnsupportedEncodingException {
@@ -107,6 +108,7 @@ public class Strings {
 	 * @param string The string to store in bytes.
 	 * @param length The length of bytes to return.
 	 * @param charset The charset to use in storing the string bytes.
+	 * @return The array of bytes containing the bytes of the given string.
 	 * @throws UnsupportedEncodingException Thrown if the given encoding is not supported.
 	 */
 	public static byte[] getASCIIZBytes(String string, final int length, final Charset charset) throws UnsupportedEncodingException {
@@ -276,7 +278,7 @@ public class Strings {
 	/**
 	 * Returns the index of the given numbered (one-based) word.
 	 * @param inString The string to search.
-	 * @param tokenNumber The number (one-based) of the token to find.
+	 * @param wordNumber The number (one-based) of the token to find.
 	 * @return The index of the specified word, or -1 if that word was not found.
 	 */
 	static public int wordIndex(final String inString, final int wordNumber) {
@@ -465,8 +467,11 @@ public class Strings {
 	}
 
 	/**
-	 * Removes all characters that come before the last occurrence of the given' character. If the character does not exist in the string, the original string
+	 * Removes all characters that come before the last occurrence of the given character. If the character does not exist in the string, the original string
 	 * will be returned.
+	 * @param string The string to be used to create a new string after the given character.
+	 * @param c The character used as a delimiter to be removed with all the content before it.
+	 * @return The string without the characters before the given character.
 	 */
 	public static String removeBeforeLast(String string, final char c) {
 		final int lastIndex = string.lastIndexOf(c); //get the last index of the character
@@ -696,6 +701,7 @@ public class Strings {
 	 * Trims the specified delimiters from the beginning and end of the string.
 	 * @param inString The string to be processed.
 	 * @param delimiters The string containing delimiter characters.
+	 * @return The string without the delimiters from the beginning and end of the string.
 	 */
 	static public String trim(final String inString, final Characters delimiters) { //TODO call the StringBuffer version---or maybe not---this may be more efficient
 		int beginIndex, endIndex;
@@ -714,6 +720,7 @@ public class Strings {
 	/**
 	 * Trims whitespace, including the Unicode no-break space character 0x00A0, from the beginning and end of the string.
 	 * @param inString The string to be processed.
+	 * @return The string without any whitespace on the beginning or the end of the string.
 	 */
 	static public String trimWhitespaceNoBreak(final String inString) { //TODO update with our new Unicode 4.x constants
 		final int length = inString.length(); //get the string's length
@@ -740,6 +747,7 @@ public class Strings {
 	/**
 	 * Trims whitespace, including the Unicode no-break space character 0x00A0, from the beginning of the string.
 	 * @param inString The string to be processed.
+	 * @return The string without any spaces on the beginning of the string.
 	 */
 	static public String trimWhitespaceNoBreakBeginning(final String inString) {
 		final int length = inString.length(); //get the string's length
@@ -760,6 +768,7 @@ public class Strings {
 	/**
 	 * Trims whitespace, including the Unicode no-break space character 0x00A0, from the beginning of the string.
 	 * @param inString The string to be processed.
+	 * @return The string without any spaces on the end of the string.
 	 */
 	static public String trimWhitespaceNoBreakEnd(final String inString) {
 		final int length = inString.length(); //get the string's length
@@ -793,7 +802,7 @@ public class Strings {
 	/**
 	 * If the input string ends with the specified string, trims that string.
 	 * @param inString The string to be processed.
-	 * @param beginString The string to be trimmed, if it appears at the end of inString.
+	 * @param endString The string to be trimmed, if it appears at the end of inString.
 	 * @return The string, trimmed if needed.
 	 */
 	static public String trimEnd(final String inString, final String endString) {
@@ -855,9 +864,11 @@ public class Strings {
 
 	/**
 	 * Writes an object to a string using the given I/O support, converting bytes to a string using the UTF-8 charset.
+	 * @param <T> The type of the object
 	 * @param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
 	 * @param object The object to write to a string.
 	 * @param io The I/O support for writing the object.
+	 * @return The given object converted to a string.
 	 * @throws IOException if there is an error writing the data.
 	 */
 	public static <T> String write(final URI baseURI, final T object, final IO<T> io) throws IOException {
@@ -866,10 +877,12 @@ public class Strings {
 
 	/**
 	 * Writes an object to a string using the given I/O support.
+	 * @param <T> The type of the object
 	 * @param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
 	 * @param object The object to write to a string.
 	 * @param io The I/O support for writing the object.
 	 * @param charset The encoding with which to interpret the written bytes.
+	 * @return The given object converted to a string.
 	 * @throws IOException if there is an error writing the data.
 	 */
 	public static <T> String write(final URI baseURI, final T object, final IO<T> io, final Charset charset) throws IOException {

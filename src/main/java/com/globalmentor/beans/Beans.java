@@ -35,6 +35,7 @@ public class Beans {
 	 * <ul>
 	 * <li><code>File</code> - Constructed by <code>File.getAbsolutePath</code></li>
 	 * </ul>
+	 * @param encoder The encoder to be upgraded.
 	 */
 	public static void upgradeEncoder(final Encoder encoder) {
 		//File
@@ -93,6 +94,7 @@ public class Beans {
 	 * Reads the given JavaBean to the file using long-term XML-encoded persistence.
 	 * @param file The file in which the object is stored.
 	 * @throws FileNotFoundException Thrown if the specified file does not exist.
+	 * @return The object retrieved by the given file.
 	 */
 	public static Object xmlDecode(final File file) throws FileNotFoundException {
 		//create a buffered input stream for the file, and construct an XML decoder that uses it

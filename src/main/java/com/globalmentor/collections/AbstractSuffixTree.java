@@ -62,7 +62,7 @@ public abstract class AbstractSuffixTree<E extends SuffixTree.Edge> implements S
 	}
 
 	/**
-	 * Creates a new node and adds it to the internal list of nodes. This implementation delegates to {@link #createNode()}.
+	 * Creates a new node and adds it to the internal list of nodes. This implementation delegates to {@link #createNode(int)}.
 	 * @return The newly created node.
 	 */
 	protected final AbstractNode addNode() {
@@ -83,17 +83,18 @@ public abstract class AbstractSuffixTree<E extends SuffixTree.Edge> implements S
 	 * Creates a new edge and adds it to the tree. The given parent node will be set to be a branch node, and the given child node will have its parent node set
 	 * to the given parent node.
 	 * <p>
-	 * This method delegates to {@link #createEdge(int, int, int, int)}.
+	 * This method delegates to {@link #createEdge(SuffixTree.Node, SuffixTree.Node, int, int)}.
 	 * </p>
 	 * @param parentNode The parent node representing the root end of the edge.
 	 * @param childNode The child node representing the leaf end of the edge.
 	 * @param start The position of the start element, inclusive.
 	 * @param end The position of the end element, exclusive.
+	 * @return The tree after it receives a new edge.
 	 * @throws NullPointerException if the given parent node and/or child node is <code>null</code>.
 	 * @throws IllegalArgumentException if the given end is less than the start.
 	 * @throws IllegalStateException if there already exists an edge with the same parent node and first element.
 	 * @throws ClassCastException if the given parent node is not an {@link AbstractNode}.
-	 * @see AbstractNode#setParentNode(Node)
+	 * @see AbstractNode#setParentNode(SuffixTree.Node)
 	 * @see AbstractNode#setLeaf(boolean)
 	 */
 	protected final E addEdge(final Node parentNode, final Node childNode, final int start, final int end) {
@@ -110,6 +111,7 @@ public abstract class AbstractSuffixTree<E extends SuffixTree.Edge> implements S
 	 * @param childNode The child node representing the leaf end of the edge.
 	 * @param start The position of the start element, inclusive.
 	 * @param end The position of the end element, exclusive.
+	 * @return The tree after it receives a new edge.
 	 * @throws NullPointerException if the given parent node and/or child node is <code>null</code>.
 	 * @throws IllegalArgumentException if the given end is less than the start.
 	 * @throws IllegalStateException if there already exists an edge with the same parent node and first element.
@@ -249,7 +251,7 @@ public abstract class AbstractSuffixTree<E extends SuffixTree.Edge> implements S
 			return getIndex() == ((Node)object).getIndex();
 		}
 
-		/** {@inheritDoc This implementation returns a string in the form <code>(<var>index</var>)*</code>, where '*' indicates a leaf node. */
+		/** {@inheritDoc} This implementation returns a string in the form <code>(<var>index</var>)*</code>, where '*' indicates a leaf node. */
 		@Override
 		public String toString() {
 			final StringBuilder stringBuilder = new StringBuilder();

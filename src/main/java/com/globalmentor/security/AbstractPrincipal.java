@@ -45,7 +45,7 @@ public abstract class AbstractPrincipal extends DefaultIDed<String> implements P
 	/**
 	 * Determines if the object is another principal with the same ID.
 	 * @param object The object with which to compare this object.
-	 * @return <code>true<code> if the object is a principal with the same ID.
+	 * @return <code>true</code> if the object is a principal with the same ID.
 	 */
 	public boolean equals(Object object) {
 		return object instanceof Principal && super.equals(object); //see if the object is a principal and it passes the default tests

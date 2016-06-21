@@ -56,7 +56,7 @@ public class PurgeOnWriteSoftValueHashMap<K, V> extends AbstractPurgeOnWriteRefe
 	/**
 	 * Decorated map constructor.
 	 * @param map The map to decorate.
-	 * @throws NulPOinter
+	 * @throws NullPointerException If the map is <code>null</code>.
 	 */
 	protected PurgeOnWriteSoftValueHashMap(final Map<K, SoftValueReference<K, V>> map) {
 		super(map); //construct the parent class

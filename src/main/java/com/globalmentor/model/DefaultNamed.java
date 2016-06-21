@@ -43,7 +43,7 @@ public class DefaultNamed<N> implements Named<N> {
 	/**
 	 * Compares the names of two objects if the other object is a {@link Named}.
 	 * @param object The object with which to compare this named object; should be another {@link Named}.
-	 * @return <code>true<code> if the other object is a named object with the same name.
+	 * @return <code>true</code> if the other object is a named object with the same name.
 	 * @see #getName()
 	 */
 	public boolean equals(final Object object) {

@@ -50,6 +50,7 @@ public class ConverterIterator<I, O> implements Iterator<O> {
 	/**
 	 * Iterator and converter constructor.
 	 * @param iterator The iterator of source objects.
+	 * @param converter The conversor to be used on the iterable.
 	 * @throws NullPointerException of if the given iterator and/or converter is <code>null</code>.
 	 */
 	public ConverterIterator(final Iterator<I> iterator, final Converter<I, O> converter) {

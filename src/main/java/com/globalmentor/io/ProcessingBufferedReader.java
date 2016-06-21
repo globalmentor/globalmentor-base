@@ -366,7 +366,7 @@ public class ProcessingBufferedReader extends Reader {
 	 * The mark index is adjusted as well. If adjusting the indexes moves the mark index below the bottom of the buffer, the reader has effectively become
 	 * unmarked.
 	 * </p>
-	 * @param The number of characters to move the indexes, positive for forwards, negative for backwards.
+	 * @param moveDelta The number of characters to move the indexes, positive for forwards, negative for backwards.
 	 * @see #fetchBuffer()
 	 */
 	protected void adjustIndexes(final int moveDelta) {
@@ -605,7 +605,7 @@ public class ProcessingBufferedReader extends Reader {
 	 * the stream is reached.
 	 * <p>
 	 * Resets peeking.
-	 * </p
+	 * </p>
 	 * @param cbuf Destination buffer.
 	 * @param off Offset at which to start storing characters.
 	 * @param len Maximum number of characters to peek.

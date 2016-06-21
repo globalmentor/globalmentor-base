@@ -97,7 +97,7 @@ public class ISOUTCOffset implements ISOTemporal {
 
 	/**
 	 * Appends the canonical lexical representation of this UTC offset to a string builder in the form "+/-hh:mm".
-	 * @param stringBuild The string builder to which the lexical representation will be appended.
+	 * @param stringBuilder The string builder to which the lexical representation will be appended.
 	 * @return The string builder.
 	 */
 	public StringBuilder append(final StringBuilder stringBuilder) {

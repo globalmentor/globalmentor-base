@@ -36,6 +36,7 @@ public class TextFormatter {
 
 	/**
 	 * Formats an array of bytes into a sequence of hex characters, with each character pair representing the hexadecimal value of the byte.
+	 * @param <A> The type of the appendable.
 	 * @param appendable The formatting destination.
 	 * @param bytes The values to convert.
 	 * @return A lowercase string with hexadecimal digits, each pair representing a byte in the byte array.
@@ -64,9 +65,9 @@ public class TextFormatter {
 	/**
 	 * Appends the string representations of the given items separated by a {@value Characters#COMMA_CHAR}. <code>null</code> objects are represented by
 	 * {@value Java#NULL_KEYWORD}.
+	 * @param <A> The type of the appendable.
 	 * @param <T> The type of item being formatted.
 	 * @param appendable The formatting destination.
-	 * @param separator The separator character to be inserted between the item strings, or {@link Characters#UNDEFINED_CHAR} if there should be no separator.
 	 * @param items The items to be formatted.
 	 * @return The appendable containing the new information.
 	 * @throws IOException if there is an error writing to the appendable.
@@ -81,7 +82,6 @@ public class TextFormatter {
 	 * Appends the string representations of the given items separated by a {@value Characters#COMMA_CHAR}. <code>null</code> objects are represented by
 	 * {@value Java#NULL_KEYWORD}.
 	 * @param <T> The type of item being formatted.
-	 * @param separator The separator character to be inserted between the item strings, or {@link Characters#UNDEFINED_CHAR} if there should be no separator.
 	 * @param items The items to be formatted.
 	 * @return The string containing the formatted list.
 	 * @see Object#toString()
@@ -98,6 +98,7 @@ public class TextFormatter {
 	/**
 	 * Appends the string representations of the given items separated by a separator character. <code>null</code> objects are represented by
 	 * {@value Java#NULL_KEYWORD}.
+	 * @param <A> The type of the appendable.
 	 * @param <T> The type of item being formatted.
 	 * @param appendable The formatting destination.
 	 * @param separator The separator character to be inserted between the item strings, or {@link Characters#UNDEFINED_CHAR} if there should be no separator.
@@ -140,6 +141,7 @@ public class TextFormatter {
 	/**
 	 * Appends the string representations of the given items separated by a separator string. <code>null</code> objects are represented by
 	 * {@value Java#NULL_KEYWORD}.
+	 * @param <A> The type of the appendable.
 	 * @param <T> The type of item being formatted.
 	 * @param appendable The formatting destination.
 	 * @param separator The separator to be inserted between the item strings, or <code>null</code> if there should be no separator.
@@ -182,6 +184,7 @@ public class TextFormatter {
 	/**
 	 * Appends the string representations of the given items separated by a separator character. <code>null</code> objects are represented by
 	 * {@value Java#NULL_KEYWORD}.
+	 * @param <A> The type of the appendable.
 	 * @param appendable The formatting destination.
 	 * @param separator The separator character to be inserted between the object strings, or {@link Characters#UNDEFINED_CHAR} if there should be no separator.
 	 * @param items The items to be formatted.
@@ -196,6 +199,7 @@ public class TextFormatter {
 	/**
 	 * Appends the string representations of the given items separated by a {@value Characters#COMMA_CHAR}. <code>null</code> objects are represented by
 	 * {@value Java#NULL_KEYWORD}.
+	 * @param <A> The type of the appendable.
 	 * @param appendable The formatting destination.
 	 * @param items The items to be formatted.
 	 * @return The appendable containing the new information.
@@ -248,6 +252,7 @@ public class TextFormatter {
 	/**
 	 * Appends the string representations of the given items separated by a separator character. <code>null</code> objects are represented by
 	 * {@value Java#NULL_KEYWORD}.
+	 * @param <A> The type of the appendable.
 	 * @param <T> The type of item being formatted.
 	 * @param appendable The formatting destination.
 	 * @param items The items to be formatted.
@@ -293,6 +298,7 @@ public class TextFormatter {
 	/**
 	 * Appends the string representations of the given items separated by a separator string. <code>null</code> objects are represented by
 	 * {@value Java#NULL_KEYWORD}.
+	 * @param <A> The type of the appendable.
 	 * @param appendable The formatting destination.
 	 * @param separator The separator string to be inserted between the object strings, or <code>null</code> if there should be no separator.
 	 * @param items The items to be formatted.
@@ -323,6 +329,7 @@ public class TextFormatter {
 	/**
 	 * Appends the string representations of the given items separated by a separator string. <code>null</code> objects are represented by
 	 * {@value Java#NULL_KEYWORD}.
+	 * @param <A> The type of the appendable.
 	 * @param <T> The type of item being formatted.
 	 * @param appendable The formatting destination.
 	 * @param items The items to be formatted.
@@ -350,6 +357,7 @@ public class TextFormatter {
 	/**
 	 * Formats a single name-value attribute using {@value Characters#EQUALS_SIGN_CHAR} for assignment and {@value Characters#QUOTATION_MARK_CHAR} for value
 	 * quotation.
+	 * @param <A> The type of the appendable.
 	 * @param appendable The formatting destination.
 	 * @param attribute The attribute to format.
 	 * @return The appendable used for formatting.
@@ -361,6 +369,7 @@ public class TextFormatter {
 
 	/**
 	 * Formats a single name-value attribute using {@value Characters#EQUALS_SIGN_CHAR} for assignment.
+	 * @param <A> The type of the appendable.
 	 * @param appendable The formatting destination.
 	 * @param attribute The attribute to format.
 	 * @param quote The quote character to use for the value, or {@link Characters#UNDEFINED_CHAR} if the value should not be quoted.
@@ -373,6 +382,7 @@ public class TextFormatter {
 
 	/**
 	 * Formats a single name-value attribute.
+	 * @param <A> The type of the appendable.
 	 * @param appendable The formatting destination.
 	 * @param attribute The attribute to format.
 	 * @param assignment The character for assigning the value to the attribute.
@@ -388,6 +398,7 @@ public class TextFormatter {
 	/**
 	 * Formats a single name-value attribute using {@value Characters#EQUALS_SIGN_CHAR} for assignment and {@value Characters#QUOTATION_MARK_CHAR} for value
 	 * quotation.
+	 * @param <A> The type of the appendable.
 	 * @param appendable The formatting destination.
 	 * @param attribute The attribute to format.
 	 * @return The appendable used for formatting.
@@ -399,6 +410,7 @@ public class TextFormatter {
 
 	/**
 	 * Formats a single name-value attribute using {@value Characters#EQUALS_SIGN_CHAR} for assignment.
+	 * @param <A> The type of the appendable.
 	 * @param appendable The formatting destination.
 	 * @param attribute The attribute to format.
 	 * @param quote The quote character to use for the value, or {@link Characters#UNDEFINED_CHAR} if the value should not be quoted.
@@ -411,6 +423,7 @@ public class TextFormatter {
 
 	/**
 	 * Formats a single name-value attribute.
+	 * @param <A> The type of the appendable.
 	 * @param appendable The formatting destination.
 	 * @param attribute The attribute to format.
 	 * @param assignment The character for assigning the value to the attribute.
@@ -426,6 +439,7 @@ public class TextFormatter {
 	/**
 	 * Formats a single name-value attribute using {@value Characters#EQUALS_SIGN_CHAR} for assignment and {@value Characters#QUOTATION_MARK_CHAR} for value
 	 * quotation.
+	 * @param <A> The type of the appendable.
 	 * @param appendable The formatting destination.
 	 * @param name The name to format.
 	 * @param value The value to format.
@@ -438,6 +452,7 @@ public class TextFormatter {
 
 	/**
 	 * Formats a single name-value attribute using {@value Characters#EQUALS_SIGN_CHAR} for assignment.
+	 * @param <A> The type of the appendable.
 	 * @param appendable The formatting destination.
 	 * @param name The name to format.
 	 * @param value The value to format.
@@ -451,6 +466,7 @@ public class TextFormatter {
 
 	/**
 	 * Formats a single name-value attribute.
+	 * @param <A> The type of the appendable.
 	 * @param appendable The formatting destination.
 	 * @param name The name to format.
 	 * @param value The value to format.
@@ -474,7 +490,8 @@ public class TextFormatter {
 	}
 
 	/**
-	 * Formats a series of name-value pairs using the format: <var>name</var>="<var>value</value>", <var>name</var>="<var>value</value>"
+	 * Formats a series of name-value pairs using the format: <var>name</var>="<var>value</var>", <var>name</var>="<var>value</var>"
+	 * @param <A> The type of the appendable.
 	 * @param appendable The formatting destination.
 	 * @param attributes The attributes to format.
 	 * @return The appendable used for formatting.
@@ -486,6 +503,7 @@ public class TextFormatter {
 
 	/**
 	 * Formats a series of name-value pairs.
+	 * @param <A> The type of the appendable.
 	 * @param appendable The formatting destination.
 	 * @param separator The character for separating the attribute, or {@link Characters#UNDEFINED_CHAR} if there should be no separator.
 	 * @param assignment The character for assigning the value to the attribute.

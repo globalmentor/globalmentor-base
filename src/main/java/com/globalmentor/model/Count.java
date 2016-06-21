@@ -102,6 +102,7 @@ public class Count extends AbstractLong<Count> implements CloneSupported {
 	 * <p>
 	 * This implementation does not allow <code>null</code> counter values.
 	 * </p>
+	 * @param <K> The type of the key used on the map.
 	 * @param map The map containing the counts.
 	 * @param key The key being counted.
 	 * @return The new count of the key in the map.
@@ -124,6 +125,7 @@ public class Count extends AbstractLong<Count> implements CloneSupported {
 	 * <p>
 	 * This implementation does not allow <code>null</code> counter values. This implementation does not support counts less than zero.
 	 * </p>
+	 * @param <K> The type of the key used on the map.
 	 * @param map The map containing the counts.
 	 * @param key The key being counted.
 	 * @return The new count of the key in the map.
@@ -149,6 +151,7 @@ public class Count extends AbstractLong<Count> implements CloneSupported {
 	 * <p>
 	 * This implementation does not allow <code>null</code> counter values.
 	 * </p>
+	 * @param <K> The type of the key used on the map.
 	 * @param map The map containing the counts.
 	 * @param key The key being counted.
 	 * @return The count value of the counter of the key in the map.

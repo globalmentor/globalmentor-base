@@ -54,8 +54,8 @@ public class Luhn {
 	 * Calculates the check digit of the given sequence of digits within the given range. Each digit must be a value from '0' to '9', inclusive. If the sequence
 	 * of digits is empty, this method returns '0'.
 	 * @param digits The digits for which a check digit should be calculated.
-	 * @param startIndex The starting index for which a check digit should be calculated.
-	 * @param endIndex One more than the last index to include in a check digit calculation.
+	 * @param start The starting index for which a check digit should be calculated.
+	 * @param end One more than the last index to include in a check digit calculation.
 	 * @return The character representing the check digit generated for the given digits according to the Luhn algorithm.
 	 * @throws NullPointerException if the given sequence of digits is <code>null</code>.
 	 * @throws IndexOutOfBoundsException if the given range references one or more indexes outside the character sequence.

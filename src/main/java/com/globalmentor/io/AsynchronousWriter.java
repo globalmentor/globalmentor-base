@@ -244,7 +244,7 @@ public class AsynchronousWriter extends Writer {
 	/**
 	 * Queues an array of characters for asynchronous writing, throwing an exception if this writer has been closed. The calling method should not subsequently
 	 * modify the contents of the buffer. No synchronization occurs in this method; any desired synchronization should occur in the caller. This implementation
-	 * delegates to {@link #produce(char[], boolean)}.
+	 * delegates to {@link #produce(char[])}.
 	 * @param charBuffer The buffer of characters to write.
 	 * @throws IOException if this writer has been closed before production begins, or if this thread was interrupted while waiting for production to complete.
 	 */

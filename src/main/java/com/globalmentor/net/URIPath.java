@@ -79,7 +79,7 @@ public final class URIPath {
 
 	/**
 	 * Determines whether this path is absolute.
-	 * @return <code>true</code> if the path begins with {@value com.globalmentor.net.URIs#ROOT_PATH}.
+	 * @return <code>true</code> if the path begins with {@link com.globalmentor.net.URIs#ROOT_PATH}.
 	 * @see #isRelative()
 	 */
 	public boolean isAbsolute() {
@@ -88,7 +88,7 @@ public final class URIPath {
 
 	/**
 	 * Determines whether this path is relative.
-	 * @return <code>true</code> if the path does not begin with {@value com.globalmentor.net.URIs#ROOT_PATH}.
+	 * @return <code>true</code> if the path does not begin with {@link com.globalmentor.net.URIs#ROOT_PATH}.
 	 * @see #isAbsolute()
 	 */
 	public boolean isRelative() {
@@ -374,6 +374,7 @@ public final class URIPath {
 	 * segment containing {@value URIs#SCHEME_SEPARATOR}. This method is no more than a URI factory that compensates for a path known to be a path and not a URI
 	 * and that may contain a {@value URIs#SCHEME_SEPARATOR} in its relative first segment.
 	 * @param path The raw, encoded path information.
+	 * @return The path URI constructed from its given string version.
 	 * @throws NullPointerException if the given path is <code>null</code>.
 	 * @throws IllegalArgumentException if the given string violates URI RFC 2396.
 	 */

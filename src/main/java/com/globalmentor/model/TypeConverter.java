@@ -25,7 +25,7 @@ public interface TypeConverter {
 
 	/**
 	 * Converts an object from one type to another. If the object is already of the correct type, no action occurs.
-	 * @param T The type of object required.
+	 * @param <T> The type of object required.
 	 * @param object The object to convert.
 	 * @param type The class representing required type of the object.
 	 * @return The object as the required type, or <code>null</code> if the object cannot be converted to the required type.

@@ -296,6 +296,7 @@ public class Classes {
 	/**
 	 * Finds a defined constructor of a class. This method differs from {@link Class#getDeclaredConstructor(Class...)} in that if no matching constructor is
 	 * found, <code>null</code> is returned rather than a {@link NoSuchMethodException} being thrown.
+	 * @param <T> The type of the class for which the constructor will be found.
 	 * @param objectClass The class for which the constructor should be found.
 	 * @param parameterTypes The constructor parameters.
 	 * @return The <code>Method</code> object of the public constructor that matches the specified <code>parameterTypes</code>, or <code>null</code> if no such
@@ -314,6 +315,7 @@ public class Classes {
 	/**
 	 * Finds a defined constructor of a class. This method differs from {@link Class#getConstructor(Class...)} in that if no matching constructor is found,
 	 * <code>null</code> is returned rather than a {@link NoSuchMethodException} being thrown.
+	 * @param <T> The type of the class for which the constructor will be found.
 	 * @param objectClass The class for which the constructor should be found.
 	 * @param parameterTypes The constructor parameters.
 	 * @return The <code>Method</code> object of the public constructor that matches the specified <code>parameterTypes</code>, or <code>null</code> if no such
@@ -335,6 +337,7 @@ public class Classes {
 	 * <p>
 	 * The returned constructor may not be public.
 	 * </p>
+	 * @param <T> The type of the class for which the constructor will be found.
 	 * @param objectClass The class for which the default constructor should be found.
 	 * @return The default constructor of the given class, or <code>null</code> if a default constructor does not exist.
 	 * @throws SecurityException Thrown if access to the information is denied.
@@ -360,6 +363,7 @@ public class Classes {
 	 * An equivalent call with more exception-handling overhead would be to enclose <code>objectClass.getConstructor(new Class()[])</code> in a
 	 * <code>try...catch()</code> block.
 	 * </p>
+	 * @param <T> The type of the class for which the constructor will be found.
 	 * @param objectClass The class for which the default constructor should be found.
 	 * @return The default constructor of the given class, or <code>null</code> if a default constructor does not exist.
 	 * @throws SecurityException Thrown if access to the information is denied.
@@ -669,8 +673,8 @@ public class Classes {
 	 * @return A full class name plus method name.
 	 * @see #getPropertyName(Class, String)
 	 */
-	public static String getMethodName(final Class<?> objectClass, final String methodlocalName) {
-		return getMethodName(objectClass, methodlocalName);
+	public static String getMethodName(final Class<?> objectClass, final String methodLocalName) {
+		return getMethodName(objectClass, methodLocalName);
 	}
 
 	/**
@@ -822,7 +826,7 @@ public class Classes {
 	 * @param <R> The type of root class.
 	 * @param objectClass The class for which super classes and interfaces should be found.
 	 * @param rootClass The root class or interface to retrieve.
-	 * @param includeThisClasses Whether the object class itself should be returned.
+	 * @param includeThisClass Whether the object class itself should be returned.
 	 * @param includeSuperClasses Whether super classes should be returned.
 	 * @param includeAbstract Whether abstract classes should be returned.
 	 * @param includeInterfaces Whether implemented interfaces should be returned.
@@ -962,7 +966,8 @@ public class Classes {
 
 	/**
 	 * Reads a class resource using the given class' class loader and the given I/O support.
-	 * @param class The class relative to which the given resource will be located.
+	 * @param <T> The type of the resource.
+	 * @param objectClass The class relative to which the given resource will be located.
 	 * @param name The name of the resource to read.
 	 * @param io The I/O support for reading the object.
 	 * @return The object read from the resource.

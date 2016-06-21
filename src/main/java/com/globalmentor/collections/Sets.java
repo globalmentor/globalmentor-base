@@ -30,6 +30,7 @@ public class Sets {
 	 * Creates a read-only set containing the given elements.
 	 * @param <E> The type of element contained in the set.
 	 * @param elements The elements to be contained in the set.
+	 * @return The immutable version of the set.
 	 * @throws NullPointerException if the given array of elements is <code>null</code>.
 	 */
 	public static <E> Set<E> immutableSetOf(final E... elements) { //TODO improve to return an ImmutableSet<E>
@@ -41,6 +42,7 @@ public class Sets {
 	 * @param <E> The type of element contained in the set.
 	 * @param iterable The existing iterable to augment.
 	 * @param elements The elements to be contained in the set.
+	 * @return The immutable version of the set.
 	 * @throws NullPointerException if the given iterable and/or array of elements is <code>null</code>.
 	 */
 	public static <E> Set<E> immutableSetOf(final Iterable<? extends E> iterable, final E... elements) { //TODO improve to return an ImmutableSet<E>
@@ -76,6 +78,7 @@ public class Sets {
 	 * @param <E> The type of element contained in the set.
 	 * @param collection The existing collection to augment.
 	 * @param elements The elements to be contained in the set.
+	 * @return The immutable version of the set.
 	 * @throws NullPointerException if the given collection and/or array of elements is <code>null</code>.
 	 */
 	public static <E> Set<E> immutableSetOf(final Collection<? extends E> collection, final E... elements) { //TODO improve to return an ImmutableSet<E>
@@ -149,6 +152,7 @@ public class Sets {
 	 * This method performs logic equivalent to {@link Set#equals(Object)}, except that a descriptive exception is thrown on inequality. This is particularly
 	 * useful for debugging.
 	 * </p>
+	 * @param <E> The type of the items contained in the set.
 	 * @param set1 The first set to compare.
 	 * @param set2 The second test to compare.
 	 * @throws IllegalArgumentException if the sets are not equal.

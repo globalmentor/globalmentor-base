@@ -76,7 +76,7 @@ public abstract class AbstractPostponedEvent<L extends EventListener, E extends 
 	}
 
 	/**
-	 * Fires the postponed event. This method delegates to {@link #fireEvent(L, E)}, and concrete classes should usually override that method instead of this one.
+	 * Fires the postponed event. This method delegates to {@link #fireEvent(EventListener, EventObject)}, and concrete classes should usually override that method instead of this one.
 	 * @throws IllegalStateException if the postponed event has already been fired.
 	 */
 	public void fireEvent() {

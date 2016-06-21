@@ -115,6 +115,7 @@ public class Numbers {
 	 * otherwise, if neither object is a number an exception will be thrown.
 	 * @param object1 The first object to compare.
 	 * @param object2 The second object to compare.
+	 * @param ambiguous Whether ambiguous sorting is allowed.
 	 * @return The value <code>0</code> if both are numbers and the first number is numerically equal to the second number; a value less than <code>0</code> if
 	 *         only the first is a number, or both are numbers and the first number is numerically less than the second number; or a value greater than
 	 *         <code>0</code> if only the second is a number, or both are numbers and the first number is numerically greater than the second number.

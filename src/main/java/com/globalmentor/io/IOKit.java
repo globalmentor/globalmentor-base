@@ -40,6 +40,7 @@ public interface IOKit<T> extends URIAccessible {
 	 * Loads an object from an input stream.
 	 * @param inputStream The input stream from which to read the data.
 	 * @param baseURI The base URI of the content, or <code>null</code> if no base URI is available.
+	 * @return The object loaded from the given input stream.
 	 * @throws IOException Thrown if there is an error reading the data.
 	 */
 	public T load(final InputStream inputStream, final URI baseURI) throws IOException;

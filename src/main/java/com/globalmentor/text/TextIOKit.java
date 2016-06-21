@@ -27,7 +27,7 @@ import com.globalmentor.io.*;
 /**
  * Class for loading and saving text. Text is saved in the UTF-8 encoding.
  * @author Garret Wilson
- * @see LocaledText
+ * @see com.globalmentor.model.LocaledText
  * @deprecated
  */
 public class TextIOKit extends AbstractIOKit<StringBuilder> {

@@ -46,6 +46,7 @@ public class Lists {
 	 * Creates a read-only list containing the given elements.
 	 * @param <E> The type of element contained in the list.
 	 * @param elements The elements to be contained in the list.
+	 * @return The immutable version of the list.
 	 * @throws NullPointerException if the given array of elements is <code>null</code>.
 	 */
 	public static <E> List<E> immutableListOf(final E... elements) { //TODO improve to return an ImmutableList<E>
@@ -58,6 +59,7 @@ public class Lists {
 	 * @param elements The elements to be contained in the list.
 	 * @param start the initial index of the range to be included, inclusive
 	 * @param end the final index of the range to be included, exclusive.
+	 * @return The immutable version of the list.
 	 * @throws NullPointerException if the given array of elements is <code>null</code>.
 	 * @throws IllegalArgumentException if the start index is greater than the end index.
 	 * @throws ArrayIndexOutOfBoundsException if the start index is less than zero or the end index is greater than the length.
@@ -71,8 +73,7 @@ public class Lists {
 	 * @param <E> The type of element contained in the list.
 	 * @param collection The existing collection to augment.
 	 * @param elements The elements to be contained in the list.
-	 * @param start the initial index of the range to be included, inclusive
-	 * @param end the final index of the range to be included, exclusive.
+	 * @return The immutable version of the list.
 	 * @throws NullPointerException if the given collection and/or array of elements is <code>null</code>.
 	 */
 	public static <E> List<E> immutableListOf(final Collection<? extends E> collection, final E... elements) { //TODO improve to return an ImmutableList<E>
@@ -86,6 +87,7 @@ public class Lists {
 	 * @param elements The elements to be contained in the list.
 	 * @param start the initial index of the range to be included, inclusive
 	 * @param end the final index of the range to be included, exclusive.
+	 * @return The immutable version of the list.
 	 * @throws NullPointerException if the given collection and/or array of elements is <code>null</code>.
 	 * @throws IllegalArgumentException if the start index is greater than the end index.
 	 * @throws ArrayIndexOutOfBoundsException if the start index is less than zero or the end index is greater than the length.
@@ -121,6 +123,7 @@ public class Lists {
 
 	/**
 	 * Creates and returns a mutable list containing the contents of the given iterator with the additional elements, if any.
+	 * @param <E> The type of the elements of the list.
 	 * @param iterator The iterator a list of the contents of which should be returned.
 	 * @param elements The additional elements, if any, to add to the list.
 	 * @return A mutable list containing the indicated elements.
@@ -134,6 +137,7 @@ public class Lists {
 
 	/**
 	 * Creates and returns a mutable list containing the contents of the given iterable with the additional elements, if any.
+	 * @param <E> The type of the list
 	 * @param iterable The iterable a list of the contents of which should be returned.
 	 * @param elements The additional elements, if any, to add to the list.
 	 * @return A mutable list containing the indicated elements.

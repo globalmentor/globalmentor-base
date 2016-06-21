@@ -61,7 +61,7 @@ public interface ModelViewable {
 
 	/**
 	 * Determines whether this object supports the given data view.
-	 * @param dataView A model view such as <code>SUMMARY_MODEL_VIEW</code>.
+	 * @param modelView A model view such as <code>SUMMARY_MODEL_VIEW</code>.
 	 * @return <code>true</code> if and only if this object supports the indicated model view.
 	 */
 	public boolean isModelViewSupported(final int modelView);

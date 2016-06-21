@@ -51,14 +51,14 @@ public interface Cache<Q, V> {
 
 	/**
 	 * Adds a listener to listen for a value being fetched.
-	 * @param query The query for requesting a value from the cache.
+	 * @param key The query for requesting a value from the cache.
 	 * @param listener The listener to be notified when the value is fetched.
 	 */
 	public void addCacheFetchListener(final Q key, final CacheFetchListener<Q, V> listener);
 
 	/**
 	 * Removes a listener to listen for a value being fetched.
-	 * @param query The query for requesting a value from the cache.
+	 * @param key The query for requesting a value from the cache.
 	 * @param listener The listener to be notified when the value is fetched.
 	 */
 	public void removeCacheFetchListener(final Q key, final CacheFetchListener<Q, V> listener);
@@ -104,7 +104,6 @@ public interface Cache<Q, V> {
 	 * @param query The query for requesting data from the cache.
 	 * @return The cached data.
 	 * @throws IOException if there was an error fetching the data from the backing store.
-	 * @see #isStaleData(Query, Data)
 	 */
 	public Data<V> getData(final Q query) throws IOException;
 
@@ -114,7 +113,6 @@ public interface Cache<Q, V> {
 	 * @param deferFetch Whether fetching, if needed, should be deffered and performed in an asynchronous thread.
 	 * @return The cached data, or <code>null</code> if fetching was deferred.
 	 * @throws IOException if there was an error fetching the value from the backing store.
-	 * @see #isStaleData(Query, Data)
 	 */
 	public Data<V> getData(final Q query, final boolean deferFetch) throws IOException;
 
@@ -128,7 +126,7 @@ public interface Cache<Q, V> {
 
 	/**
 	 * Class for storing a value along with its expiration information and other information.
-	 * @param <V> The type of value stored in the cache.
+	 * @param <VV> The type of value stored in the cache.
 	 * @author Garret Wilson
 	 */
 	public static class Data<VV> {

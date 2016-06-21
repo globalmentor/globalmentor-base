@@ -35,7 +35,7 @@ public class DefaultComparableNamed<N extends Comparable<N>> extends DefaultName
 
 	/**
 	 * Compares this object to another object. This method determines order based upon the name.
-	 * @param object The object with which to compare this object.
+	 * @param namedObject The object with which to compare this object.
 	 * @return A negative integer, zero, or a positive integer as this name is less than, equal to, or greater than the name of the specified object,
 	 *         respectively.
 	 * @see #getName()

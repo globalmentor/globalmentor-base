@@ -121,7 +121,7 @@ public class DefaultNonce implements Nonce {
 		}
 	}
 
-	/** @returns A string representation of the nonce, suitable for serialization. */
+	/** @return A string representation of the nonce, suitable for serialization. */
 	public String toString() {
 		return formatList(DELIMITER, privateKey, Long.toHexString(getTime().getTime()), Long.toHexString(getValue())); //format the nonce string  		
 	}

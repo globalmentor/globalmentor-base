@@ -32,6 +32,7 @@ public class Appendables {
 
 	/**
 	 * Appends a given repetition of characters to an appendable.
+	 * @param <A> The appendable class.
 	 * @param appendable The appendable to which the characters should be appended.
 	 * @param character The character to append.
 	 * @param count The number of repetitions of the character.

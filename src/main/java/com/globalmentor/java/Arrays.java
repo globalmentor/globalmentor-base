@@ -147,6 +147,7 @@ public class Arrays {
 
 	/**
 	 * Creates a shallow copy of the given array containing the specified range.
+	 * @param <T> The type of the elements in the array.
 	 * @param source The array to copy.
 	 * @param start The offset from which to start copying elements.
 	 * @return A new array containing the specified range of elements from the source array.
@@ -159,6 +160,7 @@ public class Arrays {
 
 	/**
 	 * Creates a shallow copy of the given array containing the specified range.
+	 * @param <T> The type of the elements in the array.
 	 * @param source The array to copy.
 	 * @param start The offset from which to start copying elements.
 	 * @param end The index after the last element to copy.
@@ -293,6 +295,7 @@ public class Arrays {
 
 	/**
 	 * Fills the given array with the specified value and returns the array.
+	 * @param <T> The type of the array that will be filled.
 	 * @param array The array to be filled.
 	 * @param value The value to be stored in all elements of the array.
 	 * @return The array that was filled.
@@ -304,6 +307,7 @@ public class Arrays {
 	/**
 	 * Assigns the specified value to each element of the specified range of the specified array. The range to be filled extends from index <code>start</code> ,
 	 * inclusive, to index <code>start</code>, exclusive.
+	 * @param <T> The type of the array that will be filled.
 	 * @param array The array to be filled.
 	 * @param start The index of the first element (inclusive) to be filled with the specified value.
 	 * @param end The index of the last element (exclusive) to be filled with the specified value.
@@ -408,6 +412,7 @@ public class Arrays {
 
 	/**
 	 * Performs a simple sequential search for the value in the given array.
+	 * @param <T> The type of object contained in the array. TODO verify if it's really being used.
 	 * @param array The array to search.
 	 * @param value The value to find.
 	 * @return The index of the first instance of an value, or -1 if no such value exits.
@@ -432,6 +437,7 @@ public class Arrays {
 
 	/**
 	 * Performs a simple sequential search for the value in the given array.
+	 * @param <T> The type of object contained in the array. TODO verify if it's really being used.
 	 * @param array The array to search.
 	 * @param value The value to find.
 	 * @return The index of the first instance of an value, or -1 if no such value exits.

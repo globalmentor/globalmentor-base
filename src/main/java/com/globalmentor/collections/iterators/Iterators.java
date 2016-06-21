@@ -31,7 +31,10 @@ public class Iterators {
 	/** The singleton immutable empty iterator. */
 	public static final Iterator<?> EMPTY_ITERATOR = new EmptyIterator<Object>();
 
-	/** @return The immutable empty iterator. */
+	/**
+	 * @param <T> The type of the iterator.
+	 * @return The immutable empty iterator.
+	 */
 	@SuppressWarnings("unchecked")
 	public static final <T> Iterator<T> emptyIterator() {
 		return (Iterator<T>)EMPTY_ITERATOR;
@@ -40,7 +43,10 @@ public class Iterators {
 	/** The singleton immutable empty iterable. */
 	public static final Iterable<?> EMPTY_ITERABLE = new EmptyIterable<Object>();
 
-	/** @return The immutable empty iterable. */
+	/**
+	 * @param <T> The generic type of empty iterable to return.
+	 * @return The immutable empty iterable.
+	 */
 	@SuppressWarnings("unchecked")
 	public static final <T> Iterable<T> emptyIterable() {
 		return (Iterable<T>)EMPTY_ITERABLE;
@@ -49,6 +55,7 @@ public class Iterators {
 	/**
 	 * Creates a copy of the iterator that contains the same data but will not reflect any modified values of the underlying collection. Creates a new collection,
 	 * collects the values of the given iterator, then returns an iterator to the new collection.
+	 * @param <E> The type of items that the iterator is set up to iterate.
 	 * @param iterator The iterator to make a copy of.
 	 * @return An iterator containing the same values as the given iterator but not reflecting the underlying values of the original collection.
 	 */
@@ -61,7 +68,9 @@ public class Iterators {
 	/**
 	 * Returns the next item from an iterator, or <code>null</code> if there is no next item. This differs from <code>Iterator.next()</code>, which throws an
 	 * exception if there is no next item.
+	 * @param <E> The type of items that the iterator is set up to iterate.
 	 * @param iterator The iterator from which the next object should be retrieved.
+	 * @return The next item of the iterator.
 	 * @see java.util.Iterator#next
 	 */
 	public static <E> E getNext(final Iterator<E> iterator) {
@@ -71,6 +80,7 @@ public class Iterators {
 
 	/**
 	 * Returns a copy of the contents of the iterator in a new array in iterator traversal order.
+	 * @param <E> The type of the iterator.
 	 * @param iterator The iterator the contents of which to return as an array.
 	 * @param elementClass The class representing the type of elements returned by the iterable.
 	 * @return A array containing the contents of the iterable.
@@ -84,6 +94,7 @@ public class Iterators {
 
 	/**
 	 * Returns a copy of the contents of the iterable in a new array in iterator traversal order.
+	 * @param <E> The type of the iterator.
 	 * @param iterable The iterable the contents of which to return as an array.
 	 * @param elementClass The class representing the type of elements returned by the iterable.
 	 * @return A array containing the contents of the iterable.

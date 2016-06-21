@@ -31,7 +31,7 @@ public interface Nonce {
 	/** @return The private key represented by the nonce. */
 	public String getPrivateKey();
 
-	/** @returns A string representation of the nonce, suitable for serialization. */
+	/** @return A string representation of the nonce, suitable for serialization. */
 	public String toString();
 
 }

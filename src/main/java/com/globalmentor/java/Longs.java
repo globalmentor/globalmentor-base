@@ -64,6 +64,8 @@ public class Longs {
 
 	/**
 	 * Compares two longs for order.
+	 * @param l1 The first long to compare.
+	 * @param l2 The second long to compare.
 	 * @return a negative integer, zero, or a positive integer as this object is less than, equal to, or greater than the specified object.
 	 */
 	public static int compare(final long l1, final long l2) {

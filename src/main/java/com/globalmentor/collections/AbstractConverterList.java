@@ -150,7 +150,7 @@ public abstract class AbstractConverterList<S, D> extends ListDecorator<D> { //T
 
 		/**
 		 * List iterator constructor.
-		 * @param iterator The iterator of source objects.
+		 * @param listIterator The iterator of source objects.
 		 */
 		@SuppressWarnings("unchecked")
 		public ConverterListIterator(final ListIterator<S> listIterator) {

@@ -153,8 +153,8 @@ public class ISOTemporalComponents {
 		this.utcOffsetHours = utcOffsetHours;
 		this.utcOffsetMinutes = utcOffsetMinutes;
 
-		final Calendar calendar = new GregorianCalendar(utcOffsetHours == 0 && utcOffsetMinutes == 0 ? TimeZone.getTimeZone(GMT_ID) : getTimeZone(utcOffsetHours,
-				utcOffsetMinutes)); //get Gregorian calendar using the time zone from the UTC offset, defaulting to a GMT time zone
+		final Calendar calendar = new GregorianCalendar(
+				utcOffsetHours == 0 && utcOffsetMinutes == 0 ? TimeZone.getTimeZone(GMT_ID) : getTimeZone(utcOffsetHours, utcOffsetMinutes)); //get Gregorian calendar using the time zone from the UTC offset, defaulting to a GMT time zone
 		calendar.clear(); //clear the calendar
 		if(year >= 0 && month >= 0 && day >= 0) { //if there is date information
 			if(hours >= 0 && minutes >= 0 && seconds >= 0 && microseconds >= 0) { //if date and time is available
@@ -265,6 +265,7 @@ public class ISOTemporalComponents {
 	 * @param locale The locale for the calendar.
 	 * @throws NullPointerException if the given time and/or locale is <code>null</code>.
 	 * @throws IllegalArgumentException if one of the given arguments is outside the allowed range.
+	 * @return The calendar representing the given temporal component information in the given locale
 	 */
 	public static GregorianCalendar createCalendar(final int year, final int month, final int day, final ISOTime time, final Locale locale) {
 		return createCalendar(year, month, day, time != null ? time.getHours() : 0, time != null ? time.getMinutes() : 0, time != null ? time.getSeconds() : 0,
@@ -284,6 +285,7 @@ public class ISOTemporalComponents {
 	 * @param locale The locale for the calendar.
 	 * @throws NullPointerException if the given locale is <code>null</code>.
 	 * @throws IllegalArgumentException if one of the given arguments is outside the allowed range.
+	 * @return The calendar representing the given temporal component information
 	 */
 	public static GregorianCalendar createCalendar(final int year, final int month, final int day, final int hours, final int minutes, final int seconds,
 			final int microseconds, final ISOUTCOffset utcOffset, final Locale locale) {
@@ -360,8 +362,8 @@ public class ISOTemporalComponents {
 	 * @throws ParseIOException if the reader has no more characters before the current date/time is completely parsed.
 	 * @throws SyntaxException if the date/time is not of the correct format.
 	 */
-	public static ISOTemporalComponents parseDateTimeUTCOffset(final Reader reader, final boolean hasDate, final boolean hasTime) throws IOException,
-			ParseIOException, SyntaxException {
+	public static ISOTemporalComponents parseDateTimeUTCOffset(final Reader reader, final boolean hasDate, final boolean hasTime)
+			throws IOException, ParseIOException, SyntaxException {
 		return parseDateTimeUTCOffset(reader, hasDate, hasTime, false, false, true); //parse the temporal components, requiring strict ISO format
 	}
 

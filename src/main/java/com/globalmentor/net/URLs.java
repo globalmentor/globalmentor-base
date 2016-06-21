@@ -124,7 +124,6 @@ public class URLs {
 	 * @param url A complete URL to a file.
 	 * @return An input stream to the contents of the file represented by the given URL.
 	 * @throws IOException Thrown if an I/O error occurred.
-	 * @see InputStreamLocator
 	 */
 	public static InputStream getInputStream(final URL url) throws IOException {
 		return url.openConnection().getInputStream(); //open a connection to the URL and return an input stream to that connection
@@ -172,7 +171,8 @@ public class URLs {
 
 	/**
 	 * Reads an object from a URL using the given I/O support.
-	 * @param URL The URL from which to read.
+	 * @param <T> The type of the object to be read.
+	 * @param url The URL from which to read.
 	 * @param io The I/O support for reading the object.
 	 * @return The object read from the URL.
 	 * @throws NullPointerException if the given URL and/or I/O support is <code>null</code>.

@@ -44,7 +44,7 @@ public class ISODateTime extends AbstractISODateTime {
 
 	/**
 	 * Temporal component constructor.
-	 * @param temporalcomponents The temporal components from which to construct the class.
+	 * @param temporalComponents The temporal components from which to construct the class.
 	 * @throws NullPointerException if the given temporal components is <code>null</code>.
 	 */
 	protected ISODateTime(final ISOTemporalComponents temporalComponents) {
@@ -177,12 +177,12 @@ public class ISODateTime extends AbstractISODateTime {
 	 * Returns an ISO date time object holding the value of the specified string.
 	 * <p>
 	 * Lenient parsing makes the following allowances:
+	 * </p>
 	 * <ul>
 	 * <li>Seconds are considered optional.</li>
 	 * <li>Whitespace before and after the date/time is allowed.</li>
 	 * <li>The looser RFC 3339 Internet timestamp format is allowed, allowing the UTC designator, {@value ISO8601#UTC_DESIGNATOR}, for example.</li>
 	 * </ul>
-	 * </p>
 	 * @param string The string to be parsed as a date time.
 	 * @return An ISO date time object represented by the string.
 	 * @throws NullPointerException if the given string is <code>null</code>
@@ -200,13 +200,13 @@ public class ISODateTime extends AbstractISODateTime {
 	 * Returns an ISO date time object holding the value of the specified string.
 	 * <p>
 	 * Liberal parsing makes the following allowances:
+	 * </p>
 	 * <ul>
 	 * <li>Seconds are considered optional.</li>
 	 * <li>Whitespace before and after the date/time is allowed.</li>
 	 * <li>The looser RFC 3339 Internet timestamp format is allowed, allowing the UTC designator, {@value ISO8601#UTC_DESIGNATOR}, for example.</li>
 	 * <li>Delimiters are optional.</li>
 	 * </ul>
-	 * </p>
 	 * @param string The string to be parsed as a date time.
 	 * @return An ISO date time object represented by the string.
 	 * @throws NullPointerException if the given string is <code>null</code>

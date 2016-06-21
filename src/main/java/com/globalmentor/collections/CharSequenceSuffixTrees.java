@@ -94,8 +94,7 @@ public class CharSequenceSuffixTrees {
 	}
 
 	/**
-	 * An abstract implementation of a visitor for character sequences. This implementation keeps track of the current sequence being visited for each node. Child
-	 * classes must override {@link #visit(SuffixTree, CharSequenceNode, CharSequenceEdge, CharSequence)}.
+	 * An abstract implementation of a visitor for character sequences. This implementation keeps track of the current sequence being visited for each node.
 	 * 
 	 * @author Garret Wilson
 	 */
@@ -118,10 +117,6 @@ public class CharSequenceSuffixTrees {
 			sequenceBuilder = new StringBuilder(charSequence);
 		}
 
-		/**
-		 * {@inheritDoc} This version first updates the current sequence and then calls {@link #visit(SuffixTree, CharSequenceNode, CharSequenceEdge, CharSequence)}
-		 * .
-		 */
 		@Override
 		public final boolean visit(final SuffixTree suffixTree, final CharSequenceNode node, final CharSequenceEdge parentEdge, final int length) {
 			if(parentEdge != null) { //if this isn't the root node

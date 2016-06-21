@@ -92,6 +92,7 @@ public class Objects {
 
 	/**
 	 * Clones an object that supports cloning.
+	 * @param <T> The type of the object.
 	 * @param object The object that supports cloning through use of the {@link CloneSupported} interface.
 	 * @return The cloned object.
 	 * @throws IllegalStateException if the object's {@link CloneSupported#clone()} method throws a {@link CloneNotSupportedException}.
@@ -110,6 +111,7 @@ public class Objects {
 	 * Compares two objects for order, taking into account <code>null</code>. If both objects are <code>null</code> they are considered equal. If only one object
 	 * is <code>null</code>, comparison will be performed based upon whether <code>null</code> is considered higher or lower. Otherwise, the second object is
 	 * compared to the first using the first object's {@link Comparable#compareTo(Object)} method.
+	 * @param <T> The type of the object.
 	 * @param object1 The first object to be compared.
 	 * @param object2 The second object to be compared.
 	 * @param nullBias A negative or positive integer indicating if <code>null</code> should be considered less than or greater than non-<code>null</code>
@@ -167,6 +169,7 @@ public class Objects {
 
 	/**
 	 * Returns the first object that is an instance of {@link Object} (i.e. that is not <code>null</code>).
+	 * @param <T> The type of the objects.
 	 * @param objects The objects to investigate.
 	 * @return The first object that is not <code>null</code>, or <code>null</code> if all objects are <code>null</code>.
 	 */
@@ -181,6 +184,8 @@ public class Objects {
 
 	/**
 	 * Returns the first object that is an instance of the given object type.
+	 * @param <T> The type of the objects.
+	 * @param <C> The subtype of the given objects.
 	 * @param objectClass The class of the type of object to return
 	 * @param objects The objects to investigate.
 	 * @return The first object that is the instance of the given type, or <code>null</code> if no object is an instance of the indicated type.
@@ -200,6 +205,7 @@ public class Objects {
 	 * <p>
 	 * This is equivalent to the JavaScript statement <code>var x = object || defaultInstance;</code>
 	 * </p>
+	 * @param <T> The type of the object.
 	 * @param object The object to examine.
 	 * @param defaultInstance The default instance to return if the object is <code>null</code>.
 	 * @return The object, or the default instance of the object is <code>null</code>.

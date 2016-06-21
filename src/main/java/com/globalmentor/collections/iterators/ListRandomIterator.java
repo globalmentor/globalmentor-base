@@ -164,7 +164,7 @@ public class ListRandomIterator<E> implements Iterator<E> { //TODO fix setRandom
 		/**
 		 * Determines whether a given object should pass through the filter or be filtered out. An integer object will be filtered out if the object at that index
 		 * in our list doesn't pass our main list filter.
-		 * @param object The object to filter.
+		 * @param integer The integer to filter.
 		 * @return <code>true</code> if the object should pass through the filter, else <code>false</code> if the object should be filtered out.
 		 */
 		public boolean isPass(final Integer integer) {

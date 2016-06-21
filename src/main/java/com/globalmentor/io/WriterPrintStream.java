@@ -19,6 +19,8 @@ package com.globalmentor.io;
 import java.io.*;
 import java.util.*;
 
+import com.globalmentor.java.OperatingSystem;
+
 import static com.globalmentor.java.Objects.*;
 import static com.globalmentor.java.OperatingSystem.*;
 
@@ -265,7 +267,7 @@ public class WriterPrintStream extends PrintStream {
 
 	/**
 	 * Terminate the current line by writing the line separator string. The line separator string is defined by the system property
-	 * {@value SystemConstants#LINE_SEPARATOR_PROPERTY}, and is not necessarily a single newline character (<code>'\n'</code>). This implementation delegates to
+	 * {@value OperatingSystem#LINE_SEPARATOR_PROPERTY}, and is not necessarily a single newline character (<code>'\n'</code>). This implementation delegates to
 	 * {@link #newLine()}.
 	 */
 	public void println() {
@@ -296,7 +298,7 @@ public class WriterPrintStream extends PrintStream {
 
 	/**
 	 * Print an integer and then terminates the line. This method behaves as though it invokes {@link #print(int)} and then {@link #println()}.
-	 * @param i The integer to be printed.
+	 * @param x The integer to be printed.
 	 */
 	public void println(final int x) {
 		synchronized(this) {
@@ -306,7 +308,7 @@ public class WriterPrintStream extends PrintStream {
 	}
 
 	/**
-	 * Print a long and then terminates the line. This method behaves as though it invokes {@link #print(long)} and then >{@link #println()}.
+	 * Print a long and then terminates the line. This method behaves as though it invokes {@link #print(long)} and then {@link #println()}.
 	 * @param l The long to be printed.
 	 */
 	public void println(final long l) {
@@ -318,7 +320,7 @@ public class WriterPrintStream extends PrintStream {
 
 	/**
 	 * Print a float and then terminates the line. This method behaves as though it invokes {@link #print(float)} and then {@link #println()}.
-	 * @param f The float to be printed.
+	 * @param x The float to be printed.
 	 */
 	public void println(final float x) {
 		synchronized(this) {

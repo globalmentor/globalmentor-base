@@ -35,9 +35,11 @@ public class Calendars {
 	 * <p>
 	 * This is equivalent to calling {@link Calendar#add(int, int)} and returning the given calendar.
 	 * </p>
+	 * @param <C> The type of the calendar.
 	 * @param calendar The calendar to which to add the value.
 	 * @param field The calendar field.
 	 * @param amount The amount of date or time to be added to the field.
+	 * @return The calendar after the modifications on the given amount of time.
 	 * @see Calendar#add(int, int)
 	 */
 	public static <C extends Calendar> C add(final C calendar, final int field, final int amount) {
@@ -58,6 +60,7 @@ public class Calendars {
 	 * <li>{@link Calendar#DAY_OF_WEEK}</li>
 	 * <li>{@link Calendar#DAY_OF_WEEK_IN_MONTH}</li>
 	 * </ol>
+	 * @param <C> The type of the calendar.
 	 * @param calendar The calendar the time of which to reset.
 	 * @return The calendar being modified.
 	 * @throws NullPointerException if the given calendar is <code>null</code>.
@@ -85,6 +88,7 @@ public class Calendars {
 	 * <li>{@link Calendar#SECOND}</li>
 	 * <li>{@link Calendar#MILLISECOND}</li>
 	 * </ol>
+	 * @param <C> The type of the calendar.
 	 * @param calendar The calendar the time of which to reset.
 	 * @return The calendar being modified.
 	 * @throws NullPointerException if the given calendar is <code>null</code>.
@@ -107,8 +111,10 @@ public class Calendars {
 	 * <li>{@link Calendar#SECOND}</li>
 	 * <li>{@link Calendar#MILLISECOND}</li>
 	 * </ol>
+	 * @param <C> The type of the calendar.
 	 * @param calendar The calendar the time of which to set.
 	 * @param fromCalendar The calendar from which to get the time.
+	 * @return The calendar after the time being set up.
 	 * @throws NullPointerException if either of the given calendars is <code>null</code>.
 	 */
 	public static <C extends Calendar> C setTime(final C calendar, final Calendar fromCalendar) {
@@ -117,6 +123,8 @@ public class Calendars {
 
 	/**
 	 * Sets the date and time-related fields, including milliseconds.
+	 * @param <C> The type of the calendar.
+	 * @param calendar The calendar to be set up the date time.
 	 * @param year The year.
 	 * @param month The zero-based month.
 	 * @param date The day of the month.
@@ -143,6 +151,7 @@ public class Calendars {
 	 * <li>{@link Calendar#SECOND}</li>
 	 * <li>{@link Calendar#MILLISECOND}</li>
 	 * </ol>
+	 * @param <C> The type of the calendar.
 	 * @param calendar The calendar the time of which to set.
 	 * @param hour The hour of the day.
 	 * @param minute The minute of the hour.

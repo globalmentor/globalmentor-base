@@ -55,7 +55,7 @@ public class Unicode {
 	 * <li>0xFD: 0x007D+0xF871</li>
 	 * <li>0xFE: 0x007D+0xF872</li>
 	 * </ul>
-	 * @see <a href="<a href="http://www.tip.nl/users/o.van.vlijmen/charsets.html">Encoding Symbol Font</a>
+	 * @see <a href="http://www.tip.nl/users/o.van.vlijmen/charsets.html">Encoding Symbol Font</a>
 	 */
 	public static final char[] SYMBOL_FONT_TO_UNICODE_TABLE = { //TODO convert to something immutable or hide
 			//  0       1       2       3       4       5       6       7       8       9       A       B       C       D       E       F

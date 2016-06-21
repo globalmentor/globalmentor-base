@@ -45,6 +45,7 @@ public class Collections {
 
 	/**
 	 * Adds all of the elements specified by the given iterable to the specified collection.
+	 * @param <T> The type of the elements contained on the collection.
 	 * @param collection The collection to which objects will be added.
 	 * @param iterable The source of the added objects.
 	 * @return <code>true</code> if the collection changed as a result of the call.
@@ -55,6 +56,7 @@ public class Collections {
 
 	/**
 	 * Adds all of the elements specified by the given iterator to the specified collection.
+	 * @param <T> The type of the elements contained on the collection.
 	 * @param collection The collection to which objects will be added.
 	 * @param iterator The source of the added objects.
 	 * @return <code>true</code> if the collection changed as a result of the call.
@@ -71,6 +73,7 @@ public class Collections {
 
 	/**
 	 * Removes all of the elements specified by the given iterable from the specified collection.
+	 * @param <T> The type of the elements contained on the collection.
 	 * @param collection The collection from which objects will be removed.
 	 * @param iterable The source of the removed objects.
 	 * @return <code>true</code> if the collection changed as a result of the call.
@@ -81,6 +84,7 @@ public class Collections {
 
 	/**
 	 * Removes all of the elements specified by the given iterator from the specified collection.
+	 * @param <T> The type of the elements contained on the collection.
 	 * @param collection The collection from which objects will be removed.
 	 * @param iterator The source of the removed objects.
 	 * @return <code>true</code> if the collection changed as a result of the call.
@@ -97,6 +101,7 @@ public class Collections {
 
 	/**
 	 * Determines if the given collection contains an object that is an instance of the given class.
+	 * @param <T> The type of the elements contained on the collection.
 	 * @param collection The collection to search.
 	 * @param objectClass The class for which to find an implementing object.
 	 * @return <code>true</code> if the collection contains an object that implements the given class, else <code>false</code>.
@@ -282,6 +287,7 @@ public class Collections {
 
 	/**
 	 * Converts a collection to a string by concatenating the string values of each member of the collection, separated by a comma.
+	 * @param <T> The type of the elements contained on the collection.
 	 * @param collection The collection to convert to a string.
 	 * @return A string representation of the collection of elements.
 	 */
@@ -291,6 +297,7 @@ public class Collections {
 
 	/**
 	 * Converts a collection to a string by concatenating the string values of each member of the collection, separated by the given delimiter character.
+	 * @param <T> The type of the elements contained on the collection.
 	 * @param collection The collection to convert to a string.
 	 * @param delimiter The character to place between elements.
 	 * @return A string representation of the collection of elements.
@@ -301,6 +308,7 @@ public class Collections {
 
 	/**
 	 * Converts a collection to a string by concatenating the string values of each member of the collection, separated by the given delimiter.
+	 * @param <T> The type of the elements contained on the collection.
 	 * @param collection The collection to convert to a string.
 	 * @param delimiter The character sequence to place between elements.
 	 * @return A string representation of the collection of elements.

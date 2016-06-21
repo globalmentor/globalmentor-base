@@ -118,7 +118,6 @@ public class ResourceModel<R extends Resource> extends URIAccessibleModel {
 
 	/**
 	 * Base URI and input stream locator constructor.
-	 * @param resource The resource being modeled, or <code>null</code> if there is no resource.
 	 * @param baseURI The base URI of the model, or <code>null</code> if unknown.
 	 * @param uriInputStreamable The implementation to use for accessing a URI for input, or <code>null</code> if the default implementation should be used.
 	 */

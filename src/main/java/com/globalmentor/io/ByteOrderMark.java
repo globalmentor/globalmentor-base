@@ -58,7 +58,7 @@ public enum ByteOrderMark {
 	/** The bytes of this byte order mark. */
 	private final byte[] bytes;
 
-	/** The bytes of this byte order mark. */
+	/** @return The bytes of this byte order mark. */
 	public byte[] getBytes() {
 		return bytes.clone(); //clone the bytes so that the authoritative copy cannot be modified
 	}

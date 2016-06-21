@@ -370,6 +370,7 @@ public class ReaderParser {
 	 * Reads all characters in a reader until the given character is reached. The new position will be that of the given character.
 	 * @param reader The reader the contents of which to be parsed.
 	 * @param character The character to reach.
+	 * @return The string read until the given character.
 	 * @throws NullPointerException if the given reader is <code>null</code>.
 	 * @throws IOException if there is an error reading from the reader.
 	 * @throws ParseEOFException if the reader has no more characters.
@@ -395,6 +396,7 @@ public class ReaderParser {
 	 * Reads all characters in a reader until one of the given characters is reached. The new position will be that of the given character.
 	 * @param reader The reader the contents of which to be parsed.
 	 * @param characters The characters one of which to reach.
+	 * @return The string read until the given character.
 	 * @throws NullPointerException if the given reader is <code>null</code>.
 	 * @throws IOException if there is an error reading from the reader.
 	 * @throws ParseEOFException if the reader has no more characters.
@@ -407,6 +409,7 @@ public class ReaderParser {
 	 * Reads all characters in a reader until one of the given characters or the end is reached. The new position will be that of the given character.
 	 * @param reader The reader the contents of which to be parsed.
 	 * @param characters The characters one of which to reach.
+	 * @return The string read until the given character or the end if there is no such a character.
 	 * @throws NullPointerException if the given reader is <code>null</code>.
 	 * @throws IOException if there is an error reading from the reader.
 	 */
@@ -419,6 +422,7 @@ public class ReaderParser {
 	 * @param reader The reader the contents of which to be parsed.
 	 * @param characters The characters one of which to reach.
 	 * @param isEndError Whether reaching the end of the reader is an error condition.
+	 * @return The string read until the given character.
 	 * @throws NullPointerException if the given reader is <code>null</code>.
 	 * @throws IOException if there is an error reading from the reader.
 	 * @throws ParseEOFException if the reader has no more characters and the end-is-error flag is <code>true</code>.
@@ -447,6 +451,7 @@ public class ReaderParser {
 	 * Reads all characters in a reader until the given delimiter is reached. The new position will be immediately after that of the given character.
 	 * @param reader The reader the contents of which to be parsed.
 	 * @param character The character to reach.
+	 * @return The string read until the given character.
 	 * @throws NullPointerException if the given reader is <code>null</code>.
 	 * @throws IOException if there is an error reading from the reader.
 	 * @throws ParseEOFException if the reader has no more characters.
@@ -475,6 +480,7 @@ public class ReaderParser {
 	 * @return The characters that were read.
 	 * @throws NullPointerException if the given reader is <code>null</code>.
 	 * @throws IOException if there is an error reading from the reader.
+	 * @throws ParseEOFException If an unexpected end of data is achieved.
 	 */
 	public static String read(final Reader reader, final char lowerBound, final char upperBound) throws IOException {
 		final StringBuilder stringBuilder = new StringBuilder(); //create a string builder

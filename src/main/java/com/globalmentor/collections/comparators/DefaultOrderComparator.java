@@ -40,7 +40,7 @@ public class DefaultOrderComparator<T> implements Comparator<T> {
 	/**
 	 * Constructs a comparator to compare objects based upon the order in which they appear in a given list.
 	 * @param defaultOrderList The list that determines the default order of the objects. This must not a different list than any list being sorted.
-	 * @throw NullPointerException if the given list is <code>null</code>
+	 * @throws NullPointerException if the given list is <code>null</code>
 	 */
 	public DefaultOrderComparator(final List<T> defaultOrderList) {
 		this.defaultOrderList = checkInstance(defaultOrderList, "Default order list cannot be null"); //save the default order list

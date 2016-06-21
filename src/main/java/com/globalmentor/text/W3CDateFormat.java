@@ -173,7 +173,9 @@ public class W3CDateFormat extends SimpleDateFormat {
 
 	/**
 	 * Formats a date by creating a W3C date and time formatter using the given style.
+	 * @param date The date to be formatted.
 	 * @param style One of the W3C date/time styles.
+	 * @return A string representing the date after the formatting.
 	 */
 	public static String format(final Date date, final Style style) {
 		return new W3CDateFormat(style).format(date); //create a new format class and format the date

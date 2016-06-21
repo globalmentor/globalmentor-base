@@ -55,8 +55,8 @@ public abstract class AbstractFileCache<K, Q extends AbstractCache.Query<K>> ext
 		 * @param file The file to store.
 		 * @param modifiedTime The last known modified time of the resource represented, or <code>null</code> if the last modified time is not known.
 		 */
-		public FileData(final File value, final Date modifiedTime) {
-			super(value); //construct the parent class
+		public FileData(final File file, final Date modifiedTime) {
+			super(file); //construct the parent class
 			this.modifiedTime = modifiedTime;
 		}
 	}

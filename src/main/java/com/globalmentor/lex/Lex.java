@@ -45,6 +45,7 @@ public class Lex {
 	 * <p>
 	 * This implementation currently only recognizes {@link Enum} types.
 	 * </p>
+	 * @param <I> The identifier class.
 	 * @param identifierClass The class of identifier; usually a type of {@link Enum}.
 	 * @param lexicalForm The lexical form of the identifier being deserialized.
 	 * @return The identifier represented by the given lexical form.

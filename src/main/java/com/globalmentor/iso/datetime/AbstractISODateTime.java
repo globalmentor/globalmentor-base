@@ -80,7 +80,7 @@ public abstract class AbstractISODateTime extends Time implements ISOTemporal {
 
 	/**
 	 * Appends the canonical lexical representation of this date time to a string builder in the form "YYYY-MM-DDThh:mm:ss[.s+]+/-hh:mm".
-	 * @param stringBuild The string builder to which the lexical representation will be appended.
+	 * @param stringBuilder The string builder to which the lexical representation will be appended.
 	 * @return The string builder.
 	 */
 	public StringBuilder append(final StringBuilder stringBuilder) {
@@ -101,13 +101,13 @@ public abstract class AbstractISODateTime extends Time implements ISOTemporal {
 	 * Returns an ISO date or date time object holding the value of the specified string.
 	 * <p>
 	 * Lenient parsing makes the following allowances:
+	 * </p>
 	 * <ul>
 	 * <li>Seconds are considered optional.</li>
 	 * <li>Whitespace before and after the date/time is allowed.</li>
 	 * <li>The looser RFC 3339 Internet timestamp format is allowed, allowing the UTC designator, {@value ISO8601#UTC_DESIGNATOR}, for example.</li>
-	 * <li>If time is present, an {@link ISODateTime} is returned; otherwise, an {@link ISODate} is returned.
+	 * <li>If time is present, an {@link ISODateTime} is returned; otherwise, an {@link ISODate} is returned.</li>
 	 * </ul>
-	 * </p>
 	 * @param string The string to be parsed as a date time.
 	 * @return An ISO date time object represented by the string.
 	 * @throws NullPointerException if the given string is <code>null</code>
@@ -126,14 +126,14 @@ public abstract class AbstractISODateTime extends Time implements ISOTemporal {
 	 * Returns an ISO date or date time object holding the value of the specified string.
 	 * <p>
 	 * Liberal parsing makes the following allowances:
+	 * </p>
 	 * <ul>
 	 * <li>Seconds are considered optional.</li>
 	 * <li>Whitespace before and after the date/time is allowed.</li>
 	 * <li>The looser RFC 3339 Internet timestamp format is allowed, allowing the UTC designator, {@value ISO8601#UTC_DESIGNATOR}, for example.</li>
-	 * <li>If time is present, an {@link ISODateTime} is returned; otherwise, an {@link ISODate} is returned.
+	 * <li>If time is present, an {@link ISODateTime} is returned; otherwise, an {@link ISODate} is returned.</li>
 	 * <li>Delimiters are optional.</li>
 	 * </ul>
-	 * </p>
 	 * @param string The string to be parsed as a date time.
 	 * @return An ISO date time object represented by the string.
 	 * @throws NullPointerException if the given string is <code>null</code>

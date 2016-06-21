@@ -39,7 +39,6 @@ public class SerialDelegateComparator<T> extends AbstractSortOrderComparator<T> 
 
 	/**
 	 * Comparators constructor for ascending order sorting. The last comparator in the sequence should unambiguously distinguish non-equal objects.
-	 * @param sortOrder The order in which to perform comparisons.
 	 * @param comparators The delegate comparators.
 	 * @throws NullPointerException if the given sort order and/or comparators is <code>null</code>.
 	 * @throws IllegalArgumentException if no comparators are given.

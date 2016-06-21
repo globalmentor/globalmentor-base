@@ -38,6 +38,7 @@ public abstract class AbstractObjectResource<C extends AbstractObjectResource<C>
 	/**
 	 * URI constructor.
 	 * @param uri The URI for the new resource.
+	 * @param type The type of the new resource.
 	 */
 	public AbstractObjectResource(final URI uri, final Class<? extends C> type) {
 		super(uri);
@@ -47,7 +48,6 @@ public abstract class AbstractObjectResource<C extends AbstractObjectResource<C>
 	/**
 	 * {@inheritDoc} This implementation compares the specified runtime type and resource URIs. If neither object has a reference URI, the default identity
 	 * comparison is performed.
-	 * @see #getType()
 	 * @see #getURI()
 	 */
 	public boolean equals(final Object object) {

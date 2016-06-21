@@ -92,7 +92,7 @@ public class Threads {
 	 * Creates a thread in the given thread group and calls the given runnable in the thread, waiting until the thread is finished. This version catches any
 	 * uncaught {@link Error} or {@link RuntimeException} in the thread and rethrows it from this thread. If any other {@link Throwable} is thrown in the thread,
 	 * this method throws an {@link UndeclaredThrowableException} with that throwable as the cause. This method delegates to
-	 * {@link #call(ThreadGroup, Runnable, UncaughtExceptionHandler)}
+	 * {@link #call(ThreadGroup, Runnable, java.lang.Thread.UncaughtExceptionHandler)}
 	 * @param threadGroup The thread group in which the thread is to be run.
 	 * @param runnable The runnable interface to run in the thread.
 	 * @return The thread that has been run in the thread group.

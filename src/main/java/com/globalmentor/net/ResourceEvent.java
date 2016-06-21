@@ -161,7 +161,7 @@ public class ResourceEvent extends EventObject {
 	 * @param parentResourceURI The reference URI of the parent resource, or <code>null</code> if there is no parent resource reference URI.
 	 * @param parentResource The parent resource, or <code>null</code> if there is no parent resource.
 	 * @param resourceURI The current reference URI of the resource.
-	 * @param The current resource, or <code>null</code> if there is no resource.
+	 * @param resource The current resource, or <code>null</code> if there is no resource.
 	 */
 	protected ResourceEvent(final Object source, final URI oldParentResourceURI, final Resource oldParentResource, final URI oldResourceURI,
 			final Resource oldResource, final URI parentResourceURI, final Resource parentResource, final URI resourceURI, final Resource resource) {

@@ -47,7 +47,7 @@ public class Audio {
 	 * <p>
 	 * Codec-aware content types use the form <code>audio/vnd.wave; codec-YYYY</code>.
 	 * </p>
-	 * @see <a href="http://wiki.whatwg.org/wiki/Video_type_parameters#WAVE>HTML 5 Video canPlay(type) parameters</a>
+	 * @see <a href="http://wiki.whatwg.org/wiki/Video_type_parameters#WAVE">HTML 5 Video canPlay(type) parameters</a>
 	 * @see <a href="http://tools.ietf.org/html/draft-ema-vpim-wav-00">Waveform Audio File Format MIME Sub-type Registration</a>
 	 * @see <a href="http://www.rfc-editor.org/rfc/rfc2361.txt">RFC 2361 - WAVE and AVI Codec Registries</a>
 	 */

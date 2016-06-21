@@ -56,9 +56,9 @@ public class ISODates {
 	 * For example, passing a calendar date of 2000-01-01 with a day count of 365, will return, for each day in the previous year, the number of days that
 	 * intersect one of the ranges.
 	 * </p>
-	 * @param calendar The current calendar to use for calculations.
+	 * @param date The current date to use for calculations.
 	 * @param windowSize The number of days back to include in each total.
-	 * @param ranges The ranges used for intersection.
+	 * @param dayCounts A map of totals for individual dates.
 	 * @return A map of all calendar days and the total number of intersection with the ranges within that period.
 	 */
 	public static SortedMap<ISODate, Long> getDayTotals(final ISODate date, final int windowSize, final Map<ISODate, Count> dayCounts) {
@@ -71,10 +71,10 @@ public class ISODates {
 	 * For example, passing a calendar date of 2000-01-01 with a window size of 365 and a history count of 730, will return, for 730 days prior to the given date,
 	 * the number of days that intersect one of the ranges within the window of 365 days before each date.
 	 * </p>
-	 * @param calendar The current calendar to use for calculations.
+	 * @param date The current date to use for calculations.
 	 * @param windowSize The number of days back to include in each total.
 	 * @param historyCount The number of day totals to include.
-	 * @param ranges The ranges used for intersection.
+	 * @param dayCounts A map of totals for individual dates.
 	 * @return A map of all calendar days and the total number of intersection with the ranges within the indicated history period.
 	 */
 	public static SortedMap<ISODate, Long> getDayTotals(final ISODate date, final int windowSize, final int historyCount, final Map<ISODate, Count> dayCounts) {

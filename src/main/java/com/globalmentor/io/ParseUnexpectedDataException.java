@@ -56,7 +56,7 @@ public class ParseUnexpectedDataException extends ParseIOException {
 
 	/**
 	 * Sets the character found.
-	 * @param characterFound The character found.
+	 * @param foundCharacter The character found.
 	 */
 	protected void setFoundCharacter(final char foundCharacter) {
 		FoundCharacter = foundCharacter;
@@ -88,7 +88,7 @@ public class ParseUnexpectedDataException extends ParseIOException {
 
 	/**
 	 * Sets the string found.
-	 * @param stringFound The string found.
+	 * @param foundString The string found.
 	 */
 	protected void setFoundString(final String foundString) {
 		FoundString = foundString;

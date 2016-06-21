@@ -94,7 +94,7 @@ public class Packages {
 	/**
 	 * Creates a full name given package and a local name. For example, a package of <code>com.example</code> and a local name of <code>Bar</code> will result in
 	 * a full name of <code>com.example.Bar</code>.
-	 * @param objectClass The class to supply the package name.
+	 * @param objectPackage The object to supply the package name.
 	 * @param localName The local name for constructing the full name within the package.
 	 * @return A full class name in the given package and the given local name.
 	 * @see Classes#getFullName(Class, String)

@@ -45,7 +45,7 @@ public class DefaultComparableIDNamed<I, N extends Comparable<N>> extends Defaul
 	/**
 	 * Considers another object equal if the other object is an {@link IDed} with the same ID.
 	 * @param object The object with which to compare this object; should be an {@link IDed}.
-	 * @return <code>true<code> if the given object is an {@link IDed} with the same ID.
+	 * @return <code>true</code> if the given object is an {@link IDed} with the same ID.
 	 * @see #getID()
 	 */
 	public boolean equals(final Object object) {

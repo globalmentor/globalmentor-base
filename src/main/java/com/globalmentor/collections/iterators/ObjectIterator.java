@@ -65,7 +65,7 @@ public class ObjectIterator<E> implements Iterator<E>, Iterable<E> {
 		throw new UnsupportedOperationException("This iterator does not support removing the object.");
 	}
 
-	/** {@inheritDoc} This implementation returns <code>this<code>. */
+	/** {@inheritDoc} This implementation returns <code>this</code>. */
 	@Override
 	public Iterator<E> iterator() {
 		return this;

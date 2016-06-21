@@ -154,8 +154,8 @@ public class BoundPropertyObject implements PropertyBindable, PropertyConstraina
 	}
 
 	/**
-	 * Add a property change listener for a specific property. The listener will be invoked only when a call to {@link #firePropertyChange(String, V, V)} names
-	 * that specific property.
+	 * Add a property change listener for a specific property. The listener will be invoked only when a call to
+	 * {@link #firePropertyChange(String, Object, Object)} names that specific property.
 	 * <p>
 	 * If the listener is <code>null</code>, no exception is thrown and no action is performed.
 	 * </p>
@@ -219,6 +219,7 @@ public class BoundPropertyObject implements PropertyBindable, PropertyConstraina
 	 * event to any registered property change listeners. No event is fired if old and new are both <code>null</code> or are both non-<code>null</code> and equal
 	 * according to the {@link Object#equals(java.lang.Object)} method. No event is fired if no listeners are registered for the given property. This method
 	 * delegates actual firing of the event to {@link #firePropertyChange(PropertyChangeEvent)}.
+	 * @param <V> The type of the property values.
 	 * @param propertyName The name of the property being changed.
 	 * @param oldValue The old property value.
 	 * @param newValue The new property value.
@@ -238,7 +239,7 @@ public class BoundPropertyObject implements PropertyBindable, PropertyConstraina
 	/**
 	 * Reports that a bound integer property has changed, reporting old and new values of type {@link Integer}. No event is fired if the values are equal, or if
 	 * no event is fired if no listeners are registered for the given property. This method delegates actual firing of the event to
-	 * {@link #firePropertyChange(String, V, V)}.
+	 * {@link #firePropertyChange(String, Object, Object)}.
 	 * @param propertyName The name of the property being changed.
 	 * @param oldValue The old property value.
 	 * @param newValue The new property value.
@@ -252,7 +253,7 @@ public class BoundPropertyObject implements PropertyBindable, PropertyConstraina
 	/**
 	 * Reports that a bound long property has changed, reporting old and new values of type {@link Long}. No event is fired if the values are equal, or if no
 	 * event is fired if no listeners are registered for the given property. This method delegates actual firing of the event to
-	 * {@link #firePropertyChange(String, V, V)}.
+	 * {@link #firePropertyChange(String, Object, Object)}.
 	 * @param propertyName The name of the property being changed.
 	 * @param oldValue The old property value.
 	 * @param newValue The new property value.
@@ -266,7 +267,7 @@ public class BoundPropertyObject implements PropertyBindable, PropertyConstraina
 	/**
 	 * Reports that a bound boolean property has changed, reporting old and new values of type <code>Boolean</code>. No event is fired if the values are equal, or
 	 * if no event is fired if no listeners are registered for the given property. This method delegates actual firing of the event to
-	 * {@link #firePropertyChange(String, V, V)}.
+	 * {@link #firePropertyChange(String, Object, Object)}.
 	 * @param propertyName The name of the property being changed.
 	 * @param oldValue The old property value.
 	 * @param newValue The new property value.
@@ -302,7 +303,8 @@ public class BoundPropertyObject implements PropertyBindable, PropertyConstraina
 	 * The same listener object may be added more than once, and will be called as many times as it is added.
 	 * </p>
 	 * <p>
-	 * If <code>listener</code> is <code>null</code>, no exception is thrown and no action is taken.<;p>
+	 * If <code>listener</code> is <code>null</code>, no exception is thrown and no action is taken.
+	 * </p>
 	 * @param listener The <code>VetoableChangeListener</code> to be added.
 	 */
 	public void addVetoableChangeListener(final VetoableChangeListener listener) {
@@ -401,6 +403,7 @@ public class BoundPropertyObject implements PropertyBindable, PropertyConstraina
 	 * Reports a vetoable property update to any registered listeners. If any veotable change listeners vetos the change, then a new event will be fired reverting
 	 * all the listeners to the old value, after which the {@link PropertyVetoException} will be rethrown. No event is fired if old and new are equal and non-
 	 * <code>null</code>. This method delegates actual firing of the event to {@link #fireVetoableChange(PropertyChangeEvent)}.
+	 * @param <V> The type of the property values.
 	 * @param propertyName The name of the property that is about to change.
 	 * @param oldValue The old value of the property.
 	 * @param newValue The new value of the property.
@@ -421,7 +424,7 @@ public class BoundPropertyObject implements PropertyBindable, PropertyConstraina
 	/**
 	 * Reports that an integer vetoable property updtae to any registered listeners, reporting old and new values of type <code>Integer</code>. No event is fired
 	 * if the values are equal, or if no event is fired if no listeners are registered for the given property. This method delegates actual firing of the event to
-	 * {@link #fireVetoableChange(String, V, V)}.
+	 * {@link #fireVetoableChange(String, Object, Object)}.
 	 * @param propertyName The name of the property that is about to change.
 	 * @param oldValue The old property value.
 	 * @param newValue The new property value.
@@ -436,7 +439,7 @@ public class BoundPropertyObject implements PropertyBindable, PropertyConstraina
 	/**
 	 * Reports that an integer vetoable property updtae to any registered listeners, reporting old and new values of type <code>Boolean</code>. No event is fired
 	 * if the values are equal, or if no event is fired if no listeners are registered for the given property. This method delegates actual firing of the event to
-	 * {@link #fireVetoableChange(String, V, V)}.
+	 * {@link #fireVetoableChange(String, Object, Object)}.
 	 * @param propertyName The name of the property that is about to change.
 	 * @param oldValue The old property value.
 	 * @param newValue The new property value.

@@ -154,6 +154,8 @@ public class StringBuilders {
 	 * {@link StringBuilder#insert(int, java.lang.CharSequence)} and is provided here for backwards-compatibility using RetroWeaver, for example.
 	 * @param stringBuilder The string builder into which the characters should be inserted.
 	 * @param offset The index at which to insert the characters.
+	 * @param charSequence The char sequence to be inserted on the string builder.
+	 * @return The string builder after the insertion of the given char sequence.
 	 * @throws IndexOutOfBoundsException if the given destination index is outside the bounds of the string builder.
 	 * @see StringBuilder#insert(int, java.lang.CharSequence)
 	 */
@@ -331,7 +333,6 @@ public class StringBuilders {
 	 * @param index The index of the character to escape.
 	 * @param escapeChar The character to prefix the hex representation.
 	 * @param escapeLength The number of characters to use for the hex representation.
-	 * @param hexCase Whether the hex characters should be lowercase or uppercase.
 	 * @return A string representing the escaped data that was used as a replacement for the character.
 	 * @throws StringIndexOutOfBoundsException if the given index does not represent a valid location in the string builder.
 	 */
@@ -384,6 +385,7 @@ public class StringBuilders {
 	 * Unescapes a value int a string builder using the provided escape character. Every instance of the escape character will be removed if followed by another
 	 * character and the subsequent character will be ignored.
 	 * @param stringBuilder The string builder to unescape.
+	 * @param escapeChar The character to prefix the hex representation.
 	 * @return The string builder with the unescaped content.
 	 * @throws NullPointerException if the given string builder is <code>null</code>.
 	 * @throws IllegalArgumentException if the string builder ends with the given escape character.

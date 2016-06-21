@@ -74,8 +74,9 @@ public class Conditions {
 	 * <p>
 	 * This is a precondition check.
 	 * </p>
+	 * @param <T> The type of the object to be tested.
 	 * @param object The object to test.
-	 * @param return The given object.
+	 * @return The object, if it is not <code>null</code>
 	 * @throws IllegalArgumentException if the given object is <code>null</code>.
 	 */
 	public static <T> T checkArgumentNotNull(final T object) {
@@ -87,11 +88,12 @@ public class Conditions {
 	 * <p>
 	 * This is a precondition check.
 	 * </p>
+	 * @param <T> The type of the object to be tested.
 	 * @param object The object to test.
-	 * @param return The given object.
 	 * @param description A description of the test to be used when generating an exception, optionally formatted with arguments, or <code>null</code> for no
 	 *          description.
 	 * @param arguments The arguments to be applied when formatting, or an empty array if the message should not be formatted.
+	 * @return The given object.
 	 * @throws IllegalArgumentException if the given object is <code>null</code>.
 	 * @throws NullPointerException if the given arguments is <code>null</code>.
 	 * @throws IllegalArgumentException if the description is an invalid pattern, or if an argument in the arguments array is not of the type expected by the
@@ -223,10 +225,9 @@ public class Conditions {
 	 * This is a precondition check.
 	 * </p>
 	 * @param from The beginning value to check, inclusive.
-	 * @param end The ending value to check, inclusive.
+	 * @param to The ending value to check, inclusive.
 	 * @param rangeMin The minimum range value, inclusive.
 	 * @param rangeMax The maximum range value, inclusive.
-	 * @return The given value.
 	 * @throws IllegalArgumentException if the from value is less than the range minimum or greater than the range maximum; or if the to value is less than the
 	 *           from value or greater than the range maximum.
 	 */

@@ -41,10 +41,10 @@ import java.util.concurrent.CopyOnWriteArraySet;
  * <p>
  * Example:
  * </p>
- * <blockquote>
  * 
  * <pre>
  * <code>
+ * 
  * 	if(haslisteners(MyListener.class)
  * 	{
  * 		final MyEvent myEvent=new MyEvent();
@@ -53,9 +53,10 @@ import java.util.concurrent.CopyOnWriteArraySet;
  * 			myListener.fireEvent(myEvent);		
  * 		}
  * 	}
+ * 
+ * </code>
  * </pre>
  * 
- * </code></blockquote> </p>
  * <p>
  * This class uses little memory if there are no registered event listeners.
  * </p>
@@ -79,6 +80,8 @@ public class EventListenerManager //TODO fix to not use WeakHashSet, which isn't
 	 * <p>
 	 * Example: <code>add(MyListener.class, listener);</code>.
 	 * </p>
+	 * @param <T> The type of the key used for registering the event listener.
+	 * @param <L> The type of the listener.
 	 * @param key The key with which the listener should be associated.
 	 * @param listener The event listener to be associated with the key.
 	 */
@@ -103,6 +106,8 @@ public class EventListenerManager //TODO fix to not use WeakHashSet, which isn't
 	 * for a class are removed, its set is removed from from the map. If the map is consequently empty, the map is removed.
 	 * <p>
 	 * Example: <code>remove(MyListener.class, listener);</code>
+	 * @param <T> The type of the event listener.
+	 * @param <L> The type of the listener.
 	 * @param key The key with which the listener was associated.
 	 * @param listener The listener to remove from the manager.
 	 * @return <code>true</code> if the manager contained the specified listener.
@@ -131,6 +136,7 @@ public class EventListenerManager //TODO fix to not use WeakHashSet, which isn't
 	 * Returns the number of listeners associated with the given key.
 	 * <p>
 	 * Example: <code>getListenerCount(MyListener.class);</code>
+	 * @param <T> The type of the event listener.
 	 * @param key The key with which the listeners are associated.
 	 * @return The number of listeners associated with the given key.
 	 */
@@ -147,6 +153,7 @@ public class EventListenerManager //TODO fix to not use WeakHashSet, which isn't
 	 * Determines whether there are listeners associated with the given key.
 	 * <p>
 	 * Example: <code>hasListeners(MyListener.class);</code>
+	 * @param <T> The type of the event listener.
 	 * @param key The key with which the listeners are associated.
 	 * @return <code>true</code> if there is at least one listener associated with the given key.
 	 * @see #getListenerCount(Class)
@@ -160,6 +167,7 @@ public class EventListenerManager //TODO fix to not use WeakHashSet, which isn't
 	 * <p>
 	 * Example: <code>getListeners(MyListener.class);</code>
 	 * </p>
+	 * @param <T> The type of the event listener.
 	 * @param key The key with which listeners have been associated.
 	 * @return An iterable of all currently registered listeners.
 	 */

@@ -78,6 +78,7 @@ public class LocaledText extends DefaultLocaleable implements CharSequence, Comp
 	 * Converts an array of strings to an array of <code>LocaleText</code>s.
 	 * @param strings The array of strings to be converted to an array of <code>LocaleText</code>s.
 	 * @param locale The locale that represents the language of the text, or <code>null</code> if no language should be indicated.
+	 * @return The array after the conversion from strings to <code>LocaleText</code>s.
 	 */
 	public static LocaledText[] toLocaleTextArray(final String[] strings, final Locale locale) {
 		final LocaledText[] localeTexts = new LocaledText[strings.length]; //create an array the same size as the string array
@@ -90,7 +91,7 @@ public class LocaledText extends DefaultLocaleable implements CharSequence, Comp
 	/**
 	 * Determines if the given object is a {@link LocaledText} with the same text and locale.
 	 * @param object The object with which to compare this object; should be {@link LocaledText}.
-	 * @return <code>true<code> if this object equals that specified in <var>object</var>.
+	 * @return <code>true</code> if this object equals that specified in <var>object</var>.
 	 * @see #getLocale()
 	 * @see #getText()
 	 */
@@ -106,7 +107,7 @@ public class LocaledText extends DefaultLocaleable implements CharSequence, Comp
 	/**
 	 * Compares this object to another object. This method determines order based upon the text and locale of the object. If both objects have the same text but
 	 * one locale is <code>null</code>, the object with the <code>null</code> locale is considered less than the other.
-	 * @param object The object with which to compare the component. This must be another {@link LocaledText} object.
+	 * @param localeText The object with which to compare the component. This must be another {@link LocaledText} object.
 	 * @return A negative integer, zero, or a positive integer as this text and locale is less than, equal to, or greater than the text and locale of the
 	 *         specified object, respectively.
 	 * @throws ClassCastException if the specified object's type prevents it from being compared to this object.

@@ -51,7 +51,7 @@ public class NameValuePair<N, V> extends DefaultNamed<N> implements IDed<N>, Val
 
 	/**
 	 * Map entry copy constructor
-	 * @param The map entry the values of which to use in creating this name/value pair.
+	 * @param mapEntry The map entry the values of which to use in creating this name/value pair.
 	 * @throws NullPointerException if the given map entry is <code>null</code>.
 	 */
 	public NameValuePair(final Map.Entry<N, V> mapEntry) {
@@ -66,7 +66,7 @@ public class NameValuePair<N, V> extends DefaultNamed<N> implements IDed<N>, Val
 	/**
 	 * Determines if the given object is another name value pair with the same name and value.
 	 * @param object The object with which to compare this name/value pair.
-	 * @return <code>true<code> if this name/value pair equals that specified in <code>object</code>.
+	 * @return <code>true</code> if this name/value pair equals that specified in <code>object</code>.
 	 * @see #getName()
 	 * @see #getValue()
 	 */

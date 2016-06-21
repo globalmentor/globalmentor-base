@@ -62,7 +62,7 @@ public class BoundPropertyResource extends BoundPropertyObject implements Resour
 	/**
 	 * Compares the resource reference URIs. If neither object has a reference URI, the default identity comparison is performed.
 	 * @param object The object with which to compare this resource.
-	 * @return <code>true<code> if this resource equals that specified in <code>object</code>.
+	 * @return <code>true</code> if this resource equals that specified in <code>object</code>.
 	 * @see #getURI()
 	 * @see DefaultResource#equals(Object)
 	 */

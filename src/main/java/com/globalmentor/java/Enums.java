@@ -53,6 +53,7 @@ public class Enums {
 	 * If the enum is a lexical {@link Identifier}, the name is converted to lowercase and all underscore characters ('_') are replaced by hyphens ('-'). For
 	 * example, <code>FILE_NOT_FOUND</code> would produce <code>file-not-found</code>.
 	 * </p>
+	 * @param <E> The type of the enum.
 	 * @param e The enum instance to convert to a serialization form.
 	 * @return A string representing the enum instance in a style appropriate for use in serialization.
 	 * @see Enum#name()
@@ -76,6 +77,7 @@ public class Enums {
 	 * to determine the original enum name. For example, <code>file-not-found</code> would produce <code>FILE_NOT_FOUND</code>. This method assumes that the
 	 * original enum name does not contain lowercase letters.
 	 * </p>
+	 * @param <E> The type of the enum.
 	 * @param enumType The class object of the enum type from which to return an enum.
 	 * @param serializationName The serialization form of the name of the enum to return.
 	 * @return The enum constant of the specified enum type with the specified serialization name.
@@ -98,7 +100,9 @@ public class Enums {
 	/**
 	 * Returns an identifying string for the enum that includes the enum class and the enum name. This ID is useful for resource keys, for example. The ID will be
 	 * in the form <code><var>com.example.EnumClass</var>.<var>NAME</var></code>.
+	 * @param <E> The type of the enum.
 	 * @param e The enum instance for which to return an ID.
+	 * @return The identifying string for the given enum.
 	 * @throws NullPointerException if the given enum is <code>null</code>.
 	 * @see Classes#getPropertyName(Class, String)
 	 * @see Enum#getClass()
@@ -112,6 +116,7 @@ public class Enums {
 	 * Returns an identifying string for the enum that includes the enum class, the enum name, and an optional property or aspect (such as "label" or "glyph").
 	 * This ID is useful for resource keys, for example. The ID will be in the form
 	 * <code><var>com.example.EnumClass</var>.<var>NAME</var>.<var>property</var></code>.
+	 * @param <E> The type of the enum.
 	 * @param e The enum instance for which to return an ID.
 	 * @param property The name of the enum property, or <code>null</code> if no property is desired.
 	 * @return A string identification of the enum.

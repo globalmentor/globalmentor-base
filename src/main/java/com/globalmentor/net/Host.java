@@ -45,7 +45,7 @@ public class Host extends DefaultComparableNamed<String> {
 
 	/**
 	 * Constructs a host from a string.
-	 * @param host A host and optional port in the form <code><var>hostname</var>[:<var>port</var>]</var>.
+	 * @param host A host and optional port in the form <code><var>hostname</var>[:<var>port</var>]</code>.
 	 * @throws IllegalArgumentException if the given host string is not syntactically correct.
 	 */
 	public Host(final String host) throws IllegalArgumentException {
@@ -83,7 +83,7 @@ public class Host extends DefaultComparableNamed<String> {
 		return portDelimiterIndex >= 0 ? Integer.valueOf(host.substring(portDelimiterIndex + 1)) : -1; //return the port unless there is no port, in which case return -1
 	}
 
-	/** @return A string representation of the host in the form <code><var>hostname</var>[:<var>port</var>]</var>. */
+	/** @return A string representation of the host in the form <code><var>hostname</var>[:<var>port</var>]</code>. */
 	public String toString() {
 		final StringBuilder stringBuilder = new StringBuilder(getName()); //host
 		final int port = getPort(); //get the port
@@ -101,7 +101,7 @@ public class Host extends DefaultComparableNamed<String> {
 	/**
 	 * If <code>object</code> is another <code>Host</code>, compares the hostname and port.
 	 * @param object The object with which to compare this host; should be another <code>Host</code>.
-	 * @return <code>true<code> if this host equals a host specified in
+	 * @return <code>true</code> if this host equals a host specified in
 		<code>object</code>.
 	 * @see #getName()
 	 * @see #getPort()

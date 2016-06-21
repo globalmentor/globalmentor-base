@@ -75,6 +75,7 @@ public interface PropertyBindable {
 
 	/**
 	 * Returns an array of all the listeners which have been associated with the named property.
+	 * @param propertyName The name of the property.
 	 * @return All of the <code>PropertyChangeListener</code>s associated with the named property; if no such listeners have been added or if
 	 *         <code>propertyName</code> is <code>null</code>, an empty array is returned
 	 */

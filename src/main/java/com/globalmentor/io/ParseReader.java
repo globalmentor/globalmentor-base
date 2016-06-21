@@ -256,7 +256,7 @@ public class ParseReader extends ProcessingBufferedReader //TODO clean up and un
 
 	/**
 	 * Adjusts all indexes by a certain amount. This method calls the parent version of this method and then updates the last position index.
-	 * @param The number of characters to move the indexes, positive for forwards, negative for backwards.
+	 * @param moveDelta The number of characters to move the indexes, positive for forwards, negative for backwards.
 	 */
 	protected void adjustIndexes(final int moveDelta) {
 		super.adjustIndexes(moveDelta); //move the parent indexes normally
@@ -313,7 +313,7 @@ public class ParseReader extends ProcessingBufferedReader //TODO clean up and un
 	 * @return The character read.
 	 * @throws IOException Thrown if a general I/O error occurs.
 	 * @throws ParseEOFException Thrown if the end of the file is reached unexpectedly.
-	 * @see TextReader#read
+	 * @see ProcessingBufferedReader#read
 	 */
 	public char readChar() throws IOException, ParseEOFException {
 		final int i = read(); //read a character
@@ -332,9 +332,9 @@ public class ParseReader extends ProcessingBufferedReader //TODO clean up and un
 	 * @return The next character that will be read after the character retrieved in the last read() or peek().
 	 * @throws IOException Thrown when a general I/O error occurs.
 	 * @throws ParseEOFException Thrown if the end of the file is reached unexpectedly.
-	 * @see TextReader#read
+	 * @see ProcessingBufferedReader#read
 	 * @see ParseReader#readChar
-	 * @see TextReader#resetPeek
+	 * @see ProcessingBufferedReader#resetPeek
 	 */
 	public char peekChar() throws IOException, ParseEOFException {
 		final int i = peek(); //peek at a character
@@ -375,7 +375,7 @@ public class ParseReader extends ProcessingBufferedReader //TODO clean up and un
 	/**
 	 * Peeks to check if the next characters are the given string, but does not throw an exception if the end of the file is reached. This function is reset with
 	 * every call to read().
-	 * @param len The number of characters to peek.
+	 * @param string The string to be verified if it is the next characters on the file.
 	 * @return <code>true</code> if the upcoming characters match the given string.
 	 * @throws IOException Thrown when a general I/O error occurs.
 	 */
@@ -474,7 +474,7 @@ public class ParseReader extends ProcessingBufferedReader //TODO clean up and un
 	 * unexpectedly reached. Resets peeking.
 	 * @param skipChars The characters which should be skipped.
 	 * @throws IOException Thrown when an i/o error occurs.
-	 * @throws EOFException Thrown if the end of the file is reached unexpectedly.
+	 * @throws ParseEOFException Thrown if the end of the file is reached unexpectedly.
 	 * @return The number of characters skipped.
 	 */
 	public long skipChars(final String skipChars) throws IOException, ParseEOFException {

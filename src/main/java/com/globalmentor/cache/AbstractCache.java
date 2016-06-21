@@ -112,7 +112,7 @@ public abstract class AbstractCache<K, Q extends AbstractCache.Query<K>, V, D ex
 	 * @param query The query for requesting a value from the cache.
 	 * @return Whether the value associated with the given query is in the cache and not stale.
 	 * @throws IOException if there was an error checking the cached information for staleness.
-	 * @see #isStaleData(Query, Data)
+	 * @see #isStaleData(Query, Cache.Data)
 	 */
 	public boolean isCached(final Q query) throws IOException {
 		final D cachedData = cacheMap.get(query.getKey()); //get cached information from the map
@@ -142,7 +142,7 @@ public abstract class AbstractCache<K, Q extends AbstractCache.Query<K>, V, D ex
 	 * @param query The query for requesting a value from the cache.
 	 * @return The cached value.
 	 * @throws IOException if there was an error fetching the value from the backing store.
-	 * @see #isStaleData(Query, Data)
+	 * @see #isStaleData(Query, Cache.Data)
 	 * @see #fetchData(Query)
 	 */
 	public final V get(final Q query) throws IOException {
@@ -155,7 +155,7 @@ public abstract class AbstractCache<K, Q extends AbstractCache.Query<K>, V, D ex
 	 * @param deferFetch Whether fetching, if needed, should be deffered and performed in an asynchronous thread.
 	 * @return The cached value, or <code>null</code> if fetching was deferred.
 	 * @throws IOException if there was an error fetching the value from the backing store.
-	 * @see #isStaleData(Query, Data)
+	 * @see #isStaleData(Query, Cache.Data)
 	 * @see #fetchData(Query)
 	 */
 	public final V get(final Q query, final boolean deferFetch) throws IOException {
@@ -168,7 +168,7 @@ public abstract class AbstractCache<K, Q extends AbstractCache.Query<K>, V, D ex
 	 * @param query The query for requesting data from the cache.
 	 * @return The cached data.
 	 * @throws IOException if there was an error fetching the data from the backing store.
-	 * @see #isStaleData(Query, Data)
+	 * @see #isStaleData(Query, Cache.Data)
 	 * @see #fetchData(Query)
 	 */
 	public final Data<V> getData(final Q query) throws IOException {
@@ -181,7 +181,7 @@ public abstract class AbstractCache<K, Q extends AbstractCache.Query<K>, V, D ex
 	 * @param deferFetch Whether fetching, if needed, should be deffered and performed in an asynchronous thread.
 	 * @return The cached data, or <code>null</code> if fetching was deferred.
 	 * @throws IOException if there was an error fetching the value from the backing store.
-	 * @see #isStaleData(Query, Data)
+	 * @see #isStaleData(Query, Cache.Data)
 	 * @see #fetchData(Query)
 	 */
 	public Data<V> getData(final Q query, final boolean deferFetch) throws IOException {

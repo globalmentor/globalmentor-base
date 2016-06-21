@@ -35,7 +35,7 @@ public class Time extends Date {
 
 		private final long milliseconds;
 
-		/** The number of milliseconds of this resolution. */
+		/** @return he number of milliseconds of this resolution. */
 		public long getMilliseconds() {
 			return milliseconds;
 		}

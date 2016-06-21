@@ -126,6 +126,8 @@ public class Locales {
 	/**
 	 * Determines the string to represent a language identifier according as defined in <a href="http://www.ietf.org/rfc/rfc4646.txt">RFC 4646</a>,
 	 * "Tags for the Identification of Languages".
+	 * @param locale The language identifier.
+	 * @return The string representation of the language identifier.
 	 * @throws NullPointerException if the given locale is <code>null</code>.
 	 * @see <a href="http://www.ietf.org/rfc/rfc4646.txt">RFC 4646</a>
 	 */
@@ -145,7 +147,8 @@ public class Locales {
 	 * <dd><var>basePath</var> + "_" + <var>language</var> + "." + <var>extension</var></dd>
 	 * <dt>depth 0</dt>
 	 * <dd><var>basePath</var> + "." + <var>extension</var></dd>
-	 * </ol> Any extension of the base path will be preserved. If the resource does not have sufficient components for the given depth, <code>null</code> will be
+	 * </dl> 
+	 * Any extension of the base path will be preserved. If the resource does not have sufficient components for the given depth, <code>null</code> will be
 	 * returned.
 	 * @param basePath The base path for which a candidate path should be generated.
 	 * @param locale The locale to use in generating the candidate path.

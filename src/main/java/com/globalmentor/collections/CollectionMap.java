@@ -38,7 +38,10 @@ public interface CollectionMap<K, V, C extends Collection<V>> extends Map<K, C> 
 	 */
 	public C getCollection(final K key);
 
-	/** Creates a collection in which to store values. */
+	/**
+	 * Creates a collection in which to store values.
+	 * @return The collections with the values stored.
+	 */
 	public C createCollection();
 
 	/**

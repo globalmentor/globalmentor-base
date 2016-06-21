@@ -39,6 +39,7 @@ public abstract class AbstractGenericPropertyChangeListener<V> implements Generi
 	/**
 	 * Converts a property change event to a generics-aware property value change event. This is a utility method to facilitate creation of property value change
 	 * listeners that cannot subclass this class. No checks are made at compile time to ensure the given event actually supports the given generic type.
+	 * @param <T> The type of property value.
 	 * @param propertyChangeEvent An event object describing the event source, the property that has changed, and its old and new values.
 	 * @return A generics-aware property change event, either cast from the provided object or created from the provided object's values as appropriate.
 	 */

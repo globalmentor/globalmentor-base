@@ -397,7 +397,7 @@ public final class Characters {
 
 	/**
 	 * Characters constructor. Duplicates are ignored.
-	 * @param source The characters to store.
+	 * @param characters The characters to store.
 	 * @throws NullPointerException if the given characters is <code>null</code>.
 	 * @throws IllegalArgumentException if the given characters contain Unicode surrogate characters.
 	 */
@@ -407,7 +407,7 @@ public final class Characters {
 
 	/**
 	 * Characters constructor. Duplicates are ignored.
-	 * @param source The characters to store.
+	 * @param characters The characters to store.
 	 * @param start The start index, inclusive.
 	 * @param end The end index, exclusive.
 	 * @throws NullPointerException if the given characters is <code>null</code>.
@@ -775,7 +775,7 @@ public final class Characters {
 	 * </p>
 	 * @param c The code point a string representation of which to append.
 	 * @return The string label representing the character.
-	 * @see #appendLabel(StringBuilder, char)
+	 * @see #appendLabel(StringBuilder, int)
 	 */
 	public static String getLabel(final int c) {
 		return appendLabel(new StringBuilder(), c).toString();

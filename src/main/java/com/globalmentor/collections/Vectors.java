@@ -27,6 +27,7 @@ public class Vectors {
 
 	/**
 	 * Randomizes the elements of the vector.
+	 * @param <E> The type of element stored in the vector.
 	 * @param vector The vector to be randomized.
 	 * @return The same vector, randomized.
 	 */
@@ -37,6 +38,7 @@ public class Vectors {
 
 	/**
 	 * Sorts a vector containing {@link Comparable} objects using a quicksort algorithm.
+	 * @param <E> The type of element stored in the vector.
 	 * @param vector The vector to be sorted.
 	 * @throws ClassCastException if an element in the vector does not implement {@link Comparable}.
 	 * @see #quickSort(Vector, int, int)

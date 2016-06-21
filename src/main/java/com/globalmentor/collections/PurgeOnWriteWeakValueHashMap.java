@@ -56,7 +56,7 @@ public class PurgeOnWriteWeakValueHashMap<K, V> extends AbstractPurgeOnWriteRefe
 	/**
 	 * Decorated map constructor.
 	 * @param map The map to decorate.
-	 * @throws NulPOinter
+	 * @throws NullPointerException If the map is null.
 	 */
 	protected PurgeOnWriteWeakValueHashMap(final Map<K, WeakValueReference<K, V>> map) {
 		super(map); //construct the parent class

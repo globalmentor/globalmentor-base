@@ -137,9 +137,6 @@ public class ReaderTokenizer implements Iterator<String>, Iterable<String> {
 	/**
 	 * Reader constructor with default token delimiters and no group delimiters.
 	 * @param reader The input characters to tokenize.
-	 * @param delimiters The delimiter characters.
-	 * @param groupBegins The valid group beginning characters.
-	 * @param groupEnds The valid group ending characters, matching to beginning characters.
 	 * @see #DEFAULT_DELIMITERS
 	 */
 	public ReaderTokenizer(final Reader reader) {

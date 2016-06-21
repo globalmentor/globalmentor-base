@@ -44,7 +44,7 @@ import static com.globalmentor.text.Text.*;
  * former for consistency.
  * </p>
  * @author Garret Wilson
- * @see <a href="http://blogs.msdn.com/b/ie/archive/2006/12/06/file-uris-in-windows.aspx">File URIs in Windows.</p>
+ * @see <a href="http://blogs.msdn.com/b/ie/archive/2006/12/06/file-uris-in-windows.aspx">File URIs in Windows</a>
  */
 public class Files {
 
@@ -621,7 +621,6 @@ public class Files {
 	 * Removes the extension of a filename, if any, and returns a new file with no extension. This is a convenience method that delegates to
 	 * {@link #changeExtension(File, String)}.
 	 * @param file The file to examine.
-	 * @param extension The extension to set, or <code>null</code> if the extension should be removed.
 	 * @return The file with no extension.
 	 */
 	public static File removeExtension(final File file) {
@@ -818,13 +817,13 @@ public class Files {
 	 * <p>
 	 * Note that this encodes path separators, and therefore this method should only be called on filenames, not paths.
 	 * </p>
-	 * @param string The filename string to be encoded.
+	 * @param filename The filename string to be encoded.
 	 * @return The string modified to be a filename.
 	 * @see #CROSS_PLATFORM_FILENAME_RESERVED_CHARACTERS
 	 * @see #CROSS_PLATFORM_FILENAME_RESERVED_FINAL_CHARACTERS
 	 * @see #FILENAME_ESCAPE_CHAR
-	 * @see CharSequences#escapeHex(CharSequence, String, String, int, char, int, Case)
-	 * @see #isFilename(String, String, String)
+	 * @see CharSequences#escapeHex(CharSequence, Characters, Characters, int, char, int, Case)
+	 * @see #isFilename(String, Characters, Characters)
 	 */
 	public static String encodeCrossPlatformFilename(final String filename) {
 		return encodeFilename(filename, CROSS_PLATFORM_FILENAME_RESERVED_CHARACTERS, CROSS_PLATFORM_FILENAME_RESERVED_FINAL_CHARACTERS); //encode the filename using cross-platform reserved characters
@@ -838,14 +837,13 @@ public class Files {
 	 * <p>
 	 * The filename is encoded using the reserved characters of the current operating system.
 	 * </p>
-	 * @param string The filename string to be encoded.
+	 * @param filename The filename string to be encoded.
 	 * @return The string modified to be a filename.
-	 * @see #WINDOWS_PLATFORM_FILENAME_RESERVED_CHARACTERS
 	 * @see #WINDOWS_FILENAME_RESERVED_FINAL_CHARACTERS
 	 * @see #POSIX_FILENAME_RESERVED_CHARACTERS
 	 * @see #FILENAME_ESCAPE_CHAR
-	 * @see CharSequences#escapeHex(CharSequence, String, String, int, char, int, Case)
-	 * @see #isFilename(String, String, String)
+	 * @see CharSequences#escapeHex(CharSequence, Characters, Characters, int, char, int, Case)
+	 * @see #isFilename(String, Characters, Characters)
 	 */
 	public static String encodeFilename(final String filename) {
 		if(isWindowsOS()) //if we're running on Windows
@@ -860,14 +858,14 @@ public class Files {
 	 * <p>
 	 * Note that this encodes path separators, and therefore this method should only be called on filenames, not paths.
 	 * </p>
-	 * @param string The filename string to be encoded.
+	 * @param filename The filename string to be encoded.
 	 * @param reservedCharacters The reserved characters which should be encoded.
 	 * @param reservedFinalCharacters The characters that should be encoded if they appear in the final position of the filename, or <code>null</code> if the
 	 *          final character doesn't have to meet special rules.
 	 * @return The string modified to be a filename.
 	 * @see #FILENAME_ESCAPE_CHAR
-	 * @see CharSequences#escapeHex(CharSequence, String, String, int, char, int, Case)
-	 * @see #isFilename(String, String, String)
+	 * @see CharSequences#escapeHex(CharSequence, Characters, Characters, int, char, int, Case)
+	 * @see #isFilename(String, Characters, Characters)
 	 */
 	public static String encodeFilename(final String filename, final Characters reservedCharacters, final Characters reservedFinalCharacters) {
 		//check to see if this is already a valid filename; if so (it usually is), this will give us a performance increase
@@ -893,7 +891,7 @@ public class Files {
 
 	/**
 	 * Unescapes all characters in a string that are encoded using '^' as an escape character followed by two hex digits.
-	 * @param string The filename string to be decoded.
+	 * @param filename The filename string to be decoded.
 	 * @return The filename string decoded back to a normal string.
 	 * @see #FILENAME_ESCAPE_CHAR
 	 * @see CharSequences#unescapeHex(CharSequence, char, int)
@@ -1055,6 +1053,7 @@ public class Files {
 
 	/**
 	 * Reads an object from a file using the given I/O support.
+	 * @param <T> //TODO write this
 	 * @param file The file from which to read.
 	 * @param io The I/O support for reading the object.
 	 * @return The object read from the file.
@@ -1172,6 +1171,7 @@ public class Files {
 	/**
 	 * Sorts a list of files in ascending order by modified time and secondly by file name. This method caches file information so that each file is accessed only
 	 * once.
+	 * @param <T> //TODO write this
 	 * @param fileList The list to be sorted.
 	 * @throws IOException if there is an error accessing the file.
 	 * @throws SecurityException if file access is not allowed.

@@ -68,7 +68,7 @@ public class DefaultObjectState<T> extends DefaultModifiable implements ObjectSt
 	 * @param key The non-<code>null</code> property key.
 	 * @param value The property value.
 	 * @return The old property value associated with the key, or <code>null</code> if no value was associated with the key previously.
-	 * @see PropertyChangeEvent
+	 * @see java.beans.PropertyChangeEvent
 	 */
 	public Object setProperty(final Object key, final Object value) {
 		final Object oldValue = propertyMap.put(key, value); //put the value in the map keyed to the key and save the old value
@@ -99,7 +99,7 @@ public class DefaultObjectState<T> extends DefaultModifiable implements ObjectSt
 	/**
 	 * Compares object states by comparing their respective objects.
 	 * @param object The object with which to compare this RDF resource; should be another object state.
-	 * @return <code>true<code> if this object state refers to the same object as
+	 * @return <code>true</code> if this object state refers to the same object as
 		specified in the object state <code>object</code>.
 	 * @see ObjectState
 	 * @see #getObject

@@ -1197,6 +1197,7 @@ public class CharSequences {
 
 	/**
 	 * Determines which if any of the given strings the character sequence starts with.
+	 * @param <S> The type of the charSequence.
 	 * @param charSequence The character sequence to examine.
 	 * @param strings The string to compare.
 	 * @return The string beginning the character sequence, or <code>null</code> if none of the strings start the character sequence.
@@ -1208,6 +1209,7 @@ public class CharSequences {
 
 	/**
 	 * Determines which if any of the given strings the character sequence starts with, starting at the given index.
+	 * @param <S> The type of the charSequence.
 	 * @param charSequence The character sequence to examine.
 	 * @param index The index at which to search.
 	 * @param strings The string to compare.
@@ -1373,6 +1375,7 @@ public class CharSequences {
 
 	/**
 	 * Turns an empty character sequence into <code>null</code>.
+	 * @param <CS> The type of the charSequence.
 	 * @param charSequence The character sequence to examine, or <code>null</code>.
 	 * @return The given character sequence, or <code>null</code> if the given character sequence has no characters or no character sequence was given.
 	 * @see #denull(CharSequence)

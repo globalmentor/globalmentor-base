@@ -50,6 +50,7 @@ public class Duration implements Comparable<Duration> {
 	/**
 	 * Duration time factory.
 	 * @param time The duration time in milliseconds.
+	 * @return A duration representing the given time.
 	 */
 	public static Duration of(final long time) {
 		if(time == 0) {

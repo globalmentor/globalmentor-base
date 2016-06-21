@@ -24,7 +24,7 @@ public interface ISOTemporal {
 
 	/**
 	 * Appends the canonical lexical representation of this temporal.
-	 * @param stringBuild The string builder to which the lexical representation will be appended.
+	 * @param stringBuilder The string builder to which the lexical representation will be appended.
 	 * @return The string builder.
 	 */
 	public StringBuilder append(final StringBuilder stringBuilder);

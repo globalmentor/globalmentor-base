@@ -1,6 +1,8 @@
 
 package com.globalmentor.util;
 
+import java.io.IOException;
+
 /**
  * <p>
  * Encodes and decodes to and from Base64 notation.
@@ -32,9 +34,15 @@ package com.globalmentor.util;
  * <ul>
  * <li>v2.2.2 - Fixed encodeFileToFile and decodeFileToFile to use the Base64.InputStream class to encode and decode on the fly which uses less memory than
  * encoding/decoding an entire file into memory before writing.</li>
- * <li>v2.2.1 - Fixed bug using URL_SAFE and ORDERED encodings. Fixed bug when using very small files (~< 40 bytes).</li>
+ * <li>v2.2.1 - Fixed bug using URL_SAFE and ORDERED encodings. Fixed bug when using very small files (~&lt; 40 bytes).</li>
  * <li>v2.2 - Added some helper methods for encoding/decoding directly from one file to the next. Also added a main() method to support command line
- * encoding/decoding from one file to the next. Also added these Base64 dialects:
+ * encoding/decoding from one file to the next.</li>
+ * </ul>
+ * 
+ * <p>
+ * Also added these Base64 dialects:
+ * </p>
+ * 
  * <ol>
  * <li>The default is RFC3548 format.</li>
  * <li>Calling Base64.setFormat(Base64.BASE64_FORMAT.URLSAFE_FORMAT) generates URL and file name friendly format as described in Section 4 of RFC3548.
@@ -42,8 +50,12 @@ package com.globalmentor.util;
  * <li>Calling Base64.setFormat(Base64.BASE64_FORMAT.ORDERED_FORMAT) generates URL and file name friendly format that preserves lexical ordering as described in
  * http://www.faqs.org/qa/rfcc-1940.html</li>
  * </ol>
- * Special thanks to Jim Kellerman at <a href="http://www.powerset.com/">http://www.powerset.com/</a> for contributing the new Base64 dialects.</li>
  * 
+ * <p>
+ * Special thanks to Jim Kellerman at <a href="http://www.powerset.com/">http://www.powerset.com/</a> for contributing the new Base64 dialects.
+ * </p>
+ * 
+ * <ul>
  * <li>v2.1 - Cleaned up javadoc comments and unused variables and methods. Added some convenience methods for reading and writing to and from files.</li>
  * <li>v2.0.2 - Now specifies UTF-8 encoding in places where the code fails on systems with other encodings (like EBCDIC).</li>
  * <li>v2.0.1 - Fixed an error when decoding a single byte, that is, when the encoded data was a single byte.</li>
@@ -51,12 +63,14 @@ package com.globalmentor.util;
  * being decoded is gzip-compressed and will decompress it automatically. Generally things are cleaner. You'll probably have to change some method calls that
  * you were making to support the new options format (<tt>int</tt>s that you "OR" together).</li>
  * <li>v1.5.1 - Fixed bug when decompressing and decoding to a byte[] using <tt>decode( String s, boolean gzipCompressed )</tt>. Added the ability to "suspend"
- * encoding in the Output Stream so you can turn on and off the encoding if you need to embed base64 data in an otherwise "normal" stream (like an XML file).</li>
+ * encoding in the Output Stream so you can turn on and off the encoding if you need to embed base64 data in an otherwise "normal" stream (like an XML file).
+ * </li>
  * <li>v1.5 - Output stream pases on flush() command but doesn't do anything itself. This helps when using GZIP streams. Added the ability to GZip-compress
  * objects before encoding them.</li>
  * <li>v1.4 - Added helper methods to read/write files.</li>
  * <li>v1.3.6 - Fixed OutputStream.flush() so that 'position' is reset.</li>
- * <li>v1.3.5 - Added flag to turn on and off line breaks. Fixed bug in input stream where last buffer being read, if not completely full, was not returned.</li>
+ * <li>v1.3.5 - Added flag to turn on and off line breaks. Fixed bug in input stream where last buffer being read, if not completely full, was not returned.
+ * </li>
  * <li>v1.3.4 - Fixed when "improperly padded stream" error was thrown at the wrong time.</li>
  * <li>v1.3.3 - Fixed I/O streams which were totally messed up.</li>
  * </ul>
@@ -93,16 +107,16 @@ public class Base64 {
 	public static final int DONT_BREAK_LINES = 8;
 
 	/**
-	 * Encode using Base64-like encoding that is URL- and Filename-safe as described in Section 4 of RFC3548: <a
-	 * href="http://www.faqs.org/rfcs/rfc3548.html">http://www.faqs.org/rfcs/rfc3548.html</a>. It is important to note that data encoded this way is <em>not</em>
-	 * officially valid Base64, or at the very least should not be called Base64 without also specifying that is was encoded using the URL- and Filename-safe
-	 * dialect.
+	 * Encode using Base64-like encoding that is URL- and Filename-safe as described in Section 4 of RFC3548:
+	 * <a href="http://www.faqs.org/rfcs/rfc3548.html">http://www.faqs.org/rfcs/rfc3548.html</a>. It is important to note that data encoded this way is
+	 * <em>not</em> officially valid Base64, or at the very least should not be called Base64 without also specifying that is was encoded using the URL- and
+	 * Filename-safe dialect.
 	 */
 	public static final int URL_SAFE = 16;
 
 	/**
-	 * Encode using the special "ordered" dialect of Base64 described here: <a
-	 * href="http://www.faqs.org/qa/rfcc-1940.html">http://www.faqs.org/qa/rfcc-1940.html</a>.
+	 * Encode using the special "ordered" dialect of Base64 described here:
+	 * <a href="http://www.faqs.org/qa/rfcc-1940.html">http://www.faqs.org/qa/rfcc-1940.html</a>.
 	 */
 	public static final int ORDERED = 32;
 
@@ -160,23 +174,23 @@ public class Base64 {
 			26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, // Letters 'a' through 'm'
 			39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, // Letters 'n' through 'z'
 			-9, -9, -9, -9 // Decimal 123 - 126
-	/*,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,     // Decimal 127 - 139
-	-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,     // Decimal 140 - 152
-	-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,     // Decimal 153 - 165
-	-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,     // Decimal 166 - 178
-	-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,     // Decimal 179 - 191
-	-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,     // Decimal 192 - 204
-	-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,     // Decimal 205 - 217
-	-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,     // Decimal 218 - 230
-	-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,     // Decimal 231 - 243
-	-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9         // Decimal 244 - 255 */
+			/*,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,     // Decimal 127 - 139
+			-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,     // Decimal 140 - 152
+			-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,     // Decimal 153 - 165
+			-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,     // Decimal 166 - 178
+			-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,     // Decimal 179 - 191
+			-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,     // Decimal 192 - 204
+			-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,     // Decimal 205 - 217
+			-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,     // Decimal 218 - 230
+			-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,     // Decimal 231 - 243
+			-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9         // Decimal 244 - 255 */
 	};
 
 	/* ********  U R L   S A F E   B A S E 6 4   A L P H A B E T  ******** */
 
 	/**
-	 * Used in the URL- and Filename-safe dialect described in Section 4 of RFC3548: <a
-	 * href="http://www.faqs.org/rfcs/rfc3548.html">http://www.faqs.org/rfcs/rfc3548.html</a>. Notice that the last two bytes become "hyphen" and "underscore"
+	 * Used in the URL- and Filename-safe dialect described in Section 4 of RFC3548:
+	 * <a href="http://www.faqs.org/rfcs/rfc3548.html">http://www.faqs.org/rfcs/rfc3548.html</a>. Notice that the last two bytes become "hyphen" and "underscore"
 	 * instead of "plus" and "slash."
 	 */
 	private static final byte[] _URL_SAFE_ALPHABET = { (byte)'A', (byte)'B', (byte)'C', (byte)'D', (byte)'E', (byte)'F', (byte)'G', (byte)'H', (byte)'I',
@@ -213,23 +227,23 @@ public class Base64 {
 			26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, // Letters 'a' through 'm'
 			39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, // Letters 'n' through 'z'
 			-9, -9, -9, -9 // Decimal 123 - 126
-	/*,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,     // Decimal 127 - 139
-	-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,     // Decimal 140 - 152
-	-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,     // Decimal 153 - 165
-	-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,     // Decimal 166 - 178
-	-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,     // Decimal 179 - 191
-	-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,     // Decimal 192 - 204
-	-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,     // Decimal 205 - 217
-	-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,     // Decimal 218 - 230
-	-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,     // Decimal 231 - 243
-	-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9         // Decimal 244 - 255 */
+			/*,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,     // Decimal 127 - 139
+			-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,     // Decimal 140 - 152
+			-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,     // Decimal 153 - 165
+			-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,     // Decimal 166 - 178
+			-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,     // Decimal 179 - 191
+			-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,     // Decimal 192 - 204
+			-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,     // Decimal 205 - 217
+			-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,     // Decimal 218 - 230
+			-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,     // Decimal 231 - 243
+			-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9         // Decimal 244 - 255 */
 	};
 
 	/* ********  O R D E R E D   B A S E 6 4   A L P H A B E T  ******** */
 
 	/**
-	 * I don't get the point of this technique, but it is described here: <a
-	 * href="http://www.faqs.org/qa/rfcc-1940.html">http://www.faqs.org/qa/rfcc-1940.html</a>.
+	 * I don't get the point of this technique, but it is described here:
+	 * <a href="http://www.faqs.org/qa/rfcc-1940.html">http://www.faqs.org/qa/rfcc-1940.html</a>.
 	 */
 	private static final byte[] _ORDERED_ALPHABET = { (byte)'-', (byte)'0', (byte)'1', (byte)'2', (byte)'3', (byte)'4', (byte)'5', (byte)'6', (byte)'7',
 			(byte)'8', (byte)'9', (byte)'A', (byte)'B', (byte)'C', (byte)'D', (byte)'E', (byte)'F', (byte)'G', (byte)'H', (byte)'I', (byte)'J', (byte)'K', (byte)'L',
@@ -265,16 +279,16 @@ public class Base64 {
 			38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, // Letters 'a' through 'm'
 			51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, // Letters 'n' through 'z'
 			-9, -9, -9, -9 // Decimal 123 - 126
-	/*,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,     // Decimal 127 - 139
-	  -9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,     // Decimal 140 - 152
-	  -9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,     // Decimal 153 - 165
-	  -9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,     // Decimal 166 - 178
-	  -9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,     // Decimal 179 - 191
-	  -9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,     // Decimal 192 - 204
-	  -9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,     // Decimal 205 - 217
-	  -9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,     // Decimal 218 - 230
-	  -9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,     // Decimal 231 - 243
-	  -9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9         // Decimal 244 - 255 */
+			/*,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,     // Decimal 127 - 139
+			  -9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,     // Decimal 140 - 152
+			  -9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,     // Decimal 153 - 165
+			  -9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,     // Decimal 166 - 178
+			  -9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,     // Decimal 179 - 191
+			  -9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,     // Decimal 192 - 204
+			  -9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,     // Decimal 205 - 217
+			  -9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,     // Decimal 218 - 230
+			  -9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,     // Decimal 231 - 243
+			  -9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9         // Decimal 244 - 255 */
 	};
 
 	/* ********  D E T E R M I N E   W H I C H   A L H A B E T  ******** */
@@ -314,6 +328,7 @@ public class Base64 {
 	/**
 	 * Encodes or decodes two files from the command line; <strong>feel free to delete this method (in fact you probably should) if you're embedding this code
 	 * into a larger program.</strong>
+	 * @param args The command line program arguments.
 	 */
 	public static final void main(String[] args) {
 		if(args.length < 3) {
@@ -525,6 +540,7 @@ public class Base64 {
 	 *
 	 * @param source The data to convert
 	 * @since 1.4
+	 * @return The Base64 notation representing the byte array.
 	 */
 	public static String encodeBytes(byte[] source) {
 		return encodeBytes(source, 0, source.length, NO_OPTIONS);
@@ -551,6 +567,7 @@ public class Base64 {
 	 * @see Base64#GZIP
 	 * @see Base64#DONT_BREAK_LINES
 	 * @since 2.0
+	 * @return The Base64 notation representing the byte array.
 	 */
 	public static String encodeBytes(byte[] source, int options) {
 		return encodeBytes(source, 0, source.length, options);
@@ -562,6 +579,7 @@ public class Base64 {
 	 * @param source The data to convert
 	 * @param off Offset in array where conversion should begin
 	 * @param len Length of data to convert
+	 * @return The Base64 notation representing the byte array.
 	 * @since 1.4
 	 */
 	public static String encodeBytes(byte[] source, int off, int len) {
@@ -589,6 +607,7 @@ public class Base64 {
 	 * @param len Length of data to convert
 	 * @param options Specified options
 	 * @param options alphabet type is pulled from this (standard, url-safe, ordered)
+	 * @return The Base64 notation representing the byte array.
 	 * @see Base64#GZIP
 	 * @see Base64#DONT_BREAK_LINES
 	 * @since 2.0
@@ -762,6 +781,7 @@ public class Base64 {
 	 * @param source The Base64 encoded data
 	 * @param off The offset of where to begin decoding
 	 * @param len The length of characters to decode
+	 * @param options encode options such as (standard, url-safe, ordered)
 	 * @return decoded data
 	 * @since 1.3
 	 */
@@ -1502,6 +1522,7 @@ public class Base64 {
 
 		/**
 		 * Method added by PHIL. [Thanks, PHIL. -Rob] This pads the buffer without closing the stream.
+		 * @throws IOException If any error occurs while reading the Base64 input.
 		 */
 		public void flushBase64() throws java.io.IOException {
 			if(position > 0) {
@@ -1535,7 +1556,7 @@ public class Base64 {
 
 		/**
 		 * Suspends encoding of the stream. May be helpful if you need to embed a piece of base640-encoded data in a stream.
-		 *
+		 * @throws IOException If any error occurs while reading the Base64 input.
 		 * @since 1.5.1
 		 */
 		public void suspendEncoding() throws java.io.IOException {

@@ -61,7 +61,7 @@ public interface ObjectState<T> extends Modifiable {
 	 * If the listener is <code>null</code>, no exception is thrown and no action is performed.
 	 * </p>
 	 * @param listener The <code>PropertyChangeListener</code> to be added.
-	 * @see PropertyChangeEvent
+	 * @see java.beans.PropertyChangeEvent
 	 */
 	public void addPropertyChangeListener(final PropertyChangeListener listener);
 

@@ -75,6 +75,7 @@ public class TempOutputStream extends OutputStreamDecorator<OutputStream> {
 
 	/**
 	 * Auto-dispose constructor with default threshold.
+	 * @param autoDispose Whether the temporary files, if any, should be deleted.
 	 * @see #DEFAULT_THRESHOLD
 	 */
 	public TempOutputStream(final boolean autoDispose) {
@@ -94,6 +95,7 @@ public class TempOutputStream extends OutputStreamDecorator<OutputStream> {
 	/**
 	 * Threshold constructor. If the threshold is set to zero, this output stream will always use a temporary file.
 	 * @param threshold The threshold number of bytes for switching from memory to a temporary file.
+	 * @param autoDispose Whether the temporary files, if any, should be deleted.
 	 * @throws IllegalArgumentException if the given threshold is negative.
 	 */
 	public TempOutputStream(final int threshold, final boolean autoDispose) {
@@ -203,7 +205,7 @@ public class TempOutputStream extends OutputStreamDecorator<OutputStream> {
 	/**
 	 * Creates a temporary file. The file will not be marked for automatic deletion.
 	 * @return A new file for temporarily storing data.
-	 * @throw IOException if there is an error creating a temporary file.
+	 * @throws IOException if there is an error creating a temporary file.
 	 */
 	protected static File createTempFile() throws IOException {
 		return Files.createTempFile(TempOutputStream.class.getSimpleName(), false); //create a temp file that won't automatically be deleted 

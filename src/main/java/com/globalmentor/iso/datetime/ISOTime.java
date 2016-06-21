@@ -93,7 +93,7 @@ public class ISOTime implements ISOTemporal {
 
 	/**
 	 * Temporal component constructor.
-	 * @param temporalcomponents The temporal components from which to construct the class.
+	 * @param temporalComponents The temporal components from which to construct the class.
 	 * @throws NullPointerException if the given temporal components is <code>null</code>.
 	 */
 	protected ISOTime(final ISOTemporalComponents temporalComponents) {
@@ -140,7 +140,7 @@ public class ISOTime implements ISOTemporal {
 
 	/**
 	 * Appends the canonical lexical representation of this time to a string builder in the form "hh:mm:ss[.s+]+/-hh:mm".
-	 * @param stringBuild The string builder to which the lexical representation will be appended.
+	 * @param stringBuilder The string builder to which the lexical representation will be appended.
 	 * @return The string builder.
 	 */
 	public StringBuilder append(final StringBuilder stringBuilder) {

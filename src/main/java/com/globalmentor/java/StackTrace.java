@@ -76,7 +76,9 @@ public class StackTrace {
 
 	/**
 	 * Prints this stack trace to the specified appendable in a format similar to {@link Throwable#printStackTrace(PrintStream)}.
+	 * @param <A> The type of appendable.
 	 * @param appendable The appendable to use for output.
+	 * @return The given appendable.
 	 * @throws NullPointerException if the given appendable is <code>null</code>.
 	 * @throws IOException if there is an error printing to the appendable.
 	 */

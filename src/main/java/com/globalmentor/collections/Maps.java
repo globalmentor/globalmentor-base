@@ -31,6 +31,8 @@ public class Maps {
 
 	/**
 	 * Adds values from an array of name-value pairs to a map. If more than one pair with the same name is given, the last one will override the others.
+	 * @param <N> The type of the name used as key of the map.
+	 * @param <V> The type of the value of the map.
 	 * @param map The map to receive the name-value pair names and values.
 	 * @param nameValuePairs An array of name-value pairs.
 	 * @return The given map.
@@ -61,6 +63,8 @@ public class Maps {
 	/**
 	 * Associates the specified value with the specified key in this map. If the map previously contained a mapping for this key, the old value is replaced by the
 	 * specified value. If <var>value</var> is <code>null</code>, the value with the specified key will be removed from the map.
+	 * @param <K> The type of key that is used by the map.
+	 * @param <V> The type of value that is used by the map.
 	 * @param map The map into which the value should be put.
 	 * @param key The key with which the specified value is to be associated.
 	 * @param value The value to be associated with the specified key, or <code>null</code> if the value associated with the key should be removed.
@@ -143,6 +147,7 @@ public class Maps {
 	 * @param <K> The type of key contained in the map.
 	 * @param <V> The type of value contained in the map.
 	 * @param map The map which should be returned in read-only form.
+	 * @return The immutable version of the map.
 	 * @throws NullPointerException if the given map is <code>null</code>.
 	 */
 	public static <K, V> Map<K, V> toImmutableMap(final Map<K, V> map) { //TODO improve to return an ImmutableMap<K, V>

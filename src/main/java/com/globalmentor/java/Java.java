@@ -115,6 +115,7 @@ public class Java {
 	 * Creates a safe Java variable name by replacing all illegal characters with the underscore ('_') character. This version only checks for the '.' and '$'
 	 * characters.
 	 * @param string A string to convert to a variable
+	 * @return The string converted to a safe Java variable name.
 	 */
 	public static String createVariableName(final String string) {
 		final StringBuilder stringBuilder = new StringBuilder(string);

@@ -54,7 +54,7 @@ public class ProgressOutputStream extends OutputStreamDecorator<OutputStream> {
 	/**
 	 * Writes all the bytes from the specified byte array to the decorated output stream. This version delegates to {@link #write(byte[], int, int)} to ensure
 	 * that no bytes written are noted more than once
-	 * @param byes The bytes to write.
+	 * @param bytes The bytes to write.
 	 * @throws NullPointerException if the given byte array is <code>null</code>.
 	 * @throws IOException if an I/O error occurs.
 	 */
@@ -63,12 +63,12 @@ public class ProgressOutputStream extends OutputStreamDecorator<OutputStream> {
 	}
 
 	/**
-	 * Writes specified number of > bytes from the specified byte array to the decorated doutput stream starting at the given offset.
-	 * @param byes The bytes to write.
+	 * Writes specified number of bytes from the specified byte array to the decorated output stream starting at the given offset.
+	 * @param bytes The bytes to write.
 	 * @param offset The start offset in the data.
 	 * @param length The number of bytes to write.
 	 * @throws NullPointerException if the given byte array is <code>null</code>.
-	 * @throws IndexOutOfBoundsException if the given offset is negative, or the given offset plus the given langth is greater than the length of the given array.
+	 * @throws IndexOutOfBoundsException if the given offset is negative, or the given offset plus the given length is greater than the length of the given array.
 	 * @throws IOException if an I/O error occurs.
 	 */
 	public synchronized void write(final byte bytes[], final int offset, final int length) throws IOException { //this method is synchronized so that the progress won't be updated and/or events sent out of order
@@ -106,7 +106,7 @@ public class ProgressOutputStream extends OutputStreamDecorator<OutputStream> {
 	}
 
 	/**
-	 * Fires a progress event to all registered progress listeners. This method delegates to {@link #fireProgessed(ProgressEvent)}.
+	 * Fires a progress event to all registered progress listeners. This method delegates to {@link #fireProgressed(ProgressEvent)}.
 	 * @param delta The amount of recent progress, or <code>-1</code> if not known.
 	 * @param value The total progress to this point, or <code>-1</code> if not known.
 	 * @param maximum The goal, or <code>-1</code> if not known.

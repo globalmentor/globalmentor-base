@@ -174,7 +174,6 @@ public class ZipManager implements URIInputStreamable {
 	 * @param href The location, either a URI or a filename, of the file.
 	 * @return A URI representing the specified file.
 	 * @throws IllegalArgumentException if the given string violates RFC&nbsp;2396.
-	 * @see #getZipFileURI
 	 * @see URIs
 	 */
 	public URI getURI(final String href) {

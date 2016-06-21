@@ -30,7 +30,7 @@ public class CollectionBuilder {
 	 * @param <E> The type of element contained in the collection.
 	 * @param <C> The type of collection.
 	 * @param collection The collection to which objects will be added.
-	 * @param iterator The source of the added objects.
+	 * @param iterable The source of the added objects.
 	 * @return The given collection.
 	 */
 	public static <E, C extends Collection<E>> C addAll(final C collection, final Iterable<? extends E> iterable) {

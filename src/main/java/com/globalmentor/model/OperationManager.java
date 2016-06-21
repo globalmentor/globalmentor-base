@@ -36,7 +36,7 @@ import com.globalmentor.time.*;
  * calling {@link #schedule(Operation)}. The operation, if not canceled, will eventually be started using {@link Operation#run()}.
  * </p>
  * 
- @author Garret Wilson
+ * @author Garret Wilson
  */
 public class OperationManager {
 
@@ -59,7 +59,7 @@ public class OperationManager {
 	/** The thread for asynchronous execution. */
 	private final Thread executionThread;
 
-	/** The thread for asynchronous execution. */
+	/** @return The thread for asynchronous execution. */
 	protected Thread getExecutionThread() {
 		return executionThread;
 	}

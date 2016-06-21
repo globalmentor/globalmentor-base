@@ -42,6 +42,7 @@ public class ConverterListIterator<I, O> extends ConverterIterator<I, O> impleme
 	/**
 	 * Iterator and converter constructor.
 	 * @param iterator The iterator of source objects.
+	 * @param converter The conversor to be used on the iterable.
 	 * @throws NullPointerException of if the given iterator and/or converter is <code>null</code>.
 	 */
 	public ConverterListIterator(final ListIterator<I> iterator, final Converter<I, O> converter) {
