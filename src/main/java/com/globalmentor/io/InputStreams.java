@@ -206,6 +206,7 @@ public class InputStreams {
 	 * @see ByteOrderMark#isUnusual()
 	 */
 	public static Charset detectCharset(final InputStream inputStream, final Charset defaultCharset) throws IOException {
+		checkArgument(inputStream.markSupported(), "Inputstream must support mark/reset.");
 		final int BYTE_ORDER_MARK_LENGTH = 4; //the number of bytes in the largest byte order mark
 		inputStream.mark(BYTE_ORDER_MARK_LENGTH); //we won't read more than the byte order mark
 		final byte[] bytes = new byte[BYTE_ORDER_MARK_LENGTH]; //create an array to hold the byte order mark

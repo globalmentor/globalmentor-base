@@ -18,6 +18,8 @@ package com.globalmentor.io;
 
 import java.nio.charset.*;
 
+import javax.annotation.*;
+
 /**
  * Utilities for working with charsets.
  * <p>
@@ -52,4 +54,19 @@ public class Charsets {
 	/** The canonical name of the Cp1252 charset. */
 	public static final String WINDOWS_1252_NAME = "windows-1252";
 
+	/**
+	 * Convenience method for creating a new decoder from a charset and setting its error handling approach for malformed input and unmappable characters.
+	 * @param charset The charset from which to create the decoder.
+	 * @param codingErrorAction The action to take if the data being decoded is invalid.
+	 * @return The new configured decoder.
+	 * @see Charset#newDecoder()
+	 * @see CharsetDecoder#onMalformedInput(CodingErrorAction)
+	 * @see CharsetDecoder#onUnmappableCharacter(CodingErrorAction)
+	 */
+	public static CharsetDecoder newDecoder(@Nonnull final Charset charset, @Nonnull final CodingErrorAction codingErrorAction) {
+		final CharsetDecoder decoder = charset.newDecoder();
+		decoder.onMalformedInput(codingErrorAction);
+		decoder.onUnmappableCharacter(codingErrorAction);
+		return decoder;
+	}
 }
