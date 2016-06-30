@@ -24,6 +24,8 @@ import java.nio.ByteOrder;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
+import javax.annotation.Nonnull;
+
 import com.globalmentor.java.Bytes;
 import com.globalmentor.model.ObjectHolder;
 
@@ -163,8 +165,11 @@ public enum ByteOrderMark {
 	 * @param bytes The array of bytes potentially starting with a byte order mark.
 	 * @return The byte order mark detected, or <code>null</code> if no byte order mark is present.
 	 */
-	public static ByteOrderMark detect(final byte[] bytes) {
-		for(final ByteOrderMark bom : values()) { //check each BOM manually
+	public static ByteOrderMark detect(@Nonnull final byte[] bytes) {
+		//note: this implementation depends on the order of the BOM enum values, from shorter bytes to longer bytes
+		final ByteOrderMark[] boms = values(); //check each BOM manually
+		for(int i = boms.length - 1; i >= 0; --i) { //work backwards to check longer BOMs first, as UTF-32LE starts with the UTF-16LE BOM
+			final ByteOrderMark bom = boms[i];
 			if(Bytes.startsWith(bytes, bom.bytes)) { //if the bytes starts with the BOM's bytes (trusting the comparison method not to modify the bytes, as we pass in our private array)
 				return bom;
 			}
