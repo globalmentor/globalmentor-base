@@ -25,6 +25,8 @@ import static java.util.Collections.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.*;
 
+import javax.annotation.Nonnull;
+
 import static com.globalmentor.io.Files.*;
 import static com.globalmentor.java.Java.*;
 import static com.globalmentor.java.Objects.*;
@@ -45,7 +47,7 @@ import com.globalmentor.net.*;
 public class Classes {
 
 	/** The set of classes that wrap primitive types. */
-	public static final Set<Class<?>> PRIMITIVE_WRAPPER_CLASSES = Sets.<Class<?>> immutableSetOf(Boolean.class, Byte.class, Character.class, Short.class,
+	public static final Set<Class<?>> PRIMITIVE_WRAPPER_CLASSES = Sets.<Class<?>>immutableSetOf(Boolean.class, Byte.class, Character.class, Short.class,
 			Integer.class, Long.class, Float.class, Double.class);
 
 	/** The name extension for Java class files. */
@@ -908,11 +910,33 @@ public class Classes {
 	 * @param classHeightMap The map of class/height pairs keyed to the class.
 	 * @throws NullPointerException if the given object class is <code>null</code>.
 	 */
-	private static <R> void addClass(final Class<? extends R> objectClass, final int height, final Map<Class<?>, NameValuePair<Class<?>, Integer>> classHeightMap) { //preferred signature, which works on Eclipse 3.4M3 but not on Sun JDK 1.6.0_03-b05:	private static <R> void addClass(final Class<? extends R> objectClass, final int height, final Map<Class<? extends R>, NameValuePair<Class<? extends R>, Integer>> classHeightMap)
+	private static <R> void addClass(final Class<? extends R> objectClass, final int height,
+			final Map<Class<?>, NameValuePair<Class<?>, Integer>> classHeightMap) { //preferred signature, which works on Eclipse 3.4M3 but not on Sun JDK 1.6.0_03-b05:	private static <R> void addClass(final Class<? extends R> objectClass, final int height, final Map<Class<? extends R>, NameValuePair<Class<? extends R>, Integer>> classHeightMap)
 		final NameValuePair<Class<?>, Integer> oldClassHeight = classHeightMap.get(objectClass); //get the old height
 		if(oldClassHeight == null || oldClassHeight.getValue().intValue() < height) { //if there was no old height, or the old height is not as large as the new height
 			classHeightMap.put(objectClass, new NameValuePair<Class<?>, Integer>(objectClass, height)); //update the height for the class
 		}
+	}
+
+	/**
+	 * Determines the path necessary to access a named resource using the class loader of the given context class.
+	 * <p>
+	 * Accessing a resource via e.g. {@link Class#getResource(String)} for the class <code>com.example.Foo</code> may be accomplished using a resource name such
+	 * as <code>"bar"</code>, relative to the class package directory structure; but loading the same resource via {@link ClassLoader#getResource(String)} using
+	 * the class loader for the same class requires the full path to the resource, such as <code>com/example/bar</code>. This method determines the full path that
+	 * would need to be used to access a resource using a class loader for a class. Thus given class <code>com.example.Foo</code> and resource name
+	 * <code>bar</code>, this method will return <code>"com/example/bar"</code>.
+	 * </p>
+	 * <p>
+	 * This method performs functionality equivalent to that performed internally to method such as {@link Class#getResource(String)} before they delegate to the
+	 * class loader.
+	 * </p>
+	 * @param contextClass The class in relation to which the resource name should be resolved
+	 * @param resourceName The name of the resource to access.
+	 * @return The full path of the resource necessary to access it using the resource loader of the given class.
+	 */
+	public static String resolveResourcePath(@Nonnull final Class<?> contextClass, @Nonnull final String resourceName) {
+		return contextClass.getPackage().getName().replace(PACKAGE_SEPARATOR, PATH_SEPARATOR) + PATH_SEPARATOR + resourceName;
 	}
 
 	//TODO make a soft reference that deletes the file when garbage-collected
