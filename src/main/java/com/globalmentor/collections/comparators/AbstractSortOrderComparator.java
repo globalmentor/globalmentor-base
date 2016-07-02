@@ -16,7 +16,7 @@
 
 package com.globalmentor.collections.comparators;
 
-import static com.globalmentor.java.Objects.*;
+import static java.util.Objects.*;
 
 /**
  * A comparator that can sort in ascending or descending order.
@@ -40,7 +40,7 @@ public abstract class AbstractSortOrderComparator<T> implements SortOrderCompara
 	 * @throws NullPointerException if the given sort order is <code>null</code>.
 	 */
 	public AbstractSortOrderComparator(final SortOrder sortOrder) {
-		this.sortOrder = checkInstance(sortOrder, "Sort order cannot be null.");
+		this.sortOrder = requireNonNull(sortOrder, "Sort order cannot be null.");
 	}
 
 	/**

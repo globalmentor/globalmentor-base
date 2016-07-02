@@ -19,11 +19,12 @@ package com.globalmentor.collections;
 import java.io.IOException;
 import java.util.*;
 
+import static java.util.Objects.*;
+
 import com.globalmentor.collections.iterators.*;
 import com.globalmentor.java.Arrays;
 
 import static com.globalmentor.java.Conditions.*;
-import static com.globalmentor.java.Objects.*;
 import static com.globalmentor.text.TextFormatter.*;
 
 /**
@@ -44,7 +45,7 @@ public class ObjectSet<E> implements Set<E>, ImmutableCollection<E> {
 	 * @throws NullPointerException if the given object is <code>null</code>.
 	 */
 	public ObjectSet(final E object) {
-		this.object = checkInstance(object, "Object cannot be null.");
+		this.object = requireNonNull(object, "Object cannot be null.");
 	}
 
 	/** {@inheritDoc} */

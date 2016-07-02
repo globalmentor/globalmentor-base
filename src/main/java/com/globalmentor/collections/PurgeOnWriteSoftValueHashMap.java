@@ -19,7 +19,7 @@ package com.globalmentor.collections;
 import java.lang.ref.*;
 import java.util.*;
 
-import static com.globalmentor.java.Objects.*;
+import static java.util.Objects.*;
 
 /**
  * A map that uses soft references to store map values. Values are only purged when map write operations occur. <code>null</code> values are not supported.
@@ -97,7 +97,7 @@ public class PurgeOnWriteSoftValueHashMap<K, V> extends AbstractPurgeOnWriteRefe
 		 * @throws NullPointerException if the given reference queue is <code>null</code>.
 		 */
 		public SoftValueReference(final K key, final V value, ReferenceQueue<? super V> referenceQueue) {
-			super(value, checkInstance(referenceQueue, "Reference queue cannot be null.")); //construct the parent class
+			super(value, requireNonNull(referenceQueue, "Reference queue cannot be null.")); //construct the parent class
 			this.key = key; //store the key
 		}
 

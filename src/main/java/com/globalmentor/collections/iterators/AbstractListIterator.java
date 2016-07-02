@@ -18,7 +18,8 @@ package com.globalmentor.collections.iterators;
 
 import java.util.*;
 
-import static com.globalmentor.java.Objects.*;
+import static java.util.Objects.*;
+
 import static com.globalmentor.java.Conditions.*;
 
 /**
@@ -67,7 +68,7 @@ public abstract class AbstractListIterator<I, E> implements ListIterator<I> {
 	 * @throws IndexOutOfBoundsException if the index is out of range (<var>index</var> &lt; 0 || <var>index</var> &gt; <code>size()</code>).
 	 */
 	public AbstractListIterator(final List<E> list, final int index) {
-		this.list = checkInstance(list, "List cannot be null.");
+		this.list = requireNonNull(list, "List cannot be null.");
 		final int size = list.size(); //get the size of the list
 		nextIndex = checkIndexBounds(index, size + 1); //make sure the next index is within the list or at the size of the list 
 	}

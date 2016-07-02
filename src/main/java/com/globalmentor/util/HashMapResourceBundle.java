@@ -18,10 +18,10 @@ package com.globalmentor.util;
 
 import java.util.*;
 
+import static java.util.Objects.*;
+
 import com.globalmentor.collections.iterators.EnumerationIterator;
 import com.globalmentor.collections.iterators.JoinIterator;
-
-import static com.globalmentor.java.Objects.*;
 
 /**
  * A resource bundle backed by a hash map.
@@ -79,7 +79,7 @@ public class HashMapResourceBundle extends ResourceBundle {
 	 * @return The object for the given key, or <code>null</code>.
 	 */
 	protected Object handleGetObject(final String key) {
-		return map.get(checkInstance(key, "Resource key cannot be null.")); //look up the object from the map
+		return map.get(requireNonNull(key, "Resource key cannot be null.")); //look up the object from the map
 	}
 
 	/** @return An enumeration of the resouce keys. */

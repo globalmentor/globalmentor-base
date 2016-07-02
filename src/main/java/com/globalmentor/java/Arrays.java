@@ -71,8 +71,8 @@ public class Arrays {
 	 * @return The given array.
 	 * @throws NullPointerException if the given array or any element within the array is <code>null</code>.
 	 */
-	public static <T> T[] checkInstances(final T[] array) {
-		return checkInstances(array, null); //check for null with no description
+	public static <T> T[] requireNonNulls(final T[] array) {
+		return requireNonNulls(array, null); //check for null with no description
 	}
 
 	/**
@@ -83,7 +83,7 @@ public class Arrays {
 	 * @return The given variable.
 	 * @throws NullPointerException if the given array or any element within the array is <code>null</code>.
 	 */
-	public static <T> T[] checkInstances(final T[] array, final String description) {
+	public static <T> T[] requireNonNulls(final T[] array, final String description) {
 		for(final T element : array) { //for each element in the array
 			if(element == null) { //if the element is null
 				throw new NullPointerException(description);

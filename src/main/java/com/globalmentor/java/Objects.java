@@ -18,6 +18,8 @@ package com.globalmentor.java;
 
 import java.lang.reflect.*;
 
+import static java.util.Objects.*;
+
 import static com.globalmentor.java.Classes.*;
 import static com.globalmentor.java.Conditions.*;
 import static com.globalmentor.java.Java.*;
@@ -33,32 +35,6 @@ public class Objects {
 
 	/** This class cannot be publicly instantiated. */
 	private Objects() {
-	}
-
-	/**
-	 * Checks to see if a given variable is an instance of any object, and throws a {@link NullPointerException} if the variable is <code>null</code>.
-	 * @param <T> The type of variable to check.
-	 * @param variable The variable to check.
-	 * @return The given variable.
-	 * @throws NullPointerException if the given variable is <code>null</code>.
-	 */
-	public static <T> T checkInstance(final T variable) {
-		return checkInstance(variable, null); //check for null with no description
-	}
-
-	/**
-	 * Checks to see if a given variable is an instance of any object, and throws a {@link NullPointerException} if the variable is <code>null</code>.
-	 * @param <T> The type of variable to check.
-	 * @param variable The variable to check.
-	 * @param description A description of the variable to be used when generating an exception, or <code>null</code> for no description.
-	 * @return The given variable.
-	 * @throws NullPointerException if the given variable is <code>null</code>.
-	 */
-	public static <T> T checkInstance(final T variable, final String description) {
-		if(variable == null) { //if the variable is null
-			throw new NullPointerException(description);
-		}
-		return variable; //return the variable
 	}
 
 	/**
@@ -210,10 +186,9 @@ public class Objects {
 	 * @param defaultInstance The default instance to return if the object is <code>null</code>.
 	 * @return The object, or the default instance of the object is <code>null</code>.
 	 * @throws NullPointerException if the given default instance is <code>null</code>.
-	 * @see #checkInstance(Object)
 	 */
 	public static <T> T toInstance(final T object, final T defaultInstance) {
-		return object != null ? object : checkInstance(defaultInstance);
+		return object != null ? object : requireNonNull(defaultInstance);
 	}
 
 	/**

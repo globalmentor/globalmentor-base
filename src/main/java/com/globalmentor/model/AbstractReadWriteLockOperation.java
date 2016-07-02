@@ -16,9 +16,9 @@
 
 package com.globalmentor.model;
 
-import static com.globalmentor.java.Objects.*;
-
 import java.util.concurrent.locks.*;
+
+import static java.util.Objects.*;
 
 /**
  * Abstract implementation of some operation that can be executed, with state governed by a read/write lock.
@@ -62,7 +62,7 @@ public abstract class AbstractReadWriteLockOperation extends AbstractOperation i
 	 * @throws NullPointerException if the given lock is <code>null</code>.
 	 */
 	public AbstractReadWriteLockOperation(final ReadWriteLock readWriteLock) {
-		this.readWriteLock = checkInstance(readWriteLock, "Read write lock cannot be null.");
+		this.readWriteLock = requireNonNull(readWriteLock, "Read write lock cannot be null.");
 	}
 
 	@Override

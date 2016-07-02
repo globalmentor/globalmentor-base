@@ -18,7 +18,7 @@ package com.globalmentor.net;
 
 import java.net.URI;
 
-import com.globalmentor.java.Objects;
+import static java.util.Objects.*;
 
 /**
  * A class that represents a reference to another resource via its URI.
@@ -39,7 +39,7 @@ public class ReferenceResource extends AbstractResource {
 	 * @throws NullPointerException if the given URI is <code>null</code>.
 	 */
 	public ReferenceResource(final URI uri) {
-		this.uri = Objects.checkInstance(uri, "URI cannot be null.");
+		this.uri = requireNonNull(uri, "URI cannot be null.");
 	}
 
 }

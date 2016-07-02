@@ -18,9 +18,9 @@ package com.globalmentor.io;
 
 import java.io.*;
 
-import com.globalmentor.java.Disposable;
+import static java.util.Objects.*;
 
-import static com.globalmentor.java.Objects.*;
+import com.globalmentor.java.Disposable;
 
 /**
  * Wraps an existing input stream. The decorated input stream is released when this stream is closed. This decorator provides convenience methods
@@ -57,7 +57,7 @@ public class InputStreamDecorator<I extends InputStream> extends InputStream imp
 	 * @throws NullPointerException if the given stream is <code>null</code>.
 	 */
 	public InputStreamDecorator(final I inputStream, final boolean autoDispose) {
-		this.inputStream = checkInstance(inputStream, "Input stream cannot be null."); //save the decorated input stream
+		this.inputStream = requireNonNull(inputStream, "Input stream cannot be null."); //save the decorated input stream
 		this.autoDispose = true;
 	}
 

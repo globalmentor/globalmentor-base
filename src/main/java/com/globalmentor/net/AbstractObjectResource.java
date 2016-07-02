@@ -16,7 +16,7 @@
 
 package com.globalmentor.net;
 
-import static com.globalmentor.java.Objects.*;
+import static java.util.Objects.*;
 
 import java.net.URI;
 
@@ -42,7 +42,7 @@ public abstract class AbstractObjectResource<C extends AbstractObjectResource<C>
 	 */
 	public AbstractObjectResource(final URI uri, final Class<? extends C> type) {
 		super(uri);
-		this.type = checkInstance(type);
+		this.type = requireNonNull(type);
 	}
 
 	/**

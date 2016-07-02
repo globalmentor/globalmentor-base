@@ -18,10 +18,11 @@ package com.globalmentor.time;
 
 import java.util.*;
 
+import static java.util.Objects.*;
+
 import static com.globalmentor.iso.datetime.ISO8601.*;
 
 import com.globalmentor.java.Integers;
-import static com.globalmentor.java.Objects.*;
 
 /**
  * Constant values and utilities for working with time zones.
@@ -73,7 +74,7 @@ public class TimeZones {
 	 * @throws IllegalArgumentException if an offset was provided for which no time zone could be found.
 	 */
 	public static TimeZone getTimeZone(final Date date, final int utcOffsetHours, final int utcOffsetMinutes) {
-		checkInstance(date, "Date cannot be null.");
+		requireNonNull(date, "Date cannot be null.");
 		return getTimeZone(utcOffsetHours, utcOffsetMinutes); //currently we ignore the date
 	}
 

@@ -18,7 +18,7 @@ package com.globalmentor.collections.iterators;
 
 import java.util.*;
 
-import static com.globalmentor.java.Objects.*;
+import static java.util.Objects.*;
 
 /**
  * An iterator backed by an enumeration. An enumeration adapter. This class also serves as an enumeration decorator by implementing the {@link Enumeration}
@@ -42,7 +42,7 @@ public class EnumerationIterator<E> implements Iterator<E>, Enumeration<E> {
 	 * @throws NullPointerException if the given enumeration is <code>null</code>.
 	 */
 	public EnumerationIterator(final Enumeration<E> enumeration) {
-		this.enumeration = checkInstance(enumeration, "Enumeration cannot be null.");
+		this.enumeration = requireNonNull(enumeration, "Enumeration cannot be null.");
 	}
 
 	/** @return <code>true</code> if the iteration has more elements. */

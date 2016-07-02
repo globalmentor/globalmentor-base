@@ -18,11 +18,12 @@ package com.globalmentor.cache;
 
 import java.io.IOException;
 import java.util.*;
-import static java.util.Collections.*;
 import java.util.concurrent.locks.*;
 
+import static java.util.Collections.*;
+import static java.util.Objects.*;
+
 import static com.globalmentor.collections.Collections.*;
-import static com.globalmentor.java.Objects.*;
 
 import com.globalmentor.collections.*;
 
@@ -131,7 +132,7 @@ public abstract class AbstractCache<K, Q extends AbstractCache.Query<K>, V, D ex
 	/*TODO del
 		public boolean isDataCached(final Q query, final Data<V> data) throws IOException
 		{
-			checkInstance(data, "Data cannot be null.");
+			requireNonNull(data, "Data cannot be null.");
 			final D cachedData=cacheMap.get(query.getKey());	//get cached information from the map
 			return cachedData==data && !isStaleData(query, cachedData);	//return whether this data is still cached and isn't stale
 		}
@@ -303,7 +304,7 @@ public abstract class AbstractCache<K, Q extends AbstractCache.Query<K>, V, D ex
 		 * @throws NullPointerException if the given query is <code>null</code>.
 		 */
 		public Fetcher(final Q query) {
-			this.query = checkInstance(query, "Query cannot be null.");
+			this.query = requireNonNull(query, "Query cannot be null.");
 		}
 
 		/**

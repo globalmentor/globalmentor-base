@@ -16,9 +16,9 @@
 
 package com.globalmentor.beans;
 
-import static com.globalmentor.java.Objects.*;
-
 import java.beans.PropertyChangeEvent;
+
+import static java.util.Objects.*;
 
 import com.globalmentor.event.TargetedEvent;
 
@@ -62,8 +62,8 @@ public class GenericPropertyChangeEvent<V> extends PropertyChangeEvent implement
 	 * @throws NullPointerException if the given source and/or target is <code>null</code>.
 	 */
 	public GenericPropertyChangeEvent(final Object source, final Object target, final String propertyName, final V oldValue, V newValue) {
-		super(checkInstance(source, "Event source object cannot be null."), propertyName, oldValue, newValue); //construct the parent class
-		this.target = checkInstance(target, "Event target object cannot be null."); //save the target
+		super(requireNonNull(source, "Event source object cannot be null."), propertyName, oldValue, newValue); //construct the parent class
+		this.target = requireNonNull(target, "Event target object cannot be null."); //save the target
 	}
 
 	/**

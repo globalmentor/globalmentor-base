@@ -18,7 +18,7 @@ package com.globalmentor.collections;
 
 import java.util.*;
 
-import static com.globalmentor.java.Objects.*;
+import static java.util.Objects.*;
 
 /**
  * A collection map that wraps an existing collection map, providing access through the {@link CollectionMap} interface. All map access is synchronized on the
@@ -40,7 +40,7 @@ public class SynchronizedCollectionMapDecorator<K, V, C extends Collection<V>> e
 	 */
 	public SynchronizedCollectionMapDecorator(final CollectionMap<K, V, C> collectionMap) {
 		super(collectionMap); //construct the parent class with the collection map
-		this.collectionMap = checkInstance(collectionMap, "Collection map cannot be null"); //save the collection map
+		this.collectionMap = requireNonNull(collectionMap, "Collection map cannot be null"); //save the collection map
 	}
 
 	/**
@@ -51,7 +51,7 @@ public class SynchronizedCollectionMapDecorator<K, V, C extends Collection<V>> e
 	 */
 	public SynchronizedCollectionMapDecorator(final CollectionMap<K, V, C> collectionMap, final Object mutex) {
 		super(collectionMap, mutex); //construct the parent class with the collection map
-		this.collectionMap = checkInstance(collectionMap, "Collection map cannot be null"); //save the collection map
+		this.collectionMap = requireNonNull(collectionMap, "Collection map cannot be null"); //save the collection map
 	}
 
 	/**

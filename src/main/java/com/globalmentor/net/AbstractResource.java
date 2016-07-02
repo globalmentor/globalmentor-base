@@ -18,8 +18,9 @@ package com.globalmentor.net;
 
 import java.net.URI;
 
+import static java.util.Objects.*;
+
 import static com.globalmentor.java.Characters.*;
-import static com.globalmentor.java.Objects.*;
 
 /**
  * Represents an abstract implementation of a resource.
@@ -60,7 +61,7 @@ public abstract class AbstractResource implements Resource {
 	 * @throws NullPointerException if the given resource URI is <code>null</code>.
 	 */
 	public static String toString(final URI resourceURI) {
-		return new StringBuilder().append(LEFT_POINTING_DOUBLE_ANGLE_QUOTATION_MARK_CHAR).append(checkInstance(resourceURI))
+		return new StringBuilder().append(LEFT_POINTING_DOUBLE_ANGLE_QUOTATION_MARK_CHAR).append(requireNonNull(resourceURI))
 				.append(RIGHT_POINTING_DOUBLE_ANGLE_QUOTATION_MARK_CHAR).toString();
 	}
 

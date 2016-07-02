@@ -19,9 +19,10 @@ package com.globalmentor.collections;
 import static com.globalmentor.java.CharSequences.*;
 import static com.globalmentor.java.Characters.*;
 import static com.globalmentor.java.Conditions.*;
-import static com.globalmentor.java.Objects.*;
 
 import java.util.*;
+
+import static java.util.Objects.*;
 
 import com.globalmentor.collections.iterators.*;
 import com.globalmentor.java.*;
@@ -121,7 +122,7 @@ public class CharSequenceSuffixTree extends AbstractSuffixTree<CharSequenceSuffi
 	 */
 	@Override
 	protected void addEdge(final CharSequenceEdge edge) {
-		checkState(!edgeMap.containsKey(checkInstance(edge)), "Duplicate edge: " + edge);
+		checkState(!edgeMap.containsKey(requireNonNull(edge)), "Duplicate edge: " + edge);
 		edgeMap.put(edge, edge); //an edge is its own key
 	}
 
@@ -132,7 +133,7 @@ public class CharSequenceSuffixTree extends AbstractSuffixTree<CharSequenceSuffi
 	 */
 	@Override
 	protected void removeEdge(final CharSequenceEdge edge) {
-		edgeMap.remove(checkInstance(edge));
+		edgeMap.remove(requireNonNull(edge));
 	}
 
 	@Override
@@ -148,7 +149,7 @@ public class CharSequenceSuffixTree extends AbstractSuffixTree<CharSequenceSuffi
 	 */
 	private CharSequenceSuffixTree(final CharSequence charSequence, final boolean explicit) {
 		super(explicit);
-		this.charSequence = checkInstance(charSequence);
+		this.charSequence = requireNonNull(charSequence);
 	}
 
 	/**
@@ -333,7 +334,7 @@ public class CharSequenceSuffixTree extends AbstractSuffixTree<CharSequenceSuffi
 		 * @throws NullPointerException if the given parent node is <code>null</code>.
 		 */
 		public EdgeKey forEdge(final Node parentNode, final char firstChar) {
-			this.parentNode = checkInstance(parentNode);
+			this.parentNode = requireNonNull(parentNode);
 			this.firstChar = firstChar;
 			return this;
 		}
@@ -407,8 +408,8 @@ public class CharSequenceSuffixTree extends AbstractSuffixTree<CharSequenceSuffi
 		 * @throws IllegalArgumentException if the given end is less than the start.
 		 */
 		public CharSequenceEdge(final CharSequenceNode parentNode, final CharSequenceNode childNode, final int start, final int end) {
-			this.parentNode = checkInstance(parentNode);
-			this.childNode = checkInstance(childNode);
+			this.parentNode = requireNonNull(parentNode);
+			this.childNode = requireNonNull(childNode);
 			this.start = start;
 			this.end = checkArgumentMinimum(end, start);
 		}
@@ -537,7 +538,7 @@ public class CharSequenceSuffixTree extends AbstractSuffixTree<CharSequenceSuffi
 		 * @throws NullPointerException if the given suffix tree is <code>null</code>.
 		 */
 		public State(final CharSequenceSuffixTree suffixTree, final boolean explicit) {
-			this.suffixTree = checkInstance(suffixTree);
+			this.suffixTree = requireNonNull(suffixTree);
 			this.node = suffixTree.getNode(0); //start on the root node
 			this.start = 0;
 			this.end = 0;
@@ -636,7 +637,7 @@ public class CharSequenceSuffixTree extends AbstractSuffixTree<CharSequenceSuffi
 		 * @throws NullPointerException if the given parent node is <code>null</code>.
 		 */
 		public NodeEdgeIterable(final Node parentNode) {
-			this.parentNode = checkInstance(parentNode);
+			this.parentNode = requireNonNull(parentNode);
 		}
 
 		@Override

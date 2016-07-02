@@ -16,9 +16,9 @@
 
 package com.globalmentor.collections;
 
-import static com.globalmentor.java.Objects.*;
-
 import java.util.*;
+
+import static java.util.Objects.*;
 
 /**
  * An abstract base implementation of a suffix tree for a sequence of elements (most commonly characters).
@@ -199,7 +199,7 @@ public abstract class AbstractSuffixTree<E extends SuffixTree.Edge> implements S
 		 * @throws NullPointerException if the given node is <code>null</code>.
 		 */
 		protected void setParentNode(final Node parentNode) {
-			this.parentNode = checkInstance(parentNode);
+			this.parentNode = requireNonNull(parentNode);
 		}
 
 		private Node suffixNode = null;
@@ -215,7 +215,7 @@ public abstract class AbstractSuffixTree<E extends SuffixTree.Edge> implements S
 		 * @throws NullPointerException if the given node is <code>null</code>.
 		 */
 		protected void setSuffixNode(final Node suffixNode) {
-			this.suffixNode = checkInstance(suffixNode);
+			this.suffixNode = requireNonNull(suffixNode);
 		}
 
 		/**

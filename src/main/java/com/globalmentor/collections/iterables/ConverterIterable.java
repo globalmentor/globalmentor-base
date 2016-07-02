@@ -16,9 +16,9 @@
 
 package com.globalmentor.collections.iterables;
 
-import static com.globalmentor.java.Objects.*;
-
 import java.util.Iterator;
+
+import static java.util.Objects.*;
 
 import com.globalmentor.collections.iterators.ConverterIterator;
 import com.globalmentor.model.Converter;
@@ -55,8 +55,8 @@ public class ConverterIterable<I, O> implements Iterable<O> {
 	 * @throws NullPointerException of if the given iterable and/or converter is <code>null</code>.
 	 */
 	public ConverterIterable(final Iterable<I> iterable, final Converter<I, O> converter) {
-		this.iterable = checkInstance(iterable);
-		this.converter = checkInstance(converter);
+		this.iterable = requireNonNull(iterable);
+		this.converter = requireNonNull(converter);
 	}
 
 	@Override

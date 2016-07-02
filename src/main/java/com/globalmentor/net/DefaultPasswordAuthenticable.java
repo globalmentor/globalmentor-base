@@ -19,7 +19,7 @@ package com.globalmentor.net;
 import java.net.PasswordAuthentication;
 import java.net.URI;
 
-import static com.globalmentor.java.Objects.*;
+import static java.util.Objects.*;
 
 /**
  * A default class for providing a username and password. A single {@link PasswordAuthentication} instance is stored and provided when requested.
@@ -45,7 +45,7 @@ public final class DefaultPasswordAuthenticable extends AbstractAuthenticable {
 	 * @throws NullPointerException if the given username and/or password is <code>null</code>.
 	 */
 	public DefaultPasswordAuthenticable(final String username, final char[] password) {
-		this(new PasswordAuthentication(checkInstance(username, "Username must be provided."), checkInstance(password, "Password must be provided."))); //construct the class with the username and password stored in a new password authentication objet
+		this(new PasswordAuthentication(requireNonNull(username, "Username must be provided."), requireNonNull(password, "Password must be provided."))); //construct the class with the username and password stored in a new password authentication objet
 	}
 
 	/**
@@ -54,7 +54,7 @@ public final class DefaultPasswordAuthenticable extends AbstractAuthenticable {
 	 * @throws NullPointerException if the given password authentication is <code>null</code>.
 	 */
 	public DefaultPasswordAuthenticable(final PasswordAuthentication passwordAuthentication) {
-		this.passwordAuthentication = checkInstance(passwordAuthentication); //store the password authentication
+		this.passwordAuthentication = requireNonNull(passwordAuthentication); //store the password authentication
 	}
 
 	/**

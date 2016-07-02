@@ -18,9 +18,9 @@ package com.globalmentor.event;
 
 import java.util.*;
 
-import com.globalmentor.event.PostponedEvent;
+import static java.util.Objects.*;
 
-import static com.globalmentor.java.Objects.*;
+import com.globalmentor.event.PostponedEvent;
 
 /**
  * Abstract implementation of an event and the means to fire it at a later time.
@@ -71,8 +71,8 @@ public abstract class AbstractPostponedEvent<L extends EventListener, E extends 
 	 */
 	public AbstractPostponedEvent(final EventListenerManager eventListenerManager, final Class<L> listenerKey, final E event) {
 		this.eventListenerManager = eventListenerManager;
-		this.listenerKey = checkInstance(listenerKey, "Listener key cannot be null.");
-		this.event = checkInstance(event, "Event cannot be null.");
+		this.listenerKey = requireNonNull(listenerKey, "Listener key cannot be null.");
+		this.event = requireNonNull(event, "Event cannot be null.");
 	}
 
 	/**

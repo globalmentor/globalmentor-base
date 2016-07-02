@@ -16,7 +16,7 @@
 
 package com.globalmentor.util;
 
-import static com.globalmentor.java.Objects.*;
+import static java.util.Objects.*;
 
 /**
  * An efficient class for creating templates which can be repeatedly applied with string arguments. Non-string parameter components will be added to the string
@@ -43,7 +43,7 @@ public class StringTemplate {
 	public StringTemplate(final Object... components) {
 		this.components = components.clone(); //clone the compnents so that they won't be modified later
 		for(final Object component : components) { //for each component
-			checkInstance(component, "Component cannot be null.");
+			requireNonNull(component, "Component cannot be null.");
 		}
 	}
 

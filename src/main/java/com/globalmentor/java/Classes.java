@@ -20,16 +20,16 @@ import java.io.*;
 import java.lang.reflect.*;
 import java.net.*;
 import java.util.*;
-
-import static java.util.Collections.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.*;
+
+import static java.util.Collections.*;
+import static java.util.Objects.*;
 
 import javax.annotation.Nonnull;
 
 import static com.globalmentor.io.Files.*;
 import static com.globalmentor.java.Java.*;
-import static com.globalmentor.java.Objects.*;
 import static com.globalmentor.java.Strings.*;
 import static com.globalmentor.net.URIs.*;
 import static com.globalmentor.net.URLs.*;
@@ -292,7 +292,7 @@ public class Classes {
 	 * @throws NullPointerException if the given class is <code>null</code>.
 	 */
 	public static boolean isPrimitiveWrapper(final Class<?> objectClass) {
-		return PRIMITIVE_WRAPPER_CLASSES.contains(checkInstance(objectClass));
+		return PRIMITIVE_WRAPPER_CLASSES.contains(requireNonNull(objectClass));
 	}
 
 	/**

@@ -18,7 +18,7 @@ package com.globalmentor.collections;
 
 import java.util.*;
 
-import static com.globalmentor.java.Objects.*;
+import static java.util.Objects.*;
 
 /**
  * A map that wraps an existing map, providing access through the {@link Map} interface. All map access is synchronized on the provided synchronization object.
@@ -40,7 +40,7 @@ public class SynchronizedMapDecorator<K, V> implements Map<K, V> {
 	 * @throws NullPointerException if the provided map is <code>null</code>.
 	 */
 	public SynchronizedMapDecorator(final Map<K, V> map) {
-		this.map = checkInstance(map, "Map cannot be null"); //save the map
+		this.map = requireNonNull(map, "Map cannot be null"); //save the map
 		this.mutex = this; //use this instance as a mutex		
 	}
 
@@ -51,8 +51,8 @@ public class SynchronizedMapDecorator<K, V> implements Map<K, V> {
 	 * @throws NullPointerException if the provided map and/or mutex is <code>null</code>.
 	 */
 	public SynchronizedMapDecorator(final Map<K, V> map, final Object mutex) {
-		this.map = checkInstance(map, "Map cannot be null"); //save the map
-		this.mutex = checkInstance(mutex, "Mutex cannot be null"); //save the mutex
+		this.map = requireNonNull(map, "Map cannot be null"); //save the map
+		this.mutex = requireNonNull(mutex, "Mutex cannot be null"); //save the mutex
 	}
 
 	/**

@@ -18,7 +18,7 @@ package com.globalmentor.event;
 
 import java.util.EventObject;
 
-import static com.globalmentor.java.Objects.*;
+import static java.util.Objects.*;
 
 /**
  * The base class for events, extending the Java event object as well as implementing the event interface.
@@ -32,7 +32,7 @@ public abstract class AbstractEvent extends EventObject implements Event {
 	 * @throws NullPointerException if the given source is <code>null</code>.
 	 */
 	public AbstractEvent(final Object source) {
-		super(checkInstance(source, "Event source object cannot be null.")); //construct the parent class
+		super(requireNonNull(source, "Event source object cannot be null.")); //construct the parent class
 	}
 
 }

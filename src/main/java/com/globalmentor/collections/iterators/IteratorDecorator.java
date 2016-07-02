@@ -18,7 +18,7 @@ package com.globalmentor.collections.iterators;
 
 import java.util.*;
 
-import static com.globalmentor.java.Objects.*;
+import static java.util.Objects.*;
 
 /**
  * An iterator that wraps an existing iterator, providing access through the {@link Iterator} interface.
@@ -40,7 +40,7 @@ public class IteratorDecorator<E> implements Iterator<E> {
 	 * @throws NullPointerException if the given iterator is <code>null</code>.
 	 */
 	public IteratorDecorator(final Iterator<E> iterator) {
-		this.iterator = checkInstance(iterator, "Iterator cannot be null"); //save the iterator
+		this.iterator = requireNonNull(iterator, "Iterator cannot be null"); //save the iterator
 	}
 
 	/** {@inheritDoc} */

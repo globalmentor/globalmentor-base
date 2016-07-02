@@ -18,7 +18,7 @@ package com.globalmentor.cache;
 
 import java.util.EventObject;
 
-import static com.globalmentor.java.Objects.*;
+import static java.util.Objects.*;
 
 /**
  * An event that is fired when a value is fetched in the cache.
@@ -63,9 +63,9 @@ public class CacheFetchEvent<Q, V> extends EventObject {
 	 * @throws NullPointerException if the given source, query, and/or value is <code>null</code>.
 	 */
 	public CacheFetchEvent(final Cache<Q, V> source, final Q query, final V value) {
-		super(checkInstance(source, "Event source object cannot be null.")); //construct the parent class
-		this.query = checkInstance(query, "Query cannot be null.");
-		this.value = checkInstance(value, "Value cannot be null.");
+		super(requireNonNull(source, "Event source object cannot be null.")); //construct the parent class
+		this.query = requireNonNull(query, "Query cannot be null.");
+		this.value = requireNonNull(value, "Value cannot be null.");
 	}
 
 }

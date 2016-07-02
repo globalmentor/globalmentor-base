@@ -20,9 +20,10 @@ import java.net.URI;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 
+import static java.util.Objects.*;
+
 import static java.util.Collections.*;
 
-import static com.globalmentor.java.Objects.*;
 import static com.globalmentor.net.URIs.*;
 
 import com.globalmentor.collections.MapDecorator;
@@ -133,7 +134,7 @@ public abstract class AbstractNamespaceLabelManager extends MapDecorator<URI, St
 	 * @throws NullPointerException if the given namespace URI is <code>null</code>.
 	 */
 	public boolean addNamespaceURI(final URI namespaceURI) {
-		if(!containsKey(checkInstance(namespaceURI, "Namespace URI cannot be null."))) { //if we don't know about this namespace
+		if(!containsKey(requireNonNull(namespaceURI, "Namespace URI cannot be null."))) { //if we don't know about this namespace
 			determineNamespaceLabel(namespaceURI); //determine a label for this namespace
 			return true; //indicate that this is a new namespace
 		} else { //if we already know about this namespace

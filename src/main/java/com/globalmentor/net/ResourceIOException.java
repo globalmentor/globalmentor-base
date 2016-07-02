@@ -20,7 +20,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
 
-import static com.globalmentor.java.Objects.*;
+import static java.util.Objects.*;
 
 /**
  * A class for resource-related I/O errors, agnostic of the I/O protocol being used. In most case a subclass more specific to the error should be used.
@@ -75,7 +75,7 @@ public class ResourceIOException extends IOException {
 	public ResourceIOException(final URI resourceURI, final String message, final Throwable cause) {
 		super(message); //construct the parent class
 		initCause(cause); //indicate the source of this exception
-		this.resourceURI = checkInstance(resourceURI, "Resource URI cannot be null."); //save the resource URI
+		this.resourceURI = requireNonNull(resourceURI, "Resource URI cannot be null."); //save the resource URI
 	}
 
 	@Override

@@ -16,9 +16,9 @@
 
 package com.globalmentor.model;
 
-import static com.globalmentor.java.Objects.*;
-
 import java.util.*;
+
+import static java.util.Objects.*;
 
 /**
  * Manages a sequence of several states, allowing a consumer to poll for states, with state transitions occurring when needed. For example, this manager may
@@ -322,7 +322,7 @@ public class PollStateManager<S> {
 		 * @throws NullPointerException if the given state is <code>null</code>.
 		 */
 		public StateInfo(final S state, final long minDuration, final long maxDuration, final long minPollCount, final long maxPollCount) {
-			this.state = checkInstance(state);
+			this.state = requireNonNull(state);
 			this.minDuration = minDuration;
 			this.maxDuration = maxDuration;
 			this.minPollCount = minPollCount;

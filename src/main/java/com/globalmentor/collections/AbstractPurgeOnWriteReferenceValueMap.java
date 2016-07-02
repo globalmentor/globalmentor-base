@@ -18,9 +18,9 @@ package com.globalmentor.collections;
 
 import java.lang.ref.*;
 import java.util.*;
-import static java.util.Collections.*;
 
-import static com.globalmentor.java.Objects.*;
+import static java.util.Collections.*;
+import static java.util.Objects.*;
 
 /**
  * A map that uses references to store map values. Cleared references are only purged when map write operations occur. <code>null</code> values are not
@@ -41,7 +41,7 @@ public abstract class AbstractPurgeOnWriteReferenceValueMap<K, V, R extends Refe
 	 * @throws NullPointerException if the given map is <code>null</code>.
 	 */
 	public AbstractPurgeOnWriteReferenceValueMap(final Map<K, R> map) {
-		this.map = checkInstance(map, "Map cannot be null.");
+		this.map = requireNonNull(map, "Map cannot be null.");
 	}
 
 	/**
@@ -288,7 +288,7 @@ public abstract class AbstractPurgeOnWriteReferenceValueMap<K, V, R extends Refe
 		private final Entry<K, R> referenceEntry; //the decorated reference entry
 
 		public ReferenceEntryDecorator(final Entry<K, R> referenceEntry) {
-			this.referenceEntry = checkInstance(referenceEntry, "Reference entry cannot be null.");
+			this.referenceEntry = requireNonNull(referenceEntry, "Reference entry cannot be null.");
 		}
 
 		/**

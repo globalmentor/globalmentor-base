@@ -16,9 +16,9 @@
 
 package com.globalmentor.model;
 
-import static com.globalmentor.java.Objects.*;
-
 import java.util.concurrent.locks.*;
+
+import static java.util.Objects.*;
 
 /**
  * An object that holds another object and provides read/write lock access to the object. This is a convenience class that is the equivalent of an
@@ -73,7 +73,7 @@ public class ReadWriteLockObjectHolder<T> extends ObjectHolder<T> implements Rea
 	 */
 	public ReadWriteLockObjectHolder(final T object, final ReadWriteLock readWriteLock) {
 		super(object); //construct the parent class
-		this.readWriteLock = checkInstance(readWriteLock, "Read write lock cannot be null.");
+		this.readWriteLock = requireNonNull(readWriteLock, "Read write lock cannot be null.");
 	}
 
 	/**

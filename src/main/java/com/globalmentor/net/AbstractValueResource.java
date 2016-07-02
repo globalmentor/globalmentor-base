@@ -16,7 +16,7 @@
 
 package com.globalmentor.net;
 
-import static com.globalmentor.java.Objects.*;
+import static java.util.Objects.*;
 
 /**
  * An abstract implementation of a resource that represents some value object instance.
@@ -52,7 +52,7 @@ public abstract class AbstractValueResource<V> implements ValueResource<V> {
 	 * @throws NullPointerException if the given value class and/or value is <code>null</code>.
 	 */
 	public AbstractValueResource(final Class<V> valueClass, final V value) {
-		this.valueClass = checkInstance(valueClass, "Value class cannot be null.");
-		this.value = checkInstance(value, "Value cannot be null.");
+		this.valueClass = requireNonNull(valueClass, "Value class cannot be null.");
+		this.value = requireNonNull(value, "Value cannot be null.");
 	}
 }

@@ -18,9 +18,9 @@ package com.globalmentor.beans;
 
 import java.beans.*;
 
-import com.globalmentor.event.PostponedEvent;
+import static java.util.Objects.*;
 
-import static com.globalmentor.java.Objects.*;
+import com.globalmentor.event.PostponedEvent;
 
 /**
  * Encapsulation of a property change event and its associated property change support, queued for later firing.
@@ -67,7 +67,7 @@ public class PostponedPropertyChangeEvent implements PostponedEvent<PropertyChan
 	 */
 	public PostponedPropertyChangeEvent(final PropertyChangeSupport propertyChangeSupport, final PropertyChangeEvent propertyChangeEvent) {
 		this.propertyChangeSupport = propertyChangeSupport;
-		this.propertyChangeEvent = checkInstance(propertyChangeEvent, "Property change event cannot be null.");
+		this.propertyChangeEvent = requireNonNull(propertyChangeEvent, "Property change event cannot be null.");
 	}
 
 	/**

@@ -18,9 +18,9 @@ package com.globalmentor.model;
 
 import java.util.*;
 
-import com.globalmentor.java.Objects;
+import static java.util.Objects.*;
 
-import static com.globalmentor.java.Objects.*;
+import com.globalmentor.java.Objects;
 
 /**
  * The encapsulation of text and the locale that indicates the text language.
@@ -42,7 +42,7 @@ public class LocaledText extends DefaultLocaleable implements CharSequence, Comp
 	 * @throws NullPointerException if the given text is <code>null</code>.
 	 */
 	public void setText(final String text) throws NullPointerException {
-		this.text = checkInstance(text, "Text cannot be null."); //set the text
+		this.text = requireNonNull(text, "Text cannot be null."); //set the text
 	}
 
 	/**
@@ -71,7 +71,7 @@ public class LocaledText extends DefaultLocaleable implements CharSequence, Comp
 	 */
 	public LocaledText(final String text, final Locale locale) throws NullPointerException {
 		super(locale); //construct the parent class
-		this.text = checkInstance(text, "Text cannot be null."); //set the text
+		this.text = requireNonNull(text, "Text cannot be null."); //set the text
 	}
 
 	/**

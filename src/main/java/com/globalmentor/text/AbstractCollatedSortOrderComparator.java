@@ -18,10 +18,10 @@ package com.globalmentor.text;
 
 import java.text.Collator;
 
+import static java.util.Objects.*;
+
 import com.globalmentor.collections.comparators.AbstractSortOrderComparator;
 import com.globalmentor.collections.comparators.SortOrder;
-import com.globalmentor.util.*;
-import static com.globalmentor.java.Objects.*;
 
 /**
  * A comparator that uses a collator for text sorting.
@@ -49,7 +49,7 @@ public abstract class AbstractCollatedSortOrderComparator<T> extends AbstractSor
 	 */
 	public AbstractCollatedSortOrderComparator(final CollatorFactory collatorFactory, final SortOrder sortOrder) {
 		super(sortOrder); //construct the parent class
-		this.collatorFactory = checkInstance(collatorFactory, "Collator factory cannot be null.");
+		this.collatorFactory = requireNonNull(collatorFactory, "Collator factory cannot be null.");
 	}
 
 }

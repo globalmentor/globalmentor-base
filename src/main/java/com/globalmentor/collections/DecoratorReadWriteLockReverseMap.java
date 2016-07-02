@@ -19,7 +19,7 @@ package com.globalmentor.collections;
 import java.util.*;
 import java.util.concurrent.locks.*;
 
-import static com.globalmentor.java.Objects.*;
+import static java.util.Objects.*;
 
 /**
  * A thread-safe map decorator that allows many readers but only one writer to access a map at a time, and that also allows lookup of the map keys keyed to the
@@ -53,7 +53,7 @@ public class DecoratorReadWriteLockReverseMap<K, V> extends DecoratorReadWriteLo
 	 */
 	public DecoratorReadWriteLockReverseMap(final Map<K, V> map, final Map<V, K> reverseMap, final ReadWriteLock lock) {
 		super(map, lock); //construct the parent class
-		this.reverseMap = checkInstance(reverseMap, "Reverse map cannot be null.");
+		this.reverseMap = requireNonNull(reverseMap, "Reverse map cannot be null.");
 	}
 
 	/**
