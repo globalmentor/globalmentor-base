@@ -18,9 +18,9 @@ package com.globalmentor.io;
 
 import java.io.*;
 
-import com.globalmentor.java.Disposable;
+import static java.util.Objects.*;
 
-import static com.globalmentor.java.Objects.*;
+import com.globalmentor.java.Disposable;
 
 /**
  * Wraps an existing output stream.
@@ -56,7 +56,7 @@ public class OutputStreamDecorator<O extends OutputStream> extends OutputStream 
 	 * @throws NullPointerException if the given output stream is <code>null</code>.
 	 */
 	protected void setOutputStream(final O outputStream) {
-		this.outputStream = checkInstance(outputStream);
+		this.outputStream = requireNonNull(outputStream);
 	}
 
 	/**
@@ -75,7 +75,7 @@ public class OutputStreamDecorator<O extends OutputStream> extends OutputStream 
 	 * @throws NullPointerException if the given stream is <code>null</code>.
 	 */
 	public OutputStreamDecorator(final O outputStream, final boolean autoDispose) {
-		this.outputStream = checkInstance(outputStream, "Output stream cannot be null."); //save the decorated output stream
+		this.outputStream = requireNonNull(outputStream, "Output stream cannot be null."); //save the decorated output stream
 		this.autoDispose = true;
 	}
 

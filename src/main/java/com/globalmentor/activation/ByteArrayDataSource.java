@@ -19,9 +19,9 @@ package com.globalmentor.activation;
 import java.io.*;
 import javax.activation.DataSource;
 
-import com.globalmentor.net.ContentType;
+import static java.util.Objects.*;
 
-import static com.globalmentor.java.Objects.*;
+import com.globalmentor.net.ContentType;
 
 /**
  * A JavaBeans Activation Framework data source class that serves as a source of data from an array of bytes.
@@ -51,8 +51,8 @@ public class ByteArrayDataSource implements DataSource {
 	 * @throws NullPointerException if the given byte array and/or name is <code>null</code>.
 	 */
 	public ByteArrayDataSource(final byte[] bytes, final String name) {
-		this.bytes = checkInstance(bytes, "Bytes cannot be null."); //save the bytes
-		this.name = checkInstance(name, "Name cannot be null."); //save the name
+		this.bytes = requireNonNull(bytes, "Bytes cannot be null."); //save the bytes
+		this.name = requireNonNull(name, "Name cannot be null."); //save the name
 	}
 
 	/** @return An input stream to the bytes. */

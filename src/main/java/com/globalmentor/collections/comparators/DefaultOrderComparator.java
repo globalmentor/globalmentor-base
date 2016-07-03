@@ -18,7 +18,7 @@ package com.globalmentor.collections.comparators;
 
 import java.util.*;
 
-import static com.globalmentor.java.Objects.*;
+import static java.util.Objects.*;
 
 /**
  * A comparator that compares object according to their default order, as specified in a list.
@@ -43,7 +43,7 @@ public class DefaultOrderComparator<T> implements Comparator<T> {
 	 * @throws NullPointerException if the given list is <code>null</code>
 	 */
 	public DefaultOrderComparator(final List<T> defaultOrderList) {
-		this.defaultOrderList = checkInstance(defaultOrderList, "Default order list cannot be null"); //save the default order list
+		this.defaultOrderList = requireNonNull(defaultOrderList, "Default order list cannot be null"); //save the default order list
 	}
 
 	/**

@@ -20,11 +20,12 @@ import java.net.URLConnection;
 import java.util.*;
 import java.util.regex.*;
 
+import static java.util.Objects.*;
+
 import static com.globalmentor.collections.Sets.*;
 import static com.globalmentor.java.CharSequences.*;
 import static com.globalmentor.java.Characters.SPACE_CHAR;
 import static com.globalmentor.java.Characters.QUOTATION_MARK_CHAR;
-import static com.globalmentor.java.Objects.*;
 import static com.globalmentor.text.ASCII.*;
 import static java.util.Collections.*;
 
@@ -210,7 +211,7 @@ public class ContentType {
 	private ContentType(final String primaryType, final String subType, final Set<Parameter> parameters) {
 		this.primaryType = checkToken(primaryType);
 		this.subType = checkToken(subType);
-		this.parameters = checkInstance(parameters);
+		this.parameters = requireNonNull(parameters);
 	}
 
 	/**
@@ -280,7 +281,7 @@ public class ContentType {
 	 * @throws NullPointerException if the given parameter name is <code>null</code>.
 	 */
 	public String getParameter(final String name) {
-		checkInstance(name);
+		requireNonNull(name);
 		for(final Parameter parameter : getParameters()) {
 			if(equalsIgnoreCase(parameter.getName(), name)) {
 				return parameter.getValue();

@@ -18,8 +18,9 @@ package com.globalmentor.collections.iterators;
 
 import java.util.*;
 
+import static java.util.Objects.*;
+
 import static com.globalmentor.collections.Lists.*;
-import static com.globalmentor.java.Objects.*;
 
 /**
  * An iterator that wraps an existing list iterator and provides its elements in reverse order. The list list iterator will be placed at the end of the list.
@@ -48,7 +49,7 @@ public class ReverseIterator<E> implements Iterator<E> {
 	 * @throws NullPointerException if the given iterator is <code>null</code>.
 	 */
 	public ReverseIterator(final ListIterator<E> listIterator) {
-		this.listIterator = checkInstance(listIterator, "Iterator cannot be null"); //save the iterator
+		this.listIterator = requireNonNull(listIterator, "Iterator cannot be null"); //save the iterator
 		while(listIterator.hasNext()) { //while the list iterator isn't at the end of the lsit
 			listIterator.next(); //advance to the end of the list
 		}

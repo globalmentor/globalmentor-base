@@ -19,7 +19,7 @@ package com.globalmentor.collections;
 import java.util.*;
 import java.util.concurrent.locks.*;
 
-import static com.globalmentor.java.Objects.*;
+import static java.util.Objects.*;
 
 /**
  * A thread-safe collection decorator that allows many readers but only one writer to access a collection at a time. For operations that iterate over live
@@ -54,7 +54,7 @@ public class DecoratorReadWriteLockCollection<E> extends ReadWriteLockDecorator 
 	 */
 	public DecoratorReadWriteLockCollection(final Collection<E> collection, final ReadWriteLock lock) {
 		super(lock); //construct the parent class
-		this.collection = checkInstance(collection, "Collection cannot be null"); //save the collection
+		this.collection = requireNonNull(collection, "Collection cannot be null"); //save the collection
 	}
 
 	/**

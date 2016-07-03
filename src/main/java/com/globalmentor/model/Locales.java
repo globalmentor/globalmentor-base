@@ -20,8 +20,9 @@ import java.util.*;
 import static java.util.Collections.*;
 import java.util.regex.Pattern;
 
+import static java.util.Objects.*;
+
 import static com.globalmentor.io.Files.*;
-import static com.globalmentor.java.Objects.*;
 import static com.globalmentor.text.RegularExpressions.*;
 
 /**
@@ -159,8 +160,8 @@ public class Locales {
 	 * @throws IllegalArgumentException if the given depth is not within the range (<var>depth</var>&gt;=0 and <var>depth</var>&lt;=3).
 	 */
 	public static String getLocaleCandidatePath(final String basePath, final Locale locale, final int depth) {
-		checkInstance(basePath, "Base path cannot be null.");
-		checkInstance(locale, "Locale cannot be null.");
+		requireNonNull(basePath, "Base path cannot be null.");
+		requireNonNull(locale, "Locale cannot be null.");
 		if(depth < 0) { //if the depth is too low to be valid
 			throw new IllegalArgumentException("Depth " + depth + " is less than 0.");
 		} else { //if the depth is at least 0

@@ -19,7 +19,7 @@ package com.globalmentor.io;
 import java.io.*;
 import java.util.regex.*;
 
-import static com.globalmentor.java.Objects.*;
+import static java.util.Objects.*;
 
 /**
  * A class that can filter files based upon a given filename pattern.
@@ -49,7 +49,7 @@ public class FilenamePatternFilter extends AbstractFileFilter {
 	 * @param filenamePattern The pattern for checking the filename.
 	 */
 	public FilenamePatternFilter(final Pattern filenamePattern) {
-		this.filenamePattern = checkInstance(filenamePattern);
+		this.filenamePattern = requireNonNull(filenamePattern);
 	}
 
 	/**

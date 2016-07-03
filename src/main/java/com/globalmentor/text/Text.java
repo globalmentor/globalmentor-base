@@ -20,13 +20,14 @@ import java.io.UnsupportedEncodingException;
 import java.text.Collator;
 import java.util.regex.Pattern;
 
+import static java.util.Objects.*;
+
 import com.globalmentor.collections.comparators.SortOrder;
 import com.globalmentor.java.Characters;
 import com.globalmentor.net.ContentType;
 
 import static com.globalmentor.java.CharSequences.*;
 import static com.globalmentor.java.Characters.*;
-import static com.globalmentor.java.Objects.*;
 
 /**
  * Constants and utilities for text.
@@ -132,7 +133,7 @@ public class Text {
 	 * @see <a href="http://www.ecma-international.org/publications/standards/Ecma-048.htm">ECMA-48: Control Functions for Coded Character Sets</a>
 	 */
 	public static final String createControlString(final String string) {
-		return START_OF_STRING_CHAR + checkInstance(string, "String cannot be null.") + STRING_TERMINATOR_CHAR; //wrap the string with a SOS/ST pair
+		return START_OF_STRING_CHAR + requireNonNull(string, "String cannot be null.") + STRING_TERMINATOR_CHAR; //wrap the string with a SOS/ST pair
 	}
 
 	/**

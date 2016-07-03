@@ -21,9 +21,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import static java.util.Objects.*;
+
 import com.globalmentor.java.CharSequences;
 
-import static com.globalmentor.java.Objects.*;
 import static com.globalmentor.net.URIs.*;
 
 /**
@@ -63,7 +64,7 @@ public final class URIPath {
 	 * @throws IllegalArgumentException if the provided path specifies a URI authority, query, and/or fragment.
 	 */
 	public URIPath(final String path) {
-		this(createURIPathURI(checkInstance(path, "Path cannot be null."))); //construct the class with a URI created from the path, compensating for relative paths that contain a colon in the first path segment
+		this(createURIPathURI(requireNonNull(path, "Path cannot be null."))); //construct the class with a URI created from the path, compensating for relative paths that contain a colon in the first path segment
 	}
 
 	/**
@@ -202,7 +203,7 @@ public final class URIPath {
 	 * @throws NullPointerException if the given path is <code>null</code>.
 	 */
 	public URIPath relativize(final String path) {
-		return relativize(new URIPath(checkInstance(path, "Path cannot be null."))); //convert the String to a URI path and relativize it against this path
+		return relativize(new URIPath(requireNonNull(path, "Path cannot be null."))); //convert the String to a URI path and relativize it against this path
 	}
 
 	/**
@@ -212,7 +213,7 @@ public final class URIPath {
 	 * @throws NullPointerException if the given path is <code>null</code>.
 	 */
 	public URIPath relativize(final URIPath path) {
-		return new URIPath(uri.relativize(checkInstance(path, "Path cannot be null.").toURI()).getRawPath()); //relativize the URI form of the given path against the URI form of this path and create a new path from the resulting URI's raw path
+		return new URIPath(uri.relativize(requireNonNull(path, "Path cannot be null.").toURI()).getRawPath()); //relativize the URI form of the given path against the URI form of this path and create a new path from the resulting URI's raw path
 	}
 
 	/**
@@ -246,7 +247,7 @@ public final class URIPath {
 	 * @see #resolve(URIPath)
 	 */
 	public final URIPath resolve(final String path) {
-		return resolve(new URIPath(checkInstance(path, "Path cannot be null."))); //convert the String to a URI path and resolve it against this path
+		return resolve(new URIPath(requireNonNull(path, "Path cannot be null."))); //convert the String to a URI path and resolve it against this path
 	}
 
 	/**
@@ -260,7 +261,7 @@ public final class URIPath {
 	 * @see URIs#resolve(URI, String)
 	 */
 	public URIPath resolve(final URIPath path) {
-		return new URIPath(URIs.resolve(uri, checkInstance(path, "Path cannot be null.").toURI()).getRawPath()); //resolve the URI form of the given path against the URI form of this path and create a new path from the resulting URI's raw path
+		return new URIPath(URIs.resolve(uri, requireNonNull(path, "Path cannot be null.").toURI()).getRawPath()); //resolve the URI form of the given path against the URI form of this path and create a new path from the resulting URI's raw path
 	}
 
 	/**
@@ -274,7 +275,7 @@ public final class URIPath {
 	 * @see URIs#resolve(URI, URI)
 	 */
 	public URI resolve(final URI uri) {
-		return URIs.resolve(this.uri, checkInstance(uri, "URI cannot be null.")); //resolve the URI form of the given path against given URI
+		return URIs.resolve(this.uri, requireNonNull(uri, "URI cannot be null.")); //resolve the URI form of the given path against given URI
 	}
 
 	/**

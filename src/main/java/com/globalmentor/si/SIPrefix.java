@@ -16,9 +16,9 @@
 
 package com.globalmentor.si;
 
-import static com.globalmentor.java.Objects.*;
-
 import java.math.BigDecimal;
+
+import static java.util.Objects.*;
 
 import com.globalmentor.model.Named;
 
@@ -75,8 +75,8 @@ public enum SIPrefix implements Named<String> {
 	 * @throws NullPointerException if the given symbol is <code>null</code>.
 	 */
 	private SIPrefix(final String name, final String symbol, final int factorPower) {
-		this.name = checkInstance(name, "Name cannot be null."); //save the name
-		this.symbol = checkInstance(symbol, "Symbol cannot be null."); //save the symbol
+		this.name = requireNonNull(name, "Name cannot be null."); //save the name
+		this.symbol = requireNonNull(symbol, "Symbol cannot be null."); //save the symbol
 		this.factorPower = factorPower; //save the base 10 power of the factor
 		this.factor = factorPower >= 0 ? BigDecimal.TEN.pow(factorPower) : BigDecimal.ONE.divide(BigDecimal.TEN.pow(-factorPower)); //calculate the factor, compensating for BigDecimal's not supporting negative powers
 	}

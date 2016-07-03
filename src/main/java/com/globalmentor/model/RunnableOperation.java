@@ -16,7 +16,7 @@
 
 package com.globalmentor.model;
 
-import static com.globalmentor.java.Objects.*;
+import static java.util.Objects.*;
 
 /**
  * An operation that delegates to a provided {@link Runnable}.
@@ -36,7 +36,7 @@ public class RunnableOperation extends AbstractOperation {
 	 * @throws NullPointerException if the given runnable is <code>null</code>.
 	 */
 	public RunnableOperation(final Runnable runnable) {
-		this.runnable = checkInstance(runnable);
+		this.runnable = requireNonNull(runnable);
 	}
 
 	/** {@inheritDoc} This method delegates to the decorated runnabled {@link Runnable#run()} method. */

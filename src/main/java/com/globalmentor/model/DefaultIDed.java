@@ -16,7 +16,7 @@
 
 package com.globalmentor.model;
 
-import static com.globalmentor.java.Objects.*;
+import static java.util.Objects.*;
 
 /**
  * A default implementation of a uniquely identified object. This class is useful to serve as a base class to other classes that are identified by an ID. It
@@ -50,7 +50,7 @@ public class DefaultIDed<I> implements IDed<I> {
 	 * @param id The ID of the object.
 	 */
 	public DefaultIDed(final I id) {
-		this.id = checkInstance(id, "ID cannot be null."); //set the ID
+		this.id = requireNonNull(id, "ID cannot be null."); //set the ID
 	}
 
 	/**

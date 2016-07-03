@@ -18,7 +18,7 @@ package com.globalmentor.model;
 
 import java.util.Arrays;
 
-import static com.globalmentor.java.Objects.*;
+import static java.util.Objects.*;
 
 import com.globalmentor.java.Objects;
 
@@ -38,7 +38,7 @@ public abstract class AbstractHashObject {
 	 * @throws NullPointerException if the given objects is <code>null</code>
 	 */
 	public AbstractHashObject(final Object... objects) {
-		this.objects = checkInstance(objects, "Objects cannot be null."); //save the objects
+		this.objects = requireNonNull(objects, "Objects cannot be null."); //save the objects
 	}
 
 	/**

@@ -16,9 +16,10 @@
 
 package com.globalmentor.io;
 
+import static java.util.Objects.*;
+
 import static com.globalmentor.io.Files.*;
 import static com.globalmentor.java.Conditions.*;
-import static com.globalmentor.java.Objects.*;
 
 import java.io.*;
 
@@ -43,7 +44,7 @@ public class TempFileInputStream extends InputStreamDecorator<FileInputStream> {
 	 * @throws FileNotFoundException if the file does not exist, is a directory rather than a regular file, or for some other reason cannot be opened for reading.
 	 */
 	public TempFileInputStream(final File tempFile) throws FileNotFoundException {
-		super(new FileInputStream(checkInstance(tempFile)));
+		super(new FileInputStream(requireNonNull(tempFile)));
 		this.tempFile = tempFile;
 	}
 

@@ -16,9 +16,9 @@
 
 package com.globalmentor.collections.iterators;
 
-import static com.globalmentor.java.Objects.*;
-
 import java.util.*;
+
+import static java.util.Objects.*;
 
 /**
  * Abstract implementation of an iterator that filters an existing iterator.
@@ -50,7 +50,7 @@ public abstract class AbstractFilteredIterator<E> extends AbstractPrimedIterator
 	 * @throws NullPointerException if the given iterator is <code>null</code>.
 	 */
 	public AbstractFilteredIterator(final Iterator<E> iterator) {
-		this.iterator = checkInstance(iterator);
+		this.iterator = requireNonNull(iterator);
 	}
 
 	/**

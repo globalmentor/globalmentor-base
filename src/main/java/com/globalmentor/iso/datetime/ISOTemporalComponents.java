@@ -20,6 +20,8 @@ import java.io.*;
 import java.util.*;
 import static java.util.Calendar.*;
 
+import static java.util.Objects.*;
+
 import com.globalmentor.io.ParseIOException;
 
 import static com.globalmentor.java.Characters.*;
@@ -27,7 +29,6 @@ import com.globalmentor.text.SyntaxException;
 
 import static com.globalmentor.io.ReaderParser.*;
 import static com.globalmentor.iso.datetime.ISO8601.*;
-import static com.globalmentor.java.Objects.*;
 import static com.globalmentor.java.Conditions.*;
 import static com.globalmentor.java.Strings.*;
 import static com.globalmentor.time.Calendars.*;
@@ -289,7 +290,7 @@ public class ISOTemporalComponents {
 	 */
 	public static GregorianCalendar createCalendar(final int year, final int month, final int day, final int hours, final int minutes, final int seconds,
 			final int microseconds, final ISOUTCOffset utcOffset, final Locale locale) {
-		final GregorianCalendar calendar = new GregorianCalendar(utcOffset != null ? utcOffset.toTimeZone() : GMT, checkInstance(locale, "Locale cannot be null.")); //get Gregorian calendar for the locale using the time zone from the UTC offset, defaulting to a GMT time zone
+		final GregorianCalendar calendar = new GregorianCalendar(utcOffset != null ? utcOffset.toTimeZone() : GMT, requireNonNull(locale, "Locale cannot be null.")); //get Gregorian calendar for the locale using the time zone from the UTC offset, defaulting to a GMT time zone
 		calendar.clear(); //clear the calendar
 		return setDateTime(calendar, checkArgumentRange(year, 0, 9999), checkArgumentRange(month, 1, 12) - 1, checkArgumentRange(day, 1, 31),
 				checkArgumentRange(hours, 0, 23), checkArgumentRange(minutes, 0, 59), checkArgumentRange(seconds, 0, 60),

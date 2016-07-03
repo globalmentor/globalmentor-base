@@ -18,7 +18,7 @@ package com.globalmentor.collections;
 
 import java.util.Map;
 
-import static com.globalmentor.java.Objects.*;
+import static java.util.Objects.*;
 
 /**
  * A map that also allows lookup of the map keys keyed to the values by decorating two maps.
@@ -44,7 +44,7 @@ public class DecoratorReverseMap<K, V> extends MapDecorator<K, V> implements Rev
 	 */
 	public DecoratorReverseMap(final Map<K, V> map, final Map<V, K> reverseMap) {
 		super(map); //create the parent class
-		this.reverseMap = checkInstance(reverseMap, "Reverse map cannot be null.");
+		this.reverseMap = requireNonNull(reverseMap, "Reverse map cannot be null.");
 	}
 
 	/**

@@ -17,12 +17,13 @@
 package com.globalmentor.io;
 
 import static com.globalmentor.io.Charsets.*;
-import static com.globalmentor.java.Objects.*;
 
 import java.io.IOException;
 import java.nio.ByteOrder;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+
+import static java.util.Objects.*;
 
 import javax.annotation.Nonnull;
 
@@ -157,7 +158,7 @@ public enum ByteOrderMark {
 	 * @throws NullPointerException if the given bytes is <code>null</code>.
 	 */
 	private ByteOrderMark(final byte... bytes) {
-		this.bytes = checkInstance(bytes, "Bytes cannot be null");
+		this.bytes = requireNonNull(bytes, "Bytes cannot be null");
 	}
 
 	/**

@@ -19,9 +19,9 @@ package com.globalmentor.io;
 import java.io.File;
 import java.net.URI;
 import java.util.List;
-import static java.util.Collections.*;
 
-import static com.globalmentor.java.Objects.*;
+import static java.util.Collections.*;
+import static java.util.Objects.*;
 
 import com.globalmentor.net.DefaultResource;
 
@@ -56,7 +56,7 @@ public class FileResource extends DefaultResource {
 	 */
 	public FileResource(final File file, final URI referenceURI) {
 		super(referenceURI); //construct the parent class
-		this.file = checkInstance(file, "File cannot be null."); //save the file
+		this.file = requireNonNull(file, "File cannot be null."); //save the file
 	}
 
 	/**

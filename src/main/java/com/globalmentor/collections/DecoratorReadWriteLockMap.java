@@ -19,7 +19,7 @@ package com.globalmentor.collections;
 import java.util.*;
 import java.util.concurrent.locks.*;
 
-import static com.globalmentor.java.Objects.*;
+import static java.util.Objects.*;
 
 /**
  * A thread-safe map decorator that allows many readers but only one writer to access a map at a time. For operations that iterate over live map data, a read or
@@ -50,7 +50,7 @@ public class DecoratorReadWriteLockMap<K, V> extends ReadWriteLockDecorator impl
 	 */
 	public DecoratorReadWriteLockMap(final Map<K, V> map, final ReadWriteLock lock) {
 		super(lock); //construct the parent class
-		this.map = checkInstance(map, "Map cannot be null"); //save the map
+		this.map = requireNonNull(map, "Map cannot be null"); //save the map
 	}
 
 	/**

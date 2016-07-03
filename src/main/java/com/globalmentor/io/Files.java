@@ -21,6 +21,7 @@ import java.net.*;
 import java.util.*;
 
 import static java.util.Collections.*;
+import static java.util.Objects.*;
 
 import com.globalmentor.event.ProgressListener;
 import com.globalmentor.java.*;
@@ -30,7 +31,6 @@ import com.globalmentor.text.*;
 import static com.globalmentor.io.InputStreams.*;
 import static com.globalmentor.java.CharSequences.*;
 import static com.globalmentor.java.Conditions.*;
-import static com.globalmentor.java.Objects.*;
 import static com.globalmentor.java.OperatingSystem.*;
 import static com.globalmentor.java.StringBuilders.*;
 import static com.globalmentor.net.ContentTypeConstants.*;
@@ -220,7 +220,7 @@ public class Files {
 	 * @throws NullPointerException if the given extension is <code>null</code>.
 	 */
 	public static String addExtension(final String filename, final String extension) {
-		return new StringBuilder(filename).append(FILENAME_EXTENSION_SEPARATOR).append(checkInstance(extension, "Extension cannot be null")).toString(); //add the requested extension and return the new filename
+		return new StringBuilder(filename).append(FILENAME_EXTENSION_SEPARATOR).append(requireNonNull(extension, "Extension cannot be null")).toString(); //add the requested extension and return the new filename
 	}
 
 	/** The characters recognized as wildcards in filenames. */
@@ -438,7 +438,7 @@ public class Files {
 	 * @see File#deleteOnExit()
 	 */
 	public static File createTempFile(String baseName, final String extension, final File directory, final boolean deleteOnExit) throws IOException {
-		if(checkInstance(baseName, "Base name cannot be null.").length() == 0) { //if the base name is empty
+		if(requireNonNull(baseName, "Base name cannot be null.").length() == 0) { //if the base name is empty
 			throw new IllegalArgumentException("Base name cannot be the empty string.");
 		}
 		if(baseName.length() < 3) { //if the base name is under three characters long (the temp file creation API requires at least three characters)
@@ -557,7 +557,7 @@ public class Files {
 		final String filename = file.getName(); //get the name of the file
 		final int filenameLength = filename.length(); //get the length of the filename
 		assert path.substring(pathLength - filenameLength).equals(filename) : "Expected last part of path to be filename."; //the filename should always be the last part of the path, even if the file was originally created with an ending slash for a directory
-		return new File(path.substring(0, pathLength - filenameLength) + checkInstance(name, "Name cannot be null."));
+		return new File(path.substring(0, pathLength - filenameLength) + requireNonNull(name, "Name cannot be null."));
 	}
 
 	/**

@@ -19,13 +19,14 @@ package com.globalmentor.collections;
 import java.io.IOException;
 import java.util.*;
 
+import static java.util.Objects.*;
+
 import com.globalmentor.collections.iterators.*;
 import com.globalmentor.java.Arrays;
 import com.globalmentor.java.Objects;
 
 import static com.globalmentor.java.Arrays.*;
 import static com.globalmentor.java.Conditions.unexpected;
-import static com.globalmentor.java.Objects.*;
 import static com.globalmentor.text.TextFormatter.formatList;
 
 /**
@@ -46,7 +47,7 @@ public class ObjectList<E> implements List<E>, ImmutableCollection<E> { //TODO r
 	 * @throws NullPointerException if the given object is <code>null</code>.
 	 */
 	public ObjectList(final E object) {
-		this.object = checkInstance(object, "Object cannot be null.");
+		this.object = requireNonNull(object, "Object cannot be null.");
 	}
 
 	/** {@inheritDoc} */

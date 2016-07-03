@@ -16,7 +16,7 @@
 
 package com.globalmentor.net;
 
-import static com.globalmentor.java.Objects.checkInstance;
+import static java.util.Objects.*;
 
 import com.globalmentor.model.NameValuePair;
 
@@ -34,7 +34,7 @@ public class URIQueryParameter extends NameValuePair<String, String> {
 	 * @throws NullPointerException if the given name is <code>null</code>.
 	 */
 	public URIQueryParameter(final String name, final String value) {
-		super(checkInstance(name, "URI query parameter name cannot be null."), value); //construct the parent class
+		super(requireNonNull(name, "URI query parameter name cannot be null."), value); //construct the parent class
 	}
 
 }

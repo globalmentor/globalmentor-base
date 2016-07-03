@@ -16,10 +16,10 @@
 
 package com.globalmentor.model;
 
+import static java.util.Objects.*;
+
 import com.globalmentor.beans.BoundPropertyObject;
 import com.globalmentor.event.EventListenerManager;
-
-import static com.globalmentor.java.Objects.*;
 
 /**
  * Abstract implementation of a task performed in a sequence.
@@ -50,7 +50,7 @@ public abstract class AbstractTask extends BoundPropertyObject implements Task {
 	 * @see Task#STATE_PROPERTY
 	 */
 	public void setState(final TaskState newState) {
-		if(state != checkInstance(newState, "State cannot be null.")) { //if the value is really changing
+		if(state != requireNonNull(newState, "State cannot be null.")) { //if the value is really changing
 			final TaskState oldState = state; //get the current value
 			state = newState; //update the value
 			firePropertyChange(STATE_PROPERTY, oldState, newState);

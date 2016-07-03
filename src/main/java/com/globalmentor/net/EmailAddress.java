@@ -19,8 +19,9 @@ package com.globalmentor.net;
 import java.net.URI;
 import java.util.regex.*;
 
+import static java.util.Objects.*;
+
 import com.globalmentor.java.Objects;
-import static com.globalmentor.java.Objects.*;
 import static com.globalmentor.net.URIs.*;
 import com.globalmentor.text.ArgumentSyntaxException;
 
@@ -89,10 +90,10 @@ public class EmailAddress implements Resource, Comparable<EmailAddress> {
 	 * @throws ArgumentSyntaxException if the given local part and/or domain violates RFC 2822.
 	 */
 	public EmailAddress(final String localPart, final String domain) throws ArgumentSyntaxException { //TODO resolve encoding differences between this class and URIUtilities.createMailtoURI(); decide if we want the parameters to be encoded or raw
-		if(!LOCAL_PART_PATTERN.matcher(checkInstance(localPart, "Local part cannot be null.")).matches()) { //if the local part does not match the pattern
+		if(!LOCAL_PART_PATTERN.matcher(requireNonNull(localPart, "Local part cannot be null.")).matches()) { //if the local part does not match the pattern
 			throw new ArgumentSyntaxException("Local part " + localPart + " is syntactically incorrect.");
 		}
-		if(!DOMAIN_PATTERN.matcher(checkInstance(domain, "Domain cannot be null.")).matches()) { //if the domain does not match the pattern
+		if(!DOMAIN_PATTERN.matcher(requireNonNull(domain, "Domain cannot be null.")).matches()) { //if the domain does not match the pattern
 			throw new ArgumentSyntaxException("Domain " + domain + " is syntactically incorrect.");
 		}
 		this.localPart = localPart;
@@ -106,7 +107,7 @@ public class EmailAddress implements Resource, Comparable<EmailAddress> {
 	 * @throws ArgumentSyntaxException if the input string violates RFC 2822.
 	 */
 	public EmailAddress(final CharSequence input) throws ArgumentSyntaxException {
-		final Matcher matcher = EMAIL_ADDRESS_PATTERN.matcher(checkInstance(input, "Email address string cannot be null.")); //get a matcher for matching the given input string
+		final Matcher matcher = EMAIL_ADDRESS_PATTERN.matcher(requireNonNull(input, "Email address string cannot be null.")); //get a matcher for matching the given input string
 		if(!matcher.matches()) { //if the input string does not match the email address patter
 			throw new ArgumentSyntaxException("Email address " + input + " is syntactically incorrect.");
 		}
@@ -171,7 +172,7 @@ public class EmailAddress implements Resource, Comparable<EmailAddress> {
 	 * @throws ArgumentSyntaxException if the input string violates RFC 2822.
 	 */
 	public static String getLocalPart(final CharSequence input) throws ArgumentSyntaxException {
-		final Matcher matcher = EMAIL_ADDRESS_PATTERN.matcher(checkInstance(input, "Email address string cannot be null.")); //get a matcher for matching the given input string
+		final Matcher matcher = EMAIL_ADDRESS_PATTERN.matcher(requireNonNull(input, "Email address string cannot be null.")); //get a matcher for matching the given input string
 		if(!matcher.matches()) { //if the input string does not match the email address patter
 			throw new ArgumentSyntaxException("Email address " + input + " is syntactically incorrect.");
 		}
@@ -186,7 +187,7 @@ public class EmailAddress implements Resource, Comparable<EmailAddress> {
 	 * @throws ArgumentSyntaxException if the input string violates RFC 2822.
 	 */
 	public static String getDomain(final CharSequence input) throws ArgumentSyntaxException {
-		final Matcher matcher = EMAIL_ADDRESS_PATTERN.matcher(checkInstance(input, "Email address string cannot be null.")); //get a matcher for matching the given input string
+		final Matcher matcher = EMAIL_ADDRESS_PATTERN.matcher(requireNonNull(input, "Email address string cannot be null.")); //get a matcher for matching the given input string
 		if(!matcher.matches()) { //if the input string does not match the email address patter
 			throw new ArgumentSyntaxException("Email address " + input + " is syntactically incorrect.");
 		}

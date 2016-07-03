@@ -3,7 +3,7 @@ package com.globalmentor.collections;
 
 import java.util.*;
 
-import static com.globalmentor.java.Objects.*;
+import static java.util.Objects.*;
 
 /**
  * A map that wraps an existing map, providing access through the {@link Map} interface.
@@ -22,7 +22,7 @@ public class MapDecorator<K, V> implements Map<K, V> {
 	 * @throws NullPointerException if the provided map is <code>null</code>.
 	 */
 	public MapDecorator(final Map<K, V> map) {
-		this.map = checkInstance(map, "Map cannot be null"); //save the map
+		this.map = requireNonNull(map, "Map cannot be null"); //save the map
 	}
 
 	/**

@@ -18,7 +18,7 @@ package com.globalmentor.collections.comparators;
 
 import java.util.Comparator;
 
-import static com.globalmentor.java.Objects.*;
+import static java.util.Objects.*;
 
 /**
  * A comparator that can can be chained for subordinate sorting in ascending or descending order.
@@ -51,7 +51,7 @@ public abstract class AbstractChainedSortOrderComparator<T> extends AbstractSort
 	 */
 	public AbstractChainedSortOrderComparator(final SortOrder sortOrder, final Comparator<T> subordinateComparator) {
 		super(sortOrder); //construct the parent class
-		this.subordinateComparator = checkInstance(subordinateComparator, "Subordinate comparator cannot be null.");
+		this.subordinateComparator = requireNonNull(subordinateComparator, "Subordinate comparator cannot be null.");
 	}
 
 }

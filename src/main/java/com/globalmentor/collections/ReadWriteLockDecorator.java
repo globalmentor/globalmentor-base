@@ -18,7 +18,7 @@ package com.globalmentor.collections;
 
 import java.util.concurrent.locks.*;
 
-import static com.globalmentor.java.Objects.*;
+import static java.util.Objects.*;
 
 /**
  * A read/write lock that decorates another read/write lock.
@@ -51,7 +51,7 @@ public class ReadWriteLockDecorator implements ReadWriteLock {
 	 * @throws NullPointerException if the given lock is <code>null</code>.
 	 */
 	public ReadWriteLockDecorator(final ReadWriteLock readWriteLock) {
-		this.readWriteLock = checkInstance(readWriteLock, "Read write lock cannot be null.");
+		this.readWriteLock = requireNonNull(readWriteLock, "Read write lock cannot be null.");
 	}
 
 }

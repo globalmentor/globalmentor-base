@@ -16,9 +16,9 @@
 
 package com.globalmentor.collections;
 
-import static com.globalmentor.java.Objects.*;
-
 import java.io.PrintStream;
+
+import static java.util.Objects.*;
 
 import com.globalmentor.java.*;
 import com.globalmentor.collections.SuffixTree.*;
@@ -78,7 +78,7 @@ public class SuffixTrees {
 	 */
 	@SuppressWarnings("unchecked")
 	public static <N extends Node, E extends Edge> boolean visit(final SuffixTree suffixTree, final Visitor<N, E> visitor) {
-		return visit(checkInstance(suffixTree), (N)suffixTree.getRootNode(), null, 0, checkInstance(visitor));
+		return visit(requireNonNull(suffixTree), (N)suffixTree.getRootNode(), null, 0, requireNonNull(visitor));
 	}
 
 	/**

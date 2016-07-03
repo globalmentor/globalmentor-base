@@ -16,12 +16,11 @@
 
 package com.globalmentor.model;
 
-import static com.globalmentor.java.Objects.*;
-
 import java.util.*;
 import java.util.concurrent.*;
 
-import com.globalmentor.java.Objects;
+import static java.util.Objects.*;
+
 import com.globalmentor.time.*;
 
 /**
@@ -172,9 +171,9 @@ public class OperationManager {
 		 * @throws NullPointerException if the given operation and/or delay time is <code>null</code>.
 		 */
 		public ScheduledOperation(final Operation operation, final Duration delayTime, final boolean repeated) {
-			this.operation = checkInstance(operation);
+			this.operation = requireNonNull(operation);
 			this.scheduledTime = new Time();
-			this.delayDuration = checkInstance(delayTime);
+			this.delayDuration = requireNonNull(delayTime);
 			this.repeated = repeated;
 		}
 	}
@@ -194,7 +193,7 @@ public class OperationManager {
 		 * @throws NullPointerException if the given blocking queue is <code>null</code>.
 		 */
 		public ScheduledOperationWorker(final BlockingQueue<ScheduledOperation> blockingQueue) {
-			this.blockingQueue = Objects.checkInstance(blockingQueue);
+			this.blockingQueue = requireNonNull(blockingQueue);
 		}
 
 		@Override

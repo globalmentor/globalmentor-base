@@ -18,7 +18,7 @@ package com.globalmentor.collections;
 
 import java.util.*;
 
-import static com.globalmentor.java.Objects.*;
+import static java.util.Objects.*;
 
 /**
  * A collection that wraps an existing collection, providing access through the {@link Collection} interface.
@@ -36,7 +36,7 @@ public class CollectionDecorator<E> implements Collection<E> {
 	 * @throws NullPointerException if the provided collection is <code>null</code>.
 	 */
 	public CollectionDecorator(final Collection<E> collection) {
-		this.collection = checkInstance(collection, "Collection cannot be null"); //save the collection
+		this.collection = requireNonNull(collection, "Collection cannot be null"); //save the collection
 	}
 
 	/**

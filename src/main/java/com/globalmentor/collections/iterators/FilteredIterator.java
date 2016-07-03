@@ -16,9 +16,9 @@
 
 package com.globalmentor.collections.iterators;
 
-import static com.globalmentor.java.Objects.*;
-
 import java.util.*;
+
+import static java.util.Objects.*;
 
 import com.globalmentor.model.Filter;
 
@@ -54,7 +54,7 @@ public class FilteredIterator<E> extends AbstractFilteredIterator<E> {
 	 */
 	public FilteredIterator(final Iterator<E> iterator, final Filter<E> filter) {
 		super(iterator);
-		this.filter = checkInstance(filter);
+		this.filter = requireNonNull(filter);
 	}
 
 	/**

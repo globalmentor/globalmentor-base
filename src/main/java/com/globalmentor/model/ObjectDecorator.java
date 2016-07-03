@@ -16,7 +16,7 @@
 
 package com.globalmentor.model;
 
-import static com.globalmentor.java.Objects.checkInstance;
+import static java.util.Objects.*;
 
 /**
  * An object that decorates another object, preserving the {@link Object#hashCode()} and {@link Object#equals(Object)} of the decorated object. Equality is only
@@ -32,7 +32,7 @@ public class ObjectDecorator<T> extends AbstractObjectDecorator<T> {
 	 * @throws NullPointerException if the given object is <code>null</code>.
 	 */
 	public ObjectDecorator(final T decoratedObject) {
-		super(checkInstance(decoratedObject, "Decorated object cannot be null.")); //construct the parent class, making sure the decorated object is not null
+		super(requireNonNull(decoratedObject, "Decorated object cannot be null.")); //construct the parent class, making sure the decorated object is not null
 	}
 
 }

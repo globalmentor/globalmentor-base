@@ -18,7 +18,7 @@ package com.globalmentor.model;
 
 import java.util.*;
 
-import static com.globalmentor.java.Objects.*;
+import static java.util.Objects.*;
 
 /**
  * A default implementation of object state information.
@@ -47,7 +47,7 @@ public class DefaultObjectState<T> extends DefaultModifiable implements ObjectSt
 	 * @throws NullPointerException Thrown if the object is <code>null</code>.
 	 */
 	public void setObject(final T object) { //TODO determine if we want to make this public or not
-		this.object = checkInstance(object, "Object cannot be null");
+		this.object = requireNonNull(object, "Object cannot be null");
 	}
 
 	/** The map of properties. */

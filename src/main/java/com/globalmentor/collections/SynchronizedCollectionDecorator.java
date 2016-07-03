@@ -18,7 +18,7 @@ package com.globalmentor.collections;
 
 import java.util.*;
 
-import static com.globalmentor.java.Objects.*;
+import static java.util.Objects.*;
 
 /**
  * A collection that wraps an existing collection, providing access through the {@link Collection} interface. All collection access is synchronized on the
@@ -40,7 +40,7 @@ public class SynchronizedCollectionDecorator<E> implements Collection<E> {
 	 * @throws NullPointerException if the provided collection is <code>null</code>.
 	 */
 	public SynchronizedCollectionDecorator(final Collection<E> collection) {
-		this.collection = checkInstance(collection, "Collection cannot be null"); //save the collection
+		this.collection = requireNonNull(collection, "Collection cannot be null"); //save the collection
 		this.mutex = this; //use this instance as a mutex		
 	}
 
@@ -51,8 +51,8 @@ public class SynchronizedCollectionDecorator<E> implements Collection<E> {
 	 * @throws NullPointerException if the provided collection and/or mutex is <code>null</code>.
 	 */
 	public SynchronizedCollectionDecorator(final Collection<E> collection, final Object mutex) {
-		this.collection = checkInstance(collection, "Collection cannot be null"); //save the collection
-		this.mutex = checkInstance(mutex, "Mutex cannot be null"); //save the mutex
+		this.collection = requireNonNull(collection, "Collection cannot be null"); //save the collection
+		this.mutex = requireNonNull(mutex, "Mutex cannot be null"); //save the mutex
 	}
 
 	/**

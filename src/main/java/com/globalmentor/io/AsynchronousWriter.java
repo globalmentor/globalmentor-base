@@ -21,8 +21,9 @@ import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.locks.*;
 
+import static java.util.Objects.*;
+
 import static com.globalmentor.java.Arrays.*;
-import static com.globalmentor.java.Objects.*;
 
 /**
  * Writer that queues information and writes the information to the underlying writer asynchronously.
@@ -118,8 +119,8 @@ public class AsynchronousWriter extends Writer {
 	 */
 	public AsynchronousWriter(final Writer writer, final BlockingQueue<char[]> blockingQueue) {
 		super(); //construct the parent class using this class as a lock
-		this.writer = checkInstance(writer, "Writer cannot be null.");
-		this.blockingQueue = checkInstance(blockingQueue, "Blocking queue cannot be null.");
+		this.writer = requireNonNull(writer, "Writer cannot be null.");
+		this.blockingQueue = requireNonNull(blockingQueue, "Blocking queue cannot be null.");
 		final Thread consumerThread = new Thread(new Consumer(), getClass().getSimpleName()); //create a new consumer thread
 		consumerThread.setDaemon(true); //make the consumer thread a daemon so that it won't hold up the application when the system shuts down
 		consumerThread.start(); //start the consumer thread
@@ -144,8 +145,8 @@ public class AsynchronousWriter extends Writer {
 	 */
 	public AsynchronousWriter(final Writer writer, final BlockingQueue<char[]> blockingQueue, final Object lock) {
 		super(lock); //construct the parent class with the given lock
-		this.writer = checkInstance(writer, "Writer cannot be null.");
-		this.blockingQueue = checkInstance(blockingQueue, "Blocking queue cannot be null.");
+		this.writer = requireNonNull(writer, "Writer cannot be null.");
+		this.blockingQueue = requireNonNull(blockingQueue, "Blocking queue cannot be null.");
 	}
 
 	/**

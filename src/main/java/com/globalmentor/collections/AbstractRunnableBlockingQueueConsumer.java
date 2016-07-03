@@ -18,9 +18,9 @@ package com.globalmentor.collections;
 
 import java.util.concurrent.BlockingQueue;
 
-import com.globalmentor.model.Consumer;
+import static java.util.Objects.*;
 
-import static com.globalmentor.java.Objects.*;
+import com.globalmentor.model.Consumer;
 
 /**
  * A runnable consumer that takes elements from a blocking queue and consume them. Normally this consumer is run in a separate thread so that consuming can
@@ -46,7 +46,7 @@ public abstract class AbstractRunnableBlockingQueueConsumer<E> implements Consum
 	 * @throws NullPointerException if the given blocking queue is <code>null</code>.
 	 */
 	public AbstractRunnableBlockingQueueConsumer(final BlockingQueue<E> blockingQueue) {
-		this.blockingQueue = checkInstance(blockingQueue, "Blocking queue cannot be null.");
+		this.blockingQueue = requireNonNull(blockingQueue, "Blocking queue cannot be null.");
 	}
 
 	/** The main functionality of the consumer, which consumes data from the blocking queue and calls {@link #consume(Object)}. */

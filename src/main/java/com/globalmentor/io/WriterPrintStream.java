@@ -19,9 +19,10 @@ package com.globalmentor.io;
 import java.io.*;
 import java.util.*;
 
+import static java.util.Objects.*;
+
 import com.globalmentor.java.OperatingSystem;
 
-import static com.globalmentor.java.Objects.*;
 import static com.globalmentor.java.OperatingSystem.*;
 
 /**
@@ -64,7 +65,7 @@ public class WriterPrintStream extends PrintStream {
 	 */
 	public WriterPrintStream(final Writer writer, final boolean autoFlush) {
 		super(new NullOutputStream()); //construct the parent class with an output stream that does nothing; this class is just an adapter to reroute the data to the writer, so the underlying output stream isn't needed
-		this.writer = checkInstance(writer, "Writer cannot be null.");
+		this.writer = requireNonNull(writer, "Writer cannot be null.");
 		this.autoflush = autoFlush;
 	}
 

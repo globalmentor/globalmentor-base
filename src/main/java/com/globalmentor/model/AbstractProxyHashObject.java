@@ -16,8 +16,9 @@
 
 package com.globalmentor.model;
 
+import static java.util.Objects.*;
+
 import com.globalmentor.java.Objects;
-import static com.globalmentor.java.Objects.*;
 
 /**
  * An object that delegates generation of a hash code and determination of equality to other objects. This class is useful for creating keys used in hash
@@ -36,7 +37,7 @@ public abstract class AbstractProxyHashObject {
 	 * @throws NullPointerException if the array of proxied objects is <code>null</code>.
 	 */
 	public AbstractProxyHashObject(final Object... proxiedObjects) {
-		this.proxiedObjects = (Object[])checkInstance(proxiedObjects, "Array of proxied objects may not be null.").clone(); //clone the array so the caller will not modify its contents
+		this.proxiedObjects = (Object[])requireNonNull(proxiedObjects, "Array of proxied objects may not be null.").clone(); //clone the array so the caller will not modify its contents
 	}
 
 	/**

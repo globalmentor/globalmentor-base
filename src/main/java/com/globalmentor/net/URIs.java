@@ -19,13 +19,14 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 
+import static java.util.Objects.*;
+
 import com.globalmentor.collections.*;
 import com.globalmentor.io.*;
 
 import com.globalmentor.java.Characters;
 import com.globalmentor.model.NameValuePair;
 import static com.globalmentor.java.CharSequences.*;
-import static com.globalmentor.java.Objects.*;
 import static com.globalmentor.java.StringBuilders.*;
 import static com.globalmentor.text.TextFormatter.*;
 
@@ -206,7 +207,7 @@ public class URIs {
 	 * @throws IllegalArgumentException if the given URI has no scheme or if the given scheme results in an invalid URI.
 	 */
 	public static URI changeScheme(final URI uri, final String newScheme) {
-		return createURI(checkInstance(newScheme, "Scheme cannot be null."), uri.getRawUserInfo(), uri.getHost(), uri.getPort(), uri.getRawPath(),
+		return createURI(requireNonNull(newScheme, "Scheme cannot be null."), uri.getRawUserInfo(), uri.getHost(), uri.getPort(), uri.getRawPath(),
 				uri.getRawQuery(), uri.getRawFragment()); //construct an identical URI except with a different scheme
 	}
 
@@ -345,7 +346,7 @@ public class URIs {
 	 * @throws IllegalArgumentException if the given URI has no host or if the given host results in an invalid URI.
 	 */
 	public static URI changeHost(final URI uri, final String newHost) {
-		return createURI(uri.getScheme(), uri.getRawUserInfo(), checkInstance(newHost, "Host cannot be null."), uri.getPort(), uri.getRawPath(), uri.getRawQuery(),
+		return createURI(uri.getScheme(), uri.getRawUserInfo(), requireNonNull(newHost, "Host cannot be null."), uri.getPort(), uri.getRawPath(), uri.getRawQuery(),
 				uri.getRawFragment()); //construct an identical URI except with a different host
 	}
 
@@ -466,8 +467,8 @@ public class URIs {
 	 * @see #getName(String)
 	 */
 	public static String changeName(final String path, final String name) {
-		checkInstance(name, "Name cannot be null."); //TODO check to see if the name has illegal characters
-		final int length = checkInstance(path, "Path cannot be null.").length(); //get the length of the path
+		requireNonNull(name, "Name cannot be null."); //TODO check to see if the name has illegal characters
+		final int length = requireNonNull(path, "Path cannot be null.").length(); //get the length of the path
 		if(length == 0) { //if there are no characters
 			return name; //the empty path becomes the name itself
 		}
@@ -503,7 +504,7 @@ public class URIs {
 			final String newRawSSP = changeName(rawSSP, rawName); //change the name to the given name
 			return changeRawSchemeSpecificPart(uri, newRawSSP); //change the URI's scheme-specific part to the new scheme-specific part			
 		} else { //if this is not an info URI
-			final String rawPath = checkInstance(uri, "URI cannot be null").getRawPath(); //get the raw path
+			final String rawPath = requireNonNull(uri, "URI cannot be null").getRawPath(); //get the raw path
 			if(rawPath == null) { //if the URI has no path
 				throw new IllegalArgumentException("URI " + uri + " has no path.");
 			}
@@ -536,7 +537,7 @@ public class URIs {
 	 * @throws NullPointerException if the given extension is <code>null</code>.
 	 */
 	public static String addNameExtension(final String name, final String extension) {
-		return new StringBuilder(name).append(NAME_EXTENSION_SEPARATOR).append(checkInstance(extension, "Extension cannot be null")).toString(); //add the requested extension and return the new filename
+		return new StringBuilder(name).append(NAME_EXTENSION_SEPARATOR).append(requireNonNull(extension, "Extension cannot be null")).toString(); //add the requested extension and return the new filename
 	}
 
 	/**
@@ -747,7 +748,7 @@ public class URIs {
 	public static URI appendRawQuery(final URI uri, final String rawQuery) {
 		final StringBuilder stringBuilder = new StringBuilder(uri.toASCIIString()); //create a string builder from the URI
 		stringBuilder.append(uri.getRawQuery() != null ? QUERY_NAME_VALUE_PAIR_DELIMITER : QUERY_SEPARATOR); //if there already is a query, separate the new parameters from the existing ones; otherwise, add the query introduction character
-		stringBuilder.append(checkInstance(rawQuery, "Query cannot be null.")); //add the new query information
+		stringBuilder.append(requireNonNull(rawQuery, "Query cannot be null.")); //add the new query information
 		return URI.create(stringBuilder.toString()); //return the new URI
 	}
 
@@ -1002,7 +1003,7 @@ public class URIs {
 	 * @see #isPathURI(URI)
 	 */
 	public static URI createPathURI(final String path) {
-		final URI pathURI = URI.create(checkInstance(path, "Path cannot be null")); //create a URI from the given path
+		final URI pathURI = URI.create(requireNonNull(path, "Path cannot be null")); //create a URI from the given path
 		if(!isPathURI(pathURI)) { //if there is a scheme or an authority
 			throw new IllegalArgumentException("Path cannot have a URI scheme or authority, and must include a path: " + path);
 		}
@@ -1079,7 +1080,7 @@ public class URIs {
 	 * @see #isPathURI(URI)
 	 */
 	public static boolean isPath(final String path) {
-		final URI pathURI = URI.create(checkInstance(path, "Path cannot be null")); //create a URI from the given path
+		final URI pathURI = URI.create(requireNonNull(path, "Path cannot be null")); //create a URI from the given path
 		return isPathURI(pathURI); //indicate whether the constructed URI represents a path
 	}
 
@@ -1090,7 +1091,7 @@ public class URIs {
 	 * @return <code>true</code> if the URI has a path and does not specifiy a scheme (i.e. the URI is not absolute), authority, query, or fragment.
 	 */
 	public static boolean isPathURI(final URI uri) {
-		checkInstance(uri, "URI cannot be null");
+		requireNonNull(uri, "URI cannot be null");
 		return uri.getScheme() == null && uri.getRawAuthority() == null && uri.getPath() != null && isPlainURI(uri); //see if there is no scheme, no authority, a path, no query, and no fragment
 	}
 
@@ -1118,7 +1119,7 @@ public class URIs {
 	 * @return <code>true</code> if the URI has no query or fragment.
 	 */
 	public static boolean isPlainURI(final URI uri) {
-		checkInstance(uri, "URI cannot be null");
+		requireNonNull(uri, "URI cannot be null");
 		return uri.getRawQuery() == null && uri.getRawFragment() == null; //see if there is no query and no fragment
 	}
 
@@ -1286,7 +1287,7 @@ public class URIs {
 	 */
 	public static URI createInfoURI(final String namespace, final String rawIdentifier, final String rawFragment) {
 		final StringBuilder stringBuilder = new StringBuilder(); //create a string builder
-		stringBuilder.append(INFO_SCHEME).append(SCHEME_SEPARATOR).append(checkInstance(namespace, "Namespace cannot be null."))
+		stringBuilder.append(INFO_SCHEME).append(SCHEME_SEPARATOR).append(requireNonNull(namespace, "Namespace cannot be null."))
 				.append(INFO_SCHEME_NAMESPACE_DELIMITER); //info:namespace/
 		stringBuilder.append(rawIdentifier); //identifier
 		if(rawFragment != null) { //if there is a fragment
@@ -1630,7 +1631,7 @@ public class URIs {
 	 * @throws NullPointerException if the path is <code>null</code>.
 	 */
 	public static boolean isAbsolutePath(final String path) {
-		return checkInstance(path, "Path cannot be null").startsWith(ROOT_PATH); //see if the path begins with '/'		
+		return requireNonNull(path, "Path cannot be null").startsWith(ROOT_PATH); //see if the path begins with '/'		
 	}
 
 	/**
@@ -1914,7 +1915,7 @@ public class URIs {
 			if(newRawFragment != null) { //if a new raw fragment was given
 				return URI.create(uri.toASCIIString() + FRAGMENT_SEPARATOR + newRawFragment); //append the new raw fragment
 			} else { //if no new raw fragment was given
-				return checkInstance(uri, "URI cannot be null."); //return the original URI
+				return requireNonNull(uri, "URI cannot be null."); //return the original URI
 			}
 		}
 	}

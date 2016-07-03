@@ -16,11 +16,11 @@
 
 package com.globalmentor.java;
 
-import static com.globalmentor.java.Objects.*;
-import static java.util.Arrays.*;
-
 import java.lang.reflect.Method;
 import java.util.List;
+
+import static java.util.Arrays.*;
+import static java.util.Objects.*;
 
 import com.globalmentor.model.AbstractHashObject;
 
@@ -59,9 +59,9 @@ public class MethodSignature extends AbstractHashObject {
 	}
 
 	private MethodSignature(final String name, final Class<?> returnType, final List<Class<?>> parameterTypes, final boolean returnTypeSignificant) {
-		this.name = checkInstance(name);
+		this.name = requireNonNull(name);
 		this.returnType = returnType;
-		this.parameterTypes = checkInstance(parameterTypes);
+		this.parameterTypes = requireNonNull(parameterTypes);
 		this.returnTypeSignificant = returnTypeSignificant;
 	}
 

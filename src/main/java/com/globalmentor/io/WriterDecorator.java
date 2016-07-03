@@ -18,7 +18,7 @@ package com.globalmentor.io;
 
 import java.io.*;
 
-import static com.globalmentor.java.Objects.checkInstance;
+import static java.util.Objects.*;
 
 /**
  * Class that wraps an existing writer. All versions of {@link Writer} methods delegate to the decorated writer.
@@ -41,7 +41,7 @@ public class WriterDecorator extends Writer {
 	 */
 	public WriterDecorator(final Writer writer) {
 		super(); //construct the parent class using this class as a lock
-		this.writer = checkInstance(writer, "Writer cannot be null.");
+		this.writer = requireNonNull(writer, "Writer cannot be null.");
 	}
 
 	/**
@@ -52,7 +52,7 @@ public class WriterDecorator extends Writer {
 	 */
 	public WriterDecorator(final Writer writer, final Object lock) {
 		super(lock); //construct the parent class with the lock
-		this.writer = checkInstance(writer, "Writer cannot be null.");
+		this.writer = requireNonNull(writer, "Writer cannot be null.");
 	}
 
 	/**
