@@ -183,10 +183,10 @@ public class InputStreams {
 	 * </p>
 	 * @param inputStream The stream the charset of which will be detected.
 	 * @return The charset detected, or <code>null</code> if no byte order mark could be detected.
-	 * @throws IOException if an unusual byte order mark is encountered.
+	 * @throws IOException if a mixed byte order mark is encountered.
 	 * @throws IOException if an I/O error occurred.
 	 * @see ByteOrderMark
-	 * @see ByteOrderMark#isUnusual()
+	 * @see ByteOrderMark#isMixed()
 	 */
 	public static Charset detectCharset(final InputStream inputStream) throws IOException {
 		return detectCharset(inputStream, null); //detect the charset, returning null if the BOM can't be determined
@@ -200,10 +200,10 @@ public class InputStreams {
 	 * @param inputStream The stream the charset of which will be detected.
 	 * @param defaultCharset The charset to return if the encoding can't be determined by the byte order mark.
 	 * @return The charset detected, or the given default charset if no byte order mark could be detected.
-	 * @throws IOException if an unusual byte order mark is encountered.
+	 * @throws IOException if a mixed byte order mark is encountered.
 	 * @throws IOException if an I/O error occurred.
 	 * @see ByteOrderMark
-	 * @see ByteOrderMark#isUnusual()
+	 * @see ByteOrderMark#isMixed()
 	 */
 	public static Charset detectCharset(final InputStream inputStream, final Charset defaultCharset) throws IOException {
 		checkArgument(inputStream.markSupported(), "Inputstream must support mark/reset.");

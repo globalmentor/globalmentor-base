@@ -51,10 +51,10 @@ public enum ByteOrderMark {
 	UTF_32BE((byte)0x00, (byte)0x00, (byte)0xFE, (byte)0xFF),
 	/** UTF-32, little-endian (4321 order) BOM */
 	UTF_32LE((byte)0xFF, (byte)0xFE, (byte)0x00, (byte)0x00),
-	/** UTF-32, unusual octet order 1 (2143 order) BOM */
-	UTF_32_UNUSUAL_ORDER1((byte)0x00, (byte)0x00, (byte)0xFF, (byte)0xFE),
-	/** UTF-32, unusual octet order 2 (3412 order) BOM */
-	UTF_32_UNUSUAL_ORDER2((byte)0xFE, (byte)0xFF, (byte)0x00, (byte)0x00);
+	/** UTF-32, big-endian, with word swapped byte order (2143 order) BOM */
+	UTF_32BE_MIXED((byte)0x00, (byte)0x00, (byte)0xFF, (byte)0xFE),
+	/** UTF-32, little-endian, with word swapped byte order (3412 order) BOM */
+	UTF_32LE_MIXED((byte)0xFE, (byte)0xFF, (byte)0x00, (byte)0x00);
 
 	/** The maximum number of bytes used by any of the byte order marks in this implementation. */
 	public static final int MAX_BYTE_COUNT = 4;
@@ -73,22 +73,22 @@ public enum ByteOrderMark {
 	}
 
 	/**
-	 * @return <code>true</code> if the byte order mark is one for which no charset exists.
-	 * @see #UTF_32_UNUSUAL_ORDER1
-	 * @see #UTF_32_UNUSUAL_ORDER2
+	 * @return <code>true</code> if the byte order mark is one of the "middle-endian" or "mixed-endian" orders for which no charset exists.
+	 * @see #UTF_32BE_MIXED
+	 * @see #UTF_32LE_MIXED
 	 */
-	public boolean isUnusual() {
-		return this == UTF_32_UNUSUAL_ORDER1 || this == UTF_32_UNUSUAL_ORDER2;
+	public boolean isMixed() {
+		return this == UTF_32BE_MIXED || this == UTF_32LE_MIXED;
 	}
 
 	/**
 	 * Checks to ensure this byte order mark is a usual one (i.e. one for which there exists a valid charset).
 	 * @return This byte order mark.
-	 * @throws IOException if this is an unusual byte order mark.
-	 * @see #isUnusual()
+	 * @throws IOException if this is a mixed byte order mark.
+	 * @see #isMixed()
 	 */
 	public ByteOrderMark checkUsualIO() throws IOException {
-		if(isUnusual()) {
+		if(isMixed()) {
 			throw new IOException("The byte order mark " + this + " is unsupported.");
 		}
 		return this;
@@ -104,15 +104,15 @@ public enum ByteOrderMark {
 				return 2;
 			case UTF_32BE:
 			case UTF_32LE:
-			case UTF_32_UNUSUAL_ORDER1:
-			case UTF_32_UNUSUAL_ORDER2:
+			case UTF_32BE_MIXED:
+			case UTF_32LE_MIXED:
 				return 4;
 			default:
 				throw new AssertionError();
 		}
 	}
 
-	/** @return The byte order of this byte order mark, or <code>null</code> if there is one byte per character or the byte order is unusual. */
+	/** @return The byte order of this byte order mark, or <code>null</code> if there is one byte per character or the byte order is mixed. */
 	public ByteOrder getByteOrder() {
 		switch(this) {
 			case UTF_16BE:
@@ -122,8 +122,8 @@ public enum ByteOrderMark {
 			case UTF_32LE:
 				return ByteOrder.LITTLE_ENDIAN;
 			case UTF_8:
-			case UTF_32_UNUSUAL_ORDER1:
-			case UTF_32_UNUSUAL_ORDER2:
+			case UTF_32BE_MIXED:
+			case UTF_32LE_MIXED:
 				return null;
 			default:
 				throw new AssertionError();
@@ -142,9 +142,9 @@ public enum ByteOrderMark {
 			case UTF_32LE:
 				return 0;
 			case UTF_16BE:
-			case UTF_32_UNUSUAL_ORDER2:
+			case UTF_32LE_MIXED:
 				return 1;
-			case UTF_32_UNUSUAL_ORDER1:
+			case UTF_32BE_MIXED:
 				return 2;
 			case UTF_32BE:
 				return 3;
@@ -202,9 +202,9 @@ public enum ByteOrderMark {
 				} else if(bytes[0] == (byte)expected0 && bytes[1] == 0x00 && bytes[2] == 0x00 && bytes[3] == 0x00) { //X1 00 00 00: UCS-4, little-endian (4321 order)
 					bom = Optional.of(UTF_32LE);
 				} else if(bytes[0] == 0x00 && bytes[1] == 0x00 && bytes[2] == (byte)expected0 && bytes[3] == 0x00) { //00 00 X1 00: UCS-4, 2143 order
-					bom = Optional.of(UTF_32_UNUSUAL_ORDER1);
+					bom = Optional.of(UTF_32BE_MIXED);
 				} else if(bytes[0] == 0x00 && bytes[1] == (byte)expected0 && bytes[2] == 0x00 && bytes[3] == 0x00) { //00 X1 00 00 UCS-4, 3412 order
-					bom = Optional.of(UTF_32_UNUSUAL_ORDER2);
+					bom = Optional.of(UTF_32LE_MIXED);
 				}
 				if(expectedChars.length() >= 2) { //if we have at least two character with which to compare the bytes in the array
 					final char expected1 = expectedChars.charAt(1); //find the second character they were expecting
@@ -257,13 +257,13 @@ public enum ByteOrderMark {
 	/**
 	 * Returns a charset corresponding to this byte order mark.
 	 * <p>
-	 * The byte order marks {@link #UTF_32_UNUSUAL_ORDER1} and {@link #UTF_32_UNUSUAL_ORDER2} are defined in XML but have no corresponding charset, so calling
-	 * this method for them (i.e. for byte order marks for which {@link #isUnusual()} returns <code>true</code>) will result in a
-	 * {@link UnsupportedOperationException} being thrown.
+	 * The byte order marks {@link #UTF_32BE_MIXED} and {@link #UTF_32LE_MIXED} are defined in XML but have no corresponding charset, so calling this method for
+	 * them (i.e. for byte order marks for which {@link #isMixed()} returns <code>true</code>) will result in a {@link UnsupportedOperationException} being
+	 * thrown.
 	 * </p>
 	 * @return a charset corresponding to this byte order mark.
 	 * @throws UnsupportedOperationException if this byte order mark has no corresponding charset.
-	 * @see #isUnusual()
+	 * @see #isMixed()
 	 */
 	public Charset toCharset() {
 		final String charsetName; //we'll skip the name and short-circuit the process for charsets we already have constructed
@@ -280,8 +280,8 @@ public enum ByteOrderMark {
 			case UTF_32LE:
 				charsetName = UTF_32LE_NAME;
 				break;
-			case UTF_32_UNUSUAL_ORDER1:
-			case UTF_32_UNUSUAL_ORDER2:
+			case UTF_32BE_MIXED:
+			case UTF_32LE_MIXED:
 				throw new UnsupportedOperationException("The byte order mark " + this + " has no corresponding charset.");
 			default:
 				throw new AssertionError("Unhandled byte order mark: " + this);
