@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.nio.ByteOrder;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.Optional;
 
 import static java.util.Objects.*;
 
@@ -164,18 +165,18 @@ public enum ByteOrderMark {
 	/**
 	 * Returns the byte order mark with which the given bytes start. If no valid byte order mark is present, <code>null</code> is returned.
 	 * @param bytes The array of bytes potentially starting with a byte order mark.
-	 * @return The byte order mark detected, or <code>null</code> if no byte order mark is present.
+	 * @return The byte order mark detected.
 	 */
-	public static ByteOrderMark detect(@Nonnull final byte[] bytes) {
+	public static Optional<ByteOrderMark> detect(@Nonnull final byte[] bytes) {
 		//note: this implementation depends on the order of the BOM enum values, from shorter bytes to longer bytes
 		final ByteOrderMark[] boms = values(); //check each BOM manually
 		for(int i = boms.length - 1; i >= 0; --i) { //work backwards to check longer BOMs first, as UTF-32LE starts with the UTF-16LE BOM
 			final ByteOrderMark bom = boms[i];
 			if(Bytes.startsWith(bytes, bom.bytes)) { //if the bytes starts with the BOM's bytes (trusting the comparison method not to modify the bytes, as we pass in our private array)
-				return bom;
+				return Optional.of(bom);
 			}
 		}
-		return null; //no matching BOM was found
+		return Optional.empty(); //no matching BOM was found
 	}
 
 	/**
@@ -184,45 +185,45 @@ public enum ByteOrderMark {
 	 * @param bytes The array of bytes representing the possible Byte Order Mark and possible expected characters.
 	 * @param expectedChars The characters expected, regardless of the encoding method used. At least four characters should included.
 	 * @param actualBOM Receives the actual byte order mark present, if any.
-	 * @return The character encoding object from the given Byte Order Mark, or if no Byte Order Mark is present, the character encoding assumed by comparing
-	 *         bytes to the expected characters, or <code>null</code> if neither method can determine a character encoding.
+	 * @return The actual Byte Order Mark encountered; or, if no Byte Order Mark was present, the Byte Order Mark representing the character encoding assumed by
+	 *         comparing bytes to the expected characters; or {@link Optional#empty()} if neither approach could determine a character encoding.
 	 * @see <a href="http://www.w3.org/TR/2008/REC-xml-20081126/#sec-guessing-no-ext-info">XML 1.0 (Fifth Edition): F.1 Detection Without External Encoding
 	 *      Information)</a>
 	 */
-	public static ByteOrderMark impute(final byte[] bytes, final CharSequence expectedChars, final ObjectHolder<ByteOrderMark> actualBOM) { //TODO maybe allow a default eight-bit encoding to be specified
-		ByteOrderMark bom = ByteOrderMark.detect(bytes); //check the byte order mark by itself; if there is no BOM, this will return null
-		if(bom != null) { //if we found a byte order mark
-			actualBOM.setObject(bom); //show that we actually found a byte order mark
+	public static Optional<ByteOrderMark> impute(final byte[] bytes, final CharSequence expectedChars, final ObjectHolder<ByteOrderMark> actualBOM) { //TODO maybe allow a default eight-bit encoding to be specified
+		Optional<ByteOrderMark> bom = ByteOrderMark.detect(bytes); //check the byte order mark by itself; if there is no BOM, this will return null
+		if(bom.isPresent()) { //if we found a byte order mark TODO improve with Java 9: https://bugs.openjdk.java.net/browse/JDK-8071670
+			actualBOM.setObject(bom.get()); //show that we actually found a byte order mark
 		} else { //if no byte order mark was found, try to compare characters with what is expected
 			if(bytes.length >= 4 && expectedChars.length() >= 1) { //if there are at least four bytes in the array, and we have at least one character to compare them with
 				final char expected0 = expectedChars.charAt(0); //find the first character they were expecting
 				if(bytes[0] == 0x00 && bytes[1] == 0x00 && bytes[2] == 0x00 && bytes[3] == (byte)expected0) { //00 00 00 X1: UCS-4, big-endian (1234 order)
-					bom = UTF_32BE;
+					bom = Optional.of(UTF_32BE);
 				} else if(bytes[0] == (byte)expected0 && bytes[1] == 0x00 && bytes[2] == 0x00 && bytes[3] == 0x00) { //X1 00 00 00: UCS-4, little-endian (4321 order)
-					bom = UTF_32LE;
+					bom = Optional.of(UTF_32LE);
 				} else if(bytes[0] == 0x00 && bytes[1] == 0x00 && bytes[2] == (byte)expected0 && bytes[3] == 0x00) { //00 00 X1 00: UCS-4, 2143 order
-					bom = UTF_32_UNUSUAL_ORDER1;
+					bom = Optional.of(UTF_32_UNUSUAL_ORDER1);
 				} else if(bytes[0] == 0x00 && bytes[1] == (byte)expected0 && bytes[2] == 0x00 && bytes[3] == 0x00) { //00 X1 00 00 UCS-4, 3412 order
-					bom = UTF_32_UNUSUAL_ORDER2;
+					bom = Optional.of(UTF_32_UNUSUAL_ORDER2);
 				}
 				if(expectedChars.length() >= 2) { //if we have at least two character with which to compare the bytes in the array
 					final char expected1 = expectedChars.charAt(1); //find the second character they were expecting
 					if(bytes[0] == 0x00 && bytes[1] == (byte)expected0 && bytes[2] == 0x00 && bytes[3] == (byte)expected1) { //00 X1 00 X2: UTF-16, big-endian, no Byte Order Mark
-						bom = UTF_16BE;
+						bom = Optional.of(UTF_16BE);
 					} else if(bytes[0] == (byte)expected0 && bytes[1] == 0x00 && bytes[2] == (byte)expected1 && bytes[3] == 0x00) { //X1 00 X2 00: UTF-16, little-endian, no Byte Order Mark
-						bom = UTF_16LE;
+						bom = Optional.of(UTF_16LE);
 					}
 					if(expectedChars.length() >= 4) { //if we have at least four character with which to compare the bytes in the array
 						final char expected3 = expectedChars.charAt(2); //find the third character they were expecting
 						final char expected4 = expectedChars.charAt(3); //find the fourth character they were expecting
 						if(bytes[0] == (byte)expected0 && bytes[1] == (byte)expected1 && bytes[2] == (byte)expected3 && bytes[3] == (byte)expected4) { //X1 X2 X3 X4: UTF-8 (or similar), no Byte Order Mark
-							bom = UTF_8;
+							bom = Optional.of(UTF_8);
 						}
 					}
 				}
 			}
 		}
-		return bom; //return whatever BOM was found (which may be null)
+		return bom; //return whatever BOM was found (which may be empty)
 	}
 
 	/**
