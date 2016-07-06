@@ -17,6 +17,12 @@
 package com.globalmentor.collections.iterators;
 
 import java.util.*;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
+
+import javax.annotation.*;
+
+import com.globalmentor.java.Objects;
 
 import static com.globalmentor.collections.Collections.*;
 import static com.globalmentor.java.Arrays.*;
@@ -37,8 +43,8 @@ public class Iterators {
 	 */
 	@SuppressWarnings("unchecked")
 	public static final <T> Iterator<T> emptyIterator() {
-		return (Iterator<T>)EMPTY_ITERATOR;
-	} //return the singleton empty iterator cast to the correct type
+		return (Iterator<T>)EMPTY_ITERATOR; //return the singleton empty iterator cast to the correct type
+	}
 
 	/** The singleton immutable empty iterable. */
 	public static final Iterable<?> EMPTY_ITERABLE = new EmptyIterable<Object>();
@@ -49,8 +55,51 @@ public class Iterators {
 	 */
 	@SuppressWarnings("unchecked")
 	public static final <T> Iterable<T> emptyIterable() {
-		return (Iterable<T>)EMPTY_ITERABLE;
-	} //return the singleton empty iterable cast to the correct type
+		return (Iterable<T>)EMPTY_ITERABLE; //return the singleton empty iterable cast to the correct type
+	}
+
+	/**
+	 * Returns an iterator concatenating the contents of two iterators.
+	 * <p>
+	 * <strong>Tip:</strong> The returned iterator can be used as an {@link Iterator} or an {@link Enumeration}.
+	 * </p>
+	 * @param <E> The type of elements returned by the iterators.
+	 * @param iterator1 The iterator the contents of which will appear first in the iteration.
+	 * @param iterator2 The iterator the contents of which will appear second in the iteration.
+	 * @return An iterator that will return the contents of the two iterators in order.
+	 */
+	public static <E> JoinIterator<E> concat(@Nonnull final Iterator<E> iterator1, @Nonnull final Iterator<E> iterator2) {
+		return new JoinIterator<>(Stream.of(iterator1, iterator2));
+	}
+
+	/**
+	 * Returns an iterator concatenating the contents of multiple iterators.
+	 * <p>
+	 * <strong>Tip:</strong> The returned iterator can be used as an {@link Iterator} or an {@link Enumeration}.
+	 * </p>
+	 * @param <E> The type of elements returned by the iterators.
+	 * @param iterators The iterators to concatenate.
+	 * @return An iterator that will return the contents of the given iterators in order.
+	 * @throws NullPointerException if any of the given iterators is <code>null</code>.
+	 */
+	@SafeVarargs
+	public static <E> JoinIterator<E> concat(@Nonnull final Iterator<E>... iterators) {
+		return new JoinIterator<>(iterators);
+	}
+
+	/**
+	 * Returns an iterator concatenating the contents of an iterator and an enumeration.
+	 * <p>
+	 * <strong>Tip:</strong> The returned iterator can be used as an {@link Iterator} or an {@link Enumeration}.
+	 * </p>
+	 * @param <E> The type of elements returned by the iterator and the enumeration.
+	 * @param iterator An iterator the contents of which will appear first in the iteration.
+	 * @param enumeration An enumeration the contents of which will appear after that of the iterator.
+	 * @return An iterator that will return the contents of the iterator and the enumeration in order.
+	 */
+	public static <E> JoinIterator<E> concat(@Nonnull final Iterator<E> iterator, @Nonnull final Enumeration<E> enumeration) {
+		return concat(iterator, toIterator(enumeration));
+	}
 
 	/**
 	 * Creates a copy of the iterator that contains the same data but will not reflect any modified values of the underlying collection. Creates a new collection,
@@ -105,6 +154,51 @@ public class Iterators {
 	}
 
 	/**
+	 * Converts an iterator to an enumeration, if it isn't already.
+	 * @param <E> the type of elements returned by the iterator.
+	 * @param iterator The iterator to be converted to an enumeration.
+	 * @return An enumeration delegating to the given iterator, or the iterator itself it is also an {@link Enumeration}.
+	 */
+	@SuppressWarnings("unchecked") //if it's an Iterator of type <E>, we assume the Enumeration would be as well
+	public static <E> Enumeration<E> toEnumeration(@Nonnull final Iterator<E> iterator) {
+		return Objects.asInstance(iterator, Enumeration.class).orElseGet(() -> new IteratorDecorator<>(iterator));
+	}
+
+	/**
+	 * Returns a single-use iterable that returns the given iterator.
+	 * <p>
+	 * Unlike most iterables, the returned iterable may only be iterated a single time.
+	 * </p>
+	 * @param <E> the type of elements returned by the iterator.
+	 * @param iterator The iterator to be converted to an iterable.
+	 * @return A single-user iterable that returns the given iterator.
+	 */
+	public static <E> Iterable<E> toIterable(@Nonnull final Iterator<E> iterator) {
+		return () -> iterator;
+	}
+
+	/**
+	 * Converts an enumeration to an iteration, if it isn't already.
+	 * @param <E> the type of elements returned by the enumeration.
+	 * @param enumeration The enumeration to be converted to an iterator.
+	 * @return An iterator delegating to the given enumeration, or the enumeration itself it is also an {@link Iterator}.
+	 */
+	@SuppressWarnings("unchecked") //if it's an Iterator of type <E>, we assume the Enumeration would be as well
+	public static <E> Iterator<E> toIterator(@Nonnull final Enumeration<E> enumeration) {
+		return Objects.asInstance(enumeration, Iterator.class).orElseGet(() -> new EnumerationDecorator<>(enumeration));
+	}
+
+	/**
+	 * Returns a stream providing access to the contents of the given iterator.
+	 * @param <E> The type of elements returned by the iterator.
+	 * @param iterator The iterator to be converted to a stream.
+	 * @return A stream that returns the contents of the given iterator.
+	 */
+	public static <E> Stream<E> toStream(@Nonnull final Iterator<E> iterator) {
+		return StreamSupport.stream(toIterable(iterator).spliterator(), false);
+	}
+
+	/**
 	 * An implementation of an iterator that contains no data.
 	 * @author Garret Wilson
 	 */
@@ -148,4 +242,5 @@ public class Iterators {
 			return emptyIterator();
 		}
 	}
+
 }

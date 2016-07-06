@@ -18,10 +18,10 @@ package com.globalmentor.util;
 
 import java.util.*;
 
+import static com.globalmentor.collections.iterators.Iterators.*;
 import static java.util.Objects.*;
 
-import com.globalmentor.collections.iterators.EnumerationIterator;
-import com.globalmentor.collections.iterators.JoinIterator;
+import com.globalmentor.collections.iterators.*;
 
 /**
  * A resource bundle backed by a hash map.
@@ -82,16 +82,13 @@ public class HashMapResourceBundle extends ResourceBundle {
 		return map.get(requireNonNull(key, "Resource key cannot be null.")); //look up the object from the map
 	}
 
-	/** @return An enumeration of the resouce keys. */
+	/** @return An enumeration of the resource keys. */
 	public Enumeration<String> getKeys() {
+		final Iterator<String> keyIterator = map.keySet().iterator(); //get an iterator to our keys
 		final ResourceBundle parent = this.parent; //get the parent resource bundle, if there is one
-		final Iterator<String> parentKeyIterator; //get an iterator to the parent's keys, if there is a parent
-		if(parent != null) { //if there is a parent
-			parentKeyIterator = new EnumerationIterator<String>(parent.getKeys()); //convert the parent key enumeration to an iterator
-		} else { //if there is no parent
-			parentKeyIterator = null; //there is no parent key iterator
+		if(parent == null) { //if there is no parent
+			return toEnumeration(keyIterator); //simply convert our keys to an enumeration
 		}
-		final Iterator<String> keyIterator = map.keySet().iterator(); //get an iterator to the map's keys
-		return new JoinIterator<String>(keyIterator, parentKeyIterator); //join our keys and the parent's keys
+		return Iterators.concat(keyIterator, parent.getKeys());
 	}
 }

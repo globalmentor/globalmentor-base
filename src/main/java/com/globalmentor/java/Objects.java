@@ -17,6 +17,7 @@
 package com.globalmentor.java;
 
 import java.lang.reflect.*;
+import java.util.Optional;
 
 import static java.util.Objects.*;
 
@@ -104,28 +105,14 @@ public class Objects {
 
 	/**
 	 * Convenience method that returns the given object if and only if it is an instance of the given class. This method is equivalent to
-	 * <code><var>object</var> instanceof <var>Type</var> ? (Type)object : null</code>.
+	 * <code><var>object</var> instanceof <var>Type</var> ? Optional.of((Type)object) : Optional.empty();</code>.
 	 * @param <T> The type of object to check for.
 	 * @param object The object to examine.
 	 * @param instanceClass The class of which the object may be an instance.
 	 * @return The object if it is an instance of the given class, otherwise <code>null</code>.
 	 */
-	public static <T> T asInstance(final Object object, final Class<T> instanceClass) {
-		return asInstance(object, instanceClass, null); //use a default value of null
-	}
-
-	/**
-	 * Convenience method that returns the given object if and only if it is an instance of the given class. If the object is not an instance of the given class,
-	 * the given default value, if any, will be returned. This method is equivalent to
-	 * <code><var>object</var> instanceof <var>Type</var> ? (Type)object : <var>defaultValue</var></code>.
-	 * @param <T> The type of object to check for.
-	 * @param object The object to examine.
-	 * @param instanceClass The class of which the object may be an instance.
-	 * @param defaultValue The default value to return.
-	 * @return The object if it is an instance of the given class, otherwise the default value.
-	 */
-	public static <T> T asInstance(final Object object, final Class<T> instanceClass, final T defaultValue) {
-		return instanceClass.isInstance(object) ? instanceClass.cast(object) : defaultValue; //cast and return the object if it is an instance of the class, otherwise the default value
+	public static <T> Optional<T> asInstance(final Object object, final Class<T> instanceClass) {
+		return instanceClass.isInstance(object) ? Optional.of(instanceClass.cast(object)) : Optional.<T>empty();
 	}
 
 	/**
@@ -149,6 +136,7 @@ public class Objects {
 	 * @param objects The objects to investigate.
 	 * @return The first object that is not <code>null</code>, or <code>null</code> if all objects are <code>null</code>.
 	 */
+	@SafeVarargs
 	public static <T> T getInstance(final T... objects) {
 		for(final T object : objects) { //look at all the references
 			if(object != null) { //if the object isn't null (it is faster to just check for null rather than to delegate to the class-based getInstance() version
@@ -167,6 +155,7 @@ public class Objects {
 	 * @return The first object that is the instance of the given type, or <code>null</code> if no object is an instance of the indicated type.
 	 * @throws NullPointerException if the given object class is <code>null</code>.
 	 */
+	@SafeVarargs
 	public static <T, C extends T> C getInstance(final Class<C> objectClass, final T... objects) {
 		for(final T object : objects) { //look at all the references
 			if(objectClass.isInstance(object)) { //if this object is an instance of the given class
@@ -204,8 +193,8 @@ public class Objects {
 	 * @throws InvocationTargetException if the getter method throws an exception.
 	 * @throws ExceptionInInitializerError if the initialization provoked by the getter method fails.
 	 */
-	public static Object getProperty(final Object object, final String propertyName) throws NoSuchMethodException, InvocationTargetException,
-			IllegalAccessException {
+	public static Object getProperty(final Object object, final String propertyName)
+			throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
 		final Method getterMethod = getGetterMethod(object.getClass(), propertyName); //get the getter property, if there is one
 		if(getterMethod != null) { //if there is a getter method
 			return getterMethod.invoke(object); //invoke the getter method and return the value

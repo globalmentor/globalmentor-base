@@ -1,5 +1,5 @@
 /*
- * Copyright © 1996-2008 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * Copyright © 1996-2016 GlobalMentor, Inc. <http://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,81 +16,69 @@
 
 package com.globalmentor.collections.iterators;
 
+import static com.globalmentor.collections.iterators.Iterators.*;
+import static java.util.stream.Collectors.*;
+
 import java.util.*;
+import java.util.stream.Stream;
+
+import javax.annotation.*;
 
 /**
- * An iterator that joins the contents of two iterators. This class also implements the {@link Enumeration} interface. Element removal is not supported.
+ * An iterator that joins the contents of zero or more iterators. This class also implements the {@link Enumeration} interface. Element removal is not
+ * supported.
  * @param <E> The type of element being iterated.
  * @author Garret Wilson
  */
-public class JoinIterator<E> implements Iterator<E>, Enumeration<E> { //TODO refactor to accept a vararg of iterators
+public class JoinIterator<E> extends AbstractIteratorDecorator<E> {
 
-	/** The first iterator, or <code>null</code> if the first iterator has been exhausted. */
-	private Iterator<E> iterator1;
-
-	/** The second iterator, or <code>null</code> if there is no second iterator. */
-	private Iterator<E> iterator2;
+	/** The queue of iterators to join. */
+	private final Queue<Iterator<E>> iteratorQueue;
 
 	/**
-	 * Iterator constructor.
-	 * @param iterator1 The first iterator, or <code>null</code> if there is no first iterator.
-	 * @param iterator2 The second iterator, containing the elements to use when the first iterator is exhausted, or <code>null</code> if there is no second
-	 *          iterator.
-	 * @throws NullPointerException if one of the given iterators is null.
+	 * {@inheritDoc}
+	 * <p>
+	 * This implementation returns the first iterator in the queue that is not empty. If no further iterators remain in the queue, an empty iterator is returned.
+	 * This ensures that empty iterators are discarded as soon as possible, as well as allowing the actual iteration implementation to be delegated to the base
+	 * classes.
+	 * </p>
 	 */
-	public JoinIterator(final Iterator<E> iterator1, final Iterator<E> iterator2) {
-		this.iterator1 = iterator1;
-		this.iterator2 = iterator2;
-	}
-
-	/** @return <code>true</code> if the iteration has more elements. */
-	public boolean hasNext() {
-		if(iterator1 != null) { //if we haven't exhausted the first iterator
-			if(iterator1.hasNext()) { //if the iterator has another element
-				return true; //show that we have another element
-			} else { //if the first iterator has run out
-				iterator1 = null; //don't use the first iterator anymore
-			}
+	@Override
+	protected Iterator<E> getIterator() {
+		Iterator<E> iterator = null;
+		//remove all empty iterators
+		while(!iteratorQueue.isEmpty() && !(iterator = iteratorQueue.peek()).hasNext()) {
+			iteratorQueue.remove();
 		}
-		return iterator2 != null ? iterator2.hasNext() : null; //see if the second iterator has more elements, if there is a second iterator
+		assert iterator != null || iteratorQueue.isEmpty();
+		//return the last accessed iterator, or an empty iterator if we ran out
+		return iteratorQueue.isEmpty() ? emptyIterator() : iterator;
 	}
 
 	/**
-	 * @return The next element in the iteration.
-	 * @throws NoSuchElementException if the iteration has no more elements.
+	 * Iterators constructor.
+	 * @param iterators The iterators to join.
+	 * @throws NullPointerException if any of the given iterators is <code>null</code>.
 	 */
-	public E next() {
-		if(hasNext()) { //if we have elements (this will determine which iterator to use)
-			if(iterator1 != null) { //if there is a first iterator
-				return iterator1.next(); //get the iterator from the first iterator
-			} else if(iterator2 != null) { //if there is a second iterator
-				return iterator2.next(); //get the iterator from the second iterator
-			}
-		}
-		throw new NoSuchElementException();
+	public JoinIterator(@Nonnull final Stream<Iterator<E>> iterators) {
+		iteratorQueue = iterators.collect(toCollection(LinkedList::new));
+		iteratorQueue.forEach(Objects::requireNonNull);
 	}
 
 	/**
-	 * Removes from the underlying collection the last element returned by the iterator. This implementation throws an exception, as removal is not supported.
-	 * @throws UnsupportedOperationException if the <code>remove</code> operation is not supported by this iterator.
+	 * Iterators varargs constructor.
+	 * @param iterators The iterators to join.
+	 * @throws NullPointerException if any of the given iterators is <code>null</code>.
 	 */
+	@SafeVarargs
+	JoinIterator(@Nonnull final Iterator<E>... iterators) {
+		this(Stream.of(iterators));
+	}
+
+	@Override
 	public void remove() {
-		throw new UnsupportedOperationException("An enumeration iterator does not support removal.");
+		//we might have already thrown away the last iterator we used, if next() was called and it was empty
+		throw new UnsupportedOperationException("A join iterator does not support removal.");
 	}
 
-	/**
-	 * @return <code>true</code> if and only if this enumeration object contains at least one more element to provide; <code>false</code> otherwise. This
-	 *         implementation delegates to {@link #hasNext()}.
-	 */
-	public boolean hasMoreElements() {
-		return hasNext(); //delegate to the iterator version
-	}
-
-	/**
-	 * @return The next element of this enumeration. This implementation delegates to {@link #next()}.
-	 * @throws NoSuchElementException if no more elements exist.
-	 */
-	public E nextElement() {
-		return next(); //delegate to the iterator version
-	}
 }

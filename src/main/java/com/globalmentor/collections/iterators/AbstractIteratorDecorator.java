@@ -18,12 +18,8 @@ package com.globalmentor.collections.iterators;
 
 import java.util.*;
 
-import javax.annotation.*;
-
-import static java.util.Objects.*;
-
 /**
- * An iterator that wraps an existing iterator.
+ * An abstract base implementation of an iterator that wraps an existing {@link Iterator}.
  * <p>
  * This iterator also serves as an adapter, converting an iterator to an {@link Enumeration}.
  * </p>
@@ -33,23 +29,50 @@ import static java.util.Objects.*;
  * @param <E> the type of elements returned by this iterator.
  * @author Garret Wilson
  */
-public class IteratorDecorator<E> extends AbstractIteratorDecorator<E> {
+public abstract class AbstractIteratorDecorator<E> implements Iterator<E>, Enumeration<E> {
 
-	/** The iterator this class decorates. */
-	private final Iterator<E> iterator;
+	/** @return The iterator this class decorates. */
+	protected abstract Iterator<E> getIterator();
+
+	//Iterator<E>
 
 	@Override
-	protected Iterator<E> getIterator() {
-		return iterator;
+	public boolean hasNext() {
+		return getIterator().hasNext();
+	}
+
+	@Override
+	public E next() {
+		return getIterator().next();
+	}
+
+	@Override
+	public void remove() {
+		getIterator().remove();
+	}
+
+	//Enumeration<E>
+
+	/**
+	 * {@inheritDoc}
+	 * <p>
+	 * This implementation delegates to {@link #hasNext()}.
+	 * </p>
+	 */
+	@Override
+	public final boolean hasMoreElements() {
+		return hasNext();
 	}
 
 	/**
-	 * Iterator constructor.
-	 * @param iterator The iterator this iterator will decorate.
-	 * @throws NullPointerException if the given iterator is <code>null</code>.
+	 * {@inheritDoc}
+	 * <p>
+	 * This implementation delegates to {@link #next()}.
+	 * </p>
 	 */
-	public IteratorDecorator(@Nonnull final Iterator<E> iterator) {
-		this.iterator = requireNonNull(iterator, "Iterator cannot be null."); //save the iterator
+	@Override
+	public final E nextElement() {
+		return next();
 	}
 
 }
