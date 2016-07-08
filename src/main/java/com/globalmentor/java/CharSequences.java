@@ -17,15 +17,18 @@
 package com.globalmentor.java;
 
 import static com.globalmentor.java.Characters.*;
+import static com.globalmentor.java.Conditions.*;
 import static java.lang.Math.*;
+import static java.lang.String.*;
 import static java.nio.charset.StandardCharsets.*;
 
+import java.nio.*;
+import java.nio.charset.CharsetDecoder;
 import java.text.Normalizer;
 import java.util.Collection;
 
 import com.globalmentor.io.UTF8;
 import com.globalmentor.text.Case;
-import com.globalmentor.text.Unicode;
 
 /**
  * Various text manipulating functions. These methods work on objects that implement the {@link CharSequence} interface. To avoid creation of new strings, some
@@ -448,47 +451,73 @@ public class CharSequences {
 	/**
 	 * Decodes the escaped characters in the character sequence by converting the hex value after each occurrence of the escape character to the corresponding
 	 * Unicode character using UTF-8.
-	 * <p>
-	 * This implementation does not allow non-escaped UTF-8 characters that would be escaped by UTF-8.
-	 * </p>
 	 * @param charSequence The data to unescape.
 	 * @param escapeChar The character that prefixes the hex representation.
 	 * @param escapeLength The number of characters used for the hex representation.
-	 * @return A string containing the unescaped data.
-	 * @throws IllegalArgumentException if the given characters contains a character greater than U+007F.
+	 * @return A character sequence containing the unescaped data.
 	 * @throws IllegalArgumentException if a given escape character is not followed by an escape sequence.
+	 * @throws IllegalArgumentException if an encountered escape sequence is not valid UTF-8.
 	 */
-	public static String unescapeHex(final CharSequence charSequence, final char escapeChar, final int escapeLength) {
+	public static CharSequence unescapeHex(final CharSequence charSequence, final char escapeChar, final int escapeLength) {
+		CharBuffer charBuffer = null; //we'll only create a char buffer if we need to unescape something
+		ByteBuffer byteBuffer = null; //we'll create this during a decoding sequence
+		int encodedByteCount = 0; //we'll set this value at the start of each encoded byte sequence
+		CharsetDecoder utf8CharsetDecoder = null; //we'll only create a charset decode if we need to
 		final int charSequenceLength = charSequence.length(); //get the length of the character sequence
-		final byte[] decodedBytes = new byte[charSequenceLength]; //create an array of byte to hold the UTF-8 data
-		int byteArrayIndex = 0; //start at the first position in the byte array
 		for(int i = 0; i < charSequenceLength; ++i) { //look at each character in the character sequence
 			final char c = charSequence.charAt(i); //get a reference to this character in the character sequence
-			final byte b; //we'll determine what byte goes at this position
 			if(c == escapeChar) { //if this is the beginning of an escaped sequence
+				if(charBuffer == null) { //initialize the character buffer if needed
+					charBuffer = CharBuffer.allocate(charSequenceLength); //unescaping should *reduce* the number of characters, if anything
+					if(i > 0) { //append all the characters up to this point, if any
+						charBuffer.append(charSequence, 0, i);
+					}
+					assert byteBuffer == null; //if we are starting to decode, we shouldn't have a byte buffer yet
+					byteBuffer = ByteBuffer.allocate(UTF8.MAX_ENCODED_BYTE_COUNT_LENGTH);
+					assert utf8CharsetDecoder == null; //if we are starting to decode, we shouldn't have a decoder yet
+					utf8CharsetDecoder = UTF_8.newDecoder();
+				}
 				if(i < charSequenceLength - escapeLength) { //if there's room for enough hex characters after it
+					//TODO create integer parsing method that works with CharSequence to obviate conversion to string
 					final String escapeSequence = charSequence.subSequence(i + 1, i + escapeLength + 1).toString(); //get the hex characters in the escape sequence							
 					try {
-						b = (byte)Integer.parseInt(escapeSequence, 16); //convert the escape sequence to a single integer value and add it to the buffer
+						final int octet = Integer.parseInt(escapeSequence, 16); //convert the escape sequence to a single integer value
+						if(byteBuffer.position() == 0) { //if this is the initial octet in the sequence
+							encodedByteCount = UTF8.getEncodedByteCountFromInitialOctet(octet); //determine how many bytes to expect, throwing an exception if invalid
+						}
+						byteBuffer.put((byte)octet); //add the byte to the buffer
 						i += 2; //skip the escape sequence (we'll go to the last character, and we'll be advanced one character when we go back to the start of the loop)
 					} catch(NumberFormatException numberFormatException) { //if the characters weren't really hex characters
-						throw new IllegalArgumentException("Invalid escape sequence " + escapeSequence + " at index " + i + " in character sequence \"" + charSequence
-								+ "\".");
+						throw new IllegalArgumentException(format("Invalid escape sequence %s at index %s in character sequence %s.", escapeSequence, i, charSequence));
 					}
 				} else { //if there is no room for an escape sequence at the end of the string
-					throw new IllegalArgumentException("Invalid escape sequence " + charSequence.subSequence(i + 1, charSequenceLength) + " at index " + i
-							+ " in character sequence \"" + charSequence + "\".");
+					throw new IllegalArgumentException(
+							format("Invalid escape sequence %s at index %s in character sequence %s.", charSequence.subSequence(i + 1, charSequenceLength), i, charSequence));
 				}
+				if(byteBuffer != null && byteBuffer.position() == encodedByteCount) { //if we have completed a sequence of UTF-8 bytes
+					assert encodedByteCount > 0; //we should have initialized the byte count at the start of the sequence
+					assert utf8CharsetDecoder != null;
+					assert charBuffer != null;
+					byteBuffer.flip(); //prepare the byte buffer for reading
+					if(utf8CharsetDecoder.decode(byteBuffer, charBuffer, true).isError()) { //decode the bytes
+						throw new IllegalArgumentException(format("Illegal UTF-8 sequence found in character sequence."));
+					}
+					byteBuffer.clear(); //we've finished our byte sequence; prepare for another
+				}
+
 			} else { //if this is not an escaped character
-				if(c > UTF8.MAX_ENCODED_BYTE_COUNT1) { //if this character is larger than the largest UTF-8 encoding for a single byte, the character sequence was not encoded correctly
-					throw new IllegalArgumentException("Invalid encoded character " + Unicode.getCodePointString(c) + " at index " + i
-							+ " in character sequence \"" + charSequence + "\".");
+				checkArgument(byteBuffer == null || byteBuffer.position() == 0, "Incomplete UTF-8 sequence found in character sequence.");
+				if(charBuffer != null) { //if we have found decoded characters and are thus decoding the string
+					charBuffer.append(c);
 				}
-				b = (byte)c; //add this character to the result with no change
 			}
-			decodedBytes[byteArrayIndex++] = b; //add the byte to the buffer and keep going
+
 		}
-		return new String(decodedBytes, 0, byteArrayIndex, UTF_8); //consider the bytes as a series of UTF-8 encoded characters.
+		if(charBuffer != null) { //if there was anything to decode
+			charBuffer.flip(); //prepare for reading the characters.
+			return charBuffer.toString();
+		}
+		return charSequence; //there was nothing to decode; just return the original character sequence
 	}
 
 	/**
@@ -1133,7 +1162,7 @@ public class CharSequences {
 				return subSequences; //return the array of subsequences
 			}
 		}
-		return new CharSequence[] { charSequence }; //return an array cotaining the character sequence itself if there are no characters or no delimiters
+		return new CharSequence[] {charSequence}; //return an array cotaining the character sequence itself if there are no characters or no delimiters
 	}
 
 	/**
@@ -1345,7 +1374,8 @@ public class CharSequences {
 	 *           is greater than <code>end</code>, with the exception that if <code>end2</code> is greater than the length of the second character sequence it
 	 *           will be adjusted to equal the end.
 	 */
-	public static boolean equals(final CharSequence charSequence1, final int start1, final int end1, final CharSequence charSequence2, final int start2, int end2) {
+	public static boolean equals(final CharSequence charSequence1, final int start1, final int end1, final CharSequence charSequence2, final int start2,
+			int end2) {
 		checkBounds(charSequence1, start1, end1);
 		final int length2 = charSequence2.length();
 		if(end2 > length2) { //adjust the second character sequence's end if needed

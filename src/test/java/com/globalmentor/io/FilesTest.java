@@ -67,11 +67,9 @@ public class FilesTest {
 	 * Test contributed by Magno Nascimento.
 	 * </p>
 	 */
-	@Ignore //TODO fix
 	@Test
 	public void testRecoverNotAllowedCharactersWithChineseCharacters() {
 		final String publicationName = Files.encodeCrossPlatformFilename("紅樓夢红楼梦 (Dream of the Red Chamber)");
-		System.out.println(publicationName);
 		assertThat(Files.decodeFilename(publicationName), equalTo("紅樓夢红楼梦 (Dream of the Red Chamber)"));
 	}
 
@@ -82,7 +80,6 @@ public class FilesTest {
 	 * Test contributed by Magno Nascimento.
 	 * </p>
 	 */
-	@Ignore //TODO fix
 	@Test
 	public void testRecoverNotAllowedCharactersWithChineseCharactersAndSlash() {
 		final String publicationName = Files.encodeCrossPlatformFilename("紅樓夢/红楼梦 (Dream of the Red Chamber)");

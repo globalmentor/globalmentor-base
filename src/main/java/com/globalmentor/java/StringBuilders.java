@@ -237,7 +237,7 @@ public class StringBuilders {
 	 * Deletes the last characters of a string builder.
 	 * @param stringBuilder The string builder to modify.
 	 * @param count The number of characters to delete.
-	 * @throws IllegalArgumentException if the given string builder has insuficient characters.
+	 * @throws IllegalArgumentException if the given string builder has insufficient characters.
 	 * @throws StringIndexOutOfBoundsException if the given string builder is <code>null</code>.
 	 */
 	public static void deleteEnd(final StringBuilder stringBuilder, final int count) {

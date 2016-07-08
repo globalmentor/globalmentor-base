@@ -897,7 +897,7 @@ public class Files {
 	 * @see CharSequences#unescapeHex(CharSequence, char, int)
 	 */
 	public static String decodeFilename(final String filename) {
-		return unescapeHex(filename, FILENAME_ESCAPE_CHAR, 2); //decode the filename
+		return unescapeHex(filename, FILENAME_ESCAPE_CHAR, 2).toString(); //decode the filename
 	}
 
 	/**

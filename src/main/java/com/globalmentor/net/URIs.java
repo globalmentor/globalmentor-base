@@ -244,7 +244,7 @@ public class URIs {
 	}
 
 	/**
-	 * Determines the info indentifier of the given {@value URIs#INFO_SCHEME} scheme URI.
+	 * Determines the info identifier of the given {@value URIs#INFO_SCHEME} scheme URI.
 	 * @param uri The URI from which the info identifier should be retrieved.
 	 * @return The decoded info identifier of the given info URI.
 	 * @throws NullPointerException if the given URI is <code>null</code>.
@@ -2102,12 +2102,12 @@ public class URIs {
 	 * Decodes the escaped characters in the character iterator according to the URI encoding rules in <a href="http://www.ietf.org/rfc/rfc2396.txt">RFC 2396</a>,
 	 * "Uniform Resource Identifiers (URI): Generic Syntax", using the URI escape character, {@value URIs#ESCAPE_CHAR}.
 	 * @param uri The data to URI-decode.
-	 * @return A string containing the encoded URI data.
+	 * @return A character sequence containing the encoded URI data.
 	 * @throws IllegalArgumentException if the given URI string contains a character greater than U+00FF.
 	 * @throws IllegalArgumentException if a given escape character is not followed by a two-digit escape sequence.
 	 * @see URIs#ESCAPE_CHAR
 	 */
-	public static String decode(final String uri) {
+	public static String decode(final CharSequence uri) {
 		return decode(uri, ESCAPE_CHAR); //decode the string using the standard URI escape character
 	}
 
@@ -2116,12 +2116,12 @@ public class URIs {
 	 * 2396</a>, "Uniform Resource Identifiers (URI): Generic Syntax".
 	 * @param uri The data to URI-decode.
 	 * @param escapeChar The escape character.
-	 * @return A string containing the encoded URI data.
+	 * @return A character sequence containing the encoded URI data.
 	 * @throws IllegalArgumentException if the given URI string contains a character greater than U+00FF.
 	 * @throws IllegalArgumentException if a given escape character is not followed by a two-digit escape sequence.
 	 */
-	public static String decode(final String uri, final char escapeChar) {
-		return unescapeHex(uri, escapeChar, 2); //unescape the string using two escape hex digits
+	public static String decode(final CharSequence uri, final char escapeChar) {
+		return unescapeHex(uri, escapeChar, 2).toString(); //unescape the string using two escape hex digits
 	}
 
 	/**
@@ -2376,7 +2376,7 @@ public class URIs {
 		}
 		stringBuilder.setCharAt(replaceIndex, SCHEME_SEPARATOR); //put ':' back where it belongs
 		replace(stringBuilder, PLAIN_ENCODING_REPLACE_CHAR, PATH_SEPARATOR); //the rest of the replacement characters represent path separators
-		final String decodedString = unescapeHex(stringBuilder, PLAIN_ENCODING_ESCAPE_CHAR, 2); //unescape the string using two escape hex digits
+		final String decodedString = unescapeHex(stringBuilder, PLAIN_ENCODING_ESCAPE_CHAR, 2).toString(); //unescape the string using two escape hex digits
 		return URI.create(decodedString); //create and return a URI from the resulting string
 	}
 }
