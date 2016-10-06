@@ -150,7 +150,7 @@ public class StackProbeOperation extends AbstractReadWriteLockOperation {
 		}
 	}
 
-	/** Retrieves a list of collected class+method names and their associated counts, in the order of highest to lowest occurrence. */
+	/** @return A list of collected class+method names and their associated counts, in the order of highest to lowest occurrence. */
 	public synchronized List<NameValuePair<String, Count>> getSortedStackProbeCounts() {
 		final List<NameValuePair<String, Count>> stackProbeCounts;
 		readLock().lock();
@@ -165,6 +165,7 @@ public class StackProbeOperation extends AbstractReadWriteLockOperation {
 
 	/**
 	 * Prints the currently collected stack probe results, in the order of highest to lowest occurrence.
+	 * @param <A> The type of the appendable.
 	 * @param appendable The appendable to which the results should be printed.
 	 * @return The given appendable.
 	 * @throws NullPointerException if the given appendable is <code>null</code>.
