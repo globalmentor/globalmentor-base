@@ -56,7 +56,7 @@ public class Profiler {
 
 	/**
 	 * Sets the current stack probe operation. No stack probes must currently be started, although one may still be scheduled but canceled.
-	 * @param stackProbeOperation
+	 * @param stackProbeOperation The stack probe operation to be set.
 	 * @throws NullPointerException if the given stack probe operation is <code>null</code>.
 	 * @throws IllegalStateException if a stack probe operation is underway.
 	 */
