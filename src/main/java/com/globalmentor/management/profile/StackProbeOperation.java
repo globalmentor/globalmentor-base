@@ -18,11 +18,12 @@ package com.globalmentor.management.profile;
 
 import static com.globalmentor.java.Characters.*;
 import static com.globalmentor.java.Classes.*;
-import static com.globalmentor.java.Objects.*;
 import static com.globalmentor.java.Packages.*;
 import static com.globalmentor.model.Count.*;
 import static com.globalmentor.text.TextFormatter.*;
+
 import static java.util.Collections.*;
+import static java.util.Objects.*;
 
 import java.io.IOException;
 import java.lang.management.*;
@@ -71,7 +72,7 @@ public class StackProbeOperation extends AbstractReadWriteLockOperation {
 	 * @throws NullPointerException if the given package name is <code>null</code>.
 	 */
 	public void addIgnoreParentPackage(final String packageName) {
-		checkInstance(packageName);
+		requireNonNull(packageName);
 		writeLock().lock();
 		try {
 			ignoreParentPackageNames.add(packageName); //add the package name
