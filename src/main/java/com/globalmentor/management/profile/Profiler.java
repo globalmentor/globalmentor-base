@@ -17,13 +17,14 @@
 package com.globalmentor.management.profile;
 
 import static com.globalmentor.java.Conditions.*;
-import static com.globalmentor.java.Objects.*;
 
 //import java.io.IOException;
 
 //import com.globalmentor.log.Log;
 import com.globalmentor.model.*;
 import com.globalmentor.time.Duration;
+
+import static java.util.Objects.*;
 
 /**
  * Profiler class that allows various profiling operations such as brute-force probing executing threads at a given interval.
@@ -62,7 +63,7 @@ public class Profiler {
 	 */
 	public static synchronized void setStackProbeOperation(final StackProbeOperation stackProbeOperation) {
 		checkState(stackProbeCount == 0, "Stack probe operation cannot be changed once started.");
-		Profiler.stackProbeOperation = checkInstance(stackProbeOperation);
+		Profiler.stackProbeOperation = requireNonNull(stackProbeOperation);
 	}
 
 	/** The number of stack probe starts that have been requested, to ensure that stops are correctly paired. */
