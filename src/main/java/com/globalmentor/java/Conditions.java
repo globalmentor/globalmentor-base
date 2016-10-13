@@ -394,13 +394,21 @@ public class Conditions {
 	/**
 	 * Checks to make sure a given state is <code>true</code>.
 	 * @param state The state to check.
-	 * @param description A description of the state to be used when generating an exception, or <code>null</code> for no description.
+	 * @param description A description of the state to be used when generating an exception, or <code>null</code> for no description. The message is formed by
+	 *          replacing each %s placeholder in the template with an argument. These are matched by position - the first %s gets errorMessageArgs[0], etc.
+	 * @param errorMessageArgs The arguments to be substituted into the message template.
 	 * @throws IllegalStateException if the given state is <code>false</code>.
 	 */
-	public static void checkState(final boolean state, final String description) {
+	public static void checkState(final boolean state, String description, final Object... errorMessageArgs) {
+
 		if(!state) {
+			if(description != null && description.length() > 0) {
+				description = String.format(description, errorMessageArgs);
+			}
+
 			throw new IllegalStateException(description);
 		}
+
 	}
 
 	/**
