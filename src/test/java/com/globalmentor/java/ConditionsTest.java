@@ -183,51 +183,49 @@ public class ConditionsTest {
 		checkArgumentPositive(-10L);
 	}
 
-	@Ignore
-	//TODO The version of checkArgumentRange that verifies if an interval of integer is inside another isn't working correctly
-	/**
-	 * Tests the {@link Conditions#checkArgumentRange(int, int, int)}, {@link Conditions#checkArgumentRange(long, long, long)} and
-	 * {@link Conditions#checkArgumentRange(int, int, int, int)} methods.
-	 */
+	/** Tests the method {@link Conditions#checkArgumentRange(int, int, int)}. */
 	@Test
-	public void testCheckArgumentRange() {
+	public void testCheckArgumentRangeWithThreeIntegers() {
 
-		{ //tests for Conditions#checkArgumentRange(int, int, int)
+		//test for the edges
+		checkArgumentRange(0, 0, 10);
+		checkArgumentRange(10, 0, 10);
 
-			//test for the edges
-			checkArgumentRange(0, 0, 10);
-			checkArgumentRange(10, 0, 10);
+		//test for the signals
+		checkArgumentRange(5, 0, 10); //test for the middle
+		checkArgumentRange(-5, -10, 0);
+		checkArgumentRange(0, -5, 5);
 
-			//test for the signals
-			checkArgumentRange(5, 0, 10); //test for the middle
-			checkArgumentRange(-5, -10, 0);
-			checkArgumentRange(0, -5, 5);
-		}
+	}
 
-		{ //tests for Conditions#checkArgumentRange(long, long, long)
+	/** Tests the method {@link Conditions#checkArgumentRange(long, long, long)}. */
+	@Test
+	public void testCheckArgumentRangeWithThreeLongs() {
 
-			//test for the edges
-			checkArgumentRange(0L, 0L, 10L);
-			checkArgumentRange(10L, 0L, 10L);
+		//test for the edges
+		checkArgumentRange(0L, 0L, 10L);
+		checkArgumentRange(10L, 0L, 10L);
 
-			//test for the signals
-			checkArgumentRange(5L, 0L, 10L); //test for the middle
-			checkArgumentRange(-5L, -10L, 0L);
-			checkArgumentRange(0L, -5L, 5L);
-		}
+		//test for the signals
+		checkArgumentRange(5L, 0L, 10L); //test for the middle
+		checkArgumentRange(-5L, -10L, 0L);
+		checkArgumentRange(0L, -5L, 5L);
 
-		{ //tests for Conditions#checkArgumentRange(int, int, int, int)
+	}
 
-			//test for the edges
-			checkArgumentRange(0, 5, 0, 10);
-			checkArgumentRange(5, 10, 0, 10);
-			checkArgumentRange(0, 10, 0, 10);
+	/** Tests the method {@link Conditions#checkArgumentRange(int, int, int, int)}. */
+	@Test
+	public void testCheckArgumentRangeWithFourIntegers() {
 
-			//test for the signals
-			checkArgumentRange(1, 9, 0, 10); //test for the middle
-			checkArgumentRange(-9, -1, -10, 0);
-			checkArgumentRange(-4, 4, -5, 5);
-		}
+		//test for the edges
+		checkArgumentRange(0, 5, 0, 10);
+		checkArgumentRange(5, 10, 0, 10);
+		checkArgumentRange(0, 10, 0, 10);
+
+		//test for the signals
+		checkArgumentRange(1, 9, 0, 10); //test for the middle
+		checkArgumentRange(-9, -1, -10, 0);
+		checkArgumentRange(-4, 4, -5, 5);
 
 	}
 
@@ -261,8 +259,6 @@ public class ConditionsTest {
 		checkArgumentRange(-10, -1, 0, 10);
 	}
 
-	@Ignore
-	//TODO The version of checkArgumentRange that verifies if an interval of integer is inside another isn't working correctly
 	/** Tests the {@link Conditions#checkArgumentRange(int, int, int, int)} method with a false statement. */
 	@Test(expected = IllegalArgumentException.class)
 	public void testCheckArgumentRangeWithAMorePositiveInterval() {
@@ -284,16 +280,12 @@ public class ConditionsTest {
 		checkConfiguration(true, "error message {0}", 123);
 	}
 
-	@Ignore
-	//TODO The version of the method without a description referrs to checkArgument instead of checkConfiguration
 	/** Tests the {@link Conditions#checkConfiguration(boolean)} method with a false statement. */
 	@Test(expected = ConfigurationException.class)
 	public void testCheckConfigurationWithAFalseStatement() {
 		checkConfiguration(false);
 	}
 
-	@Ignore
-	//TODO The version of the method without a description referrs to checkArgument instead of checkConfiguration
 	/**
 	 * Tests the {@link Conditions#checkConfiguration(boolean)} and {@link Conditions#checkConfiguration(boolean, String, Object...)} methods with a false
 	 * statement and how the messages are being formatted.
@@ -360,44 +352,42 @@ public class ConditionsTest {
 
 	}
 
-	/**
-	 * Tests the {@link Conditions#checkIndexBounds(int, int)}, {@link Conditions#checkIndexBounds(long, long)},
-	 * {@link Conditions#checkIndexBounds(int, int, int)} and {@link Conditions#checkIndexBounds(long, long, long)} methods.
-	 */
+	/** Tests the {@link Conditions#checkIndexBounds(int, int)} and {@link Conditions#checkIndexBounds(int, int, int)} methods. */
 	@Test
-	public void testCheckIndexBounds() {
+	public void testCheckIndexBoundsWithIntegers() {
 
-		{ //test for the Conditions#checkIndexBounds(int, int) and checkIndexBounds(int, int, int)
+		//test for the edges
+		checkIndexBounds(0, 10);
+		checkIndexBounds(9, 10);
+		checkIndexBounds(0, 0, 10);
+		checkIndexBounds(9, 0, 10);
 
-			//test for the edges
-			checkIndexBounds(0, 10);
-			checkIndexBounds(9, 10);
-			checkIndexBounds(0, 0, 10);
-			checkIndexBounds(9, 0, 10);
+		checkIndexBounds(4, 10); //test for the middle
 
-			checkIndexBounds(4, 10); //test for the middle
+		//test for the signals
+		checkIndexBounds(5, 0, 10);
+		checkIndexBounds(-5, -10, 0);
+		checkIndexBounds(0, -5, 5);
 
-			//test for the signals
-			checkIndexBounds(5, 0, 10);
-			checkIndexBounds(-5, -10, 0);
-			checkIndexBounds(0, -5, 5);
-		}
+	}
 
-		{ //test for the Conditions#checkIndexBounds(long, long) and checkIndexBounds(long, long, long)
+	/** Tests the {@link Conditions#checkIndexBounds(long, long)} and {@link Conditions#checkIndexBounds(long, long, long)} methods. */
+	@Test
+	public void testCheckIndexBoundsWithLongs() {
 
-			//test for the edges
-			checkIndexBounds(0L, 10L);
-			checkIndexBounds(9L, 10L);
-			checkIndexBounds(0L, 0L, 10L);
-			checkIndexBounds(9L, 0L, 10L);
+		//test for the edges
+		checkIndexBounds(0L, 10L);
+		checkIndexBounds(9L, 10L);
+		checkIndexBounds(0L, 0L, 10L);
+		checkIndexBounds(9L, 0L, 10L);
 
-			checkIndexBounds(4L, 10L); //test for the middle
+		checkIndexBounds(4L, 10L); //test for the middle
 
-			//test for the signals
-			checkIndexBounds(5L, 0L, 10L);
-			checkIndexBounds(-5L, -10L, 0L);
-			checkIndexBounds(0L, -5L, 5L);
-		}
+		//test for the signals
+		checkIndexBounds(5L, 0L, 10L);
+		checkIndexBounds(-5L, -10L, 0L);
+		checkIndexBounds(0L, -5L, 5L);
+
 	}
 
 	/** Tests the {@link Conditions#checkIndexBounds(int, int)} method with a false statement. */
@@ -572,7 +562,7 @@ public class ConditionsTest {
 		assertThat(impossible(throwableCause).getCause(), equalTo(throwableCause));
 
 	}
-	
+
 	/**
 	 * Tests the {@link Conditions#impossible(String, Throwable)} method.
 	 */
@@ -586,5 +576,5 @@ public class ConditionsTest {
 		assertThat(impossible("test message", throwableCause).getCause(), equalTo(throwableCause));
 
 	}
-	
+
 }
