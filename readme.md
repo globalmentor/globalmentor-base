@@ -7,6 +7,8 @@ Issues tracked by [JIRA](https://globalmentor.atlassian.net/browse/JAVA).
 ## Changelog
 
 - 0.5.3:
+	* [JAVA-12](https://globalmentor.atlassian.net/browse/JAVA-12): Fixed errors found on creation of unit tests for `com.globalmentor.java.Conditions` in [JAVA-11](https://globalmentor.atlassian.net/browse/JAVA-11).
+	* [JAVA-11](https://globalmentor.atlassian.net/browse/JAVA-11): Added unit tests for all the methods from `com.globalmentor.java.Conditions`.
 	* [JAVA-4](https://globalmentor.atlassian.net/browse/JAVA-4): Added arguments to `com.globalmentor.java.Conditions.checkState()` and its unit tests.
 - 0.5.2:
 	* Added utilities class for `Optional<T>`.

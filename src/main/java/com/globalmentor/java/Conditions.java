@@ -238,7 +238,7 @@ public class Conditions {
 		if(from < rangeMin) { //if the from value is below the range
 			throw new IllegalArgumentException("Range from value " + from + " is not within the range " + rangeMin + " to " + rangeMax);
 		}
-		if(to < rangeMax) { //if the to value is above the range
+		if(to > rangeMax) { //if the to value is above the range
 			throw new IllegalArgumentException("Range to value " + to + " is not within the range " + rangeMin + " to " + rangeMax);
 		}
 	}
@@ -267,7 +267,7 @@ public class Conditions {
 	 * @throws ConfigurationException if the given value is <code>false</code>.
 	 */
 	public static void checkConfiguration(final boolean test) {
-		checkArgument(test, null); //check the test with no description
+		checkConfiguration(test, null); //check the test with no description
 	}
 
 	/**
