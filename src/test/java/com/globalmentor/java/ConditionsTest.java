@@ -57,24 +57,28 @@ public class ConditionsTest {
 
 		try {
 			checkArgument(false);
+			fail("The statement above should have thrown an IllegalArgumentExcepton");
 		} catch(final IllegalArgumentException illegalArgumentException) {
 			assertThat(illegalArgumentException.getMessage(), equalTo(null));
 		}
 
 		try {
 			checkArgument(false, "error message");
+			fail("The statement above should have thrown an IllegalArgumentExcepton");
 		} catch(final IllegalArgumentException illegalArgumentException) {
 			assertThat(illegalArgumentException.getMessage(), equalTo("error message"));
 		}
 
 		try {
 			checkArgument(false, "error message {0}", 123);
+			fail("The statement above should have thrown an IllegalArgumentExcepton");
 		} catch(final IllegalArgumentException illegalArgumentException) {
 			assertThat(illegalArgumentException.getMessage(), equalTo("error message 123"));
 		}
 
 		try {
 			checkArgument(false, "error message", 123); // The arguments of the error message should be ignored.
+			fail("The statement above should have thrown an IllegalArgumentExcepton");
 		} catch(final IllegalArgumentException illegalArgumentException) {
 			assertThat(illegalArgumentException.getMessage(), equalTo("error message"));
 		}
@@ -104,24 +108,28 @@ public class ConditionsTest {
 
 		try {
 			checkArgumentNotNull(null);
+			fail("The statement above should have thrown an IllegalArgumentExcepton");
 		} catch(final IllegalArgumentException illegalArgumentException) {
 			assertThat(illegalArgumentException.getMessage(), equalTo(null));
 		}
 
 		try {
 			checkArgumentNotNull(null, "error message");
+			fail("The statement above should have thrown an IllegalArgumentExcepton");
 		} catch(final IllegalArgumentException illegalArgumentException) {
 			assertThat(illegalArgumentException.getMessage(), equalTo("error message"));
 		}
 
 		try {
 			checkArgumentNotNull(null, "error message {0}", 123);
+			fail("The statement above should have thrown an IllegalArgumentExcepton");
 		} catch(final IllegalArgumentException illegalArgumentException) {
 			assertThat(illegalArgumentException.getMessage(), equalTo("error message 123"));
 		}
 
 		try {
 			checkArgumentNotNull(null, "error message", 123); // The arguments of the error message should be ignored.
+			fail("The statement above should have thrown an IllegalArgumentExcepton");
 		} catch(final IllegalArgumentException illegalArgumentException) {
 			assertThat(illegalArgumentException.getMessage(), equalTo("error message"));
 		}
@@ -295,24 +303,28 @@ public class ConditionsTest {
 
 		try {
 			checkConfiguration(false);
+			fail("The statement above should have thrown an ConfigurationException");
 		} catch(final ConfigurationException configurationException) {
 			assertThat(configurationException.getMessage(), equalTo(null));
 		}
 
 		try {
 			checkConfiguration(false, "error message");
+			fail("The statement above should have thrown an ConfigurationException");
 		} catch(final ConfigurationException configurationException) {
 			assertThat(configurationException.getMessage(), equalTo("error message"));
 		}
 
 		try {
 			checkConfiguration(false, "error message {0}", 123);
+			fail("The statement above should have thrown an ConfigurationException");
 		} catch(final ConfigurationException configurationException) {
 			assertThat(configurationException.getMessage(), equalTo("error message 123"));
 		}
 
 		try {
 			checkConfiguration(false, "error message", 123); // The arguments of the error message should be ignored.
+			fail("The statement above should have thrown an ConfigurationException");
 		} catch(final ConfigurationException configurationException) {
 			assertThat(configurationException.getMessage(), equalTo("error message"));
 		}
@@ -340,12 +352,14 @@ public class ConditionsTest {
 
 		try {
 			checkConfigurationNotNull(null);
+			fail("The statement above should have thrown an ConfigurationException");
 		} catch(final ConfigurationException illegalArgumentException) {
 			assertThat(illegalArgumentException.getMessage(), equalTo(null));
 		}
 
 		try {
 			checkConfigurationNotNull(null, "error message");
+			fail("The statement above should have thrown an ConfigurationException");
 		} catch(final ConfigurationException illegalArgumentException) {
 			assertThat(illegalArgumentException.getMessage(), equalTo("error message"));
 		}
@@ -462,24 +476,28 @@ public class ConditionsTest {
 
 		try {
 			checkState(false);
+			fail("The statement above should have thrown an IllegalStateException");
 		} catch(final IllegalStateException illegalStateException) {
 			assertThat(illegalStateException.getMessage(), equalTo(null));
 		}
 
 		try {
 			checkState(false, "error message");
+			fail("The statement above should have thrown an IllegalStateException");
 		} catch(final IllegalStateException illegalStateException) {
 			assertThat(illegalStateException.getMessage(), equalTo("error message"));
 		}
 
 		try {
 			checkState(false, "error message %d", 123);
+			fail("The statement above should have thrown an IllegalStateException");
 		} catch(final IllegalStateException illegalStateException) {
 			assertThat(illegalStateException.getMessage(), equalTo("error message 123"));
 		}
 
 		try {
 			checkState(false, "error message", 123); // The arguments of the error message should be ignored.
+			fail("The statement above should have thrown an IllegalStateException");
 		} catch(final IllegalStateException illegalStateException) {
 			assertThat(illegalStateException.getMessage(), equalTo("error message"));
 		}
