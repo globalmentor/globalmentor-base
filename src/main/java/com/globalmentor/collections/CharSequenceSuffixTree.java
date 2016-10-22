@@ -122,7 +122,7 @@ public class CharSequenceSuffixTree extends AbstractSuffixTree<CharSequenceSuffi
 	 */
 	@Override
 	protected void addEdge(final CharSequenceEdge edge) {
-		checkState(!edgeMap.containsKey(requireNonNull(edge)), "Duplicate edge: " + edge);
+		checkState(!edgeMap.containsKey(requireNonNull(edge)), "Duplicate edge: %s", edge);
 		edgeMap.put(edge, edge); //an edge is its own key
 	}
 
