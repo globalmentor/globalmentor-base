@@ -41,7 +41,7 @@ public class ISODates {
 		for(final Range<ISODate> range : ranges) { //fill the day counts from the ranges
 			final GregorianCalendar rangeCalendar = range.getLowerBound().toCalendar(); //start at the bottom of the range
 			final GregorianCalendar rangeUpperBound = range.getUpperBound().toCalendar();
-			checkArgument(rangeCalendar.compareTo(rangeUpperBound) <= 0, "Calendar range {0} cannot be greater than {1}.", rangeCalendar, rangeUpperBound);
+			checkArgument(rangeCalendar.compareTo(rangeUpperBound) <= 0, "Calendar range %s cannot be greater than %s.", rangeCalendar, rangeUpperBound);
 			while(rangeCalendar.compareTo(rangeUpperBound) <= 0) { //sweep the range until we go past the upper end of the range
 				incrementCounterMapCount(dayCounts, new ISODate(rangeCalendar));
 				rangeCalendar.add(DAY_OF_YEAR, 1); //go to the next day in the range

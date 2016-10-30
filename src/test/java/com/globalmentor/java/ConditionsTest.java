@@ -39,7 +39,7 @@ public class ConditionsTest {
 		checkArgument(true);
 		checkArgument(true, "error message");
 		checkArgument(true, "error message", 123);
-		checkArgument(true, "error message {0}", 123);
+		checkArgument(true, "error message %d", 123);
 	}
 
 	/** Tests the {@link Conditions#checkArgument(boolean)} method with a false statement. */
@@ -70,7 +70,7 @@ public class ConditionsTest {
 		}
 
 		try {
-			checkArgument(false, "error message {0}", 123);
+			checkArgument(false, "error message %d", 123);
 			fail("The statement above should have thrown an IllegalArgumentExcepton");
 		} catch(final IllegalArgumentException illegalArgumentException) {
 			assertThat(illegalArgumentException.getMessage(), equalTo("error message 123"));
@@ -90,7 +90,7 @@ public class ConditionsTest {
 		checkArgumentNotNull(new Object());
 		checkArgumentNotNull(new Object(), "error message");
 		checkArgumentNotNull(new Object(), "error message", 123);
-		checkArgumentNotNull(new Object(), "error message {0}", 123);
+		checkArgumentNotNull(new Object(), "error message %s", 123);
 	}
 
 	/** Tests the {@link Conditions#checkArgumentNotNull(boolean)} method with a false statement. */
@@ -121,7 +121,7 @@ public class ConditionsTest {
 		}
 
 		try {
-			checkArgumentNotNull(null, "error message {0}", 123);
+			checkArgumentNotNull(null, "error message %d", 123);
 			fail("The statement above should have thrown an IllegalArgumentExcepton");
 		} catch(final IllegalArgumentException illegalArgumentException) {
 			assertThat(illegalArgumentException.getMessage(), equalTo("error message 123"));
@@ -285,7 +285,7 @@ public class ConditionsTest {
 		checkConfiguration(true);
 		checkConfiguration(true, "error message");
 		checkConfiguration(true, "error message", 123);
-		checkConfiguration(true, "error message {0}", 123);
+		checkConfiguration(true, "error message %d", 123);
 	}
 
 	/** Tests the {@link Conditions#checkConfiguration(boolean)} method with a false statement. */
@@ -316,7 +316,7 @@ public class ConditionsTest {
 		}
 
 		try {
-			checkConfiguration(false, "error message {0}", 123);
+			checkConfiguration(false, "error message %d", 123);
 			fail("The statement above should have thrown an ConfigurationException");
 		} catch(final ConfigurationException configurationException) {
 			assertThat(configurationException.getMessage(), equalTo("error message 123"));

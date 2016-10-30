@@ -90,7 +90,7 @@ public class PrintDayTotals {
 		String line;
 		while((line = reader.readLine()) != null) {
 			final String[] lineComponents = line.split(",");
-			checkArgument(lineComponents.length == 2, "Expected two components on line {0}: {1}", reader.getLineNumber(), line);
+			checkArgument(lineComponents.length == 2, "Expected two components on line %d: %s", reader.getLineNumber(), line);
 			ranges.add(new Range<ISODate>(ISODate.valueOf(lineComponents[0]), ISODate.valueOf(lineComponents[1]))); //parse and store the range
 		}
 		//count the days
