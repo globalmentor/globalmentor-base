@@ -382,9 +382,9 @@ public class Files {
 			baseName = TEMP_PREFIX; //use a generic temp prefix
 		} else { //if the file is a directory+file 
 			directory = file.getParentFile(); //put the temp file in the same directory
-			checkArgument(directory != null, "Non-directory file {0} has no parent directory.", file);
+			checkArgument(directory != null, "Non-directory file %s has no parent directory.", file);
 			baseName = file.getName();
-			checkArgument(baseName != null, "Non-directory file {0} has no filename.", file);
+			checkArgument(baseName != null, "Non-directory file %s has no filename.", file);
 		}
 		return createTempFile(baseName, directory);
 	}

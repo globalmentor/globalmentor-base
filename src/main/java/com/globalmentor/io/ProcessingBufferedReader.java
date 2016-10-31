@@ -244,8 +244,8 @@ public class ProcessingBufferedReader extends Reader {
 	 */
 	@Override
 	public void mark(final int readAheadLimit) throws IOException {
-		checkArgument(readAheadLimit <= getUndoBufferSize(), "Mark read-ahead limit of " + readAheadLimit + " not supported; maximum read-ahead limit is "
-				+ getUndoBufferSize() + ".");
+		checkArgument(readAheadLimit <= getUndoBufferSize(),
+				"Mark read-ahead limit of " + readAheadLimit + " not supported; maximum read-ahead limit is " + getUndoBufferSize() + ".");
 		this.markIndex = getReadIndex(); //mark the current location
 		//		this.readAheadLimit=readAheadLimit;
 	}

@@ -17,7 +17,6 @@
 package com.globalmentor.java;
 
 import java.io.UnsupportedEncodingException;
-import java.text.MessageFormat;
 
 import com.globalmentor.model.ConfigurationException;
 
@@ -57,13 +56,13 @@ public class Conditions {
 	 * @throws IllegalArgumentException if the given value is <code>false</code>.
 	 * @throws IllegalArgumentException if the description is an invalid pattern, or if an argument in the arguments array is not of the type expected by the
 	 *           format element(s) that use it.
-	 * @see MessageFormat#format(String, Object...)
+	 * @see String#format(String, Object...)
 	 */
 	public static void checkArgument(final boolean test, String description, final Object... arguments) {
 		if(!test) {
 			//format the message if appropriate
 			if(description != null && arguments.length > 0) {
-				description = MessageFormat.format(description, arguments);
+				description = String.format(description, arguments);
 			}
 			throw new IllegalArgumentException(description);
 		}
@@ -98,13 +97,13 @@ public class Conditions {
 	 * @throws NullPointerException if the given arguments is <code>null</code>.
 	 * @throws IllegalArgumentException if the description is an invalid pattern, or if an argument in the arguments array is not of the type expected by the
 	 *           format element(s) that use it.
-	 * @see MessageFormat#format(String, Object...)
+	 * @see String#format(String, Object...)
 	 */
 	public static <T> T checkArgumentNotNull(final T object, String description, final Object... arguments) {
 		if(object == null) {
 			//format the message if appropriate
 			if(description != null && arguments.length > 0) {
-				description = MessageFormat.format(description, arguments);
+				description = String.format(description, arguments);
 			}
 			throw new IllegalArgumentException(description);
 		}
@@ -123,7 +122,7 @@ public class Conditions {
 	 */
 	public static int checkArgumentMinimum(final int value, final int rangeMin) {
 		if(value < rangeMin) { //if the value not within the range
-			throw new IllegalArgumentException("Value " + value + " cannot be less than " + rangeMin);
+			throw new IllegalArgumentException(String.format("Value %d cannot be less than %d", value, rangeMin));
 		}
 		return value; //return the value, which has been determined to be within the range
 	}
@@ -140,7 +139,7 @@ public class Conditions {
 	 */
 	public static long checkArgumentMinimum(final long value, final long rangeMin) {
 		if(value < rangeMin) { //if the value not within the range
-			throw new IllegalArgumentException("Value " + value + " cannot be less than " + rangeMin);
+			throw new IllegalArgumentException(String.format("Value %d cannot be less than %d", value, rangeMin));
 		}
 		return value; //return the value, which has been determined to be within the range
 	}
@@ -214,7 +213,7 @@ public class Conditions {
 	 */
 	public static int checkArgumentRange(final int value, final int rangeMin, final int rangeMax) {
 		if(value < rangeMin || value > rangeMax) { //if the value not within the range
-			throw new IllegalArgumentException("Value " + value + " is not within the range " + rangeMin + " to " + rangeMax);
+			throw new IllegalArgumentException(String.format("Value %d is not within the range %d to %d", value, rangeMin, rangeMax));
 		}
 		return value; //return the value, which has been determined to be within the range
 	}
@@ -233,13 +232,13 @@ public class Conditions {
 	 */
 	public static void checkArgumentRange(final int from, final int to, final int rangeMin, final int rangeMax) {
 		if(to < from) {
-			throw new IllegalArgumentException("Range from value " + from + " cannot be less than range to value " + to);
+			throw new IllegalArgumentException(String.format("Range from value %d cannot be less than range to value %d", from, to));
 		}
 		if(from < rangeMin) { //if the from value is below the range
-			throw new IllegalArgumentException("Range from value " + from + " is not within the range " + rangeMin + " to " + rangeMax);
+			throw new IllegalArgumentException(String.format("Range from value %d is not within the range %d to %d", from, rangeMin, rangeMax));
 		}
 		if(to > rangeMax) { //if the to value is above the range
-			throw new IllegalArgumentException("Range to value " + to + " is not within the range " + rangeMin + " to " + rangeMax);
+			throw new IllegalArgumentException(String.format("Range to value %d is not within the range %d to %d", to, rangeMin, rangeMax));
 		}
 	}
 
@@ -256,7 +255,7 @@ public class Conditions {
 	 */
 	public static long checkArgumentRange(final long value, final long rangeMin, final long rangeMax) {
 		if(value < rangeMin || value > rangeMax) { //if the value not within the range
-			throw new IllegalArgumentException("Value " + value + " is not within the range " + rangeMin + " to " + rangeMax);
+			throw new IllegalArgumentException(String.format("Value %d is not within the range %d to %d", value, rangeMin, rangeMax));
 		}
 		return value; //return the value, which has been determined to be within the range
 	}
@@ -280,13 +279,13 @@ public class Conditions {
 	 * @throws ConfigurationException if the given value is <code>false</code>.
 	 * @throws IllegalArgumentException if the description is an invalid pattern, or if an argument in the arguments array is not of the type expected by the
 	 *           format element(s) that use it.
-	 * @see MessageFormat#format(String, Object...)
+	 * @see String#format(String, Object...)
 	 */
 	public static void checkConfiguration(final boolean test, String description, final Object... arguments) {
 		if(!test) {
 			//format the message if appropriate
 			if(description != null && arguments.length > 0) {
-				description = MessageFormat.format(description, arguments);
+				description = String.format(description, arguments);
 			}
 			throw new ConfigurationException(description);
 		}
