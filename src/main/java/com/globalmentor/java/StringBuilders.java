@@ -20,6 +20,9 @@ import static com.globalmentor.java.CharSequences.*;
 import static com.globalmentor.java.Characters.*;
 import static java.nio.charset.StandardCharsets.*;
 
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+
 import com.globalmentor.text.Case;
 
 /**
@@ -202,7 +205,8 @@ public class StringBuilders {
 	 * @param length The length of the run of characters to check.
 	 * @return The new length of the run with collapsed characters.
 	 */
-	public static int collapse(final StringBuilder stringBuilder, final Characters collapseChars, final String replaceString, final int offset, final int length) {
+	public static int collapse(final StringBuilder stringBuilder, final Characters collapseChars, final String replaceString, final int offset,
+			final int length) {
 		final int replaceLength = replaceString.length(); //find the length of the replacement string
 		int nextIndex = offset; //start at the requested offset
 		int newLength = length; //find out the resulting length; this will change as we collapse characters
@@ -298,6 +302,9 @@ public class StringBuilders {
 	 * otherwise. The escape character, if encountered, is not escaped unless it specifically meets one of the specified criteria; this allows re-escaping strings
 	 * that may contain escape characters produced under less-strict rules (e.g. a URI containing escaped restricted characters, but still containing non-ASCII
 	 * characters).
+	 * <p>
+	 * If the char indicated at the given index is a half of a surrogate pair, then this implementation will escape both chars together.
+	 * </p>
 	 * @param stringBuilder The data to escape.
 	 * @param start The starting index to escape, inclusive.
 	 * @param end The ending index to escape, exclusive.
@@ -311,11 +318,26 @@ public class StringBuilders {
 	 * @param hexCase Whether the hex characters should be lowercase or uppercase.
 	 * @return The string builder, now containing the escaped data.
 	 * @throws IllegalArgumentException if neither valid nor invalid characters are given.
+	 * @throws IllegalStateException if the given char is a high or low surrogate that does not have its pair completed (i.e. high surrogate + low surrogate).
 	 */
 	public static StringBuilder escapeHex(final StringBuilder stringBuilder, final int start, final int end, final Characters validCharacters,
 			final Characters invalidCharacters, final int maxCharacter, final char escapeChar, final int escapeLength, final Case hexCase) {
-		for(int characterIndex = end - 1; characterIndex >= start; --characterIndex) { //work backwards; this keeps us from having a separate variable for the length, but it also makes it simpler to calculate the next position when we swap out characters
-			final char c = stringBuilder.charAt(characterIndex); //get the current character
+		for(int characterIndex = end - 1; characterIndex >= start; characterIndex--) { //work backwards; this keeps us from having a separate variable for the length, but it also makes it simpler to calculate the next position when we swap out characters
+
+			char c = stringBuilder.charAt(characterIndex); //get the current character
+
+			if(Character.isHighSurrogate(c)) {
+				throw new IllegalStateException("A surrogate pair needs its both low and high surrogate to be escaped");
+			}
+
+			if(Character.isLowSurrogate(c)) {
+				if(characterIndex != 0 && Character.isHighSurrogate(stringBuilder.charAt(characterIndex - 1))) {
+					c = stringBuilder.charAt(--characterIndex); //get the current character and if the actual char is a low surrogate, then we change the index to the left to encode the high surrogate, which will handle this low surrogate aswell
+				} else {
+					throw new IllegalStateException("A surrogate pair needs its both low and high surrogate to be escaped");
+				}
+			}
+
 			final boolean encode = (validCharacters != null && !validCharacters.contains(c)) //encode if there is a list of valid characters and this character is not one of them
 					|| (invalidCharacters != null && invalidCharacters.contains(c)) //encode if there is a list of invalid characters and this character is one of them
 					|| (c > maxCharacter); //encode the character if it is past the given upper bound
@@ -323,6 +345,7 @@ public class StringBuilders {
 				escapeHex(stringBuilder, characterIndex, c, escapeChar, escapeLength, hexCase); //escape this character in the sequence
 			}
 		}
+
 		return stringBuilder; //return the encoded version of the string
 	}
 
@@ -358,6 +381,9 @@ public class StringBuilders {
 	/**
 	 * Escapes the indicated character in the string builder using the supplied escape character. All characters are first encoded using UTF-8. The character is
 	 * converted to its Unicode hex equivalent and prefixed with the given escape character.
+	 * <p>
+	 * If the char indicated at the given index is a half of a surrogate pair, then this implementation will escape both chars together.
+	 * </p>
 	 * @param stringBuilder The string builder containing data to escape.
 	 * @param index The index of the character to replace.
 	 * @param c The character to be escaped.
@@ -366,18 +392,44 @@ public class StringBuilders {
 	 * @param hexCase Whether the hex characters should be lowercase or uppercase.
 	 * @return A string representing the escaped data that was used as a replacement for the character.
 	 * @throws StringIndexOutOfBoundsException if the given index does not represent a valid location in the string builder.
+	 * @throws IllegalStateException if the given char is a high or low surrogate that does not have its pair completed (i.e. high surrogate + low surrogate).
 	 */
 	public static String escapeHex(final StringBuilder stringBuilder, final int index, final char c, final char escapeChar, final int escapeLength,
 			final Case hexCase) {
-		final byte[] bytes = String.valueOf(c).getBytes(UTF_8); //convert this character to a sequence of UTF-8 bytes
+
+		char[] charArray = null;
+		int endIndex = index + 1;
+
+		if(Character.isHighSurrogate(c) && index + 1 < stringBuilder.length()) { //see if the current character is a high surrogate and it's not the end of the string
+			final char c2 = stringBuilder.charAt(index + 1); //gets the next character
+
+			if(Character.isLowSurrogate(c2)) { //see if the next character is a low surrogate
+				charArray = new char[] {c, c2}; //convert this surrogate pair to a sequence of UTF-8 bytes
+				endIndex++; //if the char is a surrogate pair, then we must replace both chars from the string builder (high surrogate and low surrogate)
+			}
+
+		}
+
+		if(charArray == null) {
+			charArray = new char[] {c};
+		}
+
+		final ByteBuffer byteBuffer = UTF_8.encode(CharBuffer.wrap(charArray)); //convert this character to a sequence of UTF-8 bytes
+
+		final byte[] bytes = new byte[byteBuffer.limit()]; //sets the byte array size to the number of content in the byteBuffer
+		byteBuffer.get(bytes); //gets the content of the byteBuffer
+
 		final int byteCount = bytes.length; //find out how many bytes there are
 		final StringBuilder encodeStringBuilder = new StringBuilder(byteCount * 3); //create a string builder to hold three characters for each byte we have (the escape character plus a two-digit encoded value)
+
 		for(int byteIndex = 0; byteIndex < byteCount; ++byteIndex) { //look at each byte
 			encodeStringBuilder.append(escapeChar); //escape character
 			encodeStringBuilder.append(Integers.toHexString(bytes[byteIndex], escapeLength, hexCase)); //hh or HH
 		}
+
 		final String escapeString = encodeStringBuilder.toString(); //encode the characters
-		stringBuilder.replace(index, index + 1, escapeString); //replace the character with its encoding
+
+		stringBuilder.replace(index, endIndex, escapeString); //replace the character with its encoding
 		return escapeString; //return the escape string
 	}
 
@@ -410,7 +462,8 @@ public class StringBuilders {
 	 * @param character The character to be added to the character sequence, if needed.
 	 * @return A character sequence that is the requested number of characters longer.
 	 */
-	public static StringBuilder appendForceLength(final StringBuilder stringBuilder, final CharSequence charSequence, final int forceLength, final char character) {
+	public static StringBuilder appendForceLength(final StringBuilder stringBuilder, final CharSequence charSequence, final int forceLength,
+			final char character) {
 		return appendForceLength(stringBuilder, charSequence, forceLength, character, -1);
 	}
 
@@ -424,8 +477,8 @@ public class StringBuilders {
 	 * @param position The position at which to insert or delete characters, or -1 if the end should be used.
 	 * @return A character sequence that is the requested number of characters longer.
 	 */
-	public static StringBuilder appendForceLength(final StringBuilder stringBuilder, final CharSequence charSequence, final int forceLength,
-			final char character, int position) {
+	public static StringBuilder appendForceLength(final StringBuilder stringBuilder, final CharSequence charSequence, final int forceLength, final char character,
+			int position) {
 		final int originalLength = charSequence.length(); //get the length of the original string
 		if(originalLength == forceLength) { //if the string is already the correct length
 			stringBuilder.append(charSequence); //append it as it is
