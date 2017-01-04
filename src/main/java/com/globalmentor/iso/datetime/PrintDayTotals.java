@@ -20,6 +20,7 @@ import static com.globalmentor.iso.datetime.ISODates.*;
 import static com.globalmentor.java.Conditions.*;
 
 import java.io.*;
+import java.time.LocalDate;
 import java.util.*;
 
 import com.globalmentor.io.BOMInputStreamReader;
@@ -68,7 +69,7 @@ public class PrintDayTotals {
 		checkArgument(args.length >= 2 && args.length <= 4,
 				"Must have at least a date and number of days with an optional window size and history count: PrintDayTotals date windowSize [maxDays [historyCount]].");
 		//parse the parameters
-		final ISODate date = ISODate.valueOf(args[0]);
+		final LocalDate date = LocalDate.parse(args[0]);
 		final int windowSize = Integer.parseInt(args[1]);
 		final long maxDays;
 		if(args.length >= 3) {
@@ -83,7 +84,7 @@ public class PrintDayTotals {
 			historyCount = windowSize;
 		}
 		//parse the ranges form System.in
-		final Set<Range<ISODate>> ranges = new HashSet<Range<ISODate>>();
+		final Set<Range<LocalDate>> ranges = new HashSet<Range<LocalDate>>();
 		@SuppressWarnings("resource")
 		//we shouldn't close the input stream
 		final LineNumberReader reader = new LineNumberReader(new BOMInputStreamReader(System.in));
@@ -91,16 +92,16 @@ public class PrintDayTotals {
 		while((line = reader.readLine()) != null) {
 			final String[] lineComponents = line.split(",");
 			checkArgument(lineComponents.length == 2, "Expected two components on line %d: %s", reader.getLineNumber(), line);
-			ranges.add(new Range<ISODate>(ISODate.valueOf(lineComponents[0]), ISODate.valueOf(lineComponents[1]))); //parse and store the range
+			ranges.add(new Range<LocalDate>(LocalDate.parse(lineComponents[0]), LocalDate.parse(lineComponents[1]))); //parse and store the range
 		}
 		//count the days
-		final Map<ISODate, Count> dayCounts = getDayCounts(ranges);
+		final Map<LocalDate, Count> dayCounts = getDayCounts(ranges);
 		//calculate the totals
-		final Map<ISODate, Long> dayTotals = getDayTotals(date, windowSize, historyCount, dayCounts);
+		final Map<LocalDate, Long> dayTotals = getDayTotals(date, windowSize, historyCount, dayCounts);
 		//print the results, calculating run totals on the fly
 		long runTotal = 0;
-		for(final Map.Entry<ISODate, Long> dayTotal : dayTotals.entrySet()) {
-			final ISODate day = dayTotal.getKey();
+		for(final Map.Entry<LocalDate, Long> dayTotal : dayTotals.entrySet()) {
+			final LocalDate day = dayTotal.getKey();
 			final Count count = dayCounts.get(day);
 			if(count != null && count.getCount() > 0) { //if we have a positive count
 				System.out.print('*'); //positive count indicator
