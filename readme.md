@@ -2,7 +2,7 @@
 
 ## Issues
 
-Issues tracked by [JIRA](https://globalmentor.atlassian.net/browse/JAVA).
+Issues tracked by [JIRA](https://globalmentor.atlassian.net/projects/JAVA).
 
 ## Changelog
 
