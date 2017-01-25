@@ -40,12 +40,12 @@ public class ISODates {
 	public static SortedMap<LocalDate, Count> getDayCounts(final Set<Range<LocalDate>> ranges) {
 		final SortedMap<LocalDate, Count> dayCounts = new TreeMap<LocalDate, Count>();
 		for(final Range<LocalDate> range : ranges) { //fill the day counts from the ranges
-			final LocalDate rangeUpperBound = range.getUpperBound();
-			LocalDate rangeCalendar = range.getLowerBound(); //start at the bottom of the range
-			checkArgument(rangeCalendar.compareTo(rangeUpperBound) <= 0, "Calendar range %s cannot be greater than %s.", rangeCalendar, rangeUpperBound);
-			while(rangeCalendar.compareTo(rangeUpperBound) <= 0) { //sweep the range until we go past the upper end of the range
-				incrementCounterMapCount(dayCounts, rangeCalendar);
-				rangeCalendar = rangeCalendar.plusDays(1); //go to the next day in the range
+			final LocalDate upperBoundDate = range.getUpperBound();
+			LocalDate rangeDate = range.getLowerBound(); //start at the bottom of the range
+			checkArgument(rangeDate.compareTo(upperBoundDate) <= 0, "Calendar range %s cannot be greater than %s.", rangeDate, upperBoundDate);
+			while(rangeDate.compareTo(upperBoundDate) <= 0) { //sweep the range until we go past the upper end of the range
+				incrementCounterMapCount(dayCounts, rangeDate);
+				rangeDate = rangeDate.plusDays(1); //go to the next day in the range
 			}
 		}
 		return dayCounts;
@@ -80,20 +80,20 @@ public class ISODates {
 	 */
 	public static SortedMap<LocalDate, Long> getDayTotals(final LocalDate date, final int windowSize, final int historyCount,
 			final Map<LocalDate, Count> dayCounts) {
-		LocalDate dayCalendar = date;
+		LocalDate day = date;
 		final SortedMap<LocalDate, Long> dayTotals = new TreeMap<LocalDate, Long>();
 		for(int i = 0; i < historyCount; ++i) { //calculate all the day totals in the past
-			LocalDate totalCalendar = LocalDate.of(dayCalendar.getYear(), dayCalendar.getMonthValue(), dayCalendar.getDayOfMonth()); //use a separate localdate to calculate the totals for this day
+			LocalDate totalDate = date; //use a separate local date to calculate the totals for this day
 			long total = 0; //calculate the total for this date
 			for(int j = 0; j < windowSize; ++j) { //look at previous days relative to the current calendar date
-				final Count currentDayCount = dayCounts.get(totalCalendar); //get the count for this day
+				final Count currentDayCount = dayCounts.get(totalDate); //get the count for this day
 				if(currentDayCount != null) {
 					total += currentDayCount.getCount();
 				}
-				totalCalendar = totalCalendar.minusDays(1); //go back a day and continue calculating the total
+				totalDate = totalDate.minusDays(1); //go back a day and continue calculating the total
 			}
-			dayTotals.put(dayCalendar, Long.valueOf(total)); //store the total for this day
-			dayCalendar = dayCalendar.minusDays(1); //go back a day and calculate that day's total
+			dayTotals.put(day, Long.valueOf(total)); //store the total for this day
+			day = day.minusDays(1); //go back a day and calculate that day's total
 		}
 		return dayTotals;
 	}
