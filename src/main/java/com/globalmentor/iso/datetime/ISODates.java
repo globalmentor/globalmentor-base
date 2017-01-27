@@ -83,7 +83,7 @@ public class ISODates {
 		LocalDate day = date;
 		final SortedMap<LocalDate, Long> dayTotals = new TreeMap<LocalDate, Long>();
 		for(int i = 0; i < historyCount; ++i) { //calculate all the day totals in the past
-			LocalDate totalDate = date; //use a separate local date to calculate the totals for this day
+			LocalDate totalDate = day; //use a separate local date to calculate the totals for this day
 			long total = 0; //calculate the total for this date
 			for(int j = 0; j < windowSize; ++j) { //look at previous days relative to the current calendar date
 				final Count currentDayCount = dayCounts.get(totalDate); //get the count for this day
