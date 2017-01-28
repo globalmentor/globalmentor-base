@@ -22,7 +22,8 @@ import com.globalmentor.model.*;
 
 import static com.globalmentor.java.Conditions.*;
 import static com.globalmentor.model.Count.*;
-import static java.util.Calendar.*;
+
+import java.time.LocalDate;
 
 /**
  * Utilities for working with ISO dates.
@@ -36,15 +37,15 @@ public class ISODates {
 	 * @return A map of all calendar days and the corresponding total number of intersections for each with the ranges.
 	 * @throws IllegalArgumentException if the lower bound of one of the ranges is above its upper bound.
 	 */
-	public static SortedMap<ISODate, Count> getDayCounts(final Set<Range<ISODate>> ranges) {
-		final SortedMap<ISODate, Count> dayCounts = new TreeMap<ISODate, Count>();
-		for(final Range<ISODate> range : ranges) { //fill the day counts from the ranges
-			final GregorianCalendar rangeCalendar = range.getLowerBound().toCalendar(); //start at the bottom of the range
-			final GregorianCalendar rangeUpperBound = range.getUpperBound().toCalendar();
-			checkArgument(rangeCalendar.compareTo(rangeUpperBound) <= 0, "Calendar range %s cannot be greater than %s.", rangeCalendar, rangeUpperBound);
-			while(rangeCalendar.compareTo(rangeUpperBound) <= 0) { //sweep the range until we go past the upper end of the range
-				incrementCounterMapCount(dayCounts, new ISODate(rangeCalendar));
-				rangeCalendar.add(DAY_OF_YEAR, 1); //go to the next day in the range
+	public static SortedMap<LocalDate, Count> getDayCounts(final Set<Range<LocalDate>> ranges) {
+		final SortedMap<LocalDate, Count> dayCounts = new TreeMap<LocalDate, Count>();
+		for(final Range<LocalDate> range : ranges) { //fill the day counts from the ranges
+			final LocalDate upperBoundDate = range.getUpperBound();
+			LocalDate rangeDate = range.getLowerBound(); //start at the bottom of the range
+			checkArgument(rangeDate.compareTo(upperBoundDate) <= 0, "Calendar range %s cannot be greater than %s.", rangeDate, upperBoundDate);
+			while(rangeDate.compareTo(upperBoundDate) <= 0) { //sweep the range until we go past the upper end of the range
+				incrementCounterMapCount(dayCounts, rangeDate);
+				rangeDate = rangeDate.plusDays(1); //go to the next day in the range
 			}
 		}
 		return dayCounts;
@@ -61,7 +62,7 @@ public class ISODates {
 	 * @param dayCounts A map of totals for individual dates.
 	 * @return A map of all calendar days and the total number of intersection with the ranges within that period.
 	 */
-	public static SortedMap<ISODate, Long> getDayTotals(final ISODate date, final int windowSize, final Map<ISODate, Count> dayCounts) {
+	public static SortedMap<LocalDate, Long> getDayTotals(final LocalDate date, final int windowSize, final Map<LocalDate, Count> dayCounts) {
 		return getDayTotals(date, windowSize, windowSize, dayCounts);
 	}
 
@@ -77,21 +78,22 @@ public class ISODates {
 	 * @param dayCounts A map of totals for individual dates.
 	 * @return A map of all calendar days and the total number of intersection with the ranges within the indicated history period.
 	 */
-	public static SortedMap<ISODate, Long> getDayTotals(final ISODate date, final int windowSize, final int historyCount, final Map<ISODate, Count> dayCounts) {
-		final GregorianCalendar dayCalendar = date.toCalendar();
-		final SortedMap<ISODate, Long> dayTotals = new TreeMap<ISODate, Long>();
+	public static SortedMap<LocalDate, Long> getDayTotals(final LocalDate date, final int windowSize, final int historyCount,
+			final Map<LocalDate, Count> dayCounts) {
+		LocalDate day = date;
+		final SortedMap<LocalDate, Long> dayTotals = new TreeMap<LocalDate, Long>();
 		for(int i = 0; i < historyCount; ++i) { //calculate all the day totals in the past
-			final GregorianCalendar totalCalendar = (GregorianCalendar)dayCalendar.clone(); //use a separate calendar to calculate the totals for this day
+			LocalDate totalDate = day; //use a separate local date to calculate the totals for this day
 			long total = 0; //calculate the total for this date
 			for(int j = 0; j < windowSize; ++j) { //look at previous days relative to the current calendar date
-				final Count currentDayCount = dayCounts.get(new ISODate(totalCalendar)); //get the count for this day
+				final Count currentDayCount = dayCounts.get(totalDate); //get the count for this day
 				if(currentDayCount != null) {
 					total += currentDayCount.getCount();
 				}
-				totalCalendar.add(DAY_OF_YEAR, -1); //go back a day and continue calculating the total
+				totalDate = totalDate.minusDays(1); //go back a day and continue calculating the total
 			}
-			dayTotals.put(new ISODate(dayCalendar), Long.valueOf(total)); //store the total for this day
-			dayCalendar.add(DAY_OF_YEAR, -1); //go back a day and calculate that day's total
+			dayTotals.put(day, Long.valueOf(total)); //store the total for this day
+			day = day.minusDays(1); //go back a day and calculate that day's total
 		}
 		return dayTotals;
 	}

@@ -20,6 +20,7 @@ import static com.globalmentor.collections.Sets.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
+import java.time.LocalDate;
 import java.util.*;
 
 import org.junit.Test;
@@ -40,49 +41,49 @@ public class ISODatesTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testGetDayCounts() {
-		Map<ISODate, Count> dayCounts;
+		Map<LocalDate, Count> dayCounts;
 		//no ranges
-		dayCounts = ISODates.getDayCounts(Collections.<Range<ISODate>> emptySet());
+		dayCounts = ISODates.getDayCounts(Collections.<Range<LocalDate>>emptySet());
 		assertTrue(dayCounts.isEmpty());
 		//a single day
-		dayCounts = ISODates.getDayCounts(immutableSetOf(new Range<ISODate>(new ISODate(2002, 03, 02), new ISODate(2002, 03, 02))));
-		assertFalse(dayCounts.containsKey(new ISODate(2002, 03, 01)));
-		assertThat(dayCounts.get(new ISODate(2002, 03, 02)).getCount(), is(1L));
-		assertFalse(dayCounts.containsKey(new ISODate(2002, 03, 03)));
+		dayCounts = ISODates.getDayCounts(immutableSetOf(new Range<LocalDate>(LocalDate.of(2002, 03, 02), LocalDate.of(2002, 03, 02))));
+		assertFalse(dayCounts.containsKey(LocalDate.of(2002, 03, 01)));
+		assertThat(dayCounts.get(LocalDate.of(2002, 03, 02)).getCount(), is(1L));
+		assertFalse(dayCounts.containsKey(LocalDate.of(2002, 03, 03)));
 		//a whole year, one range
-		dayCounts = ISODates.getDayCounts(immutableSetOf(new Range<ISODate>(new ISODate(2001, 03, 05), new ISODate(2002, 03, 04))));
-		assertThat(dayCounts.get(new ISODate(2001, 03, 05)).getCount(), is(1L));
-		assertThat(dayCounts.get(new ISODate(2001, 03, 12)).getCount(), is(1L));
-		assertThat(dayCounts.get(new ISODate(2002, 03, 04)).getCount(), is(1L));
+		dayCounts = ISODates.getDayCounts(immutableSetOf(new Range<LocalDate>(LocalDate.of(2001, 03, 05), LocalDate.of(2002, 03, 04))));
+		assertThat(dayCounts.get(LocalDate.of(2001, 03, 05)).getCount(), is(1L));
+		assertThat(dayCounts.get(LocalDate.of(2001, 03, 12)).getCount(), is(1L));
+		assertThat(dayCounts.get(LocalDate.of(2002, 03, 04)).getCount(), is(1L));
 	}
 
 	/** @see ISODates#getDayTotals(ISODate, int, Map) */
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testGetDayTotals() {
-		Map<ISODate, Count> dayCounts;
-		Map<ISODate, Long> dayTotals;
+		Map<LocalDate, Count> dayCounts;
+		Map<LocalDate, Long> dayTotals;
 		//no ranges
-		dayCounts = ISODates.getDayCounts(Collections.<Range<ISODate>> emptySet());
-		dayTotals = ISODates.getDayTotals(new ISODate(2002, 03, 04), 365, dayCounts);
+		dayCounts = ISODates.getDayCounts(Collections.<Range<LocalDate>>emptySet());
+		dayTotals = ISODates.getDayTotals(LocalDate.of(2002, 03, 04), 365, dayCounts);
 		assertThat(dayTotals.size(), is(365));
-		for(final Map.Entry<ISODate, Long> dayTotalEntry : dayTotals.entrySet()) {
+		for(final Map.Entry<LocalDate, Long> dayTotalEntry : dayTotals.entrySet()) {
 			assertThat(dayTotalEntry.getValue(), is(0L));
 		}
 		//a single day
-		dayCounts = ISODates.getDayCounts(immutableSetOf(new Range<ISODate>(new ISODate(2002, 03, 02), new ISODate(2002, 03, 02))));
-		dayTotals = ISODates.getDayTotals(new ISODate(2002, 03, 04), 365, dayCounts);
+		dayCounts = ISODates.getDayCounts(immutableSetOf(new Range<LocalDate>(LocalDate.of(2002, 03, 02), LocalDate.of(2002, 03, 02))));
+		dayTotals = ISODates.getDayTotals(LocalDate.of(2002, 03, 04), 365, dayCounts);
 		assertThat(dayTotals.size(), is(365));
-		assertThat(dayTotals.get(new ISODate(2002, 03, 01)), is(0L));
-		assertThat(dayTotals.get(new ISODate(2002, 03, 02)), is(1L));
-		assertThat(dayTotals.get(new ISODate(2002, 03, 03)), is(1L));
+		assertThat(dayTotals.get(LocalDate.of(2002, 03, 01)), is(0L));
+		assertThat(dayTotals.get(LocalDate.of(2002, 03, 02)), is(1L));
+		assertThat(dayTotals.get(LocalDate.of(2002, 03, 03)), is(1L));
 		//a whole year, one range
-		dayCounts = ISODates.getDayCounts(immutableSetOf(new Range<ISODate>(new ISODate(2001, 03, 05), new ISODate(2002, 03, 04))));
-		dayTotals = ISODates.getDayTotals(new ISODate(2002, 03, 04), 365, dayCounts);
+		dayCounts = ISODates.getDayCounts(immutableSetOf(new Range<LocalDate>(LocalDate.of(2001, 03, 05), LocalDate.of(2002, 03, 04))));
+		dayTotals = ISODates.getDayTotals(LocalDate.of(2002, 03, 04), 365, dayCounts);
 		assertThat(dayTotals.size(), is(365));
-		assertThat(dayTotals.get(new ISODate(2001, 03, 05)), is(1L));
-		assertThat(dayTotals.get(new ISODate(2001, 03, 12)), is(8L));
-		assertThat(dayTotals.get(new ISODate(2002, 03, 04)), is(365L));
+		assertThat(dayTotals.get(LocalDate.of(2001, 03, 05)), is(1L));
+		assertThat(dayTotals.get(LocalDate.of(2001, 03, 12)), is(8L));
+		assertThat(dayTotals.get(LocalDate.of(2002, 03, 04)), is(365L));
 	}
 
 }
