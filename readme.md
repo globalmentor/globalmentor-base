@@ -7,6 +7,7 @@ Issues tracked by [JIRA](https://globalmentor.atlassian.net/projects/JAVA).
 ## Changelog
 
 - 0.5.3:
+	* [JAVA-20](https://globalmentor.atlassian.net/browse/JAVA-20): Deleted classes that refer to the brand new `com.globalmentor:calendar-calculator` project.
 	* [JAVA-12](https://globalmentor.atlassian.net/browse/JAVA-12): Fixed errors found on creation of unit tests for `com.globalmentor.java.Conditions` in [JAVA-11](https://globalmentor.atlassian.net/browse/JAVA-11).
 	* [JAVA-11](https://globalmentor.atlassian.net/browse/JAVA-11): Added unit tests for all the methods from `com.globalmentor.java.Conditions`.
 	* [JAVA-10](https://globalmentor.atlassian.net/browse/JAVA-10): Added support to surrogate pairs on the method `com.globalmentor.java.StringBuilders.escapeHex(final StringBuilder stringBuilder, final int start, final int end, final Characters validCharacters, final Characters invalidCharacters, final int maxCharacter, final char escapeChar, final int escapeLength, final Case hexCase)`.
