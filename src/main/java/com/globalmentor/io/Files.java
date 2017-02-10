@@ -1528,6 +1528,7 @@ public class Files {
 	 * 
 	 * @return The path to the backup file used.
 	 * @throws IllegalArgumentException if <var><code>maxBackupCount</code></var> is zero or negative.
+	 * @throws IOException If an error occurs while rolling the backup files.
 	 * 
 	 * @see #backupFile(Path, long)
 	 */
@@ -1548,6 +1549,7 @@ public class Files {
 	 * 
 	 * @return The path to the backup file used.
 	 * @throws IllegalArgumentException if <var><code>maxBackupCount</code></var> is zero or negative.
+	 * @throws IOException If an error occurs while rolling the backup files.
 	 */
 	public static Path backupFile(@Nonnull final Path path, @Nonnegative final long maxBackupCount) throws IOException {
 		checkArgumentNotNull(path, "The path to the file cannot be null.");
@@ -1609,8 +1611,7 @@ public class Files {
 	 * Opens or creates a file after first creating a backup without a rolling policy of the file if it exists, returning an output stream that may be used to
 	 * write bytes to the file. The maximum number of backups used on this method will be 1.
 	 * 
-	 * @param The path of the file to back up.
-	 * @param maxBackupCount The maximum number of rolling backup files to use.
+	 * @param path The path of the file to back up.
 	 * @param options The options specifying how the file is opened.
 	 * 
 	 * @return The new {@link OutputStream} after the creation of a backup for the given file.
@@ -1627,7 +1628,7 @@ public class Files {
 	 * Opens or creates a file after first creating a backup of the file if it exists, returning an output stream that may be used to write bytes to the file. If
 	 * <var><code>maxBackupCount</code></var> is greater than zero, a backup will first be created using {@link #backupFile(Path, long)}.
 	 * 
-	 * @param The path of the file to back up.
+	 * @param path The path of the file to back up.
 	 * @param maxBackupCount The maximum number of rolling backup files to use.
 	 * @param options The options specifying how the file is opened.
 	 * 
