@@ -30,6 +30,7 @@ import com.globalmentor.event.ProgressListener;
 import com.globalmentor.java.*;
 import com.globalmentor.net.*;
 import com.globalmentor.text.*;
+import com.globalmentor.util.StringTemplate;
 
 import static com.globalmentor.io.InputStreams.*;
 import static com.globalmentor.java.CharSequences.*;
@@ -68,10 +69,12 @@ public class Files {
 
 	/** The extension for backup files. */
 	private static final String BACKUP_EXTENSION = "bak";
+
 	/** The template for backup files in a rolling policy. */
-	private static final String NUMBERED_BACKUP_EXTENSION_TEMPLATE = "%d" + FILENAME_EXTENSION_SEPARATOR + BACKUP_EXTENSION;
+	private static final StringTemplate NUMBERED_BACKUP_EXTENSION_TEMPLATE = new StringTemplate(StringTemplate.STRING_PARAMETER, FILENAME_EXTENSION_SEPARATOR,
+			BACKUP_EXTENSION);
 	/** The extension for the latest backup file in a rolling policy. */
-	private static final String LATEST_NUMBERED_BACKUP_EXTENSION = String.format(NUMBERED_BACKUP_EXTENSION_TEMPLATE, 1);
+	private static final String LATEST_NUMBERED_BACKUP_EXTENSION = NUMBERED_BACKUP_EXTENSION_TEMPLATE.apply(1);
 
 	/** The default prefix for temporary files. */
 	private static final String TEMP_PREFIX = "temp-";
@@ -1590,11 +1593,11 @@ public class Files {
 		checkArgument(maxBackupCount > 1, "The maximum number of rolling backup files to be used must be greater than one.");
 
 		for(long i = maxBackupCount - 1; i >= 1; i--) {
-			final Path sourceBackupFile = Paths.get(path + String.valueOf(FILENAME_EXTENSION_SEPARATOR) + String.format(NUMBERED_BACKUP_EXTENSION_TEMPLATE, i));
+			final Path sourceBackupFile = Paths.get(path + String.valueOf(FILENAME_EXTENSION_SEPARATOR) + NUMBERED_BACKUP_EXTENSION_TEMPLATE.apply(i));
 
 			if(java.nio.file.Files.exists(sourceBackupFile)) {
 				final File destinationBackupFile = Paths
-						.get(path + String.valueOf(FILENAME_EXTENSION_SEPARATOR) + String.format(NUMBERED_BACKUP_EXTENSION_TEMPLATE, i + 1)).toFile();
+						.get(path + String.valueOf(FILENAME_EXTENSION_SEPARATOR) + NUMBERED_BACKUP_EXTENSION_TEMPLATE.apply(i + 1)).toFile();
 
 				Files.move(sourceBackupFile.toFile(), destinationBackupFile);
 			}

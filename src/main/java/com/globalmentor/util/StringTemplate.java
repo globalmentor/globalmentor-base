@@ -22,7 +22,7 @@ import static java.util.Objects.*;
  * An efficient class for creating templates which can be repeatedly applied with string arguments. Non-string parameter components will be added to the string
  * using their {@link Object#toString()} methods.
  * <p>
- * Example: <code>new StringTemplate("ex", StringTemplate.OBJECT_PARAMETER, "le").apply("amp")</code> yields "example".
+ * Example: <code>new StringTemplate("ex", StringTemplate.STRING_PARAMETER, "le").apply("amp")</code> yields "example".
  * </p>
  * @author Garret Wilson
  * @see java.text.MessageFormat
