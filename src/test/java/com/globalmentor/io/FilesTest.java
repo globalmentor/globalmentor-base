@@ -132,6 +132,10 @@ public class FilesTest {
 		Files.backupFile(tempFile);
 
 		assertThat(java.nio.file.Files.exists(Files.getBackupPath(tempFile)), is(true));
+
+		try (final BufferedReader reader = java.nio.file.Files.newBufferedReader(Files.getBackupPath(tempFile))) {
+			assertThat(reader.readLine(), equalTo(null));
+		}
 	}
 
 	/**
@@ -172,13 +176,13 @@ public class FilesTest {
 
 		Files.backupFile(tempFile, 3);
 
-		try (final BufferedReader reader = java.nio.file.Files.newBufferedReader(Files.getBackupPath(tempFile, 3))) {
-			assertThat(reader.readLine(), equalTo("This is the first edition an important file!"));
-		}
-
 		assertThat(java.nio.file.Files.exists(Paths.get(tempFile + ".1.bak")), is(true));
 		assertThat(java.nio.file.Files.exists(Paths.get(tempFile + ".2.bak")), is(false));
 		assertThat(java.nio.file.Files.exists(Paths.get(tempFile + ".3.bak")), is(false));
+
+		try (final BufferedReader reader = java.nio.file.Files.newBufferedReader(Files.getBackupPath(tempFile, 3))) {
+			assertThat(reader.readLine(), equalTo("This is the first edition an important file!"));
+		}
 
 		try (final BufferedWriter writer = java.nio.file.Files.newBufferedWriter(tempFile)) {
 			writer.write("This is the second edition of an important file!");
@@ -186,13 +190,13 @@ public class FilesTest {
 
 		Files.backupFile(tempFile, 3);
 
-		try (final BufferedReader reader = java.nio.file.Files.newBufferedReader(Files.getBackupPath(tempFile, 3))) {
-			assertThat(reader.readLine(), equalTo("This is the second edition of an important file!"));
-		}
-
 		assertThat(java.nio.file.Files.exists(Paths.get(tempFile + ".1.bak")), is(true));
 		assertThat(java.nio.file.Files.exists(Paths.get(tempFile + ".2.bak")), is(true));
 		assertThat(java.nio.file.Files.exists(Paths.get(tempFile + ".3.bak")), is(false));
+
+		try (final BufferedReader reader = java.nio.file.Files.newBufferedReader(Files.getBackupPath(tempFile, 3))) {
+			assertThat(reader.readLine(), equalTo("This is the second edition of an important file!"));
+		}
 
 		try (final BufferedWriter writer = java.nio.file.Files.newBufferedWriter(tempFile)) {
 			writer.write("This is the third edition of an important file!");
@@ -200,13 +204,13 @@ public class FilesTest {
 
 		Files.backupFile(tempFile, 3);
 
-		try (final BufferedReader reader = java.nio.file.Files.newBufferedReader(Files.getBackupPath(tempFile, 3))) {
-			assertThat(reader.readLine(), equalTo("This is the third edition of an important file!"));
-		}
-
 		assertThat(java.nio.file.Files.exists(Paths.get(tempFile + ".1.bak")), is(true));
 		assertThat(java.nio.file.Files.exists(Paths.get(tempFile + ".2.bak")), is(true));
 		assertThat(java.nio.file.Files.exists(Paths.get(tempFile + ".3.bak")), is(true));
+
+		try (final BufferedReader reader = java.nio.file.Files.newBufferedReader(Files.getBackupPath(tempFile, 3))) {
+			assertThat(reader.readLine(), equalTo("This is the third edition of an important file!"));
+		}
 
 		try (final BufferedReader reader = java.nio.file.Files.newBufferedReader(Paths.get(tempFile + ".2.bak"))) {
 			assertThat(reader.readLine(), equalTo("This is the second edition of an important file!"));
@@ -222,6 +226,11 @@ public class FilesTest {
 
 		Files.backupFile(tempFile, 3);
 
+		assertThat(java.nio.file.Files.exists(Paths.get(tempFile + ".1.bak")), is(true));
+		assertThat(java.nio.file.Files.exists(Paths.get(tempFile + ".2.bak")), is(true));
+		assertThat(java.nio.file.Files.exists(Paths.get(tempFile + ".3.bak")), is(true));
+		assertThat(java.nio.file.Files.exists(Paths.get(tempFile + ".4.bak")), is(false));
+
 		try (final BufferedReader reader = java.nio.file.Files.newBufferedReader(Files.getBackupPath(tempFile, 3))) {
 			assertThat(reader.readLine(), equalTo("This is the fourth edition of an important file!"));
 		}
@@ -233,11 +242,6 @@ public class FilesTest {
 		try (final BufferedReader reader = java.nio.file.Files.newBufferedReader(Paths.get(tempFile + ".3.bak"))) {
 			assertThat(reader.readLine(), equalTo("This is the second edition of an important file!"));
 		}
-
-		assertThat(java.nio.file.Files.exists(Paths.get(tempFile + ".1.bak")), is(true));
-		assertThat(java.nio.file.Files.exists(Paths.get(tempFile + ".2.bak")), is(true));
-		assertThat(java.nio.file.Files.exists(Paths.get(tempFile + ".3.bak")), is(true));
-		assertThat(java.nio.file.Files.exists(Paths.get(tempFile + ".4.bak")), is(false));
 	}
 
 	/**

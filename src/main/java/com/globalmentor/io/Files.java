@@ -18,13 +18,10 @@ package com.globalmentor.io;
 
 import java.io.*;
 import java.net.*;
-import java.nio.file.OpenOption;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.*;
 import java.util.*;
 
-import javax.annotation.Nonnegative;
-import javax.annotation.Nonnull;
+import javax.annotation.*;
 
 import static java.util.Collections.*;
 import static java.util.Objects.*;
@@ -1539,9 +1536,9 @@ public class Files {
 	 * Backs up a given file using a rolling, numbered backup file determined by {@link #getBackupPath(Path, long)}. If the backup filename does not exist, the
 	 * indicated file will simply be copied to the backup file destination. If <var><code>maxBackupCount</code></var> is <code>1</code> and the backup file
 	 * destination exists, it will be overwritten. If <var><code>maxBackupCount</code></var> is greater than <code>1</code> and the backup file destination
-	 * exists, <code>filename.ext.1.bak</code> will be deleted and each backup file <code>filename.ext.<var>number</var>.bak</code> in the sequence will be
-	 * renamed to <code>filename.ext.<var>number-1</var>.bak</code> (if it exists) up to and including <var><code>maxBackupCount</code></var>, and then the
-	 * indicated file will be copied to the backup filename.
+	 * exists, <code>filename.ext.<var>maxBackupCount</var>.bak</code> will be deleted and each backup file <code>filename.ext.<var>number</var>.bak</code> in the
+	 * sequence will be renamed to <code>filename.ext.<var>number+1</var>.bak</code> (if it exists) down to and including <var>1</var>, and then the indicated
+	 * file will be copied to the backup filename.
 	 * 
 	 * @param path The path of the file to back up.
 	 * @param maxBackupCount The maximum number of rolling backup files to use.
