@@ -6,6 +6,9 @@ Issues tracked by [JIRA](https://globalmentor.atlassian.net/projects/JAVA).
 
 ## Changelog
 
+- 0.5.4:
+	* [JAVA-27](https://globalmentor.atlassian.net/browse/JAVA-27): Added methods to backup a file on `com.globalmentor.io.Files`.
+
 - 0.5.3: (2017-02-06)
 	* [JAVA-20](https://globalmentor.atlassian.net/browse/JAVA-20): Deleted classes that refer to the brand new `com.globalmentor:calendar-calculator` project.
 	* [JAVA-12](https://globalmentor.atlassian.net/browse/JAVA-12): Fixed errors found on creation of unit tests for `com.globalmentor.java.Conditions` in [JAVA-11](https://globalmentor.atlassian.net/browse/JAVA-11).
