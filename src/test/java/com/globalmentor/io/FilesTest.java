@@ -20,9 +20,9 @@ import static com.globalmentor.net.URIs.*;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.net.URI;
+import java.nio.file.*;
 
 import org.junit.*;
 
@@ -109,6 +109,164 @@ public class FilesTest {
 		assertThat(fileURI.getScheme(), is(FILE_SCHEME)); //file:
 		assertTrue(fileURI.getRawPath().startsWith(ROOT_PATH)); //file:/
 		assertFalse(fileURI.getRawPath().startsWith(ROOT_PATH + PATH_SEPARATOR + PATH_SEPARATOR)); //not file:/// (even though that is correct)
+	}
+
+	@Test
+	public void testGetBackupPath() throws IOException {
+		Path tempFile = Files.createTempFile().toPath();
+
+		assertThat(Files.getBackupPath(tempFile), equalTo(Paths.get(tempFile + ".bak")));
+		assertThat(Files.getBackupPath(tempFile, 3), equalTo(Paths.get(tempFile + ".1.bak")));
+	}
+
+	/**
+	 * Test to see if the method {@link Files#backupFile(Path)} is working as usual when an empty file is given.
+	 * 
+	 * @throws IOException if an I/O error occurs.
+	 */
+	@Test
+	public void testEmptyBackupFile() throws IOException {
+		Path tempDirectory = java.nio.file.Files.createTempDirectory("backupTestDirectory");
+		Path tempFile = java.nio.file.Files.createFile(tempDirectory.resolve("importantFile.test"));
+
+		Files.backupFile(tempFile);
+
+		assertThat(java.nio.file.Files.exists(Files.getBackupPath(tempFile)), is(true));
+	}
+
+	/**
+	 * Test to see if the method {@link Files#backupFile(Path)} is working properly when it's asked to create a simple backup to a file.
+	 * 
+	 * @throws IOException if an I/O error occurs.
+	 */
+	@Test
+	public void testSimpleBackupFile() throws IOException {
+		Path tempDirectory = java.nio.file.Files.createTempDirectory("backupTestDirectory");
+		Path tempFile = tempDirectory.resolve("importantFile.test");
+
+		try (final BufferedWriter writer = java.nio.file.Files.newBufferedWriter(tempFile)) {
+			writer.write("This is the first edition an important file!");
+		}
+
+		Files.backupFile(tempFile);
+
+		try (final BufferedReader reader = java.nio.file.Files.newBufferedReader(Files.getBackupPath(tempFile))) {
+			assertThat(reader.readLine(), equalTo("This is the first edition an important file!"));
+		}
+	}
+
+	/**
+	 * Test to see if the method {@link Files#backupFile(Path)} is working properly when it's asked to create a backup with a rolling policy to a file, and if the
+	 * rolling policy is working correctly.
+	 * 
+	 * @throws IOException if an I/O error occurs.
+	 */
+	@Test
+	public void testRollingBackupFile() throws IOException {
+		Path tempDirectory = java.nio.file.Files.createTempDirectory("backupTestDirectory");
+		Path tempFile = tempDirectory.resolve("importantFile.test");
+
+		try (final BufferedWriter writer = java.nio.file.Files.newBufferedWriter(tempFile)) {
+			writer.write("This is the first edition an important file!");
+		}
+
+		Files.backupFile(tempFile, 3);
+
+		try (final BufferedReader reader = java.nio.file.Files.newBufferedReader(Files.getBackupPath(tempFile, 3))) {
+			assertThat(reader.readLine(), equalTo("This is the first edition an important file!"));
+		}
+
+		assertThat(java.nio.file.Files.exists(Paths.get(tempFile + ".1.bak")), is(true));
+		assertThat(java.nio.file.Files.exists(Paths.get(tempFile + ".2.bak")), is(false));
+		assertThat(java.nio.file.Files.exists(Paths.get(tempFile + ".3.bak")), is(false));
+
+		try (final BufferedWriter writer = java.nio.file.Files.newBufferedWriter(tempFile)) {
+			writer.write("This is the second edition of an important file!");
+		}
+
+		Files.backupFile(tempFile, 3);
+
+		try (final BufferedReader reader = java.nio.file.Files.newBufferedReader(Files.getBackupPath(tempFile, 3))) {
+			assertThat(reader.readLine(), equalTo("This is the second edition of an important file!"));
+		}
+
+		assertThat(java.nio.file.Files.exists(Paths.get(tempFile + ".1.bak")), is(true));
+		assertThat(java.nio.file.Files.exists(Paths.get(tempFile + ".2.bak")), is(true));
+		assertThat(java.nio.file.Files.exists(Paths.get(tempFile + ".3.bak")), is(false));
+
+		try (final BufferedWriter writer = java.nio.file.Files.newBufferedWriter(tempFile)) {
+			writer.write("This is the third edition of an important file!");
+		}
+
+		Files.backupFile(tempFile, 3);
+
+		try (final BufferedReader reader = java.nio.file.Files.newBufferedReader(Files.getBackupPath(tempFile, 3))) {
+			assertThat(reader.readLine(), equalTo("This is the third edition of an important file!"));
+		}
+
+		assertThat(java.nio.file.Files.exists(Paths.get(tempFile + ".1.bak")), is(true));
+		assertThat(java.nio.file.Files.exists(Paths.get(tempFile + ".2.bak")), is(true));
+		assertThat(java.nio.file.Files.exists(Paths.get(tempFile + ".3.bak")), is(true));
+
+		try (final BufferedReader reader = java.nio.file.Files.newBufferedReader(Paths.get(tempFile + ".2.bak"))) {
+			assertThat(reader.readLine(), equalTo("This is the second edition of an important file!"));
+		}
+
+		try (final BufferedReader reader = java.nio.file.Files.newBufferedReader(Paths.get(tempFile + ".3.bak"))) {
+			assertThat(reader.readLine(), equalTo("This is the first edition an important file!"));
+		}
+
+		try (final BufferedWriter writer = java.nio.file.Files.newBufferedWriter(tempFile)) {
+			writer.write("This is the fourth edition of an important file!");
+		}
+
+		Files.backupFile(tempFile, 3);
+
+		try (final BufferedReader reader = java.nio.file.Files.newBufferedReader(Files.getBackupPath(tempFile, 3))) {
+			assertThat(reader.readLine(), equalTo("This is the fourth edition of an important file!"));
+		}
+
+		try (final BufferedReader reader = java.nio.file.Files.newBufferedReader(Paths.get(tempFile + ".2.bak"))) {
+			assertThat(reader.readLine(), equalTo("This is the third edition of an important file!"));
+		}
+
+		try (final BufferedReader reader = java.nio.file.Files.newBufferedReader(Paths.get(tempFile + ".3.bak"))) {
+			assertThat(reader.readLine(), equalTo("This is the second edition of an important file!"));
+		}
+
+		assertThat(java.nio.file.Files.exists(Paths.get(tempFile + ".1.bak")), is(true));
+		assertThat(java.nio.file.Files.exists(Paths.get(tempFile + ".2.bak")), is(true));
+		assertThat(java.nio.file.Files.exists(Paths.get(tempFile + ".3.bak")), is(true));
+		assertThat(java.nio.file.Files.exists(Paths.get(tempFile + ".4.bak")), is(false));
+	}
+
+	/**
+	 * Test to see if the method {@link Files#newOutputStreamWithBackup(Path, OpenOption...)} is working properly.
+	 * 
+	 * @throws IOException if an I/O error occurs.
+	 */
+	@Test
+	public void testOutputStreamWithBackup() throws IOException {
+		Path tempDirectory = java.nio.file.Files.createTempDirectory("backupTestDirectory");
+		Path tempFile = tempDirectory.resolve("importantFile.test");
+
+		try (final BufferedWriter writer = java.nio.file.Files.newBufferedWriter(tempFile)) {
+			writer.write("This is the first edition an important file!");
+		}
+
+		try (final BufferedOutputStream outputStream = new BufferedOutputStream(Files.newOutputStreamWithBackup(tempFile))) {
+			outputStream.write(new byte[] {'t', 'e', 's', 't', 'e'});
+		}
+
+		try (final BufferedReader reader = java.nio.file.Files.newBufferedReader(tempFile)) {
+			assertThat(reader.readLine(), equalTo("teste"));
+		}
+
+		assertThat(java.nio.file.Files.exists(Files.getBackupPath(tempFile)), is(true));
+
+		try (final BufferedReader reader = java.nio.file.Files.newBufferedReader(Files.getBackupPath(tempFile))) {
+			assertThat(reader.readLine(), equalTo("This is the first edition an important file!"));
+		}
 	}
 
 }

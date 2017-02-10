@@ -69,12 +69,13 @@ public class Files {
 	 */
 	public static final char FILENAME_ESCAPE_CHAR = '^';
 
-	private static final String SIMPLE_BACKUP_EXTENSION = "bak";
-	private static final String NUMBERED_BACKUP_EXTENSION_TEMPLATE = "%d" + FILENAME_EXTENSION_SEPARATOR + SIMPLE_BACKUP_EXTENSION;
-	private static final String LATEST_NUMBERED_BACKUP_EXTENSION = String.format(NUMBERED_BACKUP_EXTENSION_TEMPLATE, 1);
-
 	/** The extension for backup files. */
 	private static final String BACKUP_EXTENSION = "bak";
+	/** The template for backup files in a rolling policy. */
+	private static final String NUMBERED_BACKUP_EXTENSION_TEMPLATE = "%d" + FILENAME_EXTENSION_SEPARATOR + BACKUP_EXTENSION;
+	/** The extension for the latest backup file in a rolling policy. */
+	private static final String LATEST_NUMBERED_BACKUP_EXTENSION = String.format(NUMBERED_BACKUP_EXTENSION_TEMPLATE, 1);
+
 	/** The default prefix for temporary files. */
 	private static final String TEMP_PREFIX = "temp-";
 	/** The extension for temporary files. */
@@ -1477,6 +1478,18 @@ public class Files {
 	}
 
 	/**
+	 * Determines the backup file path to use for the file at the given path without a rolling policy. The backup file will be in the same directory as the given
+	 * path; and the filename will be in the form <code>filename.ext.bak</code>, i.e. with a <code>bak</code> extension added.
+	 * 
+	 * @param path The path of the file to back up.
+	 * 
+	 * @return The path to the backup file to use.
+	 */
+	public static Path getBackupPath(@Nonnull final Path path) {
+		return getBackupPath(path, 1);
+	}
+
+	/**
 	 * Determines the rolling, numbered backup file path to use for the file at the given path. The backup file will be in the same directory as the given path;
 	 * and the filename is determined in the following manner:
 	 * <ol>
@@ -1494,70 +1507,17 @@ public class Files {
 	 * @throws IllegalArgumentException if <var><code>maxBackupCount</code></var> is zero or negative.
 	 */
 	public static Path getBackupPath(@Nonnull final Path path, @Nonnegative final long maxBackupCount) {
-		checkArgumentNotNull(path, "The path to the file cannot be null");
+		checkArgumentNotNull(path, "The path to the file cannot be null.");
 		checkArgument(java.nio.file.Files.exists(path) && !java.nio.file.Files.isDirectory(path),
 				"The provided path is referring to a directory or doesn't exist.");
 		checkArgument(maxBackupCount > 0, "The maximum number of rolling backup files to be used must be greater than zero.");
 
 		if(maxBackupCount == 1) {
-			return Paths.get(path + String.valueOf(FILENAME_EXTENSION_SEPARATOR) + SIMPLE_BACKUP_EXTENSION); //if the backups are not numbered, we return the simple backup path.
+			return Paths.get(path + String.valueOf(FILENAME_EXTENSION_SEPARATOR) + BACKUP_EXTENSION); //if the backups are not numbered, we return the simple backup path.
 		} else {
-			return Paths.get(path + String.valueOf(FILENAME_EXTENSION_SEPARATOR) + LATEST_NUMBERED_BACKUP_EXTENSION); //if the backup file is numbered, we return the path for the backup number one.
+			return Paths.get(path + String.valueOf(FILENAME_EXTENSION_SEPARATOR) + LATEST_NUMBERED_BACKUP_EXTENSION); //if the backup file is numbered, we return the path for the latest one.
 		}
 
-	}
-
-	/**
-	 * Determines the backup file path to use for the file at the given path without a rolling policy. The backup file will be in the same directory as the given
-	 * path; and the filename will be in the form <code>filename.ext.bak</code>, i.e. with a <code>bak</code> extension added.
-	 * 
-	 * @param path The path of the file to back up.
-	 * 
-	 * @return The path to the backup file to use.
-	 */
-	public static Path getBackupPath(@Nonnull final Path path) {
-		return getBackupPath(path, 1);
-	}
-
-	/**
-	 * Backs up a given file using a rolling, numbered backup file determined by {@link #getBackupPath(Path, long)}. If the backup filename does not exist, the
-	 * indicated file will simply be copied to the backup file destination. If <var><code>maxBackupCount</code></var> is <code>1</code> and the backup file
-	 * destination exists, it will be overwritten. If <var><code>maxBackupCount</code></var> is greater than <code>1</code> and the backup file destination
-	 * exists, <code>filename.ext.1.bak</code> will be deleted and each backup file <code>filename.ext.<var>number</var>.bak</code> in the sequence will be
-	 * renamed to <code>filename.ext.<var>number-1</var>.bak</code> (if it exists) up to and including <var><code>maxBackupCount</code></var>, and then the
-	 * indicated file will be copied to the backup filename.
-	 * 
-	 * @param path The path of the file to back up.
-	 * @param maxBackupCount The maximum number of rolling backup files to use.
-	 * 
-	 * @return The path to the backup file used.
-	 * @throws IllegalArgumentException if <var><code>maxBackupCount</code></var> is zero or negative.
-	 */
-	public static Path backupFile(@Nonnull final Path path, @Nonnegative final long maxBackupCount) throws IOException {
-		checkArgumentNotNull(path, "The path to the file cannot be null");
-		checkArgument(java.nio.file.Files.exists(path) && !java.nio.file.Files.isDirectory(path),
-				"The provided path is referring to a directory or doesn't exist.");
-		checkArgument(maxBackupCount > 0, "The maximum number of rolling backup files to be used must be greater than zero.");
-
-		if(maxBackupCount > 1) {
-			rollBackupFiles(path, maxBackupCount);
-		}
-
-		Path backupPath = getBackupPath(path, maxBackupCount);
-
-		try (final BufferedInputStream bufferedInputStream = new BufferedInputStream(java.nio.file.Files.newInputStream(path))) {
-
-			try (final BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(java.nio.file.Files.newOutputStream(backupPath))) {
-				int currentByte;
-
-				while((currentByte = bufferedInputStream.read()) != -1) {
-					bufferedOutputStream.write(currentByte);
-				}
-			}
-
-		}
-
-		return backupPath;
 	}
 
 	/**
@@ -1576,64 +1536,109 @@ public class Files {
 	}
 
 	/**
-	 * Rolls the backup files, adding one to the index of each backup file, in the end, there will be a free space on the first index of the backup files and the
-	 * oldest one will be discarded.
+	 * Backs up a given file using a rolling, numbered backup file determined by {@link #getBackupPath(Path, long)}. If the backup filename does not exist, the
+	 * indicated file will simply be copied to the backup file destination. If <var><code>maxBackupCount</code></var> is <code>1</code> and the backup file
+	 * destination exists, it will be overwritten. If <var><code>maxBackupCount</code></var> is greater than <code>1</code> and the backup file destination
+	 * exists, <code>filename.ext.1.bak</code> will be deleted and each backup file <code>filename.ext.<var>number</var>.bak</code> in the sequence will be
+	 * renamed to <code>filename.ext.<var>number-1</var>.bak</code> (if it exists) up to and including <var><code>maxBackupCount</code></var>, and then the
+	 * indicated file will be copied to the backup filename.
+	 * 
+	 * @param path The path of the file to back up.
+	 * @param maxBackupCount The maximum number of rolling backup files to use.
+	 * 
+	 * @return The path to the backup file used.
+	 * @throws IllegalArgumentException if <var><code>maxBackupCount</code></var> is zero or negative.
+	 */
+	public static Path backupFile(@Nonnull final Path path, @Nonnegative final long maxBackupCount) throws IOException {
+		checkArgumentNotNull(path, "The path to the file cannot be null.");
+		checkArgument(java.nio.file.Files.exists(path) && !java.nio.file.Files.isDirectory(path),
+				"The provided path is referring to a directory or doesn't exist.");
+		checkArgument(maxBackupCount > 0, "The maximum number of rolling backup files to be used must be greater than zero.");
+
+		if(java.nio.file.Files.exists(getBackupPath(path, maxBackupCount))) {
+			rollBackupFiles(path, maxBackupCount); //if there's an existent backup for the given file we need to apply the rolling policy.
+		}
+
+		Path backupPath = java.nio.file.Files.createFile(getBackupPath(path, maxBackupCount));
+
+		try (final BufferedInputStream bufferedInputStream = new BufferedInputStream(java.nio.file.Files.newInputStream(path))) {
+
+			try (final BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(java.nio.file.Files.newOutputStream(backupPath))) {
+				int currentByte;
+
+				while((currentByte = bufferedInputStream.read()) != -1) {
+					bufferedOutputStream.write(currentByte);
+				}
+			}
+
+		}
+
+		return backupPath;
+	}
+
+	/**
+	 * Rolls the backup files, adding one to the index of each backup file, in the end, there will be a free space on the first index of the backup files, and if
+	 * the number of backup files is <var>maxBackupCount</var> the oldest one (the one with the end <code>.<var>maxBackupCount</var>.bak</code>) will be
+	 * discarded.
 	 * 
 	 * @param path The path of the file to roll the backup files.
 	 * @param maxBackupCount The maximum number of rolling backup files to use.
 	 * 
 	 * @throws IOException If an error occurs while rolling the backup files.
 	 */
-	static void rollBackupFiles(@Nonnull final Path path, @Nonnegative final long maxBackupCount) throws IOException {
-		checkArgumentNotNull(path, "The path to the file cannot be null");
+	private static void rollBackupFiles(@Nonnull final Path path, @Nonnegative final long maxBackupCount) throws IOException {
+		checkArgumentNotNull(path, "The path to the file cannot be null.");
 		checkArgument(java.nio.file.Files.exists(path) && !java.nio.file.Files.isDirectory(path),
 				"The provided path is referring to a directory or doesn't exist.");
 		checkArgument(maxBackupCount > 1, "The maximum number of rolling backup files to be used must be greater than one.");
 
 		for(long i = maxBackupCount - 1; i >= 1; i--) {
-			final File sourceBackupFile = Paths.get(path + String.valueOf(FILENAME_EXTENSION_SEPARATOR) + String.format(NUMBERED_BACKUP_EXTENSION_TEMPLATE, i))
-					.toFile();
-			final File destinationBackupFile = Paths
-					.get(path + String.valueOf(FILENAME_EXTENSION_SEPARATOR) + String.format(NUMBERED_BACKUP_EXTENSION_TEMPLATE, i + 1)).toFile();
+			final Path sourceBackupFile = Paths.get(path + String.valueOf(FILENAME_EXTENSION_SEPARATOR) + String.format(NUMBERED_BACKUP_EXTENSION_TEMPLATE, i));
 
-			Files.move(sourceBackupFile, destinationBackupFile);
+			if(java.nio.file.Files.exists(sourceBackupFile)) {
+				final File destinationBackupFile = Paths
+						.get(path + String.valueOf(FILENAME_EXTENSION_SEPARATOR) + String.format(NUMBERED_BACKUP_EXTENSION_TEMPLATE, i + 1)).toFile();
+
+				Files.move(sourceBackupFile.toFile(), destinationBackupFile);
+			}
 		}
 
 	}
 
 	/**
-	 * Opens or creates a file after first creating a backup of the file if it exists, returning an input stream that may be used to write bytes to the file. If
-	 * <var><code>maxBackupCount</code></var> is greater than zero, a backup will first be created using {@link #backupFile(Path, long)}.
-	 * 
-	 * @param The path of the file to back up.
-	 * @param maxBackupCount The maximum number of rolling backup files to use.
-	 * @param options The options specifying how the file is opened.
-	 * 
-	 * @return The new {@link InputStream} after the creation of a backup for the given file.
-	 * @throws IllegalArgumentException if <var><code>maxBackupCount</code></var> is negative.
-	 * @throws IOException If an error occurs while creating the backup file.
-	 */
-	public static InputStream newInputStreamWithBackup(@Nonnull final Path path, @Nonnegative final long maxBackupCount, final OpenOption... options)
-			throws IOException {
-		return java.nio.file.Files.newInputStream(backupFile(path, maxBackupCount), options);
-	}
-
-	/**
-	 * Opens or creates a file after first creating a backup without a rolling policy of the file if it exists, returning an input stream that may be used to
+	 * Opens or creates a file after first creating a backup without a rolling policy of the file if it exists, returning an output stream that may be used to
 	 * write bytes to the file. The maximum number of backups used on this method will be 1.
 	 * 
 	 * @param The path of the file to back up.
 	 * @param maxBackupCount The maximum number of rolling backup files to use.
 	 * @param options The options specifying how the file is opened.
 	 * 
-	 * @return The new {@link InputStream} after the creation of a backup for the given file.
+	 * @return The new {@link OutputStream} after the creation of a backup for the given file.
 	 * @throws IllegalArgumentException if <var><code>maxBackupCount</code></var> is negative.
 	 * @throws IOException If an error occurs while creating the backup file.
 	 * 
-	 * @see #newInputStreamWithBackup(Path, long, OpenOption...)
+	 * @see #newOutputStreamWithBackup(Path, long, OpenOption...)
 	 */
-	public static InputStream newInputStreamWithBackup(@Nonnull final Path path, final OpenOption... options) throws IOException {
-		return newInputStreamWithBackup(path, 1, options);
+	public static OutputStream newOutputStreamWithBackup(@Nonnull final Path path, final OpenOption... options) throws IOException {
+		return newOutputStreamWithBackup(path, 1, options);
+	}
+
+	/**
+	 * Opens or creates a file after first creating a backup of the file if it exists, returning an output stream that may be used to write bytes to the file. If
+	 * <var><code>maxBackupCount</code></var> is greater than zero, a backup will first be created using {@link #backupFile(Path, long)}.
+	 * 
+	 * @param The path of the file to back up.
+	 * @param maxBackupCount The maximum number of rolling backup files to use.
+	 * @param options The options specifying how the file is opened.
+	 * 
+	 * @return The new {@link OutputStream} after the creation of a backup for the given file.
+	 * @throws IllegalArgumentException if <var><code>maxBackupCount</code></var> is negative.
+	 * @throws IOException If an error occurs while creating the backup file.
+	 */
+	public static OutputStream newOutputStreamWithBackup(@Nonnull final Path path, @Nonnegative final long maxBackupCount, final OpenOption... options)
+			throws IOException {
+		backupFile(path, maxBackupCount);
+		return java.nio.file.Files.newOutputStream(path, options);
 	}
 
 }
