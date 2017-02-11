@@ -1479,7 +1479,8 @@ public class Files {
 
 	/**
 	 * Determines the backup file path to use for the file at the given path without a rolling policy. The backup file will be in the same directory as the given
-	 * path; and the filename will be in the form <code>filename.ext.bak</code>, i.e. with a <code>bak</code> extension added.
+	 * path; and the filename will be in the form <code>filename.ext.bak</code>, i.e. with a <code>bak</code> extension added. This is a convenience method that
+	 * delegates to {@link #getBackupPath(Path, long)} with the value <code>1</code> for </var>maxBackupCount</var>.
 	 * 
 	 * @param path The path of the file to back up.
 	 * 
@@ -1495,10 +1496,8 @@ public class Files {
 	 * <ol>
 	 * <li>If <var><code>maxBackupCount</code></var> is <code>1</code>, the backup filename will be in the form <code>filename.ext.bak</code>, i.e. with a
 	 * <code>bak</code> extension added.</li>
-	 * <li>If <var><code>maxBackupCount</code></var> is greater than <code>1</code>, the method will find the first filename in the form
-	 * <code>filename.ext.<var>number</var>.bak</code> that does not exist, checking <var>number</var> from <code>1</code> to
-	 * <var><code>maxBackupCount</code></var>. If all backup files in the sequence exist, the filename using <var><code>maxBackupCount</code></var> is used.</li>
-	 * </ol>
+	 * <li>If <var><code>maxBackupCount</code></var> is greater than <code>1</code>, the backup filename will be in the form <code>filename.ext.1.bak</code>, i.e.
+	 * with a <code>1.bak</code> extension added.</li>
 	 * 
 	 * @param path The path of the file to back up.
 	 * @param maxBackupCount The maximum number of rolling backup files to use.
@@ -1522,7 +1521,8 @@ public class Files {
 
 	/**
 	 * Backs up a given file without a rolling policy. If the backup filename does not exist, the indicated file will simply be copied to the backup file
-	 * destination. If the backup file destination exists, it will be overwritten.
+	 * destination. If the backup file destination exists, it will be overwritten. This is a convenience method that delegates to {@link #backupFile(Path, long)}
+	 * with the value <code>1</code> for </var>maxBackupCount</var>.
 	 * 
 	 * @param path The path of the file to back up.
 	 * 
@@ -1540,9 +1540,9 @@ public class Files {
 	 * Backs up a given file using a rolling, numbered backup file determined by {@link #getBackupPath(Path, long)}. If the backup filename does not exist, the
 	 * indicated file will simply be copied to the backup file destination. If <var><code>maxBackupCount</code></var> is <code>1</code> and the backup file
 	 * destination exists, it will be overwritten. If <var><code>maxBackupCount</code></var> is greater than <code>1</code> and the backup file destination
-	 * exists, <code>filename.ext.<var>maxBackupCount</var>.bak</code> will be deleted and each backup file <code>filename.ext.<var>number</var>.bak</code> in the
-	 * sequence will be renamed to <code>filename.ext.<var>number+1</var>.bak</code> (if it exists) down to and including <var>1</var>, and then the indicated
-	 * file will be copied to the backup filename.
+	 * exists, <code>filename.ext.<var>maxBackupCount</var>.bak</code> will be deleted (if it exists) and each backup file
+	 * <code>filename.ext.<var>number</var>.bak</code> in the sequence will be renamed to <code>filename.ext.<var>number+1</var>.bak</code> (if it exists) down to
+	 * and including <var>1</var>, and then the indicated file will be copied to the backup filename, which is <code>filename.ext.<var>1</var>.bak</code>.
 	 * 
 	 * @param path The path of the file to back up.
 	 * @param maxBackupCount The maximum number of rolling backup files to use.
@@ -1557,23 +1557,13 @@ public class Files {
 				"The provided path is referring to a directory or doesn't exist.");
 		checkArgument(maxBackupCount > 0, "The maximum number of rolling backup files to be used must be greater than zero.");
 
-		if(java.nio.file.Files.exists(getBackupPath(path, maxBackupCount))) {
+		if(maxBackupCount > 1) {
 			rollBackupFiles(path, maxBackupCount); //if there's an existent backup for the given file we need to apply the rolling policy.
 		}
 
-		Path backupPath = java.nio.file.Files.createFile(getBackupPath(path, maxBackupCount));
+		final Path backupPath = getBackupPath(path, maxBackupCount);
 
-		try (final BufferedInputStream bufferedInputStream = new BufferedInputStream(java.nio.file.Files.newInputStream(path))) {
-
-			try (final BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(java.nio.file.Files.newOutputStream(backupPath))) {
-				int currentByte;
-
-				while((currentByte = bufferedInputStream.read()) != -1) {
-					bufferedOutputStream.write(currentByte);
-				}
-			}
-
-		}
+		Files.copy(path.toFile(), backupPath.toFile());
 
 		return backupPath;
 	}
@@ -1598,8 +1588,8 @@ public class Files {
 			final Path sourceBackupFile = Paths.get(path + String.valueOf(FILENAME_EXTENSION_SEPARATOR) + NUMBERED_BACKUP_EXTENSION_TEMPLATE.apply(i));
 
 			if(java.nio.file.Files.exists(sourceBackupFile)) {
-				final File destinationBackupFile = Paths
-						.get(path + String.valueOf(FILENAME_EXTENSION_SEPARATOR) + NUMBERED_BACKUP_EXTENSION_TEMPLATE.apply(i + 1)).toFile();
+				final File destinationBackupFile = Paths.get(path + String.valueOf(FILENAME_EXTENSION_SEPARATOR) + NUMBERED_BACKUP_EXTENSION_TEMPLATE.apply(i + 1))
+						.toFile();
 
 				Files.move(sourceBackupFile.toFile(), destinationBackupFile);
 			}
@@ -1609,7 +1599,8 @@ public class Files {
 
 	/**
 	 * Opens or creates a file after first creating a backup without a rolling policy of the file if it exists, returning an output stream that may be used to
-	 * write bytes to the file. The maximum number of backups used on this method will be 1.
+	 * write bytes to the file. The maximum number of backups used on this method will be 1. This is a convenience method that delegates to
+	 * {@link #newOutputStreamWithBackup(Path, long, OpenOption...)} with the value <code>1</code> for </var>maxBackupCount</var>.
 	 * 
 	 * @param path The path of the file to back up.
 	 * @param options The options specifying how the file is opened.
