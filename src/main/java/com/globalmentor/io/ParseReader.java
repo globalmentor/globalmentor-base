@@ -646,7 +646,7 @@ public class ParseReader extends ProcessingBufferedReader //TODO clean up and un
 	public char readExpectedChar(final String expectedChars) throws IOException, ParseUnexpectedDataException, ParseEOFException {
 		char c = readChar(); //read a character
 		if(expectedChars.indexOf(c) == -1) //if this character doesn't match any we expect
-			throw new ParseUnexpectedDataException(new Characters(expectedChars), c, getLineIndex(), getCharIndex()); //show that we didn't get the character we were expecting TODO switch to using Characters throughout
+			throw new ParseUnexpectedDataException(Characters.from(expectedChars), c, getLineIndex(), getCharIndex()); //show that we didn't get the character we were expecting TODO switch to using Characters throughout
 		return c; //return the character we read
 	}
 

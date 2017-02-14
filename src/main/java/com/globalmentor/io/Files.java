@@ -71,14 +71,14 @@ public class Files {
 	private static final String TEMP_EXTENSION = "tmp";
 
 	/** Path separator characters used on several systems. */
-	public static final Characters FILE_PATH_SEPARATOR_CHARACTERS = new Characters('\\', '/');
+	public static final Characters FILE_PATH_SEPARATOR_CHARACTERS = Characters.of('\\', '/');
 
 	/**
 	 * The characters which may not be used in POSIX filenames.
 	 * @see <a href="http://hypermail.idiosynkrasia.net/linux-kernel/archived/2001/week50/1017.html">Linux Kernal Mailing List 2001:50:1017</a>
 	 * @see #encodeFilename(String)
 	 */
-	public static final Characters POSIX_FILENAME_RESERVED_CHARACTERS = new Characters('\u0000', '/');
+	public static final Characters POSIX_FILENAME_RESERVED_CHARACTERS = Characters.of('\u0000', '/');
 
 	/**
 	 * The characters which may not be used in Windows filenames.
@@ -86,7 +86,7 @@ public class Files {
 	 * @see <a href="http://hypermail.idiosynkrasia.net/linux-kernel/archived/2001/week50/1017.html">Linux Kernal Mailing List 2001:50:1017</a>
 	 * @see #encodeFilename(String)
 	 */
-	public static final Characters WINDOWS_FILENAME_RESERVED_CHARACTERS = new Characters('\u0000', '<', '>', ':', '"', '/', '\\', '|', '?', '*');
+	public static final Characters WINDOWS_FILENAME_RESERVED_CHARACTERS = Characters.of('\u0000', '<', '>', ':', '"', '/', '\\', '|', '?', '*');
 
 	/**
 	 * The characters which may not be used as the last character of Windows filenames.
@@ -94,7 +94,7 @@ public class Files {
 	 * @see <a href="http://hypermail.idiosynkrasia.net/linux-kernel/archived/2001/week50/1017.html">Linux Kernal Mailing List 2001:50:1017</a>
 	 * @see #encodeFilename(String)
 	 */
-	public static final Characters WINDOWS_FILENAME_RESERVED_FINAL_CHARACTERS = new Characters('.', ' ');
+	public static final Characters WINDOWS_FILENAME_RESERVED_FINAL_CHARACTERS = Characters.of('.', ' ');
 
 	/**
 	 * The characters which may not be used in various file system filenames.
@@ -102,7 +102,7 @@ public class Files {
 	 * @see <a href="http://hypermail.idiosynkrasia.net/linux-kernel/archived/2001/week50/1017.html">Linux Kernal Mailing List 2001:50:1017</a>
 	 * @see #encodeFilename(String)
 	 */
-	public static final Characters CROSS_PLATFORM_FILENAME_RESERVED_CHARACTERS = new Characters('\u0000', '<', '>', ':', '"', '/', '\\', '|', '?', '*');
+	public static final Characters CROSS_PLATFORM_FILENAME_RESERVED_CHARACTERS = Characters.of('\u0000', '<', '>', ':', '"', '/', '\\', '|', '?', '*');
 
 	/**
 	 * The characters which may not be used as the last character of various file system filenames.
@@ -110,7 +110,7 @@ public class Files {
 	 * @see <a href="http://hypermail.idiosynkrasia.net/linux-kernel/archived/2001/week50/1017.html">Linux Kernal Mailing List 2001:50:1017</a>
 	 * @see #encodeFilename(String)
 	 */
-	public static final Characters CROSS_PLATFORM_FILENAME_RESERVED_FINAL_CHARACTERS = new Characters('.', ' ');
+	public static final Characters CROSS_PLATFORM_FILENAME_RESERVED_FINAL_CHARACTERS = Characters.of('.', ' ');
 
 	/** The prefix used by Unix to designate a hidden file. */
 	public static final String UNIX_HIDDEN_FILENAME_PREFIX = ".";
@@ -224,7 +224,7 @@ public class Files {
 	}
 
 	/** The characters recognized as wildcards in filenames. */
-	public static final Characters FILENAME_WILDCARD_CHARACTERS = new Characters(RegularExpressions.ZERO_OR_ONE_CHAR, RegularExpressions.ZERO_OR_MORE_CHAR);
+	public static final Characters FILENAME_WILDCARD_CHARACTERS = Characters.of(RegularExpressions.ZERO_OR_ONE_CHAR, RegularExpressions.ZERO_OR_MORE_CHAR);
 
 	/** The characters to encode for patterns in a wildcard filename. */
 	private static final Characters FILENAME_NON_WILDCARD_PATTERN_RESTRICTED_CHARACTERS = RegularExpressions.RESTRICTED.remove(FILENAME_WILDCARD_CHARACTERS);
@@ -275,7 +275,7 @@ public class Files {
 		//1. Escape all pattern characters (including '.') except for '*' and '?' with '\'.
 		escape(filenamePatternStringBuilder, FILENAME_NON_WILDCARD_PATTERN_RESTRICTED_CHARACTERS, RegularExpressions.ESCAPE);
 		//2. Prefix every occurrence of '*' with '.'; ignore existing '.' characters, as we've already escaped them.
-		escape(filenamePatternStringBuilder, new Characters(RegularExpressions.ZERO_OR_MORE_CHAR), RegularExpressions.WILDCARD_CHAR, false);
+		escape(filenamePatternStringBuilder, Characters.of(RegularExpressions.ZERO_OR_MORE_CHAR), RegularExpressions.WILDCARD_CHAR, false);
 		//3. Replace every occurrence of '?' with '.'.
 		replace(filenamePatternStringBuilder, RegularExpressions.ZERO_OR_ONE_CHAR, RegularExpressions.WILDCARD_CHAR);
 		final FileFilter fileFilter = new FilenamePatternFilter(filenamePatternStringBuilder.toString()); //create a file filter for this pattern
@@ -879,7 +879,7 @@ public class Files {
 				if(encodedFilename.length() > 0) { //if we have a filename
 					final char lastChar = encodedFilename.charAt(encodedFilename.length() - 1); //see what the last character is
 					if(reservedFinalCharacters.contains(lastChar)) { //if the last character is a reserved character
-						final String replacementString = escapeHex(String.valueOf(lastChar), null, new Characters(lastChar), Integer.MAX_VALUE, FILENAME_ESCAPE_CHAR, 2,
+						final String replacementString = escapeHex(String.valueOf(lastChar), null, Characters.of(lastChar), Integer.MAX_VALUE, FILENAME_ESCAPE_CHAR, 2,
 								Case.UPPERCASE); //escape the last character						
 						return encodedFilename.substring(0, encodedFilename.length() - 1) + replacementString; //replace the last character with its escaped form
 					}
@@ -965,7 +965,7 @@ public class Files {
 			final char c = rawSSP.charAt(i);
 			if(c > 127 || c == ';') { //if we found a non-ASCII character or the special character ';'
 				//escape the scheme-specific part from scratch, but only consider the ';' character and characters above 127 invalid so as to preserve the originally encoded characters, if any 
-				rawSSP = CharSequences.escapeHex(rawSSP, null, new Characters(';'), 127, URIs.ESCAPE_CHAR, 2, Case.LOWERCASE); //TODO use a constant
+				rawSSP = CharSequences.escapeHex(rawSSP, null, Characters.of(';'), 127, URIs.ESCAPE_CHAR, 2, Case.LOWERCASE); //TODO use a constant
 				uri = URIs.changeRawSchemeSpecificPart(uri, rawSSP); //change the scheme-specific part of the URI
 				break; //skip looking at the rest of the string
 			}

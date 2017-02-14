@@ -45,7 +45,7 @@ public class RegularExpressions {
 	public static final char CHARACTER_CLASS_END = ']';
 
 	/** The restricted characters which must be escaped in regular expressions. */
-	public static final Characters RESTRICTED = new Characters(ZERO_OR_ONE_CHAR, ZERO_OR_MORE_CHAR, ONE_OR_MORE_CHAR, WILDCARD_CHAR, '-', '(', ')',
+	public static final Characters RESTRICTED = Characters.of(ZERO_OR_ONE_CHAR, ZERO_OR_MORE_CHAR, ONE_OR_MORE_CHAR, WILDCARD_CHAR, '-', '(', ')',
 			CHARACTER_CLASS_BEGIN, CHARACTER_CLASS_END);
 
 	/** The character used for escaping regular expressions. */
@@ -59,7 +59,7 @@ public class RegularExpressions {
 	 * @see #escapePatternString(String)
 	 */
 	public static String createCharacterClass(final char... characters) {
-		return createCharacterClass(new Characters(characters));
+		return createCharacterClass(Characters.of(characters));
 	}
 
 	/**

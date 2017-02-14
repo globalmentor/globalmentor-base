@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static com.globalmentor.java.Arrays.checkIndexRange;
 import static com.globalmentor.java.CharSequences.*;
 import static com.globalmentor.java.Integers.*;
 import static com.globalmentor.java.Conditions.*;
@@ -156,7 +157,7 @@ public final class Characters {
 	public static final char LEFT_TO_RIGHT_MARK_CHAR = 0x200E;
 	/** A right-to-right mark (200F;RIGHT-TO-LEFT MARK;Cf;0;R;;;;;N;;;;;). */
 	public static final char RIGHT_TO_LEFT_MARK_CHAR = 0x200F;
-	/** A zero-width non-breaking space&mdash;word joiner (WJ). */
+	/** A zero-width non-breaking space—word joiner (WJ). */
 	public static final char WORD_JOINER_CHAR = 0x2060;
 	/** A left single quote. */
 	public static final char LEFT_SINGLE_QUOTATION_MARK_CHAR = 0x2018;
@@ -241,8 +242,8 @@ public final class Characters {
 	/** A full width quotation mark. */
 	public static final char FULLWIDTH_QUOTATION_MARK_CHAR = 0xFF02;
 	/**
-	 * A zero-width no-breaking space (ZWNBSP)&mdash;the Byte Order Mark (BOM) (FEFF;ZERO WIDTH NO-BREAK SPACE;Cf;0;BN;;;;;N;BYTE ORDER MARK;;;;). For
-	 * non-breaking purposes, deprecated in favor of <code>WORD_JOINER_CHAR</code>.
+	 * A zero-width no-breaking space (ZWNBSP)—the Byte Order Mark (BOM) (FEFF;ZERO WIDTH NO-BREAK SPACE;Cf;0;BN;;;;;N;BYTE ORDER MARK;;;;). For non-breaking
+	 * purposes, deprecated in favor of <code>WORD_JOINER_CHAR</code>.
 	 * @see #WORD_JOINER_CHAR
 	 */
 	public static final char ZERO_WIDTH_NO_BREAK_SPACE_CHAR = 0xFEFF;
@@ -278,7 +279,7 @@ public final class Characters {
 	 * Unicode newline characters.
 	 * @see <a href="http://unicode.org/unicode/standard/reports/tr13/tr13-5.html">Unicode Newline Guidelines</a>
 	 */
-	public static final Characters NEWLINE_CHARACTERS = new Characters(CARRIAGE_RETURN_CHAR, LINE_FEED_CHAR, NEXT_LINE_CHAR, LINE_SEPARATOR_CHAR, FORM_FEED_CHAR,
+	public static final Characters NEWLINE_CHARACTERS = Characters.of(CARRIAGE_RETURN_CHAR, LINE_FEED_CHAR, NEXT_LINE_CHAR, LINE_SEPARATOR_CHAR, FORM_FEED_CHAR,
 			LINE_SEPARATOR_CHAR, PARAGRAPH_SEPARATOR_CHAR);
 
 	/** Unicode whitespace characters. */
@@ -304,7 +305,7 @@ public final class Characters {
 			+ WORD_JOINER_CHAR + ZERO_WIDTH_NO_BREAK_SPACE_CHAR;
 
 	/** Characters considered to be end-of-line markers (e.g. CR and LF). */
-	public static final Characters EOL_CHARACTERS = new Characters(CARRIAGE_RETURN_CHAR, LINE_FEED_CHAR);
+	public static final Characters EOL_CHARACTERS = Characters.of(CARRIAGE_RETURN_CHAR, LINE_FEED_CHAR);
 
 	/**
 	 * Characters that do not contain visible "content", and may be trimmed from ends of a string. These include whitespace, control characters, and formatting
@@ -351,16 +352,16 @@ public final class Characters {
 			+ SINGLE_RIGHT_POINTING_ANGLE_QUOTATION_MARK_CHAR;
 
 	/** Characters used to punctuate phrases and sentences. */
-	public static final Characters PHRASE_PUNCTUATION_CHARACTERS = new Characters('.', ',', ':', ';', '?', '!'); //TODO use constants here
+	public static final Characters PHRASE_PUNCTUATION_CHARACTERS = Characters.of('.', ',', ':', ';', '?', '!'); //TODO use constants here
 
 	/** Punctuation that expects a character to follow at some point. */
-	public static final Characters DEPENDENT_PUNCTUATION_CHARACTERS = new Characters(COLON_CHAR, ';', COMMA_CHAR, HYPHEN_MINUS_CHAR, EM_DASH_CHAR, EN_DASH_CHAR); //TODO use a constant
+	public static final Characters DEPENDENT_PUNCTUATION_CHARACTERS = Characters.of(COLON_CHAR, ';', COMMA_CHAR, HYPHEN_MINUS_CHAR, EM_DASH_CHAR, EN_DASH_CHAR); //TODO use a constant
 
 	/** Left punctuation used to group characters. */
-	public static final Characters LEFT_GROUP_PUNCTUATION_CHARACTERS = new Characters('(', '[', '{', '<'); //TODO use constants
+	public static final Characters LEFT_GROUP_PUNCTUATION_CHARACTERS = Characters.of('(', '[', '{', '<'); //TODO use constants
 
 	/** Right punctuation used to group characters. */
-	public static final Characters RIGHT_GROUP_PUNCTUATION_CHARACTERS = new Characters(')', ']', '}', '>'); //TODO use constants
+	public static final Characters RIGHT_GROUP_PUNCTUATION_CHARACTERS = Characters.of(')', ']', '}', '>'); //TODO use constants
 
 	/** Punctuation used to group characters. */
 	public static final Characters GROUP_PUNCTUATION_CHARACTERS = LEFT_GROUP_PUNCTUATION_CHARACTERS.add(RIGHT_GROUP_PUNCTUATION_CHARACTERS);
@@ -393,7 +394,7 @@ public final class Characters {
 	private final int maxChar;
 
 	/** The shared instance of no characters. */
-	public static final Characters NONE = new Characters();
+	public static final Characters NONE = new Characters(EMPTY_ARRAY, 0, 0);
 
 	/**
 	 * Characters constructor. Duplicates are ignored.
@@ -401,7 +402,7 @@ public final class Characters {
 	 * @throws NullPointerException if the given characters is <code>null</code>.
 	 * @throws IllegalArgumentException if the given characters contain Unicode surrogate characters.
 	 */
-	public Characters(char... characters) {
+	private Characters(final char... characters) {
 		this(characters, 0, characters.length);
 	}
 
@@ -411,9 +412,12 @@ public final class Characters {
 	 * @param start The start index, inclusive.
 	 * @param end The end index, exclusive.
 	 * @throws NullPointerException if the given characters is <code>null</code>.
+	 * @throws IllegalArgumentException if the start index is greater than the end index.
+	 * @throws ArrayIndexOutOfBoundsException if the start index is less than zero or the end index is greater than the length.
 	 * @throws IllegalArgumentException if the given characters contain Unicode surrogate characters.
 	 */
-	public Characters(char[] characters, final int start, final int end) {
+	private Characters(char[] characters, final int start, final int end) {
+		checkIndexRange(characters.length, start, end);
 		if(characters.length != 0) { //if this is not an empty array of characters
 			//create a defensive copy of the input
 			if(start == 0 && end == characters.length) { //if we're using the whole array
@@ -461,13 +465,35 @@ public final class Characters {
 	}
 
 	/**
+	 * Characters factory method. Duplicates are ignored.
+	 * @param characters The characters to store.
+	 * @throws NullPointerException if the given characters is <code>null</code>.
+	 * @throws IllegalArgumentException if the given characters contain Unicode surrogate characters.
+	 */
+	public static Characters of(final char... characters) {
+		return of(characters, 0, characters.length);
+	}
+
+	/**
+	 * Characters factory method. Duplicates are ignored.
+	 * @param characters The characters to store.
+	 * @param start The start index, inclusive.
+	 * @param end The end index, exclusive.
+	 * @throws NullPointerException if the given characters is <code>null</code>.
+	 * @throws IllegalArgumentException if the given characters contain Unicode surrogate characters.
+	 */
+	public static Characters of(final char[] characters, final int start, final int end) {
+		return new Characters(characters, start, end);
+	}
+
+	/**
 	 * Creates a range of characters.
 	 * @param first The first of the range, inclusive.
 	 * @param last The last of the range, inclusive.
 	 * @return Characters representing the indicated range.
 	 * @throws IllegalArgumentException if the last character comes before the first character.
 	 */
-	public static Characters range(final char first, final char last) {
+	public static Characters ofRange(final char first, final char last) {
 		if(last < first) {
 			throw new IllegalArgumentException("Last character in range " + getLabel(last) + " cannot come before first character " + getLabel(first) + ".");
 		}
@@ -480,13 +506,13 @@ public final class Characters {
 	}
 
 	/**
-	 * Character sequence constructor. Duplicates are ignored.
+	 * Character sequence factory method. Duplicates are ignored.
 	 * @param charSequence The character sequence containing characters to store.
 	 * @throws NullPointerException if the given character sequence is <code>null</code>.
 	 * @throws IllegalArgumentException if the given character sequence contains Unicode surrogate characters.
 	 */
-	public Characters(final CharSequence charSequence) {
-		this(toCharArray(charSequence));
+	public static Characters from(final CharSequence charSequence) {
+		return of(toCharArray(charSequence));
 	}
 
 	/** @return <code>true</code> if this object contains no characters. */
@@ -519,7 +545,7 @@ public final class Characters {
 	 */
 	public Characters add(final char... characters) {
 		final int length = characters.length;
-		return length > 0 ? new Characters(toStringBuilder(length).append(characters)) //get a string builder from the characters and append the given characters to create a new object
+		return length > 0 ? Characters.from(toStringBuilder(length).append(characters)) //get a string builder from the characters and append the given characters to create a new object
 				: this; //if nothing is being added, return these characters
 	}
 
@@ -532,7 +558,7 @@ public final class Characters {
 	 */
 	public Characters add(final CharSequence charSequence) {
 		final int length = charSequence.length();
-		return length > 0 ? new Characters(toStringBuilder(charSequence.length()).append(charSequence)) //get a string builder from the characters and append the given characters to create a new object
+		return length > 0 ? Characters.from(toStringBuilder(charSequence.length()).append(charSequence)) //get a string builder from the characters and append the given characters to create a new object
 				: this; //if nothing is being added, return these characters
 	}
 
@@ -561,7 +587,7 @@ public final class Characters {
 						stringBuilder.append(c); //add this character to our string builder
 					}
 				}
-				return new Characters(stringBuilder); //return new characters from our string builder, with the requested characters removed
+				return Characters.from(stringBuilder); //return new characters from our string builder, with the requested characters removed
 			}
 		}
 		return this; //if we didn't have any of the given characters to begin with, return the characters the way they are
@@ -582,7 +608,7 @@ public final class Characters {
 						stringBuilder.append(c); //add this character to our string builder
 					}
 				}
-				return new Characters(stringBuilder); //return new characters from our string builder, with the requested characters removed
+				return Characters.from(stringBuilder); //return new characters from our string builder, with the requested characters removed
 			}
 		}
 		return this; //if we didn't have any of the given characters to begin with, return the characters the way they are
@@ -626,7 +652,7 @@ public final class Characters {
 			subsequences.add(charSequence.subSequence(start, end)); //add this subsequence
 			start = end; //start over at the end of this subsequence
 		}
-		return subsequences != null ? subsequences : Collections.<CharSequence> emptyList();
+		return subsequences != null ? subsequences : Collections.<CharSequence>emptyList();
 	}
 
 	/** @return A string containing these characters. */

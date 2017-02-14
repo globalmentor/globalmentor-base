@@ -232,7 +232,7 @@ public class Prose {
 	 */
 	public static boolean isBreak(final String text) {
 		//if the string is only made up of asterisks and hyphens
-		if(text.length() > 2 && isAllChars(text, new Characters('*', '-', '_', EM_DASH_CHAR, EN_DASH_CHAR))) //TODO use constants
+		if(text.length() > 2 && isAllChars(text, Characters.of('*', '-', '_', EM_DASH_CHAR, EN_DASH_CHAR))) //TODO use constants
 			return true; //this is a page break heading
 		//if this line contains "page" surrounded by only punctuation
 		else if("page".equalsIgnoreCase(Strings.trim(text, PUNCTUATION_CHARS.add(TRIM_CHARACTERS))))

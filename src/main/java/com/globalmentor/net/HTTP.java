@@ -326,7 +326,7 @@ public class HTTP {
 	public static final char WILDCARD_CHAR = '*';
 
 	/** US-ASCII control characters. */
-	public static final Characters CTL_CHARACTERS = Characters.range((char)0, (char)31).add((char)127);
+	public static final Characters CTL_CHARACTERS = Characters.ofRange((char)0, (char)31).add((char)127);
 
 	/** US-ASCII carriage return. */
 	public static final char CR = (char)13;
@@ -343,14 +343,14 @@ public class HTTP {
 	public static final String CRLF = "" + CR + LF;
 
 	/** Characters that must be in a quoted string to be included in a parameter value. */
-	public static final Characters SEPARATOR_CHARACTERS = new Characters('(', ')', '<', '>', '@', ',', ';', ':', '\\', QUOTE, '/', '[', ']', '?', '=', '{', '}',
+	public static final Characters SEPARATOR_CHARACTERS = Characters.of('(', ')', '<', '>', '@', ',', ';', ':', '\\', QUOTE, '/', '[', ']', '?', '=', '{', '}',
 			SP, HT);
 
 	/** Characters that delimit tokens. */
 	public static final Characters DELIMITER_CHARACTERS = CTL_CHARACTERS.add(SEPARATOR_CHARACTERS);
 
 	/** Linear whitespace characters which can, in the correct sequence, be folded into single spaces. */
-	public static final Characters LWS_CHARACTERS = new Characters(CR, LF, SP, HT);
+	public static final Characters LWS_CHARACTERS = Characters.of(CR, LF, SP, HT);
 
 	/** The regular expression string matching linear whitespace. */
 	public static final String LWS_REGULAR_EXPRESSION = "[\\r\\f \\t]";

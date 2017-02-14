@@ -340,7 +340,7 @@ public class Strings {
 		String outString = inString; //this is the string we'll process
 		int fromIndex = 0; //we'll start looking for links at the beginning of the string
 		while(fromIndex < outString.length()) { //keep looking until we run out of characters
-			int checkIndex = CharSequences.charIndexOf(outString, new Characters('.', '@'), fromIndex); //see if we can find any of the hyperlink characters TODO use a constant
+			int checkIndex = CharSequences.charIndexOf(outString, Characters.of('.', '@'), fromIndex); //see if we can find any of the hyperlink characters TODO use a constant
 			if(checkIndex != -1) { //if we found one of them
 				int wordBegin = getWordBeginning(outString, checkIndex); //find the beginning of this word
 				int originalWordEnd = getWordEnd(outString, checkIndex); //find the end of this word

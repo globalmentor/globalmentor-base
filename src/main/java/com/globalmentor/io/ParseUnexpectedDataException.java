@@ -178,7 +178,7 @@ public class ParseUnexpectedDataException extends ParseIOException {
 	public ParseUnexpectedDataException(final String message, final char expectedChar, final char foundChar, final long lineIndex, final long charIndex) {
 		super(message != null ? message : "Unexpected character: expected " + Characters.getLabel(expectedChar) + " found " + Characters.getLabel(foundChar) + ".",
 				(String)null, lineIndex, charIndex);
-		setExpectedCharacters(new Characters(expectedChar)); //save the expected character
+		setExpectedCharacters(Characters.of(expectedChar)); //save the expected character
 		setFoundCharacter(foundChar); //save the character found
 
 	}
