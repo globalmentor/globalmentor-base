@@ -1498,6 +1498,7 @@ public class Files {
 	 * <code>bak</code> extension added.</li>
 	 * <li>If <var><code>maxBackupCount</code></var> is greater than <code>1</code>, the backup filename will be in the form <code>filename.ext.1.bak</code>, i.e.
 	 * with a <code>1.bak</code> extension added.</li>
+	 * </ol>
 	 * 
 	 * @param path The path of the file to back up.
 	 * @param maxBackupCount The maximum number of rolling backup files to use.
@@ -1546,6 +1547,11 @@ public class Files {
 	 * exists, <code>filename.ext.<var>maxBackupCount</var>.bak</code> will be deleted (if it exists) and each backup file
 	 * <code>filename.ext.<var>number</var>.bak</code> in the sequence will be renamed to <code>filename.ext.<var>number+1</var>.bak</code> (if it exists) down to
 	 * and including <var>1</var>, and then the indicated file will be copied to the backup filename, which is <code>filename.ext.<var>1</var>.bak</code>.
+	 * 
+	 * <p>
+	 * If it's a rolling backup and one of the backup files are manually erased, the blank space that will be left between them will be rolled aswell, until the
+	 * blank space take the place of number <var><code>maxBackupCount</code></var> and then disappears.
+	 * </p>
 	 * 
 	 * @param path The path of the file to back up.
 	 * @param maxBackupCount The maximum number of rolling backup files to use.
