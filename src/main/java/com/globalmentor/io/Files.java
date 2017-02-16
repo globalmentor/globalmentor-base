@@ -1511,12 +1511,15 @@ public class Files {
 				"The provided path is referring to a directory or doesn't exist.");
 		checkArgument(maxBackupCount > 0, "The maximum number of rolling backup files to be used must be greater than zero.");
 
+		File backupFile = null;
+
 		if(maxBackupCount == 1) {
-			return Paths.get(path + String.valueOf(FILENAME_EXTENSION_SEPARATOR) + BACKUP_EXTENSION); //if the backups are not numbered, we return the simple backup path.
+			backupFile = Files.addExtension(path.toFile(), BACKUP_EXTENSION); //if the backups are not numbered, we return the simple backup path.
 		} else {
-			return Paths.get(path + String.valueOf(FILENAME_EXTENSION_SEPARATOR) + LATEST_NUMBERED_BACKUP_EXTENSION); //if the backup file is numbered, we return the path for the latest one.
+			backupFile = Files.addExtension(path.toFile(), LATEST_NUMBERED_BACKUP_EXTENSION); //if the backup file is numbered, we return the path for the latest one.
 		}
 
+		return backupFile.toPath();
 	}
 
 	/**
@@ -1561,11 +1564,7 @@ public class Files {
 			rollBackupFiles(path, maxBackupCount); //if there's an existent backup for the given file we need to apply the rolling policy.
 		}
 
-		final Path backupPath = getBackupPath(path, maxBackupCount);
-
-		Files.copy(path.toFile(), backupPath.toFile());
-
-		return backupPath;
+		return java.nio.file.Files.copy(path, getBackupPath(path, maxBackupCount), StandardCopyOption.REPLACE_EXISTING);
 	}
 
 	/**
@@ -1585,13 +1584,12 @@ public class Files {
 		checkArgument(maxBackupCount > 1, "The maximum number of rolling backup files to be used must be greater than one.");
 
 		for(long i = maxBackupCount - 1; i >= 1; i--) {
-			final Path sourceBackupFile = Paths.get(path + String.valueOf(FILENAME_EXTENSION_SEPARATOR) + NUMBERED_BACKUP_EXTENSION_TEMPLATE.apply(i));
+			final Path sourceBackupFile = Files.addExtension(path.toFile(), NUMBERED_BACKUP_EXTENSION_TEMPLATE.apply(i)).toPath();
 
 			if(java.nio.file.Files.exists(sourceBackupFile)) {
-				final File destinationBackupFile = Paths.get(path + String.valueOf(FILENAME_EXTENSION_SEPARATOR) + NUMBERED_BACKUP_EXTENSION_TEMPLATE.apply(i + 1))
-						.toFile();
+				final Path destinationBackupFile = Files.addExtension(path.toFile(), NUMBERED_BACKUP_EXTENSION_TEMPLATE.apply(i + 1)).toPath();
 
-				Files.move(sourceBackupFile.toFile(), destinationBackupFile);
+				java.nio.file.Files.move(sourceBackupFile, destinationBackupFile, StandardCopyOption.REPLACE_EXISTING);
 			}
 		}
 
