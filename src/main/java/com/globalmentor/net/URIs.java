@@ -121,22 +121,22 @@ public class URIs {
 	public static final char MAILTO_USERNAME_DOMAIN_SEPARATOR = '@'; //TODO reuse EmailAddress definition
 
 	/** Alphabetic characters as defined by RFC 2396. */
-	public static final Characters ALPHA_CHARACTERS = Characters.range('a', 'z').add(Characters.range('A', 'Z')); //count 52
+	public static final Characters ALPHA_CHARACTERS = Characters.ofRange('a', 'z').add(Characters.ofRange('A', 'Z')); //count 52
 
 	/** Digit characters as defined by RFC 2396. */
-	public static final Characters DIGIT_CHARACTERS = Characters.range('0', '9'); //count 10
+	public static final Characters DIGIT_CHARACTERS = Characters.ofRange('0', '9'); //count 10
 
 	/** Safe characters as defined by RFC 2396. */
-	public static final Characters SAFE_CHARACTERS = new Characters('$', '-', '_', '@', '.', '&'); //count 6
+	public static final Characters SAFE_CHARACTERS = Characters.of('$', '-', '_', '@', '.', '&'); //count 6
 
 	/** Extra characters as defined by RFC 2396. */
-	public static final Characters EXTRA_CHARACTERS = new Characters('!', '*', '"', '\'', '(', ')', ','); //count 7
+	public static final Characters EXTRA_CHARACTERS = Characters.of('!', '*', '"', '\'', '(', ')', ','); //count 7
 
 	/** The character to use for escaping URI data as defined by RFC 2396. */
 	public static final char ESCAPE_CHAR = '%'; //count 1
 
 	/** Reserved characters as defined by RFC 2396. */
-	public static final Characters RESERVED_CHARACTERS = new Characters('=', ';', '/', '#', '?', ':', ' '); //count 7
+	public static final Characters RESERVED_CHARACTERS = Characters.of('=', ';', '/', '#', '?', ':', ' '); //count 7
 
 	/** Characters that can appear in a URI as defined by RFC 2396. */
 	public static final Characters URI_CHARACTERS = ALPHA_CHARACTERS.add(DIGIT_CHARACTERS).add(SAFE_CHARACTERS).add(EXTRA_CHARACTERS).add(ESCAPE_CHAR)
@@ -149,10 +149,10 @@ public class URIs {
 	public static final Characters UNRESERVED_CHARACTERS = ALPHA_CHARACTERS.add(DIGIT_CHARACTERS).add('-', '.', '_', '~');
 
 	/** General delimiter characters defined by RFC 3986. */
-	public static final Characters GEN_DELIM_CHARACTERS = new Characters(':', '/', '?', '#', '[', ']', '@');
+	public static final Characters GEN_DELIM_CHARACTERS = Characters.of(':', '/', '?', '#', '[', ']', '@');
 
 	/** Subdelimiter characters defined by RFC 3986. */
-	public static final Characters SUB_DELIM_CHARACTERS = new Characters('!', '$', '&', '\'', '(', ')', '*', '+', ',', ';', '=');
+	public static final Characters SUB_DELIM_CHARACTERS = Characters.of('!', '$', '&', '\'', '(', ')', '*', '+', ',', ';', '=');
 
 	/** Path segment characters defined by RFC 3986. */
 	public static final Characters PATH_SEGMENT_CHARACTERS = UNRESERVED_CHARACTERS.add(SUB_DELIM_CHARACTERS).add(':', '@');

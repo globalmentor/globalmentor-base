@@ -70,7 +70,7 @@ public class ContentType {
 	/** The wildcard subtype, matching any subtype. */
 	public static final String WILDCARD_SUBTYPE = String.valueOf(TYPE_WILDCARD_CHAR);
 	/** The <code>tspecials</code> characters of RFC 2046, which require a string to be quoted in a parameter value. */
-	public static final Characters SPECIAL_CHARACTERS = new Characters('(', ')', '<', '>', '@', ',', ';', ':', '\\', '"', '/', '[', ']', '?', '=');
+	public static final Characters SPECIAL_CHARACTERS = Characters.of('(', ')', '<', '>', '@', ',', ';', ':', '\\', '"', '/', '[', ']', '?', '=');
 	/** The characters of RFC 2046 which are considered illegal in tokens; control characters and non-ASCII characters are not included. */
 	public static final Characters ILLEGAL_TOKEN_CHARACTERS = SPECIAL_CHARACTERS.add(SPACE_CHAR);
 

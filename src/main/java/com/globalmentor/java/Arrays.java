@@ -107,10 +107,10 @@ public class Arrays {
 			throw new IllegalArgumentException("Start range index " + start + " greater than end range index" + end);
 		}
 		if(start < 0) { //if the first index is too low
-			throw new IllegalArgumentException("Start range index " + start + " cannot be less than zero.");
+			throw new ArrayIndexOutOfBoundsException("Start range index " + start + " cannot be less than zero.");
 		}
 		if(end > length) { //if the last index is too high
-			throw new IllegalArgumentException("End range index " + end + " cannot be greater than length " + length);
+			throw new ArrayIndexOutOfBoundsException("End range index " + end + " cannot be greater than length " + length);
 		}
 		return rangeLength;
 	}

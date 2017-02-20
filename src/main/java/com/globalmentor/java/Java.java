@@ -109,7 +109,7 @@ public class Java {
 	}
 
 	/** Illegal variable characters to be replaced when creating a valid variable name. */
-	private static final Characters ILLEGAL_VARIABLE_NAME_CHARACTERS = new Characters(PACKAGE_SEPARATOR, INTERNAL_CLASS_SEPARATOR);
+	private static final Characters ILLEGAL_VARIABLE_NAME_CHARACTERS = Characters.of(PACKAGE_SEPARATOR, INTERNAL_CLASS_SEPARATOR);
 
 	/**
 	 * Creates a safe Java variable name by replacing all illegal characters with the underscore ('_') character. This version only checks for the '.' and '$'

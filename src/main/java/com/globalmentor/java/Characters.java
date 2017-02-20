@@ -1,5 +1,5 @@
 /*
- * Copyright © 1996-2012 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * Copyright © 1996-2017 GlobalMentor, Inc. <http://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static com.globalmentor.java.Arrays.checkIndexRange;
 import static com.globalmentor.java.CharSequences.*;
 import static com.globalmentor.java.Integers.*;
 import static com.globalmentor.java.Conditions.*;
@@ -57,6 +58,9 @@ public final class Characters {
 
 	/** A shared instance of an empty array of characters. */
 	public static final char[] EMPTY_ARRAY = new char[0];
+
+	/** The shared instance of no characters. */
+	public static final Characters NONE = new Characters(EMPTY_ARRAY); //must be defined before the predefined instances below
 
 	/** The character with Unicode code point zero. */
 	public static final char NULL_CHAR = 0x0000;
@@ -156,7 +160,7 @@ public final class Characters {
 	public static final char LEFT_TO_RIGHT_MARK_CHAR = 0x200E;
 	/** A right-to-right mark (200F;RIGHT-TO-LEFT MARK;Cf;0;R;;;;;N;;;;;). */
 	public static final char RIGHT_TO_LEFT_MARK_CHAR = 0x200F;
-	/** A zero-width non-breaking space&mdash;word joiner (WJ). */
+	/** A zero-width non-breaking space—word joiner (WJ). */
 	public static final char WORD_JOINER_CHAR = 0x2060;
 	/** A left single quote. */
 	public static final char LEFT_SINGLE_QUOTATION_MARK_CHAR = 0x2018;
@@ -241,8 +245,8 @@ public final class Characters {
 	/** A full width quotation mark. */
 	public static final char FULLWIDTH_QUOTATION_MARK_CHAR = 0xFF02;
 	/**
-	 * A zero-width no-breaking space (ZWNBSP)&mdash;the Byte Order Mark (BOM) (FEFF;ZERO WIDTH NO-BREAK SPACE;Cf;0;BN;;;;;N;BYTE ORDER MARK;;;;). For
-	 * non-breaking purposes, deprecated in favor of <code>WORD_JOINER_CHAR</code>.
+	 * A zero-width no-breaking space (ZWNBSP)—the Byte Order Mark (BOM) (FEFF;ZERO WIDTH NO-BREAK SPACE;Cf;0;BN;;;;;N;BYTE ORDER MARK;;;;). For non-breaking
+	 * purposes, deprecated in favor of <code>WORD_JOINER_CHAR</code>.
 	 * @see #WORD_JOINER_CHAR
 	 */
 	public static final char ZERO_WIDTH_NO_BREAK_SPACE_CHAR = 0xFEFF;
@@ -278,7 +282,7 @@ public final class Characters {
 	 * Unicode newline characters.
 	 * @see <a href="http://unicode.org/unicode/standard/reports/tr13/tr13-5.html">Unicode Newline Guidelines</a>
 	 */
-	public static final Characters NEWLINE_CHARACTERS = new Characters(CARRIAGE_RETURN_CHAR, LINE_FEED_CHAR, NEXT_LINE_CHAR, LINE_SEPARATOR_CHAR, FORM_FEED_CHAR,
+	public static final Characters NEWLINE_CHARACTERS = of(CARRIAGE_RETURN_CHAR, LINE_FEED_CHAR, NEXT_LINE_CHAR, LINE_SEPARATOR_CHAR, FORM_FEED_CHAR,
 			LINE_SEPARATOR_CHAR, PARAGRAPH_SEPARATOR_CHAR);
 
 	/** Unicode whitespace characters. */
@@ -304,7 +308,7 @@ public final class Characters {
 			+ WORD_JOINER_CHAR + ZERO_WIDTH_NO_BREAK_SPACE_CHAR;
 
 	/** Characters considered to be end-of-line markers (e.g. CR and LF). */
-	public static final Characters EOL_CHARACTERS = new Characters(CARRIAGE_RETURN_CHAR, LINE_FEED_CHAR);
+	public static final Characters EOL_CHARACTERS = of(CARRIAGE_RETURN_CHAR, LINE_FEED_CHAR);
 
 	/**
 	 * Characters that do not contain visible "content", and may be trimmed from ends of a string. These include whitespace, control characters, and formatting
@@ -351,16 +355,16 @@ public final class Characters {
 			+ SINGLE_RIGHT_POINTING_ANGLE_QUOTATION_MARK_CHAR;
 
 	/** Characters used to punctuate phrases and sentences. */
-	public static final Characters PHRASE_PUNCTUATION_CHARACTERS = new Characters('.', ',', ':', ';', '?', '!'); //TODO use constants here
+	public static final Characters PHRASE_PUNCTUATION_CHARACTERS = of('.', ',', ':', ';', '?', '!'); //TODO use constants here
 
 	/** Punctuation that expects a character to follow at some point. */
-	public static final Characters DEPENDENT_PUNCTUATION_CHARACTERS = new Characters(COLON_CHAR, ';', COMMA_CHAR, HYPHEN_MINUS_CHAR, EM_DASH_CHAR, EN_DASH_CHAR); //TODO use a constant
+	public static final Characters DEPENDENT_PUNCTUATION_CHARACTERS = of(COLON_CHAR, ';', COMMA_CHAR, HYPHEN_MINUS_CHAR, EM_DASH_CHAR, EN_DASH_CHAR); //TODO use a constant
 
 	/** Left punctuation used to group characters. */
-	public static final Characters LEFT_GROUP_PUNCTUATION_CHARACTERS = new Characters('(', '[', '{', '<'); //TODO use constants
+	public static final Characters LEFT_GROUP_PUNCTUATION_CHARACTERS = of('(', '[', '{', '<'); //TODO use constants
 
 	/** Right punctuation used to group characters. */
-	public static final Characters RIGHT_GROUP_PUNCTUATION_CHARACTERS = new Characters(')', ']', '}', '>'); //TODO use constants
+	public static final Characters RIGHT_GROUP_PUNCTUATION_CHARACTERS = of(')', ']', '}', '>'); //TODO use constants
 
 	/** Punctuation used to group characters. */
 	public static final Characters GROUP_PUNCTUATION_CHARACTERS = LEFT_GROUP_PUNCTUATION_CHARACTERS.add(RIGHT_GROUP_PUNCTUATION_CHARACTERS);
@@ -380,6 +384,26 @@ public final class Characters {
 	 */
 	//TODO fix; these characters must be escaped, or this Pattern.toString() will run into an endless loop!	public static final Pattern WORD_DELIMITER_PATTERN=Pattern.compile("["+WORD_DELIMITER_CHARS+"]");
 
+	//Unicode categories; see http://www.unicode.org/reports/tr44/#General_Category_Values
+
+	/** Characters in the Unicode <code>Space_Separator</code> (<code>Zs</code>) category as of Unicode 9.0.0. */
+	public static final Characters SPACE_SEPARATOR_CHARACTERS = of(SPACE_CHAR, NO_BREAK_SPACE_CHAR, '\u1680').add(ofRange('\u2000', '\u200A')).add('\u202F')
+			.add('\u205F').add('\u3000');
+
+	/** Characters in the Unicode <code>Line_Separator</code> (<code>Zl</code>) category as of Unicode 9.0.0. */
+	public static final Characters LINE_SEPARATOR_CHARACTERS = of(LINE_SEPARATOR_CHAR);
+
+	/** Characters in the Unicode <code>Paragraph_Separator</code> (<code>Zp</code>) category as of Unicode 9.0.0. */
+	public static final Characters PARAGRAPH_SEPARATOR_CHARACTERS = of(PARAGRAPH_SEPARATOR_CHAR);
+
+	/**
+	 * Characters in the Unicode <code>Separator</code> (<code>Z</code>) group as of Unicode 9.0.0.
+	 * @see #SPACE_SEPARATOR_CHARACTERS
+	 * @see #LINE_SEPARATOR_CHARACTERS
+	 * @see #PARAGRAPH_SEPARATOR_CHARACTERS
+	 */
+	public static final Characters SEPARATOR_CHARACTERS = of(SPACE_SEPARATOR_CHARACTERS, LINE_SEPARATOR_CHARACTERS, PARAGRAPH_SEPARATOR_CHARACTERS);
+
 	/** Characters that allow words to wrap. */
 	public static final String WORD_WRAP_CHARS = WHITESPACE_CHARACTERS + "-/"; //TODO use constants
 
@@ -392,72 +416,81 @@ public final class Characters {
 	/** The highest character, or -1 if there are no characters.. */
 	private final int maxChar;
 
-	/** The shared instance of no characters. */
-	public static final Characters NONE = new Characters();
+	/**
+	 * Characters constructor.
+	 * <p>
+	 * This method is only to be used internally with preprocessed data. The given character array is used as-is, and is expected to be sorted, with no surrogate
+	 * characters, and with duplicates removed.
+	 * </p>
+	 * @param characters The characters to store.
+	 * @throws NullPointerException if the given characters is <code>null</code>.
+	 */
+	private Characters(final char[] characters) {
+		if(characters.length > 0) { //if this is not an empty array of characters
+			minChar = characters[0];
+			maxChar = characters[characters.length - 1];
+		} else { //if there are no characters
+			minChar = maxChar = -1;
+		}
+		this.chars = characters; //save the processed characters
+	}
 
 	/**
-	 * Characters constructor. Duplicates are ignored.
+	 * Characters factory method. Duplicates are ignored.
 	 * @param characters The characters to store.
 	 * @throws NullPointerException if the given characters is <code>null</code>.
 	 * @throws IllegalArgumentException if the given characters contain Unicode surrogate characters.
 	 */
-	public Characters(char... characters) {
-		this(characters, 0, characters.length);
+	public static Characters of(final char... characters) {
+		return of(characters, 0, characters.length);
 	}
 
 	/**
-	 * Characters constructor. Duplicates are ignored.
+	 * Characters factory method. Duplicates are ignored.
 	 * @param characters The characters to store.
 	 * @param start The start index, inclusive.
 	 * @param end The end index, exclusive.
 	 * @throws NullPointerException if the given characters is <code>null</code>.
 	 * @throws IllegalArgumentException if the given characters contain Unicode surrogate characters.
 	 */
-	public Characters(char[] characters, final int start, final int end) {
-		if(characters.length != 0) { //if this is not an empty array of characters
-			//create a defensive copy of the input
-			if(start == 0 && end == characters.length) { //if we're using the whole array
-				characters = characters.clone(); //create a copy of the characters so that we can control the array completely
-			} else { //if we're using part of the array
-				final int length = end - start;
-				final char[] tempCharacters = new char[length]; //create a new array
-				System.arraycopy(characters, start, tempCharacters, 0, length); //copy the characters
-				characters = tempCharacters; //use the copy
-			}
-			sort(characters); //sort the characters
-			boolean duplicates = false; //start by assuming there are no duplicates
-			final int length = characters.length;
-			final int lastIndex = length - 1;
-			for(int i = lastIndex; i > 0; --i) { //check the characters for duplicates; iterate down to the second character
-				final char c = characters[i];
-				if(c == characters[i - 1]) { //because the characters are now sorted, we just check for two of the same character side-by-side
-					duplicates = true;
-				}
-				if(c >= Character.MIN_SURROGATE && c <= Character.MAX_SURROGATE) { //if this is a surrogate character
-					throw new IllegalArgumentException("Characters contain surrogate character: " + getLabel(c) + ".");
-				}
-			}
-			minChar = characters[0];
-			if(minChar >= Character.MIN_SURROGATE && minChar <= Character.MAX_SURROGATE) { //check the first character, which we skipped
-				throw new IllegalArgumentException("Characters contain surrogate character: " + getLabel(minChar) + ".");
-			}
-			maxChar = characters[lastIndex];
-			if(duplicates) { //if there are duplicates, remove them
-				int lastChar = -1;
-				final StringBuilder stringBuilder = new StringBuilder(characters.length);
-				for(final char c : characters) {
-					if(c != lastChar) { //if this is not a duplicate (the characters are in order, so duplicates will always be side-by-side)
-						stringBuilder.append(c);
-						lastChar = c; //indicate the last character we looked at, so we can prevent duplicates
-					}
-				}
-				characters = toCharArray(stringBuilder); //use the characters in the string builder, which no longer contain duplicates
-			}
-		} else { //if there are no characters
-			characters = EMPTY_ARRAY; //use a shared empty array to save memory
-			minChar = maxChar = -1;
+	public static Characters of(char[] characters, final int start, final int end) {
+		checkIndexRange(characters.length, start, end);
+		final int length = end - start;
+		if(length == 0) {
+			return NONE;
 		}
-		this.chars = characters; //save the processed characters
+		//create a defensive copy of the input
+		if(start == 0 && end == characters.length) { //if we're using the whole array
+			characters = characters.clone(); //create a copy of the characters so that we can control the array completely
+		} else { //if we're using part of the array
+			final char[] tempCharacters = new char[length]; //create a new array
+			System.arraycopy(characters, start, tempCharacters, 0, length); //copy the characters
+			characters = tempCharacters; //use the copy
+		}
+		sort(characters); //sort the characters
+		boolean duplicates = false; //start by assuming there are no duplicates
+		for(int i = length - 1; i > 0 && !duplicates; --i) { //check the characters for duplicates; iterate down to the second character
+			final char c = characters[i];
+			checkArgument(!Character.isSurrogate(c), "Characters contain surrogate character: %s.", getLabel(c));
+			if(c == characters[i - 1]) { //because the characters are now sorted, we just check for two of the same character side-by-side
+				duplicates = true;
+			}
+		}
+		final char firstChar = characters[0];
+		checkArgument(!Character.isSurrogate(characters[0]), "Characters contain surrogate character: %s.", getLabel(firstChar)); //check the first character, which we skipped
+		if(duplicates) { //if there are duplicates, remove them
+			int lastChar = -1;
+			final StringBuilder stringBuilder = new StringBuilder(characters.length);
+			for(final char c : characters) {
+				if(c != lastChar) { //if this is not a duplicate (the characters are in order, so duplicates will always be side-by-side)
+					stringBuilder.append(c);
+					lastChar = c; //indicate the last character we looked at, so we can prevent duplicates
+				}
+			}
+			characters = toCharArray(stringBuilder); //use the characters in the string builder, which no longer contain duplicates
+			//note that length is no longer valid here, but there is no point in updating it now
+		}
+		return new Characters(characters);
 	}
 
 	/**
@@ -467,7 +500,7 @@ public final class Characters {
 	 * @return Characters representing the indicated range.
 	 * @throws IllegalArgumentException if the last character comes before the first character.
 	 */
-	public static Characters range(final char first, final char last) {
+	public static Characters ofRange(final char first, final char last) {
 		if(last < first) {
 			throw new IllegalArgumentException("Last character in range " + getLabel(last) + " cannot come before first character " + getLabel(first) + ".");
 		}
@@ -480,13 +513,29 @@ public final class Characters {
 	}
 
 	/**
-	 * Character sequence constructor. Duplicates are ignored.
+	 * Characters factory method from existing {@link Characters} instances. Duplicates are ignored.
+	 * @param multipleCharacters The {@link Characters} instances containing characters to store.
+	 * @throws NullPointerException if the given characters is <code>null</code>.
+	 * @throws IllegalArgumentException if the given characters contain Unicode surrogate characters.
+	 */
+	public static Characters of(final Characters... multipleCharacters) {
+		Characters characters = NONE; //start with no characters
+		if(multipleCharacters.length > 0) { //if there are characters
+			for(final Characters moreCharacters : multipleCharacters) { //go through add add each of the character sets
+				characters = characters.add(moreCharacters);
+			}
+		}
+		return characters;
+	}
+
+	/**
+	 * Character sequence factory method. Duplicates are ignored.
 	 * @param charSequence The character sequence containing characters to store.
 	 * @throws NullPointerException if the given character sequence is <code>null</code>.
 	 * @throws IllegalArgumentException if the given character sequence contains Unicode surrogate characters.
 	 */
-	public Characters(final CharSequence charSequence) {
-		this(toCharArray(charSequence));
+	public static Characters from(final CharSequence charSequence) {
+		return of(toCharArray(charSequence));
 	}
 
 	/** @return <code>true</code> if this object contains no characters. */
@@ -519,7 +568,7 @@ public final class Characters {
 	 */
 	public Characters add(final char... characters) {
 		final int length = characters.length;
-		return length > 0 ? new Characters(toStringBuilder(length).append(characters)) //get a string builder from the characters and append the given characters to create a new object
+		return length > 0 ? Characters.from(toStringBuilder(length).append(characters)) //get a string builder from the characters and append the given characters to create a new object
 				: this; //if nothing is being added, return these characters
 	}
 
@@ -532,7 +581,7 @@ public final class Characters {
 	 */
 	public Characters add(final CharSequence charSequence) {
 		final int length = charSequence.length();
-		return length > 0 ? new Characters(toStringBuilder(charSequence.length()).append(charSequence)) //get a string builder from the characters and append the given characters to create a new object
+		return length > 0 ? Characters.from(toStringBuilder(charSequence.length()).append(charSequence)) //get a string builder from the characters and append the given characters to create a new object
 				: this; //if nothing is being added, return these characters
 	}
 
@@ -561,7 +610,7 @@ public final class Characters {
 						stringBuilder.append(c); //add this character to our string builder
 					}
 				}
-				return new Characters(stringBuilder); //return new characters from our string builder, with the requested characters removed
+				return Characters.from(stringBuilder); //return new characters from our string builder, with the requested characters removed
 			}
 		}
 		return this; //if we didn't have any of the given characters to begin with, return the characters the way they are
@@ -582,7 +631,7 @@ public final class Characters {
 						stringBuilder.append(c); //add this character to our string builder
 					}
 				}
-				return new Characters(stringBuilder); //return new characters from our string builder, with the requested characters removed
+				return Characters.from(stringBuilder); //return new characters from our string builder, with the requested characters removed
 			}
 		}
 		return this; //if we didn't have any of the given characters to begin with, return the characters the way they are
@@ -626,7 +675,7 @@ public final class Characters {
 			subsequences.add(charSequence.subSequence(start, end)); //add this subsequence
 			start = end; //start over at the end of this subsequence
 		}
-		return subsequences != null ? subsequences : Collections.<CharSequence> emptyList();
+		return subsequences != null ? subsequences : Collections.<CharSequence>emptyList();
 	}
 
 	/** @return A string containing these characters. */
