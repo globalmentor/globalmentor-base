@@ -424,7 +424,6 @@ public final class Characters {
 	 * </p>
 	 * @param characters The characters to store.
 	 * @throws NullPointerException if the given characters is <code>null</code>.
-	 * @throws IllegalArgumentException if the given characters contain Unicode surrogate characters.
 	 */
 	private Characters(final char[] characters) {
 		if(characters.length > 0) { //if this is not an empty array of characters
@@ -515,14 +514,14 @@ public final class Characters {
 
 	/**
 	 * Characters factory method from existing {@link Characters} instances. Duplicates are ignored.
-	 * @param characterss The {@link Characters} instances containing characters to store.
+	 * @param multipleCharacters The {@link Characters} instances containing characters to store.
 	 * @throws NullPointerException if the given characters is <code>null</code>.
 	 * @throws IllegalArgumentException if the given characters contain Unicode surrogate characters.
 	 */
-	public static Characters of(final Characters... characterss) {
+	public static Characters of(final Characters... multipleCharacters) {
 		Characters characters = NONE; //start with no characters
-		if(characterss.length > 0) { //if there are characters
-			for(final Characters moreCharacters : characterss) { //go through add add each of the character sets
+		if(multipleCharacters.length > 0) { //if there are characters
+			for(final Characters moreCharacters : multipleCharacters) { //go through add add each of the character sets
 				characters = characters.add(moreCharacters);
 			}
 		}
