@@ -1,5 +1,5 @@
 /*
- * Copyright © 1996-2011 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * Copyright © 1996-2017 GlobalMentor, Inc. <http://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,15 +16,18 @@
 
 package com.globalmentor.io;
 
-import java.io.IOException;
-import java.io.LineNumberReader;
-import java.io.Reader;
+import java.io.*;
+import java.util.List;
+
+import javax.annotation.Nonnull;
 
 /**
  * Exception class for parsing errors that occur during I/O.
  * @see ParseReader
  */
 public class ParseIOException extends IOException {
+
+	private static final long serialVersionUID = 1L;
 
 	/** The index of the line on which the error occurred, or -1 if the line index is not known. */
 	private final long lineIndex;
@@ -359,21 +362,21 @@ public class ParseIOException extends IOException {
 
 	/**
 	 * Converts an array of strings to a message with the strings separated by commas.
-	 * @param stringArray An array of strings to be converted to a string.
+	 * @param strings An array of strings to be converted to a string.
 	 * @return The message string constructed
 	 */
 	//TODO convert the characters in these strings so that whitespace gets converted to characters
-	static public String convertStringsToMessage(final String[] stringArray) {
-		String messageString = ""; //this string will receive the message to return
-		for(int i = 0; i < stringArray.length; ++i) { //look at each string in the array
-			messageString += "\"" + stringArray[i]; //add a double quote character followed by this string
-			if(i < stringArray.length - 1) //if this isn't the last string in the array
-				messageString += "\", "; //show that there will be another string
-			else
-				//if this is the last string in the array
-				messageString += '"'; //add just a double quote
+	static public String convertStringsToMessage(@Nonnull final List<String> strings) {
+		final StringBuilder messageStringBuilder = new StringBuilder(); //this will receive the message to return
+		for(int i = 0; i < strings.size(); ++i) { //look at each string
+			messageStringBuilder.append('"').append(strings.get(i)); //add a double quote character followed by this string
+			if(i < strings.size() - 1) { //if this isn't the last string
+				messageStringBuilder.append("\", "); //show that there will be another string
+			} else { //if this is the last string
+				messageStringBuilder.append('"'); //add just a double quote
+			}
 		}
-		return messageString; //return the message string we constructed
+		return messageStringBuilder.toString(); //return the message string we constructed
 	}
 
 }

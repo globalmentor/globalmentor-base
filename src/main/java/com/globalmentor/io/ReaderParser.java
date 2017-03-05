@@ -1,5 +1,5 @@
 /*
- * Copyright © 1996-2009 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * Copyright © 1996-2017 GlobalMentor, Inc. <http://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,8 @@ package com.globalmentor.io;
 
 import java.io.*;
 
+import javax.annotation.*;
+
 import com.globalmentor.java.Characters;
 
 import static com.globalmentor.java.Conditions.*;
@@ -30,6 +32,27 @@ import static com.globalmentor.java.Conditions.*;
 public class ReaderParser {
 
 	/**
+	 * Checks for a parsing condition and, if the test did not pass, throws a {@link ParseIOException}.
+	 * @param test The result of the test.
+	 * @param description A description of the test to be used when generating an exception, optionally formatted with arguments, or <code>null</code> for no
+	 *          description.
+	 * @param arguments The arguments to be applied when formatting, or an empty array if the message should not be formatted.
+	 * @throws NullPointerException if the given arguments is <code>null</code>.
+	 * @throws ParseIOException if the given value is <code>false</code>.
+	 * @throws ParseIOException if the description is an invalid pattern, or if an argument in the arguments array is not of the type expected by the format
+	 *           element(s) that use it.
+	 * @see String#format(String, Object...)
+	 */
+	public static void checkParseIO(@Nonnull final Reader reader, final boolean test, String description, final Object... arguments) throws ParseIOException {
+		if(!test) { //format the message if appropriate
+			if(description != null && arguments.length > 0) {
+				description = String.format(description, arguments);
+			}
+			throw new ParseIOException(reader, description);
+		}
+	}
+
+	/**
 	 * Checks that reader has no more data.
 	 * @param reader The reader the contents of which to be parsed.
 	 * @throws NullPointerException if the given reader is <code>null</code>.
@@ -39,7 +62,7 @@ public class ReaderParser {
 	public static void checkReaderEnd(final Reader reader) throws IOException, ParseUnexpectedDataException {
 		final int c = reader.read(); //get the current character
 		if(c >= 0) { //if this character is valid (the reader is not out of data)
-			throw new ParseUnexpectedDataException("Expected end of data; found " + Characters.getLabel(c) + ".", (char)c, reader);
+			throw new ParseUnexpectedDataException(reader, "Expected end of data; found " + Characters.getLabel(c) + ".", (char)c);
 		}
 	}
 
@@ -85,7 +108,7 @@ public class ReaderParser {
 		final int c = reader.read(); //get the current character
 		if(c != character) { //if this character does not match what we expected
 			checkReaderNotEnd(reader, c); //make sure we're not at the end of the reader
-			throw new ParseUnexpectedDataException(character, (char)c, reader);
+			throw new ParseUnexpectedDataException(reader, character, (char)c);
 		}
 		return (char)c; //return the character read
 	}
@@ -105,8 +128,9 @@ public class ReaderParser {
 		final int c = reader.read(); //get the current character
 		if(c < lowerBound || c > upperBound) { //if this character is not in the range
 			checkReaderNotEnd(reader, c); //make sure we're not at the end of the reader
-			throw new ParseUnexpectedDataException("Expected character from " + Characters.getLabel(lowerBound) + " to " + Characters.getLabel(upperBound)
-					+ "; found " + Characters.getLabel(c) + ".", (char)c, reader);
+			throw new ParseUnexpectedDataException(reader,
+					"Expected character from " + Characters.getLabel(lowerBound) + " to " + Characters.getLabel(upperBound) + "; found " + Characters.getLabel(c) + ".",
+					(char)c);
 		}
 		return (char)c; //return the character read
 	}
@@ -125,7 +149,7 @@ public class ReaderParser {
 		final int c = reader.read(); //get the current character
 		checkReaderNotEnd(reader, c); //make sure we're not at the end of the reader
 		if(!characters.contains((char)c)) { //if this character does not match one of the expected characters
-			throw new ParseUnexpectedDataException(characters, (char)c, reader);
+			throw new ParseUnexpectedDataException(reader, characters, (char)c);
 		}
 		return (char)c; //return the character read
 	}
@@ -288,8 +312,8 @@ public class ReaderParser {
 	 * @throws ParseUnexpectedDataException if a character in the string does not fall within the given range.
 	 * @throws ParseEOFException if the reader has no more characters.
 	 */
-	public static String readStringCheck(final Reader reader, final int count, final char lowerBound, final char upperBound) throws IOException,
-			ParseUnexpectedDataException {
+	public static String readStringCheck(final Reader reader, final int count, final char lowerBound, final char upperBound)
+			throws IOException, ParseUnexpectedDataException {
 		checkArgumentNotNegative(count); //make sure the count isn't negative
 		final char[] characters = new char[count]; //create a new buffer
 		if(reader.read(characters) != count) { //read the characters; if all the character weren't read
@@ -298,8 +322,9 @@ public class ReaderParser {
 		for(int i = 0; i < count; ++i) { //look at each character
 			final char c = characters[i]; //look at this character
 			if(c < lowerBound || c > upperBound) { //if this character is not in the range
-				throw new ParseUnexpectedDataException("Expected character from " + Characters.getLabel(lowerBound) + " to " + Characters.getLabel(upperBound)
-						+ "; found " + Characters.getLabel(c) + ".", (char)c, reader);
+				throw new ParseUnexpectedDataException(reader,
+						"Expected character from " + Characters.getLabel(lowerBound) + " to " + Characters.getLabel(upperBound) + "; found " + Characters.getLabel(c) + ".",
+						(char)c);
 			}
 		}
 		return new String(characters); //return a new string from the characters read 
@@ -498,8 +523,8 @@ public class ReaderParser {
 	 * @throws ParseEOFException Thrown when the end of the reader is reached unexpectedly.
 	 * @return The characters between the delimiters.
 	 */
-	public static String readDelimited(final Reader reader, final char startDelimiter, final char endDelimiter) throws IOException, ParseUnexpectedDataException,
-			ParseEOFException {
+	public static String readDelimited(final Reader reader, final char startDelimiter, final char endDelimiter)
+			throws IOException, ParseUnexpectedDataException, ParseEOFException {
 		check(reader, startDelimiter); //read the first delimiter
 		final String string = reachAfter(reader, endDelimiter); //read until the end delimiter is reached
 		return string; //return the string in-between

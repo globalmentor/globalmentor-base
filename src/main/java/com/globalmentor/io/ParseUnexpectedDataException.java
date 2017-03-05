@@ -1,5 +1,5 @@
 /*
- * Copyright © 1996-2011 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * Copyright © 1996-2017 GlobalMentor, Inc. <http://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,42 +16,51 @@
 
 package com.globalmentor.io;
 
+import static com.globalmentor.collections.Lists.*;
+import static java.util.Objects.*;
+
 import java.io.Reader;
+import java.util.*;
+
+import javax.annotation.*;
 
 import com.globalmentor.java.Characters;
 
 /**
  * Class for unexpected characters encountered when parsing an input stream. Used by {@link ParseReader}.
  * <p>
- * This implementation assumes that if a list of strings were expected, a string will have been found. That is, if <code>getExpectedCharacters()</code> returns
- * a non-null value, <code>getCharacterFound()</code> will hold a valid value; otherwise, <code>getStringFound()</code> will hold the appropriate value.
+ * This implementation assumes that if a list of strings were expected, a string will have been found. That is, if {@link #getExpectedCharacters()} returns a
+ * value {@link #getFoundCharacter()} will hold a valid value; otherwise, {@link #getFoundString()} will hold the appropriate value.
+ * </p>
  * @see ParseIOException
  * @see ParseReader
  */
 public class ParseUnexpectedDataException extends ParseIOException {
 
-	/** The expected characters, if characters were expected, else <code>null</code>. */
-	private Characters ExpectedCharacters = null;
+	private static final long serialVersionUID = 2L;
 
-	/** @return The expected characters, if characters were expected, else <code>null</code>. */
-	public Characters getExpectedCharacters() {
-		return ExpectedCharacters;
+	/** The expected characters, if characters were expected, else <code>null</code>. */
+	private Characters expectedCharacters = null;
+
+	/** @return The expected characters, if characters were expected. */
+	public Optional<Characters> getExpectedCharacters() {
+		return Optional.ofNullable(expectedCharacters);
 	}
 
 	/**
-	 * Sets the string of expected characters.
-	 * @param expectedCharacters The string of expected characters.
+	 * Sets the expected characters.
+	 * @param expectedCharacters The expected characters.
 	 */
-	protected void setExpectedCharacters(final Characters expectedCharacters) {
-		ExpectedCharacters = expectedCharacters;
+	protected void setExpectedCharacters(@Nonnull final Characters expectedCharacters) {
+		this.expectedCharacters = requireNonNull(expectedCharacters);
 	}
 
-	/** The character found, if characters were expected. */
-	private char FoundCharacter = (char)0;
+	/** The character found, if characters were expected, else <code>0</code>. */
+	private char foundCharacter = (char)0;
 
-	/** @return The character found, if characters were expected. */
+	/** @return The character found, if characters were expected, else <code>0</code>. */
 	public char getFoundCharacter() {
-		return FoundCharacter;
+		return foundCharacter;
 	}
 
 	/**
@@ -59,57 +68,57 @@ public class ParseUnexpectedDataException extends ParseIOException {
 	 * @param foundCharacter The character found.
 	 */
 	protected void setFoundCharacter(final char foundCharacter) {
-		FoundCharacter = foundCharacter;
+		this.foundCharacter = foundCharacter;
 	}
 
-	/** The array of expected strings, if strings were expected, else <code>null</code>. */
-	private String[] ExpectedStrings = null;
+	/** The expected strings, if strings were expected, else <code>null</code>. */
+	private List<String> expectedStrings = null;
 
-	/** @return The array of expected strings, if strings were expected, else <code>null</code>. */
-	public String[] getExpectedStrings() {
-		return ExpectedStrings;
+	/** @return The expected strings, if strings were expected. */
+	public Optional<List<String>> getExpectedStrings() {
+		return Optional.ofNullable(expectedStrings);
 	}
 
 	/**
-	 * Sets the array of expected strings.
-	 * @param expectedStrings The array of expected strings.
+	 * Sets the expected strings.
+	 * @param expectedStrings The expected strings.
 	 */
-	protected void setExpectedStrings(final String[] expectedStrings) {
-		ExpectedStrings = expectedStrings;
+	protected void setExpectedStrings(@Nonnull final List<String> expectedStrings) {
+		this.expectedStrings = immutableListOf(expectedStrings);
 	}
 
-	/** The string found, if strings were expected. */
-	private String FoundString = null;
+	/** The string found, if strings were expected, else <code>null</code>. */
+	private String foundString = null;
 
 	/** @return The string found, if strings were expected. */
-	public String getFoundString() {
-		return FoundString;
+	public Optional<String> getFoundString() {
+		return Optional.ofNullable(foundString);
 	}
 
 	/**
 	 * Sets the string found.
 	 * @param foundString The string found.
 	 */
-	protected void setFoundString(final String foundString) {
-		FoundString = foundString;
+	protected void setFoundString(@Nonnull final String foundString) {
+		this.foundString = requireNonNull(foundString);
 	}
 
 	/**
 	 * Constructor for an unexpected character error from a parse reader.
-	 * @param foundChar The character found at this location.
 	 * @param reader The reader the data of which is the source of the error.
+	 * @param foundChar The character found at this location.
 	 */
-	public ParseUnexpectedDataException(final char foundChar, final Reader reader) {
-		this((String)null, foundChar, reader);
+	public ParseUnexpectedDataException(final Reader reader, final char foundChar) {
+		this(reader, (String)null, foundChar);
 	}
 
 	/**
 	 * Constructor for an unexpected character error from a parse reader.
+	 * @param reader The reader the data of which is the source of the error.
 	 * @param message The error message, or <code>null</code> if there is no error message.
 	 * @param foundChar The character found at this location.
-	 * @param reader The reader the data of which is the source of the error.
 	 */
-	public ParseUnexpectedDataException(final String message, final char foundChar, final Reader reader) {
+	public ParseUnexpectedDataException(final Reader reader, final String message, final char foundChar) {
 		this(message, foundChar, getLineIndex(reader), getCharacterIndex(reader)); //construct the class with values from the parse reader
 	}
 
@@ -137,22 +146,22 @@ public class ParseUnexpectedDataException extends ParseIOException {
 
 	/**
 	 * Constructor for an unexpected character error from a parse reader, when one character was expected.
+	 * @param reader The reader the data of which is the source of the error.
 	 * @param expectedChar The character expected at this location.
 	 * @param foundChar The character found at this location.
-	 * @param reader The reader the data of which is the source of the error.
 	 */
-	public ParseUnexpectedDataException(final char expectedChar, final char foundChar, final Reader reader) {
+	public ParseUnexpectedDataException(final Reader reader, final char expectedChar, final char foundChar) {
 		this(null, expectedChar, foundChar, getLineIndex(reader), getCharacterIndex(reader)); //construct the class with values from the parse reader
 	}
 
 	/**
 	 * Constructor for an unexpected character error from a parse reader, when one character was expected.
+	 * @param reader The reader the data of which is the source of the error.
 	 * @param message The error message, or <code>null</code> if there is no error message.
 	 * @param expectedChar The character expected at this location.
 	 * @param foundChar The character found at this location.
-	 * @param reader The reader the data of which is the source of the error.
 	 */
-	public ParseUnexpectedDataException(final String message, final char expectedChar, final char foundChar, final Reader reader) {
+	public ParseUnexpectedDataException(final Reader reader, final String message, final char expectedChar, final char foundChar) {
 		this(message, expectedChar, foundChar, getLineIndex(reader), getCharacterIndex(reader)); //construct the class with values from the parse reader
 	}
 
@@ -185,11 +194,11 @@ public class ParseUnexpectedDataException extends ParseIOException {
 
 	/**
 	 * Constructor for an unexpected character error from a parse reader, when multiple characters were expected.
+	 * @param reader The reader the data of which is the source of the error.
 	 * @param expectedChars The characters expected at this location.
 	 * @param foundChar The character found at this location.
-	 * @param reader The reader the data of which is the source of the error.
 	 */
-	public ParseUnexpectedDataException(final Characters expectedChars, final char foundChar, final Reader reader) {
+	public ParseUnexpectedDataException(final Reader reader, final Characters expectedChars, final char foundChar) {
 		this(expectedChars, foundChar, getLineIndex(reader), getCharacterIndex(reader)); //construct the class with values from the parse reader
 	}
 
@@ -217,9 +226,9 @@ public class ParseUnexpectedDataException extends ParseIOException {
 	 */
 	public ParseUnexpectedDataException(final String[] expectedStrings, final String foundString, final long lineIndex, final long charIndex,
 			final String sourceName) {
-		super("Unexpected character: expected one of " + convertStringsToMessage(expectedStrings) + " found "
-				+ convertStringsToMessage(new String[] { foundString }) + ".", sourceName, lineIndex, charIndex);
-		setExpectedStrings(expectedStrings); //save the expected strings
+		super("Unexpected character: expected one of " + convertStringsToMessage(immutableListOf(expectedStrings)) + " found "
+				+ convertStringsToMessage(immutableListOf(foundString)) + ".", sourceName, lineIndex, charIndex);
+		setExpectedStrings(immutableListOf(expectedStrings)); //save the expected strings
 		setFoundString(foundString); //save the string found
 	}
 
@@ -228,13 +237,13 @@ public class ParseUnexpectedDataException extends ParseIOException {
 	 * @return A message with the expected data.
 	 */
 	public String getExpectedMessage() {
-		if(getExpectedCharacters() != null) //if we have expected characters
-			return getExpectedCharacters().toLabelArrayString(); //return a string of our expected characters
-		else if(getExpectedStrings() != null) //if we have expected strings
-			return convertStringsToMessage(getExpectedStrings()); //return a string of our expected strings
-		else
-			//if we don't know what we were expecting
+		if(getExpectedCharacters().isPresent()) { //if we have expected characters
+			return getExpectedCharacters().map(Characters::toLabelArrayString).get(); //return a string of our expected characters
+		} else if(getExpectedStrings().isPresent()) //if we have expected strings
+			return getExpectedStrings().map(ParseIOException::convertStringsToMessage).get(); //return a string of our expected strings
+		else { //if we don't know what we were expecting
 			return ""; //return a null string; this in theory should never happen
+		}
 	}
 
 	/**
@@ -242,11 +251,11 @@ public class ParseUnexpectedDataException extends ParseIOException {
 	 * @return A message with the data found.
 	 */
 	public String getFoundMessage() {
-		if(getExpectedCharacters() != null) //if we were expecting characters
+		if(getExpectedCharacters().isPresent()) { //if we were expecting characters
 			return Characters.getLabel(getFoundCharacter()); //we will have found a character, so return it
-		else if(getExpectedStrings() != null) //if we were expecting strings
-			return convertStringsToMessage(new String[] { getFoundString() }); //we will have found a string, so return what we found
-		else
+		} else if(getExpectedStrings().isPresent()) { //if we were expecting strings
+			return convertStringsToMessage(immutableListOf(getFoundString().get())); //we will have found a string, so return what we found
+		} else
 			//if we don't know what we were expecting
 			return ""; //return a null string; this in theory should never happen
 	}
