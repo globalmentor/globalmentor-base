@@ -307,9 +307,6 @@ public final class Characters {
 	public static final String FORMAT_CHARS = "" + ZERO_WIDTH_NON_JOINER_CHAR + ZERO_WIDTH_JOINER_CHAR + LEFT_TO_RIGHT_MARK_CHAR + RIGHT_TO_LEFT_MARK_CHAR
 			+ WORD_JOINER_CHAR + ZERO_WIDTH_NO_BREAK_SPACE_CHAR;
 
-	/** Characters considered to be end-of-line markers (e.g. CR and LF). */
-	public static final Characters EOL_CHARACTERS = of(CARRIAGE_RETURN_CHAR, LINE_FEED_CHAR);
-
 	/**
 	 * Characters that do not contain visible "content", and may be trimmed from ends of a string. These include whitespace, control characters, and formatting
 	 * characters.
@@ -395,6 +392,9 @@ public final class Characters {
 
 	/** Characters in the Unicode <code>Paragraph_Separator</code> (<code>Zp</code>) category as of Unicode 9.0.0. */
 	public static final Characters PARAGRAPH_SEPARATOR_CHARACTERS = of(PARAGRAPH_SEPARATOR_CHAR);
+
+	/** Characters considered to be end-of-line markers (e.g. CR and LF). */
+	public static final Characters EOL_CHARACTERS = of(CARRIAGE_RETURN_CHAR, LINE_FEED_CHAR).add(LINE_SEPARATOR_CHARACTERS).add(PARAGRAPH_SEPARATOR_CHARACTERS);
 
 	/**
 	 * Characters in the Unicode <code>Separator</code> (<code>Z</code>) group as of Unicode 9.0.0.
