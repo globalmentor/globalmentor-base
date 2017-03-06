@@ -18,6 +18,8 @@ package com.globalmentor.io;
 
 import java.nio.file.Path;
 
+import com.globalmentor.java.Conditions;
+
 /**
  * Utility methods to manipulate Paths.
  * 
@@ -32,12 +34,25 @@ public class Paths {
 	/**
 	 * Adds the given extension to a path and returns the new path with the new extension. The filename is not checked to see if it currently has an extension.
 	 * This method delegates to {@link Files#addExtension(String, String)}.
+	 * 
 	 * @param path The path to which to add an extension.
 	 * @param extension The extension to add.
+	 * 
 	 * @return The path with the new extension.
+	 * @throws IllegalArgumentException if the given path refer to a directory instead of a file.
 	 */
 	public static Path addExtension(final Path path, final String extension) {
-		return java.nio.file.Paths.get(Files.addExtension(path.toString(), extension)); //add an extension to the path and create and return a new file with that 
+		Conditions.checkArgumentNotNull(path, "the <path> cannot be null.");
+		Conditions.checkArgumentNotNull(extension, "the <extension> to be added cannot be null.");
+		Conditions.checkArgument(!java.nio.file.Files.isDirectory(path), "the <path> must refer to a file.");
+
+		final String fileName = path.getFileName().toString();
+
+		if(path.getParent() != null) {
+			return path.getParent().resolve(Files.addExtension(fileName, extension));
+		} else {
+			return java.nio.file.Paths.get(Files.addExtension(fileName, extension));
+		}
 	}
 
 }

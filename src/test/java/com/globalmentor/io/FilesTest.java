@@ -23,6 +23,7 @@ import static org.junit.Assert.*;
 import java.io.*;
 import java.net.URI;
 import java.nio.file.*;
+import java.nio.file.Paths;
 
 import org.junit.*;
 
