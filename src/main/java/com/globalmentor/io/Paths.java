@@ -48,11 +48,7 @@ public class Paths {
 
 		final String fileName = path.getFileName().toString();
 
-		if(path.getParent() != null) {
-			return path.getParent().resolve(Files.addExtension(fileName, extension));
-		} else {
-			return java.nio.file.Paths.get(Files.addExtension(fileName, extension));
-		}
+		return path.resolveSibling(Files.addExtension(fileName, extension));
 	}
 
 }
