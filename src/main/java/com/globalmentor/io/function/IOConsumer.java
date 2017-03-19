@@ -32,6 +32,7 @@ import javax.annotation.*;
  *
  * @param <T> the type of the input to the operation.
  * @author Garret Wilson
+ * @see Consumer
  */
 @FunctionalInterface
 public interface IOConsumer<T> {
