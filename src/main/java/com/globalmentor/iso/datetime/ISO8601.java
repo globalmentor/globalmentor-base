@@ -16,6 +16,8 @@
 
 package com.globalmentor.iso.datetime;
 
+import com.globalmentor.java.Characters;
+
 /**
  * Definitions related to ISO 8601-2004, "Data elements and interchange formats — Information interchange — Representation of dates and times".
  * @author Garret Wilson
@@ -33,6 +35,6 @@ public class ISO8601 {
 	/** The UTC designator for "Zulu Time", 'Z'. */
 	public static final char UTC_DESIGNATOR = 'Z';
 	/** The signs of a number. */
-	public static final char[] SIGNS = { '-', '+' };
+	public static final Characters SIGNS = Characters.of('-', '+');
 
 }

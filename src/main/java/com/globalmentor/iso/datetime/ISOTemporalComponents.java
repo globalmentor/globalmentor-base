@@ -475,7 +475,7 @@ public class ISOTemporalComponents {
 				} else { //if we shouldn't parse a UTC offset
 					if(!hasDate && !hasTime) { //if neither a date nor a time were requested, require a UTC offset
 						checkReaderEnd(reader); //make sure we're not at the end of the reader
-						throw new ParseIOException(reader, "Expected one of " + Arrays.toString(SIGNS) + "; found " + (char)utcOffsetDelimiter + ".");
+						throw new ParseIOException(reader, "Expected one of " + SIGNS.toLabelArrayString() + "; found " + (char)utcOffsetDelimiter + ".");
 					}
 					utcOffsetHours = -1; //set the UTC offset values to invalid
 					utcOffsetMinutes = -1;
