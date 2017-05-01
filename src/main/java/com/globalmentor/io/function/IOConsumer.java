@@ -40,7 +40,7 @@ public interface IOConsumer<T> {
 	/**
 	 * Performs this operation on the given argument.
 	 * @param t the input argument
-	 * @throws IOException if there is an I/O error performing the operation.
+	 * @throws IOException if there is an I/O error performing the operation
 	 */
 	public void accept(@Nonnull T t) throws IOException;
 
@@ -50,8 +50,9 @@ public interface IOConsumer<T> {
 	 * @param after The operation to perform after this operation.
 	 * @return A consumer that performs in sequence this operation followed by the given operation.
 	 * @throws NullPointerException if the given consumer is <code>null</code>.
+	 * @throws IOException if there is an I/O error performing the operation
 	 */
-	public default IOConsumer<T> andThen(@Nonnull final Consumer<? super T> after) {
+	public default IOConsumer<T> andThen(@Nonnull final IOConsumer<? super T> after) throws IOException {
 		requireNonNull(after);
 		return t -> {
 			accept(t);
