@@ -438,6 +438,7 @@ public final class Characters {
 	/**
 	 * Characters factory method. Duplicates are ignored.
 	 * @param characters The characters to store.
+	 * @return An instance of {@link Characters} with the given characters stored.
 	 * @throws NullPointerException if the given characters is <code>null</code>.
 	 * @throws IllegalArgumentException if the given characters contain Unicode surrogate characters.
 	 */
@@ -450,6 +451,7 @@ public final class Characters {
 	 * @param characters The characters to store.
 	 * @param start The start index, inclusive.
 	 * @param end The end index, exclusive.
+	 * @return An instance of {@link Characters} with the given characters stored.
 	 * @throws NullPointerException if the given characters is <code>null</code>.
 	 * @throws IllegalArgumentException if the given characters contain Unicode surrogate characters.
 	 */
@@ -515,6 +517,7 @@ public final class Characters {
 	/**
 	 * Characters factory method from existing {@link Characters} instances. Duplicates are ignored.
 	 * @param multipleCharacters The {@link Characters} instances containing characters to store.
+	 * @return An instance of {@link Characters} with the given characters stored.
 	 * @throws NullPointerException if the given characters is <code>null</code>.
 	 * @throws IllegalArgumentException if the given characters contain Unicode surrogate characters.
 	 */
@@ -531,6 +534,7 @@ public final class Characters {
 	/**
 	 * Character sequence factory method. Duplicates are ignored.
 	 * @param charSequence The character sequence containing characters to store.
+	 * @return An instance of {@link Characters} with the characters contained on the given char sequence.
 	 * @throws NullPointerException if the given character sequence is <code>null</code>.
 	 * @throws IllegalArgumentException if the given character sequence contains Unicode surrogate characters.
 	 */

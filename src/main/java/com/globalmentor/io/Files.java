@@ -1480,7 +1480,7 @@ public class Files {
 	/**
 	 * Determines the backup file path to use for the file at the given path without a rolling policy. The backup file will be in the same directory as the given
 	 * path; and the filename will be in the form <code>filename.ext.bak</code>, i.e. with a <code>bak</code> extension added. This is a convenience method that
-	 * delegates to {@link #getBackupPath(Path, long)} with the value <code>1</code> for </var>maxBackupCount</var>.
+	 * delegates to {@link #getBackupPath(Path, long)} with the value <code>1</code> for <var>maxBackupCount</var>.
 	 * 
 	 * @param path The path of the file to back up.
 	 * 
@@ -1526,7 +1526,7 @@ public class Files {
 	/**
 	 * Backs up a given file without a rolling policy. If the backup filename does not exist, the indicated file will simply be copied to the backup file
 	 * destination. If the backup file destination exists, it will be overwritten. This is a convenience method that delegates to {@link #backupFile(Path, long)}
-	 * with the value <code>1</code> for </var>maxBackupCount</var>.
+	 * with the value <code>1</code> for <var>maxBackupCount</var>.
 	 * 
 	 * @param path The path of the file to back up.
 	 * 
@@ -1604,7 +1604,7 @@ public class Files {
 	/**
 	 * Opens or creates a file after first creating a backup without a rolling policy of the file if it exists, returning an output stream that may be used to
 	 * write bytes to the file. The maximum number of backups used on this method will be 1. This is a convenience method that delegates to
-	 * {@link #newOutputStreamWithBackup(Path, long, OpenOption...)} with the value <code>1</code> for </var>maxBackupCount</var>.
+	 * {@link #newOutputStreamWithBackup(Path, long, OpenOption...)} with the value <code>1</code> for <var>maxBackupCount</var>.
 	 * 
 	 * @param path The path of the file to back up.
 	 * @param options The options specifying how the file is opened.
