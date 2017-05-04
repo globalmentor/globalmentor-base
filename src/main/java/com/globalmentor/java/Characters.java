@@ -102,6 +102,8 @@ public final class Characters {
 	public static final char COMMA_CHAR = 0x002C;
 	/** A hyphen or minus character. */
 	public static final char HYPHEN_MINUS_CHAR = 0x002D;
+	/** A solidus or slash character (002F;SOLIDUS;Po;0;CS;;;;;N;SLASH;;;;). */
+	public static final char SOLIDUS_CHAR = 0x002F;
 	/** A colon character. */
 	public static final char COLON_CHAR = 0x003A;
 	/** A semicolon character. */
@@ -908,8 +910,8 @@ public final class Characters {
 	}
 
 	/**
-	 * Appends a string representing the character as 'x', or if the character is a control character, either a special representation such as '\n' or the Unicode
-	 * code point of this character, e.g. "U+1234".
+	 * Appends a string representing the character as 'x', or if the character is a control character or a surrogate, either a special representation such as '\n'
+	 * or the Unicode code point of this character, e.g. "U+1234".
 	 * <p>
 	 * This method supports Unicode supplementary code points.
 	 * </p>
@@ -920,7 +922,7 @@ public final class Characters {
 	 * @see #appendUnicodeString(StringBuilder, int)
 	 */
 	public static StringBuilder appendLabel(final StringBuilder stringBuilder, final int c) {
-		if(Character.isISOControl(c)) { //if this is a control character
+		if(Character.isISOControl(c) || (Character.isBmpCodePoint(c) && Character.isSurrogate((char)c))) { //if this is a control character or a surrogate
 			switch(c) { //see which character this is
 				case '\t': //tab
 					stringBuilder.append("'\\t'");
