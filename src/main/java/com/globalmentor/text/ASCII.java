@@ -46,6 +46,9 @@ public class ASCII {
 	/** The highest ASCII code point value. */
 	public static final char MAX_VALUE = 127;
 
+	/** The ASCII digit characters <code>'0'</code> through <code>'9'</code>. */
+	public static final Characters DIGIT_CHARACTERS = Characters.ofRange('0', '9');
+
 	/**
 	 * Indicates whether a given character is within the ASCII range.
 	 * @param c The character to test.
@@ -288,8 +291,8 @@ public class ASCII {
 	 *           is greater than <code>end</code>, with the exception that if <code>end2</code> is greater than the length of the second character sequence it
 	 *           will be adjusted to equal the end.
 	 */
-	public static boolean equalsIgnoreCase(final CharSequence charSequence1, final int start1, final int end1, final CharSequence charSequence2,
-			final int start2, int end2) {
+	public static boolean equalsIgnoreCase(final CharSequence charSequence1, final int start1, final int end1, final CharSequence charSequence2, final int start2,
+			int end2) {
 		checkBounds(charSequence1, start1, end1);
 		final int length2 = charSequence2.length();
 		if(end2 > length2) { //adjust the second character sequence's end if needed

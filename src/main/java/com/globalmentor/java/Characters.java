@@ -33,6 +33,7 @@ import static com.globalmentor.java.Conditions.*;
 import static com.globalmentor.java.StringBuilders.*;
 
 import com.globalmentor.collections.ObjectList;
+import com.globalmentor.text.ASCII;
 import com.globalmentor.text.RomanNumerals;
 
 /**
@@ -726,6 +727,7 @@ public final class Characters {
 		if(character < minChar || character > maxChar) { //do quick bounds checking
 			return false;
 		}
+		//TODO add a flag indicating if the range is complete and uninterrupted, so that individual characters wouldn't have to be checked
 		for(final char c : chars) { //look at each character
 			if(c == character) { //if we found the character
 				return true;
@@ -769,7 +771,9 @@ public final class Characters {
 	 * Determines whether a character is one of the digits '0'-'9'.
 	 * @param c The character to examine.
 	 * @return <code>true</code> if the character is an ISO_LATIN_1 digit.
+	 * @deprecated Use {@link ASCII#DIGIT_CHARACTERS}.
 	 */
+	@Deprecated
 	public static final boolean isLatinDigit(final char c) {
 		return c >= '0' && c <= '9'; //see if the character falls in the range of the Latin digits
 	}
