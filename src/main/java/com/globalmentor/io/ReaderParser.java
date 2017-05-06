@@ -16,6 +16,8 @@
 
 package com.globalmentor.io;
 
+import static java.util.Objects.*;
+
 import java.io.*;
 
 import javax.annotation.*;
@@ -552,8 +554,8 @@ public class ReaderParser {
 	}
 
 	/**
-	 * Reads all characters in a reader that appear within a given array. The new position will either be the first character not in the array or the end of the
-	 * reader.
+	 * Reads all characters in a reader that appear within a given set of characters. The new position will either be the first character not in the characters or
+	 * the end of the reader.
 	 * @param reader The reader the contents of which to be parsed.
 	 * @param characters The characters to read.
 	 * @return The characters that were read.
@@ -561,9 +563,22 @@ public class ReaderParser {
 	 * @throws IOException if there is an error reading from the reader.
 	 */
 	public static String read(final Reader reader, final Characters characters) throws IOException {
-		final StringBuilder stringBuilder = new StringBuilder(); //create a string builder
-		skip(reader, characters, stringBuilder); //read the characters
-		return stringBuilder.toString(); //return the collected characters
+		return read(reader, characters, new StringBuilder()).toString();
+	}
+
+	/**
+	 * Reads all characters in a reader that appear within a given set of characters and collects them in a given string builder. The new position will either be
+	 * the first character not in the characters or the end of the reader.
+	 * @param reader The reader the contents of which to be parsed.
+	 * @param characters The characters to read.
+	 * @param stringBuilder The string builder to collect the read characters.
+	 * @return The given string builder with the characters that were read added.
+	 * @throws NullPointerException if the given reader, characters, and/or string builder is <code>null</code>.
+	 * @throws IOException if there is an error reading from the reader.
+	 */
+	public static StringBuilder read(final Reader reader, final Characters characters, @Nonnull final StringBuilder stringBuilder) throws IOException {
+		skip(reader, characters, requireNonNull(stringBuilder)); //read the characters
+		return stringBuilder;
 	}
 
 	/**
@@ -617,8 +632,8 @@ public class ReaderParser {
 	}
 
 	/**
-	 * Skips over characters in a reader that appear within a given array. The new position will either be the first character not in the array or the end of the
-	 * reader.
+	 * Skips over characters in a reader that appear within a given set of characters. The new position will either be the first character not in the characters
+	 * or the end of the reader.
 	 * @param reader The reader the contents of which to be parsed.
 	 * @param characters The characters to skip.
 	 * @return The next character that will be returned the reader's {@link Reader#read()} operation, or <code>-1</code> if the end of the reader has been
@@ -631,8 +646,8 @@ public class ReaderParser {
 	}
 
 	/**
-	 * Skips over characters in a reader that appear within a given array and optionally collects those characters in a string builder. The new position will
-	 * either be the first character not in the array or the end of the reader.
+	 * Skips over characters in a reader that appear within a given set of characters and optionally collects those characters in a string builder. The new
+	 * position will either be the first character not in the characters or the end of the reader.
 	 * @param reader The reader the contents of which to be parsed.
 	 * @param characters The characters to skip.
 	 * @param stringBuilder The string builder to collect the characters skipped, or <code>null</code> if the skipped characters should be discarded.
