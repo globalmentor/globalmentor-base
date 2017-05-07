@@ -36,18 +36,20 @@ import java.util.function.LongConsumer;
 public interface IOLongConsumer {
 
 	/**
-	 * Performs this operation on the given argument.
-	 *
+	 * <p>
+	 * This method is the same as {@link LongConsumer#accept(long)}, but with a support for {@link IOException}.
+	 * </p>
+	 * 
 	 * @param value the input argument
 	 * @throws IOException if there is an I/O error performing the operation
 	 */
 	void accept(long value) throws IOException;
 
 	/**
-	 * Returns a composed {@code LongConsumer} that performs, in sequence, this operation followed by the {@code after} operation. If performing either operation
-	 * throws an exception, it is relayed to the caller of the composed operation. If performing this operation throws an exception, the {@code after} operation
-	 * will not be performed.
-	 *
+	 * <p>
+	 * This method is the same as {@link LongConsumer#andThen(LongConsumer)}, but with a support for {@link IOException}.
+	 * </p>
+	 * 
 	 * @param after the operation to perform after this operation
 	 * @return a composed {@code LongConsumer} that performs in sequence this operation followed by the {@code after} operation
 	 * @throws NullPointerException if {@code after} is null

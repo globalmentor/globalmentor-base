@@ -37,8 +37,10 @@ import java.util.function.Function;
 public interface IOFunction<T, R> {
 
 	/**
-	 * Applies this function to the given argument.
-	 *
+	 * <p>
+	 * This method is the same as {@link Function#apply(Object)}, but with a support for {@link IOException}.
+	 * </p>
+	 * 
 	 * @param t the function argument
 	 * @return the function result
 	 * @throws IOException if there is an I/O error performing the operation
@@ -46,9 +48,10 @@ public interface IOFunction<T, R> {
 	R apply(T t) throws IOException;
 
 	/**
-	 * Returns a composed function that first applies the {@code before} function to its input, and then applies this function to the result. If evaluation of
-	 * either function throws an exception, it is relayed to the caller of the composed function.
-	 *
+	 * <p>
+	 * This method is the same as {@link Function#compose(Function)}, but with a support for {@link IOException}.
+	 * </p>
+	 * 
 	 * @param <V> the type of input to the {@code before} function, and to the composed function
 	 * @param before the function to apply before this function is applied
 	 * @return a composed function that first applies the {@code before} function and then applies this function
@@ -63,9 +66,10 @@ public interface IOFunction<T, R> {
 	}
 
 	/**
-	 * Returns a composed function that first applies this function to its input, and then applies the {@code after} function to the result. If evaluation of
-	 * either function throws an exception, it is relayed to the caller of the composed function.
-	 *
+	 * <p>
+	 * This method is the same as {@link Function#andThen(Function)}, but with a support for {@link IOException}.
+	 * </p>
+	 * 
 	 * @param <V> the type of output of the {@code after} function, and of the composed function
 	 * @param after the function to apply after this function is applied
 	 * @return a composed function that first applies this function and then applies the {@code after} function

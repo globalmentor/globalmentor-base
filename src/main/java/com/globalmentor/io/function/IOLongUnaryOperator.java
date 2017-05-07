@@ -36,8 +36,10 @@ import java.util.function.LongUnaryOperator;
 public interface IOLongUnaryOperator {
 
 	/**
-	 * Applies this operator to the given operand.
-	 *
+	 * <p>
+	 * This method is the same as {@link LongUnaryOperator#applyAsLong(long)}, but with a support for {@link IOException}.
+	 * </p>
+	 * 
 	 * @param operand the operand
 	 * @return the operator result
 	 * @throws IOException if there is an I/O error performing the operation
@@ -45,9 +47,10 @@ public interface IOLongUnaryOperator {
 	long applyAsLong(long operand) throws IOException;
 
 	/**
-	 * Returns a composed operator that first applies the {@code before} operator to its input, and then applies this operator to the result. If evaluation of
-	 * either operator throws an exception, it is relayed to the caller of the composed operator.
-	 *
+	 * <p>
+	 * This method is the same as {@link LongUnaryOperator#compose(LongUnaryOperator)}, but with a support for {@link IOException}.
+	 * </p>
+	 * 
 	 * @param before the operator to apply before this operator is applied
 	 * @return a composed operator that first applies the {@code before} operator and then applies this operator
 	 * @throws NullPointerException if before is null
@@ -61,9 +64,10 @@ public interface IOLongUnaryOperator {
 	}
 
 	/**
-	 * Returns a composed operator that first applies this operator to its input, and then applies the {@code after} operator to the result. If evaluation of
-	 * either operator throws an exception, it is relayed to the caller of the composed operator.
-	 *
+	 * <p>
+	 * This method is the same as {@link LongUnaryOperator#andThen(LongUnaryOperator)}, but with a support for {@link IOException}.
+	 * </p>
+	 * 
 	 * @param after the operator to apply after this operator is applied
 	 * @return a composed operator that first applies this operator and then applies the {@code after} operator
 	 * @throws NullPointerException if after is null
@@ -77,8 +81,10 @@ public interface IOLongUnaryOperator {
 	}
 
 	/**
-	 * Returns a unary operator that always returns its input argument.
-	 *
+	 * <p>
+	 * This method is the same as {@link LongUnaryOperator#identity()}, but with a support for {@link IOException}.
+	 * </p>
+	 * 
 	 * @return a unary operator that always returns its input argument
 	 * @throws IOException if there is an I/O error performing the operation
 	 */

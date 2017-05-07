@@ -34,8 +34,10 @@ import java.util.function.LongSupplier;
 public interface IOLongSupplier {
 
 	/**
-	 * Gets a result.
-	 *
+	 * <p>
+	 * This method is the same as {@link LongSupplier#getAsLong()}, but with a support for {@link IOException}.
+	 * </p>
+	 * 
 	 * @return a result
 	 * @throws IOException if there is an I/O error performing the operation
 	 */

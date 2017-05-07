@@ -35,8 +35,10 @@ import java.util.function.DoubleToLongFunction;
 public interface IODoubleToLongFunction {
 
 	/**
-	 * Applies this function to the given argument.
-	 *
+	 * <p>
+	 * This method is the same as {@link DoubleToLongFunction#applyAsLong(double)}, but with a support for {@link IOException}.
+	 * </p>
+	 * 
 	 * @param value the function argument
 	 * @return the function result
 	 * @throws IOException if there is an I/O error performing the operation

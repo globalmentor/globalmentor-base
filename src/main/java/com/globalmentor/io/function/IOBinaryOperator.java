@@ -37,9 +37,12 @@ import java.util.Comparator;
  */
 @FunctionalInterface
 public interface IOBinaryOperator<T> extends IOBiFunction<T, T, T> {
+
 	/**
-	 * Returns a {@link IOBinaryOperator} which returns the lesser of two elements according to the specified {@code Comparator}.
-	 *
+	 * <p>
+	 * This method is the same as {@link BinaryOperator#minBy(Comparator)}, but with a support for {@link IOException}.
+	 * </p>
+	 * 
 	 * @param <T> the type of the input arguments of the comparator
 	 * @param comparator a {@code Comparator} for comparing the two values
 	 * @return a {@code BinaryOperator} which returns the lesser of its operands, according to the supplied {@code Comparator}
@@ -52,8 +55,10 @@ public interface IOBinaryOperator<T> extends IOBiFunction<T, T, T> {
 	}
 
 	/**
-	 * Returns a {@link IOBinaryOperator} which returns the greater of two elements according to the specified {@code Comparator}.
-	 *
+	 * <p>
+	 * This method is the same as {@link BinaryOperator#maxBy(Comparator)}, but with a support for {@link IOException}.
+	 * </p>
+	 * 
 	 * @param <T> the type of the input arguments of the comparator
 	 * @param comparator a {@code Comparator} for comparing the two values
 	 * @return a {@code BinaryOperator} which returns the greater of its operands, according to the supplied {@code Comparator}

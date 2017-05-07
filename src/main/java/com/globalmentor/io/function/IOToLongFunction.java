@@ -19,6 +19,7 @@ package com.globalmentor.io.function;
 import java.io.IOException;
 
 import java.util.function.ToLongBiFunction;
+import java.util.function.ToLongFunction;
 
 /**
  * Represents a function that produces a long-valued result. This is the {@code long}-producing primitive specialization for {@link IOFunction}.
@@ -36,8 +37,10 @@ import java.util.function.ToLongBiFunction;
 public interface IOToLongFunction<T> {
 
 	/**
-	 * Applies this function to the given argument.
-	 *
+	 * <p>
+	 * This method is the same as {@link ToLongFunction#applyAsLong(Object)}, but with a support for {@link IOException}.
+	 * </p>
+	 * 
 	 * @param value the function argument
 	 * @return the function result
 	 * @throws IOException if there is an I/O error performing the operation

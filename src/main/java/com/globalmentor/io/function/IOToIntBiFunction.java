@@ -38,8 +38,10 @@ import java.util.function.ToIntBiFunction;
 public interface IOToIntBiFunction<T, U> {
 
 	/**
-	 * Applies this function to the given arguments.
-	 *
+	 * <p>
+	 * This method is the same as {@link ToIntBiFunction#applyAsInt(Object, Object)}, but with a support for {@link IOException}.
+	 * </p>
+	 * 
 	 * @param t the first function argument
 	 * @param u the second function argument
 	 * @return the function result

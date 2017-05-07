@@ -37,8 +37,10 @@ import java.util.function.UnaryOperator;
 public interface IOUnaryOperator<T> extends IOFunction<T, T> {
 
 	/**
-	 * Returns a unary operator that always returns its input argument.
-	 *
+	 * <p>
+	 * This method is the same as {@link UnaryOperator#identity()}, but with a support for {@link IOException}.
+	 * </p>
+	 * 
 	 * @param <T> the type of the input and output of the operator
 	 * @return a unary operator that always returns its input argument
 	 * @throws IOException if there is an I/O error performing the operation

@@ -38,8 +38,10 @@ import java.util.function.BiFunction;
 public interface IOBiFunction<T, U, R> {
 
 	/**
-	 * Applies this function to the given arguments.
-	 *
+	 * <p>
+	 * This method is the same as {@link BiFunction#apply(Object, Object)}, but with a support for {@link IOException}.
+	 * </p>
+	 * 
 	 * @param t the first function argument
 	 * @param u the second function argument
 	 * @return the function result
@@ -48,9 +50,10 @@ public interface IOBiFunction<T, U, R> {
 	R apply(T t, U u) throws IOException;
 
 	/**
-	 * Returns a composed function that first applies this function to its input, and then applies the {@code after} function to the result. If evaluation of
-	 * either function throws an exception, it is relayed to the caller of the composed function.
-	 *
+	 * <p>
+	 * This method is the same as {@link BiFunction#andThen(java.util.function.Function)}, but with a support for {@link IOException}.
+	 * </p>
+	 * 
 	 * @param <V> the type of output of the {@code after} function, and of the composed function
 	 * @param after the function to apply after this function is applied
 	 * @return a composed function that first applies this function and then applies the {@code after} function

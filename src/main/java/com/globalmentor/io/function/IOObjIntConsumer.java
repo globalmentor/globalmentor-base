@@ -37,8 +37,10 @@ import java.util.function.ObjIntConsumer;
 public interface IOObjIntConsumer<T> {
 
 	/**
-	 * Performs this operation on the given arguments.
-	 *
+	 * <p>
+	 * This method is the same as {@link ObjIntConsumer#accept(Object, int)}, but with a support for {@link IOException}.
+	 * </p>
+	 * 
 	 * @param t the first input argument
 	 * @param value the second input argument
 	 * @throws IOException if there is an I/O error performing the operation

@@ -40,8 +40,10 @@ import java.util.function.Supplier;
 public interface IOSupplier<T> {
 
 	/**
-	 * Gets a result.
-	 *
+	 * <p>
+	 * This method is the same as {@link Supplier#get()}, but with a support for {@link IOException}.
+	 * </p>
+	 * 
 	 * @return a result
 	 * @throws IOException if there is an I/O error performing the operation
 	 */

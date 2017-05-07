@@ -39,7 +39,9 @@ import java.util.function.Consumer;
 public interface IOBiConsumer<T, U> {
 
 	/**
-	 * Performs this operation on the given arguments.
+	 * <p>
+	 * This method is the same as {@link BiConsumer#accept(Object, Object)}, but with a support for {@link IOException}.
+	 * </p>
 	 *
 	 * @param t the first input argument
 	 * @param u the second input argument
@@ -48,9 +50,9 @@ public interface IOBiConsumer<T, U> {
 	void accept(T t, U u) throws IOException;
 
 	/**
-	 * Returns a composed {@code BiConsumer} that performs, in sequence, this operation followed by the {@code after} operation. If performing either operation
-	 * throws an exception, it is relayed to the caller of the composed operation. If performing this operation throws an exception, the {@code after} operation
-	 * will not be performed.
+	 * <p>
+	 * This method is the same as {@link BiConsumer#andThen(BiConsumer)}, but with a support for {@link IOException}.
+	 * </p>
 	 *
 	 * @param after the operation to perform after this operation
 	 * @return a composed {@code BiConsumer} that performs in sequence this operation followed by the {@code after} operation

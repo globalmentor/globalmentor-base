@@ -36,8 +36,10 @@ import java.util.function.LongBinaryOperator;
 public interface IOLongBinaryOperator {
 
 	/**
-	 * Applies this operator to the given operands.
-	 *
+	 * <p>
+	 * This method is the same as {@link LongBinaryOperator#applyAsLong(long, long)}, but with a support for {@link IOException}.
+	 * </p>
+	 * 
 	 * @param left the first operand
 	 * @param right the second operand
 	 * @return the operator result

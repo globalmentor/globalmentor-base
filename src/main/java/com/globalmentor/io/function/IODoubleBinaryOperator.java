@@ -34,9 +34,12 @@ import java.util.function.DoubleBinaryOperator;
  */
 @FunctionalInterface
 public interface IODoubleBinaryOperator {
+
 	/**
-	 * Applies this operator to the given operands.
-	 *
+	 * <p>
+	 * This method is the same as {@link DoubleBinaryOperator#applyAsDouble(double, double)}, but with a support for {@link IOException}.
+	 * </p>
+	 * 
 	 * @param left the first operand
 	 * @param right the second operand
 	 * @return the operator result

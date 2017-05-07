@@ -36,8 +36,10 @@ import java.util.function.IntBinaryOperator;
 public interface IOIntBinaryOperator {
 
 	/**
-	 * Applies this operator to the given operands.
-	 *
+	 * <p>
+	 * This method is the same as {@link IntBinaryOperator#applyAsInt(int, int)}, but with a support for {@link IOException}.
+	 * </p>
+	 * 
 	 * @param left the first operand
 	 * @param right the second operand
 	 * @return the operator result

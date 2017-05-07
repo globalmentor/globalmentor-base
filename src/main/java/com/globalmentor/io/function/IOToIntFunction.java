@@ -36,8 +36,10 @@ import java.util.function.ToIntFunction;
 public interface IOToIntFunction<T> {
 
 	/**
-	 * Applies this function to the given argument.
-	 *
+	 * <p>
+	 * This method is the same as {@link ToIntFunction#applyAsInt(Object)}, but with a support for {@link IOException}.
+	 * </p>
+	 * 
 	 * @param value the function argument
 	 * @return the function result
 	 * @throws IOException if there is an I/O error performing the operation

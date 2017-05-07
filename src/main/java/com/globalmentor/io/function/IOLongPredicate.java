@@ -36,8 +36,10 @@ import java.util.function.LongPredicate;
 public interface IOLongPredicate {
 
 	/**
-	 * Evaluates this predicate on the given argument.
-	 *
+	 * <p>
+	 * This method is the same as {@link LongPredicate#test(long)}, but with a support for {@link IOException}.
+	 * </p>
+	 * 
 	 * @param value the input argument
 	 * @return {@code true} if the input argument matches the predicate, otherwise {@code false}
 	 * @throws IOException if there is an I/O error performing the operation
@@ -45,13 +47,10 @@ public interface IOLongPredicate {
 	boolean test(long value) throws IOException;
 
 	/**
-	 * Returns a composed predicate that represents a short-circuiting logical AND of this predicate and another. When evaluating the composed predicate, if this
-	 * predicate is {@code false}, then the {@code other} predicate is not evaluated.
-	 *
 	 * <p>
-	 * Any exceptions thrown during evaluation of either predicate are relayed to the caller; if evaluation of this predicate throws an exception, the
-	 * {@code other} predicate will not be evaluated.
-	 *
+	 * This method is the same as {@link LongPredicate#and(LongPredicate)}, but with a support for {@link IOException}.
+	 * </p>
+	 * 
 	 * @param other a predicate that will be logically-ANDed with this predicate
 	 * @return a composed predicate that represents the short-circuiting logical AND of this predicate and the {@code other} predicate
 	 * @throws NullPointerException if other is null
@@ -63,8 +62,10 @@ public interface IOLongPredicate {
 	}
 
 	/**
-	 * Returns a predicate that represents the logical negation of this predicate.
-	 *
+	 * <p>
+	 * This method is the same as {@link LongPredicate#negate()}, but with a support for {@link IOException}.
+	 * </p>
+	 * 
 	 * @return a predicate that represents the logical negation of this predicate
 	 * @throws IOException if there is an I/O error performing the operation
 	 */
@@ -73,13 +74,10 @@ public interface IOLongPredicate {
 	}
 
 	/**
-	 * Returns a composed predicate that represents a short-circuiting logical OR of this predicate and another. When evaluating the composed predicate, if this
-	 * predicate is {@code true}, then the {@code other} predicate is not evaluated.
-	 *
 	 * <p>
-	 * Any exceptions thrown during evaluation of either predicate are relayed to the caller; if evaluation of this predicate throws an exception, the
-	 * {@code other} predicate will not be evaluated.
-	 *
+	 * This method is the same as {@link LongPredicate#or(LongPredicate)}, but with a support for {@link IOException}.
+	 * </p>
+	 * 
 	 * @param other a predicate that will be logically-ORed with this predicate
 	 * @return a composed predicate that represents the short-circuiting logical OR of this predicate and the {@code other} predicate
 	 * @throws NullPointerException if other is null
