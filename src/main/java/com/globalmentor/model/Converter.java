@@ -22,6 +22,7 @@ package com.globalmentor.model;
  * @param <I> The input type.
  * @param <O> The output type.
  */
+@FunctionalInterface
 public interface Converter<I, O> {
 
 	/**
