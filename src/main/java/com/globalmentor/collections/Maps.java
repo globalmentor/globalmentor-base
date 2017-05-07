@@ -121,7 +121,7 @@ public class Maps {
 	 */
 	public static <K, V, C extends Collection<NameValuePair<K, V>>> C getKeyValues(final Map<K, V> map, final C collection) {
 		for(final Map.Entry<K, V> entry : map.entrySet()) { //convert all the map entries to NameValues and add them to the collection
-			collection.add(new NameValuePair<K, V>(entry));
+			collection.add(NameValuePair.fromMapEntry(entry));
 		}
 		return collection;
 	}

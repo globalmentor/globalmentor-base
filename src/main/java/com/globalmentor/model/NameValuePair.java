@@ -1,5 +1,5 @@
 /*
- * Copyright © 1996-2012 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * Copyright © 1996-2017 GlobalMentor, Inc. <http://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,8 @@
 package com.globalmentor.model;
 
 import java.util.Map;
+
+import javax.annotation.*;
 
 import com.globalmentor.java.Objects;
 
@@ -50,12 +52,12 @@ public class NameValuePair<N, V> extends DefaultNamed<N> implements IDed<N>, Val
 	}
 
 	/**
-	 * Map entry copy constructor
+	 * Static factory method to create a name-value pair from a map entry copy.
 	 * @param mapEntry The map entry the values of which to use in creating this name/value pair.
 	 * @throws NullPointerException if the given map entry is <code>null</code>.
 	 */
-	public NameValuePair(final Map.Entry<N, V> mapEntry) {
-		this(mapEntry.getKey(), mapEntry.getValue());
+	public static <MEK, MEV> NameValuePair<MEK, MEV> fromMapEntry(@Nonnull final Map.Entry<MEK, MEV> mapEntry) {
+		return new NameValuePair<>(mapEntry.getKey(), mapEntry.getValue());
 	}
 
 	@Override
