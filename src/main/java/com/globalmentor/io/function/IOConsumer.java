@@ -38,20 +38,25 @@ import javax.annotation.*;
 public interface IOConsumer<T> {
 
 	/**
-	 * Performs this operation on the given argument.
+	 * <p>
+	 * This method is the same as {@link Consumer#accept(Object)}, but with a support for {@link IOException}.
+	 * </p>
+	 * 
 	 * @param t the input argument
-	 * @throws IOException if there is an I/O error performing the operation.
+	 * @throws IOException if there is an I/O error performing the operation
 	 */
 	public void accept(@Nonnull T t) throws IOException;
 
 	/**
-	 * Returns a consumer that performs, in sequence, this operation followed by the given operation.
-	 *
+	 * <p>
+	 * This method is the same as {@link Consumer#andThen(Consumer)}, but with a support for {@link IOException}.
+	 * </p>
+	 * 
 	 * @param after The operation to perform after this operation.
-	 * @return A consumer that performs in sequence this operation followed by the given operation.
-	 * @throws NullPointerException if the given consumer is <code>null</code>.
+	 * @return A consumer that performs this operation followed by the given operation in sequence.
+	 * @throws IOException if there is an I/O error performing the operation.
 	 */
-	public default IOConsumer<T> andThen(@Nonnull final Consumer<? super T> after) {
+	public default IOConsumer<T> andThen(@Nonnull final IOConsumer<? super T> after) throws IOException {
 		requireNonNull(after);
 		return t -> {
 			accept(t);

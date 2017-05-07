@@ -35,6 +35,7 @@ public class ReaderParser {
 
 	/**
 	 * Checks for a parsing condition and, if the test did not pass, throws a {@link ParseIOException}.
+	 * @param reader The reader the contents of which to be parsed.
 	 * @param test The result of the test.
 	 * @param description A description of the test to be used when generating an exception, optionally formatted with arguments, or <code>null</code> for no
 	 *          description.
