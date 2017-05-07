@@ -210,7 +210,9 @@ public class Objects {
 	 * @param objects The objects to be used in generating a hash code.
 	 * @return A hash code taking into account the given objects.
 	 * @throws NullPointerException if the given array of objects is <code>null</code>.
+	 * @deprecated Use {@link java.util.Objects#hash(Object...)} from Java 7 instead.
 	 */
+	@Deprecated
 	public static int getHashCode(final Object... objects) {
 		return getSeededHashCode(17, objects); //generate a hash code with a particular seed
 	}
@@ -224,6 +226,7 @@ public class Objects {
 	 * @return A hash code starting with the given seed and taking into account the given objects.
 	 * @throws NullPointerException if the given array of objects is <code>null</code>.
 	 */
+	@Deprecated
 	public static int getSeededHashCode(int seed, final Object... objects) {
 		for(final Object object : objects) { //for each object
 			final int hashCode = object != null ? (object.getClass().isArray() ? getHashCode((Object[])object) : object.hashCode()) : 0; //get the object's hash code, or zero if the object is null
@@ -240,6 +243,7 @@ public class Objects {
 	 * @throws NullPointerException if the given array of values is <code>null</code>.
 	 * @see java.util.Arrays#hashCode(int[])
 	 */
+	@Deprecated
 	public static int getIntHashCode(final int... values) {
 		return java.util.Arrays.hashCode(values);
 	}
@@ -252,6 +256,7 @@ public class Objects {
 	 * @throws NullPointerException if the given array of values is <code>null</code>.
 	 * @see java.util.Arrays#hashCode(long[])
 	 */
+	@Deprecated
 	public static int getLongHashCode(final long... values) {
 		return java.util.Arrays.hashCode(values);
 	}
@@ -264,6 +269,7 @@ public class Objects {
 	 * @throws NullPointerException if the given array of values is <code>null</code>.
 	 * @see java.util.Arrays#hashCode(double[])
 	 */
+	@Deprecated
 	public static int getDoubleHashCode(final double... values) {
 		return java.util.Arrays.hashCode(values);
 	}
