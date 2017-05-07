@@ -21,6 +21,8 @@ import java.util.Objects;
 
 import java.util.function.LongUnaryOperator;
 
+import javax.annotation.Nonnull;
+
 /**
  * Represents an operation on a single {@code long}-valued operand that produces a {@code long}-valued result. This is the primitive type specialization of
  * {@link IOUnaryOperator} for {@code long}.
@@ -40,9 +42,9 @@ public interface IOLongUnaryOperator {
 	 * This method is the same as {@link LongUnaryOperator#applyAsLong(long)}, but with a support for {@link IOException}.
 	 * </p>
 	 * 
-	 * @param operand the operand
-	 * @return the operator result
-	 * @throws IOException if there is an I/O error performing the operation
+	 * @param operand The operand.
+	 * @return The operator result.
+	 * @throws IOException if there is an I/O error performing the operation.
 	 */
 	long applyAsLong(long operand) throws IOException;
 
@@ -51,14 +53,13 @@ public interface IOLongUnaryOperator {
 	 * This method is the same as {@link LongUnaryOperator#compose(LongUnaryOperator)}, but with a support for {@link IOException}.
 	 * </p>
 	 * 
-	 * @param before the operator to apply before this operator is applied
-	 * @return a composed operator that first applies the {@code before} operator and then applies this operator
-	 * @throws NullPointerException if before is null
-	 * @throws IOException if there is an I/O error performing the operation
+	 * @param before The operator to apply before this operator is applied.
+	 * @return A composed operator that applies the {@code before} operator first and then this operator.
+	 * @throws IOException if there is an I/O error performing the operation.
 	 *
 	 * @see #andThen(IOLongUnaryOperator)
 	 */
-	default IOLongUnaryOperator compose(IOLongUnaryOperator before) throws IOException {
+	default IOLongUnaryOperator compose(@Nonnull IOLongUnaryOperator before) throws IOException {
 		Objects.requireNonNull(before);
 		return (long v) -> applyAsLong(before.applyAsLong(v));
 	}
@@ -68,14 +69,13 @@ public interface IOLongUnaryOperator {
 	 * This method is the same as {@link LongUnaryOperator#andThen(LongUnaryOperator)}, but with a support for {@link IOException}.
 	 * </p>
 	 * 
-	 * @param after the operator to apply after this operator is applied
-	 * @return a composed operator that first applies this operator and then applies the {@code after} operator
-	 * @throws NullPointerException if after is null
-	 * @throws IOException if there is an I/O error performing the operation
+	 * @param after The operator to apply after this operator is applied.
+	 * @return A composed operator that applies this operator first and then the {@code after} operator.
+	 * @throws IOException if there is an I/O error performing the operation.
 	 *
 	 * @see #compose(IOLongUnaryOperator)
 	 */
-	default IOLongUnaryOperator andThen(IOLongUnaryOperator after) throws IOException {
+	default IOLongUnaryOperator andThen(@Nonnull IOLongUnaryOperator after) throws IOException {
 		Objects.requireNonNull(after);
 		return (long t) -> after.applyAsLong(applyAsLong(t));
 	}
@@ -85,8 +85,8 @@ public interface IOLongUnaryOperator {
 	 * This method is the same as {@link LongUnaryOperator#identity()}, but with a support for {@link IOException}.
 	 * </p>
 	 * 
-	 * @return a unary operator that always returns its input argument
-	 * @throws IOException if there is an I/O error performing the operation
+	 * @return A unary operator that always returns its input argument.
+	 * @throws IOException if there is an I/O error performing the operation.
 	 */
 	static IOLongUnaryOperator identity() throws IOException {
 		return t -> t;

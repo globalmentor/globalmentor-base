@@ -21,6 +21,8 @@ import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.IntConsumer;
 
+import javax.annotation.Nonnull;
+
 /**
  * Represents an operation that accepts a single {@code int}-valued argument and returns no result. This is the primitive type specialization of
  * {@link Consumer} for {@code int}. Unlike most other functional interfaces, {@code IntConsumer} is expected to operate via side-effects.
@@ -40,8 +42,8 @@ public interface IOIntConsumer {
 	 * This method is the same as {@link IntConsumer#accept(int)}, but with a support for {@link IOException}.
 	 * </p>
 	 * 
-	 * @param value the input argument
-	 * @throws IOException if there is an I/O error performing the operation
+	 * @param value The input argument.
+	 * @throws IOException if there is an I/O error performing the operation.
 	 */
 	void accept(int value) throws IOException;
 
@@ -50,12 +52,11 @@ public interface IOIntConsumer {
 	 * This method is the same as {@link IntConsumer#andThen(IntConsumer)}, but with a support for {@link IOException}.
 	 * </p>
 	 * 
-	 * @param after the operation to perform after this operation
-	 * @return a composed {@code IntConsumer} that performs in sequence this operation followed by the {@code after} operation
-	 * @throws NullPointerException if {@code after} is null
-	 * @throws IOException if there is an I/O error performing the operation
+	 * @param after The operation to perform after this operation.
+	 * @return A composed {@code IntConsumer} that performs this operation followed by the {@code after} operation in sequence.
+	 * @throws IOException if there is an I/O error performing the operation.
 	 */
-	default IOIntConsumer andThen(IOIntConsumer after) throws IOException {
+	default IOIntConsumer andThen(@Nonnull IOIntConsumer after) throws IOException {
 		Objects.requireNonNull(after);
 		return (int t) -> {
 			accept(t);

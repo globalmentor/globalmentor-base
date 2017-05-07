@@ -20,6 +20,8 @@ import java.io.IOException;
 import java.util.Objects;
 import java.util.function.Function;
 
+import javax.annotation.Nonnull;
+
 /**
  * Represents a function that accepts one argument and produces a result.
  *
@@ -41,9 +43,9 @@ public interface IOFunction<T, R> {
 	 * This method is the same as {@link Function#apply(Object)}, but with a support for {@link IOException}.
 	 * </p>
 	 * 
-	 * @param t the function argument
-	 * @return the function result
-	 * @throws IOException if there is an I/O error performing the operation
+	 * @param t The function argument.
+	 * @return The function result.
+	 * @throws IOException if there is an I/O error performing the operation.
 	 */
 	R apply(T t) throws IOException;
 
@@ -52,15 +54,14 @@ public interface IOFunction<T, R> {
 	 * This method is the same as {@link Function#compose(Function)}, but with a support for {@link IOException}.
 	 * </p>
 	 * 
-	 * @param <V> the type of input to the {@code before} function, and to the composed function
-	 * @param before the function to apply before this function is applied
-	 * @return a composed function that first applies the {@code before} function and then applies this function
-	 * @throws NullPointerException if before is null
-	 * @throws IOException if there is an I/O error performing the operation
+	 * @param <V> The type of input to the {@code before} function, and to the composed function.
+	 * @param before The function to apply before this function is applied.
+	 * @return A composed function that first applies the {@code before} function and then applies this function.
+	 * @throws IOException if there is an I/O error performing the operation.
 	 *
 	 * @see #andThen(IOFunction)
 	 */
-	default <V> IOFunction<V, R> compose(IOFunction<? super V, ? extends T> before) throws IOException {
+	default <V> IOFunction<V, R> compose(@Nonnull IOFunction<? super V, ? extends T> before) throws IOException {
 		Objects.requireNonNull(before);
 		return (V v) -> apply(before.apply(v));
 	}
@@ -70,15 +71,14 @@ public interface IOFunction<T, R> {
 	 * This method is the same as {@link Function#andThen(Function)}, but with a support for {@link IOException}.
 	 * </p>
 	 * 
-	 * @param <V> the type of output of the {@code after} function, and of the composed function
-	 * @param after the function to apply after this function is applied
-	 * @return a composed function that first applies this function and then applies the {@code after} function
-	 * @throws NullPointerException if after is null
-	 * @throws IOException if there is an I/O error performing the operation
+	 * @param <V> The type of output of the {@code after} function, and of the composed function.
+	 * @param after The function to apply after this function is applied.
+	 * @return A composed function that first applies this function and then applies the {@code after} function.
+	 * @throws IOException if there is an I/O error performing the operation.
 	 *
 	 * @see #compose(IOFunction)
 	 */
-	default <V> IOFunction<T, V> andThen(IOFunction<? super R, ? extends V> after) throws IOException {
+	default <V> IOFunction<T, V> andThen(@Nonnull IOFunction<? super R, ? extends V> after) throws IOException {
 		Objects.requireNonNull(after);
 		return (T t) -> after.apply(apply(t));
 	}
@@ -86,9 +86,9 @@ public interface IOFunction<T, R> {
 	/**
 	 * Returns a function that always returns its input argument.
 	 *
-	 * @param <T> the type of the input and output objects to the function
-	 * @return a function that always returns its input argument
-	 * @throws IOException if there is an I/O error performing the operation
+	 * @param <T> The type of the input and output objects to the function.
+	 * @return A function that always returns its input argument.
+	 * @throws IOException if there is an I/O error performing the operation.
 	 */
 	static <T> IOFunction<T, T> identity() throws IOException {
 		return t -> t;

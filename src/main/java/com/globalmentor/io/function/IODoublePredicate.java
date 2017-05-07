@@ -21,6 +21,8 @@ import java.util.Objects;
 
 import java.util.function.DoublePredicate;
 
+import javax.annotation.Nonnull;
+
 /**
  * Represents a predicate (boolean-valued function) of one {@code double}-valued argument. This is the {@code double}-consuming primitive type specialization of
  * {@link IOPredicate}.
@@ -40,9 +42,9 @@ public interface IODoublePredicate {
 	 * This method is the same as {@link DoublePredicate#test(double)}, but with a support for {@link IOException}.
 	 * </p>
 	 * 
-	 * @param value the input argument
-	 * @return {@code true} if the input argument matches the predicate, otherwise {@code false}
-	 * @throws IOException if there is an I/O error performing the operation
+	 * @param value The input argument.
+	 * @return {@code true} if the input argument matches the predicate, {@code false} if not.
+	 * @throws IOException if there is an I/O error performing the operation.
 	 */
 	boolean test(double value) throws IOException;
 
@@ -51,12 +53,11 @@ public interface IODoublePredicate {
 	 * This method is the same as {@link DoublePredicate#and(DoublePredicate)}, but with a support for {@link IOException}.
 	 * </p>
 	 * 
-	 * @param other a predicate that will be logically-ANDed with this predicate
-	 * @return a composed predicate that represents the short-circuiting logical AND of this predicate and the {@code other} predicate
-	 * @throws NullPointerException if other is null
-	 * @throws IOException if there is an I/O error performing the operation
+	 * @param other A predicate that will be logically-ANDed with this predicate.
+	 * @return A composed predicate that represents the short-circuiting logical AND of this predicate and the {@code other} predicate.
+	 * @throws IOException if there is an I/O error performing the operation.
 	 */
-	default IODoublePredicate and(IODoublePredicate other) throws IOException {
+	default IODoublePredicate and(@Nonnull IODoublePredicate other) throws IOException {
 		Objects.requireNonNull(other);
 		return (value) -> test(value) && other.test(value);
 	}
@@ -66,8 +67,8 @@ public interface IODoublePredicate {
 	 * This method is the same as {@link DoublePredicate#negate()}, but with a support for {@link IOException}.
 	 * </p>
 	 * 
-	 * @return a predicate that represents the logical negation of this predicate
-	 * @throws IOException if there is an I/O error performing the operation
+	 * @return A predicate that represents the logical negation of this predicate.
+	 * @throws IOException if there is an I/O error performing the operation.
 	 */
 	default IODoublePredicate negate() throws IOException {
 		return (value) -> !test(value);
@@ -78,10 +79,9 @@ public interface IODoublePredicate {
 	 * This method is the same as {@link DoublePredicate#or(DoublePredicate)}, but with a support for {@link IOException}.
 	 * </p>
 	 * 
-	 * @param other a predicate that will be logically-ORed with this predicate
-	 * @return a composed predicate that represents the short-circuiting logical OR of this predicate and the {@code other} predicate
-	 * @throws NullPointerException if other is null
-	 * @throws IOException if there is an I/O error performing the operation
+	 * @param other A predicate that will be logically-ORed with this predicate.
+	 * @return A composed predicate that represents the short-circuiting logical OR of this predicate and the {@code other} predicate.
+	 * @throws IOException if there is an I/O error performing the operation.
 	 */
 	default IODoublePredicate or(IODoublePredicate other) throws IOException {
 		Objects.requireNonNull(other);

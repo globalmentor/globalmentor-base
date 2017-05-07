@@ -39,9 +39,9 @@ public interface IOLongToIntFunction {
 	 * This method is the same as {@link LongToIntFunction#applyAsInt(long)}, but with a support for {@link IOException}.
 	 * </p>
 	 * 
-	 * @param value the function argument
-	 * @return the function result
-	 * @throws IOException if there is an I/O error performing the operation
+	 * @param value The function argument.
+	 * @return The function result.
+	 * @throws IOException if there is an I/O error performing the operation.
 	 */
 	int applyAsInt(long value) throws IOException;
 }

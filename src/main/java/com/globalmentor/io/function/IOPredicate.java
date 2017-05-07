@@ -21,6 +21,8 @@ import java.util.Objects;
 
 import java.util.function.Predicate;
 
+import javax.annotation.Nonnull;
+
 /**
  * Represents a predicate (boolean-valued function) of one argument.
  *
@@ -41,9 +43,9 @@ public interface IOPredicate<T> {
 	 * This method is the same as {@link Predicate#test(Object)}, but with a support for {@link IOException}.
 	 * </p>
 	 * 
-	 * @param t the input argument
-	 * @return {@code true} if the input argument matches the predicate, otherwise {@code false}
-	 * @throws IOException if there is an I/O error performing the operation
+	 * @param t The input argument.
+	 * @return {@code true} if the input argument matches the predicate, {@code false} if not.
+	 * @throws IOException if there is an I/O error performing the operation.
 	 */
 	boolean test(T t) throws IOException;
 
@@ -52,12 +54,11 @@ public interface IOPredicate<T> {
 	 * This method is the same as {@link Predicate#and(Predicate)}, but with a support for {@link IOException}.
 	 * </p>
 	 * 
-	 * @param other a predicate that will be logically-ANDed with this predicate
-	 * @return a composed predicate that represents the short-circuiting logical AND of this predicate and the {@code other} predicate
-	 * @throws NullPointerException if other is null
-	 * @throws IOException if there is an I/O error performing the operation
+	 * @param other A predicate that will be logically-ANDed with this predicate.
+	 * @return A composed predicate that represents the short-circuiting logical AND of this predicate and the {@code other} predicate.
+	 * @throws IOException if there is an I/O error performing the operation.
 	 */
-	default IOPredicate<T> and(IOPredicate<? super T> other) throws IOException {
+	default IOPredicate<T> and(@Nonnull IOPredicate<? super T> other) throws IOException {
 		Objects.requireNonNull(other);
 		return (t) -> test(t) && other.test(t);
 	}
@@ -67,8 +68,8 @@ public interface IOPredicate<T> {
 	 * This method is the same as {@link Predicate#negate()}, but with a support for {@link IOException}.
 	 * </p>
 	 * 
-	 * @return a predicate that represents the logical negation of this predicate
-	 * @throws IOException if there is an I/O error performing the operation
+	 * @return A predicate that represents the logical negation of this predicate.
+	 * @throws IOException if there is an I/O error performing the operation.
 	 */
 	default IOPredicate<T> negate() throws IOException {
 		return (t) -> !test(t);
@@ -79,12 +80,11 @@ public interface IOPredicate<T> {
 	 * This method is the same as {@link Predicate#or(Predicate)}, but with a support for {@link IOException}.
 	 * </p>
 	 * 
-	 * @param other a predicate that will be logically-ORed with this predicate
-	 * @return a composed predicate that represents the short-circuiting logical OR of this predicate and the {@code other} predicate
-	 * @throws NullPointerException if other is null
-	 * @throws IOException if there is an I/O error performing the operation
+	 * @param other A predicate that will be logically-ORed with this predicate.
+	 * @return A composed predicate that represents the short-circuiting logical OR of this predicate and the {@code other} predicate.
+	 * @throws IOException if there is an I/O error performing the operation.
 	 */
-	default IOPredicate<T> or(IOPredicate<? super T> other) throws IOException {
+	default IOPredicate<T> or(@Nonnull IOPredicate<? super T> other) throws IOException {
 		Objects.requireNonNull(other);
 		return (t) -> test(t) || other.test(t);
 	}
@@ -94,10 +94,10 @@ public interface IOPredicate<T> {
 	 * This method is the same as {@link Predicate#isEqual(Object)}, but with a support for {@link IOException}.
 	 * </p>
 	 * 
-	 * @param <T> the type of arguments to the predicate
-	 * @param targetRef the object reference with which to compare for equality, which may be {@code null}
-	 * @return a predicate that tests if two arguments are equal according to {@link Objects#equals(Object, Object)}
-	 * @throws IOException if there is an I/O error performing the operation
+	 * @param <T> The type of arguments to the predicate.
+	 * @param targetRef The object reference with which to compare for equality, which may be {@code null}.
+	 * @return A predicate that tests if two arguments are equal according to {@link Objects#equals(Object, Object)}.
+	 * @throws IOException if there is an I/O error performing the operation.
 	 */
 	static <T> IOPredicate<T> isEqual(Object targetRef) throws IOException {
 		return (null == targetRef) ? Objects::isNull : object -> targetRef.equals(object);

@@ -21,6 +21,8 @@ import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.LongConsumer;
 
+import javax.annotation.Nonnull;
+
 /**
  * Represents an operation that accepts a single {@code long}-valued argument and returns no result. This is the primitive type specialization of
  * {@link Consumer} for {@code long}. Unlike most other functional interfaces, {@code LongConsumer} is expected to operate via side-effects.
@@ -40,8 +42,8 @@ public interface IOLongConsumer {
 	 * This method is the same as {@link LongConsumer#accept(long)}, but with a support for {@link IOException}.
 	 * </p>
 	 * 
-	 * @param value the input argument
-	 * @throws IOException if there is an I/O error performing the operation
+	 * @param value The input argument.
+	 * @throws IOException if there is an I/O error performing the operation.
 	 */
 	void accept(long value) throws IOException;
 
@@ -50,12 +52,11 @@ public interface IOLongConsumer {
 	 * This method is the same as {@link LongConsumer#andThen(LongConsumer)}, but with a support for {@link IOException}.
 	 * </p>
 	 * 
-	 * @param after the operation to perform after this operation
-	 * @return a composed {@code LongConsumer} that performs in sequence this operation followed by the {@code after} operation
-	 * @throws NullPointerException if {@code after} is null
-	 * @throws IOException if there is an I/O error performing the operation
+	 * @param after The operation to perform after this operation.
+	 * @return A composed {@code LongConsumer} that performs this operation followed by the {@code after} operation in sequence.
+	 * @throws IOException if there is an I/O error performing the operation.
 	 */
-	default IOLongConsumer andThen(IOLongConsumer after) throws IOException {
+	default IOLongConsumer andThen(@Nonnull IOLongConsumer after) throws IOException {
 		Objects.requireNonNull(after);
 		return (long t) -> {
 			accept(t);

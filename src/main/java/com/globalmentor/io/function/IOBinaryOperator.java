@@ -18,6 +18,9 @@ package com.globalmentor.io.function;
 
 import java.util.Objects;
 import java.util.function.BinaryOperator;
+
+import javax.annotation.Nonnull;
+
 import java.io.IOException;
 import java.util.Comparator;
 
@@ -43,13 +46,12 @@ public interface IOBinaryOperator<T> extends IOBiFunction<T, T, T> {
 	 * This method is the same as {@link BinaryOperator#minBy(Comparator)}, but with a support for {@link IOException}.
 	 * </p>
 	 * 
-	 * @param <T> the type of the input arguments of the comparator
-	 * @param comparator a {@code Comparator} for comparing the two values
-	 * @return a {@code BinaryOperator} which returns the lesser of its operands, according to the supplied {@code Comparator}
-	 * @throws NullPointerException if the argument is null
-	 * @throws IOException if there is an I/O error performing the operation
+	 * @param <T> The type of the input arguments of the comparator.
+	 * @param comparator A {@code Comparator} for comparing both values.
+	 * @return an {@code IOBinaryOperator} which returns the lesser of its operands, according to the supplied {@code Comparator}.
+	 * @throws IOException if there is an I/O error performing the operation.
 	 */
-	public static <T> IOBinaryOperator<T> minBy(Comparator<? super T> comparator) throws IOException {
+	public static <T> IOBinaryOperator<T> minBy(@Nonnull Comparator<? super T> comparator) throws IOException {
 		Objects.requireNonNull(comparator);
 		return (a, b) -> comparator.compare(a, b) <= 0 ? a : b;
 	}
@@ -59,13 +61,12 @@ public interface IOBinaryOperator<T> extends IOBiFunction<T, T, T> {
 	 * This method is the same as {@link BinaryOperator#maxBy(Comparator)}, but with a support for {@link IOException}.
 	 * </p>
 	 * 
-	 * @param <T> the type of the input arguments of the comparator
-	 * @param comparator a {@code Comparator} for comparing the two values
-	 * @return a {@code BinaryOperator} which returns the greater of its operands, according to the supplied {@code Comparator}
-	 * @throws NullPointerException if the argument is null
+	 * @param <T> The type of the input arguments of the comparator.
+	 * @param comparator A {@code Comparator} for comparing both values.
+	 * @return An {@code IOBinaryOperator} which returns the greater of its operands, according to the supplied {@code Comparator}.
 	 * @throws IOException if there is an I/O error performing the operation
 	 */
-	public static <T> IOBinaryOperator<T> maxBy(Comparator<? super T> comparator) throws IOException {
+	public static <T> IOBinaryOperator<T> maxBy(@Nonnull Comparator<? super T> comparator) throws IOException {
 		Objects.requireNonNull(comparator);
 		return (a, b) -> comparator.compare(a, b) >= 0 ? a : b;
 	}

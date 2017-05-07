@@ -20,6 +20,8 @@ import java.io.IOException;
 import java.util.Objects;
 import java.util.function.BiPredicate;
 
+import javax.annotation.Nonnull;
+
 /**
  * Represents a predicate (boolean-valued function) of two arguments. This is the two-arity specialization of {@link IOPredicate}.
  *
@@ -41,10 +43,10 @@ public interface IOBiPredicate<T, U> {
 	 * This method is the same as {@link BiPredicate#test(Object, Object)}, but with a support for {@link IOException}.
 	 * </p>
 	 * 
-	 * @param t the first input argument
-	 * @param u the second input argument
-	 * @return {@code true} if the input arguments match the predicate, otherwise {@code false}
-	 * @throws IOException if there is an I/O error performing the operation
+	 * @param t The first input argument.
+	 * @param u The second input argument.
+	 * @return {@code true} if the input arguments match the predicate, {@code false} if not.
+	 * @throws IOException if there is an I/O error performing the operation.
 	 */
 	boolean test(T t, U u) throws IOException;
 
@@ -53,12 +55,11 @@ public interface IOBiPredicate<T, U> {
 	 * This method is the same as {@link BiPredicate#and(BiPredicate)}, but with a support for {@link IOException}.
 	 * </p>
 	 * 
-	 * @param other a predicate that will be logically-ANDed with this predicate
-	 * @return a composed predicate that represents the short-circuiting logical AND of this predicate and the {@code other} predicate
-	 * @throws NullPointerException if other is null
-	 * @throws IOException if there is an I/O error performing the operation
+	 * @param other A predicate that will be logically-ANDed with this predicate.
+	 * @return A composed predicate that represents the short-circuiting logical AND of this predicate and the {@code other} predicate.
+	 * @throws IOException if there is an I/O error performing the operation.
 	 */
-	default IOBiPredicate<T, U> and(IOBiPredicate<? super T, ? super U> other) throws IOException {
+	default IOBiPredicate<T, U> and(@Nonnull IOBiPredicate<? super T, ? super U> other) throws IOException {
 		Objects.requireNonNull(other);
 		return (T t, U u) -> test(t, u) && other.test(t, u);
 	}
@@ -68,7 +69,7 @@ public interface IOBiPredicate<T, U> {
 	 * This method is the same as {@link BiPredicate#negate()}, but with a support for {@link IOException}.
 	 * </p>
 	 * 
-	 * @return a predicate that represents the logical negation of this predicate
+	 * @return A predicate that represents the logical negation of this predicate
 	 * @throws IOException if there is an I/O error performing the operation
 	 */
 	default IOBiPredicate<T, U> negate() throws IOException {
@@ -80,12 +81,11 @@ public interface IOBiPredicate<T, U> {
 	 * This method is the same as {@link BiPredicate#or(BiPredicate)}, but with a support for {@link IOException}.
 	 * </p>
 	 * 
-	 * @param other a predicate that will be logically-ORed with this predicate
-	 * @return a composed predicate that represents the short-circuiting logical OR of this predicate and the {@code other} predicate
-	 * @throws NullPointerException if other is null
-	 * @throws IOException if there is an I/O error performing the operation
+	 * @param other A predicate that will be logically-ORed with this predicate.
+	 * @return A composed predicate that represents the short-circuiting logical OR of this predicate and the {@code other} predicate.
+	 * @throws IOException if there is an I/O error performing the operation.
 	 */
-	default IOBiPredicate<T, U> or(IOBiPredicate<? super T, ? super U> other) throws IOException {
+	default IOBiPredicate<T, U> or(@Nonnull IOBiPredicate<? super T, ? super U> other) throws IOException {
 		Objects.requireNonNull(other);
 		return (T t, U u) -> test(t, u) || other.test(t, u);
 	}

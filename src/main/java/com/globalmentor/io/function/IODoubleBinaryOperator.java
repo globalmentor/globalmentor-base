@@ -40,10 +40,10 @@ public interface IODoubleBinaryOperator {
 	 * This method is the same as {@link DoubleBinaryOperator#applyAsDouble(double, double)}, but with a support for {@link IOException}.
 	 * </p>
 	 * 
-	 * @param left the first operand
-	 * @param right the second operand
-	 * @return the operator result
-	 * @throws IOException if there is an I/O error performing the operation
+	 * @param left The first operand.
+	 * @param right The second operand.
+	 * @return The operator result.
+	 * @throws IOException if there is an I/O error performing the operation.
 	 */
 	double applyAsDouble(double left, double right) throws IOException;
 }

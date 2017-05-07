@@ -21,6 +21,8 @@ import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
+import javax.annotation.Nonnull;
+
 /**
  * Represents an operation that accepts two input arguments and returns no result. This is the two-arity specialization of {@link Consumer}. Unlike most other
  * functional interfaces, {@code BiConsumer} is expected to operate via side-effects.
@@ -43,9 +45,9 @@ public interface IOBiConsumer<T, U> {
 	 * This method is the same as {@link BiConsumer#accept(Object, Object)}, but with a support for {@link IOException}.
 	 * </p>
 	 *
-	 * @param t the first input argument
-	 * @param u the second input argument
-	 * @throws IOException if there is an I/O error performing the operation
+	 * @param t The first input.
+	 * @param u The second input.
+	 * @throws IOException if there is an I/O error performing the operation.
 	 */
 	void accept(T t, U u) throws IOException;
 
@@ -54,12 +56,11 @@ public interface IOBiConsumer<T, U> {
 	 * This method is the same as {@link BiConsumer#andThen(BiConsumer)}, but with a support for {@link IOException}.
 	 * </p>
 	 *
-	 * @param after the operation to perform after this operation
-	 * @return a composed {@code BiConsumer} that performs in sequence this operation followed by the {@code after} operation
-	 * @throws NullPointerException if {@code after} is null
-	 * @throws IOException if there is an I/O error performing the operation
+	 * @param after The operation to be performed after this operation.
+	 * @return A composed {@code IOBiConsumer} that performs this operation followed by the {@code after} operation in sequence.
+	 * @throws IOException if there is an I/O error performing the operation.
 	 */
-	default IOBiConsumer<T, U> andThen(IOBiConsumer<? super T, ? super U> after) throws IOException {
+	default IOBiConsumer<T, U> andThen(@Nonnull IOBiConsumer<? super T, ? super U> after) throws IOException {
 		Objects.requireNonNull(after);
 
 		return (l, r) -> {

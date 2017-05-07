@@ -21,6 +21,8 @@ import java.util.Objects;
 
 import java.util.function.IntUnaryOperator;
 
+import javax.annotation.Nonnull;
+
 /**
  * Represents an operation on a single {@code int}-valued operand that produces an {@code int}-valued result. This is the primitive type specialization of
  * {@link IOUnaryOperator} for {@code int}.
@@ -40,9 +42,9 @@ public interface IOIntUnaryOperator {
 	 * This method is the same as {@link IntUnaryOperator#applyAsInt(int)}, but with a support for {@link IOException}.
 	 * </p>
 	 * 
-	 * @param operand the operand
-	 * @return the operator result
-	 * @throws IOException if there is an I/O error performing the operation
+	 * @param operand The operand.
+	 * @return The operator result.
+	 * @throws IOException if there is an I/O error performing the operation.
 	 */
 	int applyAsInt(int operand) throws IOException;
 
@@ -51,14 +53,13 @@ public interface IOIntUnaryOperator {
 	 * This method is the same as {@link IntUnaryOperator#compose(IntUnaryOperator)}, but with a support for {@link IOException}.
 	 * </p>
 	 * 
-	 * @param before the operator to apply before this operator is applied
-	 * @return a composed operator that first applies the {@code before} operator and then applies this operator
-	 * @throws NullPointerException if before is null
-	 * @throws IOException if there is an I/O error performing the operation
+	 * @param before The operator to apply before this operator is applied.
+	 * @return A composed operator that first applies the {@code before} operator and then applies this operator.
+	 * @throws IOException if there is an I/O error performing the operation.
 	 *
 	 * @see #andThen(IOIntUnaryOperator)
 	 */
-	default IOIntUnaryOperator compose(IOIntUnaryOperator before) throws IOException {
+	default IOIntUnaryOperator compose(@Nonnull IOIntUnaryOperator before) throws IOException {
 		Objects.requireNonNull(before);
 		return (int v) -> applyAsInt(before.applyAsInt(v));
 	}
@@ -68,14 +69,13 @@ public interface IOIntUnaryOperator {
 	 * This method is the same as {@link IntUnaryOperator#andThen(IntUnaryOperator)}, but with a support for {@link IOException}.
 	 * </p>
 	 * 
-	 * @param after the operator to apply after this operator is applied
-	 * @return a composed operator that first applies this operator and then applies the {@code after} operator
-	 * @throws NullPointerException if after is null
-	 * @throws IOException if there is an I/O error performing the operation
+	 * @param after The operator to apply after this operator is applied.
+	 * @return A composed operator that first applies this operator and then applies the {@code after} operator.
+	 * @throws IOException if there is an I/O error performing the operation.
 	 *
 	 * @see #compose(IOIntUnaryOperator)
 	 */
-	default IOIntUnaryOperator andThen(IOIntUnaryOperator after) throws IOException {
+	default IOIntUnaryOperator andThen(@Nonnull IOIntUnaryOperator after) throws IOException {
 		Objects.requireNonNull(after);
 		return (int t) -> after.applyAsInt(applyAsInt(t));
 	}
@@ -85,8 +85,8 @@ public interface IOIntUnaryOperator {
 	 * This method is the same as {@link IntUnaryOperator#identity()}, but with a support for {@link IOException}.
 	 * </p>
 	 * 
-	 * @return a unary operator that always returns its input argument
-	 * @throws IOException if there is an I/O error performing the operation
+	 * @return A unary operator that always returns its input argument.
+	 * @throws IOException if there is an I/O error performing the operation.
 	 */
 	static IOIntUnaryOperator identity() throws IOException {
 		return t -> t;

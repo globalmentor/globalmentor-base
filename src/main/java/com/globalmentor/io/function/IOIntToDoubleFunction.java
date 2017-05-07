@@ -39,9 +39,9 @@ public interface IOIntToDoubleFunction {
 	 * This method is the same as {@link IntToDoubleFunction#applyAsDouble(int)}, but with a support for {@link IOException}.
 	 * </p>
 	 * 
-	 * @param value the function argument
-	 * @return the function result
-	 * @throws IOException if there is an I/O error performing the operation
+	 * @param value The function argument.
+	 * @return The function result.
+	 * @throws IOException if there is an I/O error performing the operation.
 	 */
 	double applyAsDouble(int value) throws IOException;
 }

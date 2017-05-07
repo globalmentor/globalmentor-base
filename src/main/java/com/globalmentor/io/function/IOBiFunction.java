@@ -20,6 +20,8 @@ import java.io.IOException;
 import java.util.Objects;
 import java.util.function.BiFunction;
 
+import javax.annotation.Nonnull;
+
 /**
  * Represents a function that accepts two arguments and produces a result. This is the two-arity specialization of {@link IOFunction}.
  *
@@ -42,9 +44,9 @@ public interface IOBiFunction<T, U, R> {
 	 * This method is the same as {@link BiFunction#apply(Object, Object)}, but with a support for {@link IOException}.
 	 * </p>
 	 * 
-	 * @param t the first function argument
-	 * @param u the second function argument
-	 * @return the function result
+	 * @param t The first function.
+	 * @param u The second function.
+	 * @return The function result.
 	 * @throws IOException if there is an I/O error performing the operation
 	 */
 	R apply(T t, U u) throws IOException;
@@ -54,13 +56,12 @@ public interface IOBiFunction<T, U, R> {
 	 * This method is the same as {@link BiFunction#andThen(java.util.function.Function)}, but with a support for {@link IOException}.
 	 * </p>
 	 * 
-	 * @param <V> the type of output of the {@code after} function, and of the composed function
-	 * @param after the function to apply after this function is applied
-	 * @return a composed function that first applies this function and then applies the {@code after} function
-	 * @throws NullPointerException if after is null
+	 * @param <V> The type of output of the {@code after} function, and of the composed function.
+	 * @param after The function to be applied after this function.
+	 * @return A composed function that applies this function first and then the {@code after} function.
 	 * @throws IOException if there is an I/O error performing the operation
 	 */
-	default <V> IOBiFunction<T, U, V> andThen(IOFunction<? super R, ? extends V> after) throws IOException {
+	default <V> IOBiFunction<T, U, V> andThen(@Nonnull IOFunction<? super R, ? extends V> after) throws IOException {
 		Objects.requireNonNull(after);
 		return (T t, U u) -> after.apply(apply(t, u));
 	}

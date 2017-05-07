@@ -41,10 +41,10 @@ public interface IOToDoubleBiFunction<T, U> {
 	 * This method is the same as {@link ToDoubleBiFunction#applyAsDouble(Object, Object)}, but with a support for {@link IOException}.
 	 * </p>
 	 * 
-	 * @param t the first function argument
-	 * @param u the second function argument
-	 * @return the function result
-	 * @throws IOException if there is an I/O error performing the operation
+	 * @param t The first function argument.
+	 * @param u The second function argument.
+	 * @return The function result.
+	 * @throws IOException if there is an I/O error performing the operation.
 	 */
 	double applyAsDouble(T t, U u) throws IOException;
 }

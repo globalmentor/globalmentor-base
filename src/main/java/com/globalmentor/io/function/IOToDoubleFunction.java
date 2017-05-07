@@ -40,9 +40,9 @@ public interface IOToDoubleFunction<T> {
 	 * This method is the same as {@link ToDoubleFunction#applyAsDouble(Object)}, but with a support for {@link IOException}.
 	 * </p>
 	 * 
-	 * @param value the function argument
-	 * @return the function result
-	 * @throws IOException if there is an I/O error performing the operation
+	 * @param value The function argument.
+	 * @return The function result.
+	 * @throws IOException if there is an I/O error performing the operation.
 	 */
 	double applyAsDouble(T value) throws IOException;
 }

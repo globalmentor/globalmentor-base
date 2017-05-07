@@ -21,6 +21,8 @@ import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.DoubleConsumer;
 
+import javax.annotation.Nonnull;
+
 /**
  * Represents an operation that accepts a single {@code double}-valued argument and returns no result. This is the primitive type specialization of
  * {@link Consumer} for {@code double}. Unlike most other functional interfaces, {@code DoubleConsumer} is expected to operate via side-effects.
@@ -40,8 +42,8 @@ public interface IODoubleConsumer {
 	 * This method is the same as {@link DoubleConsumer#accept(double)}, but with a support for {@link IOException}.
 	 * </p>
 	 * 
-	 * @param value the input argument
-	 * @throws IOException if there is an I/O error performing the operation
+	 * @param value The input argument.
+	 * @throws IOException if there is an I/O error performing the operation.
 	 */
 	void accept(double value) throws IOException;
 
@@ -50,12 +52,11 @@ public interface IODoubleConsumer {
 	 * This method is the same as {@link DoubleConsumer#andThen(DoubleConsumer)}, but with a support for {@link IOException}.
 	 * </p>
 	 * 
-	 * @param after the operation to perform after this operation
-	 * @return a composed {@code DoubleConsumer} that performs in sequence this operation followed by the {@code after} operation
-	 * @throws NullPointerException if {@code after} is null
-	 * @throws IOException if there is an I/O error performing the operation
+	 * @param after The operation to perform after this operation.
+	 * @return A composed {@code DoubleConsumer} that performs in sequence this operation followed by the {@code after} operation.
+	 * @throws IOException if there is an I/O error performing the operation.
 	 */
-	default IODoubleConsumer andThen(IODoubleConsumer after) throws IOException {
+	default IODoubleConsumer andThen(@Nonnull IODoubleConsumer after) throws IOException {
 		Objects.requireNonNull(after);
 		return (double t) -> {
 			accept(t);

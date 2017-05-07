@@ -40,10 +40,10 @@ public interface IOIntBinaryOperator {
 	 * This method is the same as {@link IntBinaryOperator#applyAsInt(int, int)}, but with a support for {@link IOException}.
 	 * </p>
 	 * 
-	 * @param left the first operand
-	 * @param right the second operand
-	 * @return the operator result
-	 * @throws IOException if there is an I/O error performing the operation
+	 * @param left The first operand.
+	 * @param right The second operand.
+	 * @return The operator result.
+	 * @throws IOException if there is an I/O error performing the operation.
 	 */
 	int applyAsInt(int left, int right) throws IOException;
 }

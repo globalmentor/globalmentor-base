@@ -21,6 +21,8 @@ import java.util.Objects;
 
 import java.util.function.DoubleUnaryOperator;
 
+import javax.annotation.Nonnull;
+
 /**
  * Represents an operation on a single {@code double}-valued operand that produces a {@code double}-valued result. This is the primitive type specialization of
  * {@link IOUnaryOperator} for {@code double}.
@@ -40,9 +42,9 @@ public interface IODoubleUnaryOperator {
 	 * This method is the same as {@link DoubleUnaryOperator#applyAsDouble(double)}, but with a support for {@link IOException}.
 	 * </p>
 	 * 
-	 * @param operand the operand
-	 * @return the operator result
-	 * @throws IOException if there is an I/O error performing the operation
+	 * @param operand The operand.
+	 * @return The operator result.
+	 * @throws IOException if there is an I/O error performing the operation.
 	 */
 	double applyAsDouble(double operand) throws IOException;
 
@@ -51,14 +53,13 @@ public interface IODoubleUnaryOperator {
 	 * This method is the same as {@link DoubleUnaryOperator#compose(DoubleUnaryOperator)}, but with a support for {@link IOException}.
 	 * </p>
 	 * 
-	 * @param before the operator to apply before this operator is applied
-	 * @return a composed operator that first applies the {@code before} operator and then applies this operator
-	 * @throws NullPointerException if before is null
-	 * @throws IOException if there is an I/O error performing the operation
+	 * @param before The operator to apply before this operator is applied.
+	 * @return A composed operator that applies the {@code before} operator first and then this operator.
+	 * @throws IOException if there is an I/O error performing the operation.
 	 *
 	 * @see #andThen(IODoubleUnaryOperator)
 	 */
-	default IODoubleUnaryOperator compose(IODoubleUnaryOperator before) throws IOException {
+	default IODoubleUnaryOperator compose(@Nonnull IODoubleUnaryOperator before) throws IOException {
 		Objects.requireNonNull(before);
 		return (double v) -> applyAsDouble(before.applyAsDouble(v));
 	}
@@ -68,14 +69,13 @@ public interface IODoubleUnaryOperator {
 	 * This method is the same as {@link DoubleUnaryOperator#andThen(DoubleUnaryOperator)}, but with a support for {@link IOException}.
 	 * </p>
 	 * 
-	 * @param after the operator to apply after this operator is applied
-	 * @return a composed operator that first applies this operator and then applies the {@code after} operator
-	 * @throws NullPointerException if after is null
-	 * @throws IOException if there is an I/O error performing the operation
+	 * @param after The operator to apply after this operator is applied.
+	 * @return A composed operator that applies this operator first and then the {@code after} operator.
+	 * @throws IOException if there is an I/O error performing the operation.
 	 *
 	 * @see #compose(IODoubleUnaryOperator)
 	 */
-	default IODoubleUnaryOperator andThen(IODoubleUnaryOperator after) throws IOException {
+	default IODoubleUnaryOperator andThen(@Nonnull IODoubleUnaryOperator after) throws IOException {
 		Objects.requireNonNull(after);
 		return (double t) -> after.applyAsDouble(applyAsDouble(t));
 	}
@@ -85,8 +85,8 @@ public interface IODoubleUnaryOperator {
 	 * This method is the same as {@link DoubleUnaryOperator#identity()}, but with a support for {@link IOException}.
 	 * </p>
 	 * 
-	 * @return a unary operator that always returns its input argument
-	 * @throws IOException if there is an I/O error performing the operation
+	 * @return A unary operator that always returns its input argument.
+	 * @throws IOException if there is an I/O error performing the operation.
 	 */
 	static IODoubleUnaryOperator identity() throws IOException {
 		return t -> t;

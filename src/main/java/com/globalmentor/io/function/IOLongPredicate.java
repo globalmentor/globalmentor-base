@@ -21,6 +21,8 @@ import java.util.Objects;
 
 import java.util.function.LongPredicate;
 
+import javax.annotation.Nonnull;
+
 /**
  * Represents a predicate (boolean-valued function) of one {@code long}-valued argument. This is the {@code long}-consuming primitive type specialization of
  * {@link IOPredicate}.
@@ -40,9 +42,9 @@ public interface IOLongPredicate {
 	 * This method is the same as {@link LongPredicate#test(long)}, but with a support for {@link IOException}.
 	 * </p>
 	 * 
-	 * @param value the input argument
-	 * @return {@code true} if the input argument matches the predicate, otherwise {@code false}
-	 * @throws IOException if there is an I/O error performing the operation
+	 * @param value The input argument.
+	 * @return {@code true} if the input argument matches the predicate, {@code false} if not.
+	 * @throws IOException if there is an I/O error performing the operation.
 	 */
 	boolean test(long value) throws IOException;
 
@@ -51,12 +53,11 @@ public interface IOLongPredicate {
 	 * This method is the same as {@link LongPredicate#and(LongPredicate)}, but with a support for {@link IOException}.
 	 * </p>
 	 * 
-	 * @param other a predicate that will be logically-ANDed with this predicate
-	 * @return a composed predicate that represents the short-circuiting logical AND of this predicate and the {@code other} predicate
-	 * @throws NullPointerException if other is null
-	 * @throws IOException if there is an I/O error performing the operation
+	 * @param other A predicate that will be logically-ANDed with this predicate.
+	 * @return A composed predicate that represents the short-circuiting logical AND of this predicate and the {@code other} predicate.
+	 * @throws IOException if there is an I/O error performing the operation.
 	 */
-	default IOLongPredicate and(IOLongPredicate other) throws IOException {
+	default IOLongPredicate and(@Nonnull IOLongPredicate other) throws IOException {
 		Objects.requireNonNull(other);
 		return (value) -> test(value) && other.test(value);
 	}
@@ -66,8 +67,8 @@ public interface IOLongPredicate {
 	 * This method is the same as {@link LongPredicate#negate()}, but with a support for {@link IOException}.
 	 * </p>
 	 * 
-	 * @return a predicate that represents the logical negation of this predicate
-	 * @throws IOException if there is an I/O error performing the operation
+	 * @return A predicate that represents the logical negation of this predicate.
+	 * @throws IOException if there is an I/O error performing the operation.
 	 */
 	default IOLongPredicate negate() throws IOException {
 		return (value) -> !test(value);
@@ -78,12 +79,11 @@ public interface IOLongPredicate {
 	 * This method is the same as {@link LongPredicate#or(LongPredicate)}, but with a support for {@link IOException}.
 	 * </p>
 	 * 
-	 * @param other a predicate that will be logically-ORed with this predicate
-	 * @return a composed predicate that represents the short-circuiting logical OR of this predicate and the {@code other} predicate
-	 * @throws NullPointerException if other is null
-	 * @throws IOException if there is an I/O error performing the operation
+	 * @param other A predicate that will be logically-ORed with this predicate.
+	 * @return A composed predicate that represents the short-circuiting logical OR of this predicate and the {@code other} predicate.
+	 * @throws IOException if there is an I/O error performing the operation.
 	 */
-	default IOLongPredicate or(IOLongPredicate other) throws IOException {
+	default IOLongPredicate or(@Nonnull IOLongPredicate other) throws IOException {
 		Objects.requireNonNull(other);
 		return (value) -> test(value) || other.test(value);
 	}

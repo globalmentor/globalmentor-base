@@ -53,9 +53,8 @@ public interface IOConsumer<T> {
 	 * </p>
 	 * 
 	 * @param after The operation to perform after this operation.
-	 * @return A consumer that performs in sequence this operation followed by the given operation.
-	 * @throws NullPointerException if the given consumer is <code>null</code>.
-	 * @throws IOException if there is an I/O error performing the operation
+	 * @return A consumer that performs this operation followed by the given operation in sequence.
+	 * @throws IOException if there is an I/O error performing the operation.
 	 */
 	public default IOConsumer<T> andThen(@Nonnull final IOConsumer<? super T> after) throws IOException {
 		requireNonNull(after);

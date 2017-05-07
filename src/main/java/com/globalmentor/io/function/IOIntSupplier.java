@@ -38,8 +38,8 @@ public interface IOIntSupplier {
 	 * This method is the same as {@link IntSupplier#getAsInt()}, but with a support for {@link IOException}.
 	 * </p>
 	 * 
-	 * @return a result
-	 * @throws IOException if there is an I/O error performing the operation
+	 * @return A result.
+	 * @throws IOException if there is an I/O error performing the operation.
 	 */
 	int getAsInt() throws IOException;
 }

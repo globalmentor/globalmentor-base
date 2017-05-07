@@ -38,8 +38,8 @@ public interface IOLongSupplier {
 	 * This method is the same as {@link LongSupplier#getAsLong()}, but with a support for {@link IOException}.
 	 * </p>
 	 * 
-	 * @return a result
-	 * @throws IOException if there is an I/O error performing the operation
+	 * @return A result.
+	 * @throws IOException if there is an I/O error performing the operation.
 	 */
 	long getAsLong() throws IOException;
 }

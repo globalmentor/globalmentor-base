@@ -41,9 +41,9 @@ public interface IOObjDoubleConsumer<T> {
 	 * This method is the same as {@link ObjDoubleConsumer#accept(Object, double)}, but with a support for {@link IOException}.
 	 * </p>
 	 * 
-	 * @param t the first input argument
-	 * @param value the second input argument
-	 * @throws IOException if there is an I/O error performing the operation
+	 * @param t The first input argument.
+	 * @param value The second input argument.
+	 * @throws IOException if there is an I/O error performing the operation.
 	 */
 	void accept(T t, double value) throws IOException;
 }

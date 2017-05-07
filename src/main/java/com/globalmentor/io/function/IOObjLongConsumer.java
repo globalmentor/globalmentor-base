@@ -41,9 +41,9 @@ public interface IOObjLongConsumer<T> {
 	 * This method is the same as {@link ObjLongConsumer#accept(Object, long)}, but with a support for {@link IOException}.
 	 * </p>
 	 * 
-	 * @param t the first input argument
-	 * @param value the second input argument
-	 * @throws IOException if there is an I/O error performing the operation
+	 * @param t The first input argument.
+	 * @param value The second input argument.
+	 * @throws IOException if there is an I/O error performing the operation.
 	 */
 	void accept(T t, long value) throws IOException;
 }
