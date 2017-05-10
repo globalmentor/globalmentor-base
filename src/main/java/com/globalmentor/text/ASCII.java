@@ -1,5 +1,5 @@
 /*
- * Copyright © 2012-2013 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * Copyright © 2012-2017 GlobalMentor, Inc. <http://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,8 +46,13 @@ public class ASCII {
 	/** The highest ASCII code point value. */
 	public static final char MAX_VALUE = 127;
 
-	/** The ASCII digit characters <code>'0'</code> through <code>'9'</code>. */
+	/** The ASCII digit characters <code>'0'</code> – <code>'9'</code>. */
 	public static final Characters DIGIT_CHARACTERS = Characters.ofRange('0', '9');
+
+	/**
+	 * The ASCII hexadecimal digit characters <code>'0'</code> – <code>'9'</code>, <code>'a'</code> – <code>'f'</code>, and <code>'A'</code> – <code>'F'</code>.
+	 */
+	public static final Characters HEX_CHARACTERS = DIGIT_CHARACTERS.add(Characters.ofRange('a', 'f')).add(Characters.ofRange('A', 'F'));
 
 	/**
 	 * Indicates whether a given character is within the ASCII range.
