@@ -139,7 +139,7 @@ public class ReaderParser {
 	}
 
 	/**
-	 * Checks that the current characters matches a given set of characters and advances to the next character.
+	 * Checks that the current character matches a given set of characters and advances to the next character.
 	 * @param reader The reader the contents of which to be parsed.
 	 * @param characters The characters to accept.
 	 * @return The character returned the reader's {@link Reader#read()} operation.
@@ -155,6 +155,41 @@ public class ReaderParser {
 			throw new ParseUnexpectedDataException(reader, characters, (char)c);
 		}
 		return (char)c; //return the character read
+	}
+
+	/**
+	 * Checks that the a certain number of characters matches a given set of characters and advances to the next character.
+	 * @param reader The reader the contents of which to be parsed.
+	 * @param characters The characters to accept.
+	 * @param count The number of characters to read.
+	 * @return A string containing the characters returned the reader's {@link Reader#read()} operation.
+	 * @throws NullPointerException if the given reader, and/or given characters is <code>null</code>.
+	 * @throws IOException if there is an error reading from the reader.
+	 * @throws ParseUnexpectedDataException if one of the characters in the reader does not match one of the specified characters.
+	 * @throws ParseEOFException if the reader has no more characters.
+	 */
+	public static String check(final Reader reader, final Characters characters, final int count) throws IOException, ParseUnexpectedDataException {
+		return check(reader, characters, count, new StringBuilder()).toString();
+	}
+
+	/**
+	 * Checks that the a certain number of characters matches a given set of characters and advances to the next character.
+	 * @param reader The reader the contents of which to be parsed.
+	 * @param characters The characters to accept.
+	 * @param count The number of characters to read.
+	 * @param stringBuilder The string builder to receive the characters read.
+	 * @return The given string builder with the added characters.
+	 * @throws NullPointerException if the given reader, characters, and/or string builder is <code>null</code>.
+	 * @throws IOException if there is an error reading from the reader.
+	 * @throws ParseUnexpectedDataException if one of the characters in the reader does not match one of the specified characters.
+	 * @throws ParseEOFException if the reader has no more characters.
+	 */
+	public static StringBuilder check(final Reader reader, final Characters characters, int count, final StringBuilder stringBuilder)
+			throws IOException, ParseUnexpectedDataException {
+		for(; count > 0; count--) {
+			stringBuilder.append(check(reader, characters));
+		}
+		return stringBuilder;
 	}
 
 	/**
