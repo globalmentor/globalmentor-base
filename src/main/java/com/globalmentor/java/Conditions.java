@@ -411,6 +411,38 @@ public class Conditions {
 	}
 
 	/**
+	 * Checks the results of an expression to see if an operation is supported, and throws an {@link UnsupportedOperationException} if the value is
+	 * <code>false</code>.
+	 * @param test The result of the test.
+	 * @throws UnsupportedOperationException if the given value is <code>false</code>.
+	 */
+	public static void checkSupportedOperation(final boolean test) {
+		checkArgument(test, null); //check the test with no description
+	}
+
+	/**
+	 * Checks the results of an expression to see if an operation is supported, and throws an {@link UnsupportedOperationException} if the value is
+	 * <code>false</code>.
+	 * @param test The result of the test.
+	 * @param description A description of the test to be used when generating an exception, optionally formatted with arguments, or <code>null</code> for no
+	 *          description.
+	 * @param arguments The arguments to be applied when formatting, or an empty array if the message should not be formatted.
+	 * @throws NullPointerException if the given arguments is <code>null</code>.
+	 * @throws IllegalArgumentException if the given value is <code>false</code>.
+	 * @throws IllegalArgumentException if the description is an invalid pattern, or if an argument in the arguments array is not of the type expected by the
+	 *           format element(s) that use it.
+	 * @see String#format(String, Object...)
+	 */
+	public static void checkSupportedOperation(final boolean test, String description, final Object... arguments) {
+		if(!test) { //format the message if appropriate
+			if(description != null && arguments.length > 0) {
+				description = String.format(description, arguments);
+			}
+			throw new UnsupportedOperationException(description);
+		}
+	}
+
+	/**
 	 * Creates a throwable indicating an unexpected condition, which can be thrown by the caller.
 	 * <p>
 	 * An <dfn>unexpected</dfn> condition is one that is logically possible to occur, but yet should not occur because of an API contract, for instance. For
