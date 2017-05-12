@@ -49,12 +49,12 @@ public final class CodePointCharacter {
 	 * @see Character#isValidCodePoint(int)
 	 */
 	private CodePointCharacter(final int codePoint) {
-		checkArgument(Character.isValidCodePoint(codePoint), "The value %d does not represent is not a valid code point.", codePoint);
+		checkArgument(Character.isValidCodePoint(codePoint), "The value %d does not represent a valid code point.", codePoint);
 		this.codePoint = codePoint;
 	}
 
 	/**
-	 * Creates a code point character from a Java primitive <code>char<code> type value.
+	 * Creates a code point character from a Java primitive <code>char</code> type value.
 	 * 
 	 * @param c The character to represent.
 	 * @return A new code point character representing the given character.
@@ -72,7 +72,6 @@ public final class CodePointCharacter {
 	 * @see Character#isValidCodePoint(int)
 	 */
 	public static CodePointCharacter of(final int codePoint) {
-		checkArgument(Character.isValidCodePoint(codePoint), "The value %d does not represent is not a valid code point.", codePoint);
 		return new CodePointCharacter(codePoint);
 	}
 
@@ -82,7 +81,7 @@ public final class CodePointCharacter {
 	 * @param high The high-surrogate code unit.
 	 * @param low The low-surrogate code unit.
 	 * @return A new code point character representing the supplementary code point composed from the specified surrogate pair.
-	 * @throws IllegalArgumentException if the the given characters do not comprise a surrogate pair.
+	 * @throws IllegalArgumentException if the given characters do not comprise a surrogate pair.
 	 * @see Character#isSurrogatePair(char, char)
 	 */
 	public static CodePointCharacter fromSurrogatePair(final char high, final char low) {
@@ -96,7 +95,7 @@ public final class CodePointCharacter {
 	 * returned. The character sequence must not be empty or contain more than two characters.
 	 * @param charSequence The low-surrogate code unit.
 	 * @return A new code point character representing one or two characters in the given character sequence.
-	 * @throws IllegalArgumentException if the the given character sequence do not represent a single character.
+	 * @throws IllegalArgumentException if the given character sequence does not represent a single character.
 	 */
 	public static CodePointCharacter fromCharSequence(@Nonnull final CharSequence charSequence) {
 		switch(charSequence.length()) {
