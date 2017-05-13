@@ -53,7 +53,13 @@ public class ABNF {
 	/** A double quote character. */
 	public static final char DQUOTE = 0x22;
 
-	/** Hexadecimal digits. */
+	/**
+	 * Hexadecimal digits.
+	 * <p>
+	 * Note that this definition differs from {@link ASCII#HEX_CHARACTERS} in that this definition, following <cite>RFC 2234</cite>, does not include lowercase
+	 * letters.
+	 * </p>
+	 */
 	public static final Characters HEXDIG_CHARACTERS = DIGIT_CHARACTERS.addRange('A', 'F');
 
 	/** A horizontal tab character. */

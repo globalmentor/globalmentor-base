@@ -50,6 +50,14 @@ public class ASCII {
 	public static final Characters DIGIT_CHARACTERS = Characters.ofRange('0', '9');
 
 	/**
+	 * The ASCII hexadecimal digit characters <code>'0'</code> – <code>'9'</code>, <code>'a'</code> – <code>'f'</code>, and <code>'A'</code> – <code>'F'</code>.
+	 * <p>
+	 * Note that this definition includes both lowercase and uppercase letters.
+	 * </p>
+	 */
+	public static final Characters HEX_CHARACTERS = DIGIT_CHARACTERS.addRange('a', 'f').addRange('A', 'F');
+
+	/**
 	 * Indicates whether a given character is within the ASCII range.
 	 * @param c The character to test.
 	 * @return <code>true</code> if the given character is not greater than {@value #MAX_VALUE}.
