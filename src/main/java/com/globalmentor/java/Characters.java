@@ -593,6 +593,17 @@ public final class Characters {
 	}
 
 	/**
+	 * Adds a range of characters.
+	 * @param first The first of the range, inclusive.
+	 * @param last The last of the range, inclusive.
+	 * @return A new object containing these characters and the given range of characters.
+	 * @throws IllegalArgumentException if the last character comes before the first character.
+	 */
+	public Characters addRange(final char first, final char last) {
+		return add(Characters.ofRange(first, last));
+	}
+
+	/**
 	 * Creates a new object with these characters, with the given characters removed.
 	 * @param characters The characters to remove.
 	 * @return A new object containing these characters without the given characters.

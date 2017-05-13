@@ -121,7 +121,7 @@ public class URIs {
 	public static final char MAILTO_USERNAME_DOMAIN_SEPARATOR = '@'; //TODO reuse EmailAddress definition
 
 	/** Alphabetic characters as defined by RFC 2396. */
-	public static final Characters ALPHA_CHARACTERS = Characters.ofRange('a', 'z').add(Characters.ofRange('A', 'Z')); //count 52
+	public static final Characters ALPHA_CHARACTERS = Characters.ofRange('a', 'z').addRange('A', 'Z'); //count 52
 
 	/** Digit characters as defined by RFC 2396. */
 	public static final Characters DIGIT_CHARACTERS = Characters.ofRange('0', '9'); //count 10
