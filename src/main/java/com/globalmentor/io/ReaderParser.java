@@ -511,7 +511,8 @@ public class ReaderParser {
 	}
 
 	/**
-	 * Reads all characters in a reader until the given delimiter is reached. The new position will be immediately after that of the given character.
+	 * Reads all characters in a reader until the given delimiter is reached. The given delimiter will <em>not</em> be included in the returned value. The new
+	 * position will be immediately <em>after</em> that of the given character.
 	 * @param reader The reader the contents of which to be parsed.
 	 * @param character The character to reach.
 	 * @return The string read until the given character.
@@ -519,8 +520,23 @@ public class ReaderParser {
 	 * @throws IOException if there is an error reading from the reader.
 	 * @throws ParseEOFException if the reader has no more characters.
 	 */
-	public static String reachAfter(final Reader reader, final char character) throws IOException, ParseEOFException {
-		final StringBuilder stringBuilder = new StringBuilder(); //the string builder to collect read characters
+	public static String reachAfter(@Nonnull final Reader reader, @Nonnull final char character) throws IOException, ParseEOFException {
+		return reachAfter(reader, character, new StringBuilder()).toString();
+	}
+
+	/**
+	 * Reads all characters in a reader until the given delimiter is reached. The given delimiter will <em>not</em> be included in the returned value. The new
+	 * position will be immediately <em>after</em> that of the given character.
+	 * @param reader The reader the contents of which to be parsed.
+	 * @param character The character to reach.
+	 * @param stringBuilder The string builder to which read characters should be added.
+	 * @return The string builder with the content read until the given character.
+	 * @throws NullPointerException if the given reader and/or string builder is <code>null</code>.
+	 * @throws IOException if there is an error reading from the reader.
+	 * @throws ParseEOFException if the reader has no more characters.
+	 */
+	public static StringBuilder reachAfter(@Nonnull final Reader reader, @Nonnull final char character, @Nonnull final StringBuilder stringBuilder)
+			throws IOException, ParseEOFException {
 		int c; //the character read
 		while(true) {
 			c = reader.read(); //read another character
@@ -531,7 +547,7 @@ public class ReaderParser {
 				stringBuilder.append((char)c); //add the read character to the string builder
 			}
 		}
-		return stringBuilder.toString(); //return the string we read
+		return stringBuilder;
 	}
 
 	/**
