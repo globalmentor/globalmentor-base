@@ -1,5 +1,5 @@
 /*
- * Copyright © 1996-2008 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * Copyright © 1996-2017 GlobalMentor, Inc. <http://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,38 +21,70 @@ import java.util.regex.*;
 
 import static java.util.Objects.*;
 
-import com.globalmentor.java.Objects;
+import com.globalmentor.java.Characters;
 import static com.globalmentor.net.URIs.*;
+
+import com.globalmentor.text.ABNF;
 import com.globalmentor.text.ArgumentSyntaxException;
 
 /**
- * The encapsulation of an email address in the form specified by <a href="http://www.ietf.org/rfc/rfc2822.txt">RFC 2822, "Internet Message Format"</a>.
+ * Value class for email addresses represented in the form specified by <a href="http://www.ietf.org/rfc/rfc5322.txt"><code>RFC 5322: Internet Message
+ * Format</cite></a>.
  * @author Garret Wilson
+ * @see <a href="http://www.ietf.org/rfc/rfc5322.txt">RFC 5322</a>
  */
-public class EmailAddress implements Resource, Comparable<EmailAddress> {
+public final class EmailAddress implements Resource, Comparable<EmailAddress> {
+
+	//TODO make explicit whether these definitions include RFC 5322 obsolete ("obs-") elements
+
+	/**
+	 * Email address <code>atext</code> characters as per <cite>RFC 5322</cite>. <blockquote>Printable US-ASCII characters not including specials. Used for
+	 * atoms.</blockquote>
+	 */
+	public static final Characters ATEXT_CHARACTERS = ABNF.ALPHA_CHARACTERS.add(ABNF.DIGIT_CHARACTERS).add('!', '#', '$', '%', '&', '\'', '*', '+', '-', '/', '=',
+			'?', '^', '_', '`', '{', '|', '}', '~');
+
+	/**
+	 * Email address <code>dtext</code> characters as per <cite>RFC 5322</cite>. <em>This definition does not include the obsolete <code>obs-dtext</code> from
+	 * <cite>RFC 5322</cite>.</em> <blockquote>Printable US-ASCII characters not including "[", "]", or "\".</blockquote>
+	 */
+	public static final Characters DTEXT_CHARACTERS = Characters.ofRange((char)33, (char)90).addRange((char)94, (char)126);
 
 	/** The delimiter separating the local part from the domain. */
 	public static final char LOCAL_PART_DOMAIN_DELIMITER = '@';
 
-	/**
-	 * A regular expression pattern for matching the local part of an email addresses according to RFC 2822. This pattern is derived from the regular expression
-	 * provided at <a href="http://www.email-unlimited.com/stuff/email_address_validator.htm">Email Address Validation</a>.
-	 * @see <a href="http://www.email-unlimited.com/stuff/email_address_validator.htm">Email Address Validation</a>
-	 */
-	public static final Pattern LOCAL_PART_PATTERN = Pattern.compile("[-!#$%&'*+/0-9=?A-Z^_a-z{|}~](?:\\.?[-!#$%&'*+/0-9=?A-Z^_a-z{|}~])*");
+	/** The beginning delimiter of a <code>domain-literal</code>. */
+	public static final char DOMAIN_LITERAL_BEGIN = '[';
+
+	/** The ending delimiter of a <code>domain-literal</code>. */
+	public static final char DOMAIN_LITERAL_END = ']';
 
 	/**
-	 * A regular expression pattern for matching the domain of an email addresses according to RFC 2822. This pattern is derived from the regular expression
-	 * provided at <a href="http://www.email-unlimited.com/stuff/email_address_validator.htm">Email Address Validation</a>.
-	 * @see <a href="http://www.email-unlimited.com/stuff/email_address_validator.htm">Email Address Validation</a>
+	 * A regular expression pattern for matching the local part of an email addresses according to <cite>RFC 5322</cite>. This pattern is derived from the regular
+	 * expression provided at <a href="http://stackoverflow.com/a/201378/421049">an answer to <cite>Using a regular expression to validate an email
+	 * address</cite></a>.
+	 * @see <a href="http://stackoverflow.com/q/201323/421049">Using a regular expression to validate an email address</a>
 	 */
-	public static final Pattern DOMAIN_PATTERN = Pattern.compile("[a-zA-Z](?:-?[a-zA-Z0-9])*(?:\\.[a-zA-Z](?:-?[a-zA-Z0-9])*)+");
+	public static final Pattern LOCAL_PART_PATTERN = Pattern.compile("[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*"
+			+ "|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]"
+			+ "|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\"");
 
 	/**
-	 * A regular expression pattern for matching email addresses according to RFC 2822. The pattern has two matching groups: the local part, and the domain, in
-	 * that order. This pattern is derived from the regular expression provided at <a
-	 * href="http://www.email-unlimited.com/stuff/email_address_validator.htm">Email Address Validation</a>.
-	 * @see <a href="http://www.email-unlimited.com/stuff/email_address_validator.htm">Email Address Validation</a>
+	 * A regular expression pattern for matching the domain of an email addresses according to <cite>RFC 5322</cite>. This pattern is derived from the regular
+	 * expression provided at <a href="http://stackoverflow.com/a/201378/421049">an answer to <cite>Using a regular expression to validate an email
+	 * address</cite></a>.
+	 * @see <a href="http://stackoverflow.com/q/201323/421049">Using a regular expression to validate an email address</a>
+	 */
+	public static final Pattern DOMAIN_PATTERN = Pattern.compile("(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?"
+			+ "|\\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\\.){3}"
+			+ "(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:"
+			+ "(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]"
+			+ "|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\]");
+
+	/**
+	 * A regular expression pattern for matching email addresses according to <cite>RFC 5322</cite>. This pattern is derived from the regular expression provided
+	 * at <a href="http://stackoverflow.com/a/201378/421049">an answer to <cite>Using a regular expression to validate an email address</cite></a>.
+	 * @see <a href="http://stackoverflow.com/q/201323/421049">Using a regular expression to validate an email address</a>
 	 * @see #EMAIL_ADDRESS_PATTERN_LOCAL_PART_GROUP
 	 * @see #EMAIL_ADDRESS_PATTERN_DOMAIN_GROUP
 	 * @see #LOCAL_PART_PATTERN
@@ -87,37 +119,48 @@ public class EmailAddress implements Resource, Comparable<EmailAddress> {
 	 * @param localPart The local part of the email address.
 	 * @param domain The domain of the email address.
 	 * @throws NullPointerException if the given local part and/or domain is <code>null</code>.
-	 * @throws ArgumentSyntaxException if the given local part and/or domain violates RFC 2822.
 	 */
-	public EmailAddress(final String localPart, final String domain) throws ArgumentSyntaxException { //TODO resolve encoding differences between this class and URIUtilities.createMailtoURI(); decide if we want the parameters to be encoded or raw
+	private EmailAddress(final String localPart, final String domain) throws ArgumentSyntaxException {
+		this.localPart = requireNonNull(localPart);
+		this.domain = requireNonNull(domain);
+	}
+
+	/**
+	 * Constructs an email address from its separate components.
+	 * @param localPart The local part of the email address.
+	 * @param domain The domain of the email address.
+	 * @throws NullPointerException if the given local part and/or domain is <code>null</code>.
+	 * @throws ArgumentSyntaxException if the given local part and/or domain violates <cite>RFC 5322</cite>.
+	 */
+	public static EmailAddress of(final String localPart, final String domain) throws ArgumentSyntaxException { //TODO resolve encoding differences between this class and URIUtilities.createMailtoURI(); decide if we want the parameters to be encoded or raw
 		if(!LOCAL_PART_PATTERN.matcher(requireNonNull(localPart, "Local part cannot be null.")).matches()) { //if the local part does not match the pattern
 			throw new ArgumentSyntaxException("Local part " + localPart + " is syntactically incorrect.");
 		}
 		if(!DOMAIN_PATTERN.matcher(requireNonNull(domain, "Domain cannot be null.")).matches()) { //if the domain does not match the pattern
 			throw new ArgumentSyntaxException("Domain " + domain + " is syntactically incorrect.");
 		}
-		this.localPart = localPart;
-		this.domain = domain;
+		return new EmailAddress(localPart, domain);
 	}
 
 	/**
 	 * Constructs an email address from a string.
-	 * @param input The character sequence to be parsed as an email address.
+	 * @param input The string to be parsed as an email address.
 	 * @throws NullPointerException if the given character sequence is <code>null</code>.
-	 * @throws ArgumentSyntaxException if the input string violates RFC 2822.
+	 * @throws ArgumentSyntaxException if the input string violates <cite>RFC 5322</cite>.
 	 */
-	public EmailAddress(final CharSequence input) throws ArgumentSyntaxException {
+	public static EmailAddress fromString(final String input) throws ArgumentSyntaxException {
 		final Matcher matcher = EMAIL_ADDRESS_PATTERN.matcher(requireNonNull(input, "Email address string cannot be null.")); //get a matcher for matching the given input string
 		if(!matcher.matches()) { //if the input string does not match the email address patter
 			throw new ArgumentSyntaxException("Email address " + input + " is syntactically incorrect.");
 		}
-		this.localPart = matcher.group(EMAIL_ADDRESS_PATTERN_LOCAL_PART_GROUP); //the first group contains the local part
-		this.domain = matcher.group(EMAIL_ADDRESS_PATTERN_DOMAIN_GROUP); //the second group contains the domain
+		final String localPart = matcher.group(EMAIL_ADDRESS_PATTERN_LOCAL_PART_GROUP); //the first group contains the local part
+		final String domain = matcher.group(EMAIL_ADDRESS_PATTERN_DOMAIN_GROUP); //the second group contains the domain
+		return new EmailAddress(localPart, domain);
 	}
 
 	/** @return A hash code representing this object. */
 	public int hashCode() {
-		return Objects.getHashCode(getLocalPart(), getDomain()); //return a hash code for the local part and domain
+		return hash(getLocalPart(), getDomain()); //return a hash code for the local part and domain
 	}
 
 	/**
@@ -126,12 +169,14 @@ public class EmailAddress implements Resource, Comparable<EmailAddress> {
 	 * @return <code>true</code> if the given object is an equivalent email address.
 	 */
 	public boolean equals(final Object object) {
-		if(object instanceof EmailAddress) { //if the other object is an email address
-			final EmailAddress emailAddress = (EmailAddress)object; //get the other object as an email address
-			return getLocalPart().equals(emailAddress.getLocalPart()) && getDomain().equals(emailAddress.getDomain()); //compare local part and domain
-		} else { //if the other object is not an email address
-			return false; //the objects aren't equal
+		if(this == object) {
+			return true;
 		}
+		if(!(object instanceof EmailAddress)) { //if the other object is an email address
+			return false;
+		}
+		final EmailAddress emailAddress = (EmailAddress)object; //get the other object as an email address
+		return getLocalPart().equals(emailAddress.getLocalPart()) && getDomain().equals(emailAddress.getDomain()); //compare local part and domain
 	}
 
 	/**
@@ -150,7 +195,8 @@ public class EmailAddress implements Resource, Comparable<EmailAddress> {
 	}
 
 	/**
-	 * Constructs a string representation of the email address in its RFC 2822 format. This implementation returns the canonical version of the email address.
+	 * Constructs a string representation of the email address in its <cite>RFC 5322</cite> format. This implementation returns the canonical version of the email
+	 * address.
 	 * @return A string representation of the email address.
 	 */
 	public String toString() {
@@ -169,7 +215,7 @@ public class EmailAddress implements Resource, Comparable<EmailAddress> {
 	 * @param input The character sequence to be parsed as an email address.
 	 * @return The local part of the given email address.
 	 * @throws NullPointerException if the given character sequence is <code>null</code>.
-	 * @throws ArgumentSyntaxException if the input string violates RFC 2822.
+	 * @throws ArgumentSyntaxException if the input string violates <cite>RFC 5322</cite>.
 	 */
 	public static String getLocalPart(final CharSequence input) throws ArgumentSyntaxException {
 		final Matcher matcher = EMAIL_ADDRESS_PATTERN.matcher(requireNonNull(input, "Email address string cannot be null.")); //get a matcher for matching the given input string
@@ -184,7 +230,7 @@ public class EmailAddress implements Resource, Comparable<EmailAddress> {
 	 * @param input The character sequence to be parsed as an email address.
 	 * @return The domain of the given email address.
 	 * @throws NullPointerException if the given character sequence is <code>null</code>.
-	 * @throws ArgumentSyntaxException if the input string violates RFC 2822.
+	 * @throws ArgumentSyntaxException if the input string violates <cite>RFC 5322</cite>.
 	 */
 	public static String getDomain(final CharSequence input) throws ArgumentSyntaxException {
 		final Matcher matcher = EMAIL_ADDRESS_PATTERN.matcher(requireNonNull(input, "Email address string cannot be null.")); //get a matcher for matching the given input string
