@@ -45,16 +45,16 @@ public class ABNF {
 	public static final String CRLF = "" + CR + LF;
 
 	/** Control characters: 0x00-1F / 0x7F. */
-	public static final Characters CTL_CHARS = Characters.ofRange((char)0x00, (char)0x1F).add((char)0x7F);
+	public static final Characters CTL_CHARACTERS = Characters.ofRange((char)0x00, (char)0x1F).add((char)0x7F);
 
 	/** Digit characters: 0x30-39 (0-9). */
-	public static final Characters DIGIT_CHARS = Characters.ofRange((char)0x30, (char)0x39);
+	public static final Characters DIGIT_CHARACTERS = Characters.ofRange((char)0x30, (char)0x39);
 
 	/** A double quote character. */
 	public static final char DQUOTE = 0x22;
 
 	/** Hexadecimal digits. */
-	public static final Characters HEXDIG_CHARS = DIGIT_CHARS.addRange('A', 'F');
+	public static final Characters HEXDIG_CHARACTERS = DIGIT_CHARACTERS.addRange('A', 'F');
 
 	/** A horizontal tab character. */
 	public static final char HTAB = 0x09;
@@ -63,15 +63,15 @@ public class ABNF {
 	public static final char SP = 0x20;
 
 	/** White space characters. */
-	public static final Characters WSP_CHARS = Characters.of(SP, HTAB);
+	public static final Characters WSP_CHARACTERS = Characters.of(SP, HTAB);
 
 	/** Linear whitespace (WSP / CRLF WSP). */
-	public static final Characters LWSP_CHARS = WSP_CHARS.add(CRLF);
+	public static final Characters LWSP_CHARACTERS = WSP_CHARACTERS.add(CRLF);
 
 	/** Characters taking up 8 bits of data: 0x00-FF. */
-	public static final Characters OCTET_CHARS = Characters.ofRange((char)0x00, (char)0xff);
+	public static final Characters OCTET_CHARACTERS = Characters.ofRange((char)0x00, (char)0xff);
 
 	/** Visible (printing) characters: 0x21-7E. */
-	public static final Characters VCHAR_CHARS = Characters.ofRange((char)0x21, (char)0x7E);
+	public static final Characters VCHAR_CHARACTERS = Characters.ofRange((char)0x21, (char)0x7E);
 
 }
