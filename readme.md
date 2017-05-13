@@ -7,6 +7,7 @@ Issues tracked by [JIRA](https://globalmentor.atlassian.net/projects/JAVA).
 ## Changelog
 
 - 0.5.4:
+	* [JAVA-42](https://globalmentor.atlassian.net/browse/JAVA-42): Upgraded ABNF definitions to use Characters class.
 	* [JAVA-36](https://globalmentor.atlassian.net/browse/JAVA-36): Created Unicode code point character value class.
 	* [JAVA-34](https://globalmentor.atlassian.net/browse/JAVA-34): Implemented functional interfaces with support for IOExceptions.
 	* [JAVA-27](https://globalmentor.atlassian.net/browse/JAVA-27): Added methods to backup a file on `com.globalmentor.io.Files`.
