@@ -36,6 +36,7 @@ public class IOOptionals {
 	 * If a value is present, invokes the given consumer with the optional value; otherwise, does nothing.
 	 * @param <T> The type of value contained in the optional.
 	 * @param ioConsumer The object to receive the value if a value is present.
+	 * @param optional The {@link Optional} with the optional value on which the consumer will be invoked.
 	 * @throws NullPointerException if the optional is <code>null</code>; or if the value is present but the consumer is <code>null</code>.
 	 * @throws IOException if there was an I/O exception while consuming the value.
 	 */

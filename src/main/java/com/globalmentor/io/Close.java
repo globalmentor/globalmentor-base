@@ -32,6 +32,7 @@ public class Close {
 	/**
 	 * Produces a {@link Closeable} object that will close by invoking the given consumer.
 	 * @param closeStragy The strategy for closing the returned {@link Closeable}.
+	 * @return A {@link Closeable} instance that will invoke the given close strategy when closed.
 	 * @throws NullPointerException if the optional is <code>null</code>; or if the value is present but the consumer is <code>null</code>.
 	 */
 	public static Closeable by(@Nonnull final Strategy closeStragy) {

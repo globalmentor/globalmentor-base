@@ -28,7 +28,7 @@ import com.globalmentor.text.ABNF;
 import com.globalmentor.text.ArgumentSyntaxException;
 
 /**
- * Value class for email addresses represented in the form specified by <a href="http://www.ietf.org/rfc/rfc5322.txt"><code>RFC 5322: Internet Message
+ * Value class for email addresses represented in the form specified by <a href="http://www.ietf.org/rfc/rfc5322.txt"><cite>RFC 5322: Internet Message
  * Format</cite></a>.
  * @author Garret Wilson
  * @see <a href="http://www.ietf.org/rfc/rfc5322.txt">RFC 5322</a>
@@ -129,6 +129,7 @@ public final class EmailAddress implements Resource, Comparable<EmailAddress> {
 	 * Constructs an email address from its separate components.
 	 * @param localPart The local part of the email address.
 	 * @param domain The domain of the email address.
+	 * @return An email address with the given local part and domain.
 	 * @throws NullPointerException if the given local part and/or domain is <code>null</code>.
 	 * @throws ArgumentSyntaxException if the given local part and/or domain violates <cite>RFC 5322</cite>.
 	 */
@@ -145,6 +146,7 @@ public final class EmailAddress implements Resource, Comparable<EmailAddress> {
 	/**
 	 * Constructs an email address from a string.
 	 * @param input The string to be parsed as an email address.
+	 * @return An email address from the given string representation.
 	 * @throws NullPointerException if the given character sequence is <code>null</code>.
 	 * @throws ArgumentSyntaxException if the input string violates <cite>RFC 5322</cite>.
 	 */

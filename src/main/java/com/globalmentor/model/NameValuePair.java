@@ -53,7 +53,10 @@ public class NameValuePair<N, V> extends DefaultNamed<N> implements IDed<N>, Val
 
 	/**
 	 * Static factory method to create a name-value pair from a map entry copy.
+	 * @param <MEK> The type of map entry key.
+	 * @param <MEV> The type of map entry value.
 	 * @param mapEntry The map entry the values of which to use in creating this name/value pair.
+	 * @return A name-value pair from the map entry.
 	 * @throws NullPointerException if the given map entry is <code>null</code>.
 	 */
 	public static <MEK, MEV> NameValuePair<MEK, MEV> fromMapEntry(@Nonnull final Map.Entry<MEK, MEV> mapEntry) {
