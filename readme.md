@@ -6,7 +6,7 @@ Issues tracked by [JIRA](https://globalmentor.atlassian.net/projects/JAVA).
 
 ## Changelog
 
-- 0.5.4:
+- 0.5.4: (2017-05-13)
 	* [JAVA-42](https://globalmentor.atlassian.net/browse/JAVA-42): Upgraded ABNF definitions to use `Characters` class.
 	* [JAVA-36](https://globalmentor.atlassian.net/browse/JAVA-36): Created Unicode `CodePointCharacter` value class.
 	* [JAVA-34](https://globalmentor.atlassian.net/browse/JAVA-34): Implemented functional interfaces with support for `IOException`s.
