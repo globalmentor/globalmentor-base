@@ -25,6 +25,8 @@ import static java.util.Objects.*;
 import com.globalmentor.io.ParseIOException;
 
 import static com.globalmentor.java.Characters.*;
+
+import com.globalmentor.text.ASCII;
 import com.globalmentor.text.SyntaxException;
 
 import static com.globalmentor.io.ReaderParser.*;
@@ -437,7 +439,7 @@ public class ISOTemporalComponents {
 				if(!lenient || peek(reader) == TIME_DELIMITER) { //if there are seconds (seconds are only optional if we are parsing leniently)
 					check(reader, TIME_DELIMITER); //check the time delimiter
 					seconds = Integer.parseInt(readStringCheck(reader, 2, '0', '9')); //read the seconds
-				} else if(!requireDelimiters && isPeek(reader, '0', '9')) { //if we don't require delimiters and there is a digit
+				} else if(!requireDelimiters && ASCII.DIGIT_CHARACTERS.contains(peek(reader))) { //if we don't require delimiters and there is a digit
 					seconds = Integer.parseInt(readStringCheck(reader, 2, '0', '9')); //read the seconds
 				} else { //if this is a lenient parsing and there are no seconds
 					seconds = 0; //conclude no seconds

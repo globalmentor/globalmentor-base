@@ -28,6 +28,17 @@ import static com.globalmentor.java.Conditions.*;
 
 /**
  * Parsing methods that work on a {@link Reader}. The reader must support marking.
+ * <p>
+ * This parser supports several general operations:
+ * </p>
+ * <dl>
+ * <dt><dfn>check</dfn></dt>
+ * <dd>Checks the parsed content, throwing an exception if the content does not match that expected. The content is consumed. Semantically a "check" operation
+ * is equivalent to a "confirm" operation that throws an exception if the result is <code>false</code>.</dd>
+ * <dt><dfn>confirm</dfn></dt>
+ * <dd>Compares the content and returns whether it matches that expected. If the content matches, it is consumed. If the content does not match, it is not
+ * consumed. No exception is thrown based upon the match.</dd>
+ * <dl>
  * @author Garret Wilson
  * @see Reader#markSupported()
  */
@@ -412,21 +423,6 @@ public class ReaderParser {
 			reader.reset(); //reset to the last mark, which was set right before the character we found
 		}
 		return c; //return the character read
-	}
-
-	/**
-	 * Reads a character and, if a character was read (i.e. the reader is not out of data), resets the reader as if the character were not readm returning whether
-	 * the character matches a character in the given range.
-	 * @param reader The reader the contents of which to be parsed.
-	 * @param lowerBound The lowest character in the range.
-	 * @param upperBound The highest character in the range.
-	 * @return <code>true</code> if a characters in the given range was peeked.
-	 * @throws NullPointerException if the given reader is <code>null</code>.
-	 * @throws IOException if there is an error reading from the reader.
-	 */
-	public static boolean isPeek(final Reader reader, final char lowerBound, final char upperBound) throws IOException {
-		final char c = peek(reader);
-		return c >= lowerBound && c <= upperBound; //see if this character is in the range
 	}
 
 	/**
