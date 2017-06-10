@@ -42,6 +42,9 @@ import static com.globalmentor.java.Conditions.*;
  * <dt><dfn>reach</dfn></dt>
  * <dd>Reads content until some delimiter is encountered. The reached content is not returned. By default no exception is thrown if the end of the content is
  * reached, unless the method indicates that reaching the delimiter is required.</dd>
+ * <dt><dfn>read</dfn></dt>
+ * <dd>Reads content. If restrictions are provided, they will be used to check the returned content. By default no exception is thrown if the end of the content
+ * is reached, unless the method indicates that reaching the delimiter is required.</dd>
  * <dl>
  * @author Garret Wilson
  * @see Reader#markSupported()
@@ -511,6 +514,9 @@ public class ReaderParser {
 
 	/**
 	 * Reads a character, throwing an error if the end of the reader was reached.
+	 * <p>
+	 * This method is semantically equivalent to calling {@link #readRequiredCount(Reader, int)} with a value of <code>1</code>.
+	 * </p>
 	 * @param reader The reader the contents of which to be parsed.
 	 * @return The character returned from the reader's {@link Reader#read()} operation.
 	 * @throws NullPointerException if the given reader is <code>null</code>.
@@ -562,56 +568,68 @@ public class ReaderParser {
 	}
 
 	/**
-	 * Reads at least a minimum number of characters in a reader that lie within a given range. The new position will either be the first character not in the
-	 * range or the end of the reader.
+	 * Reads a given number of characters, throwing an error if the end of the reader was reached or if a character in the string does not match one of the given
+	 * characters.
 	 * @param reader The reader the contents of which to be parsed.
-	 * @param minimumCount The minimum number of characters to read.
-	 * @param lowerBound The lowest character in the range.
-	 * @param upperBound The highest character in the range.
-	 * @return The characters that were read.
-	 * @throws NullPointerException if the given reader is <code>null</code>.
-	 * @throws IOException if there is an error reading from the reader.
-	 */
-	public static String readRequiredMinimumCount(final Reader reader, int minimumCount, final char lowerBound, final char upperBound) throws IOException {
-		final StringBuilder stringBuilder = new StringBuilder(); //create a string builder
-		while(minimumCount > 0) { //while we should read a minimum count of characters
-			stringBuilder.append(check(reader, lowerBound, upperBound)); //check another character and append it to the string builder
-			--minimumCount; //note that we have more minimum characters to read
-		}
-		skip(reader, lowerBound, upperBound, stringBuilder); //read the remaining characters
-		return stringBuilder.toString(); //return the collected characters
-	}
-
-	/**
-	 * Reads a given number of characters, throwing an error if the end of the reader was reached or if a character in the string does not match a character in
-	 * the given range.
-	 * @param reader The reader the contents of which to be parsed.
+	 * @param characters The characters to accept.
 	 * @param count The number of characters to read.
-	 * @param lowerBound The lowest character in the range.
-	 * @param upperBound The highest character in the range.
 	 * @return The string representing the characters returned from the reader's {@link Reader#read()} operation.
 	 * @throws NullPointerException if the given reader is <code>null</code>.
 	 * @throws IllegalArgumentException if the given count is less than zero.
 	 * @throws IOException if there is an error reading from the reader.
-	 * @throws ParseUnexpectedDataException if a character in the string does not fall within the given range.
+	 * @throws ParseUnexpectedDataException if one of the characters read is not included in the given characters.
 	 * @throws ParseEOFException if the reader has no more characters.
 	 */
-	public static String readStringCheck(final Reader reader, final int count, final char lowerBound, final char upperBound)
-			throws IOException, ParseUnexpectedDataException {
+	public static String readRequiredCount(final Reader reader, final Characters characters, final int count) throws IOException, ParseUnexpectedDataException {
 		checkArgumentNotNegative(count); //make sure the count isn't negative
-		final char[] characters = new char[count]; //create a new buffer
-		if(reader.read(characters) != count) { //read the characters; if all the character weren't read
+		final char[] buffer = new char[count]; //create a new buffer
+		if(reader.read(buffer) != count) { //read the characters; if all the character weren't read
 			throw new ParseEOFException(reader);
 		}
 		for(int i = 0; i < count; ++i) { //look at each character
-			final char c = characters[i]; //look at this character
-			if(c < lowerBound || c > upperBound) { //if this character is not in the range
-				throw new ParseUnexpectedDataException(reader,
-						"Expected character from " + Characters.getLabel(lowerBound) + " to " + Characters.getLabel(upperBound) + "; found " + Characters.getLabel(c) + ".",
-						(char)c);
+			final char c = buffer[i]; //look at this character
+			if(!characters.contains(c)) { //if this character does not match one of the expected characters
+				throw new ParseUnexpectedDataException(reader, characters, c);
 			}
 		}
-		return new String(characters); //return a new string from the characters read 
+		return new String(buffer); //return a new string from the characters read 
+	}
+
+	/**
+	 * Reads at least a minimum number of characters in a reader that appear in a set of characters. The new position will either be the first character not in
+	 * the range or the end of the reader.
+	 * @param reader The reader the contents of which to be parsed.
+	 * @param characters The characters to accept.
+	 * @param minimumCount The minimum number of characters to read.
+	 * @return The characters that were read.
+	 * @throws NullPointerException if the given reader is <code>null</code>.
+	 * @throws IOException if there is an error reading from the reader.
+	 * @see #read(Reader, Characters)
+	 */
+	public static String readRequiredMinimumCount(final Reader reader, final Characters characters, int minimumCount) throws IOException {
+		return readRequiredMinimumCount(reader, characters, minimumCount, new StringBuilder()).toString();
+	}
+
+	/**
+	 * Reads at least a minimum number of characters in a reader that appear in a set of characters. The new position will either be the first character not in
+	 * the range or the end of the reader.
+	 * @param reader The reader the contents of which to be parsed.
+	 * @param characters The characters to accept.
+	 * @param stringBuilder The string builder to which the characters will be appended.
+	 * @param minimumCount The minimum number of characters to read.
+	 * @return The given string builder with the characters appended.
+	 * @throws NullPointerException if the given reader is <code>null</code>.
+	 * @throws IOException if there is an error reading from the reader.
+	 * @see #read(Reader, Characters, StringBuilder)
+	 */
+	public static StringBuilder readRequiredMinimumCount(final Reader reader, final Characters characters, int minimumCount, final StringBuilder stringBuilder)
+			throws IOException {
+		final int originalLength = stringBuilder.length();
+		read(reader, characters, stringBuilder); //read all the characters we can
+		if(stringBuilder.length() - originalLength < minimumCount) { //if we didn't read enough characters
+			check(reader, characters); //attempt to read another character, which will throw the appropriate exception
+		}
+		return stringBuilder;
 	}
 
 	/**
