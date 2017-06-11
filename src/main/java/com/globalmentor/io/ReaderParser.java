@@ -49,7 +49,7 @@ import static com.globalmentor.java.Conditions.*;
  * <dd>Reads content; either "while" some content is encountered, or "until" some content is encountered (which will not be read), or "past" some content (which
  * will be read). By default no exception is thrown if the end of the content is reached, unless the method indicates that reaching the delimiter is
  * required.</dd>
- * <dt><dfn>skips</dfn></dt>
+ * <dt><dfn>skip</dfn></dt>
  * <dd>Skips and discards content. No exception is thrown if the end of the content is reached. The semantics of "skip" is the same as "read while", discarding
  * content.</dd>
  * <dl>
