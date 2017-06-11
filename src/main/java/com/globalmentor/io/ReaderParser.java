@@ -126,27 +126,6 @@ public class ReaderParser {
 	}
 
 	/**
-	 * Checks that the current character matches a character in a range and advances to the next character.
-	 * @param reader The reader the contents of which to be parsed.
-	 * @param lowerBound The lowest character in the range.
-	 * @param upperBound The highest character in the range.
-	 * @return The character returned the reader's {@link Reader#read()} operation.
-	 * @throws NullPointerException if the given reader is <code>null</code>.
-	 * @throws IOException if there is an error reading from the reader.
-	 * @throws ParseUnexpectedDataException if the current character in the reader does not fall within the given range.
-	 * @throws ParseEOFException if the reader has no more characters.
-	 */
-	public static char check(final Reader reader, final char lowerBound, final char upperBound) throws IOException, ParseUnexpectedDataException {
-		final char c = readRequired(reader); //read the next character
-		if(c < lowerBound || c > upperBound) { //if this character is not in the range
-			throw new ParseUnexpectedDataException(reader,
-					"Expected character from " + Characters.getLabel(lowerBound) + " to " + Characters.getLabel(upperBound) + "; found " + Characters.getLabel(c) + ".",
-					c);
-		}
-		return c; //return the character read
-	}
-
-	/**
 	 * Checks that the current character matches a given set of characters and advances to the next character.
 	 * @param reader The reader the contents of which to be parsed.
 	 * @param characters The characters to accept.
@@ -253,29 +232,6 @@ public class ReaderParser {
 		final int c = reader.read(); //get the current character
 		if(c >= 0) { //if the end of the reader was not reached
 			if(characters.contains((char)c)) { //if one of the expected characters was read
-				return true; //indicate that the character was the one expected
-			} else { //if the character was not the one expected
-				reader.reset(); //reset to the last mark, which was set right before the character we found
-			}
-		}
-		return false; //indicate that another character was encountered or the end of the reader was reached
-	}
-
-	/**
-	 * Reads a character and, if a character does not match a character in the given range, resets the reader as if the character were not read.
-	 * @param reader The reader the contents of which to be parsed.
-	 * @param lowerBound The lowest character in the range.
-	 * @param upperBound The highest character in the range.
-	 * @return <code>true</code> if a character in the given range was read, or <code>false</code> if the next character is not one of the expected characters and
-	 *         was therefore replaced if the end of the reader was not reached.
-	 * @throws NullPointerException if the given reader is <code>null</code>.
-	 * @throws IOException if there is an error reading from the reader.
-	 */
-	public static boolean confirm(final Reader reader, final char lowerBound, final char upperBound) throws IOException {
-		reader.mark(1); //mark our current position
-		final int c = reader.read(); //get the current character
-		if(c >= 0) { //if the end of the reader was not reached
-			if(c >= lowerBound && c <= upperBound) { //if this character is in the range
 				return true; //indicate that the character was the one expected
 			} else { //if the character was not the one expected
 				reader.reset(); //reset to the last mark, which was set right before the character we found
