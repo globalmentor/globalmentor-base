@@ -252,7 +252,7 @@ public class ReaderParser {
 	 * @throws NullPointerException if the given reader and/or character sequence is <code>null</code>.
 	 * @throws IOException if there is an error reading from the reader.
 	 */
-	public static boolean confirm(final Reader reader, @Nonnull final CharSequence charSequence) throws IOException {
+	public static boolean confirm(@Nonnull final Reader reader, @Nonnull final CharSequence charSequence) throws IOException {
 		final int length = charSequence.length();
 		final char[] buffer = new char[length]; //create a buffer for reading all the characters more efficiently than one at a time
 		reader.mark(length); //mark our current position
