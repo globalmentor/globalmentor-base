@@ -25,6 +25,8 @@ import static java.util.Objects.*;
 import com.globalmentor.io.ParseIOException;
 
 import static com.globalmentor.java.Characters.*;
+
+import com.globalmentor.text.ASCII;
 import com.globalmentor.text.SyntaxException;
 
 import static com.globalmentor.io.ReaderParser.*;
@@ -290,7 +292,8 @@ public class ISOTemporalComponents {
 	 */
 	public static GregorianCalendar createCalendar(final int year, final int month, final int day, final int hours, final int minutes, final int seconds,
 			final int microseconds, final ISOUTCOffset utcOffset, final Locale locale) {
-		final GregorianCalendar calendar = new GregorianCalendar(utcOffset != null ? utcOffset.toTimeZone() : GMT, requireNonNull(locale, "Locale cannot be null.")); //get Gregorian calendar for the locale using the time zone from the UTC offset, defaulting to a GMT time zone
+		final GregorianCalendar calendar = new GregorianCalendar(utcOffset != null ? utcOffset.toTimeZone() : GMT,
+				requireNonNull(locale, "Locale cannot be null.")); //get Gregorian calendar for the locale using the time zone from the UTC offset, defaulting to a GMT time zone
 		calendar.clear(); //clear the calendar
 		return setDateTime(calendar, checkArgumentRange(year, 0, 9999), checkArgumentRange(month, 1, 12) - 1, checkArgumentRange(day, 1, 31),
 				checkArgumentRange(hours, 0, 23), checkArgumentRange(minutes, 0, 59), checkArgumentRange(seconds, 0, 60),
@@ -408,17 +411,17 @@ public class ISOTemporalComponents {
 		final int utcOffsetMinutes;
 		try {
 			if(hasDate) { //if we should parse a date
-				year = Integer.parseInt(readStringCheck(reader, 4, '0', '9')); //read the year
-				if(requireDelimiters || peek(reader) == DATE_DELIMITER) {
+				year = Integer.parseInt(readRequiredCount(reader, ASCII.DIGIT_CHARACTERS, 4)); //read the year
+				if(requireDelimiters || peekRequired(reader) == DATE_DELIMITER) {
 					check(reader, DATE_DELIMITER); //check the date delimiter
 				}
-				month = Integer.parseInt(readStringCheck(reader, 2, '0', '9')); //read the month
-				if(requireDelimiters || peek(reader) == DATE_DELIMITER) {
+				month = Integer.parseInt(readRequiredCount(reader, ASCII.DIGIT_CHARACTERS, 2)); //read the month
+				if(requireDelimiters || peekRequired(reader) == DATE_DELIMITER) {
 					check(reader, DATE_DELIMITER); //check the date delimiter
 				}
-				day = Integer.parseInt(readStringCheck(reader, 2, '0', '9')); //read the day
+				day = Integer.parseInt(readRequiredCount(reader, ASCII.DIGIT_CHARACTERS, 2)); //read the day
 				if(hasTime == null) { //if we should check to see if there is a time
-					hasTime = peekEnd(reader) == TIME_BEGIN; //determine whether we have time based upon the presence of the introductory time delimiter
+					hasTime = peek(reader) == TIME_BEGIN; //determine whether we have time based upon the presence of the introductory time delimiter
 				}
 			} else { //if we shouldn't parse a date
 				year = -1; //set the date values to invalid
@@ -429,21 +432,21 @@ public class ISOTemporalComponents {
 				if(hasDate) { //if there is both a date and a time
 					check(reader, TIME_BEGIN); //check the beginning of the time section
 				}
-				hours = Integer.parseInt(readStringCheck(reader, 2, '0', '9')); //read the hours
-				if(requireDelimiters || peek(reader) == TIME_DELIMITER) {
+				hours = Integer.parseInt(readRequiredCount(reader, ASCII.DIGIT_CHARACTERS, 2)); //read the hours
+				if(requireDelimiters || peekRequired(reader) == TIME_DELIMITER) {
 					check(reader, TIME_DELIMITER); //check the time delimiter
 				}
-				minutes = Integer.parseInt(readStringCheck(reader, 2, '0', '9')); //read the minutes
-				if(!lenient || peek(reader) == TIME_DELIMITER) { //if there are seconds (seconds are only optional if we are parsing leniently)
+				minutes = Integer.parseInt(readRequiredCount(reader, ASCII.DIGIT_CHARACTERS, 2)); //read the minutes
+				if(!lenient || peekRequired(reader) == TIME_DELIMITER) { //if there are seconds (seconds are only optional if we are parsing leniently)
 					check(reader, TIME_DELIMITER); //check the time delimiter
-					seconds = Integer.parseInt(readStringCheck(reader, 2, '0', '9')); //read the seconds
-				} else if(!requireDelimiters && isPeek(reader, '0', '9')) { //if we don't require delimiters and there is a digit
-					seconds = Integer.parseInt(readStringCheck(reader, 2, '0', '9')); //read the seconds
+					seconds = Integer.parseInt(readRequiredCount(reader, ASCII.DIGIT_CHARACTERS, 2)); //read the seconds
+				} else if(!requireDelimiters && ASCII.DIGIT_CHARACTERS.contains(peekRequired(reader))) { //if we don't require delimiters and there is a digit
+					seconds = Integer.parseInt(readRequiredCount(reader, ASCII.DIGIT_CHARACTERS, 2)); //read the seconds
 				} else { //if this is a lenient parsing and there are no seconds
 					seconds = 0; //conclude no seconds
 				}
 				if(confirm(reader, TIME_SUBSECONDS_DELIMITER)) { //if there are subseconds
-					microseconds = Integer.parseInt(makeStringLength(readMinimum(reader, 1, '0', '9'), 6, '0', -1)); //read all subseconds, converting the precision to six digits
+					microseconds = Integer.parseInt(makeStringLength(readRequiredMinimumCount(reader, ASCII.DIGIT_CHARACTERS, 1), 6, '0', -1)); //read all subseconds, converting the precision to six digits
 				} else { //if there are no microseconds
 					microseconds = 0;
 				}
@@ -457,17 +460,17 @@ public class ISOTemporalComponents {
 				utcOffsetHours = -1; //set the UTC offset values to invalid
 				utcOffsetMinutes = -1;
 			} else { //if we should at least allow a UTC offset
-				final int utcOffsetDelimiter = peekEnd(reader); //peek the next character
+				final int utcOffsetDelimiter = peek(reader); //peek the next character
 				if(utcOffsetDelimiter == '+' || utcOffsetDelimiter == '-') { //if this is the start of a UTC offset
 					check(reader, (char)utcOffsetDelimiter); //read the delimiter
 					final StringBuilder utcOffsetStringBuilder = new StringBuilder(3); //create a new string builder for just enough room for a sign and the offset hours
 					if(utcOffsetDelimiter == '-') { //if this was the negative sign (don't append the positive sign, because Integer.parseInt doesn't allow it)
 						utcOffsetStringBuilder.append((char)utcOffsetDelimiter); //append the negative sign
 					}
-					utcOffsetStringBuilder.append(readStringCheck(reader, 2, '0', '9')); //read the UTC offset hours
+					utcOffsetStringBuilder.append(readRequiredCount(reader, ASCII.DIGIT_CHARACTERS, 2)); //read the UTC offset hours
 					utcOffsetHours = Integer.parseInt(utcOffsetStringBuilder.toString()); //parse the UTC offset hours
 					check(reader, TIME_DELIMITER); //check the time delimiter
-					utcOffsetMinutes = Integer.parseInt(readStringCheck(reader, 2, '0', '9')); //read the UTC offset minutes
+					utcOffsetMinutes = Integer.parseInt(readRequiredCount(reader, ASCII.DIGIT_CHARACTERS, 2)); //read the UTC offset minutes
 				} else if(allowTimestampFormat && utcOffsetDelimiter == UTC_DESIGNATOR) { //if we allow the UTC designator, and this character is the UTC designator
 					check(reader, UTC_DESIGNATOR); //read the UTC designator
 					utcOffsetHours = 0; //Zulu time is equivalent to +00:00
