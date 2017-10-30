@@ -19,6 +19,8 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 
+import javax.annotation.Nonnull;
+
 import static java.util.Objects.*;
 
 import com.globalmentor.collections.*;
@@ -33,8 +35,8 @@ import static com.globalmentor.text.TextFormatter.*;
 import com.globalmentor.text.*;
 
 /**
- * Various URI manipulating functions for working with URIs as defined in <a href="http://www.ietf.org/rfc/rfc3986.txt">RFC 3986</a>,
- * "Uniform Resource Identifiers (URI): Generic Syntax".
+ * Various URI manipulating functions for working with URIs as defined in <a href="http://www.ietf.org/rfc/rfc3986.txt">RFC 3986</a>, "Uniform Resource
+ * Identifiers (URI): Generic Syntax".
  * <p>
  * For file URIs Java incorrectly uses the form <code>file:/mnt/sdcard/...</code> instead of <code>file:///mnt/sdcard/...</code>, but these utilities use the
  * former for consistency.
@@ -117,6 +119,9 @@ public class URIs {
 	/** The path to root, consisting of a single path separator ("/"). */
 	public static final String ROOT_PATH = String.valueOf(PATH_SEPARATOR);
 
+	/** The path Java returns when it tries to resolve <code>..</code> to the root path. */
+	public static final String ROOT_PATH_PARENT_LEVEL = ROOT_PATH + PARENT_LEVEL_PATH_SEGMENT;
+
 	/** The character separating a <code>mailto</code> URI username from the domain. */
 	public static final char MAILTO_USERNAME_DOMAIN_SEPARATOR = '@'; //TODO reuse EmailAddress definition
 
@@ -173,8 +178,8 @@ public class URIs {
 	public static final int MICROSOFT_INTERNET_EXPLORER_MAXIMUM_URI_LENGTH = 2083;
 
 	/**
-	 * Creates a string of type <code>text/uri-list</code> as defined in <a href="http://www.ietf.org/rfc/rfc2483.txt">RFC 2483</a>,
-	 * "URI Resolution Services Necessary for URN Resolution".
+	 * Creates a string of type <code>text/uri-list</code> as defined in <a href="http://www.ietf.org/rfc/rfc2483.txt">RFC 2483</a>, "URI Resolution Services
+	 * Necessary for URN Resolution".
 	 * @param uris The URIs to include in the list.
 	 * @return A URI list string.
 	 * @see <a href="http://www.ietf.org/rfc/rfc2483.txt">RFC 2483: URI Resolution Services Necessary for URN Resolution</a>
@@ -403,30 +408,6 @@ public class URIs {
 	}
 
 	/**
-	 * Returns the name of the resource at the given path, which will be the name of the last path component. If the path is a collection (i.e. it ends with
-	 * slash), the component before the last slash will be returned. As examples, "/path/name.ext" and "name.ext" will return "name.ext". "/path/", "path/", and
-	 * "path" will all return "path".
-	 * @param path The path, which should be encoded if {@value URIs#PATH_SEPARATOR} characters are present within a path component.
-	 * @return The name of the last last path component, the empty string if the path is the empty string, or "/" if the path is the root path.
-	 * @throws NullPointerException if the given path is <code>null</code>.
-	 */
-	public static String getName(final String path) {
-		final int length = path.length(); //get the length of the path
-		if(length > 0) { //if there are path characters
-			int endIndex = length; //start at the end of the path (endIndex will always be one position after the ending character)
-			if(path.charAt(endIndex - 1) == PATH_SEPARATOR) { //if the path ends with a path separator
-				--endIndex; //skip the ending path separator
-			}
-			final int beginIndex = path.lastIndexOf(PATH_SEPARATOR, endIndex - 1) + 1; //get the index after the previous separator; if there are no previous separators, this will correctly yield index 0
-			if(endIndex - beginIndex > 0) { //if there are characters to collect (if not, this is the root path, "/")
-				return path.substring(beginIndex, endIndex); //return the name we found
-			}
-			assert ROOT_PATH.equals(path) : "Path unexpectedly not the root path.";
-		}
-		return path; //the path (either "" or "/") is already its name
-	}
-
-	/**
 	 * Returns the raw name of the resource at the given URI's path, which will be the raw name of the last path component. If the path is a collection (i.e. it
 	 * ends with slash), the component before the last slash will be returned. As examples, "/path/name.ext" and "name.ext" will return "name.ext". "/path/",
 	 * "path/", and "path" will all return "path". This method correctly handles {@value URIs#INFO_SCHEME} URIs.
@@ -530,17 +511,6 @@ public class URIs {
 	}
 
 	/**
-	 * Adds the given extension to a name and returns the new name with the new extension. The name is not checked to see if it currently has an extension.
-	 * @param name The name to which to add an extension.
-	 * @param extension The extension to add.
-	 * @return The name with the new extension.
-	 * @throws NullPointerException if the given extension is <code>null</code>.
-	 */
-	public static String addNameExtension(final String name, final String extension) {
-		return new StringBuilder(name).append(NAME_EXTENSION_SEPARATOR).append(requireNonNull(extension, "Extension cannot be null")).toString(); //add the requested extension and return the new filename
-	}
-
-	/**
 	 * Adds the given extension to a URI name and returns the new URI with the new extension. The URI name is not checked to see if it currently has an extension.
 	 * @param uri The URI the name of which an extension should be added.
 	 * @param extension The raw, encoded extension to add.
@@ -621,54 +591,6 @@ public class URIs {
 	}
 
 	/**
-	 * Extracts the extension from a name.
-	 * @param name The URI name to examine.
-	 * @return The extension of the name (not including '.'), or <code>null</code> if no extension is present.
-	 */
-	public static String getNameExtension(final String name) {
-		final int separatorIndex = name.lastIndexOf(NAME_EXTENSION_SEPARATOR); //see if we can find the extension separator, which will be the last such character in the string
-		return separatorIndex >= 0 ? name.substring(separatorIndex + 1) : null; //if we found a separator, return everything after it 
-	}
-
-	/**
-	 * Changes the extension of a name and returns a new name with the new extension. If the name does not currently have an extension, one will be added.
-	 * @param name The name to examine.
-	 * @param extension The extension to set, or <code>null</code> if the extension should be removed.
-	 * @return The name with the new extension.
-	 */
-	public static String changeNameExtension(String name, final String extension) {
-		final int separatorIndex = name.lastIndexOf(NAME_EXTENSION_SEPARATOR); //see if we can find the extension separator
-		if(separatorIndex >= 0) { //if we found a separator
-			name = name.substring(0, separatorIndex); //remove the extension
-		}
-		if(extension != null) { //if an extension was given
-			name = addNameExtension(name, extension); //add the requested extension
-		}
-		return name; //return the new filename
-	}
-
-	/**
-	 * Adds the extension, if any, to a name and returns the new name. This is a convenience method that delegates to {@link #addNameExtension(String, String)} if
-	 * a non-<code>null</code> extension is given.
-	 * @param name The name to examine.
-	 * @param extension The extension to add, or <code>null</code> if no extension should be added.
-	 * @return The name with the new extension, if any.
-	 */
-	public static String setNameExtension(final String name, final String extension) {
-		return extension != null ? addNameExtension(name, extension) : name; //if an extension was given, add it; otherwise, return the name unmodified
-	}
-
-	/**
-	 * Removes the extension, if any, of a name and returns a new name with no extension. This is a convenience method that delegates to
-	 * {@link #changeNameExtension(String, String)}.
-	 * @param name The name to examine.
-	 * @return The name with no extension.
-	 */
-	public static String removeNameExtension(final String name) {
-		return changeNameExtension(name, null); //replace the extension with nothing
-	}
-
-	/**
 	 * Creates a new URI identical to the supplied URI with no query or fragment.
 	 * @param uri The URI from which to remove the query and fragment, if any.
 	 * @return A new URI with no query or fragment.
@@ -678,45 +600,8 @@ public class URIs {
 	}
 
 	/**
-	 * Constructs an absolute path from the given elements in the form: <code>/<var>element1</var>/<var>element2</var></code>. Each element in the path is
-	 * URI-encoded using UTF-8.
-	 * @param absolute <code>true</code> if the path should be absolute and therefore should begin with '/'.
-	 * @param collection <code>true</code> if the path should be a collection and therefore end with `/`.
-	 * @param pathElements <code>true</code> if the path represents a collection and therefore should end with '/'.
-	 * @return A path constructed according to the given rules.
-	 * @throws IllegalArgumentException if there are no path elements and an absolute non-collection or non-absolute collection is requested.
-	 */
-	public static String constructPath(final boolean absolute, final boolean collection, final String... pathElements) {
-		if(pathElements.length == 0 && absolute != collection) { //if there are no path elements, an absolute URI must also be a collection
-			throw new IllegalArgumentException("A path with no elements must be an absolute collection or a relative non-collection.");
-		}
-		final StringBuilder stringBuilder = new StringBuilder(); //create a string builder
-		if(absolute) { //if this should be an absolute path
-			stringBuilder.append(PATH_SEPARATOR); //prepend '/'
-		}
-		boolean hasPath = false; //don't assume we have any path elements
-		for(final String pathElement : pathElements) { //look at each path element
-			//TODO fix			try
-			{
-				//TODO fix encoding using a real encoder, not the www-encoding URLEncoder				stringBuilder.append(encode(pathElement, UTF_8));	//encode and append this path element
-				stringBuilder.append(pathElement); //encode and append this path element
-				stringBuilder.append(PATH_SEPARATOR); //separate the path elements
-			}
-			/*TODO fix
-						catch(final UnsupportedEncodingException unsupportedEncodingException) {	//we should always support UTF-8
-							throw new AssertionError(unsupportedEncodingException);
-						}
-			*/
-		}
-		if(!collection && pathElements.length > 0) { //if there were path elements but this wasn't a collection, we have one too many path separators 
-			stringBuilder.deleteCharAt(stringBuilder.length() - 1); //remove the last character, a '/'
-		}
-		return stringBuilder.toString(); //return the string version of the constructed path
-	}
-
-	/**
-	 * Constructs a query string for a URI by URI-encoding each name-value pair, separating them with '&amp;', and prepending the entire string (if there is at least
-	 * one parameter) with '?'.
+	 * Constructs a query string for a URI by URI-encoding each name-value pair, separating them with '&amp;', and prepending the entire string (if there is at
+	 * least one parameter) with '?'.
 	 * @param params The name-value pairs representing the query parameters.
 	 * @return A string representing the constructed query, or the empty string if there were no parameters.
 	 */
@@ -1042,53 +927,10 @@ public class URIs {
 	}
 
 	/**
-	 * Checks to see if a given path is only a path and not a URI with a scheme and/or authority. If the given string is not a path, an exception is thrown.
-	 * @param path The string version of a path to determine if it is indeed only a path.
-	 * @return The given path.
-	 * @throws NullPointerException if the given path is <code>null</code>.
-	 * @throws IllegalArgumentException if the given string is not a path.
-	 * @see #isPath(String)
-	 */
-	public static String checkPath(final String path) throws IllegalArgumentException {
-		if(!isPath(path)) { //if the string is not a path
-			throw new IllegalArgumentException("The given string " + path + " is not a valid sole path.");
-		}
-		return path; //return the path
-	}
-
-	/**
-	 * Checks to see if a given path is only a relative path and not a URI with a scheme and/or authority. If the given string is not a relative path, an
-	 * exception is thrown.
-	 * @param path The string version of a path to determine if it is indeed only a relative path.
-	 * @return The given relative path.
-	 * @throws NullPointerException if the given path is <code>null</code>.
-	 * @throws IllegalArgumentException if the given string is not a path or the path is not relative.
-	 * @see #isPath(String)
-	 */
-	public static String checkRelativePath(final String path) throws IllegalArgumentException {
-		if(isAbsolutePath(checkPath(path))) { //check the path; if it is a path but it is absolute
-			throw new IllegalArgumentException("The given path " + path + " is not relative.");
-		}
-		return path; //return the relative path
-	}
-
-	/**
-	 * Determines if a given path is only a path and not a URI with a scheme and/or authority.
-	 * @param path The string version of a path to determine if it.
-	 * @return <code>true</code> if the path is a path and does not specifiy a scheme (i.e. the URI is not absolute) or authority.
-	 * @throws NullPointerException if the given path is <code>null</code>.
-	 * @see #isPathURI(URI)
-	 */
-	public static boolean isPath(final String path) {
-		final URI pathURI = URI.create(requireNonNull(path, "Path cannot be null")); //create a URI from the given path
-		return isPathURI(pathURI); //indicate whether the constructed URI represents a path
-	}
-
-	/**
 	 * Determines if a given URI contains only a path and does not have a scheme, authority, query, and/or fragment.
 	 * @param uri The URI to check to for path status.
 	 * @throws NullPointerException if the given URI is <code>null</code>.
-	 * @return <code>true</code> if the URI has a path and does not specifiy a scheme (i.e. the URI is not absolute), authority, query, or fragment.
+	 * @return <code>true</code> if the URI has a path and does not specify a scheme (i.e. the URI is not absolute), authority, query, or fragment.
 	 */
 	public static boolean isPathURI(final URI uri) {
 		requireNonNull(uri, "URI cannot be null");
@@ -1148,19 +990,27 @@ public class URIs {
 	}
 
 	/**
-	 * Determines the parent level of a hierarchical URI. This is equivalent to resolving the path {@value URIs#PARENT_LEVEL_PATH_SEGMENT} to the URI.
+	 * Determines the parent level of a hierarchical URI. This is equivalent to resolving the path {@value URIs#PARENT_LEVEL_PATH_SEGMENT} to the URI for all
+	 * non-root paths.
 	 * @param uri The URI to examine.
-	 * @return A URI representing the parent hierarchical level of a hierarchical URI.
+	 * @return A URI representing the parent hierarchical level of a hierarchical URI, or <code>null</code> if the given URI's path equates to the root path.
 	 */
 	public static URI getParentLevel(final URI uri) {
-		return resolve(uri, PARENT_LEVEL_PATH_SEGMENT); //resolve the URI to ".."
+		final URI parentLevel = resolve(uri, PARENT_LEVEL_PATH_SEGMENT); //resolve the URI to ".."
+		if(ROOT_PATH_PARENT_LEVEL.equals(parentLevel.getRawPath())) { //if the result is /..
+			return null; //the original path indicated the root
+		}
+		return parentLevel;
 	}
 
 	/**
 	 * Determines the parent collection of a hierarchical URI.
+	 * <p>
+	 * Non-normalized collection paths (e.g. ending with <code>/.</code>) are not supported.
+	 * </p>
 	 * @param uri The URI to examine.
 	 * @return A URI representing the parent collection of a hierarchical URI; if the URI ends in '/', equivalent to resolving the path ".." to the URI; if the
-	 *         URI does not end in '/', equivalent to resolving the path "." to the URI.
+	 *         URI does not end in '/', equivalent to resolving the path "." to the URI; or <code>null</code> if the given URI's path equates to the root path.
 	 * @throws IllegalArgumentException if the URI does not have a path component.
 	 * @see #isCollectionURI(URI)
 	 * @see #getParentLevel(URI)
@@ -1190,32 +1040,6 @@ public class URIs {
 	public static ContentType getContentType(final URI uri) {
 		final String rawPath = uri.getRawPath(); //get the raw path
 		return rawPath != null ? Files.getExtensionContentType(getNameExtension(uri)) : null; //return the content type based on the extension of the URI name, if there is one
-	}
-
-	/**
-	 * Normalizes the given path by resolving the '.' and '..' path segments.
-	 * @param path The path to normalize.
-	 * @return The normalized form of the given path.
-	 * @throws NullPointerException if the given path is <code>null</code>.
-	 * @throws IllegalArgumentException if the provided path specifies a URI scheme (i.e. the URI is absolute) and/or authority.
-	 * @see #normalize(URI)
-	 */
-	public static String normalizePath(final String path) {
-		return normalize(createPathURI(path)).getPath(); //get a URI from the path, normalize that URI, and then return the path of the resulting URI
-	}
-
-	/**
-	 * Relativizes the given full path against the given base path. If the full path is not composed of the given base path, the full path is returned.
-	 * @param basePath The path against which the full path should be relativized.
-	 * @param fullPath The full path to be relativized.
-	 * @return A form of the full path relative to the base path.
-	 * @throws NullPointerException if one of the given paths is <code>null</code>.
-	 * @throws IllegalArgumentException if one of the provided path specifies a URI scheme (i.e. the URI is absolute) and/or authority.
-	 */
-	public static String relativizePath(final String basePath, final String fullPath) {
-		final URI baseURI = createPathURI(basePath); //create a URI for the base path, ensuring it's a path
-		final URI fullURI = createPathURI(fullPath); //create a URI for the full path, ensuring it's a path
-		return baseURI.relativize(fullURI).getPath(); //relativize the URIs and return the path
 	}
 
 	/**
@@ -1436,9 +1260,9 @@ public class URIs {
 	/*TODO fix
 		public static String getRelativePath(final URL contextURL, final URL url) throws MalformedURLException
 		{
-
+	
 			  //TODO check this new implementation; this simply chops off everything that matches
-
+	
 			if(urlPath.startsWith(directoryURLPath)) {	//if the directory URL path is at the beginning of the URL path
 				final String relativePath=urlPath.substring(directoryURLPath.length());  //get everything after the directory URL
 				return relativePath;  //return the relative path
@@ -1460,10 +1284,10 @@ public class URIs {
 		    hconn.setInstanceFollowRedirects(false);
 		    int response = hconn.getResponseCode();
 		    boolean redirect = (response >= 300 && response <= 399);
-
+	
 	//TODO del In the case of a redirect, we want to actually change the URL
 	//TODO del that was input to the new, redirected URL
-
+	
 		    if (redirect) {
 			String loc = conn.getHeaderField("L4ocation");
 			if (loc.startsWith("http", 0)) {
@@ -1522,7 +1346,7 @@ public class URIs {
 	 * @throws IllegalArgumentException if the given path is not absolute.
 	 */
 	public static String getRelativePath(final String absolutePath) {
-		if(!isAbsolutePath(absolutePath)) { //if the path is not really absolute
+		if(!isPathAbsolute(absolutePath)) { //if the path is not really absolute
 			throw new IllegalArgumentException("Path is not absolute: " + absolutePath);
 		}
 		return absolutePath.substring(ROOT_PATH.length()); //remove the beginning root path indicator
@@ -1573,65 +1397,24 @@ public class URIs {
 	}
 
 	/**
-	 * Determines whether the given path is a canonical collection path.
-	 * @param path The raw path to examine.
-	 * @return <code>true</code> if the path ends with a slash ('/').
-	 * @throws NullPointerException if the given path is <code>null</code>.
+	 * Determines whether the URI has a path. This is a convenience method that delegates to {@link URI#getRawPath()}.
+	 * @param uri The URI which should be checked for a path.
+	 * @return <code>true</code> if the given URI has a path.
 	 */
-	public static boolean isCollectionPath(final String path) {
-		return endsWith(path, PATH_SEPARATOR); //see if the path ends with '/'		
-	}
-
-	/**
-	 * Checks to see if a given path represents a canonical collection, that is, it has a path that ends with a slash ('/'). If the given path is not a collection
-	 * path, an exception is thrown.
-	 * @param path The raw path to examine.
-	 * @return The given collection path.
-	 * @throws NullPointerException if the given path is <code>null</code>.
-	 * @throws IllegalArgumentException if the provided path does not end with a slash ('/').
-	 * @see #isCollectionPath(String)
-	 */
-	public static String checkCollectionPath(final String path) {
-		if(!isCollectionPath(path)) { //if the path is not a collection path
-			throw new IllegalArgumentException("The given path " + path + " is not a collection path.");
-		}
-		return path; //return the collection path
-	}
-
-	/**
-	 * Checks to see if a given path does not represents a canonical collection, that is, it does not have a path that ends with a slash ('/'). If the given path
-	 * is not a collection path, an exception is thrown.
-	 * @param path The raw path to examine.
-	 * @return The given non-collection path.
-	 * @throws NullPointerException if the given path is <code>null</code>.
-	 * @throws IllegalArgumentException if the provided path ends with a slash ('/').
-	 * @see #isCollectionPath(String)
-	 */
-	public static String checkNotCollectionPath(final String path) {
-		if(isCollectionPath(path)) { //if the path is a collection path
-			throw new IllegalArgumentException("The given path " + path + " is a collection path.");
-		}
-		return path; //return the collection path
+	public static boolean hasPath(final URI uri) {
+		return uri.getRawPath() != null; //check the raw path; no need for encoding just to check the presence of the path
 	}
 
 	/**
 	 * Determines whether the path of the URI (which may or may not be absolute) is absolute.
 	 * @param uri The URI the path of which to examine.
-	 * @return <code>true</code> if the path of the given URI begins with a slash ('/').
-	 * @see #isAbsolutePath(String)
+	 * @return <code>true</code> if the URI has a path that begins with a slash ('/').
+	 * @see #hasPath(URI)
+	 * @see #isPathAbsolute(String)
 	 */
-	public static boolean isAbsolutePath(final URI uri) {
-		return isAbsolutePath(uri.getRawPath()); //see if the path begins with '/' (use the raw path in case the first character is an encoded slash)		
-	}
-
-	/**
-	 * Determines whether the given path is absolute.
-	 * @param path The path to examine.
-	 * @return <code>true</code> if the path begins with a slash ('/').
-	 * @throws NullPointerException if the path is <code>null</code>.
-	 */
-	public static boolean isAbsolutePath(final String path) {
-		return requireNonNull(path, "Path cannot be null").startsWith(ROOT_PATH); //see if the path begins with '/'		
+	public static boolean hasAbsolutePath(final URI uri) {
+		final String rawPath = uri.getRawPath(); //use the raw path in case the first character is an encoded slash
+		return rawPath != null && isPathAbsolute(rawPath); //see if the path begins with '/'
 	}
 
 	/**
@@ -2030,8 +1813,8 @@ public class URIs {
 	}
 
 	/**
-	 * Encodes all URI reserved characters in the URI according to the URI encoding rules in <a href="http://www.ietf.org/rfc/rfc3986.txt">RFC 3986</a>,
-	 * "Uniform Resource Identifiers (URI): Generic Syntax" using the URI escape character, {@value URIs#ESCAPE_CHAR}.
+	 * Encodes all URI reserved characters in the URI according to the URI encoding rules in <a href="http://www.ietf.org/rfc/rfc3986.txt">RFC 3986</a>, "Uniform
+	 * Resource Identifiers (URI): Generic Syntax" using the URI escape character, {@value URIs#ESCAPE_CHAR}.
 	 * @param uri The URI to URI-encode.
 	 * @return A string containing the escaped data.
 	 * @see URIs#ESCAPE_CHAR
@@ -2041,8 +1824,8 @@ public class URIs {
 	}
 
 	/**
-	 * Encodes all URI reserved characters in the URI according to the URI encoding rules in <a href="http://www.ietf.org/rfc/rfc3986.txt">RFC 3986</a>,
-	 * "Uniform Resource Identifiers (URI): Generic Syntax".
+	 * Encodes all URI reserved characters in the URI according to the URI encoding rules in <a href="http://www.ietf.org/rfc/rfc3986.txt">RFC 3986</a>, "Uniform
+	 * Resource Identifiers (URI): Generic Syntax".
 	 * @param uri The URI to URI-encode.
 	 * @param escapeChar The escape character to use, which will always be escaped.
 	 * @return A string containing the escaped data.
@@ -2379,4 +2162,253 @@ public class URIs {
 		final String decodedString = unescapeHex(stringBuilder, PLAIN_ENCODING_ESCAPE_CHAR, 2).toString(); //unescape the string using two escape hex digits
 		return URI.create(decodedString); //create and return a URI from the resulting string
 	}
+
+	//URI paths
+
+	/**
+	 * Checks to see if a given path represents a canonical collection, that is, it has a path that ends with a slash ('/'). If the given path is not a collection
+	 * path, an exception is thrown.
+	 * @param path The raw path to examine.
+	 * @return The given collection path.
+	 * @throws NullPointerException if the given path is <code>null</code>.
+	 * @throws IllegalArgumentException if the provided path does not end with a slash ('/').
+	 * @see #isCollectionPath(String)
+	 */
+	public static String checkCollectionPath(@Nonnull final String path) {
+		if(!isCollectionPath(path)) { //if the path is not a collection path
+			throw new IllegalArgumentException("The given path " + path + " is not a collection path.");
+		}
+		return path; //return the collection path
+	}
+
+	/**
+	 * Checks to see if a given path does not represents a canonical collection, that is, it does not have a path that ends with a slash ('/'). If the given path
+	 * is not a collection path, an exception is thrown.
+	 * @param path The raw path to examine.
+	 * @return The given non-collection path.
+	 * @throws NullPointerException if the given path is <code>null</code>.
+	 * @throws IllegalArgumentException if the provided path ends with a slash ('/').
+	 * @see #isCollectionPath(String)
+	 */
+	public static String checkNotCollectionPath(final String path) {
+		if(isCollectionPath(path)) { //if the path is a collection path
+			throw new IllegalArgumentException("The given path " + path + " is a collection path.");
+		}
+		return path; //return the collection path
+	}
+
+	/**
+	 * Checks to see if a given path is only a path and not a URI with a scheme and/or authority. If the given string is not a path, an exception is thrown.
+	 * @param path The string version of a path to determine if it is indeed only a path.
+	 * @return The given path.
+	 * @throws NullPointerException if the given path is <code>null</code>.
+	 * @throws IllegalArgumentException if the given string is not a path.
+	 * @see #isPath(String)
+	 */
+	public static String checkPath(final String path) throws IllegalArgumentException {
+		if(!isPath(path)) { //if the string is not a path
+			throw new IllegalArgumentException("The given string " + path + " is not a valid sole path.");
+		}
+		return path; //return the path
+	}
+
+	/**
+	 * Checks to see if a given path is only a relative path and not a URI with a scheme and/or authority. If the given string is not a relative path, an
+	 * exception is thrown.
+	 * @param path The string version of a path to determine if it is indeed only a relative path.
+	 * @return The given relative path.
+	 * @throws NullPointerException if the given path is <code>null</code>.
+	 * @throws IllegalArgumentException if the given string is not a path or the path is not relative.
+	 * @see #isPath(String)
+	 */
+	public static String checkRelativePath(final String path) throws IllegalArgumentException {
+		if(isPathAbsolute(checkPath(path))) { //check the path; if it is a path but it is absolute
+			throw new IllegalArgumentException("The given path " + path + " is not relative.");
+		}
+		return path; //return the relative path
+	}
+
+	/**
+	 * Constructs an absolute path from the given elements in the form: <code>/<var>element1</var>/<var>element2</var></code>. Each element in the path is
+	 * URI-encoded using UTF-8.
+	 * @param absolute <code>true</code> if the path should be absolute and therefore should begin with '/'.
+	 * @param collection <code>true</code> if the path should be a collection and therefore end with `/`.
+	 * @param pathElements <code>true</code> if the path represents a collection and therefore should end with '/'.
+	 * @return A path constructed according to the given rules.
+	 * @throws IllegalArgumentException if there are no path elements and an absolute non-collection or non-absolute collection is requested.
+	 */
+	public static String constructPath(final boolean absolute, final boolean collection, final String... pathElements) {
+		if(pathElements.length == 0 && absolute != collection) { //if there are no path elements, an absolute URI must also be a collection
+			throw new IllegalArgumentException("A path with no elements must be an absolute collection or a relative non-collection.");
+		}
+		final StringBuilder stringBuilder = new StringBuilder(); //create a string builder
+		if(absolute) { //if this should be an absolute path
+			stringBuilder.append(PATH_SEPARATOR); //prepend '/'
+		}
+		boolean hasPath = false; //don't assume we have any path elements
+		for(final String pathElement : pathElements) { //look at each path element
+			//TODO fix			try
+			{
+				//TODO fix encoding using a real encoder, not the www-encoding URLEncoder				stringBuilder.append(encode(pathElement, UTF_8));	//encode and append this path element
+				stringBuilder.append(pathElement); //encode and append this path element
+				stringBuilder.append(PATH_SEPARATOR); //separate the path elements
+			}
+			/*TODO fix
+						catch(final UnsupportedEncodingException unsupportedEncodingException) {	//we should always support UTF-8
+							throw new AssertionError(unsupportedEncodingException);
+						}
+			*/
+		}
+		if(!collection && pathElements.length > 0) { //if there were path elements but this wasn't a collection, we have one too many path separators 
+			stringBuilder.deleteCharAt(stringBuilder.length() - 1); //remove the last character, a '/'
+		}
+		return stringBuilder.toString(); //return the string version of the constructed path
+	}
+
+	/**
+	 * Returns the name of the resource at the given path, which will be the name of the last path component. If the path is a collection (i.e. it ends with
+	 * slash), the component before the last slash will be returned. As examples, "/path/name.ext" and "name.ext" will return "name.ext". "/path/", "path/", and
+	 * "path" will all return "path".
+	 * @param path The path, which should be encoded if {@value URIs#PATH_SEPARATOR} characters are present within a path component.
+	 * @return The name of the last last path component, the empty string if the path is the empty string, or "/" if the path is the root path.
+	 * @throws NullPointerException if the given path is <code>null</code>.
+	 */
+	public static String getName(final String path) {
+		final int length = path.length(); //get the length of the path
+		if(length > 0) { //if there are path characters
+			int endIndex = length; //start at the end of the path (endIndex will always be one position after the ending character)
+			if(path.charAt(endIndex - 1) == PATH_SEPARATOR) { //if the path ends with a path separator
+				--endIndex; //skip the ending path separator
+			}
+			final int beginIndex = path.lastIndexOf(PATH_SEPARATOR, endIndex - 1) + 1; //get the index after the previous separator; if there are no previous separators, this will correctly yield index 0
+			if(endIndex - beginIndex > 0) { //if there are characters to collect (if not, this is the root path, "/")
+				return path.substring(beginIndex, endIndex); //return the name we found
+			}
+			assert ROOT_PATH.equals(path) : "Path unexpectedly not the root path.";
+		}
+		return path; //the path (either "" or "/") is already its name
+	}
+
+	/**
+	 * Determines whether the given path is a canonical collection path.
+	 * <p>
+	 * Non-normalized collection paths (e.g. ending with <code>/.</code>) are not supported.
+	 * </p>
+	 * @param path The raw path to examine.
+	 * @return <code>true</code> if the path ends with a slash ('/').
+	 * @throws NullPointerException if the given path is <code>null</code>.
+	 */
+	public static boolean isCollectionPath(@Nonnull final String path) {
+		return endsWith(path, PATH_SEPARATOR); //see if the path ends with '/'		
+	}
+
+	/**
+	 * Determines if a given path is only a path and not a URI with a scheme and/or authority.
+	 * @param path The string version of a path to determine if it.
+	 * @return <code>true</code> if the path is a path and does not specify a scheme (i.e. the URI is not absolute) or authority.
+	 * @throws NullPointerException if the given path is <code>null</code>.
+	 * @see #isPathURI(URI)
+	 */
+	public static boolean isPath(final String path) {
+		final URI pathURI = URI.create(requireNonNull(path, "Path cannot be null")); //create a URI from the given path
+		return isPathURI(pathURI); //indicate whether the constructed URI represents a path
+	}
+
+	/**
+	 * Determines whether the given path is absolute.
+	 * @param path The path to examine.
+	 * @return <code>true</code> if the path begins with a slash ('/').
+	 * @throws NullPointerException if the path is <code>null</code>.
+	 */
+	public static boolean isPathAbsolute(@Nonnull final String path) {
+		return requireNonNull(path, "Path cannot be null").startsWith(ROOT_PATH); //see if the path begins with '/'		
+	}
+
+	/**
+	 * Normalizes the given path by resolving the '.' and '..' path segments.
+	 * @param path The path to normalize.
+	 * @return The normalized form of the given path.
+	 * @throws NullPointerException if the given path is <code>null</code>.
+	 * @throws IllegalArgumentException if the provided path specifies a URI scheme (i.e. the URI is absolute) and/or authority.
+	 * @see #normalize(URI)
+	 */
+	public static String normalizePath(final String path) {
+		return normalize(createPathURI(path)).getPath(); //get a URI from the path, normalize that URI, and then return the path of the resulting URI
+	}
+
+	/**
+	 * Relativizes the given full path against the given base path. If the full path is not composed of the given base path, the full path is returned.
+	 * @param basePath The path against which the full path should be relativized.
+	 * @param fullPath The full path to be relativized.
+	 * @return A form of the full path relative to the base path.
+	 * @throws NullPointerException if one of the given paths is <code>null</code>.
+	 * @throws IllegalArgumentException if one of the provided path specifies a URI scheme (i.e. the URI is absolute) and/or authority.
+	 */
+	public static String relativizePath(final String basePath, final String fullPath) {
+		final URI baseURI = createPathURI(basePath); //create a URI for the base path, ensuring it's a path
+		final URI fullURI = createPathURI(fullPath); //create a URI for the full path, ensuring it's a path
+		return baseURI.relativize(fullURI).getPath(); //relativize the URIs and return the path
+	}
+
+	//names
+
+	/**
+	 * Adds the given extension to a name and returns the new name with the new extension. The name is not checked to see if it currently has an extension.
+	 * @param name The name to which to add an extension.
+	 * @param extension The extension to add.
+	 * @return The name with the new extension.
+	 * @throws NullPointerException if the given extension is <code>null</code>.
+	 */
+	public static String addNameExtension(final String name, final String extension) {
+		return new StringBuilder(name).append(NAME_EXTENSION_SEPARATOR).append(requireNonNull(extension, "Extension cannot be null")).toString(); //add the requested extension and return the new filename
+	}
+
+	/**
+	 * Changes the extension of a name and returns a new name with the new extension. If the name does not currently have an extension, one will be added.
+	 * @param name The name to examine.
+	 * @param extension The extension to set, or <code>null</code> if the extension should be removed.
+	 * @return The name with the new extension.
+	 */
+	public static String changeNameExtension(String name, final String extension) {
+		final int separatorIndex = name.lastIndexOf(NAME_EXTENSION_SEPARATOR); //see if we can find the extension separator
+		if(separatorIndex >= 0) { //if we found a separator
+			name = name.substring(0, separatorIndex); //remove the extension
+		}
+		if(extension != null) { //if an extension was given
+			name = addNameExtension(name, extension); //add the requested extension
+		}
+		return name; //return the new filename
+	}
+
+	/**
+	 * Extracts the extension from a name.
+	 * @param name The URI name to examine.
+	 * @return The extension of the name (not including '.'), or <code>null</code> if no extension is present.
+	 */
+	public static String getNameExtension(final String name) {
+		final int separatorIndex = name.lastIndexOf(NAME_EXTENSION_SEPARATOR); //see if we can find the extension separator, which will be the last such character in the string
+		return separatorIndex >= 0 ? name.substring(separatorIndex + 1) : null; //if we found a separator, return everything after it 
+	}
+
+	/**
+	 * Removes the extension, if any, of a name and returns a new name with no extension. This is a convenience method that delegates to
+	 * {@link #changeNameExtension(String, String)}.
+	 * @param name The name to examine.
+	 * @return The name with no extension.
+	 */
+	public static String removeNameExtension(final String name) {
+		return changeNameExtension(name, null); //replace the extension with nothing
+	}
+
+	/**
+	 * Adds the extension, if any, to a name and returns the new name. This is a convenience method that delegates to {@link #addNameExtension(String, String)} if
+	 * a non-<code>null</code> extension is given.
+	 * @param name The name to examine.
+	 * @param extension The extension to add, or <code>null</code> if no extension should be added.
+	 * @return The name with the new extension, if any.
+	 */
+	public static String setNameExtension(final String name, final String extension) {
+		return extension != null ? addNameExtension(name, extension) : name; //if an extension was given, add it; otherwise, return the name unmodified
+	}
+
 }
