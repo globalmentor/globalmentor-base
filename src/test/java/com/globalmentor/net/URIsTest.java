@@ -16,14 +16,13 @@
 
 package com.globalmentor.net;
 
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
 import java.net.URI;
 import java.util.*;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.*;
 
 /**
  * Various tests for URI utilities.
@@ -32,9 +31,65 @@ import org.junit.Test;
  */
 public class URIsTest {
 
-	/** Illustrates a bug in the JDK in which {@link URI#hashCode()} does not meet it obligations in regard to {@link URI#equals(Object)}. */
+	//URIs
+
+	/** @see URIs#getCurrentLevel(URI). */
 	@Test
-	@Ignore
+	public void testGetCurrentLevel() {
+		assertThat(URIs.getCurrentLevel(URI.create("http://example.com/foo/./bar/test/.")), is(URI.create("http://example.com/foo/bar/test/")));
+		assertThat(URIs.getCurrentLevel(URI.create("http://example.com/foo/../bar/test/.")), is(URI.create("http://example.com/bar/test/")));
+		assertThat(URIs.getCurrentLevel(URI.create("http://example.com/foo/bar/test/.")), is(URI.create("http://example.com/foo/bar/test/")));
+		assertThat(URIs.getCurrentLevel(URI.create("http://example.com/foo/bar/test/..")), is(URI.create("http://example.com/foo/bar/test/"))); //counter-intuitive
+		assertThat(URIs.getCurrentLevel(URI.create("http://example.com/foo/bar/file.ext")), is(URI.create("http://example.com/foo/bar/")));
+		assertThat(URIs.getCurrentLevel(URI.create("http://example.com/foo/bar/")), is(URI.create("http://example.com/foo/bar/")));
+		assertThat(URIs.getCurrentLevel(URI.create("http://example.com/foo/bar")), is(URI.create("http://example.com/foo/")));
+		assertThat(URIs.getCurrentLevel(URI.create("http://example.com/foo/")), is(URI.create("http://example.com/foo/")));
+		assertThat(URIs.getCurrentLevel(URI.create("http://example.com/foo")), is(URI.create("http://example.com/")));
+		assertThat(URIs.getCurrentLevel(URI.create("http://example.com/")), is(URI.create("http://example.com/")));
+		assertThat(URIs.getCurrentLevel(URI.create("http://example.com/foo/../..")), is(URI.create("http://example.com/")));
+	}
+
+	/** @see URIs#getParentLevel(URI). */
+	@Test
+	public void testGetParentLevel() {
+		assertThat(URIs.getParentLevel(URI.create("http://example.com/foo/./bar/test/.")), is(URI.create("http://example.com/foo/bar/")));
+		assertThat(URIs.getParentLevel(URI.create("http://example.com/foo/../bar/test/.")), is(URI.create("http://example.com/bar/")));
+		assertThat(URIs.getParentLevel(URI.create("http://example.com/foo/bar/test/.")), is(URI.create("http://example.com/foo/bar/")));
+		assertThat(URIs.getParentLevel(URI.create("http://example.com/foo/bar/test/..")), is(URI.create("http://example.com/foo/bar/"))); //counter-intuitive
+		assertThat(URIs.getParentLevel(URI.create("http://example.com/foo/bar/file.ext")), is(URI.create("http://example.com/foo/")));
+		assertThat(URIs.getParentLevel(URI.create("http://example.com/foo/bar/")), is(URI.create("http://example.com/foo/")));
+		assertThat(URIs.getParentLevel(URI.create("http://example.com/foo/bar")), is(URI.create("http://example.com/")));
+		assertThat(URIs.getParentLevel(URI.create("http://example.com/foo/")), is(URI.create("http://example.com/")));
+		assertThat(URIs.getParentLevel(URI.create("http://example.com/foo")), is(nullValue()));
+		assertThat(URIs.getParentLevel(URI.create("http://example.com/")), is(nullValue()));
+		assertThat(URIs.getParentLevel(URI.create("http://example.com/foo/../..")), is(nullValue()));
+	}
+
+	/** @see URIs#getParentURI(URI). */
+	@Test
+	public void testGetParentURI() {
+		assertThat(URIs.getParentURI(URI.create("http://example.com/foo/bar/test/.")), is(URI.create("http://example.com/foo/bar/test/"))); //non-normalized collection URI not supported
+		assertThat(URIs.getParentURI(URI.create("http://example.com/foo/bar/test/..")), is(URI.create("http://example.com/foo/bar/test/")));
+		assertThat(URIs.getParentURI(URI.create("http://example.com/foo/bar/file.ext")), is(URI.create("http://example.com/foo/bar/")));
+		assertThat(URIs.getParentURI(URI.create("http://example.com/foo/bar/")), is(URI.create("http://example.com/foo/")));
+		assertThat(URIs.getParentURI(URI.create("http://example.com/foo/bar")), is(URI.create("http://example.com/foo/")));
+		assertThat(URIs.getParentURI(URI.create("http://example.com/foo/")), is(URI.create("http://example.com/")));
+		assertThat(URIs.getParentURI(URI.create("http://example.com/foo")), is(URI.create("http://example.com/")));
+		assertThat(URIs.getParentURI(URI.create("http://example.com/")), is(nullValue()));
+		assertThat(URIs.getParentURI(URI.create("http://example.com/foo/../..")), is(URI.create("http://example.com/"))); //non-normalized collection URI not supported
+	}
+
+	/**
+	 * Illustrates a bug in the JDK in which {@link URI#hashCode()} does not meet it obligations in regard to {@link URI#equals(Object)}.
+	 * <p>
+	 * <em>Apparently fixed in Java 1.8.0_75 as part of <a href="https://bugs.openjdk.java.net/browse/JDK-7171415">JDK-7171415</a>.</em>
+	 * </p>
+	 * @see <a href="https://stackoverflow.com/q/16257996/421049">How to get recognition of Java URI hashCode() bug that has been inappropriately denied</a>
+	 * @see <a href="http://bugs.java.com/bugdatabase/view_bug.do?bug_id=7054089">JDK-7054089</a>
+	 * @see <a href="https://bugs.openjdk.java.net/browse/JDK-7171415">JDK-7171415</a>
+	 */
+	@Test
+	@Ignore //TODO un-ignore and remove workaround code across projects
 	public void testURIHashCode() {
 		final URI uri1 = URI.create("http://www.example.com/foo%2Abar");
 		final URI uri2 = URI.create("http://www.example.com/foo%2abar");
