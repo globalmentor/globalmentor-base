@@ -70,6 +70,9 @@ public class URIs {
 	/** The resource scheme identifier "resource". */
 	public static final String RESOURCE_SCHEME = "resource";
 
+	/** The telephone scheme identifier. */
+	public static final String TEL_SCHEME = "tel";
+
 	/** The URN scheme identifier "urn". */
 	public static final String URN_SCHEME = "urn";
 
