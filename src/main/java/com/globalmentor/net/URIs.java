@@ -18,6 +18,7 @@ package com.globalmentor.net;
 import java.io.*;
 import java.net.*;
 import java.util.*;
+import java.util.regex.Pattern;
 
 import javax.annotation.Nonnull;
 
@@ -78,6 +79,18 @@ public class URIs {
 
 	/** The colon character (':') that separates a URI schema from the rest of the URI. */
 	public static final char SCHEME_SEPARATOR = ':';
+
+	/**
+	 * The pattern to match the scheme-specific part of a URN.
+	 * <p>
+	 * This pattern is not currently meant to be a vigorous validation of URN format, but rather a means to easily discover the components of a URN.
+	 * </p>
+	 */
+	public static final Pattern URN_SSP_PATTERN = Pattern.compile(String.format("(.+)%s(.+)", SCHEME_SEPARATOR));
+	/** The matching group to retrieve the URN namespace identifier. */
+	public static final int URN_SSP_PATTERN_NID_MATCHING_GROUP = 1;
+	/** The matching group to retrieve the URN-namespace-specific part. */
+	public static final int URN_SSP_PATTERN_NSS_MATCHING_GROUP = 2;
 
 	/** The prefix string that introduces an authority. */
 	public static final String AUTHORITY_PREFIX = "//";
