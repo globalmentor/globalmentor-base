@@ -6,6 +6,12 @@ Issues tracked by [JIRA](https://globalmentor.atlassian.net/projects/JAVA).
 
 ## Changelog
 
+- 0.5.5: (2017-12-15)
+	* [JAVA-50](https://globalmentor.atlassian.net/browse/JAVA-50): Clarify parent hierarchy access for URIs.
+	* [JAVA-48](https://globalmentor.atlassian.net/browse/JAVA-48): Remove <prerequisites> sections from POMs.
+	* [JAVA-47](https://globalmentor.atlassian.net/browse/JAVA-47): Update JSR 305 dependency; change "provided" to "optional".
+	* [JAVA-46](https://globalmentor.atlassian.net/browse/JAVA-46): Update version of Hamcrest optional dependency.
+	* [JAVA-43](https://globalmentor.atlassian.net/browse/JAVA-43): Improve naming and semantics of reader parser methods.
 - 0.5.4: (2017-05-13)
 	* [JAVA-42](https://globalmentor.atlassian.net/browse/JAVA-42): Upgraded ABNF definitions to use `Characters` class.
 	* [JAVA-36](https://globalmentor.atlassian.net/browse/JAVA-36): Created Unicode `CodePointCharacter` value class.
