@@ -5,7 +5,7 @@
 
 	<groupId>com.globalmentor</groupId>
 	<artifactId>globalmentor-core</artifactId>
-	<version>0.5.5-SNAPSHOT</version>
+	<version>0.5.5</version>
 	<packaging>jar</packaging>
 
 	<name>GlobalMentor Core</name>
