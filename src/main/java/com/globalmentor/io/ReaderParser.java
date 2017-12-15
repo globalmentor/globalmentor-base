@@ -52,7 +52,7 @@ import static com.globalmentor.java.Conditions.*;
  * <dt><dfn>skip</dfn></dt>
  * <dd>Skips and discards content. No exception is thrown if the end of the content is reached. The semantics of "skip" is the same as "read while", discarding
  * content.</dd>
- * <dl>
+ * </dl>
  * @author Garret Wilson
  * @see Reader#markSupported()
  */
@@ -622,6 +622,7 @@ public class ReaderParser {
 	 * will be that of the given character.
 	 * @param reader The reader the contents of which to be parsed.
 	 * @param character The character to pass.
+	 * @return The string read until the given character.
 	 * @throws NullPointerException if the given reader is <code>null</code>.
 	 * @throws IOException if there is an error reading from the reader.
 	 * @throws ParseEOFException if the reader has no more characters.
