@@ -440,9 +440,8 @@ public class URIs {
 	/**
 	 * Returns the decoded name of the resource at the given URI's path, which will be the decoded name of the last path component. If the path is a collection
 	 * (i.e. it ends with slash), the component before the last slash will be returned. As examples, "/path/name.ext" and "name.ext" will return "name.ext".
-	 * "/path/", "path/", and "path" will all return "path". An empty name is never returned; <code>null</code> will be returned instead. The path name is first
-	 * extracted from the URI's raw path and then decoded so that encoded {@value URIs#PATH_SEPARATOR} characters will not prevent correct parsing. This method
-	 * correctly handles {@value URIs#INFO_SCHEME} URIs.
+	 * "/path/", "path/", and "path" will all return "path". The path name is first extracted from the URI's raw path and then decoded so that encoded
+	 * {@value URIs#PATH_SEPARATOR} characters will not prevent correct parsing. This method correctly handles {@value URIs#INFO_SCHEME} URIs.
 	 * @param uri The URI the path of which will be examined.
 	 * @return The name of the last path component, the empty string if the path is the empty string, "/" if the path is the root path, or <code>null</code> if
 	 *         the URI has no path.
@@ -492,10 +491,16 @@ public class URIs {
 	 * @param rawName The new raw name of the URI.
 	 * @return A new URI with the raw name changed to the given raw name.
 	 * @throws NullPointerException if the given URI and/or name is <code>null</code>.
-	 * @throws IllegalArgumentException if the given URI has no path.
+	 * @throws IllegalArgumentException if the given URI has no path, if the name is empty, or if the name is just a "/".
 	 * @see #getRawName(URI)
 	 */
 	public static URI changeRawName(final URI uri, final String rawName) {
+		final String currentUriRawName = getRawName(uri);
+
+		if(currentUriRawName.equals("") || currentUriRawName.equals("/")) {
+			throw new IllegalArgumentException("The name of the given URI cannot be empty or \"/\".");
+		}
+
 		if(uri.isOpaque() && INFO_SCHEME.equals(uri.getScheme())) { //if this is an info URI
 			final String rawSSP = uri.getRawSchemeSpecificPart(); //get the raw scheme-specific part
 			final String newRawSSP = changeName(rawSSP, rawName); //change the name to the given name
@@ -2370,6 +2375,10 @@ public class URIs {
 
 	/**
 	 * Adds the given extension to a name and returns the new name with the new extension. The name is not checked to see if it currently has an extension.
+	 * <p>
+	 * This method currently allows an extension with the <code>.</code> delimiter, but it may be prohibited in the future.
+	 * </p>
+	 * 
 	 * @param name The name to which to add an extension.
 	 * @param extension The extension to add.
 	 * @return The name with the new extension.
@@ -2384,6 +2393,7 @@ public class URIs {
 	 * @param name The name to examine.
 	 * @param extension The extension to set, or <code>null</code> if the extension should be removed.
 	 * @return The name with the new extension.
+	 * @throws IllegalArgumentException If the name is empty, or if the name is just a "/".
 	 */
 	public static String changeNameExtension(String name, final String extension) {
 		final int separatorIndex = name.lastIndexOf(NAME_EXTENSION_SEPARATOR); //see if we can find the extension separator

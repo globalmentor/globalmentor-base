@@ -65,17 +65,16 @@ public class URIsTest {
 		URIs.checkScheme(URI.create("http://example.com/"), "https");
 	}
 
-	/** Tests whether {@link URIs#checkScheme(URI, String)} is throwing an exception when a null {@link URI} provided. */
+	/** Tests whether {@link URIs#checkScheme(URI, String)} is throwing an exception when a null {@link URI} is provided. */
 	@Test(expected = NullPointerException.class)
 	public void testCheckSchemeNullURIFail() {
-		URIs.checkInfoNamespace(null, "http");
+		URIs.checkScheme(null, "http");
 	}
 
-	/** Tests whether {@link URIs#checkScheme(URI, String)} is throwing an exception when a null scheme provided. */
+	/** Tests whether {@link URIs#checkScheme(URI, String)} is throwing an exception when a null scheme is provided. */
 	@Test(expected = NullPointerException.class)
-	@Ignore // TODO The method throws an IllegalArgumentException instead of NullPointerException.
 	public void testCheckSchemeNullSchemeFail() {
-		URIs.checkInfoNamespace(URI.create("http://example.com/"), null);
+		URIs.checkScheme(URI.create("http://example.com/"), null);
 	}
 
 	/** Tests whether {@link URIs#changeScheme(URI, String)} is working properly. */
@@ -122,9 +121,9 @@ public class URIsTest {
 		URIs.checkInfoNamespace(null, "ddc");
 	}
 
-	/** Tests whether {@link URIs#checkInfoNamespace(URI, String)} is throwing an exception when a null scheme provided. */
-	@Test(expected = NullPointerException.class)
-	@Ignore // TODO The method throws an IllegalArgumentException instead of NullPointerException.
+	/** Tests whether {@link URIs#checkInfoNamespace(URI, String)} is throwing an exception when a null scheme is provided. */
+	@Test(expected = NullPointerException.class) // TODO The method throws an IllegalArgumentException instead of NullPointerException.
+	@Ignore
 	public void testCheckInfoNamespaceNullSchemeFail() {
 		URIs.checkInfoNamespace(URI.create("info:ddc/22/eng//004.678"), null);
 	}
@@ -157,6 +156,7 @@ public class URIsTest {
 	@Test
 	public void testGetInfoIdentifier() {
 		assertThat(URIs.getInfoIdentifier(URI.create("info:ddc/22/eng//004.678")), is("22/eng//004.678"));
+		assertThat(URIs.getInfoIdentifier(URI.create("info:ddc/22/eng//00%3F4.678")), is("22/eng//00?4.678"));
 	}
 
 	/** Tests whether {@link URIs#getInfoIdentifier(URI)} is throwing an exception when a non-info scheme is provided. */
@@ -171,11 +171,11 @@ public class URIsTest {
 		URIs.getInfoIdentifier(null);
 	}
 
-	//TODO clarify differences between getInfoIdentifier and getInfoRawIdentifier.
 	/** Tests whether {@link URIs#getInfoRawIdentifier(URI)} is working properly. */
 	@Test
 	public void testGetInfoRawIdentifier() {
-		assertThat(URIs.getInfoRawIdentifier(URI.create("info:ddc/22/eng//004.678")), is("22/eng//004.678"));
+		assertThat(URIs.getInfoIdentifier(URI.create("info:ddc/22/eng//004.678")), is("22/eng//004.678"));
+		assertThat(URIs.getInfoRawIdentifier(URI.create("info:ddc/22/eng//00%3F4.678")), is("22/eng//00%3F4.678"));
 	}
 
 	/** Tests whether {@link URIs#getInfoRawIdentifier(URI)} is throwing an exception when a non-info scheme is provided. */
@@ -332,11 +332,12 @@ public class URIsTest {
 	/** Tests whether {@link URIs#getRawName(URI)} is working properly. */
 	@Test
 	public void testGetRawName() {
-		assertThat(URIs.getRawName(URI.create("http://example.com")), is("")); // TODO It should return null according to the Javadocs
-		assertThat(URIs.getRawName(URI.create("http://example.com/")), is("/"));
-		assertThat(URIs.getRawName(URI.create("http://example.com/foo")), is("foo"));
-		assertThat(URIs.getRawName(URI.create("http://example.com/foo/")), is("foo"));
+		assertThat(URIs.getRawName(URI.create("http://example.com")), is(""));
+		assertThat(URIs.getRawName(URI.create("http://example.com/%2A")), is("%2A"));
+		assertThat(URIs.getRawName(URI.create("http://example.com/foo%2A")), is("foo%2A"));
+		assertThat(URIs.getRawName(URI.create("http://example.com/foo%2A/")), is("foo%2A"));
 		assertThat(URIs.getRawName(URI.create("http://example.com/foo/bar/foobar.txt")), is("foobar.txt"));
+		assertThat(URIs.getRawName(URI.create("http://example.com/foo/bar/foo%2Abar.txt")), is("foo%2Abar.txt"));
 
 		assertThat(URIs.getRawName(URI.create("info:ddc/22/eng//004.678")), is("004.678"));
 	}
@@ -347,20 +348,46 @@ public class URIsTest {
 		URIs.getRawName(null);
 	}
 
-	// TODO create test and fail test for getName()
+	/** Tests whether {@link URIs#getName(URI)} is working properly. */
+	@Test
+	public void testGetName() {
+		assertThat(URIs.getName(URI.create("http://example.com")), is(""));
+		assertThat(URIs.getName(URI.create("http://example.com/%2A")), is("*"));
+		assertThat(URIs.getName(URI.create("http://example.com/foo%2A")), is("foo*"));
+		assertThat(URIs.getName(URI.create("http://example.com/foo%2A/")), is("foo*"));
+		assertThat(URIs.getName(URI.create("http://example.com/foo/bar/foo%2Abar.txt")), is("foo*bar.txt"));
+
+		assertThat(URIs.getName(URI.create("info:ddc/22/eng//004.678")), is("004.678"));
+	}
+
+	/** Tests whether {@link URIs#getName(URI)} is throwing an exception when a null {@link URI} is provided. */
+	@Test(expected = NullPointerException.class)
+	public void testGetNameNullURIFail() {
+		URIs.getName((URI)null);
+	}
 
 	/** Tests whether {@link URIs#changeName(String, String)} is working properly. */
 	@Test
 	public void testChangeName() {
-		assertThat(URIs.changeName(URI.create("http://example.com"), "foobar.txt"), is(URI.create("http://example.comfoobar.txt"))); // TODO It should throw an IllegalArgumentException according to the Javadocs.
-		assertThat(URIs.changeName(URI.create("http://example.com/"), "foobar.txt"), is(URI.create("http://example.com/foobar.txt/"))); // TODO Should it really add the trailing slash?
-		assertThat(URIs.changeName(URI.create("http://example.com/foo"), "foobar.txt"), is(URI.create("http://example.com/foobar.txt")));
-		assertThat(URIs.changeName(URI.create("http://example.com/foo/"), "foobar.txt"), is(URI.create("http://example.com/foobar.txt/")));
+		assertThat(URIs.changeName(URI.create("http://example.com/foo"), "foo*bar.txt"), is(URI.create("http://example.com/foo*bar.txt")));
+		assertThat(URIs.changeName(URI.create("http://example.com/foo/"), "foo*bar.txt"), is(URI.create("http://example.com/foo*bar.txt/")));
 
-		assertThat(URIs.changeName(URI.create("http://example.com/foo/bar/foobar.txt"), "foo.txt"), is(URI.create("http://example.com/foo/bar/foo.txt")));
-		assertThat(URIs.changeName(URI.create("http://example.com/foo/bar/foobar.txt"), ""), is(URI.create("http://example.com/foo/bar/")));
+		assertThat(URIs.changeName(URI.create("http://example.com/foo/bar/foobar.txt"), "foo*.txt"), is(URI.create("http://example.com/foo/bar/foo*.txt")));
+		assertThat(URIs.changeName(URI.create("http://example.com/foo/bar/foobar.txt"), "*"), is(URI.create("http://example.com/foo/bar/*")));
 
-		assertThat(URIs.changeName(URI.create("info:ddc/22/eng//004.678"), "foobar.txt"), is(URI.create("info:ddc/22/eng//foobar.txt")));
+		assertThat(URIs.changeName(URI.create("info:ddc/22/eng//004.678"), "foo*bar.txt"), is(URI.create("info:ddc/22/eng//foo*bar.txt")));
+	}
+
+	/** Tests whether {@link URIs#changeName(String, String)} is throwing an exception when an empty name for the {@link URI} is provided. */
+	@Test(expected = IllegalArgumentException.class)
+	public void testChangeNameEmptyURINameFail() {
+		URIs.changeName(URI.create("http://example.com"), "foo*bar.txt");
+	}
+
+	/** Tests whether {@link URIs#changeName(String, String)} is throwing an exception when a "/" name for the {@link URI} is provided. */
+	@Test(expected = IllegalArgumentException.class)
+	public void testChangeNameSlashURINameFail() {
+		URIs.changeName(URI.create("http://example.com/"), "foo*bar.txt");
 	}
 
 	/** Tests whether {@link URIs#changeName(String, String)} is throwing an exception when a null {@link URI} is provided. */
@@ -375,16 +402,50 @@ public class URIsTest {
 		URIs.changeName(URI.create("http://example.com/"), null);
 	}
 
-	//TODO create test and fail test for changeRawName()
+	/** Tests whether {@link URIs#changeRawName(String, String)} is working properly. */
+	@Test
+	public void testChangeRawName() {
+		assertThat(URIs.changeRawName(URI.create("http://example.com/foo"), "foo%2Abar.txt"), is(URI.create("http://example.com/foo%2Abar.txt")));
+		assertThat(URIs.changeRawName(URI.create("http://example.com/foo/"), "foo%2Abar.txt"), is(URI.create("http://example.com/foo%2Abar.txt/")));
+
+		assertThat(URIs.changeRawName(URI.create("http://example.com/foo/bar/foobar.txt"), "foo%2A.txt"), is(URI.create("http://example.com/foo/bar/foo%2A.txt")));
+		assertThat(URIs.changeRawName(URI.create("http://example.com/foo/bar/foobar.txt"), "%2A"), is(URI.create("http://example.com/foo/bar/%2A")));
+
+		assertThat(URIs.changeRawName(URI.create("info:ddc/22/eng//004.678"), "foo%2Abar.txt"), is(URI.create("info:ddc/22/eng//foo%2Abar.txt")));
+	}
+
+	/** Tests whether {@link URIs#changeRawName(String, String)} is throwing an exception when an empty {@link URI} name is provided. */
+	@Test(expected = IllegalArgumentException.class)
+	public void testChangeRawNameEmptyURINameFail() {
+		URIs.changeRawName(URI.create("http://example.com"), "foo%2Abar.txt");
+	}
+
+	/** Tests whether {@link URIs#changeRawName(String, String)} is throwing an exception when a "/" {@link URI} name is provided. */
+	@Test(expected = IllegalArgumentException.class)
+	public void testChangeRawNameSlashURINameFail() {
+		URIs.changeRawName(URI.create("http://example.com/"), "foo%2Abar.txt");
+	}
+
+	/** Tests whether {@link URIs#changeRawName(String, String)} is throwing an exception when a null {@link URI} is provided. */
+	@Test(expected = NullPointerException.class)
+	public void testChangeRawNameNullURIFail() {
+		URIs.changeRawName((URI)null, "");
+	}
+
+	/** Tests whether {@link URIs#changeRawName(String, String)} is throwing an exception when a null name is provided. */
+	@Test(expected = NullPointerException.class)
+	public void testChangeRawNameNullNameFail() {
+		URIs.changeRawName(URI.create("http://example.com/foo"), null);
+	}
 
 	/** Tests whether {@link URIs#addNameExtension(String, String)} is working properly. */
 	@Test
 	public void testAddNameExtension() {
 		assertThat(URIs.addNameExtension("foobar", "txt"), is("foobar.txt"));
-		assertThat(URIs.addNameExtension("foobar", ""), is("foobar.")); // TODO It should probably not add anything when an empty extension is provided.
+		assertThat(URIs.addNameExtension("foobar", ""), is("foobar."));
 
-		assertThat(URIs.addNameExtension("", ".foobar"), is("..foobar")); // TODO It should probably not double the "." at the beginning of the name.
-		assertThat(URIs.addNameExtension(".foobar", ""), is(".foobar.")); // TODO Clarify how we should deal with files like this, e.g., ".gitignore" and similars.
+		assertThat(URIs.addNameExtension("", ".foobar"), is("..foobar"));
+		assertThat(URIs.addNameExtension(".foobar", ""), is(".foobar."));
 	}
 
 	/** Tests whether {@link URIs#addNameExtension(String, String)} is throwing an exception when a null name is provided. */
@@ -403,14 +464,22 @@ public class URIsTest {
 	@Test
 	public void testAddRawNameExtension() {
 		assertThat(URIs.addRawNameExtension(URI.create("http://example.com/foobar"), "txt"), is(URI.create("http://example.com/foobar.txt")));
-		assertThat(URIs.addRawNameExtension(URI.create("http://example.com/"), ""), is(URI.create("http://example.com//./"))); //TODO It looks a little bit crazy. It should not modify the URI.
 
-		assertThat(URIs.addRawNameExtension(URI.create("http://example.com/"), ".foobar"), is(URI.create("http://example.com//..foobar/"))); //TODO Why is it doubling the slash?
-		assertThat(URIs.addRawNameExtension(URI.create("http://example.com/.foobar"), ""), is(URI.create("http://example.com/.foobar."))); //TODO Should it really make a modification in the URI when an empty extension is given?
+		assertThat(URIs.addRawNameExtension(URI.create("http://example.com/.foobar"), ""), is(URI.create("http://example.com/.foobar.")));
 
 		assertThat(URIs.addRawNameExtension(URI.create("http://example.com/foo.txt"), "bar"), is(URI.create("http://example.com/foo.txt.bar")));
+	}
 
-		assertThat(URIs.addRawNameExtension(URI.create("http://example.com"), "foobar"), is(URI.create("http://example.com.foobar"))); //TODO It should throw an IllegalArgumentException.
+	/** Tests whether {@link URIs#addRawNameExtension(String, String)} is throwing an exception when a "/" name is provided. */
+	@Test(expected = IllegalArgumentException.class)
+	public void testAddRawNameExtensionSlashName() {
+		URIs.addRawNameExtension(URI.create("http://example.com/"), "");
+	}
+
+	/** Tests whether {@link URIs#addRawNameExtension(String, String)} is throwing an exception when an empty name is provided. */
+	@Test(expected = IllegalArgumentException.class)
+	public void testAddRawNameExtensionEmptyName() {
+		URIs.addRawNameExtension(URI.create("http://example.com"), "foobar");
 	}
 
 	/** Tests whether {@link URIs#addRawNameExtension(String, String)} is throwing an exception when a null name is provided. */
@@ -469,16 +538,24 @@ public class URIsTest {
 	public void testChangeRawNameExtensionString() {
 		assertThat(URIs.changeRawNameExtension(URI.create("http://example.com/foobar.xml"), "json"), is(URI.create("http://example.com/foobar.json")));
 		assertThat(URIs.changeRawNameExtension(URI.create("http://example.com/foobar"), "xml"), is(URI.create("http://example.com/foobar.xml")));
-		assertThat(URIs.changeRawNameExtension(URI.create("http://example.com/"), "foobar"), is(URI.create("http://example.com//.foobar/"))); // TODO check the slashes
 
 		assertThat(URIs.changeRawNameExtension(URI.create("http://example.com/foobar.xml"), ".json"), is(URI.create("http://example.com/foobar..json"))); //TODO maybe we should ignore the "." in front of the extension?
 		assertThat(URIs.changeRawNameExtension(URI.create("http://example.com/foobar.xml"), ""), is(URI.create("http://example.com/foobar.")));
 
 		assertThat(URIs.changeRawNameExtension(URI.create("http://example.com/foobar.xml"), null), is(URI.create("http://example.com/foobar")));
 		assertThat(URIs.changeRawNameExtension(URI.create("http://example.com/foobar"), null), is(URI.create("http://example.com/foobar")));
+	}
 
-		assertThat(URIs.changeRawNameExtension(URI.create("http://example.com"), "foobar"), is(URI.create("http://example.com.foobar"))); // TODO It should throw an IllegalArgument Exception according to the Javadocs.
-		assertThat(URIs.changeRawNameExtension(URI.create("http://example.com"), null), is(URI.create("http://example.com"))); // TODO It should throw an IllegalArgument Exception
+	/** Tests whether {@link URIs#getNameExtension(String)} is working properly. */
+	@Test(expected = IllegalArgumentException.class)
+	public void testChangeRawNameExtensionStringSlashName() {
+		URIs.changeRawNameExtension(URI.create("http://example.com/"), "foobar");
+	}
+
+	/** Tests whether {@link URIs#getNameExtension(String)} is working properly. */
+	@Test(expected = IllegalArgumentException.class)
+	public void testChangeRawNameExtensionStringEmptyName() {
+		URIs.changeRawNameExtension(URI.create("http://example.com"), "foobar");
 	}
 
 	/** Tests whether {@link URIs#getNameExtension(String)} is throwing an exception when a null name is provided. */
