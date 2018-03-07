@@ -502,7 +502,7 @@ public class URIsTest {
 		assertThat(URIs.getNameExtension(URI.create("http://example.com/")), is((String)null));
 
 		assertThat(URIs.getNameExtension(URI.create("http://example.com/.foobar")), is("foobar"));
-		assertThat(URIs.getNameExtension(URI.create("http://example.com/.")), is("")); //TODO Should it really return an empty String instead of null?
+		assertThat(URIs.getNameExtension(URI.create("http://example.com/.")), is(""));
 		assertThat(URIs.getNameExtension(URI.create("http://example.com/")), is((String)null));
 
 		assertThat(URIs.getNameExtension(URI.create("http://example.com")), is((String)null));
@@ -523,6 +523,9 @@ public class URIsTest {
 
 		assertThat(URIs.getNameExtension(".foobar"), is("foobar"));
 		assertThat(URIs.getNameExtension("."), is("")); //TODO Should it really return an empty String instead of null?
+
+		assertThat(URIs.getNameExtension(URI.create("http://example.com/foobar.%2Axml")), is("*xml"));
+		assertThat(URIs.getNameExtension(URI.create("http://example.com/foobar.*xml")), is("*xml"));
 	}
 
 	/** Tests whether {@link URIs#getNameExtension(String)} is throwing an exception when a null name is provided. */
@@ -531,9 +534,19 @@ public class URIsTest {
 		URIs.getNameExtension((String)null);
 	}
 
-	//TODO add test and fail test for getRawNameExtension().
+	/** Tests whether {@link URIs#getRawNameExtension(URI, String)} is working properly. */
+	@Test
+	public void testGetRawNameExtensionString() {
+		assertThat(URIs.getRawNameExtension(URI.create("http://example.com/foobar.xml")), is("xml"));
+		assertThat(URIs.getRawNameExtension(URI.create("http://example.com/foobar")), is((String)null));
+		assertThat(URIs.getRawNameExtension(URI.create("http://example.com/")), is((String)null));
+		assertThat(URIs.getRawNameExtension(URI.create("http://example.com")), is((String)null));
 
-	/** Tests whether {@link URIs#getNameExtension(String)} is working properly. */
+		assertThat(URIs.getRawNameExtension(URI.create("http://example.com/foobar.%2Axml")), is("%2Axml"));
+		assertThat(URIs.getRawNameExtension(URI.create("http://example.com/foobar.*xml")), is("*xml"));
+	}
+
+	/** Tests whether {@link URIs#changeRawNameExtension(URI, String)} is working properly. */
 	@Test
 	public void testChangeRawNameExtensionString() {
 		assertThat(URIs.changeRawNameExtension(URI.create("http://example.com/foobar.xml"), "json"), is(URI.create("http://example.com/foobar.json")));
@@ -594,10 +607,16 @@ public class URIsTest {
 	/** Tests whether {@link URIs#constructQuery(URIQueryParameter...)} is working properly. */
 	@Test
 	public void testConstructQueryParameters() {
-		// assertThat(URIs.constructQuery((URIQueryParameter)null), is("")); // TODO according to the javadocs, it should return an empty String
+		assertThat(URIs.constructQuery(), is("")); // TODO according to the javadocs, it should return an empty String
 
 		assertThat(URIs.constructQuery(new URIQueryParameter("type", "foo")), is("?type=foo"));
 		assertThat(URIs.constructQuery(new URIQueryParameter("type", "foo"), new URIQueryParameter("place", "bar")), is("?type=foo&place=bar"));
+	}
+
+	/** Tests whether {@link URIs#constructQuery(URIQueryParameter...)} is working properly. */
+	@Test(expected = NullPointerException.class)
+	public void testConstructQueryParametersNullQueryParameterFail() {
+		URIs.constructQuery((URIQueryParameter)null);
 	}
 
 	//TODO create tests for constructQuery(String) !The implementation looks really awkward. What's the purpose of that method? If someone has to create the raw query String, why wouldn't it add a '?' manually too?
@@ -675,6 +694,12 @@ public class URIsTest {
 	}
 
 	//TODO create test to getParameters()
+
+	/** Tests whether {@link URIs#getParameters(URI)} is working properly. */
+	@Test
+	public void testGetParameters() {
+
+	}
 
 	/** Tests whether {@link URIs#createPathURI(String)} is working properly. */
 	@Test
