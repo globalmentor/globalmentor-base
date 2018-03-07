@@ -622,7 +622,7 @@ public class URIs {
 
 	/**
 	 * Constructs a query string for a URI by URI-encoding each name-value pair, separating them with '&amp;', and prepending the entire string (if there is at
-	 * least one parameter) with '?'.
+	 * least one parameter) with '?', if there are no parameters, it doesn't do anything.
 	 * @param params The name-value pairs representing the query parameters.
 	 * @return A string representing the constructed query, or the empty string if there were no parameters.
 	 */
@@ -635,6 +635,7 @@ public class URIs {
 	 * @param params The string representing the query parameters.
 	 * @return A string representing the constructed query, or the empty string if there were no parameters.
 	 */
+	@Deprecated
 	public static String constructQuery(final String params) {
 		final StringBuilder query = new StringBuilder();
 		if(params.length() > 0) { //if there is at least one parameter character
@@ -917,7 +918,8 @@ public class URIs {
 	}
 
 	/**
-	 * Checks to see if a given URI has the root path. If the given URI does not have the root path, an exception is thrown.
+	 * Checks to see if a given URI has the root path. If the given URI does not have the root path, i.e., if it's missing or if it's not composed only by the
+	 * root path, an exception is thrown.
 	 * @param uri The URI to check to see if it has the root path.
 	 * @return The given root URI.
 	 * @throws NullPointerException if the given URI is <code>null</code>.

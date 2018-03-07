@@ -25,6 +25,7 @@ import java.util.*;
 import org.junit.*;
 
 import com.globalmentor.collections.CollectionMap;
+import com.globalmentor.model.NameValuePair;
 
 /**
  * Various tests for URI utilities.
@@ -619,7 +620,37 @@ public class URIsTest {
 		URIs.constructQuery((URIQueryParameter)null);
 	}
 
-	//TODO create tests for constructQuery(String) !The implementation looks really awkward. What's the purpose of that method? If someone has to create the raw query String, why wouldn't it add a '?' manually too?
+	/** Tests whether {@link URIs#constructQuery(URIQueryParameter...)} is working properly. */
+	@Test
+	public void testConstructQuery() {
+		assertThat(URIs.constructQuery(new URIQueryParameter("", "")), is("?="));
+		assertThat(URIs.constructQuery(new URIQueryParameter("foo", "")), is("?foo="));
+		assertThat(URIs.constructQuery(new URIQueryParameter("", "bar")), is("?=bar"));
+		assertThat(URIs.constructQuery(new URIQueryParameter("foo", "bar")), is("?foo=bar"));
+		assertThat(URIs.constructQuery(new URIQueryParameter("foo", null)), is("?foo"));
+	}
+
+	/** Tests whether {@link URIs#constructQuery(URIQueryParameter...)} is throwing an exception when a null {@link URIQueryParameter} is provided. */
+	@Test(expected = NullPointerException.class)
+	public void testConstructQueryNullParameters() {
+		URIs.constructQuery((URIQueryParameter)null);
+	}
+
+	/** Tests whether {@link URIs#constructQuery(String)} is working properly. */
+	@Test
+	public void testConstructQueryString() {
+		assertThat(URIs.constructQuery("="), is("?="));
+		assertThat(URIs.constructQuery("foo="), is("?foo="));
+		assertThat(URIs.constructQuery("=bar"), is("?=bar"));
+		assertThat(URIs.constructQuery("foo=bar"), is("?foo=bar"));
+		assertThat(URIs.constructQuery("foo"), is("?foo"));
+	}
+
+	/** Tests whether {@link URIs#constructQuery(String)} is throwing an exception when a null {@link URIQueryParameter} is provided. */
+	@Test(expected = NullPointerException.class)
+	public void testConstructQueryStringNullParameters() {
+		URIs.constructQuery((String)null);
+	}
 
 	/** Tests whether {@link URIs#appendRawQuery(URI, String)} is working properly. */
 	@Test
@@ -629,13 +660,13 @@ public class URIsTest {
 		assertThat(URIs.appendRawQuery(URI.create("http://example.com/"), "type=foo&place=bar"), is(URI.create("http://example.com/?type=foo&place=bar")));
 	}
 
-	/** Tests whether {@link URIs#appendRawQuery(URI, String)} throwing an exception when a null query parameter is provided. */
+	/** Tests whether {@link URIs#appendRawQuery(URI, String)} is throwing an exception when a null query parameter is provided. */
 	@Test(expected = NullPointerException.class)
 	public void testAppendRawQueryNullQueryFail() {
 		URIs.appendRawQuery(URI.create("http://example.com/"), null);
 	}
 
-	/** Tests whether {@link URIs#appendRawQuery(URI, String)} throwing an exception when a null {@link URI} is provided. */
+	/** Tests whether {@link URIs#appendRawQuery(URI, String)} is throwing an exception when a null {@link URI} is provided. */
 	@Test(expected = NullPointerException.class)
 	public void testAppendRawQueryNullURIFail() {
 		URIs.appendRawQuery(null, "type=foo");
@@ -650,13 +681,13 @@ public class URIsTest {
 		assertThat(URIs.appendQueryParameter(URI.create("http://example.com/?type=foo"), "place", "bar"), is(URI.create("http://example.com/?type=foo&place=bar")));
 	}
 
-	/** Tests whether {@link URIs#appendQueryParameter(URI, String, String)} throwing an exception when a null query name is provided. */
+	/** Tests whether {@link URIs#appendQueryParameter(URI, String, String)} is throwing an exception when a null query name is provided. */
 	@Test(expected = NullPointerException.class)
 	public void testAppendQueryParameterNullQueryNameFail() {
 		URIs.appendQueryParameter(URI.create("http://example.com/"), null, "");
 	}
 
-	/** Tests whether {@link URIs#appendQueryParameter(URI, String, String)} throwing an exception when a null query name and value is provided. */
+	/** Tests whether {@link URIs#appendQueryParameter(URI, String, String)} is throwing an exception when a null query name and value is provided. */
 	@Test(expected = NullPointerException.class)
 	public void testAppendQueryParameterNullQueryNameAndValueFail() {
 		URIs.appendQueryParameter(URI.create("http://example.com/"), null, null);
@@ -671,8 +702,7 @@ public class URIsTest {
 	/** Tests whether {@link URIs#getParameterMap(URI)} is working properly. */
 	@Test
 	public void testGetParameterMap() {
-		// TODO In what situation will it return a List with multiple values?
-
+		assertThat(URIs.getParameterMap(URI.create("http://example.com")).isEmpty(), is(true));
 		assertThat(URIs.getParameterMap(URI.create("http://example.com/")).isEmpty(), is(true));
 
 		CollectionMap<String, String, List<String>> queryCollectionMap;
@@ -685,6 +715,11 @@ public class URIsTest {
 		assertThat(queryCollectionMap.size(), is(2));
 		assertThat(queryCollectionMap.get("type"), is(Arrays.asList("foo")));
 		assertThat(queryCollectionMap.get("place"), is(Arrays.asList("bar")));
+
+		queryCollectionMap = URIs.getParameterMap(URI.create("http://example.com/?type=foo&place=bar&type=foobar"));
+		assertThat(queryCollectionMap.size(), is(2));
+		assertThat(queryCollectionMap.get("type"), is(Arrays.asList("foo", "foobar")));
+		assertThat(queryCollectionMap.get("place"), is(Arrays.asList("bar")));
 	}
 
 	/** Tests whether {@link URIs#getParameterMap(URI)} is throwing an exception when a null {@link URI} is provided. */
@@ -693,12 +728,34 @@ public class URIsTest {
 		URIs.getParameterMap(null);
 	}
 
-	//TODO create test to getParameters()
-
 	/** Tests whether {@link URIs#getParameters(URI)} is working properly. */
 	@Test
 	public void testGetParameters() {
+		assertThat(URIs.getParameters(URI.create("http://example.com")), is(nullValue()));
+		assertThat(URIs.getParameters(URI.create("http://example.com/")), is(nullValue()));
 
+		NameValuePair<String, String>[] parametersNameValuePairs;
+
+		parametersNameValuePairs = URIs.getParameters(URI.create("http://example.com/?type=foo"));
+		assertThat(parametersNameValuePairs.length, is(1));
+		assertThat(parametersNameValuePairs[0].getName(), is("type"));
+		assertThat(parametersNameValuePairs[0].getValue(), is("foo"));
+
+		parametersNameValuePairs = URIs.getParameters(URI.create("http://example.com/?type=foo&place=bar"));
+		assertThat(parametersNameValuePairs.length, is(2));
+		assertThat(parametersNameValuePairs[0].getName(), is("type"));
+		assertThat(parametersNameValuePairs[0].getValue(), is("foo"));
+		assertThat(parametersNameValuePairs[1].getName(), is("place"));
+		assertThat(parametersNameValuePairs[1].getValue(), is("bar"));
+
+		parametersNameValuePairs = URIs.getParameters(URI.create("http://example.com/?type=foo&place=bar&type=foobar"));
+		assertThat(parametersNameValuePairs.length, is(3));
+		assertThat(parametersNameValuePairs[0].getName(), is("type"));
+		assertThat(parametersNameValuePairs[0].getValue(), is("foo"));
+		assertThat(parametersNameValuePairs[1].getName(), is("place"));
+		assertThat(parametersNameValuePairs[1].getValue(), is("bar"));
+		assertThat(parametersNameValuePairs[2].getName(), is("type"));
+		assertThat(parametersNameValuePairs[2].getValue(), is("foobar"));
 	}
 
 	/** Tests whether {@link URIs#createPathURI(String)} is working properly. */
@@ -725,7 +782,49 @@ public class URIsTest {
 		URIs.createPathURI("http://foobar");
 	}
 
-	// TODO create test to checkRoot() and checkAbsolute()
+	/** Tests whether {@link URIs#checkRoot(URI)} is working properly. */
+	@Test
+	public void testCheckRoot() {
+		assertThat(URIs.checkRoot(URI.create("http://example.com/")), is(URI.create("http://example.com/")));
+	}
+
+	/** Tests whether {@link URIs#checkRoot(URI)} is throwing an exception when a {@link URI} without the root path is provided. */
+	@Test(expected = IllegalArgumentException.class)
+	public void testCheckRootNotRootPath() {
+		assertThat(URIs.checkRoot(URI.create("http://example.com/foo")), is(URI.create("http://example.com/foo")));
+	}
+
+	/** Tests whether {@link URIs#checkRoot(URI)} is throwing an exception when a {@link URI} without the root path is provided. */
+	@Test(expected = IllegalArgumentException.class)
+	public void testCheckRootNotRootPath2() {
+		assertThat(URIs.checkRoot(URI.create("http://example.com")), is(URI.create("http://example.com/foo")));
+	}
+
+	/** Tests whether {@link URIs#checkRoot(URI)} is throwing an exception when a null {@link URI} is provided. */
+	@Test(expected = NullPointerException.class)
+	public void testCheckRootNullUri() {
+		URIs.checkRoot(null);
+	}
+
+	/** Tests whether {@link URIs#checkAbsolute(URI)} is working properly. */
+	@Test
+	public void testCheckAbsolute() {
+		assertThat(URIs.checkAbsolute(URI.create("http://example.com")), is(URI.create("http://example.com")));
+		assertThat(URIs.checkAbsolute(URI.create("http://example.com/")), is(URI.create("http://example.com/")));
+		assertThat(URIs.checkAbsolute(URI.create("http://example.com/foo")), is(URI.create("http://example.com/foo")));
+	}
+
+	/** Tests whether {@link URIs#checkAbsolute(URI)} is throwing an exception when a {@link URI} without schema is provided. */
+	@Test(expected = IllegalArgumentException.class)
+	public void testCheckAbsoluteWithoutSchema() {
+		assertThat(URIs.checkRoot(URI.create("example.com")), is(URI.create("http://example.com/foo")));
+	}
+
+	/** Tests whether {@link URIs#checkAbsolute(URI)} is throwing an exception when a null {@link URI} is provided. */
+	@Test(expected = NullPointerException.class)
+	public void testCheckAbsoluteNullUri() {
+		URIs.checkAbsolute(null);
+	}
 
 	/** Tests whether {@link URIs#isPathURI(URI)} is working properly. */
 	@Test
