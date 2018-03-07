@@ -523,7 +523,7 @@ public class URIsTest {
 		assertThat(URIs.getNameExtension(""), is((String)null));
 
 		assertThat(URIs.getNameExtension(".foobar"), is("foobar"));
-		assertThat(URIs.getNameExtension("."), is("")); //TODO Should it really return an empty String instead of null?
+		assertThat(URIs.getNameExtension("."), is(""));
 
 		assertThat(URIs.getNameExtension(URI.create("http://example.com/foobar.%2Axml")), is("*xml"));
 		assertThat(URIs.getNameExtension(URI.create("http://example.com/foobar.*xml")), is("*xml"));
@@ -553,7 +553,7 @@ public class URIsTest {
 		assertThat(URIs.changeRawNameExtension(URI.create("http://example.com/foobar.xml"), "json"), is(URI.create("http://example.com/foobar.json")));
 		assertThat(URIs.changeRawNameExtension(URI.create("http://example.com/foobar"), "xml"), is(URI.create("http://example.com/foobar.xml")));
 
-		assertThat(URIs.changeRawNameExtension(URI.create("http://example.com/foobar.xml"), ".json"), is(URI.create("http://example.com/foobar..json"))); //TODO maybe we should ignore the "." in front of the extension?
+		assertThat(URIs.changeRawNameExtension(URI.create("http://example.com/foobar.xml"), ".json"), is(URI.create("http://example.com/foobar..json")));
 		assertThat(URIs.changeRawNameExtension(URI.create("http://example.com/foobar.xml"), ""), is(URI.create("http://example.com/foobar.")));
 
 		assertThat(URIs.changeRawNameExtension(URI.create("http://example.com/foobar.xml"), null), is(URI.create("http://example.com/foobar")));
