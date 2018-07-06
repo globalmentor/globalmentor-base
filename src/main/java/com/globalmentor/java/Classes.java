@@ -252,7 +252,9 @@ public class Classes {
 	 * @param objectClass The class with which compatibility is being determined.
 	 * @param compatibleClass The class the compatibility of which is questioned.
 	 * @return <code>true</code> if the given class is compatible with the object class.
+	 * @deprecated Moved to io.ploop.reflect.Reflector.isReflectionAssignableFrom()
 	 */
+	@Deprecated
 	public static boolean isCompatible(final Class<?> objectClass, final Class<?> compatibleClass) {
 		if(objectClass.isPrimitive()) { //if the class is a primitive, we'll have to do special checking
 			if(objectClass == compatibleClass) { //if the classes are the same
