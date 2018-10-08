@@ -42,7 +42,7 @@ public class FilenameExtensionIterator implements Iterator<String> {
 
 	private final char extensionDelimiter;
 
-	private int delimiterIndex;
+	private int nextDelimiterIndex;
 
 	/**
 	 * Filename constructor using the normal filename extension delimiter.
@@ -61,27 +61,31 @@ public class FilenameExtensionIterator implements Iterator<String> {
 	public FilenameExtensionIterator(@Nonnull final CharSequence filename, final char extensionDelimiter) {
 		this.filename = requireNonNull(filename);
 		this.extensionDelimiter = extensionDelimiter;
-		delimiterIndex = -1; //prime the current delimiters index
-		delimiterIndex = findNextDelimiterIndex();
+		nextDelimiterIndex = -1; //prepare the next delimiter index to be primed
+		nextDelimiterIndex = findNextDelimiterIndex(); //prime the next delimiter index
 	}
 
 	@Override
 	public boolean hasNext() {
-		return delimiterIndex >= 0;
+		return nextDelimiterIndex >= 0;
 	}
 
 	@Override
 	public String next() {
-		if(delimiterIndex < 0) {
+		if(nextDelimiterIndex < 0) {
 			throw new NoSuchElementException("No more filename extensions found.");
 		}
-		final String next = filename.subSequence(delimiterIndex + 1, filename.length()).toString();
-		delimiterIndex = findNextDelimiterIndex(); //prime the next delimiter index
+		final String next = filename.subSequence(nextDelimiterIndex + 1, filename.length()).toString();
+		nextDelimiterIndex = findNextDelimiterIndex(); //advance to the next delimiter
 		return next;
 	}
 
+	/**
+	 * Determines the next delimiter index based on the current "next" delimiter index.
+	 * @return The index of the new "next" delimiter index, based on the current "next" delimiter index.
+	 */
 	protected int findNextDelimiterIndex() {
-		return indexOf(filename, extensionDelimiter, delimiterIndex + 1);
+		return indexOf(filename, extensionDelimiter, nextDelimiterIndex + 1);
 	}
 
 }
