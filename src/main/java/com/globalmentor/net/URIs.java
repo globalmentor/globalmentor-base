@@ -380,6 +380,8 @@ public class URIs {
 	 * @throws IllegalArgumentException if the given scheme-specific part results in an invalid URI.
 	 */
 	public static URI changeRawSchemeSpecificPart(final URI uri, final String newRawSSP) {
+		requireNonNull(newRawSSP);
+
 		final String oldRawSSP = uri.getRawSchemeSpecificPart(); //get the old raw scheme-specific part of the URI
 		if(oldRawSSP.equals(newRawSSP)) { //if the scheme-specific part is the same
 			return uri; //the URI remains unchanged
