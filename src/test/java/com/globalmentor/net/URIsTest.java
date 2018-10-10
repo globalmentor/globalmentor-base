@@ -298,7 +298,7 @@ public class URIsTest {
 	public void testChangeRawSchemeSpecificPartNullSchemeFail() {
 		assertThat(URIs.changeRawSchemeSpecificPart(URI.create("http://example.com"), null), is(URI.create("http")));
 	}
-	
+
 	/** Tests whether {@link URIs#changeRawSchemeSpecificPart(URI, String)} is throwing an exception when a null host is provided. */
 	@Test(expected = NullPointerException.class)
 	public void testChangeRawSchemeSpecificPartNullURIFail() {

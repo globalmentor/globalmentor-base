@@ -385,9 +385,9 @@ public class URIs {
 			return uri; //the URI remains unchanged
 		}
 		final StringBuilder stringBuilder = new StringBuilder(); //create a new string builder
-		stringBuilder.append(uri.getScheme());
+		stringBuilder.append(uri.getScheme()); //append the scheme
 		if(newRawSSP != null) {
-			stringBuilder.append(SCHEME_SEPARATOR).append(newRawSSP); //append the scheme and the scheme-specific part
+			stringBuilder.append(SCHEME_SEPARATOR).append(newRawSSP); //append the scheme-specific part, if any
 		}
 		final String rawFragment = uri.getRawFragment(); //get the raw fragment, if any
 		if(rawFragment != null) { //if there is a raw fragment
