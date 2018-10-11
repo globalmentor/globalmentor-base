@@ -293,10 +293,10 @@ public class URIsTest {
 		assertThat(URIs.changeRawSchemeSpecificPart(URI.create("http://example.com/foo"), "//globalmentor.io/bar"), is(URI.create("http://globalmentor.io/bar")));
 	}
 
-	/** Tests whether {@link URIs#changeRawSchemeSpecificPart(URI, String)} is working properly when a null scheme is provided. */
-	@Test
+	/** Tests whether {@link URIs#changeRawSchemeSpecificPart(URI, String)} is throwing an exception when a null scheme is provided. */
+	@Test(expected = NullPointerException.class)
 	public void testChangeRawSchemeSpecificPartNullSchemeFail() {
-		assertThat(URIs.changeRawSchemeSpecificPart(URI.create("http://example.com"), null), is(URI.create("http")));
+		URIs.changeRawSchemeSpecificPart(URI.create("http://example.com"), null);
 	}
 
 	/** Tests whether {@link URIs#changeRawSchemeSpecificPart(URI, String)} is throwing an exception when a null host is provided. */
