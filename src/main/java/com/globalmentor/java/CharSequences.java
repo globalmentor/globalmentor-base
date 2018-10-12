@@ -25,7 +25,9 @@ import static java.nio.charset.StandardCharsets.*;
 import java.nio.*;
 import java.nio.charset.CharsetDecoder;
 import java.text.Normalizer;
-import java.util.Collection;
+import java.util.*;
+
+import javax.annotation.*;
 
 import com.globalmentor.io.UTF8;
 import com.globalmentor.text.ASCII;
@@ -1169,20 +1171,55 @@ public class CharSequences {
 	}
 
 	/**
-	 * Removes all normalized Unicode marks such as accents from a string, providing a string that can be used as liberally matching lookup without regard to
-	 * diacritics. For example:
+	 * Removes all normalized Unicode marks such as accents from a string. For example:
 	 * <ul>
 	 * <li>'é' will be converted to 'e' (Unicode non-spacing marks)</li>
-	 * <li>vowel signs in Hindi will be removed ((Unicode spacing combining marks)</li>
+	 * <li>vowel signs in Hindi will be removed (Unicode spacing combining marks)</li>
 	 * <li>circles around characters will be removed (Unicode enclosing marks)</li>
 	 * </ul>
 	 * @param charSequence The character sequence from which to remove marks.
 	 * @return The normalized string with marks removed.
 	 * @see <a href="http://stackoverflow.com/q/3322152/421049">Java - getting rid of accents and converting them to regular letters</a>
+	 * @see #normalizeForSearch(CharSequence)
 	 */
 	public static String removeMarks(final CharSequence charSequence) {
 		final String string = Normalizer.normalize(charSequence, Normalizer.Form.NFD); //perform canonical decomposition
 		return string.replaceAll("\\p{M}", ""); //remove all resulting decomposed marks
+	}
+
+	/**
+	 * Normalizes a string so that it can be used as a liberally matching lookup without regard to diacritics or case.
+	 * <ul>
+	 * <li>Decomposes characters such as ﬁ to fi.</li>
+	 * <li>Removes all normalized Unicode marks such as accents.</li>
+	 * <li>Converts the string to lowercase.</li>
+	 * </ul>
+	 * <p>
+	 * This method converts to lowercase using {@link Locale#ROOT}. If you wish you supply a specific locale, use
+	 * {@link #normalizeForSearch(CharSequence, Locale)}.
+	 * </p>
+	 * @param charSequence The character sequence from which to remove marks.
+	 * @return The normalized string with marks removed.
+	 * @see <a href="http://stackoverflow.com/q/3322152/421049">Java - getting rid of accents and converting them to regular letters</a>
+	 */
+	public static String normalizeForSearch(@Nonnull final CharSequence charSequence) {
+		return normalizeForSearch(charSequence, Locale.ROOT);
+	}
+
+	/**
+	 * Normalizes a string so that it can be used as a liberally matching lookup without regard to diacritics or case.
+	 * <ul>
+	 * <li>Decomposes characters such as ﬁ to fi.</li>
+	 * <li>Removes all normalized Unicode marks such as accents.</li>
+	 * <li>Converts the string to lowercase.</li>
+	 * </ul>
+	 * @param charSequence The character sequence from which to remove marks.
+	 * @return The normalized string with marks removed.
+	 * @see <a href="http://stackoverflow.com/q/3322152/421049">Java - getting rid of accents and converting them to regular letters</a>
+	 */
+	public static String normalizeForSearch(@Nonnull final CharSequence charSequence, @Nonnull final Locale locale) {
+		final String string = Normalizer.normalize(charSequence, Normalizer.Form.NFKD); //perform compatibility decomposition
+		return string.replaceAll("\\p{M}", "").toLowerCase(locale); //remove all resulting decomposed marks and convert to lowercase
 	}
 
 	/**

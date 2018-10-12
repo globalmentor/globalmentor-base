@@ -18,12 +18,9 @@ package com.globalmentor.java;
 
 import static org.junit.Assert.*;
 
-import java.util.AbstractMap.SimpleEntry;
 import java.util.Map;
-import java.util.stream.Stream;
 
 import static com.globalmentor.java.CharSequences.*;
-import static java.util.stream.Collectors.toMap;
 import static org.hamcrest.Matchers.*;
 import org.junit.*;
 
@@ -33,22 +30,16 @@ import org.junit.*;
  */
 public class CharSequencesTest {
 
-	/*
-	 * Four lengths of UTF-8 sequences:
-	 * $: 0x24
-	 * ¢: 0xC2 0xA2
-	 * €: 0xE2 0x82 0xAC
-	 * 😂 : 0xF0 0x9F 0x98 0x82 
-	 */
-
-	/** @see CharSequences#unescapeHex(CharSequence, char, int). */
+	/** @see CharSequences#unescapeHex(CharSequence, char, int) */
 	@Test
 	public void testUnescapeHex() {
 		final String input = "abc";
-		final Map<String, String> escapeSequences = Stream
-				.of( //TODO switch to Java 8 Map.of()
-						new SimpleEntry<>("$", "^24"), new SimpleEntry<>("¢", "^C2^A2"), new SimpleEntry<>("€", "^E2^82^AC"), new SimpleEntry<>("😂", "^F0^9F^98^82"))
-				.collect(toMap(SimpleEntry::getKey, SimpleEntry::getValue));
+		//Four lengths of UTF-8 sequences:
+		//$: 0x24
+		//¢: 0xC2 0xA2
+		//€: 0xE2 0x82 0xAC
+		//😂 : 0xF0 0x9F 0x98 0x82 
+		final Map<String, String> escapeSequences = Map.of("$", "^24", "¢", "^C2^A2", "€", "^E2^82^AC", "😂", "^F0^9F^98^82");
 
 		assertThat(unescapeHex("", '^', 2).toString(), is(""));
 		assertThat(unescapeHex("a", '^', 2).toString(), is("a"));
@@ -71,7 +62,30 @@ public class CharSequencesTest {
 				assertThat(unescapeHex(test + "^58", '^', 2).toString(), is(expected + "X"));
 			}
 		});
+	}
 
+	/** @see CharSequences#removeMarks(CharSequence) */
+	@Test
+	public void testRemoveMarks() {
+		assertThat(removeMarks("foo"), is("foo"));
+		assertThat(removeMarks("touch\u00E9"), is("touche")); //touché precomposed
+		assertThat(removeMarks("touch\u0065\u0301"), is("touche")); //touché decomposed
+		assertThat(removeMarks("Æneas"), is("Æneas"));
+		assertThat(removeMarks("ﬁ"), is("ﬁ")); //removing marks doesn't change ligatures
+		assertThat(removeMarks("हिंदी"), is("हद")); //hindi->hd
+		assertThat(removeMarks("x\u20DD"), is("x")); //enclosing circle
+	}
+
+	/** @see CharSequences#normalizeForSearch(CharSequence) */
+	@Test
+	public void testNormalizeForSearch() {
+		assertThat(normalizeForSearch("foo"), is("foo"));
+		assertThat(normalizeForSearch("touch\u00E9"), is("touche")); //touché precomposed
+		assertThat(normalizeForSearch("touch\u0065\u0301"), is("touche")); //touché decomposed
+		assertThat(normalizeForSearch("Æneas"), is("æneas")); //TODO check into how we can wind up with "aeneas"
+		assertThat(normalizeForSearch("ﬁ"), is("fi"));
+		assertThat(normalizeForSearch("हिंदी"), is("हद")); //hindi->hd
+		assertThat(normalizeForSearch("x\u20DD"), is("x")); //enclosing circle
 	}
 
 }
