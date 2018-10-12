@@ -381,7 +381,7 @@ public class URIs {
 	 */
 	public static URI changeRawSchemeSpecificPart(final URI uri, final String newRawSSP) {
 		requireNonNull(newRawSSP, "a null scheme-specific part is not allowed.");
-		final String oldRawSSP = requireNonNull(uri, "The URI provided should not be null.").getRawSchemeSpecificPart(); //get the old raw scheme-specific part of the URI
+		final String oldRawSSP = uri.getRawSchemeSpecificPart(); //get the old raw scheme-specific part of the URI
 		if(oldRawSSP.equals(newRawSSP)) { //if the scheme-specific part is the same
 			return uri; //the URI remains unchanged
 		}
