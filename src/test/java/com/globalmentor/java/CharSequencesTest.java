@@ -18,9 +18,12 @@ package com.globalmentor.java;
 
 import static org.junit.Assert.*;
 
+import java.util.AbstractMap.SimpleEntry;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import static com.globalmentor.java.CharSequences.*;
+import static java.util.stream.Collectors.toMap;
 import static org.hamcrest.Matchers.*;
 import org.junit.*;
 
@@ -39,7 +42,9 @@ public class CharSequencesTest {
 		//¢: 0xC2 0xA2
 		//€: 0xE2 0x82 0xAC
 		//😂 : 0xF0 0x9F 0x98 0x82 
-		final Map<String, String> escapeSequences = Map.of("$", "^24", "¢", "^C2^A2", "€", "^E2^82^AC", "😂", "^F0^9F^98^82");
+		final Map<String, String> escapeSequences = Stream.of( //TODO switch to Java 9 Map.of()
+				new SimpleEntry<>("$", "^24"), new SimpleEntry<>("¢", "^C2^A2"), new SimpleEntry<>("€", "^E2^82^AC"), new SimpleEntry<>("😂", "^F0^9F^98^82"))
+				.collect(toMap(SimpleEntry::getKey, SimpleEntry::getValue));
 
 		assertThat(unescapeHex("", '^', 2).toString(), is(""));
 		assertThat(unescapeHex("a", '^', 2).toString(), is("a"));
