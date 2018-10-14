@@ -293,11 +293,22 @@ public class URIsTest {
 		assertThat(URIs.changeRawSchemeSpecificPart(URI.create("http://example.com/foo"), "//globalmentor.io/bar"), is(URI.create("http://globalmentor.io/bar")));
 	}
 
-	/** Tests whether {@link URIs#changeRawSchemeSpecificPart(URI, String)} is throwing an exception when a null host is provided. */
+	/** Tests whether {@link URIs#changeRawSchemeSpecificPart(URI, String)} is throwing an exception when a null scheme-specific part is provided. */
 	@Test(expected = NullPointerException.class)
-	@Ignore // TODO GRAVE ISSUE! It's replacing the scheme-specific part for "null", instead of throwing an exception.
-	public void testChangeRawSchemeSpecificPartFail() {
-		URIs.changeRawSchemeSpecificPart(URI.create("http://example.com/foo/bar"), null);
+	public void testChangeRawSchemeSpecificPartNullSchemeFail() {
+		URIs.changeRawSchemeSpecificPart(URI.create("http://example.com"), null);
+	}
+
+	/** Tests whether {@link URIs#changeRawSchemeSpecificPart(URI, String)} is throwing an exception when a null uri is provided. */
+	@Test(expected = NullPointerException.class)
+	public void testChangeRawSchemeSpecificPartNullURIFail() {
+		URIs.changeRawSchemeSpecificPart(null, "http");
+	}
+
+	/** Tests whether {@link URIs#changeRawSchemeSpecificPart(URI, String)} is throwing an exception when a null uri and scheme-specific part is provided. */
+	@Test(expected = NullPointerException.class)
+	public void testChangeRawSchemeSpecificPartNullSchemeAndURIFail() {
+		URIs.changeRawSchemeSpecificPart(null, null);
 	}
 
 	/** Tests whether {@link URIs#toCollectionURI(URI)} is working properly. */

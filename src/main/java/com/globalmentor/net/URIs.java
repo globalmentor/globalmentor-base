@@ -374,12 +374,13 @@ public class URIs {
 	/**
 	 * Creates a new URI identical to the supplied URI with a different raw scheme-specific part.
 	 * @param uri The URI to change.
-	 * @param newRawSSP The raw, escaped scheme-specific part, or <code>null</code> if there should be no scheme-specific part.
+	 * @param newRawSSP The raw, escaped scheme-specific part.
 	 * @return A new URI with the new raw scheme-specific part information.
-	 * @throws NullPointerException if the given URI and/or scheme-specific part is <code>null</code>.
+	 * @throws NullPointerException if the given URI or the scheme-specific part is <code>null</code>.
 	 * @throws IllegalArgumentException if the given scheme-specific part results in an invalid URI.
 	 */
 	public static URI changeRawSchemeSpecificPart(final URI uri, final String newRawSSP) {
+		requireNonNull(newRawSSP, "a null scheme-specific part is not allowed.");
 		final String oldRawSSP = uri.getRawSchemeSpecificPart(); //get the old raw scheme-specific part of the URI
 		if(oldRawSSP.equals(newRawSSP)) { //if the scheme-specific part is the same
 			return uri; //the URI remains unchanged
