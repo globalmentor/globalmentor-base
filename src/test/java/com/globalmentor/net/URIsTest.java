@@ -450,28 +450,6 @@ public class URIsTest {
 		URIs.changeRawName(URI.create("http://example.com/foo"), null);
 	}
 
-	/** Tests whether {@link URIs#addNameExtension(String, String)} is working properly. */
-	@Test
-	public void testAddNameExtension() {
-		assertThat(URIs.addNameExtension("foobar", "txt"), is("foobar.txt"));
-		assertThat(URIs.addNameExtension("foobar", ""), is("foobar."));
-
-		assertThat(URIs.addNameExtension("", ".foobar"), is("..foobar"));
-		assertThat(URIs.addNameExtension(".foobar", ""), is(".foobar."));
-	}
-
-	/** Tests whether {@link URIs#addNameExtension(String, String)} is throwing an exception when a null name is provided. */
-	@Test(expected = NullPointerException.class)
-	public void testAddNameExtensionNullNameFail() {
-		URIs.addNameExtension(null, "txt");
-	}
-
-	/** Tests whether {@link URIs#addNameExtension(String, String)} is throwing an exception when a null extension is provided. */
-	@Test(expected = NullPointerException.class)
-	public void testAddNameExtensionNullExtensionFail() {
-		URIs.addNameExtension("foobar", null);
-	}
-
 	/** Tests whether {@link URIs#addRawNameExtension(String, String)} is working properly. */
 	@Test
 	public void testAddRawNameExtension() {
@@ -526,24 +504,11 @@ public class URIsTest {
 		URIs.getNameExtension((URI)null);
 	}
 
-	/** Tests whether {@link URIs#getNameExtension(String)} is working properly. */
+	/** Tests whether {@link URIs#getNameExtension(URI)} is working properly. */
 	@Test
 	public void testGetNameExtensionString() {
-		assertThat(URIs.getNameExtension("foobar.txt"), is("txt"));
-		assertThat(URIs.getNameExtension("foobar"), is((String)null));
-		assertThat(URIs.getNameExtension(""), is((String)null));
-
-		assertThat(URIs.getNameExtension(".foobar"), is("foobar"));
-		assertThat(URIs.getNameExtension("."), is(""));
-
 		assertThat(URIs.getNameExtension(URI.create("http://example.com/foobar.%2Axml")), is("*xml"));
 		assertThat(URIs.getNameExtension(URI.create("http://example.com/foobar.*xml")), is("*xml"));
-	}
-
-	/** Tests whether {@link URIs#getNameExtension(String)} is throwing an exception when a null name is provided. */
-	@Test(expected = NullPointerException.class)
-	public void testGetNameExtensionNullStringFail() {
-		URIs.getNameExtension((String)null);
 	}
 
 	/** Tests whether {@link URIs#getRawNameExtension(URI, String)} is working properly. */
@@ -571,19 +536,19 @@ public class URIsTest {
 		assertThat(URIs.changeRawNameExtension(URI.create("http://example.com/foobar"), null), is(URI.create("http://example.com/foobar")));
 	}
 
-	/** Tests whether {@link URIs#getNameExtension(String)} is working properly. */
+	/** Tests whether {@link URIs#changeRawNameExtension(URI, String)} is working properly. */
 	@Test(expected = IllegalArgumentException.class)
 	public void testChangeRawNameExtensionStringSlashName() {
 		URIs.changeRawNameExtension(URI.create("http://example.com/"), "foobar");
 	}
 
-	/** Tests whether {@link URIs#getNameExtension(String)} is working properly. */
+	/** Tests whether {@link URIs#changeRawNameExtension(URI, String)} is working properly. */
 	@Test(expected = IllegalArgumentException.class)
 	public void testChangeRawNameExtensionStringEmptyName() {
 		URIs.changeRawNameExtension(URI.create("http://example.com"), "foobar");
 	}
 
-	/** Tests whether {@link URIs#getNameExtension(String)} is throwing an exception when a null name is provided. */
+	/** Tests whether {@link URIs#changeRawNameExtension(URI, String)} is throwing an exception when a null name is provided. */
 	@Test(expected = NullPointerException.class)
 	public void testChangeRawNameExtensionNullExtensionFail() {
 		URIs.changeRawNameExtension((URI)null, "");

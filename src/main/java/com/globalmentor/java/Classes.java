@@ -28,15 +28,14 @@ import static java.util.Objects.*;
 
 import javax.annotation.Nonnull;
 
-import static com.globalmentor.io.Files.*;
+import static com.globalmentor.io.Filenames.*;
 import static com.globalmentor.java.Java.*;
 import static com.globalmentor.java.Strings.*;
 import static com.globalmentor.net.URIs.*;
 import static com.globalmentor.net.URLs.*;
 
 import com.globalmentor.collections.Sets;
-import com.globalmentor.io.IO;
-import com.globalmentor.io.Streams;
+import com.globalmentor.io.*;
 import com.globalmentor.model.NameValuePair;
 import com.globalmentor.net.*;
 
@@ -971,7 +970,7 @@ public class Classes {
 				//			TODO del Log.trace("baseName:", baseName);
 				final String extension = getExtension(filename); //get the extension
 				//			TODO del Log.trace("extension:", extension);
-				file = File.createTempFile(baseName, new StringBuilder().append(FILENAME_EXTENSION_SEPARATOR).append(extension).toString()); //create a temp file with the base name as the prefix and the extension (with separator) as the suffix
+				file = File.createTempFile(baseName, new StringBuilder().append(Filenames.EXTENSION_SEPARATOR).append(extension).toString()); //create a temp file with the base name as the prefix and the extension (with separator) as the suffix
 				file.deleteOnExit(); //indicate that the temporary file should be deleted when the JVM exits
 				final InputStream inputStream = resourceURL.openConnection().getInputStream(); //get an input stream to the resource
 				try {

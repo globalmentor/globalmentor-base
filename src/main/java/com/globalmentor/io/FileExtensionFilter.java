@@ -51,7 +51,7 @@ public class FileExtensionFilter implements FileFilter, FilenameFilter {
 	 * @return <code>true</code> if and only if the name should be included in the file list; <code>false</code> otherwise.
 	 */
 	public boolean accept(final File directory, final String name) {
-		return getExtensionSet().contains(getExtension(name)); //see if the extension set contains the extension of the filename
+		return getExtensionSet().contains(Filenames.getExtension(name)); //see if the extension set contains the extension of the filename
 	}
 
 	/**

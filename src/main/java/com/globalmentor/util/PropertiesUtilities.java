@@ -16,7 +16,7 @@
 
 package com.globalmentor.util;
 
-import static com.globalmentor.net.URIs.*;
+import static com.globalmentor.io.Filenames.*;
 import static java.nio.charset.StandardCharsets.*;
 
 import java.io.*;
@@ -190,7 +190,7 @@ public class PropertiesUtilities {
 	public static Properties loadPropertiesResource(final Class<?> objectClass, final String baseName) throws FileNotFoundException, IOException {
 		final Properties properties = new Properties();
 		//try to load baseName.properties
-		InputStream propertiesStream = objectClass.getResourceAsStream(addNameExtension(baseName, PROPERTIES_NAME_EXTENSION));
+		InputStream propertiesStream = objectClass.getResourceAsStream(addExtension(baseName, PROPERTIES_NAME_EXTENSION));
 		if(propertiesStream != null) {
 			propertiesStream = new BufferedInputStream(propertiesStream); //buffer the stream
 			final Reader propertiesReader = new BOMInputStreamReader(propertiesStream, ISO_8859_1); //check for a BOM, falling back to the default properties charset
@@ -202,7 +202,7 @@ public class PropertiesUtilities {
 			}
 		}
 		//try to load baseName.xml
-		propertiesStream = objectClass.getResourceAsStream(addNameExtension(baseName, "xml"));	//TODO decide whether to create duplicate XML_NAME_EXTENSION constant inside globalmentor-core 
+		propertiesStream = objectClass.getResourceAsStream(addExtension(baseName, "xml")); //TODO decide whether to create duplicate XML_NAME_EXTENSION constant inside globalmentor-core 
 		if(propertiesStream != null) {
 			propertiesStream = new BufferedInputStream(propertiesStream); //buffer the stream
 			try {
