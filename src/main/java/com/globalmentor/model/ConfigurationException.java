@@ -20,7 +20,9 @@ package com.globalmentor.model;
  * An unchecked illegal state exception to indicate that the system is not configured correctly for some operation. For example, this exception might be thrown
  * if no appropriate parser is available or a particular character encoding is not supported.
  * @author Garret Wilson
+ * @deprecated Moved to Confound.
  */
+@Deprecated
 public class ConfigurationException extends IllegalStateException {
 
 	/**
