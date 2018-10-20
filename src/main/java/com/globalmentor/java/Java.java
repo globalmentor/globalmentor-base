@@ -60,9 +60,9 @@ public class Java {
 	 * @param comparable2 The second object to compare.
 	 * @return A negative integer, zero, or a positive integer if the first object is less than, equal to, or greater than the specified annotation, respectively,
 	 *         with a <code>null</code> considered less than a non-<code>null</code> value.
-	 * @see Comparable#compareTo
+	 * @see Comparable#compareTo(Object)
 	 */
-	public static final <T extends Comparable<T>> int compareTo(final T comparable1, final T comparable2) {
+	public static final <T extends Comparable<T>> int compareTo(final T comparable1, final T comparable2) { //TODO move to Comparables
 		if(comparable1 != null && comparable2 != null) //if both objects are non-null
 			return comparable1.compareTo(comparable2); //compare the objects
 		else if(comparable1 == comparable2) //if both objects are null (we know at this point that one object is null, so if the objects are equal then both are null)

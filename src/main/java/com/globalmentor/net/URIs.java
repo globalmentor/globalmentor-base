@@ -95,23 +95,19 @@ public class URIs {
 	/** The prefix string that introduces an authority. */
 	public static final String AUTHORITY_PREFIX = "//";
 
-	/** The at sign ('@') that separates user information from a host in a URI. */
+	/** The at sign (<code>'@'</code>) that separates user information from a host in a URI. */
 	public static final char USER_INFO_SEPARATOR = '@';
 
-	/** The colon character (':') that separates a host from a port. */
+	/** The colon character (<code>':'</code>) that separates a host from a port. */
 	public static final char PORT_SEPARATOR = ':';
 
-	/** The slash character ('/') that separates components in a URI path. */
+	/** The slash character (<code>'/'</code>) that separates components in a URI path. */
 	public static final char PATH_SEPARATOR = '/';
 
-	/**
-	 * The URI path segment that represents the current hierarchical level of a hierarchical URI.
-	 */
+	/** The URI path segment that represents the current hierarchical level of a hierarchical URI. */
 	public static final String CURRENT_LEVEL_PATH_SEGMENT = ".";
 
-	/**
-	 * The URI path segment that represents the parent hierarchical level of a hierarchical URI.
-	 */
+	/** The URI path segment that represents the parent hierarchical level of a hierarchical URI. */
 	public static final String PARENT_LEVEL_PATH_SEGMENT = "..";
 
 	/** The character that separates the query from the rest of a URI. */

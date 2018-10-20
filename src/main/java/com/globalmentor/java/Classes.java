@@ -73,6 +73,9 @@ public class Classes {
 	 */
 	public static final Pattern SETTER_METHOD_NAME_PATTERN = Pattern.compile("(" + SET_SETTER_PREFIX + ")(.+)");
 
+	/** The slash character (<code>'/'</code>) that separates components in a resource path. */
+	public static final char RESOURCE_PATH_SEPARATOR = '/';
+
 	/** This class cannot be publicly instantiated. */
 	private Classes() {
 	}
@@ -937,7 +940,7 @@ public class Classes {
 	 * @return The full path of the resource necessary to access it using the resource loader of the given class.
 	 */
 	public static String resolveResourcePath(@Nonnull final Class<?> contextClass, @Nonnull final String resourceName) {
-		return contextClass.getPackage().getName().replace(PACKAGE_SEPARATOR, PATH_SEPARATOR) + PATH_SEPARATOR + resourceName;
+		return contextClass.getPackage().getName().replace(PACKAGE_SEPARATOR, RESOURCE_PATH_SEPARATOR) + RESOURCE_PATH_SEPARATOR + resourceName;
 	}
 
 	//TODO make a soft reference that deletes the file when garbage-collected
