@@ -57,11 +57,11 @@ public class DecoratorIDedMappedList<K, E extends IDed<K>> extends ListDecorator
 
 	/**
 	 * 
-	 * Returns <tt>true</tt> if this list contains the specified element. More formally, returns <tt>true</tt> if and only if this list contains at least one
-	 * element <tt>e</tt> such that <tt>(o==null&nbsp;?&nbsp;e==null&nbsp;:&nbsp;o.equals(e))</tt>.
+	 * Returns <code>true</code> if this list contains the specified element. More formally, returns <code>true</code> if and only if this list contains at least one
+	 * element <code>e</code> such that <code>(o==null&nbsp;?&nbsp;e==null&nbsp;:&nbsp;o.equals(e))</code>.
 	 *
 	 * @param o element whose presence in this list is to be tested.
-	 * @return <tt>true</tt> if this list contains the specified element.
+	 * @return <code>true</code> if this list contains the specified element.
 	 * @throws ClassCastException if the type of the specified element is incompatible with this list (optional).
 	 * @throws NullPointerException if the specified element is null and this list does not support null elements (optional).
 	 */
@@ -86,13 +86,13 @@ public class DecoratorIDedMappedList<K, E extends IDed<K>> extends ListDecorator
 
 	/**
 	 * Removes the first occurrence in this list of the specified element (optional operation). If this list does not contain the element, it is unchanged. More
-	 * formally, removes the element with the lowest index i such that <tt>(o==null ? get(i)==null : o.equals(get(i)))</tt> (if such an element exists).
+	 * formally, removes the element with the lowest index i such that <code>(o==null ? get(i)==null : o.equals(get(i)))</code> (if such an element exists).
 	 *
 	 * @param o element to be removed from this list, if present.
-	 * @return <tt>true</tt> if this list contained the specified element.
+	 * @return <code>true</code> if this list contained the specified element.
 	 * @throws ClassCastException if the type of the specified element is incompatible with this list (optional).
 	 * @throws NullPointerException if the specified element is null and this list does not support null elements (optional).
-	 * @throws UnsupportedOperationException if the <tt>remove</tt> method is not supported by this list.
+	 * @throws UnsupportedOperationException if the <code>remove</code> method is not supported by this list.
 	 */
 	public boolean remove(Object o) {
 		final boolean result = super.remove(o); //remove the object normally
@@ -108,12 +108,12 @@ public class DecoratorIDedMappedList<K, E extends IDed<K>> extends ListDecorator
 	 * this will occur if the specified collection is this list, and it's nonempty.)
 	 *
 	 * @param c collection whose elements are to be added to this list.
-	 * @return <tt>true</tt> if this list changed as a result of the call.
+	 * @return <code>true</code> if this list changed as a result of the call.
 	 * 
-	 * @throws UnsupportedOperationException if the <tt>addAll</tt> method is not supported by this list.
+	 * @throws UnsupportedOperationException if the <code>addAll</code> method is not supported by this list.
 	 * @throws ClassCastException if the class of an element in the specified collection prevents it from being added to this list.
 	 * @throws NullPointerException if the specified collection contains one or more null elements and this list does not support null elements, or if the
-	 *           specified collection is <tt>null</tt>.
+	 *           specified collection is <code>null</code>.
 	 * @throws IllegalArgumentException if some aspect of an element in the specified collection prevents it from being added to this list.
 	 * @see #add(Object)
 	 */
@@ -135,12 +135,12 @@ public class DecoratorIDedMappedList<K, E extends IDed<K>> extends ListDecorator
 	 *
 	 * @param index index at which to insert first element from the specified collection.
 	 * @param c elements to be inserted into this list.
-	 * @return <tt>true</tt> if this list changed as a result of the call.
+	 * @return <code>true</code> if this list changed as a result of the call.
 	 * 
-	 * @throws UnsupportedOperationException if the <tt>addAll</tt> method is not supported by this list.
+	 * @throws UnsupportedOperationException if the <code>addAll</code> method is not supported by this list.
 	 * @throws ClassCastException if the class of one of elements of the specified collection prevents it from being added to this list.
 	 * @throws NullPointerException if the specified collection contains one or more null elements and this list does not support null elements, or if the
-	 *           specified collection is <tt>null</tt>.
+	 *           specified collection is <code>null</code>.
 	 * @throws IllegalArgumentException if some aspect of one of elements of the specified collection prevents it from being added to this list.
 	 * @throws IndexOutOfBoundsException if the index is out of range (index &lt; 0 || index &gt; size()).
 	 */
@@ -158,12 +158,12 @@ public class DecoratorIDedMappedList<K, E extends IDed<K>> extends ListDecorator
 	 * Removes from this list all the elements that are contained in the specified collection (optional operation).
 	 *
 	 * @param c collection that defines which elements will be removed from this list.
-	 * @return <tt>true</tt> if this list changed as a result of the call.
+	 * @return <code>true</code> if this list changed as a result of the call.
 	 * 
-	 * @throws UnsupportedOperationException if the <tt>removeAll</tt> method is not supported by this list.
+	 * @throws UnsupportedOperationException if the <code>removeAll</code> method is not supported by this list.
 	 * @throws ClassCastException if the types of one or more elements in this list are incompatible with the specified collection (optional).
 	 * @throws NullPointerException if this list contains one or more null elements and the specified collection does not support null elements (optional).
-	 * @throws NullPointerException if the specified collection is <tt>null</tt>.
+	 * @throws NullPointerException if the specified collection is <code>null</code>.
 	 * @see #remove(Object)
 	 * @see #contains(Object)
 	 */
@@ -183,12 +183,12 @@ public class DecoratorIDedMappedList<K, E extends IDed<K>> extends ListDecorator
 	 *
 	 * @param c collection that defines which elements this set will retain.
 	 * 
-	 * @return <tt>true</tt> if this list changed as a result of the call.
+	 * @return <code>true</code> if this list changed as a result of the call.
 	 * 
-	 * @throws UnsupportedOperationException if the <tt>retainAll</tt> method is not supported by this list.
+	 * @throws UnsupportedOperationException if the <code>retainAll</code> method is not supported by this list.
 	 * @throws ClassCastException if the types of one or more elements in this list are incompatible with the specified collection (optional).
 	 * @throws NullPointerException if this list contains one or more null elements and the specified collection does not support null elements (optional).
-	 * @throws NullPointerException if the specified collection is <tt>null</tt>.
+	 * @throws NullPointerException if the specified collection is <code>null</code>.
 	 * @see #remove(Object)
 	 * @see #contains(Object)
 	 */
@@ -207,7 +207,7 @@ public class DecoratorIDedMappedList<K, E extends IDed<K>> extends ListDecorator
 	/**
 	 * Removes all of the elements from this list (optional operation). This list will be empty after this call returns (unless it throws an exception).
 	 *
-	 * @throws UnsupportedOperationException if the <tt>clear</tt> method is not supported by this list.
+	 * @throws UnsupportedOperationException if the <code>clear</code> method is not supported by this list.
 	 */
 	public void clear() {
 		super.clear(); //clear normally
@@ -223,7 +223,7 @@ public class DecoratorIDedMappedList<K, E extends IDed<K>> extends ListDecorator
 	 * @param element element to be stored at the specified position.
 	 * @return the element previously at the specified position.
 	 * 
-	 * @throws UnsupportedOperationException if the <tt>set</tt> method is not supported by this list.
+	 * @throws UnsupportedOperationException if the <code>set</code> method is not supported by this list.
 	 * @throws ClassCastException if the class of the specified element prevents it from being added to this list.
 	 * @throws NullPointerException if the specified element is null and this list does not support null elements.
 	 * @throws IllegalArgumentException if some aspect of the specified element prevents it from being added to this list.
@@ -243,7 +243,7 @@ public class DecoratorIDedMappedList<K, E extends IDed<K>> extends ListDecorator
 	 * @param index index at which the specified element is to be inserted.
 	 * @param element element to be inserted.
 	 * 
-	 * @throws UnsupportedOperationException if the <tt>add</tt> method is not supported by this list.
+	 * @throws UnsupportedOperationException if the <code>add</code> method is not supported by this list.
 	 * @throws ClassCastException if the class of the specified element prevents it from being added to this list.
 	 * @throws NullPointerException if the specified element is null and this list does not support null elements.
 	 * @throws IllegalArgumentException if some aspect of the specified element prevents it from being added to this list.
@@ -261,7 +261,7 @@ public class DecoratorIDedMappedList<K, E extends IDed<K>> extends ListDecorator
 	 * @param index the index of the element to removed.
 	 * @return the element previously at the specified position.
 	 * 
-	 * @throws UnsupportedOperationException if the <tt>remove</tt> method is not supported by this list.
+	 * @throws UnsupportedOperationException if the <code>remove</code> method is not supported by this list.
 	 * @throws IndexOutOfBoundsException if the index is out of range (index &lt; 0 || index &gt;= size()).
 	 */
 	public E remove(int index) {
@@ -271,33 +271,33 @@ public class DecoratorIDedMappedList<K, E extends IDed<K>> extends ListDecorator
 	}
 
 	/**
-	 * Returns <tt>true</tt> if this map contains a mapping for the specified key. More formally, returns <tt>true</tt> if and only if this map contains a mapping
-	 * for a key <tt>k</tt> such that <tt>(key==null ? k==null : key.equals(k))</tt>. (There can be at most one such mapping.)
+	 * Returns <code>true</code> if this map contains a mapping for the specified key. More formally, returns <code>true</code> if and only if this map contains a mapping
+	 * for a key <code>k</code> such that <code>(key==null ? k==null : key.equals(k))</code>. (There can be at most one such mapping.)
 	 *
 	 * @param key key whose presence in this map is to be tested.
-	 * @return <tt>true</tt> if this map contains a mapping for the specified key.
+	 * @return <code>true</code> if this map contains a mapping for the specified key.
 	 * 
 	 * @throws ClassCastException if the key is of an inappropriate type for this map (optional).
-	 * @throws NullPointerException if the key is <tt>null</tt> and this map does not permit <tt>null</tt> keys (optional).
+	 * @throws NullPointerException if the key is <code>null</code> and this map does not permit <code>null</code> keys (optional).
 	 */
 	public boolean containsKey(Object key) {
 		return getMap().containsKey(key);
 	}
 
 	/**
-	 * Returns the value to which this map maps the specified key. Returns <tt>null</tt> if the map contains no mapping for this key. A return value of
-	 * <tt>null</tt> does not <i>necessarily</i> indicate that the map contains no mapping for the key; it's also possible that the map explicitly maps the key to
-	 * <tt>null</tt>. The <tt>containsKey</tt> operation may be used to distinguish these two cases.
+	 * Returns the value to which this map maps the specified key. Returns <code>null</code> if the map contains no mapping for this key. A return value of
+	 * <code>null</code> does not <i>necessarily</i> indicate that the map contains no mapping for the key; it's also possible that the map explicitly maps the key to
+	 * <code>null</code>. The <code>containsKey</code> operation may be used to distinguish these two cases.
 	 *
 	 * <p>
-	 * More formally, if this map contains a mapping from a key <tt>k</tt> to a value <tt>v</tt> such that <tt>(key==null ? k==null :
-	 * key.equals(k))</tt>, then this method returns <tt>v</tt>; otherwise it returns <tt>null</tt>. (There can be at most one such mapping.)
+	 * More formally, if this map contains a mapping from a key <code>k</code> to a value <code>v</code> such that <code>(key==null ? k==null :
+	 * key.equals(k))</code>, then this method returns <code>v</code>; otherwise it returns <code>null</code>. (There can be at most one such mapping.)
 	 *
 	 * @param key key whose associated value is to be returned.
-	 * @return the value to which this map maps the specified key, or <tt>null</tt> if the map contains no mapping for this key.
+	 * @return the value to which this map maps the specified key, or <code>null</code> if the map contains no mapping for this key.
 	 * 
 	 * @throws ClassCastException if the key is of an inappropriate type for this map (optional).
-	 * @throws NullPointerException if the key is <tt>null</tt> and this map does not permit <tt>null</tt> keys (optional).
+	 * @throws NullPointerException if the key is <code>null</code> and this map does not permit <code>null</code> keys (optional).
 	 * 
 	 * @see #containsKey(Object)
 	 */

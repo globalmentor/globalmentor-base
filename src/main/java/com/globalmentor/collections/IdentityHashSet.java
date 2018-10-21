@@ -40,14 +40,14 @@ public class IdentityHashSet<E> extends AbstractSet<E> implements Set<E>, Clonea
 	private static final Object PRESENT = new Object();
 
 	/**
-	 * Constructs a new, empty set; the backing <tt>HashMap</tt> instance has default initial capacity (16) and load factor (0.75).
+	 * Constructs a new, empty set; the backing <code>HashMap</code> instance has default initial capacity (16) and load factor (0.75).
 	 */
 	public IdentityHashSet() {
 		map = new IdentityHashMap<E, Object>();
 	}
 
 	/**
-	 * Constructs a new set containing the elements in the specified collection. The <tt>HashMap</tt> is created with default load factor (0.75) and an initial
+	 * Constructs a new set containing the elements in the specified collection. The <code>HashMap</code> is created with default load factor (0.75) and an initial
 	 * capacity sufficient to contain the elements in the specified collection.
 	 *
 	 * @param c the collection whose elements are to be placed into this set.
@@ -59,7 +59,7 @@ public class IdentityHashSet<E> extends AbstractSet<E> implements Set<E>, Clonea
 	}
 
 	/**
-	 * Constructs a new, empty set; the backing <tt>HashMap</tt> instance has the specified initial capacity and default load factor, which is <tt>0.75</tt>.
+	 * Constructs a new, empty set; the backing <code>HashMap</code> instance has the specified initial capacity and default load factor, which is <code>0.75</code>.
 	 *
 	 * @param initialCapacity the initial capacity of the hash table.
 	 * @throws IllegalArgumentException if the initial capacity is less than zero.
@@ -88,19 +88,19 @@ public class IdentityHashSet<E> extends AbstractSet<E> implements Set<E>, Clonea
 	}
 
 	/**
-	 * Returns <tt>true</tt> if this set contains no elements.
+	 * Returns <code>true</code> if this set contains no elements.
 	 *
-	 * @return <tt>true</tt> if this set contains no elements.
+	 * @return <code>true</code> if this set contains no elements.
 	 */
 	public boolean isEmpty() {
 		return map.isEmpty();
 	}
 
 	/**
-	 * Returns <tt>true</tt> if this set contains the specified element.
+	 * Returns <code>true</code> if this set contains the specified element.
 	 *
 	 * @param o element whose presence in this set is to be tested.
-	 * @return <tt>true</tt> if this set contains the specified element.
+	 * @return <code>true</code> if this set contains the specified element.
 	 */
 	public boolean contains(Object o) {
 		return map.containsKey(o);
@@ -110,7 +110,7 @@ public class IdentityHashSet<E> extends AbstractSet<E> implements Set<E>, Clonea
 	 * Adds the specified element to this set if it is not already present.
 	 *
 	 * @param o element to be added to this set.
-	 * @return <tt>true</tt> if the set did not already contain the specified element.
+	 * @return <code>true</code> if the set did not already contain the specified element.
 	 */
 	public boolean add(E o) {
 		return map.put(o, PRESENT) == null;
@@ -120,7 +120,7 @@ public class IdentityHashSet<E> extends AbstractSet<E> implements Set<E>, Clonea
 	 * Removes the specified element from this set if it is present.
 	 *
 	 * @param o object to be removed from this set, if present.
-	 * @return <tt>true</tt> if the set contained the specified element.
+	 * @return <code>true</code> if the set contained the specified element.
 	 */
 	public boolean remove(Object o) {
 		return map.remove(o) == PRESENT;
@@ -134,7 +134,7 @@ public class IdentityHashSet<E> extends AbstractSet<E> implements Set<E>, Clonea
 	}
 
 	/**
-	 * Returns a shallow copy of this <tt>HashSet</tt> instance: the elements themselves are not cloned.
+	 * Returns a shallow copy of this <code>HashSet</code> instance: the elements themselves are not cloned.
 	 *
 	 * @return a shallow copy of this set.
 	 */

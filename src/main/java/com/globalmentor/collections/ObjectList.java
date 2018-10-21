@@ -146,7 +146,7 @@ public class ObjectList<E> implements List<E>, ImmutableCollection<E> { //TODO r
 	 *
 	 * @param index index of the element to return
 	 * @return the element at the specified position in this list
-	 * @throws IndexOutOfBoundsException if the index is out of range (<tt>index &lt; 0 || index &gt;= size()</tt>)
+	 * @throws IndexOutOfBoundsException if the index is out of range (<code>index &lt; 0 || index &gt;= size()</code>)
 	 */
 	@Override
 	public E get(final int index) {
@@ -162,11 +162,11 @@ public class ObjectList<E> implements List<E>, ImmutableCollection<E> { //TODO r
 	 * @param index index of the element to replace
 	 * @param element element to be stored at the specified position
 	 * @return the element previously at the specified position
-	 * @throws UnsupportedOperationException if the <tt>set</tt> operation is not supported by this list
+	 * @throws UnsupportedOperationException if the <code>set</code> operation is not supported by this list
 	 * @throws ClassCastException if the class of the specified element prevents it from being added to this list
 	 * @throws NullPointerException if the specified element is null and this list does not permit null elements
 	 * @throws IllegalArgumentException if some property of the specified element prevents it from being added to this list
-	 * @throws IndexOutOfBoundsException if the index is out of range (<tt>index &lt; 0 || index &gt;= size()</tt>)
+	 * @throws IndexOutOfBoundsException if the index is out of range (<code>index &lt; 0 || index &gt;= size()</code>)
 	 */
 	@Override
 	public E set(final int index, final E element) {
@@ -179,11 +179,11 @@ public class ObjectList<E> implements List<E>, ImmutableCollection<E> { //TODO r
 	 *
 	 * @param index index at which the specified element is to be inserted
 	 * @param element element to be inserted
-	 * @throws UnsupportedOperationException if the <tt>add</tt> operation is not supported by this list
+	 * @throws UnsupportedOperationException if the <code>add</code> operation is not supported by this list
 	 * @throws ClassCastException if the class of the specified element prevents it from being added to this list
 	 * @throws NullPointerException if the specified element is null and this list does not permit null elements
 	 * @throws IllegalArgumentException if some property of the specified element prevents it from being added to this list
-	 * @throws IndexOutOfBoundsException if the index is out of range (<tt>index &lt; 0 || index &gt; size()</tt>)
+	 * @throws IndexOutOfBoundsException if the index is out of range (<code>index &lt; 0 || index &gt; size()</code>)
 	 */
 	@Override
 	public void add(final int index, final E element) {
@@ -196,8 +196,8 @@ public class ObjectList<E> implements List<E>, ImmutableCollection<E> { //TODO r
 	 *
 	 * @param index the index of the element to be removed
 	 * @return the element previously at the specified position
-	 * @throws UnsupportedOperationException if the <tt>remove</tt> operation is not supported by this list
-	 * @throws IndexOutOfBoundsException if the index is out of range (<tt>index &lt; 0 || index &gt;= size()</tt>)
+	 * @throws UnsupportedOperationException if the <code>remove</code> operation is not supported by this list
+	 * @throws IndexOutOfBoundsException if the index is out of range (<code>index &lt; 0 || index &gt;= size()</code>)
 	 */
 	@Override
 	public E remove(final int index) {
@@ -208,7 +208,7 @@ public class ObjectList<E> implements List<E>, ImmutableCollection<E> { //TODO r
 
 	/**
 	 * Returns the index of the first occurrence of the specified element in this list, or -1 if this list does not contain the element. More formally, returns
-	 * the lowest index <tt>i</tt> such that <tt>(o==null&nbsp;?&nbsp;get(i)==null&nbsp;:&nbsp;o.equals(get(i)))</tt>, or -1 if there is no such index.
+	 * the lowest index <code>i</code> such that <code>(o==null&nbsp;?&nbsp;get(i)==null&nbsp;:&nbsp;o.equals(get(i)))</code>, or -1 if there is no such index.
 	 *
 	 * @param o element to search for
 	 * @return the index of the first occurrence of the specified element in this list, or -1 if this list does not contain the element
@@ -222,7 +222,7 @@ public class ObjectList<E> implements List<E>, ImmutableCollection<E> { //TODO r
 
 	/**
 	 * Returns the index of the last occurrence of the specified element in this list, or -1 if this list does not contain the element. More formally, returns the
-	 * highest index <tt>i</tt> such that <tt>(o==null&nbsp;?&nbsp;get(i)==null&nbsp;:&nbsp;o.equals(get(i)))</tt>, or -1 if there is no such index.
+	 * highest index <code>i</code> such that <code>(o==null&nbsp;?&nbsp;get(i)==null&nbsp;:&nbsp;o.equals(get(i)))</code>, or -1 if there is no such index.
 	 *
 	 * @param o element to search for
 	 * @return the index of the last occurrence of the specified element in this list, or -1 if this list does not contain the element
@@ -251,9 +251,9 @@ public class ObjectList<E> implements List<E>, ImmutableCollection<E> { //TODO r
 	 * the first element that would be returned by an initial call to {@link ListIterator#next next}. An initial call to {@link ListIterator#previous previous}
 	 * would return the element with the specified index minus one.
 	 *
-	 * @param index index of first element to be returned from the list iterator (by a call to the <tt>next</tt> method)
+	 * @param index index of first element to be returned from the list iterator (by a call to the <code>next</code> method)
 	 * @return a list iterator of the elements in this list (in proper sequence), starting at the specified position in this list
-	 * @throws IndexOutOfBoundsException if the index is out of range (<tt>index &lt; 0 || index &gt; size()</tt>)
+	 * @throws IndexOutOfBoundsException if the index is out of range (<code>index &lt; 0 || index &gt; size()</code>)
 	 */
 	@Override
 	public ListIterator<E> listIterator(final int index) {
@@ -270,8 +270,8 @@ public class ObjectList<E> implements List<E>, ImmutableCollection<E> { //TODO r
 	// View
 
 	/**
-	 * Returns a view of the portion of this list between the specified <tt>fromIndex</tt>, inclusive, and <tt>toIndex</tt>, exclusive. (If <tt>fromIndex</tt> and
-	 * <tt>toIndex</tt> are equal, the returned list is empty.) The returned list is backed by this list, so non-structural changes in the returned list are
+	 * Returns a view of the portion of this list between the specified <code>fromIndex</code>, inclusive, and <code>toIndex</code>, exclusive. (If <code>fromIndex</code> and
+	 * <code>toIndex</code> are equal, the returned list is empty.) The returned list is backed by this list, so non-structural changes in the returned list are
 	 * reflected in this list, and vice-versa. The returned list supports all of the optional list operations supported by this list.
 	 * <p>
 	 *
@@ -282,7 +282,7 @@ public class ObjectList<E> implements List<E>, ImmutableCollection<E> { //TODO r
 	 * list.subList(from, to).clear();
 	 * </pre>
 	 * 
-	 * Similar idioms may be constructed for <tt>indexOf</tt> and <tt>lastIndexOf</tt>, and all of the algorithms in the <tt>Collections</tt> class can be applied
+	 * Similar idioms may be constructed for <code>indexOf</code> and <code>lastIndexOf</code>, and all of the algorithms in the <code>Collections</code> class can be applied
 	 * to a subList.
 	 * <p>
 	 *
@@ -293,8 +293,8 @@ public class ObjectList<E> implements List<E>, ImmutableCollection<E> { //TODO r
 	 * @param fromIndex low endpoint (inclusive) of the subList
 	 * @param toIndex high endpoint (exclusive) of the subList
 	 * @return a view of the specified range within this list
-	 * @throws IndexOutOfBoundsException for an illegal endpoint index value (<tt>fromIndex &lt; 0 || toIndex &gt; size ||
-	 *         fromIndex &gt; toIndex</tt>)
+	 * @throws IndexOutOfBoundsException for an illegal endpoint index value (<code>fromIndex &lt; 0 || toIndex &gt; size ||
+	 *         fromIndex &gt; toIndex</code>)
 	 */
 	@Override
 	public List<E> subList(final int fromIndex, final int toIndex) {

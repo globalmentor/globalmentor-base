@@ -48,12 +48,12 @@ public class ListDecorator<E> extends CollectionDecorator<E> implements List<E> 
 	 *
 	 * @param index index at which to insert first element from the specified collection.
 	 * @param c elements to be inserted into this list.
-	 * @return <tt>true</tt> if this list changed as a result of the call.
+	 * @return <code>true</code> if this list changed as a result of the call.
 	 * 
-	 * @throws UnsupportedOperationException if the <tt>addAll</tt> method is not supported by this list.
+	 * @throws UnsupportedOperationException if the <code>addAll</code> method is not supported by this list.
 	 * @throws ClassCastException if the class of one of elements of the specified collection prevents it from being added to this list.
 	 * @throws NullPointerException if the specified collection contains one or more null elements and this list does not support null elements, or if the
-	 *           specified collection is <tt>null</tt>.
+	 *           specified collection is <code>null</code>.
 	 * @throws IllegalArgumentException if some aspect of one of elements of the specified collection prevents it from being added to this list.
 	 * @throws IndexOutOfBoundsException if the index is out of range (index &lt; 0 || index &gt; size()).
 	 */
@@ -82,7 +82,7 @@ public class ListDecorator<E> extends CollectionDecorator<E> implements List<E> 
 	 * @param element element to be stored at the specified position.
 	 * @return the element previously at the specified position.
 	 * 
-	 * @throws UnsupportedOperationException if the <tt>set</tt> method is not supported by this list.
+	 * @throws UnsupportedOperationException if the <code>set</code> method is not supported by this list.
 	 * @throws ClassCastException if the class of the specified element prevents it from being added to this list.
 	 * @throws NullPointerException if the specified element is null and this list does not support null elements.
 	 * @throws IllegalArgumentException if some aspect of the specified element prevents it from being added to this list.
@@ -99,7 +99,7 @@ public class ListDecorator<E> extends CollectionDecorator<E> implements List<E> 
 	 * @param index index at which the specified element is to be inserted.
 	 * @param element element to be inserted.
 	 * 
-	 * @throws UnsupportedOperationException if the <tt>add</tt> method is not supported by this list.
+	 * @throws UnsupportedOperationException if the <code>add</code> method is not supported by this list.
 	 * @throws ClassCastException if the class of the specified element prevents it from being added to this list.
 	 * @throws NullPointerException if the specified element is null and this list does not support null elements.
 	 * @throws IllegalArgumentException if some aspect of the specified element prevents it from being added to this list.
@@ -116,7 +116,7 @@ public class ListDecorator<E> extends CollectionDecorator<E> implements List<E> 
 	 * @param index the index of the element to removed.
 	 * @return the element previously at the specified position.
 	 * 
-	 * @throws UnsupportedOperationException if the <tt>remove</tt> method is not supported by this list.
+	 * @throws UnsupportedOperationException if the <code>remove</code> method is not supported by this list.
 	 * @throws IndexOutOfBoundsException if the index is out of range (index &lt; 0 || index &gt;= size()).
 	 */
 	public E remove(int index) {
@@ -127,7 +127,7 @@ public class ListDecorator<E> extends CollectionDecorator<E> implements List<E> 
 
 	/**
 	 * Returns the index in this list of the first occurrence of the specified element, or -1 if this list does not contain this element. More formally, returns
-	 * the lowest index <tt>i</tt> such that <tt>(o==null ? get(i)==null : o.equals(get(i)))</tt>, or -1 if there is no such index.
+	 * the lowest index <code>i</code> such that <code>(o==null ? get(i)==null : o.equals(get(i)))</code>, or -1 if there is no such index.
 	 *
 	 * @param o element to search for.
 	 * @return the index in this list of the first occurrence of the specified element, or -1 if this list does not contain this element.
@@ -140,7 +140,7 @@ public class ListDecorator<E> extends CollectionDecorator<E> implements List<E> 
 
 	/**
 	 * Returns the index in this list of the last occurrence of the specified element, or -1 if this list does not contain this element. More formally, returns
-	 * the highest index <tt>i</tt> such that <tt>(o==null ? get(i)==null : o.equals(get(i)))</tt>, or -1 if there is no such index.
+	 * the highest index <code>i</code> such that <code>(o==null ? get(i)==null : o.equals(get(i)))</code>, or -1 if there is no such index.
 	 *
 	 * @param o element to search for.
 	 * @return the index in this list of the last occurrence of the specified element, or -1 if this list does not contain this element.
@@ -164,10 +164,10 @@ public class ListDecorator<E> extends CollectionDecorator<E> implements List<E> 
 
 	/**
 	 * Returns a list iterator of the elements in this list (in proper sequence), starting at the specified position in this list. The specified index indicates
-	 * the first element that would be returned by an initial call to the <tt>next</tt> method. An initial call to the <tt>previous</tt> method would return the
+	 * the first element that would be returned by an initial call to the <code>next</code> method. An initial call to the <code>previous</code> method would return the
 	 * element with the specified index minus one.
 	 *
-	 * @param index index of first element to be returned from the list iterator (by a call to the <tt>next</tt> method).
+	 * @param index index of first element to be returned from the list iterator (by a call to the <code>next</code> method).
 	 * @return a list iterator of the elements in this list (in proper sequence), starting at the specified position in this list.
 	 * @throws IndexOutOfBoundsException if the index is out of range (index &lt; 0 || index &gt; size()).
 	 */
@@ -178,8 +178,8 @@ public class ListDecorator<E> extends CollectionDecorator<E> implements List<E> 
 	// View
 
 	/**
-	 * Returns a view of the portion of this list between the specified <tt>fromIndex</tt>, inclusive, and <tt>toIndex</tt>, exclusive. (If <tt>fromIndex</tt> and
-	 * <tt>toIndex</tt> are equal, the returned list is empty.) The returned list is backed by this list, so non-structural changes in the returned list are
+	 * Returns a view of the portion of this list between the specified <code>fromIndex</code>, inclusive, and <code>toIndex</code>, exclusive. (If <code>fromIndex</code> and
+	 * <code>toIndex</code> are equal, the returned list is empty.) The returned list is backed by this list, so non-structural changes in the returned list are
 	 * reflected in this list, and vice-versa. The returned list supports all of the optional list operations supported by this list.
 	 * <p>
 	 *
@@ -190,7 +190,7 @@ public class ListDecorator<E> extends CollectionDecorator<E> implements List<E> 
 	 * list.subList(from, to).clear();
 	 * </pre>
 	 * 
-	 * Similar idioms may be constructed for <tt>indexOf</tt> and <tt>lastIndexOf</tt>, and all of the algorithms in the <tt>Collections</tt> class can be applied
+	 * Similar idioms may be constructed for <code>indexOf</code> and <code>lastIndexOf</code>, and all of the algorithms in the <code>Collections</code> class can be applied
 	 * to a subList.
 	 * <p>
 	 *

@@ -28,31 +28,31 @@ import java.util.*;
 public interface MappedList<K, E> extends List<E> {
 
 	/**
-	 * Returns <tt>true</tt> if this map contains a mapping for the specified key. More formally, returns <tt>true</tt> if and only if this map contains a mapping
-	 * for a key <tt>k</tt> such that <tt>(key==null ? k==null : key.equals(k))</tt>. (There can be at most one such mapping.)
+	 * Returns <code>true</code> if this map contains a mapping for the specified key. More formally, returns <code>true</code> if and only if this map contains a mapping
+	 * for a key <code>k</code> such that <code>(key==null ? k==null : key.equals(k))</code>. (There can be at most one such mapping.)
 	 *
 	 * @param key key whose presence in this map is to be tested.
-	 * @return <tt>true</tt> if this map contains a mapping for the specified key.
+	 * @return <code>true</code> if this map contains a mapping for the specified key.
 	 * 
 	 * @throws ClassCastException if the key is of an inappropriate type for this map (optional).
-	 * @throws NullPointerException if the key is <tt>null</tt> and this map does not permit <tt>null</tt> keys (optional).
+	 * @throws NullPointerException if the key is <code>null</code> and this map does not permit <code>null</code> keys (optional).
 	 */
 	public boolean containsKey(Object key);
 
 	/**
-	 * Returns the value to which this map maps the specified key. Returns <tt>null</tt> if the map contains no mapping for this key. A return value of
-	 * <tt>null</tt> does not <i>necessarily</i> indicate that the map contains no mapping for the key; it's also possible that the map explicitly maps the key to
-	 * <tt>null</tt>. The <tt>containsKey</tt> operation may be used to distinguish these two cases.
+	 * Returns the value to which this map maps the specified key. Returns <code>null</code> if the map contains no mapping for this key. A return value of
+	 * <code>null</code> does not <i>necessarily</i> indicate that the map contains no mapping for the key; it's also possible that the map explicitly maps the key to
+	 * <code>null</code>. The <code>containsKey</code> operation may be used to distinguish these two cases.
 	 *
 	 * <p>
-	 * More formally, if this map contains a mapping from a key <tt>k</tt> to a value <tt>v</tt> such that <tt>(key==null ? k==null :
-	 * key.equals(k))</tt>, then this method returns <tt>v</tt>; otherwise it returns <tt>null</tt>. (There can be at most one such mapping.)
+	 * More formally, if this map contains a mapping from a key <code>k</code> to a value <code>v</code> such that <code>(key==null ? k==null :
+	 * key.equals(k))</code>, then this method returns <code>v</code>; otherwise it returns <code>null</code>. (There can be at most one such mapping.)
 	 *
 	 * @param key key whose associated value is to be returned.
-	 * @return the value to which this map maps the specified key, or <tt>null</tt> if the map contains no mapping for this key.
+	 * @return the value to which this map maps the specified key, or <code>null</code> if the map contains no mapping for this key.
 	 * 
 	 * @throws ClassCastException if the key is of an inappropriate type for this map (optional).
-	 * @throws NullPointerException if the key is <tt>null</tt> and this map does not permit <tt>null</tt> keys (optional).
+	 * @throws NullPointerException if the key is <code>null</code> and this map does not permit <code>null</code> keys (optional).
 	 * 
 	 * @see #containsKey(Object)
 	 */
