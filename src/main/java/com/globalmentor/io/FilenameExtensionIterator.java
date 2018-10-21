@@ -16,7 +16,7 @@
 
 package com.globalmentor.io;
 
-import static com.globalmentor.io.Files.FILENAME_EXTENSION_SEPARATOR;
+import static com.globalmentor.io.Filenames.EXTENSION_SEPARATOR;
 import static com.globalmentor.java.CharSequences.*;
 import static java.util.Objects.*;
 
@@ -34,7 +34,7 @@ import javax.annotation.*;
  * <li><code>bar</code></li>
  * </ol>
  * @author Garret Wilson
- * @see Files#FILENAME_EXTENSION_SEPARATOR
+ * @see Filenames#EXTENSION_SEPARATOR
  */
 public class FilenameExtensionIterator implements Iterator<String> {
 
@@ -47,16 +47,16 @@ public class FilenameExtensionIterator implements Iterator<String> {
 	/**
 	 * Filename constructor using the normal filename extension delimiter.
 	 * @param filename The filename over which extensions should be iterated.
-	 * @see Files#FILENAME_EXTENSION_SEPARATOR
+	 * @see Filenames#EXTENSION_SEPARATOR
 	 */
 	public FilenameExtensionIterator(@Nonnull final CharSequence filename) {
-		this(filename, FILENAME_EXTENSION_SEPARATOR);
+		this(filename, EXTENSION_SEPARATOR);
 	}
 
 	/**
 	 * Filename and delimiter constructor.
 	 * @param filename The filename over which extensions should be iterated.
-	 * @param delimiter The filename extension delimiter.
+	 * @param extensionDelimiter The filename extension delimiter.
 	 */
 	public FilenameExtensionIterator(@Nonnull final CharSequence filename, final char extensionDelimiter) {
 		this.filename = requireNonNull(filename);

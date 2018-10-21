@@ -46,57 +46,6 @@ public class FilesTest {
 		Files.delete(tempFile);
 	}
 
-	//encode/decode filename
-
-	/**
-	 * Test to verify if the method {@link Files#encodeCrossPlatformFilename(String)} and {@link Files#decodeFilename(String)} are encoding and decoding the file
-	 * name correctly
-	 * <p>
-	 * Test contributed by Magno Nascimento.
-	 * </p>
-	 */
-	@Test
-	public void testRecoverNotAllowedCharactersWithLatinCharacters() {
-		final String publicationName = Files.encodeCrossPlatformFilename("Dream Of The Red Chamber");
-		assertThat(Files.decodeFilename(publicationName), equalTo("Dream Of The Red Chamber"));
-	}
-
-	/**
-	 * Test to verify if the method {@link Files#encodeCrossPlatformFilename(String)} and {@link Files#decodeFilename(String)} are encoding and decoding the file
-	 * name correctly
-	 * <p>
-	 * Test contributed by Magno Nascimento.
-	 * </p>
-	 */
-	@Test
-	public void testRecoverNotAllowedCharactersWithChineseCharacters() {
-		final String publicationName = Files.encodeCrossPlatformFilename("紅樓夢红楼梦 (Dream of the Red Chamber)");
-		assertThat(Files.decodeFilename(publicationName), equalTo("紅樓夢红楼梦 (Dream of the Red Chamber)"));
-	}
-
-	/**
-	 * Test to verify if the method {@link Files#encodeCrossPlatformFilename(String)} and {@link Files#decodeFilename(String)} are encoding and decoding the file
-	 * name correctly
-	 * <p>
-	 * Test contributed by Magno Nascimento.
-	 * </p>
-	 */
-	@Test
-	public void testRecoverNotAllowedCharactersWithChineseCharactersAndSlash() {
-		final String publicationName = Files.encodeCrossPlatformFilename("紅樓夢/红楼梦 (Dream of the Red Chamber)");
-		assertThat(Files.decodeFilename(publicationName), equalTo("紅樓夢/红楼梦 (Dream of the Red Chamber)"));
-	}
-
-	/**
-	 * Test to verify if the method {@link Files#encodeCrossPlatformFilename(String)} and {@link Files#decodeFilename(String)} are encoding and decoding the file
-	 * name correctly
-	 */
-	@Test
-	public void testRecoverNotAllowedCharactersWithSlash() {
-		final String publicationName = Files.encodeCrossPlatformFilename("/ (Dream of the Red Chamber)");
-		assertThat(Files.decodeFilename(publicationName), equalTo("/ (Dream of the Red Chamber)"));
-	}
-
 	//File.toFileURI(File)
 
 	/**

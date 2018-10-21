@@ -33,7 +33,7 @@ public class Paths {
 
 	/**
 	 * Adds the given extension to a path and returns the new path with the new extension. The filename is not checked to see if it currently has an extension.
-	 * This method delegates to {@link Files#addExtension(String, String)}.
+	 * This method delegates to {@link Filenames#addExtension(String, String)}.
 	 * 
 	 * @param path The path to which to add an extension.
 	 * @param extension The extension to add.
@@ -48,7 +48,7 @@ public class Paths {
 
 		final String fileName = path.getFileName().toString();
 
-		return path.resolveSibling(Files.addExtension(fileName, extension));
+		return path.resolveSibling(Filenames.addExtension(fileName, extension));
 	}
 
 }

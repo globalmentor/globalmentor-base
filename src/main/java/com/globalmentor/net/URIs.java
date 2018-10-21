@@ -95,27 +95,20 @@ public class URIs {
 	/** The prefix string that introduces an authority. */
 	public static final String AUTHORITY_PREFIX = "//";
 
-	/** The at sign ('@') that separates user information from a host in a URI. */
+	/** The at sign (<code>'@'</code>) that separates user information from a host in a URI. */
 	public static final char USER_INFO_SEPARATOR = '@';
 
-	/** The colon character (':') that separates a host from a port. */
+	/** The colon character (<code>':'</code>) that separates a host from a port. */
 	public static final char PORT_SEPARATOR = ':';
 
-	/** The slash character ('/') that separates components in a URI path. */
+	/** The slash character (<code>'/'</code>) that separates components in a URI path. */
 	public static final char PATH_SEPARATOR = '/';
 
-	/**
-	 * The URI path segment that represents the current hierarchical level of a hierarchical URI.
-	 */
+	/** The URI path segment that represents the current hierarchical level of a hierarchical URI. */
 	public static final String CURRENT_LEVEL_PATH_SEGMENT = ".";
 
-	/**
-	 * The URI path segment that represents the parent hierarchical level of a hierarchical URI.
-	 */
+	/** The URI path segment that represents the parent hierarchical level of a hierarchical URI. */
 	public static final String PARENT_LEVEL_PATH_SEGMENT = "..";
-
-	/** The character used to separate an extension from the rest of a name. */
-	public static final char NAME_EXTENSION_SEPARATOR = '.';
 
 	/** The character that separates the query from the rest of a URI. */
 	public static final char QUERY_SEPARATOR = '?';
@@ -545,7 +538,7 @@ public class URIs {
 		if(rawName == null) { //if there is no raw name
 			throw new IllegalArgumentException("Cannot add name extension to URI " + uri + ", which has no path.");
 		}
-		return changeRawName(uri, addNameExtension(rawName, extension));
+		return changeRawName(uri, Filenames.addExtension(rawName, extension));
 	}
 
 	/**
@@ -568,7 +561,7 @@ public class URIs {
 	 */
 	public static String getRawNameExtension(final URI uri) {
 		final String rawName = getRawName(uri); //get the raw name of the URI, if any
-		return rawName != null ? getNameExtension(rawName) : null; //if there is a raw name, return its extension, if any
+		return rawName != null ? Filenames.getExtension(rawName) : null; //if there is a raw name, return its extension, if any
 	}
 
 	/**
@@ -587,7 +580,7 @@ public class URIs {
 			}
 			throw new IllegalArgumentException("Cannot change the name extension of URI " + uri + ", which has no path.");
 		}
-		rawName = changeNameExtension(rawName, extension); //change the extension of the name
+		rawName = Filenames.changeExtension(rawName, extension); //change the extension of the name
 		return changeRawName(uri, rawName); //change the raw name of the URI
 	}
 
@@ -1059,7 +1052,7 @@ public class URIs {
 	 * @return The default content type for the URI's name extension, or <code>null</code> if no known content type is associated with this URI's extension.
 	 * @see Files#getExtensionContentType(String)
 	 * @see #getRawName(URI)
-	 * @see #getNameExtension(String)
+	 * @see Filenames#getExtension(String)
 	 */
 	public static ContentType getContentType(final URI uri) {
 		final String rawPath = uri.getRawPath(); //get the raw path
@@ -2372,72 +2365,6 @@ public class URIs {
 		final URI baseURI = createPathURI(basePath); //create a URI for the base path, ensuring it's a path
 		final URI fullURI = createPathURI(fullPath); //create a URI for the full path, ensuring it's a path
 		return baseURI.relativize(fullURI).getPath(); //relativize the URIs and return the path
-	}
-
-	//names
-
-	/**
-	 * Adds the given extension to a name and returns the new name with the new extension. The name is not checked to see if it currently has an extension.
-	 * <p>
-	 * This method currently allows an extension with the <code>.</code> delimiter, but it may be prohibited in the future.
-	 * </p>
-	 * 
-	 * @param name The name to which to add an extension.
-	 * @param extension The extension to add.
-	 * @return The name with the new extension.
-	 * @throws NullPointerException if the given extension is <code>null</code>.
-	 */
-	public static String addNameExtension(final String name, final String extension) {
-		return new StringBuilder(name).append(NAME_EXTENSION_SEPARATOR).append(requireNonNull(extension, "Extension cannot be null")).toString(); //add the requested extension and return the new filename
-	}
-
-	/**
-	 * Changes the extension of a name and returns a new name with the new extension. If the name does not currently have an extension, one will be added.
-	 * @param name The name to examine.
-	 * @param extension The extension to set, or <code>null</code> if the extension should be removed.
-	 * @return The name with the new extension.
-	 * @throws IllegalArgumentException If the name is empty, or if the name is just a "/".
-	 */
-	public static String changeNameExtension(String name, final String extension) {
-		final int separatorIndex = name.lastIndexOf(NAME_EXTENSION_SEPARATOR); //see if we can find the extension separator
-		if(separatorIndex >= 0) { //if we found a separator
-			name = name.substring(0, separatorIndex); //remove the extension
-		}
-		if(extension != null) { //if an extension was given
-			name = addNameExtension(name, extension); //add the requested extension
-		}
-		return name; //return the new filename
-	}
-
-	/**
-	 * Extracts the extension from a name.
-	 * @param name The URI name to examine.
-	 * @return The extension of the name (not including '.'), or <code>null</code> if no extension is present.
-	 */
-	public static String getNameExtension(final String name) {
-		final int separatorIndex = name.lastIndexOf(NAME_EXTENSION_SEPARATOR); //see if we can find the extension separator, which will be the last such character in the string
-		return separatorIndex >= 0 ? name.substring(separatorIndex + 1) : null; //if we found a separator, return everything after it 
-	}
-
-	/**
-	 * Removes the extension, if any, of a name and returns a new name with no extension. This is a convenience method that delegates to
-	 * {@link #changeNameExtension(String, String)}.
-	 * @param name The name to examine.
-	 * @return The name with no extension.
-	 */
-	public static String removeNameExtension(final String name) {
-		return changeNameExtension(name, null); //replace the extension with nothing
-	}
-
-	/**
-	 * Adds the extension, if any, to a name and returns the new name. This is a convenience method that delegates to {@link #addNameExtension(String, String)} if
-	 * a non-<code>null</code> extension is given.
-	 * @param name The name to examine.
-	 * @param extension The extension to add, or <code>null</code> if no extension should be added.
-	 * @return The name with the new extension, if any.
-	 */
-	public static String setNameExtension(final String name, final String extension) {
-		return extension != null ? addNameExtension(name, extension) : name; //if an extension was given, add it; otherwise, return the name unmodified
 	}
 
 }

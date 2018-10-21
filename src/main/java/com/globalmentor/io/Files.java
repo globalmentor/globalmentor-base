@@ -33,9 +33,7 @@ import com.globalmentor.text.*;
 import com.globalmentor.util.StringTemplate;
 
 import static com.globalmentor.io.InputStreams.*;
-import static com.globalmentor.java.CharSequences.*;
 import static com.globalmentor.java.Conditions.*;
-import static com.globalmentor.java.OperatingSystem.*;
 import static com.globalmentor.java.StringBuilders.*;
 import static com.globalmentor.net.ContentTypeConstants.*;
 import static com.globalmentor.net.URIs.*;
@@ -52,26 +50,11 @@ import static com.globalmentor.text.Text.*;
  */
 public class Files {
 
-	/** The character used to separate an extension from the rest of a filename. */
-	public static final char FILENAME_EXTENSION_SEPARATOR = '.';
-
-	/**
-	 * The character to use for escaping reserved characters.
-	 * <p>
-	 * Java automatically converts '%' in URIs and does not correctly access file URIs containing '#', so neither of these characters can be used as an escape
-	 * character.
-	 * </p>
-	 * <p>
-	 * Note that, as '^' is not a valid URI character, it will be escaped again using '%' if such a filename is included in a URI.
-	 * </p>
-	 */
-	public static final char FILENAME_ESCAPE_CHAR = '^';
-
 	/** The extension for backup files. */
 	private static final String BACKUP_EXTENSION = "bak";
 
 	/** The template for backup files in a rolling policy. */
-	private static final StringTemplate NUMBERED_BACKUP_EXTENSION_TEMPLATE = new StringTemplate(StringTemplate.STRING_PARAMETER, FILENAME_EXTENSION_SEPARATOR,
+	private static final StringTemplate NUMBERED_BACKUP_EXTENSION_TEMPLATE = new StringTemplate(StringTemplate.STRING_PARAMETER, Filenames.EXTENSION_SEPARATOR,
 			BACKUP_EXTENSION);
 	/** The extension for the latest backup file in a rolling policy. */
 	private static final String LATEST_NUMBERED_BACKUP_EXTENSION = NUMBERED_BACKUP_EXTENSION_TEMPLATE.apply(1);
@@ -80,48 +63,6 @@ public class Files {
 	private static final String TEMP_PREFIX = "temp-";
 	/** The extension for temporary files. */
 	private static final String TEMP_EXTENSION = "tmp";
-
-	/** Path separator characters used on several systems. */
-	public static final Characters FILE_PATH_SEPARATOR_CHARACTERS = Characters.of('\\', '/');
-
-	/**
-	 * The characters which may not be used in POSIX filenames.
-	 * @see <a href="http://hypermail.idiosynkrasia.net/linux-kernel/archived/2001/week50/1017.html">Linux Kernal Mailing List 2001:50:1017</a>
-	 * @see #encodeFilename(String)
-	 */
-	public static final Characters POSIX_FILENAME_RESERVED_CHARACTERS = Characters.of('\u0000', '/');
-
-	/**
-	 * The characters which may not be used in Windows filenames.
-	 * @see <a href="http://msdn.microsoft.com/en-us/library/aa365247.aspx">MSDN: Naming a File or Directory</a>
-	 * @see <a href="http://hypermail.idiosynkrasia.net/linux-kernel/archived/2001/week50/1017.html">Linux Kernal Mailing List 2001:50:1017</a>
-	 * @see #encodeFilename(String)
-	 */
-	public static final Characters WINDOWS_FILENAME_RESERVED_CHARACTERS = Characters.of('\u0000', '<', '>', ':', '"', '/', '\\', '|', '?', '*');
-
-	/**
-	 * The characters which may not be used as the last character of Windows filenames.
-	 * @see <a href="http://msdn.microsoft.com/en-us/library/aa365247.aspx">MSDN: Naming a File or Directory</a>
-	 * @see <a href="http://hypermail.idiosynkrasia.net/linux-kernel/archived/2001/week50/1017.html">Linux Kernal Mailing List 2001:50:1017</a>
-	 * @see #encodeFilename(String)
-	 */
-	public static final Characters WINDOWS_FILENAME_RESERVED_FINAL_CHARACTERS = Characters.of('.', ' ');
-
-	/**
-	 * The characters which may not be used in various file system filenames.
-	 * @see <a href="http://msdn.microsoft.com/en-us/library/aa365247.aspx">MSDN: Naming a File or Directory</a>
-	 * @see <a href="http://hypermail.idiosynkrasia.net/linux-kernel/archived/2001/week50/1017.html">Linux Kernal Mailing List 2001:50:1017</a>
-	 * @see #encodeFilename(String)
-	 */
-	public static final Characters CROSS_PLATFORM_FILENAME_RESERVED_CHARACTERS = Characters.of('\u0000', '<', '>', ':', '"', '/', '\\', '|', '?', '*');
-
-	/**
-	 * The characters which may not be used as the last character of various file system filenames.
-	 * @see <a href="http://msdn.microsoft.com/en-us/library/aa365247.aspx">MSDN: Naming a File or Directory</a>
-	 * @see <a href="http://hypermail.idiosynkrasia.net/linux-kernel/archived/2001/week50/1017.html">Linux Kernal Mailing List 2001:50:1017</a>
-	 * @see #encodeFilename(String)
-	 */
-	public static final Characters CROSS_PLATFORM_FILENAME_RESERVED_FINAL_CHARACTERS = Characters.of('.', ' ');
 
 	/** The prefix used by Unix to designate a hidden file. */
 	public static final String UNIX_HIDDEN_FILENAME_PREFIX = ".";
@@ -161,7 +102,12 @@ public class Files {
 	/** The shared file filter that accepts all files. */
 	public static final FileFilter WILDCARD_FILE_FILTER = new WildcardFileFilter();
 
-	/** A singleton read-only map of lowercase file extensions and the corresponding content types they represent. */
+	/**
+	 * A singleton read-only map of lowercase file extensions and the corresponding content types they represent.
+	 * @deprecated There are many reasons why this isn't a good idea. These things change, and more may be added. This is something better managed by some larger
+	 *             entity or container.
+	 */
+	@Deprecated
 	public static final Map<String, ContentType> FILE_EXTENSION_CONTENT_TYPE_MAP; //TODO convert to lazy weak referenced map
 
 	static { //TODO move definitions to a resource file
@@ -215,48 +161,24 @@ public class Files {
 
 	/**
 	 * Adds the given extension to a file and returns the new file with the new extension. The filename is not checked to see if it currently has an extension.
+	 * <p>
+	 * This implementation requires the given file to have a parent.
+	 * </p>
 	 * @param file The file to which to add an extension.
 	 * @param extension The extension to add.
 	 * @return The file with the new extension.
 	 */
 	public static File addExtension(final File file, final String extension) {
-		return new File(addExtension(file.getPath(), extension)); //add an extension to the path and create and return a new file with that 
-	}
-
-	/**
-	 * Adds the given extension to a filename and returns the new filename with the new extension. The filename is not checked to see if it currently has an
-	 * extension.
-	 * @param filename The filename to which to add an extension.
-	 * @param extension The extension to add.
-	 * @return The filename with the new extension.
-	 * @throws NullPointerException if the given extension is <code>null</code>.
-	 */
-	public static String addExtension(final String filename, final String extension) {
-		return new StringBuilder(filename).append(FILENAME_EXTENSION_SEPARATOR).append(requireNonNull(extension, "Extension cannot be null")).toString(); //add the requested extension and return the new filename
+		return new File(file.getParent(), Filenames.addExtension(file.getName(), extension)); //return the file with a "temp" extension
 	}
 
 	/** The characters recognized as wildcards in filenames. */
+	@Deprecated
 	public static final Characters FILENAME_WILDCARD_CHARACTERS = Characters.of(RegularExpressions.ZERO_OR_ONE_CHAR, RegularExpressions.ZERO_OR_MORE_CHAR);
 
 	/** The characters to encode for patterns in a wildcard filename. */
+	@Deprecated
 	private static final Characters FILENAME_NON_WILDCARD_PATTERN_RESTRICTED_CHARACTERS = RegularExpressions.RESTRICTED.remove(FILENAME_WILDCARD_CHARACTERS);
-
-	/**
-	 * Lists files in the given path, the filename of which which may contain wildcards.
-	 * <p>
-	 * This implementation only recognizes the wildcard characters '*' and '?'. If these characters appear outside the filename, they will not be considered
-	 * wildcards.
-	 * </p>
-	 * @param wildcardPath The path containing the directory and filename
-	 * @param wildcardFilename The filename, which can contain wildcard characters.
-	 * @return A list of files in the given directory with names matching the given wildcard path.
-	 */
-	/*TODO del
-		public static File[] list(final String wildcardPath)
-		{
-			return list()
-		}
-	*/
 
 	/**
 	 * Lists files in the given file, the filename of which which may contain wildcards.
@@ -268,6 +190,7 @@ public class Files {
 	 * @return A list of files in the given path matching the given wildcard filename.
 	 * @see #FILENAME_WILDCARD_CHARACTERS
 	 */
+	@Deprecated
 	public static File[] listWildcards(final File wildcardFile) { //TODO improve to only return directories
 		return listWildcards(wildcardFile.getParentFile(), wildcardFile.getName());
 	}
@@ -282,6 +205,7 @@ public class Files {
 	 * @return A list of files in the given directory with names matching the given wildcard filename.
 	 * @see #FILENAME_WILDCARD_CHARACTERS
 	 */
+	@Deprecated
 	public static File[] listWildcards(final File directory, final String wildcardFilename) {
 		final StringBuilder filenamePatternStringBuilder = new StringBuilder(wildcardFilename);
 		//1. Escape all pattern characters (including '.') except for '*' and '?' with '\'.
@@ -456,7 +380,7 @@ public class Files {
 		if(baseName.length() < 3) { //if the base name is under three characters long (the temp file creation API requires at least three characters)
 			baseName = baseName + "-temp"; //pad the base name to meet the requirements of File.createTempFile()
 		}
-		final File tempFile = File.createTempFile(baseName, new StringBuilder().append(FILENAME_EXTENSION_SEPARATOR).append(extension).toString(), directory); //create a temporary file in the given directory, if any
+		final File tempFile = File.createTempFile(baseName, new StringBuilder().append(Filenames.EXTENSION_SEPARATOR).append(extension).toString(), directory); //create a temporary file in the given directory, if any
 		if(deleteOnExit) { //if the file should be deleted on JVM exit
 			tempFile.deleteOnExit(); //tell the file it should be deleted when the JVM exits
 		}
@@ -515,35 +439,12 @@ public class Files {
 	}
 
 	/**
-	 * Returns the filename from a file path string in a cross-platform manner. This is useful to determine the filename if the file platform is not known. The
-	 * characters after the last file path separator are returned. If there is no file path separator, the entire string is returned.
-	 * @param filePath The file path.
-	 * @return The filename after the last file path separator.
-	 * @throws NullPointerException if the given file path is <code>null</code>.
-	 * @see #FILE_PATH_SEPARATOR_CHARACTERS
-	 */
-	public static String getFilename(final String filePath) { //TODO fix for Unix filenames; perhaps pass a system identification enum value
-		final int pathSeparatorIndex = lastIndexOf(filePath, FILE_PATH_SEPARATOR_CHARACTERS); //see if there are any file path separator characters (unfortunately, this will strip away any backslash found in a Unix filename if the entire path was sent, but it's better to have a too-short filename in a rare case than one that includes the full Windows path)
-		return pathSeparatorIndex >= 0 ? filePath.substring(pathSeparatorIndex + 1) : filePath; //if there is a path separator, remove everything but what comes after the last path separator
-	}
-
-	/**
 	 * Extracts the extension from a file. Anything after the last path character ('/' or '\\') is ignored.
 	 * @param file The file to examine.
 	 * @return The extension of the file (not including '.'), or <code>null</code> if no extension is present.
 	 */
 	public static String getExtension(final File file) {
-		return getExtension(file.getName()); //return the extension of the filename
-	}
-
-	/**
-	 * Extracts the extension from a filename or path. Anything after the last path character ('/' or '\\') is ignored.
-	 * @param filename The filename to examine.
-	 * @return The extension of the file (not including '.'), or <code>null</code> if no extension is present.
-	 */
-	public static String getExtension(final String filename) {
-		final int separatorIndex = getExtensionSeparatorIndex(filename); //see if we can find the extension separator
-		return separatorIndex >= 0 ? filename.substring(separatorIndex + 1) : null; //if we found a separator, return everything after it 
+		return Filenames.getExtension(file.getName()); //return the extension of the filename
 	}
 
 	/**
@@ -579,25 +480,7 @@ public class Files {
 	 * @return The file with the new extension.
 	 */
 	public static File changeExtension(final File file, final String extension) {
-		return changeName(file, changeExtension(file.getName(), extension)); //return a file based on the name with the new extension
-	}
-
-	/**
-	 * Changes the extension of a filename and returns a new filename with the new extension. If the filename does not currently have an extension, one will be
-	 * added.
-	 * @param filename The filename to examine.
-	 * @param extension The extension to set, or <code>null</code> if the extension should be removed.
-	 * @return The filename with the new extension.
-	 */
-	public static String changeExtension(String filename, final String extension) {
-		final int separatorIndex = getExtensionSeparatorIndex(filename); //see if we can find the extension separator
-		if(separatorIndex >= 0) { //if we found a separator
-			filename = filename.substring(0, separatorIndex); //remove the extension
-		}
-		if(extension != null) { //if an extension was given
-			filename = addExtension(filename, extension); //add the requested extension
-		}
-		return filename; //return the new filename
+		return changeName(file, Filenames.changeExtension(file.getName(), extension)); //return a file based on the name with the new extension
 	}
 
 	/**
@@ -640,44 +523,6 @@ public class Files {
 	}
 
 	/**
-	 * Removes the extension of a filename, if any, and returns a new filename with no extension. This is a convenience method that delegates to
-	 * {@link #changeExtension(String, String)}.
-	 * @param filename The file to examine.
-	 * @return The filename with no extension.
-	 */
-	public static String removeExtension(final String filename) {
-		return changeExtension(filename, null); //replace the extension with nothing
-	}
-
-	/**
-	 * Appends a given string to the end of a filename before the extension, if any. This is useful for forming a locale-aware filename, such as
-	 * <code>test_fr.txt</code> from <code>test.txt</code>.
-	 * @param path The path that may contain an extension.
-	 * @param charSequence The characters to append to the filename.
-	 * @return A path with the given string appended before the filename extension, if any.
-	 */
-	public static String appendFilename(final String path, final CharSequence charSequence) {
-		final int separatorIndex = getExtensionSeparatorIndex(path); //see if we can find the extension separator
-		final int insertionIndex = separatorIndex >= 0 ? separatorIndex : path.length(); //insert the characters before the extension or, if there is no extension, at the end of the string
-		return StringBuilders.insert(new StringBuilder(path), insertionIndex, charSequence).toString(); //create a new string builder, insert the characters, and return the new string
-	}
-
-	/**
-	 * Determines the index of a file extension separator character ('.'). Anything after the last path character ('/' or '\\') is ignored.
-	 * @param path The filename or path to examine.
-	 * @return The index of the extension separator character ('.'), or -1 if no extension is present.
-	 */
-	protected static int getExtensionSeparatorIndex(final String path) { //TODO fix to work with Windows backslashes as well
-		final int separatorIndex = path.lastIndexOf(FILENAME_EXTENSION_SEPARATOR); //see if we can find the extension separator, which will be the last such character in the string
-		if(separatorIndex >= 0) { //if we found a separator
-			if(indexOf(path, FILE_PATH_SEPARATOR_CHARACTERS, separatorIndex + 1) < 0) { //if there is no slash after after the extension separator
-				return separatorIndex; //return the index of the extension separator
-			}
-		}
-		return -1; //show that there is no extension		
-	}
-
-	/**
 	 * Returns the media type for the specified file based on its extension.
 	 * @param file The file for which to return a media type.
 	 * @return The default media type for the file's extension, or <code>null</code> if no known media type is associated with this file's extension.
@@ -696,28 +541,34 @@ public class Files {
 	 * @see #getExtensionContentType(String)
 	 */
 	public static ContentType getMediaType(final String filename) {
-		final String extension = getExtension(filename); //get the file's extension
+		final String extension = Filenames.getExtension(filename); //get the file's extension
 		return extension != null ? getExtensionContentType(extension) : null; //return the media type based on the filename's extension, if there is one
 	}
 
 	/**
 	 * Returns a file suitable for a temporary file, based on the specified filename, by adding an extension for a temporary file.
+	 * <p>
+	 * This implementation requires the given file to have a parent.
+	 * </p>
 	 * @param file The file for which a temporary file should be returned.
 	 * @return The file suitable for temporary access.
 	 * @see TEMP_EXTENSION
 	 */
 	public static File getTempFile(final File file) {
-		return new File(file.getParent(), addExtension(file.getName(), TEMP_EXTENSION)); //return the file with a "temp" extension
+		return new File(file.getParent(), Filenames.addExtension(file.getName(), TEMP_EXTENSION)); //return the file with a "temp" extension
 	}
 
 	/**
 	 * Returns a file suitable for backup, based on the specified filename, by adding an extension for a backup file.
+	 * <p>
+	 * This implementation requires the given file to have a parent.
+	 * </p>
 	 * @param file The file for which a backup file should be returned.
 	 * @return The file suitable for backup.
 	 * @see BACKUP_EXTENSION
 	 */
 	public static File getBackupFile(final File file) {
-		return new File(file.getParent(), addExtension(file.getName(), BACKUP_EXTENSION)); //return the file with a "backup" extension
+		return new File(file.getParent(), Filenames.addExtension(file.getName(), BACKUP_EXTENSION)); //return the file with a "backup" extension
 	}
 
 	/**
@@ -728,64 +579,6 @@ public class Files {
 	 */
 	public static File getUserDirectory() throws SecurityException {
 		return new File(System.getProperty(OperatingSystem.USER_DIR_PROPERTY)); //try to get the current directory
-	}
-
-	/** @return The characters that are not allowed in filenames of this operating system. */
-	/*TODO del if not needed
-		public static String getSystemFilenameReservedCharacters()
-		{
-			if(SystemUtilities.isWindowsOS())	//if we're running on Windows
-				return WINDOWS_FILENAME_RESERVED_CHARACTERS;	//return the Windows filename reserved characters
-			else	//for all other operating systems (TODO fix for Macintosh)
-				return POSIX_FILENAME_RESERVED_CHARACTERS;	//return the POSIX filename reserved characters
-		}
-	*/
-
-	/**
-	 * Checks to ensure that a particular string is a valid filename across operating systems. This method does not ensure that such a file actually exists.
-	 * @param string The string of characters which may represent a filename.
-	 * @return <code>true</code> if the string contains no illegal filname characters.
-	 */
-	public static boolean isCrossPlatformFilename(final String string) {
-		return isFilename(string, CROSS_PLATFORM_FILENAME_RESERVED_CHARACTERS, CROSS_PLATFORM_FILENAME_RESERVED_FINAL_CHARACTERS); //check the filename using cross-platform reserved characters
-	}
-
-	/**
-	 * Checks to ensure that a particular string is a valid filename for the operating system. This method does not ensure that such a file actually exists.
-	 * <p>
-	 * The reserved characters of the operating system will be used.
-	 * </p>
-	 * @param string The string of characters which may represent a filename.
-	 * @return <code>true</code> if the string contains no illegal filname characters.
-	 */
-	public static boolean isFilename(final String string) {
-		if(isWindowsOS()) //if we're running on Windows
-			return isFilename(string, WINDOWS_FILENAME_RESERVED_CHARACTERS, WINDOWS_FILENAME_RESERVED_FINAL_CHARACTERS); //check the filename using Windows reserved characters
-		else
-			//for all other operating systems TODO fix for Macintosh
-			return isFilename(string, POSIX_FILENAME_RESERVED_CHARACTERS, null); //check the filename for POSIX
-	}
-
-	/**
-	 * Checks to ensure that a particular string is a valid filename. This method does not ensure that such a file actually exists.
-	 * @param string The string of characters which may represent a filename.
-	 * @param reservedCharacters The reserved characters which should be encoded.
-	 * @param reservedFinalCharacters The characters that should be encoded if they appear in the final position of the filename, or <code>null</code> if the
-	 *          final character doesn't have to meet special rules.
-	 * @return <code>true</code> if the string contains no reserved filename characters.
-	 */
-	public static boolean isFilename(final String string, final Characters reservedCharacters, final Characters reservedFinalCharacters) {
-		//the string is a filename if the string isn't null and there are no illegal characters in the string
-		final boolean isFilename = string != null && !contains(string, reservedCharacters);
-		if(isFilename && reservedFinalCharacters != null && !reservedFinalCharacters.isEmpty()) { //if we should check the final character
-			if(string.length() > 0) { //if we have any characters at all
-				final char lastChar = string.charAt(string.length() - 1); //see what the last character is
-				if(reservedFinalCharacters.contains(lastChar)) { //if the last character is reserved
-					return false; //this is not a valid filename
-				}
-			}
-		}
-		return isFilename; //return what we thought to begin with
 	}
 
 	/**
@@ -819,97 +612,6 @@ public class Files {
 	 */
 	public static boolean ensureExistsFromBackup(final File file) throws IOException {
 		return ensureExistsFromBackup(file, getBackupFile(file)); //check to see if the file exists, using the default filename for the backup file
-	}
-
-	protected static final char REPLACEMENT_CHAR = '_'; //the character to use to replace any other character  TODO maybe move these up and/or rename
-
-	/**
-	 * Escape all reserved filename characters to a two-digit <em>uppercase</em> hex representation using '^' as an escape character so that the filename can be
-	 * used across operating systems.
-	 * <p>
-	 * Note that this encodes path separators, and therefore this method should only be called on filenames, not paths.
-	 * </p>
-	 * @param filename The filename string to be encoded.
-	 * @return The string modified to be a filename.
-	 * @see #CROSS_PLATFORM_FILENAME_RESERVED_CHARACTERS
-	 * @see #CROSS_PLATFORM_FILENAME_RESERVED_FINAL_CHARACTERS
-	 * @see #FILENAME_ESCAPE_CHAR
-	 * @see CharSequences#escapeHex(CharSequence, Characters, Characters, int, char, int, Case)
-	 * @see #isFilename(String, Characters, Characters)
-	 */
-	public static String encodeCrossPlatformFilename(final String filename) {
-		return encodeFilename(filename, CROSS_PLATFORM_FILENAME_RESERVED_CHARACTERS, CROSS_PLATFORM_FILENAME_RESERVED_FINAL_CHARACTERS); //encode the filename using cross-platform reserved characters
-	}
-
-	/**
-	 * Escape all reserved filename characters to a two-digit <em>uppercase</em> hex representation using '^' as an escape character.
-	 * <p>
-	 * Note that this encodes path separators, and therefore this method should only be called on filenames, not paths.
-	 * </p>
-	 * <p>
-	 * The filename is encoded using the reserved characters of the current operating system.
-	 * </p>
-	 * @param filename The filename string to be encoded.
-	 * @return The string modified to be a filename.
-	 * @see #WINDOWS_FILENAME_RESERVED_FINAL_CHARACTERS
-	 * @see #POSIX_FILENAME_RESERVED_CHARACTERS
-	 * @see #FILENAME_ESCAPE_CHAR
-	 * @see CharSequences#escapeHex(CharSequence, Characters, Characters, int, char, int, Case)
-	 * @see #isFilename(String, Characters, Characters)
-	 */
-	public static String encodeFilename(final String filename) {
-		if(isWindowsOS()) //if we're running on Windows
-			return encodeFilename(filename, WINDOWS_FILENAME_RESERVED_CHARACTERS, WINDOWS_FILENAME_RESERVED_FINAL_CHARACTERS); //encode the filename using Windows reserved characters
-		else
-			//for all other operating systems TODO fix for Macintosh
-			return encodeFilename(filename, POSIX_FILENAME_RESERVED_CHARACTERS, null); //encode the filename for POSIX
-	}
-
-	/**
-	 * Escape all reserved filename characters to a two-digit <em>uppercase</em> hex representation using '^' as an escape character.
-	 * <p>
-	 * Note that this encodes path separators, and therefore this method should only be called on filenames, not paths.
-	 * </p>
-	 * @param filename The filename string to be encoded.
-	 * @param reservedCharacters The reserved characters which should be encoded.
-	 * @param reservedFinalCharacters The characters that should be encoded if they appear in the final position of the filename, or <code>null</code> if the
-	 *          final character doesn't have to meet special rules.
-	 * @return The string modified to be a filename.
-	 * @see #FILENAME_ESCAPE_CHAR
-	 * @see CharSequences#escapeHex(CharSequence, Characters, Characters, int, char, int, Case)
-	 * @see #isFilename(String, Characters, Characters)
-	 */
-	public static String encodeFilename(final String filename, final Characters reservedCharacters, final Characters reservedFinalCharacters) {
-		//check to see if this is already a valid filename; if so (it usually is), this will give us a performance increase
-		//even if this is a valid filename, make sure it doesn't have the escape character in it---we would have to escape that, too, even though it isn't reserved
-		if(isFilename(filename, reservedCharacters, reservedFinalCharacters) //if this is a valid filename already	
-				&& filename.indexOf(FILENAME_ESCAPE_CHAR) < 0) { //if the filename doesn't contain the escape character	
-			return filename; //return the string as is---it already is a valid filename
-		} else { //if something about the filename isn't correct
-			final String encodedFilename = escapeHex(filename, null, reservedCharacters, Integer.MAX_VALUE, FILENAME_ESCAPE_CHAR, 2, Case.UPPERCASE);
-			if(reservedFinalCharacters != null && !reservedFinalCharacters.isEmpty()) { //if we should check the final character (e.g. on Windows)
-				if(encodedFilename.length() > 0) { //if we have a filename
-					final char lastChar = encodedFilename.charAt(encodedFilename.length() - 1); //see what the last character is
-					if(reservedFinalCharacters.contains(lastChar)) { //if the last character is a reserved character
-						final String replacementString = escapeHex(String.valueOf(lastChar), null, Characters.of(lastChar), Integer.MAX_VALUE, FILENAME_ESCAPE_CHAR, 2,
-								Case.UPPERCASE); //escape the last character						
-						return encodedFilename.substring(0, encodedFilename.length() - 1) + replacementString; //replace the last character with its escaped form
-					}
-				}
-			}
-			return encodedFilename; //return the encoded filename since we didn't need to modify it further
-		}
-	}
-
-	/**
-	 * Unescapes all characters in a string that are encoded using '^' as an escape character followed by two hex digits.
-	 * @param filename The filename string to be decoded.
-	 * @return The filename string decoded back to a normal string.
-	 * @see #FILENAME_ESCAPE_CHAR
-	 * @see CharSequences#unescapeHex(CharSequence, char, int)
-	 */
-	public static String decodeFilename(final String filename) {
-		return unescapeHex(filename, FILENAME_ESCAPE_CHAR, 2).toString(); //decode the filename
 	}
 
 	/**
@@ -1486,7 +1188,7 @@ public class Files {
 	 * 
 	 * @return The path to the backup file to use.
 	 */
-	public static Path getBackupPath(@Nonnull final Path path) {
+	public static Path getBackupPath(@Nonnull final Path path) { //TODO move to Paths?
 		return getBackupPath(path, 1);
 	}
 
@@ -1506,7 +1208,7 @@ public class Files {
 	 * @return The path to the backup file to use.
 	 * @throws IllegalArgumentException if <var><code>maxBackupCount</code></var> is zero or negative.
 	 */
-	public static Path getBackupPath(@Nonnull final Path path, @Nonnegative final long maxBackupCount) {
+	public static Path getBackupPath(@Nonnull final Path path, @Nonnegative final long maxBackupCount) { //TODO move to Paths?
 		checkArgumentNotNull(path, "The path to the file cannot be null.");
 		checkArgument(java.nio.file.Files.exists(path) && !java.nio.file.Files.isDirectory(path),
 				"The provided path is referring to a directory or doesn't exist.");

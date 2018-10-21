@@ -21,8 +21,7 @@ import static java.util.Collections.*;
 import java.util.regex.Pattern;
 
 import static java.util.Objects.*;
-
-import static com.globalmentor.io.Files.*;
+import static com.globalmentor.io.Filenames.*;
 import static com.globalmentor.text.RegularExpressions.*;
 
 /**
@@ -36,8 +35,8 @@ public class Locales {
 	public static final char LOCALE_SEPARATOR = '_';
 
 	/**
-	 * The character '-' used to separate components in language tags as defined in <a href="http://www.ietf.org/rfc/rfc14646.txt">RFC 4646</a>,
-	 * "Tags for the Identifying".
+	 * The character '-' used to separate components in language tags as defined in <a href="http://www.ietf.org/rfc/rfc14646.txt">RFC 4646</a>, "Tags for the
+	 * Identifying".
 	 * @see <a href="http://www.ietf.org/rfc/rfc4646.txt">RFC 4646</a>
 	 */
 	public static final char LANGUAGE_TAG_SEPARATOR = '-';
@@ -125,8 +124,8 @@ public class Locales {
 	}
 
 	/**
-	 * Determines the string to represent a language identifier according as defined in <a href="http://www.ietf.org/rfc/rfc4646.txt">RFC 4646</a>,
-	 * "Tags for the Identification of Languages".
+	 * Determines the string to represent a language identifier according as defined in <a href="http://www.ietf.org/rfc/rfc4646.txt">RFC 4646</a>, "Tags for the
+	 * Identification of Languages".
 	 * @param locale The language identifier.
 	 * @return The string representation of the language identifier.
 	 * @throws NullPointerException if the given locale is <code>null</code>.
@@ -148,7 +147,7 @@ public class Locales {
 	 * <dd><var>basePath</var> + "_" + <var>language</var> + "." + <var>extension</var></dd>
 	 * <dt>depth 0</dt>
 	 * <dd><var>basePath</var> + "." + <var>extension</var></dd>
-	 * </dl> 
+	 * </dl>
 	 * Any extension of the base path will be preserved. If the resource does not have sufficient components for the given depth, <code>null</code> will be
 	 * returned.
 	 * @param basePath The base path for which a candidate path should be generated.
@@ -158,8 +157,10 @@ public class Locales {
 	 *         to generate a candidate path at the given depth.
 	 * @throws NullPointerException if the given base path and/or locale is <code>null</code>.
 	 * @throws IllegalArgumentException if the given depth is not within the range (<var>depth</var>&gt;=0 and <var>depth</var>&lt;=3).
+	 * @deprecated TODO move to Rincl
 	 */
-	public static String getLocaleCandidatePath(final String basePath, final Locale locale, final int depth) {
+	@Deprecated
+	public static String getLocaleCandidatePath(final String basePath, final Locale locale, final int depth) { //TODO update to use Path
 		requireNonNull(basePath, "Base path cannot be null.");
 		requireNonNull(locale, "Locale cannot be null.");
 		if(depth < 0) { //if the depth is too low to be valid
@@ -171,18 +172,18 @@ public class Locales {
 				final String language = locale.getLanguage(); //get the language
 				if(language.length() > 0) { //if this locale has a language
 					if(depth == 1) { //if depth 1 was requested
-						return appendFilename(basePath, Locales.LOCALE_SEPARATOR + language); //return basePath_language.ext
+						return appendBaseFilename(basePath, Locales.LOCALE_SEPARATOR + language); //return basePath_language.ext
 					} else { //if the depth is at least 2
 						final String country = locale.getCountry(); //get the country
 						if(country.length() > 0) { //if this locale has a country
 							if(depth == 2) { //if depth 2 was requested
-								return appendFilename(basePath, Locales.LOCALE_SEPARATOR + language + Locales.LOCALE_SEPARATOR + country); //return basePath_language_country.ext
+								return appendBaseFilename(basePath, Locales.LOCALE_SEPARATOR + language + Locales.LOCALE_SEPARATOR + country); //return basePath_language_country.ext
 							} else { //if the depth is at least 3
 								final String variant = locale.getVariant(); //get the variant
 								if(variant.length() > 0) { //if this locale has a variant
 									if(depth == 3) { //if depth 3 was requested
-										return appendFilename(basePath, Locales.LOCALE_SEPARATOR + language + Locales.LOCALE_SEPARATOR + country + Locales.LOCALE_SEPARATOR
-												+ variant); //return basePath_language_country_variant.ext
+										return appendBaseFilename(basePath,
+												Locales.LOCALE_SEPARATOR + language + Locales.LOCALE_SEPARATOR + country + Locales.LOCALE_SEPARATOR + variant); //return basePath_language_country_variant.ext
 									} else { //if something higher than depth 3 was requested
 										throw new IllegalArgumentException("Depth " + depth + " is higher than 3.");
 									}
