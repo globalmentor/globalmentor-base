@@ -1214,6 +1214,7 @@ public class CharSequences {
 	 * <li>Converts the string to lowercase.</li>
 	 * </ul>
 	 * @param charSequence The character sequence from which to remove marks.
+	 * @param locale The locale to use for normalization; specifically for converting to lowercase.
 	 * @return The normalized string with marks removed.
 	 * @see <a href="http://stackoverflow.com/q/3322152/421049">Java - getting rid of accents and converting them to regular letters</a>
 	 */
