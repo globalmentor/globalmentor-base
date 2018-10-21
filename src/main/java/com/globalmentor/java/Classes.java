@@ -29,6 +29,7 @@ import static java.util.Objects.*;
 import javax.annotation.Nonnull;
 
 import static com.globalmentor.io.Filenames.*;
+import static com.globalmentor.java.Conditions.*;
 import static com.globalmentor.java.Java.*;
 import static com.globalmentor.java.Strings.*;
 import static com.globalmentor.net.URIs.*;
@@ -923,6 +924,16 @@ public class Classes {
 	}
 
 	/**
+	 * Determines the base path necessary to access a named resource using the class loader of the given context class.
+	 * @param contextClass The class in relation to which the resource name should be resolved.
+	 * @return The full base path, ending with a path separator, necessary to access resources using the resource loader of the given class.
+	 * @see #resolveResourcePath(Class, String)
+	 */
+	public static String getResourceBasePath(@Nonnull final Class<?> contextClass) {
+		return contextClass.getPackage().getName().replace(PACKAGE_SEPARATOR, RESOURCE_PATH_SEPARATOR) + RESOURCE_PATH_SEPARATOR;
+	}
+
+	/**
 	 * Determines the path necessary to access a named resource using the class loader of the given context class.
 	 * <p>
 	 * Accessing a resource via e.g. {@link Class#getResource(String)} for the class <code>com.example.Foo</code> may be accomplished using a resource name such
@@ -932,7 +943,7 @@ public class Classes {
 	 * <code>bar</code>, this method will return <code>"com/example/bar"</code>.
 	 * </p>
 	 * <p>
-	 * This method performs functionality equivalent to that performed internally to method such as {@link Class#getResource(String)} before they delegate to the
+	 * This method performs functionality equivalent to that performed internally to methods such as {@link Class#getResource(String)} before they delegate to the
 	 * class loader.
 	 * </p>
 	 * @param contextClass The class in relation to which the resource name should be resolved
@@ -940,7 +951,25 @@ public class Classes {
 	 * @return The full path of the resource necessary to access it using the resource loader of the given class.
 	 */
 	public static String resolveResourcePath(@Nonnull final Class<?> contextClass, @Nonnull final String resourceName) {
-		return contextClass.getPackage().getName().replace(PACKAGE_SEPARATOR, RESOURCE_PATH_SEPARATOR) + RESOURCE_PATH_SEPARATOR + resourceName;
+		return getResourceBasePath(contextClass) + resourceName;
+	}
+
+	/**
+	 * Retrieves the filename for a resource given its path. The filename is guaranteed never to be the empty string.
+	 * @param resourcePath The path to the resource.
+	 * @return The filename of the resource, or {@link Optional#empty()} if the path ends with a separator.
+	 * @throws IllegalArgumentException if the given resource path is empty.
+	 */
+	public static Optional<String> getResourceName(@Nonnull final String resourcePath) {
+		checkArgument(!resourcePath.isEmpty(), "An empty resource path is not accepted.");
+		final int lastPathSeparatorIndex = resourcePath.lastIndexOf(RESOURCE_PATH_SEPARATOR);
+		if(lastPathSeparatorIndex < 0) { //if there is no path separator, the whole path is the filename
+			return Optional.of(resourcePath);
+		}
+		if(lastPathSeparatorIndex == resourcePath.length() - 1) { //if the resource path ends with a slash
+			return Optional.empty();
+		}
+		return Optional.of(resourcePath.substring(lastPathSeparatorIndex + 1)); //return everything after the last path separator
 	}
 
 	//TODO make a soft reference that deletes the file when garbage-collected
@@ -949,7 +978,7 @@ public class Classes {
 	private static final Map<String, File> resourceFileMap = new ConcurrentHashMap<String, File>();
 
 	/**
-	 * Provides access to a resouce in the classpath via a file object. The rules for searching resources associated with a given class are implemented by the
+	 * Provides access to a resource in the classpath via a file object. The rules for searching resources associated with a given class are implemented by the
 	 * defining {@linkplain ClassLoader class loader} of the class. The first time a particular resource is accessed a temporary file is created with the contents
 	 * of the resource. The temporary file will be deleted when the JVM exits. This method does not guarantee that any two requests for the same resource will
 	 * result in the same file object or filename. The calling method must not delete the file or modify the file in any way, as the file may be cached and used
