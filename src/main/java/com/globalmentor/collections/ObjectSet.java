@@ -33,7 +33,9 @@ import static com.globalmentor.text.TextFormatter.*;
  * @author Garret Wilson
  * 
  * @param <E> The type of object contained in the set.
+ * @deprecated Replace with {@link java.util.Collections#singleton(Object)}
  */
+@Deprecated
 public class ObjectSet<E> implements Set<E>, ImmutableCollection<E> {
 
 	/** The object held in the set. */
@@ -75,7 +77,7 @@ public class ObjectSet<E> implements Set<E>, ImmutableCollection<E> {
 	/** {@inheritDoc} */
 	@Override
 	public Object[] toArray() {
-		return new Object[] { object };
+		return new Object[] {object};
 	}
 
 	/** {@inheritDoc} */
