@@ -23,6 +23,8 @@ import com.globalmentor.model.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
+import java.util.Optional;
+
 import org.junit.*;
 
 /**
@@ -84,24 +86,25 @@ public class ConditionsTest {
 		}
 	}
 
-	/** Tests the {@link Conditions#checkArgumentNotNull(boolean)} and the {@link Conditions#checkArgumentNotNull(boolean, String, Object...)} methods. */
+	/** Tests the {@link Conditions#checkArgumentNotNull(Object)} and the {@link Conditions#checkArgumentNotNull(Object, String, Object...)} methods. */
 	@Test
 	public void testCheckArgumentNotNull() {
-		checkArgumentNotNull(new Object());
-		checkArgumentNotNull(new Object(), "error message");
-		checkArgumentNotNull(new Object(), "error message", 123);
-		checkArgumentNotNull(new Object(), "error message %s", 123);
+		final Object object = new Object();
+		assertThat(checkArgumentNotNull(object), sameInstance(object));
+		assertThat(checkArgumentNotNull(object, "error message"), sameInstance(object));
+		assertThat(checkArgumentNotNull(object, "error message", 123), sameInstance(object));
+		assertThat(checkArgumentNotNull(object, "error message %s", 123), sameInstance(object));
 	}
 
-	/** Tests the {@link Conditions#checkArgumentNotNull(boolean)} method with a false statement. */
+	/** Tests the {@link Conditions#checkArgumentNotNull(Object)} method with <code>null</code>. */
 	@Test(expected = IllegalArgumentException.class)
 	public void testCheckArgumentNotNullWithANullObject() {
 		checkArgumentNotNull(null);
 	}
 
 	/**
-	 * Tests the {@link Conditions#checkArgumentNotNull(boolean)} and {@link Conditions#checkArgumentNotNull(boolean, String, Object...)} methods with a false
-	 * statement and how the messages are being formatted.
+	 * Tests the {@link Conditions#checkArgumentNotNull(Object)} and {@link Conditions#checkArgumentNotNull(Object, String, Object...)} methods with
+	 * <code>null</code> and how the messages are being formatted.
 	 */
 	@Test
 	public void testCheckArgumentNotNullErrorMessage() {
@@ -129,6 +132,64 @@ public class ConditionsTest {
 
 		try {
 			checkArgumentNotNull(null, "error message", 123); // The arguments of the error message should be ignored.
+			fail("The statement above should have thrown an IllegalArgumentExcepton");
+		} catch(final IllegalArgumentException illegalArgumentException) {
+			assertThat(illegalArgumentException.getMessage(), equalTo("error message"));
+		}
+	}
+
+	/** Tests the {@link Conditions#checkArgumentPresent(Optional)} and the {@link Conditions#checkArgumentPresent(Optional, String, Object...)} methods. */
+	@Test
+	public void testCheckArgumentPresent() {
+		final Object object = new Object();
+		assertThat(checkArgumentPresent(Optional.of(object)), sameInstance(object));
+		assertThat(checkArgumentPresent(Optional.of(object), "error message"), sameInstance(object));
+		assertThat(checkArgumentPresent(Optional.of(object), "error message", 123), sameInstance(object));
+		assertThat(checkArgumentPresent(Optional.of(object), "error message %s", 123), sameInstance(object));
+	}
+
+	/** Tests the {@link Conditions#checkArgumentPresent(Optional)} method with a <code>null</code> object. */
+	@Test(expected = NullPointerException.class)
+	public void testCheckArgumentPresentWithANullObject() {
+		checkArgumentPresent(null);
+	}
+
+	/** Tests the {@link Conditions#checkArgumentPresent(Optional)} method with an empty optional. */
+	@Test(expected = IllegalArgumentException.class)
+	public void testCheckArgumentPresentWithAnEmptyObject() {
+		checkArgumentPresent(Optional.empty());
+	}
+
+	/**
+	 * Tests the {@link Conditions#checkArgumentPresent(Optional)} and {@link Conditions#checkArgumentPresent(Optional, String, Object...)} methods with an empty
+	 * optional and how the messages are being formatted.
+	 */
+	@Test
+	public void testCheckArgumentPresentErrorMessage() {
+
+		try {
+			checkArgumentPresent(Optional.empty());
+			fail("The statement above should have thrown an IllegalArgumentExcepton");
+		} catch(final IllegalArgumentException illegalArgumentException) {
+			assertThat(illegalArgumentException.getMessage(), equalTo(null));
+		}
+
+		try {
+			checkArgumentPresent(Optional.empty(), "error message");
+			fail("The statement above should have thrown an IllegalArgumentExcepton");
+		} catch(final IllegalArgumentException illegalArgumentException) {
+			assertThat(illegalArgumentException.getMessage(), equalTo("error message"));
+		}
+
+		try {
+			checkArgumentPresent(Optional.empty(), "error message %d", 123);
+			fail("The statement above should have thrown an IllegalArgumentExcepton");
+		} catch(final IllegalArgumentException illegalArgumentException) {
+			assertThat(illegalArgumentException.getMessage(), equalTo("error message 123"));
+		}
+
+		try {
+			checkArgumentPresent(Optional.empty(), "error message", 123); // The arguments of the error message should be ignored.
 			fail("The statement above should have thrown an IllegalArgumentExcepton");
 		} catch(final IllegalArgumentException illegalArgumentException) {
 			assertThat(illegalArgumentException.getMessage(), equalTo("error message"));
