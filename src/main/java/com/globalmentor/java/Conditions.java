@@ -17,6 +17,9 @@
 package com.globalmentor.java;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Optional;
+
+import javax.annotation.*;
 
 import com.globalmentor.model.ConfigurationException;
 
@@ -69,13 +72,13 @@ public class Conditions {
 	}
 
 	/**
-	 * Check to make sure an argument isn't <code>null</code>, throwing {@link IllegalArgumentException} if the object is <code>null</code>.
+	 * Checks to make sure an argument isn't <code>null</code>, throwing {@link IllegalArgumentException} if the object is <code>null</code>.
 	 * <p>
 	 * This is a precondition check.
 	 * </p>
 	 * @param <T> The type of the object to be tested.
 	 * @param object The object to test.
-	 * @return The object, if it is not <code>null</code>
+	 * @return The object, if it is not <code>null</code>.
 	 * @throws IllegalArgumentException if the given object is <code>null</code>.
 	 */
 	public static <T> T checkArgumentNotNull(final T object) {
@@ -83,7 +86,7 @@ public class Conditions {
 	}
 
 	/**
-	 * Check to make sure an argument isn't <code>null</code>, throwing {@link IllegalArgumentException} if the object is <code>null</code>.
+	 * Checks to make sure an argument isn't <code>null</code>, throwing {@link IllegalArgumentException} if the object is <code>null</code>.
 	 * <p>
 	 * This is a precondition check.
 	 * </p>
@@ -108,6 +111,48 @@ public class Conditions {
 			throw new IllegalArgumentException(description);
 		}
 		return object;
+	}
+
+	/**
+	 * Checks to make sure an argument is present, throwing {@link IllegalArgumentException} if the optional is not present.
+	 * <p>
+	 * This is a precondition check.
+	 * </p>
+	 * @param <T> The type of optional object to be tested.
+	 * @param optional The optional object to test.
+	 * @return The optional object.
+	 * @throws NullPointerException if the given optional is <code>null</code>.
+	 * @throws IllegalArgumentException if the given optional is not present.
+	 * @see Optional#isPresent()
+	 * @see Optional#get()
+	 */
+	public static <T> T checkArgumentPresent(@Nonnull final Optional<T> optional) {
+		return checkArgumentPresent(optional, null);
+	}
+
+	/**
+	 * Checks to make sure an argument is present, throwing {@link IllegalArgumentException} if the optional is not present.
+	 * <p>
+	 * This is a precondition check.
+	 * </p>
+	 * @param <T> The type of optional object to be tested.
+	 * @param optional The optional object to test.
+	 * @param description A description of the test to be used when generating an exception, optionally formatted with arguments, or <code>null</code> for no
+	 *          description.
+	 * @param arguments The arguments to be applied when formatting, or an empty array if the message should not be formatted.
+	 * @return The optional object.
+	 * @throws NullPointerException if the given optional and/or arguments is <code>null</code>.
+	 * @throws IllegalArgumentException if the given optional is not present, or if an argument in the arguments array is not of the type expected by the format
+	 *           element(s) that use it.
+	 * @see String#format(String, Object...)
+	 * @see Optional#isPresent()
+	 * @see Optional#get()
+	 */
+	public static <T> T checkArgumentPresent(@Nonnull final Optional<T> optional, @Nullable final String description, @Nonnull final Object... arguments) {
+		return optional.orElseThrow(() -> {
+			final String message = description != null && arguments.length > 0 ? String.format(description, arguments) : description;
+			return new IllegalArgumentException(message);
+		});
 	}
 
 	/**
