@@ -521,7 +521,7 @@ public class Strings {
 	 * @return A new string with its end removed.
 	 */
 	static public String trimBeginning(final String inString, final char removeChar, int occurrence) {
-		if(occurrence == Integer.MAX_VALUE) { //if a MAX_VALUE is provided, remove everything past but not including the last occurrence of the remove character
+		if(occurrence == Integer.MAX_VALUE) { //if a MAX_VALUE is provided, remove everything past the last occurrence remove character, but not including it.
 			return inString.substring(inString.lastIndexOf(removeChar) + 1);
 		}
 
@@ -534,7 +534,7 @@ public class Strings {
 				}
 			}
 		}
-		return inString.substring(occurrenceIndex + 1); //remove everything past but not including the actual occurrence of the remove character
+		return inString.substring(occurrenceIndex + 1); //remove everything past the actual occurrence of remove character, but not including it.
 	}
 
 	/**
@@ -566,7 +566,7 @@ public class Strings {
 	 * @return A new string with its end removed.
 	 */
 	static public String trimEnd(final String inString, final char removeChar, int occurrence) {
-		if(occurrence == Integer.MAX_VALUE) { //if a MAX_VALUE is provided, remove everything up to but not including the first occurrence of the remove character
+		if(occurrence == Integer.MAX_VALUE) { //if a MAX_VALUE is provided, remove everything up to the first occurrence of remove character, but not including it.
 			return inString.substring(0, inString.indexOf(removeChar));
 		}
 
@@ -579,7 +579,7 @@ public class Strings {
 				}
 			}
 		}
-		return inString.substring(0, occurrenceIndex); //remove everything up to but not including the actual occurrence of the remove character
+		return inString.substring(0, occurrenceIndex); //remove everything up to the actual occurrence of remove character, but not including it.
 	}
 
 	/**

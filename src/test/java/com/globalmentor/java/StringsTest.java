@@ -28,8 +28,9 @@ import org.junit.Test;
  */
 public class StringsTest {
 
+	/** Tests whether {@link Strings#trimBeginning(String, char, int)} is working properly. */
 	@Test
-	public void trimBeggining() {
+	public void trimBeginning() {
 		assertThat(Strings.trimBeginningFirst("foobar", 'f'), equalTo("oobar"));
 		assertThat(Strings.trimBeginningFirst("foobar", 'o'), equalTo("obar"));
 		assertThat(Strings.trimBeginningFirst("foobar", 'r'), equalTo(""));
@@ -46,6 +47,24 @@ public class StringsTest {
 		assertThat(Strings.trimBeginning("somewhere over the rainbow", 'e', Integer.MAX_VALUE), equalTo(" rainbow"));
 	}
 
+	/** Tests whether {@link Strings#trimBeginningFirst(String, char)} is working properly. */
+	@Test
+	public void trimBeginningFirst() {
+		assertThat(Strings.trimBeginningFirst("foobar", 'f'), equalTo("oobar"));
+		assertThat(Strings.trimBeginningFirst("foobar", 'o'), equalTo("obar"));
+		assertThat(Strings.trimBeginningFirst("foobar", 'r'), equalTo(""));
+
+	}
+
+	/** Tests whether {@link Strings#trimBeginningLast(String, char)} is working properly. */
+	@Test
+	public void trimBeginningLast() {
+		assertThat(Strings.trimBeginningLast("foobar", 'f'), equalTo("oobar"));
+		assertThat(Strings.trimBeginningLast("foobar", 'o'), equalTo("bar"));
+		assertThat(Strings.trimBeginningLast("foobar", 'r'), equalTo(""));
+	}
+
+	/** Tests whether {@link Strings#trimEnd(String, char, int)} is working properly. */
 	@Test
 	public void trimEnd() {
 		assertThat(Strings.trimEndFirst("foobar", 'f'), equalTo(""));
@@ -62,6 +81,23 @@ public class StringsTest {
 		assertThat(Strings.trimEnd("somewhere over the rainbow", 'e', 3), equalTo("somewher"));
 		// tests trimming from the last occurrence.
 		assertThat(Strings.trimEnd("somewhere over the rainbow", 'e', Integer.MAX_VALUE), equalTo("som"));
+	}
+
+	/** Tests whether {@link Strings#trimEndFirst(String, char)} is working properly. */
+	@Test
+	public void trimEndFirst() {
+		assertThat(Strings.trimEndFirst("foobar", 'f'), equalTo(""));
+		assertThat(Strings.trimEndFirst("foobar", 'o'), equalTo("fo"));
+		assertThat(Strings.trimEndFirst("foobar", 'r'), equalTo("fooba"));
+
+	}
+
+	/** Tests whether {@link Strings#trimEndLast(String, char)} is working properly. */
+	@Test
+	public void trimEndLast() {
+		assertThat(Strings.trimEndLast("foobar", 'f'), equalTo(""));
+		assertThat(Strings.trimEndLast("foobar", 'o'), equalTo("f"));
+		assertThat(Strings.trimEndLast("foobar", 'r'), equalTo("fooba"));
 	}
 
 }
