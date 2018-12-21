@@ -514,14 +514,15 @@ public class Strings {
 
 	/**
 	 * Trims the left side of the string beginning at the specified occurrence of removeChar from the beginning. If removeChar does not exist in the string the
-	 * required number of times, the string will be trimmed at the last occurrence. information is removed. The occurrences are considered from the left to the right.
+	 * required number of times, the string will be trimmed at the last occurrence. The occurrences are considered from the left to the right. If
+	 * {@link Integer#MAX_VALUE} is provided, the last occurrence from the left to the right of remove char is used.
 	 * @param inString the String from which the information will be removed.
 	 * @param removeChar The character to remove from the string.
 	 * @param occurrence The number of occurrences of the remove character before information should be removed.
 	 * @return A new string with its end removed.
 	 */
 	static public String trimBeginning(final String inString, final char removeChar, int occurrence) {
-		if(occurrence == Integer.MAX_VALUE) { //if a MAX_VALUE is provided, remove everything past the last occurrence remove character, but not including it.
+		if(occurrence == Integer.MAX_VALUE) { //if a MAX_VALUE is provided, remove everything up to the last occurrence remove character, but not including it.
 			return inString.substring(inString.lastIndexOf(removeChar) + 1);
 		}
 
@@ -534,7 +535,7 @@ public class Strings {
 				}
 			}
 		}
-		return inString.substring(occurrenceIndex + 1); //remove everything past the actual occurrence of remove character, but not including it.
+		return inString.substring(occurrenceIndex + 1); //remove everything up to the actual occurrence of remove character, but not including it.
 	}
 
 	/**
@@ -559,14 +560,15 @@ public class Strings {
 
 	/**
 	 * Trims the right side of the string beginning at the specified occurrence of removeChar from the end. If removeChar does not exist in the string the
-	 * required number of times, the string will be trimmed at the last occurrence. information is removed. The occurrences are considered from the right to the left.
+	 * required number of times, the string will be trimmed at the last occurrence. The occurrences are considered from the right to the left. If
+	 * {@link Integer#MAX_VALUE} is provided, the last occurrence from the right to the left of remove char is used.
 	 * @param inString the String from which the information will be removed.
 	 * @param removeChar The character to remove from the string.
 	 * @param occurrence The number of occurrences of the remove character before information should be removed.
 	 * @return A new string with its end removed.
 	 */
 	static public String trimEnd(final String inString, final char removeChar, int occurrence) {
-		if(occurrence == Integer.MAX_VALUE) { //if a MAX_VALUE is provided, remove everything up to the first occurrence of remove character, but not including it.
+		if(occurrence == Integer.MAX_VALUE) { //if a MAX_VALUE is provided, remove everything past the first occurrence of remove character, but not including it.
 			return inString.substring(0, inString.indexOf(removeChar));
 		}
 
@@ -579,7 +581,7 @@ public class Strings {
 				}
 			}
 		}
-		return inString.substring(0, occurrenceIndex); //remove everything up to the actual occurrence of remove character, but not including it.
+		return inString.substring(0, occurrenceIndex); //remove everything past the actual occurrence of remove character, but not including it.
 	}
 
 	/**
