@@ -71,7 +71,7 @@ public class Strings {
 	 * @return A non-<code>null</code> array containing the string, or empty if the string is <code>null</code>.
 	 */
 	public static String[] createArray(final String string) {
-		return string != null ? new String[] { string } : NO_STRINGS; //return an array containing the string, or an empty array if the string is null
+		return string != null ? new String[] {string} : NO_STRINGS; //return an array containing the string, or an empty array if the string is null
 	}
 
 	/**
@@ -356,8 +356,8 @@ public class Strings {
 					String HREF = outString.substring(wordBegin, newWordEnd + 1); //get the location to jump to
 					if(HREF.indexOf("..") == -1) { //make sure there are not two periods in a row
 						final String protocolString = HREF.indexOf('@') != -1 ? "mailto:" : "http://"; //if the location has the '@' character, it's an e-mail address; otherwise, it's an HTTP URL
-						if(!((HREF.length() > 3 && HREF.substring(0, 4).toLowerCase().equals("http")) || (HREF.length() > 5 && HREF.substring(0, 6).toLowerCase()
-								.equals("mailto")))) //if the hyperlink doesn't have a protocol at the beginning already TODO fix for ftp
+						if(!((HREF.length() > 3 && HREF.substring(0, 4).toLowerCase().equals("http"))
+								|| (HREF.length() > 5 && HREF.substring(0, 6).toLowerCase().equals("mailto")))) //if the hyperlink doesn't have a protocol at the beginning already TODO fix for ftp
 							HREF = protocolString + HREF; //add the protocol to the beginning of the address for them (in our link, not in the normal text
 						final String tagPrefix = "<A HREF=\"" + HREF + "\">"; //create the tag prefix
 						final String tagPostfix = "</A>"; //create the tag postfix
@@ -467,8 +467,8 @@ public class Strings {
 	}
 
 	/**
-	 * Removes all characters that come before the last occurrence of the given character. If the character does not exist in the string, the original string
-	 * will be returned.
+	 * Removes all characters that come before the last occurrence of the given character. If the character does not exist in the string, the original string will
+	 * be returned.
 	 * @param string The string to be used to create a new string after the given character.
 	 * @param c The character used as a delimiter to be removed with all the content before it.
 	 * @return The string without the characters before the given character.
@@ -493,26 +493,41 @@ public class Strings {
 	}
 
 	/**
-	 * Trims the last side of the string beginning at the first occurrence of removeChar. If removeChar does not exist in the string, no information is removed.
-	 * @param inString the String from which the information will be removed.
+	 * Trims the left side of the string beginning at the first occurrence of removeChar. If removeChar does not exist in the string, no information is removed.
+	 * @param inString the String from which the information will be removed. The occurrences are considered from the left to the right.
 	 * @param removeChar The character to remove from the string.
 	 * @return A new string with its beginning removed.
 	 */
-	static public String trimFirstChar(final String inString, final char removeChar) {
-		return trimFirstChar(inString, removeChar, 1); //trim on the first occurrence of the character
+	static public String trimBeginningFirst(final String inString, final char removeChar) {
+		return trimBeginning(inString, removeChar, 1); //trim on the first occurrence of the character
+	}
+
+	/**
+	 * Trims the left side of the string beginning at the last occurrence of removeChar. If removeChar does not exist in the string, no information is removed.
+	 * @param inString the String from which the information will be removed. The occurrences are considered from the left to the right.
+	 * @param removeChar The character to remove from the string.
+	 * @return A new string with its beginning removed.
+	 */
+	static public String trimBeginningLast(final String inString, final char removeChar) {
+		return trimBeginning(inString, removeChar, Integer.MAX_VALUE); //trim on the last occurrence of the character
 	}
 
 	/**
 	 * Trims the left side of the string beginning at the specified occurrence of removeChar from the beginning. If removeChar does not exist in the string the
-	 * required number of times, the string will be trimmed at the last occurrence. information is removed.
+	 * required number of times, the string will be trimmed at the last occurrence. The occurrences are considered from the left to the right. If
+	 * {@link Integer#MAX_VALUE} is provided, the last occurrence from the left to the right of remove char is used.
 	 * @param inString the String from which the information will be removed.
 	 * @param removeChar The character to remove from the string.
 	 * @param occurrence The number of occurrences of the remove character before information should be removed.
 	 * @return A new string with its end removed.
 	 */
-	static public String trimFirstChar(final String inString, final char removeChar, int occurrence) {
+	static public String trimBeginning(final String inString, final char removeChar, int occurrence) {
+		if(occurrence == Integer.MAX_VALUE) { //if a MAX_VALUE is provided, remove everything up to the last occurrence remove character, but not including it.
+			return inString.substring(inString.lastIndexOf(removeChar) + 1);
+		}
+
 		int occurrenceIndex = -1; //we'll start looking at the beginning
-		for(int i = occurrenceIndex + 1; i < inString.length(); ++i) { //look at each character, starting at the end
+		for(int i = occurrenceIndex + 1; i < inString.length(); ++i) { //look at each character, starting at the beginning
 			if(inString.charAt(i) == removeChar) { //if this is the character to remove
 				occurrenceIndex = i; //show where the last occurrence took place
 				if((--occurrence) == 0) { //decrement occurrence; if we've used up all occurrences
@@ -520,38 +535,53 @@ public class Strings {
 				}
 			}
 		}
-		return inString.substring(occurrenceIndex + 1); //remove everything past but not including the last occurrence of the remove character	}
+		return inString.substring(occurrenceIndex + 1); //remove everything up to the actual occurrence of remove character, but not including it.
+	}
+
+	/**
+	 * Trims the right side of the string beginning at the first occurrence of removeChar. If removeChar does not exist in the string, no information is removed.
+	 * @param inString the String from which the information will be removed. The occurrences are considered from the right to the left.
+	 * @param removeChar The character to remove from the string.
+	 * @return A new string with its end removed.
+	 */
+	static public String trimEndFirst(final String inString, final char removeChar) {
+		return trimEnd(inString, removeChar, 1); //trim on the first occurrence of the character
 	}
 
 	/**
 	 * Trims the right side of the string beginning at the last occurrence of removeChar. If removeChar does not exist in the string, no information is removed.
-	 * @param inString the String from which the information will be removed.
+	 * @param inString the String from which the information will be removed. The occurrences are considered from the right to the left.
 	 * @param removeChar The character to remove from the string.
 	 * @return A new string with its end removed.
 	 */
-	static public String trimLastChar(final String inString, final char removeChar) {
-		return trimLastChar(inString, removeChar, 1); //trim on the first occurrence of the character
+	static public String trimEndLast(final String inString, final char removeChar) {
+		return trimEnd(inString, removeChar, Integer.MAX_VALUE); //trim on the last occurrence of the character
 	}
 
 	/**
 	 * Trims the right side of the string beginning at the specified occurrence of removeChar from the end. If removeChar does not exist in the string the
-	 * required number of times, the string will be trimmed at the last occurrence. information is removed.
+	 * required number of times, the string will be trimmed at the last occurrence. The occurrences are considered from the right to the left. If
+	 * {@link Integer#MAX_VALUE} is provided, the last occurrence from the right to the left of remove char is used.
 	 * @param inString the String from which the information will be removed.
 	 * @param removeChar The character to remove from the string.
 	 * @param occurrence The number of occurrences of the remove character before information should be removed.
 	 * @return A new string with its end removed.
 	 */
-	static public String trimLastChar(final String inString, final char removeChar, int occurrence) {
-		int occurrenceIndex = inString.length() + 1; //we'll start looking at the end
+	static public String trimEnd(final String inString, final char removeChar, int occurrence) {
+		if(occurrence == Integer.MAX_VALUE) { //if a MAX_VALUE is provided, remove everything past the first occurrence of remove character, but not including it.
+			return inString.substring(0, inString.indexOf(removeChar));
+		}
+
+		int occurrenceIndex = inString.length(); //we'll start looking at the end
 		for(int i = occurrenceIndex - 1; i >= 0; --i) { //look at each character, starting at the end
 			if(inString.charAt(i) == removeChar) { //if this is the character to remove
 				occurrenceIndex = i; //show where the last occurrence took place
-				if((--occurrence) != 0) { //decrement occurrence; if we've used up all occurrences
+				if((--occurrence) == 0) { //decrement occurrence; if we've used up all occurrences
 					break; //stop searching for a place to trim
 				}
 			}
 		}
-		return inString.substring(0, occurrenceIndex); //remove everything up to but not including the last occurrence of the remove character
+		return inString.substring(0, occurrenceIndex); //remove everything past the actual occurrence of remove character, but not including it.
 	}
 
 	/**
@@ -794,8 +824,7 @@ public class Strings {
 	 */
 	static public String trimBeginning(final String inString, final String beginString) {
 		return inString.startsWith(beginString) ? //if the string begins with beginString
-		inString.substring(beginString.length())
-				: //trim the string
+				inString.substring(beginString.length()) : //trim the string
 				inString; //if the string doesn't begin with beginString, return the string itself
 	}
 
@@ -807,8 +836,7 @@ public class Strings {
 	 */
 	static public String trimEnd(final String inString, final String endString) {
 		return inString.endsWith(endString) ? //if the string ends with beginString
-		inString.substring(0, inString.length() - endString.length())
-				: //trim the string
+				inString.substring(0, inString.length() - endString.length()) : //trim the string
 				inString; //if the string doesn't end with endString, return the string itself
 	}
 
