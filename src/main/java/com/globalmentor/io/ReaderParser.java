@@ -99,13 +99,15 @@ public class ReaderParser {
 	 * Checks that a read character does not represent the end of the reader's data.
 	 * @param reader The reader the contents of which to be parsed.
 	 * @param c The character returned from a reader's {@link Reader#read()} operation.
+	 * @return The given character.
 	 * @throws NullPointerException if the given reader is <code>null</code>.
 	 * @throws ParseEOFException if the given character represents the end of the reader's data.
 	 */
-	public static void checkReaderNotEnd(@Nonnull final Reader reader, final int c) throws ParseEOFException {
+	public static int checkReaderNotEnd(@Nonnull final Reader reader, final int c) throws ParseEOFException {
 		if(c < 0) { //if this returned character represents the end of the reader's data
 			throw new ParseEOFException(reader);
 		}
+		return c;
 	}
 
 	/**
