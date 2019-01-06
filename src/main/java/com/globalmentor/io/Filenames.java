@@ -92,6 +92,13 @@ public class Filenames {
 
 	//base filenames
 
+	/*
+	 * Here "base filename" refers to the filename with _all_ extensions removed. That is both `example.bar` and `example.foo.bar`
+	 * would result in a base filename of `example`.
+	 */
+
+	//TODO for all base filaneme and extension methods implement a way to ignore invalid extensions, e.g. with spaces or that are empty, such as "Hello World. Nice to see you..txt"
+
 	/**
 	 * Appends a given string to the end of a filename before the extension, if any. This is useful for forming a locale-aware filename, such as
 	 * <code>test_fr.txt</code> from <code>test.txt</code>.
@@ -100,9 +107,19 @@ public class Filenames {
 	 * @return A filename with the given string appended before the filename extension, if any.
 	 */
 	public static String appendBaseFilename(final String filename, final CharSequence charSequence) {
-		final int separatorIndex = filename.lastIndexOf(EXTENSION_SEPARATOR); //see if we can find the extension separator
+		final int separatorIndex = filename.indexOf(EXTENSION_SEPARATOR); //see if we can find the extension separator
 		final int insertionIndex = separatorIndex >= 0 ? separatorIndex : filename.length(); //insert the characters before the extension or, if there is no extension, at the end of the string
 		return StringBuilders.insert(new StringBuilder(filename), insertionIndex, charSequence).toString(); //create a new string builder, insert the characters, and return the new string
+	}
+
+	/**
+	 * Retrieves a base filename with no extensions
+	 * @param filename The filename that may contain an extension.
+	 * @return A filename with all extensions, if any, removed.
+	 */
+	public static String getBaseFilename(final String filename) {
+		final int separatorIndex = filename.indexOf(EXTENSION_SEPARATOR); //see if we can find the extension separator
+		return separatorIndex >= 0 ? filename.substring(0, separatorIndex) : filename; //insert the characters before the extension or, if there is no extension, at the end of the string
 	}
 
 	//filenames
@@ -279,7 +296,8 @@ public class Filenames {
 	}
 
 	/**
-	 * Adds the given extension to a name and returns the new name with the new extension. The name is not checked to see if it currently has an extension.
+	 * Adds the given extension to a filename and returns the new filename with the new extension. The name is not checked to see if it currently has an
+	 * extension.
 	 * <p>
 	 * This method currently allows an extension with the <code>.</code> delimiter, but it may be prohibited in the future.
 	 * </p>
@@ -293,7 +311,8 @@ public class Filenames {
 	}
 
 	/**
-	 * Changes the extension of a name and returns a new name with the new extension. If the name does not currently have an extension, one will be added.
+	 * Changes the last extension of a filename and returns a new filename with the new extension. If the filename does not currently have an extension, one will
+	 * be added.
 	 * @param filename The filename to examine.
 	 * @param extension The extension to set, or <code>null</code> if the extension should be removed.
 	 * @return The name with the new extension.
@@ -311,7 +330,7 @@ public class Filenames {
 	}
 
 	/**
-	 * Extracts the extension from a name.
+	 * Extracts the extension from a filename.
 	 * @param filename The filename to examine.
 	 * @return The extension of the name (not including '.'), which may not be present.
 	 */
@@ -321,7 +340,7 @@ public class Filenames {
 	}
 
 	/**
-	 * Removes the extension, if any, of a name and returns a new name with no extension. This is a convenience method that delegates to
+	 * Removes the last extension, if any, of a filename and returns a new filename with no extension. This is a convenience method that delegates to
 	 * {@link #changeExtension(String, String)}.
 	 * @param filename The name to examine.
 	 * @return The name with no extension.
@@ -331,8 +350,8 @@ public class Filenames {
 	}
 
 	/**
-	 * Adds the extension, if any, to a name and returns the new name. This is a convenience method that delegates to {@link #addExtension(String, String)} if a
-	 * non-<code>null</code> extension is given.
+	 * Adds the extension, if any, to a filename and returns the new filename. This is a convenience method that delegates to
+	 * {@link #addExtension(String, String)} if a non-<code>null</code> extension is given.
 	 * @param filename The filename to examine.
 	 * @param extension The extension to add, or <code>null</code> if no extension should be added.
 	 * @return The name with the new extension, if any.
