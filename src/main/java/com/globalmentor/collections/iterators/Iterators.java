@@ -1,5 +1,5 @@
 /*
- * Copyright © 1996-2008 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * Copyright © 1996-2019 GlobalMentor, Inc. <http://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ import static com.globalmentor.java.Arrays.*;
 /**
  * Various utilities to be used with iterators.
  * @author Garret Wilson
- * @see java.util.Iterator
+ * @see Iterator
  */
 public class Iterators {
 
@@ -120,11 +120,27 @@ public class Iterators {
 	 * @param <E> The type of items that the iterator is set up to iterate.
 	 * @param iterator The iterator from which the next object should be retrieved.
 	 * @return The next item of the iterator.
-	 * @see java.util.Iterator#next
+	 * @see Iterator#next()
+	 * @deprecated Migrate to {@link #findNext(Iterator)}.
 	 */
+	@Deprecated
 	public static <E> E getNext(final Iterator<E> iterator) {
 		//get the next element, or null if there is no next element
 		return iterator.hasNext() ? iterator.next() : null;
+	}
+
+	/**
+	 * Returns an {@link Optional} describing the first element of this iterator, or an empty {@code Optional} if the iterator is empty.
+	 * @apiNote This method is equivalent to calling {@link Iterator#next()}, except an empty optional is returned rather than throwing an exception if there is
+	 *          no next item.
+	 * @param <E> The type of elements returned by the iterator.
+	 * @param iterator The iterator from which the next object should be retrieved.
+	 * @return The next item of the iterator.
+	 * @see Iterator#next()
+	 * @see Stream#findFirst()
+	 */
+	public static <E> Optional<E> findNext(@Nonnull final Iterator<E> iterator) {
+		return iterator.hasNext() ? Optional.of(iterator.next()) : Optional.empty();
 	}
 
 	/**

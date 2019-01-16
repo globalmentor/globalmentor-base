@@ -51,7 +51,7 @@ public class ConverterIterable<I, O> implements Iterable<O> {
 	/**
 	 * Iterable and converter constructor.
 	 * @param iterable The iterable of source objects.
-	 * @param converter The conversor to be used on the iterable.
+	 * @param converter The converter to be used on the iterable.
 	 * @throws NullPointerException of if the given iterable and/or converter is <code>null</code>.
 	 */
 	public ConverterIterable(final Iterable<I> iterable, final Converter<I, O> converter) {
