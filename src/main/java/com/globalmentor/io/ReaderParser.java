@@ -59,6 +59,15 @@ import static com.globalmentor.java.Conditions.*;
 public class ReaderParser {
 
 	/**
+	 * The minimum number of characters to mark in a reader. This value is guaranteed to be at least <code>1</code> for marking a single character. If fewer than
+	 * the minimum characters are marked, an ancient bug in the {@link LineNumberReader} could results in an {@link IOException} for "mark invalid" if a
+	 * <code>CRLF</code> happens to straddle the end the buffer.
+	 * @see <a href="https://bugs.java.com/bugdatabase/view_bug.do?bug_id=JDK-8218280">JDK-8218280 : LineNumberReader throws "Mark invalid" exception if CRLF
+	 *      straddles buffer.</a>
+	 */
+	public static final int MINIMUM_MARK = 2;
+
+	/**
 	 * Checks for a parsing condition and, if the test did not pass, throws a {@link ParseIOException}.
 	 * @param reader The reader the contents of which to be parsed.
 	 * @param test The result of the test.
@@ -211,7 +220,7 @@ public class ReaderParser {
 	 * @throws IOException if there is an error reading from the reader.
 	 */
 	public static boolean confirm(@Nonnull final Reader reader, final char character) throws IOException {
-		reader.mark(1); //mark our current position
+		reader.mark(MINIMUM_MARK); //mark our current position
 		final int c = reader.read(); //get the current character
 		if(c >= 0) { //if the end of the reader was not reached
 			if(c == character) { //if the expected character was read
@@ -233,7 +242,7 @@ public class ReaderParser {
 	 * @throws IOException if there is an error reading from the reader.
 	 */
 	public static boolean confirm(@Nonnull final Reader reader, @Nonnull final Characters characters) throws IOException {
-		reader.mark(1); //mark our current position
+		reader.mark(MINIMUM_MARK); //mark our current position
 		final int c = reader.read(); //get the current character
 		if(c >= 0) { //if the end of the reader was not reached
 			if(characters.contains((char)c)) { //if one of the expected characters was read
@@ -285,13 +294,12 @@ public class ReaderParser {
 	 * @throws NullPointerException if the given reader and/or the given characters is <code>null</code>.
 	 * @throws IOException if there is an error reading from the reader.
 	 */
-	protected static int consumeWhile(@Nonnull final Reader reader, @Nonnull final Characters characters, @Nullable final StringBuilder stringBuilder)
-			throws IOException {
+	static int consumeWhile(@Nonnull final Reader reader, @Nonnull final Characters characters, @Nullable final StringBuilder stringBuilder) throws IOException {
 		int c; //the character read
 		boolean consume; //we'll note when we should consume
 		do {
 			consume = false; //start out assuming we shouldn't skip this character
-			reader.mark(1); //mark our current position
+			reader.mark(MINIMUM_MARK); //mark our current position TODO testing; line number reader may read several lines; check other locations
 			c = reader.read(); //read another character
 			if(c < 0) { //if we're at the end of the reader
 				return c; //stop skipping and return without resetting the reader to the mark
@@ -356,7 +364,7 @@ public class ReaderParser {
 		int c; //the character read
 		boolean reached;
 		do {
-			reader.mark(1); //mark our current position
+			reader.mark(MINIMUM_MARK); //mark our current position
 			c = reader.read(); //read another character
 			if(isEndError) { //if requested make sure we're not at the end of the reader
 				checkReaderNotEnd(reader, c);
@@ -434,7 +442,7 @@ public class ReaderParser {
 	 * @throws IOException if there is an error reading from the reader.
 	 */
 	public static int peek(@Nonnull final Reader reader) throws IOException {
-		reader.mark(1); //mark our current position
+		reader.mark(MINIMUM_MARK); //mark our current position
 		final int c = reader.read(); //get the current character
 		if(c >= 0) { //if the reader is not out of data
 			reader.reset(); //reset to the last mark, which was set right before the character we found
