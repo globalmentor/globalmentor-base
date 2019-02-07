@@ -19,6 +19,9 @@ package com.globalmentor.util;
 import static java.util.Objects.*;
 
 import java.util.Optional;
+import java.util.OptionalDouble;
+import java.util.OptionalInt;
+import java.util.OptionalLong;
 import java.util.function.*;
 import java.util.stream.Stream;
 
@@ -32,9 +35,7 @@ public class Optionals {
 
 	/**
 	 * Returns another another optional from a supplier if the given optional is not present.
-	 * <p>
-	 * This method duplicates functionality in Java 9.
-	 * </p>
+	 * @apiNote This method duplicates functionality in Java 9.
 	 * @param <T> The type of value contained in the optional.
 	 * @param optional The optional to check
 	 * @param supplier The supplier of an alternative optional if the value of the given optional is not present.
@@ -50,9 +51,7 @@ public class Optionals {
 
 	/**
 	 * Performs an action with the value if a value is present, otherwise performs another action.
-	 * <p>
-	 * This method duplicates functionality in Java 9.
-	 * </p>
+	 * @apiNote This method duplicates functionality in Java 9.
 	 * @param <T> The type of value contained in the optional.
 	 * @param optional The optional to check
 	 * @param action The action to perform if the value is present.
@@ -72,9 +71,7 @@ public class Optionals {
 
 	/**
 	 * Converts an optional to a stream.
-	 * <p>
-	 * This method duplicates functionality in Java 9.
-	 * </p>
+	 * @apiNote This method duplicates functionality in Java 9.
 	 * @param <T> The type of value contained in the optional.
 	 * @param optional The optional to check
 	 * @return A stream, either containing the optional value, or empty if the optional is empty.
@@ -82,6 +79,33 @@ public class Optionals {
 	 */
 	public static <T> Stream<T> stream(@Nonnull final Optional<T> optional) {
 		return optional.isPresent() ? Stream.of(optional.get()) : Stream.empty();
+	}
+
+	/**
+	 * Converts an optional wrapper {@link Double} instance to a primitive containing {@link OptionalDouble} instance.
+	 * @param optional The {@link Optional} instance to convert.
+	 * @return The equivalent primitive optional wrapper.
+	 */
+	public static OptionalDouble toOptionalDouble(@Nonnull final Optional<Double> optional) {
+		return optional.isPresent() ? OptionalDouble.of(optional.get().doubleValue()) : OptionalDouble.empty();
+	}
+
+	/**
+	 * Converts an optional wrapper {@link Integer} instance to a primitive containing {@link OptionalInt} instance.
+	 * @param optional The {@link Optional} instance to convert.
+	 * @return The equivalent primitive optional wrapper.
+	 */
+	public static OptionalInt toOptionalInt(@Nonnull final Optional<Integer> optional) {
+		return optional.isPresent() ? OptionalInt.of(optional.get().intValue()) : OptionalInt.empty();
+	}
+
+	/**
+	 * Converts an optional wrapper {@link Long} instance to a primitive containing {@link OptionalLong} instance.
+	 * @param optional The {@link Optional} instance to convert.
+	 * @return The equivalent primitive optional wrapper.
+	 */
+	public static OptionalLong toOptionalLong(@Nonnull final Optional<Long> optional) {
+		return optional.isPresent() ? OptionalLong.of(optional.get().longValue()) : OptionalLong.empty();
 	}
 
 }
