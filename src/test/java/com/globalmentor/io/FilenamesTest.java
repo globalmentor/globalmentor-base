@@ -16,11 +16,11 @@
 
 package com.globalmentor.io;
 
-import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.*;
+import org.junit.jupiter.api.*;
 
 import com.globalmentor.io.Filenames;
 
@@ -33,9 +33,41 @@ import com.globalmentor.io.Filenames;
  */
 public class FilenamesTest {
 
-	//filenames
+	//#filenames
 
-	//encode/decode
+	//##dotfiles
+
+	/** @see Filenames #isDotfileFilename(String) */
+	@Test
+	public void testIsDotfileFilename() {
+		assertThrows(NullPointerException.class, () -> Filenames.isDotfileFilename(null));
+		assertThrows(IllegalArgumentException.class, () -> Filenames.isDotfileFilename(""));
+		assertThat(Filenames.isDotfileFilename("."), is(false));
+		assertThat(Filenames.isDotfileFilename(".x"), is(true));
+		assertThat(Filenames.isDotfileFilename(".x."), is(true));
+		assertThat(Filenames.isDotfileFilename(".x.."), is(true));
+		assertThat(Filenames.isDotfileFilename(".foo"), is(true));
+		assertThat(Filenames.isDotfileFilename(".foo."), is(true));
+		assertThat(Filenames.isDotfileFilename(".foo.bar"), is(true));
+		assertThat(Filenames.isDotfileFilename(".foo.bar."), is(true));
+		assertThat(Filenames.isDotfileFilename(".."), is(false));
+		assertThat(Filenames.isDotfileFilename("..x"), is(true));
+		assertThat(Filenames.isDotfileFilename("..x."), is(true));
+		assertThat(Filenames.isDotfileFilename("..x.."), is(true));
+		assertThat(Filenames.isDotfileFilename("..foo"), is(true));
+		assertThat(Filenames.isDotfileFilename("..foo."), is(true));
+		assertThat(Filenames.isDotfileFilename("..foo.bar"), is(true));
+		assertThat(Filenames.isDotfileFilename("..foo.bar."), is(true));
+		assertThat(Filenames.isDotfileFilename("x"), is(false));
+		assertThat(Filenames.isDotfileFilename("x."), is(false));
+		assertThat(Filenames.isDotfileFilename("x.."), is(false));
+		assertThat(Filenames.isDotfileFilename("foo"), is(false));
+		assertThat(Filenames.isDotfileFilename("foo."), is(false));
+		assertThat(Filenames.isDotfileFilename("foo.bar"), is(false));
+		assertThat(Filenames.isDotfileFilename("foo.bar."), is(false));
+	}
+
+	//#encode/decode
 
 	/**
 	 * Test to verify if the method {@link Filenames#encodeCrossPlatformFilename(String)} and {@link Filenames#decodeFilename(String)} are encoding and decoding
@@ -86,7 +118,7 @@ public class FilenamesTest {
 		assertThat(Filenames.decodeFilename(publicationName), equalTo("/ (Dream of the Red Chamber)"));
 	}
 
-	//extensions
+	//#extensions
 
 	/** Tests whether {@link Filenames#addExtension(String, String)} is working properly. */
 	@Test
@@ -99,15 +131,13 @@ public class FilenamesTest {
 	}
 
 	/** Tests whether {@link Filenames#addExtension(String, String)} is throwing an exception when a <code>null</code> name is provided. */
-	@Test(expected = NullPointerException.class)
 	public void testAddNameExtensionNullNameFail() {
-		Filenames.addExtension(null, "txt");
+		assertThrows(NullPointerException.class, () -> Filenames.addExtension(null, "txt"));
 	}
 
 	/** Tests whether {@link Filenames#addExtension(String, String)} is throwing an exception when a <code>null</code> extension is provided. */
-	@Test(expected = NullPointerException.class)
 	public void testAddNameExtensionNullExtensionFail() {
-		Filenames.addExtension("foobar", null);
+		assertThrows(NullPointerException.class, () -> Filenames.addExtension("foobar", null));
 	}
 
 	/** Tests whether {@link Filenames#getExtension(String)} is working properly. */
@@ -122,9 +152,8 @@ public class FilenamesTest {
 	}
 
 	/** Tests whether {@link Filenames#getExtension(String)} is throwing an exception when a <code>null</code> name is provided. */
-	@Test(expected = NullPointerException.class)
 	public void testGetNameExtensionNullStringFail() {
-		Filenames.getExtension((String)null);
+		assertThrows(NullPointerException.class, () -> Filenames.getExtension((String)null));
 	}
 
 }

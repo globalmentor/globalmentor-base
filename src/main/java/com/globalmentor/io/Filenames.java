@@ -17,10 +17,13 @@
 package com.globalmentor.io;
 
 import static com.globalmentor.java.CharSequences.*;
+import static com.globalmentor.java.Conditions.*;
 import static com.globalmentor.java.OperatingSystem.*;
 import static java.util.Objects.*;
 
 import java.util.stream.*;
+
+import javax.annotation.*;
 
 import com.globalmentor.java.CharSequences;
 import com.globalmentor.java.Characters;
@@ -32,6 +35,13 @@ import com.globalmentor.text.Case;
  * @author Garret Wilson
  */
 public class Filenames {
+
+	/**
+	 * The prefix used by Unix to designate a <dfn>dotfile</dfn>, which is usually hidden.
+	 * @see <a href="https://superuser.com/q/757635/954883">Why do some file/folder names on Windows have a dot in front of them?</a>
+	 * @see <a href="https://wiki.archlinux.org/index.php/Dotfiles">Dotfiles</a>
+	 */
+	public static final char DOTFILE_PREFIX = '.';
 
 	/** The character used to separate an extension from the rest of a filename. */
 	public static final char EXTENSION_SEPARATOR = '.';
@@ -90,14 +100,14 @@ public class Filenames {
 	private Filenames() {
 	}
 
-	//base filenames
+	//#base filenames
 
 	/*
 	 * Here "base filename" refers to the filename with _all_ extensions removed. That is both `example.bar` and `example.foo.bar`
 	 * would result in a base filename of `example`.
 	 */
 
-	//TODO for all base filaneme and extension methods implement a way to ignore invalid extensions, e.g. with spaces or that are empty, such as "Hello World. Nice to see you..txt"
+	//TODO for all base filename and extension methods implement a way to ignore invalid extensions, e.g. with spaces or that are empty, such as "Hello World. Nice to see you..txt"
 
 	/**
 	 * Appends a given string to the end of a filename before the extension, if any. This is useful for forming a locale-aware filename, such as
@@ -122,7 +132,7 @@ public class Filenames {
 		return separatorIndex >= 0 ? filename.substring(0, separatorIndex) : filename; //insert the characters before the extension or, if there is no extension, at the end of the string
 	}
 
-	//filenames
+	//#filenames
 
 	/**
 	 * Checks to ensure that a particular string is a valid filename across operating systems.
@@ -131,6 +141,28 @@ public class Filenames {
 	 */
 	public static boolean isCrossPlatformFilename(final String string) {
 		return isValidFilename(string, CROSS_PLATFORM_RESERVED_CHARACTERS, CROSS_PLATFORM_RESERVED_FINAL_CHARACTERS); //check the filename using cross-platform reserved characters
+	}
+
+	//##dotfiles
+
+	/**
+	 * Determines whether the filename is for a so-called "dotfile", beginning with a dot but including at least one other character. This method does not
+	 * consider <code>"."</code> and <code>".."</code> to be dotfile filenames.
+	 * @implSpec The current implementation currently does not consider whether the filename contains slashes of any sort, assuming that the string is actually a
+	 *           filename if it is non-empty.
+	 * @param filename The filename to check.
+	 * @return <code>true</code> if the filename is considered a dotfile.
+	 * @throws IllegalArgumentException if the filename is the empty string, which is not a valid filename.
+	 * @see <a href="https://superuser.com/q/757635/954883">Why do some file/folder names on Windows have a dot in front of them?</a>
+	 * @see <a href="https://wiki.archlinux.org/index.php/Dotfiles">Dotfiles</a>
+	 * @see #DOTFILE_PREFIX
+	 */
+	public static boolean isDotfileFilename(@Nonnull final CharSequence filename) {
+		final int length = filename.length();
+		checkArgument(length > 0, "Empty filenames are not valid.");
+		return (length > 1) //A dotfile has at least two characters (e.g. "." is not a dotfile), …
+				&& filename.charAt(0) == DOTFILE_PREFIX //… starts with '.', …
+				&& (filename.charAt(1) != DOTFILE_PREFIX || length > 2); //… but is not "..".
 	}
 
 	/**
@@ -170,6 +202,8 @@ public class Filenames {
 		}
 		return isFilename; //return what we thought to begin with
 	}
+
+	//##encode/decode
 
 	/**
 	 * Escape all reserved filename characters to a two-digit <em>uppercase</em> hex representation using <code>'^'</code> as an escape character so that the
@@ -260,7 +294,7 @@ public class Filenames {
 		return unescapeHex(filename, ESCAPE_CHAR, 2).toString(); //decode the filename
 	}
 
-	//extensions
+	//#extensions
 
 	/**
 	 * Returns all the possible extensions of a filename, from the most specific to the most general.

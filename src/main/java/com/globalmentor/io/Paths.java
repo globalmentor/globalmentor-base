@@ -16,9 +16,12 @@
 
 package com.globalmentor.io;
 
+import static com.globalmentor.io.Filenames.*;
+import static java.util.Objects.*;
+
 import java.nio.file.Path;
 
-import com.globalmentor.java.Conditions;
+import javax.annotation.*;
 
 /**
  * Utility methods to manipulate Paths.
@@ -31,20 +34,39 @@ public class Paths {
 	private Paths() {
 	}
 
+	//#filenames
+
+	//##dotfiles
+
+	/**
+	 * Determines whether the path is for a so-called "dotfile", the filename of which begins with a dot but is neither <code>"."</code> or <code>".."</code>.
+	 * This method does not make a distinction between files and directories.
+	 * @param path The path to check.
+	 * @return <code>true</code> if the path contains a filename that is considered a dotfile.
+	 * @see <a href="https://superuser.com/q/757635/954883">Why do some file/folder names on Windows have a dot in front of them?</a>
+	 * @see <a href="https://wiki.archlinux.org/index.php/Dotfiles">Dotfiles</a>
+	 * @see Path#getFileName()
+	 * @see Filenames#isDotfileFilename(CharSequence)
+	 */
+	public static boolean isDotfile(@Nonnull final Path path) {
+		final Path filename = path.getFileName();
+		return filename != null && isDotfileFilename(filename.toString());
+	}
+
+	//#extensions
+
 	/**
 	 * Adds the given extension to a path and returns the new path with the new extension. The filename is not checked to see if it currently has an extension.
-	 * This method delegates to {@link Filenames#addExtension(String, String)}.
+	 * @implSpec This method delegates to {@link Filenames#addExtension(String, String)}.
 	 * 
 	 * @param path The path to which to add an extension.
 	 * @param extension The extension to add.
 	 * 
 	 * @return The path with the new extension.
-	 * @throws IllegalArgumentException if the given path refer to a directory instead of a file.
 	 */
 	public static Path addExtension(final Path path, final String extension) {
-		Conditions.checkArgumentNotNull(path, "the <path> cannot be null.");
-		Conditions.checkArgumentNotNull(extension, "the <extension> to be added cannot be null.");
-		Conditions.checkArgument(!java.nio.file.Files.isDirectory(path), "the <path> must refer to a file.");
+		requireNonNull(path, "the <path> cannot be null.");
+		requireNonNull(extension, "the <extension> to be added cannot be null.");
 
 		final String fileName = path.getFileName().toString();
 
