@@ -17,6 +17,7 @@
 package com.globalmentor.io;
 
 import static com.globalmentor.io.Filenames.*;
+import static com.globalmentor.java.Conditions.*;
 import static java.util.Objects.*;
 
 import java.nio.file.Path;
@@ -58,19 +59,34 @@ public class Paths {
 	/**
 	 * Adds the given extension to a path and returns the new path with the new extension. The filename is not checked to see if it currently has an extension.
 	 * @implSpec This method delegates to {@link Filenames#addExtension(String, String)}.
-	 * 
 	 * @param path The path to which to add an extension.
 	 * @param extension The extension to add.
-	 * 
 	 * @return The path with the new extension.
+	 * @throws IllegalArgumentException If a filename is not present.
+	 * @see Filenames#addExtension(String, String)
 	 */
-	public static Path addExtension(final Path path, final String extension) {
+	public static Path addExtension(@Nonnull final Path path, @Nonnull final String extension) {
 		requireNonNull(path, "the <path> cannot be null.");
 		requireNonNull(extension, "the <extension> to be added cannot be null.");
+		final Path filename = path.getFileName();
+		checkArgument(filename != null, "Path %s has no filename to which an extension can be added.", path);
+		return path.resolveSibling(Filenames.addExtension(filename.toString(), extension));
+	}
 
-		final String fileName = path.getFileName().toString();
-
-		return path.resolveSibling(Filenames.addExtension(fileName, extension));
+	/**
+	 * Changes the last extension of a path's filename and returns a new path with the filename with the new extension. If the filename does not currently have an
+	 * extension, one will be added.
+	 * @implSpec This method delegates to {@link Filenames#changeExtension(String, String)}.
+	 * @param path The path for which an extension will be changed.
+	 * @param extension The extension to set, or <code>null</code> if the extension should be removed.
+	 * @return The path with the filename with the new extension.
+	 * @throws IllegalArgumentException If a filename is not present, or if the name is just a "/".
+	 * @see Filenames#changeExtension(String, String)
+	 */
+	public static Path changeExtension(@Nonnull final Path path, @Nullable final String extension) {
+		final Path filename = path.getFileName();
+		checkArgument(filename != null, "Path %s has no filename for changing its extension.");
+		return path.resolveSibling(Filenames.changeExtension(filename.toString(), extension));
 	}
 
 }

@@ -349,7 +349,7 @@ public class Filenames {
 	 * be added.
 	 * @param filename The filename to examine.
 	 * @param extension The extension to set, or <code>null</code> if the extension should be removed.
-	 * @return The name with the new extension.
+	 * @return The filename with the new extension.
 	 * @throws IllegalArgumentException If the name is empty, or if the name is just a "/".
 	 */
 	public static String changeExtension(String filename, final String extension) {
