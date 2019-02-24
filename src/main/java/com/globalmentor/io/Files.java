@@ -64,9 +64,6 @@ public class Files {
 	/** The extension for temporary files. */
 	private static final String TEMP_EXTENSION = "tmp";
 
-	/** The prefix used by Unix to designate a hidden file. */
-	public static final String UNIX_HIDDEN_FILENAME_PREFIX = ".";
-
 	/**
 	 * The filename of the NTFS recycle bin folder.
 	 * @see <a href="http://support.microsoft.com/kb/171694">Differences Between the Recycle Bin and the Recycler Folder</a>

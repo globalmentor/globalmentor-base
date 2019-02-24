@@ -33,7 +33,7 @@ import org.junit.rules.TemporaryFolder;
 public class PathsTest {
 
 	@Rule
-	public final TemporaryFolder tempFolder = new TemporaryFolder();
+	public final TemporaryFolder tempFolder = new TemporaryFolder(); //TODO redo tests to use the user home directory; no actual files/directories need to be created 
 
 	/**
 	 * Tests whether the extension is being added correctly using {@link Paths#addExtension(Path, String)} with an absolute path.
@@ -46,18 +46,6 @@ public class PathsTest {
 		final Path tempFile = java.nio.file.Files.createFile(rootPath.resolve("testFile"));
 
 		assertThat(Paths.addExtension(tempFile.toAbsolutePath(), "ext"), equalTo(rootPath.resolve("testFile.ext")));
-	}
-
-	/**
-	 * Tests whether the extension is throwing an exception when using {@link Paths#addExtension(Path, String)} with a directory path.
-	 * 
-	 * @throws IOException if an I/O error occurs.
-	 */
-	@Test(expected = IllegalArgumentException.class)
-	public void addExtensionUsingDirectoryTest() throws IOException {
-		final Path rootPath = tempFolder.getRoot().toPath();
-
-		Paths.addExtension(rootPath.toAbsolutePath(), "ext");
 	}
 
 	/**
