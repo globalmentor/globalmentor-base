@@ -55,6 +55,7 @@
 
 	<modules>
 		<module>base</module>
+		<module>management</module>
 	</modules>
 
 	<properties>
@@ -119,11 +120,21 @@
 
 	<dependencyManagement>
 		<dependencies>
+			<!-- GlobalMentor core libraries -->
+
 			<dependency>
 				<groupId>com.globalmentor</groupId>
 				<artifactId>globalmentor-base</artifactId>
 				<version>0.6.0-SNAPSHOT</version>
 			</dependency>
+
+			<dependency>
+				<groupId>com.globalmentor</groupId>
+				<artifactId>globalmentor-management</artifactId>
+				<version>0.5.1-SNAPSHOT</version>
+			</dependency>
+
+			<!-- external libraries -->
 
 			<dependency>
 				<groupId>com.github.npathai</groupId>

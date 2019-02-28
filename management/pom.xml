@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>com.globalmentor</groupId>
 		<artifactId>globalmentor-parent</artifactId>
-		<version>8.2.0</version>
+		<version>8.5.0-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>globalmentor-management</artifactId>
@@ -13,20 +13,11 @@
 
 	<name>GlobalMentor Management</name>
 	<description>GlobalMentor Java management library.</description>
-	<url>http://www.globalmentor.com/software/</url>
-	<inceptionYear>1996</inceptionYear>
-
-	<scm>
-		<connection>scm:git:https://bitbucket.org/globalmentor/globalmentor-management.git</connection>
-		<developerConnection>scm:git:https://bitbucket.org/globalmentor/globalmentor-management.git</developerConnection>
-		<url>https://bitbucket.org/globalmentor/globalmentor-management</url>
-	</scm>
 
 	<dependencies>
 		<dependency>
 			<groupId>com.globalmentor</groupId>
-			<artifactId>globalmentor-core</artifactId>
-			<version>0.5.3</version>
+			<artifactId>globalmentor-base</artifactId>
 		</dependency>
 	</dependencies>
 </project>
