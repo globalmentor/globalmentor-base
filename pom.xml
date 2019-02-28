@@ -18,11 +18,11 @@
 
 	<groupId>com.globalmentor</groupId>
 	<artifactId>globalmentor-parent</artifactId>
-	<version>8.4.0</version>
+	<version>8.5.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>GlobalMentor Parent</name>
-	<description>GlobalMentor parent POM.</description>
+	<description>GlobalMentor parent POM and core aggregate.</description>
 	<url>http://www.globalmentor.com/</url>
 
 	<licenses>
@@ -48,10 +48,14 @@
 	</developers>
 
 	<scm>
-		<connection>scm:git:https://bitbucket.org/globalmentor/globalmentor-parent.git</connection>
-		<developerConnection>scm:git:https://bitbucket.org/globalmentor/globalmentor-parent.git</developerConnection>
-		<url>https://bitbucket.org/globalmentor/globalmentor-parent</url>
+		<connection>scm:git:https://bitbucket.org/globalmentor/globalmentor-core.git</connection>
+		<developerConnection>scm:git:https://bitbucket.org/globalmentor/globalmentor-core.git</developerConnection>
+		<url>https://bitbucket.org/globalmentor/globalmentor-core</url>
 	</scm>
+
+	<modules>
+		<module>base</module>
+	</modules>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -115,6 +119,12 @@
 
 	<dependencyManagement>
 		<dependencies>
+			<dependency>
+				<groupId>com.globalmentor</groupId>
+				<artifactId>globalmentor-base</artifactId>
+				<version>0.6.0-SNAPSHOT</version>
+			</dependency>
+
 			<dependency>
 				<groupId>com.github.npathai</groupId>
 				<artifactId>hamcrest-optional</artifactId>

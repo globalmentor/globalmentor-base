@@ -1,4 +1,8 @@
-# GlobalMentor Parent POM
+# GlobalMentor Core Libraries
+
+This repository contains the GlobalMentor parent POM and core Java libraries.
+
+## GlobalMentor Parent POM
 
 Parent POM for GlobalMentor projects. Provides dependency management for project and testing.
 
