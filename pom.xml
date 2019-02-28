@@ -9,7 +9,7 @@
 	</parent>
 
 	<artifactId>globalmentor-core</artifactId>
-	<version>0.5.7-SNAPSHOT</version>
+	<version>0.5.7</version>
 
 	<name>GlobalMentor Core</name>
 	<description>GlobalMentor core Java library.</description>
