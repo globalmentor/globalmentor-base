@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.globalmentor</groupId>
+		<artifactId>globalmentor-parent</artifactId>
+		<version>8.2.0</version>
+	</parent>
+
+	<artifactId>globalmentor-management</artifactId>
+	<version>0.5.1-SNAPSHOT</version>
+
+	<name>GlobalMentor Management</name>
+	<description>GlobalMentor Java management library.</description>
+	<url>http://www.globalmentor.com/software/</url>
+	<inceptionYear>1996</inceptionYear>
+
+	<scm>
+		<connection>scm:git:https://bitbucket.org/globalmentor/globalmentor-management.git</connection>
+		<developerConnection>scm:git:https://bitbucket.org/globalmentor/globalmentor-management.git</developerConnection>
+		<url>https://bitbucket.org/globalmentor/globalmentor-management</url>
+	</scm>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.globalmentor</groupId>
+			<artifactId>globalmentor-core</artifactId>
+			<version>0.5.3</version>
+		</dependency>
+	</dependencies>
+</project>
