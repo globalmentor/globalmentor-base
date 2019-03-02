@@ -323,13 +323,14 @@ public class ReaderParser {
 	 * @param isEndError Whether reaching the end of the reader is an error condition.
 	 * @param stringBuilder The string builder to collect the characters consumed, or <code>null</code> if the consumed characters should be discarded.
 	 * @param includeReached Whether the reached character should be included, effectively making this method read <em>past</em> the character.
+	 * @return The string builder given, or <code>null</code> if no string builder was provided.
 	 * @throws NullPointerException if the given reader is <code>null</code>.
 	 * @throws IOException if there is an error reading from the reader.
 	 * @throws ParseEOFException if the reader has no more characters and the end-is-error flag is <code>true</code>.
 	 */
-	protected static void consumeUntil(@Nonnull final Reader reader, final char untilCharacter, final boolean isEndError,
+	protected static StringBuilder consumeUntil(@Nonnull final Reader reader, final char untilCharacter, final boolean isEndError,
 			@Nullable final StringBuilder stringBuilder, final boolean includeReached) throws IOException, ParseEOFException {
-		consumeUntil(reader, null, untilCharacter, isEndError, stringBuilder, includeReached);
+		return consumeUntil(reader, null, untilCharacter, isEndError, stringBuilder, includeReached);
 	}
 
 	/**
@@ -340,13 +341,14 @@ public class ReaderParser {
 	 * @param isEndError Whether reaching the end of the reader is an error condition.
 	 * @param stringBuilder The string builder to collect the characters consumed, or <code>null</code> if the consumed characters should be discarded.
 	 * @param includeReached Whether the reached character should be included, effectively making this method read <em>past</em> the character.
+	 * @return The string builder given, or <code>null</code> if no string builder was provided.
 	 * @throws NullPointerException if the given reader is <code>null</code>.
 	 * @throws IOException if there is an error reading from the reader.
 	 * @throws ParseEOFException if the reader has no more characters and the end-is-error flag is <code>true</code>.
 	 */
-	protected static void consumeUntil(@Nonnull final Reader reader, @Nullable final Characters untilCharacters, final boolean isEndError,
+	protected static StringBuilder consumeUntil(@Nonnull final Reader reader, @Nullable final Characters untilCharacters, final boolean isEndError,
 			@Nullable final StringBuilder stringBuilder, final boolean includeReached) throws IOException, ParseEOFException {
-		consumeUntil(reader, requireNonNull(untilCharacters), (char)0, isEndError, stringBuilder, includeReached);
+		return consumeUntil(reader, requireNonNull(untilCharacters), (char)0, isEndError, stringBuilder, includeReached);
 	}
 
 	/**
@@ -357,11 +359,12 @@ public class ReaderParser {
 	 * @param isEndError Whether reaching the end of the reader is an error condition.
 	 * @param stringBuilder The string builder to collect the characters consumed, or <code>null</code> if the consumed characters should be discarded.
 	 * @param includeReached Whether the reached character should be included, effectively making this method read <em>past</em> the character.
+	 * @return The string builder given, or <code>null</code> if no string builder was provided.
 	 * @throws NullPointerException if the given reader is <code>null</code>.
 	 * @throws IOException if there is an error reading from the reader.
 	 * @throws ParseEOFException if the reader has no more characters and the end-is-error flag is <code>true</code>.
 	 */
-	protected static void consumeUntil(@Nonnull final Reader reader, @Nullable final Characters untilCharacters, final char untilCharacter,
+	protected static StringBuilder consumeUntil(@Nonnull final Reader reader, @Nullable final Characters untilCharacters, final char untilCharacter,
 			final boolean isEndError, @Nullable final StringBuilder stringBuilder, final boolean includeReached) throws IOException, ParseEOFException {
 		int c; //the character read
 		boolean reached;
@@ -372,7 +375,7 @@ public class ReaderParser {
 				if(isEndError) { //if requested make sure we're not at the end of the reader
 					throw new ParseEOFException(reader);
 				} else {
-					return; //there's no content to include, and there was no character to reset; in short, we're finished
+					return stringBuilder; //there's no content to include, and there was no character to reset; in short, we're finished
 				}
 			}
 			final char character = (char)c;
@@ -386,6 +389,7 @@ public class ReaderParser {
 		if(!includeReached) { //if we shouldn't included the reached character
 			reader.reset(); //reset to the last mark, which was set right before the character we found
 		}
+		return stringBuilder;
 	}
 
 	/**
@@ -654,9 +658,7 @@ public class ReaderParser {
 	 * @throws IOException if there is an error reading from the reader.
 	 */
 	public static String readPast(@Nonnull final Reader reader, @Nonnull final Characters characters) throws IOException {
-		final StringBuilder stringBuilder = new StringBuilder();
-		consumeUntil(reader, characters, false, stringBuilder, true);
-		return stringBuilder.toString();
+		return consumeUntil(reader, characters, false, new StringBuilder(), true).toString();
 	}
 
 	/**
@@ -671,9 +673,7 @@ public class ReaderParser {
 	 * @throws ParseEOFException if the reader has no more characters.
 	 */
 	public static String readPastRequired(@Nonnull final Reader reader, @Nonnull final Characters characters) throws IOException {
-		final StringBuilder stringBuilder = new StringBuilder();
-		consumeUntil(reader, characters, true, stringBuilder, true);
-		return stringBuilder.toString();
+		return consumeUntil(reader, characters, true, new StringBuilder(), true).toString();
 	}
 
 	/**
@@ -686,9 +686,7 @@ public class ReaderParser {
 	 * @throws IOException if there is an error reading from the reader.
 	 */
 	public static String readUntil(@Nonnull final Reader reader, @Nonnull final Characters characters) throws IOException {
-		final StringBuilder stringBuilder = new StringBuilder();
-		consumeUntil(reader, characters, false, stringBuilder, false);
-		return stringBuilder.toString();
+		return consumeUntil(reader, characters, false, new StringBuilder(), false).toString();
 	}
 
 	/**
@@ -703,9 +701,7 @@ public class ReaderParser {
 	 * @throws ParseEOFException if the reader has no more characters.
 	 */
 	public static String readUntilRequired(@Nonnull final Reader reader, final char character) throws IOException, ParseEOFException {
-		final StringBuilder stringBuilder = new StringBuilder();
-		consumeUntil(reader, character, true, stringBuilder, false);
-		return stringBuilder.toString();
+		return consumeUntil(reader, character, true, new StringBuilder(), false).toString();
 	}
 
 	/**
@@ -720,9 +716,7 @@ public class ReaderParser {
 	 * @throws ParseEOFException if the reader has no more characters.
 	 */
 	public static String readUntilRequired(@Nonnull final Reader reader, @Nonnull final Characters characters) throws IOException, ParseEOFException {
-		final StringBuilder stringBuilder = new StringBuilder();
-		consumeUntil(reader, characters, true, stringBuilder, false);
-		return stringBuilder.toString();
+		return consumeUntil(reader, characters, true, new StringBuilder(), false).toString();
 	}
 
 	/**
