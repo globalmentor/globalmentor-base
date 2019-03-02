@@ -514,6 +514,24 @@ public class ReaderParser {
 	}
 
 	/**
+	 * Reads text from a reader that has certain required beginning and ending delimiter characters. The delimiters will be discarded.
+	 * @param reader The reader the contents of which to be parsed.
+	 * @param startDelimiter The character to expect at the first of the characters.
+	 * @param endDelimiter The character to expect at the end of the characters.
+	 * @throws IOException Thrown when an I/O error occurs.
+	 * @throws ParseUnexpectedDataException Thrown when an unexpected character is found.
+	 * @throws ParseEOFException Thrown when the end of the reader is reached unexpectedly.
+	 * @return The characters between the delimiters.
+	 */
+	public static String readEnclosedRequired(final Reader reader, final char startDelimiter, final char endDelimiter)
+			throws IOException, ParseUnexpectedDataException, ParseEOFException {
+		check(reader, startDelimiter); //read the first delimiter
+		final String string = readUntilRequired(reader, endDelimiter); //read until the end delimiter is reached
+		check(reader, endDelimiter); //read the ending delimiter
+		return string; //return the string in-between
+	}
+
+	/**
 	 * Reads a character, throwing an error if the end of the reader was reached.
 	 * <p>
 	 * This method is semantically equivalent to calling {@link #readRequiredCount(Reader, int)} with a value of <code>1</code>.
@@ -614,10 +632,41 @@ public class ReaderParser {
 	}
 
 	/**
+	 * Reads all characters in a reader until one of the given characters or the end is reached. The reached character will be included and the new position will
+	 * be immediately <em>after</em> that of the given character.
+	 * @param reader The reader the contents of which to be parsed.
+	 * @param characters The characters one of which to reach.
+	 * @return The string read until the given character or the empty string if there is no such a character.
+	 * @throws NullPointerException if the given reader and/or characters is <code>null</code>.
+	 * @throws IOException if there is an error reading from the reader.
+	 */
+	public static String readPast(@Nonnull final Reader reader, @Nonnull final Characters characters) throws IOException {
+		final StringBuilder stringBuilder = new StringBuilder();
+		consumeUntil(reader, characters, false, stringBuilder, true);
+		return stringBuilder.toString();
+	}
+
+	/**
+	 * Reads all characters in a reader until one of the given characters. The reached character will be included and the new position will be immediately
+	 * <em>after</em> that of the given character.
+	 * @param reader The reader the contents of which to be parsed.
+	 * @param characters The characters one of which to reach.
+	 * @return The string read until the given character or the empty string if there is no such a character.
+	 * @throws NullPointerException if the given reader and/or characters is <code>null</code>.
+	 * @throws IOException if there is an error reading from the reader.
+	 * @throws ParseEOFException if the reader has no more characters.
+	 */
+	public static String readPastRequired(@Nonnull final Reader reader, @Nonnull final Characters characters) throws IOException {
+		final StringBuilder stringBuilder = new StringBuilder();
+		consumeUntil(reader, characters, true, stringBuilder, true);
+		return stringBuilder.toString();
+	}
+
+	/**
 	 * Reads all characters in a reader until one of the given characters or the end is reached. The new position will be that of the given character.
 	 * @param reader The reader the contents of which to be parsed.
 	 * @param characters The characters one of which to reach.
-	 * @return The string read until the given character or the end if there is no such a character.
+	 * @return The string read until the given character or the empty string if there is no such a character.
 	 * @throws NullPointerException if the given reader and/or characters is <code>null</code>.
 	 * @throws IOException if there is an error reading from the reader.
 	 */
