@@ -317,6 +317,7 @@ public class ReaderParser {
 
 	/**
 	 * Reads all characters in a reader until one of the given characters is reached. The new position will be that of the given character.
+	 * @implSpec This implementation delegates to {@link #consumeUntil(Reader, Characters, char, boolean, StringBuilder, boolean)}.
 	 * @param reader The reader the contents of which to be parsed.
 	 * @param untilCharacter The character to check if the given characters is <code>null</code>.
 	 * @param isEndError Whether reaching the end of the reader is an error condition.
@@ -333,6 +334,7 @@ public class ReaderParser {
 
 	/**
 	 * Reads all characters in a reader until one of the given characters is reached. The new position will be that of the given character.
+	 * @implSpec This implementation delegates to {@link #consumeUntil(Reader, Characters, char, boolean, StringBuilder, boolean)}.
 	 * @param reader The reader the contents of which to be parsed.
 	 * @param untilCharacters The characters one of which to reach.
 	 * @param isEndError Whether reaching the end of the reader is an error condition.
@@ -366,8 +368,12 @@ public class ReaderParser {
 		do {
 			reader.mark(MINIMUM_MARK); //mark our current position
 			c = reader.read(); //read another character
-			if(isEndError) { //if requested make sure we're not at the end of the reader
-				checkReaderNotEnd(reader, c);
+			if(c < 0) { //if this returned character represents the end of the reader's data
+				if(isEndError) { //if requested make sure we're not at the end of the reader
+					throw new ParseEOFException(reader);
+				} else {
+					return; //there's no content to include, and there was no character to reset; in short, we're finished
+				}
 			}
 			final char character = (char)c;
 			reached = untilCharacters != null ? untilCharacters.contains(character) : c == untilCharacter; //see if we've reached the character
@@ -385,6 +391,7 @@ public class ReaderParser {
 	/**
 	 * Skips all characters in a reader until the given delimiter is passed or the end is reached. The new position will be immediately <em>after</em> that of the
 	 * given character.
+	 * @implSpec This implementation delegates to {@link #consumeUntil(Reader, char, boolean, StringBuilder, boolean)}.
 	 * @param reader The reader the contents of which to be parsed.
 	 * @param character The character to pass.
 	 * @throws NullPointerException if the given reader is <code>null</code>.
@@ -398,6 +405,7 @@ public class ReaderParser {
 	/**
 	 * Skips all characters in a reader until one of the given characters or the end is reached. The new position will be immediately <em>after</em> that of the
 	 * given character.
+	 * @implSpec This implementation delegates to {@link #consumeUntil(Reader, Characters, boolean, StringBuilder, boolean)}.
 	 * @param reader The reader the contents of which to be parsed.
 	 * @param characters The characters one of which to reach.
 	 * @throws NullPointerException if the given reader and/or characters is <code>null</code>.
@@ -410,6 +418,7 @@ public class ReaderParser {
 	/**
 	 * Skips all characters in a reader until the given delimiter is passed, throwing an exception if the end of the reader has been reached. The new position
 	 * will be immediately <em>after</em> that of the given character.
+	 * @implSpec This implementation delegates to {@link #consumeUntil(Reader, char, boolean, StringBuilder, boolean)}.
 	 * @param reader The reader the contents of which to be parsed.
 	 * @param character The character to pass.
 	 * @throws NullPointerException if the given reader is <code>null</code>.
@@ -423,6 +432,7 @@ public class ReaderParser {
 	/**
 	 * Skips all characters in a reader until one of the given characters is reached, throwing an exception if the end of the reader has been reached. The new
 	 * position will be immediately <em>after</em> that of the given character.
+	 * @implSpec This implementation delegates to {@link #consumeUntil(Reader, Characters, boolean, StringBuilder, boolean)}.
 	 * @param reader The reader the contents of which to be parsed.
 	 * @param characters The characters one of which to reach.
 	 * @throws NullPointerException if the given reader is and/or characters <code>null</code>.
@@ -466,6 +476,7 @@ public class ReaderParser {
 
 	/**
 	 * Skips all characters in a reader until the given delimiter is passed or the end is reached. The new position will be that of the given character.
+	 * @implSpec This implementation delegates to {@link #consumeUntil(Reader, char, boolean, StringBuilder, boolean)}.
 	 * @param reader The reader the contents of which to be parsed.
 	 * @param character The character to pass.
 	 * @throws NullPointerException if the given reader is <code>null</code>.
@@ -478,6 +489,7 @@ public class ReaderParser {
 
 	/**
 	 * Skips all characters in a reader until one of the given characters or the end is reached. The new position will be that of the given character.
+	 * @implSpec This implementation delegates to {@link #consumeUntil(Reader, Characters, boolean, StringBuilder, boolean)}.
 	 * @param reader The reader the contents of which to be parsed.
 	 * @param characters The characters one of which to reach.
 	 * @throws NullPointerException if the given reader and/or characters is <code>null</code>.
@@ -490,6 +502,7 @@ public class ReaderParser {
 	/**
 	 * Skips all characters in a reader until the given delimiter is passed, throwing an exception if the end of the reader has been reached. The new position
 	 * will be that of the given character.
+	 * @implSpec This implementation delegates to {@link #consumeUntil(Reader, char, boolean, StringBuilder, boolean)}.
 	 * @param reader The reader the contents of which to be parsed.
 	 * @param character The character to pass.
 	 * @throws NullPointerException if the given reader is <code>null</code>.
@@ -503,6 +516,7 @@ public class ReaderParser {
 	/**
 	 * Skips all characters in a reader until one of the given characters is reached, throwing an exception if the end of the reader has been reached. The new
 	 * position will be that of the given character.
+	 * @implSpec This implementation delegates to {@link #consumeUntil(Reader, Characters, boolean, StringBuilder, boolean)}.
 	 * @param reader The reader the contents of which to be parsed.
 	 * @param characters The characters one of which to reach.
 	 * @throws NullPointerException if the given reader and/or characters is <code>null</code>.
@@ -533,9 +547,7 @@ public class ReaderParser {
 
 	/**
 	 * Reads a character, throwing an error if the end of the reader was reached.
-	 * <p>
-	 * This method is semantically equivalent to calling {@link #readRequiredCount(Reader, int)} with a value of <code>1</code>.
-	 * </p>
+	 * @apiNote This method is semantically equivalent to calling {@link #readRequiredCount(Reader, int)} with a value of <code>1</code>.
 	 * @param reader The reader the contents of which to be parsed.
 	 * @return The character returned from the reader's {@link Reader#read()} operation.
 	 * @throws NullPointerException if the given reader is <code>null</code>.
@@ -634,6 +646,7 @@ public class ReaderParser {
 	/**
 	 * Reads all characters in a reader until one of the given characters or the end is reached. The reached character will be included and the new position will
 	 * be immediately <em>after</em> that of the given character.
+	 * @implSpec This implementation delegates to {@link #consumeUntil(Reader, Characters, boolean, StringBuilder, boolean)}.
 	 * @param reader The reader the contents of which to be parsed.
 	 * @param characters The characters one of which to reach.
 	 * @return The string read until the given character or the empty string if there is no such a character.
@@ -649,6 +662,7 @@ public class ReaderParser {
 	/**
 	 * Reads all characters in a reader until one of the given characters. The reached character will be included and the new position will be immediately
 	 * <em>after</em> that of the given character.
+	 * @implSpec This implementation delegates to {@link #consumeUntil(Reader, Characters, boolean, StringBuilder, boolean)}.
 	 * @param reader The reader the contents of which to be parsed.
 	 * @param characters The characters one of which to reach.
 	 * @return The string read until the given character or the empty string if there is no such a character.
@@ -664,6 +678,7 @@ public class ReaderParser {
 
 	/**
 	 * Reads all characters in a reader until one of the given characters or the end is reached. The new position will be that of the given character.
+	 * @implSpec This implementation delegates to {@link #consumeUntil(Reader, Characters, boolean, StringBuilder, boolean)}.
 	 * @param reader The reader the contents of which to be parsed.
 	 * @param characters The characters one of which to reach.
 	 * @return The string read until the given character or the empty string if there is no such a character.
@@ -679,6 +694,7 @@ public class ReaderParser {
 	/**
 	 * Reads all characters in a reader until the given delimiter is reached, throwing an exception if the end of the reader has been reached. The new position
 	 * will be that of the given character.
+	 * @implSpec This implementation delegates to {@link #consumeUntil(Reader, char, boolean, StringBuilder, boolean)}.
 	 * @param reader The reader the contents of which to be parsed.
 	 * @param character The character to pass.
 	 * @return The string read until the given character.
@@ -695,6 +711,7 @@ public class ReaderParser {
 	/**
 	 * Reads all characters in a reader until one of the given characters is reached, throwing an exception if the end of the reader has been reached. The new
 	 * position will be that of the given character.
+	 * @implSpec This implementation delegates to {@link #consumeUntil(Reader, Characters, boolean, StringBuilder, boolean)}.
 	 * @param reader The reader the contents of which to be parsed.
 	 * @param characters The characters one of which to reach.
 	 * @return The string read until the given character.
@@ -724,6 +741,7 @@ public class ReaderParser {
 	/**
 	 * Reads all characters in a reader that appear within a given set of characters and collects them in a given string builder. The new position will either be
 	 * the first character not in the characters or the end of the reader.
+	 * @implSpec This implementation delegates to {@link #consumeWhile(Reader, Characters, StringBuilder)}.
 	 * @param reader The reader the contents of which to be parsed.
 	 * @param characters The characters to read.
 	 * @param stringBuilder The string builder to collect the read characters.
@@ -740,6 +758,7 @@ public class ReaderParser {
 	/**
 	 * Skips over characters in a reader that appear within a given set of characters. The new position will either be the first character not in the characters
 	 * or the end of the reader.
+	 * @implSpec This implementation delegates to {@link #consumeWhile(Reader, Characters, StringBuilder)}.
 	 * @param reader The reader the contents of which to be parsed.
 	 * @param characters The characters to skip.
 	 * @return The next character that will be returned the reader's {@link Reader#read()} operation, or <code>-1</code> if the end of the reader has been

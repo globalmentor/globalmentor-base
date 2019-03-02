@@ -19,10 +19,7 @@ package com.globalmentor.io;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
-import java.io.IOException;
-import java.io.LineNumberReader;
-import java.io.Reader;
-import java.io.StringReader;
+import java.io.*;
 
 import org.junit.jupiter.api.*;
 
@@ -33,6 +30,14 @@ import com.globalmentor.java.Characters;
  * @author Garret Wilson
  */
 public class ReaderParserTest {
+
+	/** Tests that {@link ReaderParser#consumeUntil(Reader, Characters, char, boolean, StringBuilder, boolean)} detects the end of the stream when request. */
+	@Test
+	public void testConsumeUntilDetectsEnd() throws IOException {
+		final Reader reader = new StringReader("abc");
+		final StringBuilder stringBuilder = new StringBuilder();
+		ReaderParser.consumeUntil(reader, null, 'x', false, stringBuilder, false);
+	}
 
 	/**
 	 * Tests the main parsing method {@link ReaderParser#consumeWhile(Reader, Characters, StringBuilder)} to ensure that it works in the presence of an old JDK
