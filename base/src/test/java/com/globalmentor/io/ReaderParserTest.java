@@ -35,8 +35,7 @@ public class ReaderParserTest {
 	@Test
 	public void testConsumeUntilDetectsEnd() throws IOException {
 		final Reader reader = new StringReader("abc");
-		final StringBuilder stringBuilder = new StringBuilder();
-		ReaderParser.consumeUntil(reader, null, 'x', false, stringBuilder, false);
+		assertThat(ReaderParser.consumeUntil(reader, null, 'x', false, new StringBuilder(), false).toString(), is("abc"));
 	}
 
 	/**
