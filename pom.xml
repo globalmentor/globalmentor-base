@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-	GlobalMentor, Inc. Parent POM
+	GlobalMentor, Inc. Core Aggregate Parent POM
 	Copyright © 2018 GlobalMentor, Inc. (http://www.globalmentor.com/)
 
 	The following properties will be set:
@@ -17,13 +17,13 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.globalmentor</groupId>
-	<artifactId>globalmentor-parent</artifactId>
-	<version>8.5.0-SNAPSHOT</version>
+	<artifactId>globalmentor-root</artifactId>
+	<version>0.6.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
-	<name>GlobalMentor Parent</name>
-	<description>GlobalMentor parent POM and core aggregate.</description>
-	<url>http://www.globalmentor.com/</url>
+	<name>GlobalMentor Root</name>
+	<description>GlobalMentor root POM and core aggregate parent POM.</description>
+	<url>http://www.globalmentor.com/software/</url>
 
 	<licenses>
 		<license>
@@ -131,7 +131,7 @@
 			<dependency>
 				<groupId>com.globalmentor</groupId>
 				<artifactId>globalmentor-management</artifactId>
-				<version>0.5.1-SNAPSHOT</version>
+				<version>0.6.0-SNAPSHOT</version>
 			</dependency>
 
 			<!-- external libraries -->
