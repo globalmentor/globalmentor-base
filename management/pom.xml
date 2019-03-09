@@ -4,12 +4,11 @@
 
 	<parent>
 		<groupId>com.globalmentor</groupId>
-		<artifactId>globalmentor-parent</artifactId>
-		<version>8.5.0-SNAPSHOT</version>
+		<artifactId>globalmentor-base</artifactId>
+		<version>0.6.0-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>globalmentor-management</artifactId>
-	<version>0.5.1-SNAPSHOT</version>
 
 	<name>GlobalMentor Management</name>
 	<description>GlobalMentor Java management library.</description>
@@ -17,7 +16,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.globalmentor</groupId>
-			<artifactId>globalmentor-base</artifactId>
+			<artifactId>globalmentor-core</artifactId>
 		</dependency>
 	</dependencies>
 </project>
