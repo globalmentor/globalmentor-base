@@ -4,14 +4,14 @@
 
 	<parent>
 		<groupId>com.globalmentor</groupId>
-		<artifactId>globalmentor-root</artifactId>
+		<artifactId>globalmentor-base</artifactId>
 		<version>0.6.0-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>globalmentor-base</artifactId>
+	<artifactId>globalmentor-core</artifactId>
 
-	<name>GlobalMentor Base</name>
-	<description>GlobalMentor base Java library.</description>
+	<name>GlobalMentor Core</name>
+	<description>GlobalMentor core Java library.</description>
 
 	<build>
 		<resources>

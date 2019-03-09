@@ -4,7 +4,7 @@
 
 	<parent>
 		<groupId>com.globalmentor</groupId>
-		<artifactId>globalmentor-root</artifactId>
+		<artifactId>globalmentor-base</artifactId>
 		<version>0.6.0-SNAPSHOT</version>
 	</parent>
 
@@ -16,7 +16,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.globalmentor</groupId>
-			<artifactId>globalmentor-base</artifactId>
+			<artifactId>globalmentor-core</artifactId>
 		</dependency>
 	</dependencies>
 </project>
