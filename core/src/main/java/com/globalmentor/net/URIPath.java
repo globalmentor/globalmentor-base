@@ -218,6 +218,8 @@ public final class URIPath {
 
 	/**
 	 * Relativizes a URI against a base URI and returns a {@link URIPath} object indicating the path relative to the base.
+	 * @implNote Note that this does not properly relativize URIs that require backtracking, such as siblings; see
+	 *           <a href="https://bugs.java.com/bugdatabase/view_bug.do?bug_id=6226081">JDK-6226081</a>.
 	 * @param baseURI The base URI against which to relativize.
 	 * @param uri The URI to relativize against the base.
 	 * @return A new URI path relative to the base URI.
@@ -394,8 +396,8 @@ public final class URIPath {
 	}
 
 	/**
-	 * Encodes the given string so that it is a valid URI path according <a href="http://www.ietf.org/rfc/rfc3986.txt">RFC 3986</a>,
-	 * "Uniform Resource Identifiers (URI): Generic Syntax".
+	 * Encodes the given string so that it is a valid URI path according <a href="http://www.ietf.org/rfc/rfc3986.txt">RFC 3986</a>, "Uniform Resource Identifiers
+	 * (URI): Generic Syntax".
 	 * @param path The path to URI-encode.
 	 * @return A string containing the escaped data.
 	 */
@@ -405,8 +407,8 @@ public final class URIPath {
 	}
 
 	/**
-	 * Encodes the given string so that it is a valid URI path segment according <a href="http://www.ietf.org/rfc/rfc3986.txt">RFC 3986</a>,
-	 * "Uniform Resource Identifiers (URI): Generic Syntax".
+	 * Encodes the given string so that it is a valid URI path segment according <a href="http://www.ietf.org/rfc/rfc3986.txt">RFC 3986</a>, "Uniform Resource
+	 * Identifiers (URI): Generic Syntax".
 	 * @param pathSegment The path segment to URI-encode.
 	 * @return A string containing the escaped data.
 	 */

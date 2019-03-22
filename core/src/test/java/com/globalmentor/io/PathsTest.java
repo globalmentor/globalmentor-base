@@ -16,61 +16,92 @@
 
 package com.globalmentor.io;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static com.globalmentor.java.OperatingSystem.*;
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-import java.io.IOException;
 import java.nio.file.Path;
 
-import org.junit.*;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.*;
 
 /**
  * Tests the {@link Paths} utility class.
  * 
  * @author Magno Nascimento
+ * @author Garret Wilson
  */
 public class PathsTest {
 
-	@Rule
-	public final TemporaryFolder tempFolder = new TemporaryFolder(); //TODO redo tests to use the user home directory; no actual files/directories need to be created 
-
-	/**
-	 * Tests whether the extension is being added correctly using {@link Paths#addExtension(Path, String)} with an absolute path.
-	 * 
-	 * @throws IOException if an I/O error occurs.
-	 */
+	/** @see Paths#isSubPath(Path, Path) */
 	@Test
-	public void addExtensionTest() throws IOException {
-		final Path rootPath = tempFolder.getRoot().toPath();
-		final Path tempFile = java.nio.file.Files.createFile(rootPath.resolve("testFile"));
-
-		assertThat(Paths.addExtension(tempFile.toAbsolutePath(), "ext"), equalTo(rootPath.resolve("testFile.ext")));
+	public void testIsSubPath() {
+		final Path tempDirectory = getTempDirectory();
+		assertThat(Paths.isSubPath(tempDirectory, tempDirectory), is(true));
+		assertThat(Paths.isSubPath(tempDirectory, tempDirectory.resolve("foo")), is(true));
+		assertThat(Paths.isSubPath(tempDirectory, tempDirectory.resolve("foo").resolve("bar")), is(true));
+		assertThat(Paths.isSubPath(tempDirectory, tempDirectory.resolve("foo").resolve("bar").resolve("test.txt")), is(true));
+		assertThat(Paths.isSubPath(tempDirectory.resolve("foo"), tempDirectory.resolve("foo").resolve("bar").resolve("test.txt")), is(true));
+		assertThat(Paths.isSubPath(tempDirectory.resolve("foo"), tempDirectory.resolve("bar").resolve("test.txt")), is(false));
+		assertThat(Paths.isSubPath(tempDirectory.resolve("foo"), tempDirectory.resolve("bar")), is(false));
+		assertThat(Paths.isSubPath(tempDirectory.resolve("foo"), tempDirectory), is(false));
 	}
 
-	/**
-	 * Tests whether the extension is being added correctly using {@link Paths#addExtension(Path, String)} with a relative path.
-	 * 
-	 * @throws IOException if an I/O error occurs.
-	 */
+	/** @see Paths#changeBase(Path, Path, Path) */
 	@Test
-	public void addExtensionUsingRelativePathTest() throws IOException {
-		final Path rootPath = tempFolder.getRoot().toPath();
-		final Path tempFile = java.nio.file.Files.createFile(rootPath.resolve("testFile"));
+	public void testChangeBase() {
+		final Path tempDirectory = getTempDirectory(); //e.g. /temp
+		final Path testFile = tempDirectory.resolve("foo").resolve("test.txt"); //e.g. /temp/foo/test.txt
 
-		assertThat(Paths.addExtension(tempFile, "ext"), equalTo(rootPath.resolve("testFile.ext")));
+		//same base
+		assertThat(Paths.changeBase(testFile, tempDirectory, tempDirectory), is(testFile));
+		assertThat(Paths.changeBase(testFile, tempDirectory.resolve("foo"), tempDirectory.resolve("foo")), is(testFile));
+
+		//different base
+		assertThat(Paths.changeBase(testFile, tempDirectory.resolve("foo"), tempDirectory.resolve("bar")), is(tempDirectory.resolve("bar").resolve("test.txt")));
+
+		//nested base
+		assertThat(Paths.changeBase(testFile, tempDirectory, tempDirectory.resolve("bar")), is(tempDirectory.resolve("bar").resolve("foo").resolve("test.txt")));
+
+		//not a base
+		assertThrows(IllegalArgumentException.class, () -> Paths.changeBase(testFile, tempDirectory.resolve("bad"), tempDirectory.resolve("bar")));
 	}
 
-	/**
-	 * Tests whether the extension is being added correctly using {@link Paths#addExtension(Path, String)} with a file name path.
-	 * 
-	 * @throws IOException if an I/O error occurs.
-	 */
-	@Test
-	public void addExtensionUsingFileNameTest() throws IOException {
-		final Path rootPath = tempFolder.getRoot().toPath();
-		final Path tempFile = java.nio.file.Files.createFile(rootPath.resolve("testFile"));
+	//#filenames
 
-		assertThat(Paths.addExtension(tempFile.getFileName(), "ext"), equalTo(rootPath.resolve("testFile.ext").getFileName()));
+	/** Tests whether the extension is being added correctly using {@link Paths#addExtension(Path, String)}. */
+	@Test
+	public void testAddExtension() {
+		final Path basePath = getTempDirectory();
+		assertThat(Paths.addExtension(basePath.resolve("testFile"), "ext"), is(basePath.resolve("testFile.ext")));
 	}
+
+	/** Tests whether an additional extension is being added correctly using {@link Paths#addExtension(Path, String)}. */
+	@Test
+	public void testAddSecondExtension() {
+		final Path basePath = getTempDirectory();
+		assertThat(Paths.addExtension(basePath.resolve("testFile.foo"), "ext"), is(basePath.resolve("testFile.foo.ext")));
+	}
+
+	/** Tests whether the extension is being added correctly using {@link Paths#addExtension(Path, String)} with a file name path. */
+	@Test
+	public void testAddExtensionUsingFileName() {
+		final Path testPath = java.nio.file.Paths.get("test");
+		assertThat(Paths.addExtension(testPath, "ext"), is(java.nio.file.Paths.get("test.ext")));
+	}
+
+	/** Tests whether the extension is being changed correctly using {@link Paths#addExtension(Path, String)}. */
+	@Test
+	public void testCchangeExtension() {
+		final Path basePath = getTempDirectory();
+		assertThat(Paths.changeExtension(basePath.resolve("testFile.foo"), "bar"), is(basePath.resolve("testFile.bar")));
+	}
+
+	/** Tests whether the extension is being removed correctly using {@link Paths#addExtension(Path, String)}. */
+	@Test
+	public void testRemoveExtension() {
+		final Path basePath = getTempDirectory();
+		assertThat(Paths.removeExtension(basePath.resolve("testFile.foo")), is(basePath.resolve("testFile")));
+	}
+
 }
