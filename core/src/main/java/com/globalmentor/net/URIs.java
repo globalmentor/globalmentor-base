@@ -1966,8 +1966,8 @@ public class URIs {
 	}
 
 	/**
-	 * Changes a URI from one base to another. For example, <code>http://example.com/base1/test.txt</code> changed to base
-	 * <code>http://example.com/base2/level2/</code> yields <code>http://example.com/base2/level2/test.txt</code>.
+	 * Changes a URI from one base to another. For example, <code>http://example.com/base1/test.txt</code> changed from base
+	 * <code>http://example.com/base1/</code> to base <code>http://example.com/base2/level2/</code> yields <code>http://example.com/base2/level2/test.txt</code>.
 	 * <p>
 	 * If the old and new base URIs are the same, the given URI is returned.
 	 * </p>
@@ -1978,7 +1978,7 @@ public class URIs {
 	 * @param uri The URI the base of which to change.
 	 * @param oldBaseURI The current base URI.
 	 * @param newBaseURI The base URI of the new URI to construct.
-	 * @return A new URI constructed by relativizing the URI to the old base URI and resolving the resulting URI agains the new base URI.
+	 * @return A new URI constructed by relativizing the URI to the old base URI and resolving the resulting URI against the new base URI.
 	 * @see #isUNCFileURI(URI)
 	 * @see URI#relativize(URI)
 	 * @see #resolve(URI, URI)
