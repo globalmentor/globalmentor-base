@@ -16,13 +16,14 @@
 
 package com.globalmentor.net;
 
+import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.net.URI;
 import java.util.*;
 
-import org.junit.*;
+import org.junit.jupiter.api.*;
 
 import com.globalmentor.collections.CollectionMap;
 import com.globalmentor.model.NameValuePair;
@@ -61,21 +62,21 @@ public class URIsTest {
 	}
 
 	/** Tests whether {@link URIs#checkScheme(URI, String)} is throwing an exception when an incompatible scheme is provided. */
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testCheckSchemeFail() {
-		URIs.checkScheme(URI.create("http://example.com/"), "https");
+		assertThrows(IllegalArgumentException.class, () -> URIs.checkScheme(URI.create("http://example.com/"), "https"));
 	}
 
 	/** Tests whether {@link URIs#checkScheme(URI, String)} is throwing an exception when a null {@link URI} is provided. */
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testCheckSchemeNullURIFail() {
-		URIs.checkScheme(null, "http");
+		assertThrows(NullPointerException.class, () -> URIs.checkScheme(null, "http"));
 	}
 
 	/** Tests whether {@link URIs#checkScheme(URI, String)} is throwing an exception when a null scheme is provided. */
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testCheckSchemeNullSchemeFail() {
-		URIs.checkScheme(URI.create("http://example.com/"), null);
+		assertThrows(NullPointerException.class, () -> URIs.checkScheme(URI.create("http://example.com/"), null));
 	}
 
 	/** Tests whether {@link URIs#changeScheme(URI, String)} is working properly. */
@@ -87,21 +88,21 @@ public class URIsTest {
 	}
 
 	/** Tests whether {@link URIs#changeScheme(URI, String)} is throwing an exception when an incompatible scheme is provided. */
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testChangeSchemeFail() {
-		URIs.changeScheme(URI.create("http://example.com/"), "http s");
+		assertThrows(IllegalArgumentException.class, () -> URIs.changeScheme(URI.create("http://example.com/"), "http s"));
 	}
 
 	/** Tests whether {@link URIs#changeScheme(URI, String)} is throwing an exception when a null {@link URI} provided. */
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testCheckChangeSchemeNullURIFail() {
-		URIs.changeScheme(null, "http");
+		assertThrows(NullPointerException.class, () -> URIs.changeScheme(null, "http"));
 	}
 
 	/** Tests whether {@link URIs#changeScheme(URI, String)} is throwing an exception when a null scheme provided. */
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testCheckChangeSchemeNullSchemeFail() {
-		URIs.changeScheme(URI.create("http://example.com/"), null);
+		assertThrows(NullPointerException.class, () -> URIs.changeScheme(URI.create("http://example.com/"), null));
 	}
 
 	/** Tests whether {@link URIs#checkInfoNamespace(URI, String)} is working properly. */
@@ -111,22 +112,22 @@ public class URIsTest {
 	}
 
 	/** Tests whether {@link URIs#checkInfoNamespace(URI, String)} is throwing an exception when an incompatible info namespace is provided. */
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testCheckInfoNamespaceFail() {
-		URIs.checkInfoNamespace(URI.create("info:lccn/22/eng//004.678"), "ddc");
+		assertThrows(IllegalArgumentException.class, () -> URIs.checkInfoNamespace(URI.create("info:lccn/22/eng//004.678"), "ddc"));
 	}
 
 	/** Tests whether {@link URIs#checkInfoNamespace(URI, String)} is throwing an exception when a null {@link URI} provided. */
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testCheckInfoNamespaceNullURIFail() {
-		URIs.checkInfoNamespace(null, "ddc");
+		assertThrows(NullPointerException.class, () -> URIs.checkInfoNamespace(null, "ddc"));
 	}
 
 	/** Tests whether {@link URIs#checkInfoNamespace(URI, String)} is throwing an exception when a null scheme is provided. */
-	@Test(expected = NullPointerException.class) // TODO The method throws an IllegalArgumentException instead of NullPointerException.
-	@Ignore
+	@Test // TODO The method throws an IllegalArgumentException instead of NullPointerException.
+	@Disabled
 	public void testCheckInfoNamespaceNullSchemeFail() {
-		URIs.checkInfoNamespace(URI.create("info:ddc/22/eng//004.678"), null);
+		assertThrows(NullPointerException.class, () -> URIs.checkInfoNamespace(URI.create("info:ddc/22/eng//004.678"), null));
 	}
 
 	/** Tests whether {@link URIs#checkInfoNamespace(URI, String)} is working properly. */
@@ -136,21 +137,21 @@ public class URIsTest {
 	}
 
 	/** Tests whether {@link URIs#checkInfoNamespace(URI, String)} is throwing an exception when a non-info scheme is provided. */
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testGetInfoNamespaceWrongSchemeFail() {
-		URIs.getInfoNamespace(URI.create("inf:ddc/22/eng//004.678"));
+		assertThrows(IllegalArgumentException.class, () -> URIs.getInfoNamespace(URI.create("inf:ddc/22/eng//004.678")));
 	}
 
 	/** Tests whether {@link URIs#checkInfoNamespace(URI, String)} is throwing an exception when an info {@link URI} without namespace is provided. */
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testGetInfoNamespaceMissingNamespaceFail() {
-		URIs.getInfoNamespace(URI.create("inf:/22/eng//004.678"));
+		assertThrows(IllegalArgumentException.class, () -> URIs.getInfoNamespace(URI.create("inf:/22/eng//004.678")));
 	}
 
 	/** Tests whether {@link URIs#checkInfoNamespace(URI, String)} is throwing an exception when a null {@link URI} provided. */
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testGetInfoNamespaceNullFail() {
-		URIs.getInfoNamespace(null);
+		assertThrows(NullPointerException.class, () -> URIs.getInfoNamespace(null));
 	}
 
 	/** Tests whether {@link URIs#getInfoIdentifier(URI)} is working properly. */
@@ -161,15 +162,15 @@ public class URIsTest {
 	}
 
 	/** Tests whether {@link URIs#getInfoIdentifier(URI)} is throwing an exception when a non-info scheme is provided. */
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testGetInfoIdentifierWrongSchemeFail() {
-		URIs.getInfoIdentifier(URI.create("inf:/22/eng//004.678"));
+		assertThrows(IllegalArgumentException.class, () -> URIs.getInfoIdentifier(URI.create("inf:/22/eng//004.678")));
 	}
 
 	/** Tests whether {@link URIs#getInfoIdentifier(URI)} is throwing an exception when a null {@link URI} provided. */
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testGetInfoIdentifierNullFail() {
-		URIs.getInfoIdentifier(null);
+		assertThrows(NullPointerException.class, () -> URIs.getInfoIdentifier(null));
 	}
 
 	/** Tests whether {@link URIs#getInfoRawIdentifier(URI)} is working properly. */
@@ -180,15 +181,15 @@ public class URIsTest {
 	}
 
 	/** Tests whether {@link URIs#getInfoRawIdentifier(URI)} is throwing an exception when a non-info scheme is provided. */
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testGetInfoRawIdentifierWrongSchemeFail() {
-		URIs.getInfoRawIdentifier(URI.create("inf:/22/eng//004.678"));
+		assertThrows(IllegalArgumentException.class, () -> URIs.getInfoRawIdentifier(URI.create("inf:/22/eng//004.678")));
 	}
 
 	/** Tests whether {@link URIs#getInfoRawIdentifier(URI)} is throwing an exception when a null {@link URI} is provided. */
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testGetInfoRawIdentifierNullFail() {
-		URIs.getInfoRawIdentifier(null);
+		assertThrows(NullPointerException.class, () -> URIs.getInfoRawIdentifier(null));
 	}
 
 	/** Tests whether {@link URIs#isInfoNamespace(URI, String)} is working properly. */
@@ -200,16 +201,16 @@ public class URIsTest {
 	}
 
 	/** Tests whether {@link URIs#isInfoNamespace(URI, String)} is throwing an exception when a null {@link URI} is provided. */
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testIsInfoNamespaceTestNullURIFail() {
-		URIs.isInfoNamespace(null, "ddc");
+		assertThrows(NullPointerException.class, () -> URIs.isInfoNamespace(null, "ddc"));
 	}
 
 	/** Tests whether {@link URIs#isInfoNamespace(URI, String)} is throwing an exception when a null scheme is provided. */
-	@Test(expected = NullPointerException.class)
-	@Ignore //The method throws an IllegalArgumentException instead of NullPointerException.
+	@Test
+	@Disabled //TODO The method throws an IllegalArgumentException instead of NullPointerException.
 	public void testIsInfoNamespaceTestNullSchemeFail() {
-		URIs.isInfoNamespace(URI.create("info:ddc/22/eng//004.678"), null);
+		assertThrows(NullPointerException.class, () -> URIs.isInfoNamespace(URI.create("info:ddc/22/eng//004.678"), null));
 	}
 
 	/** Tests whether {@link URIs#getPathRawPath(URI)} is working properly. */
@@ -220,9 +221,9 @@ public class URIsTest {
 	}
 
 	/** Tests whether {@link URIs#getPathRawPath(URI)} is throwing an exception when a non-path scheme is provided. */
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testGetPathRawPathWrongSchemeFail() {
-		URIs.getPathRawPath(URI.create("http://example.com"));
+		assertThrows(IllegalArgumentException.class, () -> URIs.getPathRawPath(URI.create("http://example.com")));
 	}
 
 	/** Tests whether {@link URIs#getPathURIPath(URI)} is working properly. */
@@ -233,9 +234,9 @@ public class URIsTest {
 	}
 
 	/** Tests whether {@link URIs#getPathURIPath(URI)} is throwing an exception when a non-path scheme is provided. */
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testGetPathURIPathWrongSchemeFail() {
-		URIs.getPathURIPath(URI.create("http://example.com"));
+		assertThrows(IllegalArgumentException.class, () -> URIs.getPathURIPath(URI.create("http://example.com")));
 	}
 
 	/** Tests whether {@link URIs#changePath(URI, URIPath)} is working properly. */
@@ -250,9 +251,9 @@ public class URIsTest {
 	}
 
 	/** Tests whether {@link URIs#changePath(URI, URIPath)} is throwing an exception when a null {@link URI} is provided. */
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testChangePathNullURIFail() {
-		URIs.changePath(null, URIPath.asPathURIPath(URI.create("path:foobar/")));
+		assertThrows(NullPointerException.class, () -> URIs.changePath(null, URIPath.asPathURIPath(URI.create("path:foobar/"))));
 	}
 
 	/** Tests whether {@link URIs#changeRawPath(URI, String)} is working properly. */
@@ -266,9 +267,9 @@ public class URIsTest {
 	}
 
 	/** Tests whether {@link URIs#changeRawPath(URI, String)} is throwing an exception when a null path is provided. */
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testChangeRawPathNullURIFail() {
-		URIs.changeRawPath(null, "/foobar");
+		assertThrows(NullPointerException.class, () -> URIs.changeRawPath(null, "/foobar"));
 	}
 
 	/** Tests whether {@link URIs#changeHost(URI, String)} is working properly. */
@@ -280,9 +281,9 @@ public class URIsTest {
 	}
 
 	/** Tests whether {@link URIs#changeHost(URI, String)} is throwing an exception when a null host is provided. */
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testChangeHostNullHostFail() {
-		URIs.changeHost(URI.create("http://example.com/foo/bar"), null);
+		assertThrows(NullPointerException.class, () -> URIs.changeHost(URI.create("http://example.com/foo/bar"), null));
 	}
 
 	/** Tests whether {@link URIs#changeRawSchemeSpecificPart(URI, String)} is working properly. */
@@ -294,21 +295,21 @@ public class URIsTest {
 	}
 
 	/** Tests whether {@link URIs#changeRawSchemeSpecificPart(URI, String)} is throwing an exception when a null scheme-specific part is provided. */
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testChangeRawSchemeSpecificPartNullSchemeFail() {
-		URIs.changeRawSchemeSpecificPart(URI.create("http://example.com"), null);
+		assertThrows(NullPointerException.class, () -> URIs.changeRawSchemeSpecificPart(URI.create("http://example.com"), null));
 	}
 
 	/** Tests whether {@link URIs#changeRawSchemeSpecificPart(URI, String)} is throwing an exception when a null uri is provided. */
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testChangeRawSchemeSpecificPartNullURIFail() {
-		URIs.changeRawSchemeSpecificPart(null, "http");
+		assertThrows(NullPointerException.class, () -> URIs.changeRawSchemeSpecificPart(null, "http"));
 	}
 
 	/** Tests whether {@link URIs#changeRawSchemeSpecificPart(URI, String)} is throwing an exception when a null uri and scheme-specific part is provided. */
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testChangeRawSchemeSpecificPartNullSchemeAndURIFail() {
-		URIs.changeRawSchemeSpecificPart(null, null);
+		assertThrows(NullPointerException.class, () -> URIs.changeRawSchemeSpecificPart(null, null));
 	}
 
 	/** Tests whether {@link URIs#toCollectionURI(URI)} is working properly. */
@@ -321,9 +322,9 @@ public class URIsTest {
 	}
 
 	/** Tests whether {@link URIs#toCollectionURI(URI)} is throwing an exception when a null {@link URI} is provided. */
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testToCollectionNullURIFail() {
-		URIs.toCollectionURI(null);
+		assertThrows(NullPointerException.class, () -> URIs.toCollectionURI(null));
 	}
 
 	/** Tests whether {@link URIs#getPath(URI)} is working properly. */
@@ -336,9 +337,9 @@ public class URIsTest {
 	}
 
 	/** Tests whether {@link URIs#getPath(URI)} is throwing an exception when a null {@link URI} is provided. */
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testGetPathNullURIFail() {
-		URIs.getPath(null);
+		assertThrows(NullPointerException.class, () -> URIs.getPath(null));
 	}
 
 	/** Tests whether {@link URIs#getRawName(URI)} is working properly. */
@@ -355,9 +356,9 @@ public class URIsTest {
 	}
 
 	/** Tests whether {@link URIs#getRawName(URI)} is throwing an exception when a null {@link URI} is provided. */
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testGetRawNameNullURIFail() {
-		URIs.getRawName(null);
+		assertThrows(NullPointerException.class, () -> URIs.getRawName(null));
 	}
 
 	/** Tests whether {@link URIs#getName(URI)} is working properly. */
@@ -373,9 +374,9 @@ public class URIsTest {
 	}
 
 	/** Tests whether {@link URIs#getName(URI)} is throwing an exception when a null {@link URI} is provided. */
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testGetNameNullURIFail() {
-		URIs.getName((URI)null);
+		assertThrows(NullPointerException.class, () -> URIs.getName((URI)null));
 	}
 
 	/** Tests whether {@link URIs#changeName(String, String)} is working properly. */
@@ -391,27 +392,27 @@ public class URIsTest {
 	}
 
 	/** Tests whether {@link URIs#changeName(String, String)} is throwing an exception when an empty name for the {@link URI} is provided. */
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testChangeNameEmptyURINameFail() {
-		URIs.changeName(URI.create("http://example.com"), "foo*bar.txt");
+		assertThrows(IllegalArgumentException.class, () -> URIs.changeName(URI.create("http://example.com"), "foo*bar.txt"));
 	}
 
 	/** Tests whether {@link URIs#changeName(String, String)} is throwing an exception when a "/" name for the {@link URI} is provided. */
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testChangeNameSlashURINameFail() {
-		URIs.changeName(URI.create("http://example.com/"), "foo*bar.txt");
+		assertThrows(IllegalArgumentException.class, () -> URIs.changeName(URI.create("http://example.com/"), "foo*bar.txt"));
 	}
 
 	/** Tests whether {@link URIs#changeName(String, String)} is throwing an exception when a null {@link URI} is provided. */
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testChangeNameNullURIFail() {
-		URIs.changeName((URI)null, "");
+		assertThrows(NullPointerException.class, () -> URIs.changeName((URI)null, ""));
 	}
 
 	/** Tests whether {@link URIs#changeName(String, String)} is throwing an exception when a null name is provided. */
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testChangeNameNullNameFail() {
-		URIs.changeName(URI.create("http://example.com/"), null);
+		assertThrows(NullPointerException.class, () -> URIs.changeName(URI.create("http://example.com/"), null));
 	}
 
 	/** Tests whether {@link URIs#changeRawName(String, String)} is working properly. */
@@ -427,27 +428,27 @@ public class URIsTest {
 	}
 
 	/** Tests whether {@link URIs#changeRawName(String, String)} is throwing an exception when an empty {@link URI} name is provided. */
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testChangeRawNameEmptyURINameFail() {
-		URIs.changeRawName(URI.create("http://example.com"), "foo%2Abar.txt");
+		assertThrows(IllegalArgumentException.class, () -> URIs.changeRawName(URI.create("http://example.com"), "foo%2Abar.txt"));
 	}
 
 	/** Tests whether {@link URIs#changeRawName(String, String)} is throwing an exception when a "/" {@link URI} name is provided. */
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testChangeRawNameSlashURINameFail() {
-		URIs.changeRawName(URI.create("http://example.com/"), "foo%2Abar.txt");
+		assertThrows(IllegalArgumentException.class, () -> URIs.changeRawName(URI.create("http://example.com/"), "foo%2Abar.txt"));
 	}
 
 	/** Tests whether {@link URIs#changeRawName(String, String)} is throwing an exception when a null {@link URI} is provided. */
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testChangeRawNameNullURIFail() {
-		URIs.changeRawName((URI)null, "");
+		assertThrows(NullPointerException.class, () -> URIs.changeRawName((URI)null, ""));
 	}
 
 	/** Tests whether {@link URIs#changeRawName(String, String)} is throwing an exception when a null name is provided. */
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testChangeRawNameNullNameFail() {
-		URIs.changeRawName(URI.create("http://example.com/foo"), null);
+		assertThrows(NullPointerException.class, () -> URIs.changeRawName(URI.create("http://example.com/foo"), null));
 	}
 
 	/** Tests whether {@link URIs#addRawNameExtension(String, String)} is working properly. */
@@ -461,27 +462,27 @@ public class URIsTest {
 	}
 
 	/** Tests whether {@link URIs#addRawNameExtension(String, String)} is throwing an exception when a "/" name is provided. */
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testAddRawNameExtensionSlashName() {
-		URIs.addRawNameExtension(URI.create("http://example.com/"), "");
+		assertThrows(IllegalArgumentException.class, () -> URIs.addRawNameExtension(URI.create("http://example.com/"), ""));
 	}
 
 	/** Tests whether {@link URIs#addRawNameExtension(String, String)} is throwing an exception when an empty name is provided. */
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testAddRawNameExtensionEmptyName() {
-		URIs.addRawNameExtension(URI.create("http://example.com"), "foobar");
+		assertThrows(IllegalArgumentException.class, () -> URIs.addRawNameExtension(URI.create("http://example.com"), "foobar"));
 	}
 
 	/** Tests whether {@link URIs#addRawNameExtension(String, String)} is throwing an exception when a null name is provided. */
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testAddRawNameExtensionNullNameFail() {
-		URIs.addRawNameExtension(null, "txt");
+		assertThrows(NullPointerException.class, () -> URIs.addRawNameExtension(null, "txt"));
 	}
 
 	/** Tests whether {@link URIs#addRawNameExtension(String, String)} is throwing an exception when a null extension is provided. */
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testAddRawNameExtensionNullExtensionFail() {
-		URIs.addRawNameExtension(URI.create("http://example.com"), null);
+		assertThrows(NullPointerException.class, () -> URIs.addRawNameExtension(URI.create("http://example.com"), null));
 	}
 
 	/** Tests whether {@link URIs#getNameExtension(URI)} is working properly. */
@@ -499,9 +500,9 @@ public class URIsTest {
 	}
 
 	/** Tests whether {@link URIs#getNameExtension(URI)} is throwing an exception when a null {@link URI} is provided. */
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testGetNameExtensionNullURIFail() {
-		URIs.getNameExtension((URI)null);
+		assertThrows(NullPointerException.class, () -> URIs.getNameExtension((URI)null));
 	}
 
 	/** Tests whether {@link URIs#getNameExtension(URI)} is working properly. */
@@ -537,21 +538,21 @@ public class URIsTest {
 	}
 
 	/** Tests whether {@link URIs#changeRawNameExtension(URI, String)} is working properly. */
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testChangeRawNameExtensionStringSlashName() {
-		URIs.changeRawNameExtension(URI.create("http://example.com/"), "foobar");
+		assertThrows(IllegalArgumentException.class, () -> URIs.changeRawNameExtension(URI.create("http://example.com/"), "foobar"));
 	}
 
 	/** Tests whether {@link URIs#changeRawNameExtension(URI, String)} is working properly. */
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testChangeRawNameExtensionStringEmptyName() {
-		URIs.changeRawNameExtension(URI.create("http://example.com"), "foobar");
+		assertThrows(IllegalArgumentException.class, () -> URIs.changeRawNameExtension(URI.create("http://example.com"), "foobar"));
 	}
 
 	/** Tests whether {@link URIs#changeRawNameExtension(URI, String)} is throwing an exception when a null name is provided. */
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testChangeRawNameExtensionNullExtensionFail() {
-		URIs.changeRawNameExtension((URI)null, "");
+		assertThrows(NullPointerException.class, () -> URIs.changeRawNameExtension((URI)null, ""));
 	}
 
 	/** Tests whether {@link URIs#getPlainURI(URI)} is working properly. */
@@ -576,9 +577,9 @@ public class URIsTest {
 	}
 
 	/** Tests whether {@link URIs#getPlainURI(URI)} is throwing an exception when a null {@link URI} is provided. */
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testGetPlainURINullURIFail() {
-		URIs.getPlainURI((URI)null);
+		assertThrows(NullPointerException.class, () -> URIs.getPlainURI((URI)null));
 	}
 
 	/** Tests whether {@link URIs#constructQuery(URIQueryParameter...)} is working properly. */
@@ -591,9 +592,9 @@ public class URIsTest {
 	}
 
 	/** Tests whether {@link URIs#constructQuery(URIQueryParameter...)} is working properly. */
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testConstructQueryParametersNullQueryParameterFail() {
-		URIs.constructQuery((URIQueryParameter)null);
+		assertThrows(NullPointerException.class, () -> URIs.constructQuery((URIQueryParameter)null));
 	}
 
 	/** Tests whether {@link URIs#constructQuery(URIQueryParameter...)} is working properly. */
@@ -607,9 +608,9 @@ public class URIsTest {
 	}
 
 	/** Tests whether {@link URIs#constructQuery(URIQueryParameter...)} is throwing an exception when a null {@link URIQueryParameter} is provided. */
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testConstructQueryNullParameters() {
-		URIs.constructQuery((URIQueryParameter)null);
+		assertThrows(NullPointerException.class, () -> URIs.constructQuery((URIQueryParameter)null));
 	}
 
 	/** Tests whether {@link URIs#constructQuery(String)} is working properly. */
@@ -623,9 +624,9 @@ public class URIsTest {
 	}
 
 	/** Tests whether {@link URIs#constructQuery(String)} is throwing an exception when a null {@link URIQueryParameter} is provided. */
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testConstructQueryStringNullParameters() {
-		URIs.constructQuery((String)null);
+		assertThrows(NullPointerException.class, () -> URIs.constructQuery((String)null));
 	}
 
 	/** Tests whether {@link URIs#appendRawQuery(URI, String)} is working properly. */
@@ -637,15 +638,15 @@ public class URIsTest {
 	}
 
 	/** Tests whether {@link URIs#appendRawQuery(URI, String)} is throwing an exception when a null query parameter is provided. */
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testAppendRawQueryNullQueryFail() {
-		URIs.appendRawQuery(URI.create("http://example.com/"), null);
+		assertThrows(NullPointerException.class, () -> URIs.appendRawQuery(URI.create("http://example.com/"), null));
 	}
 
 	/** Tests whether {@link URIs#appendRawQuery(URI, String)} is throwing an exception when a null {@link URI} is provided. */
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testAppendRawQueryNullURIFail() {
-		URIs.appendRawQuery(null, "type=foo");
+		assertThrows(NullPointerException.class, () -> URIs.appendRawQuery(null, "type=foo"));
 	}
 
 	/** Tests whether {@link URIs#appendQueryParameter(URI, String, String)} is working properly. */
@@ -658,21 +659,21 @@ public class URIsTest {
 	}
 
 	/** Tests whether {@link URIs#appendQueryParameter(URI, String, String)} is throwing an exception when a null query name is provided. */
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testAppendQueryParameterNullQueryNameFail() {
-		URIs.appendQueryParameter(URI.create("http://example.com/"), null, "");
+		assertThrows(NullPointerException.class, () -> URIs.appendQueryParameter(URI.create("http://example.com/"), null, ""));
 	}
 
 	/** Tests whether {@link URIs#appendQueryParameter(URI, String, String)} is throwing an exception when a null query name and value is provided. */
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testAppendQueryParameterNullQueryNameAndValueFail() {
-		URIs.appendQueryParameter(URI.create("http://example.com/"), null, null);
+		assertThrows(NullPointerException.class, () -> URIs.appendQueryParameter(URI.create("http://example.com/"), null, null));
 	}
 
 	/** Tests whether {@link URIs#appendQueryParameter(URI, String, String)} is throwing an exception when a null {@link URI} is provided. */
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testAppendQueryParameterNullURIFail() {
-		URIs.appendQueryParameter(null, "type", "foo");
+		assertThrows(NullPointerException.class, () -> URIs.appendQueryParameter(null, "type", "foo"));
 	}
 
 	/** Tests whether {@link URIs#getParameterMap(URI)} is working properly. */
@@ -699,9 +700,9 @@ public class URIsTest {
 	}
 
 	/** Tests whether {@link URIs#getParameterMap(URI)} is throwing an exception when a null {@link URI} is provided. */
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testGetParameterMapNullFail() {
-		URIs.getParameterMap(null);
+		assertThrows(NullPointerException.class, () -> URIs.getParameterMap(null));
 	}
 
 	/** Tests whether {@link URIs#getParameters(URI)} is working properly. */
@@ -747,15 +748,15 @@ public class URIsTest {
 	}
 
 	/** Tests whether {@link URIs#createPathURI(String)} throwing an exception when a null {@link URI} is provided. */
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testCreatePathURINullFail() {
-		URIs.createPathURI(null);
+		assertThrows(NullPointerException.class, () -> URIs.createPathURI(null));
 	}
 
 	/** Tests whether {@link URIs#createPathURI(String)} throwing an exception when a scheme is provided. */
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testCreatePathURISchemeProvidedFail() {
-		URIs.createPathURI("http://foobar");
+		assertThrows(IllegalArgumentException.class, () -> URIs.createPathURI("http://foobar"));
 	}
 
 	/** Tests whether {@link URIs#checkRoot(URI)} is working properly. */
@@ -765,21 +766,22 @@ public class URIsTest {
 	}
 
 	/** Tests whether {@link URIs#checkRoot(URI)} is throwing an exception when a {@link URI} without the root path is provided. */
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testCheckRootNotRootPath() {
-		assertThat(URIs.checkRoot(URI.create("http://example.com/foo")), is(URI.create("http://example.com/foo")));
+		assertThrows(IllegalArgumentException.class,
+				() -> assertThat(URIs.checkRoot(URI.create("http://example.com/foo")), is(URI.create("http://example.com/foo"))));
 	}
 
 	/** Tests whether {@link URIs#checkRoot(URI)} is throwing an exception when a {@link URI} without the root path is provided. */
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testCheckRootNotRootPath2() {
-		assertThat(URIs.checkRoot(URI.create("http://example.com")), is(URI.create("http://example.com/foo")));
+		assertThrows(IllegalArgumentException.class, () -> assertThat(URIs.checkRoot(URI.create("http://example.com")), is(URI.create("http://example.com/foo"))));
 	}
 
 	/** Tests whether {@link URIs#checkRoot(URI)} is throwing an exception when a null {@link URI} is provided. */
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testCheckRootNullUri() {
-		URIs.checkRoot(null);
+		assertThrows(NullPointerException.class, () -> URIs.checkRoot(null));
 	}
 
 	/** Tests whether {@link URIs#checkAbsolute(URI)} is working properly. */
@@ -791,15 +793,15 @@ public class URIsTest {
 	}
 
 	/** Tests whether {@link URIs#checkAbsolute(URI)} is throwing an exception when a {@link URI} without schema is provided. */
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testCheckAbsoluteWithoutSchema() {
-		assertThat(URIs.checkRoot(URI.create("example.com")), is(URI.create("http://example.com/foo")));
+		assertThrows(IllegalArgumentException.class, () -> assertThat(URIs.checkRoot(URI.create("example.com")), is(URI.create("http://example.com/foo"))));
 	}
 
 	/** Tests whether {@link URIs#checkAbsolute(URI)} is throwing an exception when a null {@link URI} is provided. */
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testCheckAbsoluteNullUri() {
-		URIs.checkAbsolute(null);
+		assertThrows(NullPointerException.class, () -> URIs.checkAbsolute(null));
 	}
 
 	/** Tests whether {@link URIs#isPathURI(URI)} is working properly. */
@@ -828,9 +830,9 @@ public class URIsTest {
 	}
 
 	/** Tests whether {@link URIs#isPathURI(URI)} is throwing an exception when a null {@link URI} is provided. */
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testIsPathURINullURIFail() {
-		URIs.isPathURI(null);
+		assertThrows(NullPointerException.class, () -> URIs.isPathURI(null));
 	}
 
 	/** Tests whether {@link URIs#getPlainURI(URI)} is working properly. */
@@ -855,9 +857,9 @@ public class URIsTest {
 	}
 
 	/** Tests whether {@link URIs#isPlainURI(URI)} is throwing an exception when a null {@link URI} is provided. */
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testIsPlainURINullURIFail() {
-		URIs.isPlainURI((URI)null);
+		assertThrows(NullPointerException.class, () -> URIs.isPlainURI((URI)null));
 	}
 
 	/** Tests whether {@link URIs#resolve(URI, URI)} is working properly. */
@@ -917,21 +919,21 @@ public class URIsTest {
 	}
 
 	/** Tests whether {@link URIs#resolve(URI, URI)} is throwing an exception when a null base {@link URI} is provided. */
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testResolveNullBaseURIFail() {
-		URIs.resolve(null, URI.create("http://example.com/foobar"));
+		assertThrows(NullPointerException.class, () -> URIs.resolve(null, URI.create("http://example.com/foobar")));
 	}
 
 	/** Tests whether {@link URIs#resolve(URI, URI)} is throwing an exception when a null child {@link URI} is provided. */
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testResolveNullChildURIFail() {
-		URIs.resolve(URI.create("http://example.com/"), (URI)null);
+		assertThrows(NullPointerException.class, () -> URIs.resolve(URI.create("http://example.com/"), (URI)null));
 	}
 
 	/** Tests whether {@link URIs#resolve(URI, URI)} is throwing an exception when a null base and child {@link URI} are provided. */
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testResolveNullBaseAndChildURIFail() {
-		URIs.resolve(null, (URI)null);
+		assertThrows(NullPointerException.class, () -> URIs.resolve(null, (URI)null));
 	}
 
 	/** @see URIs#getCurrentLevel(URI). */
@@ -951,9 +953,9 @@ public class URIsTest {
 	}
 
 	/** Tests whether {@link URIs#getCurrentLevel(URI)} is throwing an exception when a null {@link URI} provided. */
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testGetCurrentLevelTestNullFail() {
-		URIs.getCurrentLevel(null);
+		assertThrows(NullPointerException.class, () -> URIs.getCurrentLevel(null));
 	}
 
 	/** @see URIs#getParentLevel(URI). */
@@ -973,9 +975,9 @@ public class URIsTest {
 	}
 
 	/** Tests whether {@link URIs#getParentLevel(URI)} is throwing an exception when a null {@link URI} provided. */
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testGetParentLevelTestNullFail() {
-		URIs.getParentLevel(null);
+		assertThrows(NullPointerException.class, () -> URIs.getParentLevel(null));
 	}
 
 	/** @see URIs#getParentURI(URI). */
@@ -993,9 +995,9 @@ public class URIsTest {
 	}
 
 	/** Tests whether {@link URIs#getParentURI(URI)} is throwing an exception when a null {@link URI} provided. */
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testGetParentURITestNullFail() {
-		URIs.getParentURI(null);
+		assertThrows(NullPointerException.class, () -> URIs.getParentURI(null));
 	}
 
 	/**
@@ -1008,7 +1010,7 @@ public class URIsTest {
 	 * @see <a href="https://bugs.openjdk.java.net/browse/JDK-7171415">JDK-7171415</a>
 	 */
 	@Test
-	@Ignore //TODO un-ignore and remove workaround code across projects
+	@Disabled //TODO un-ignore and remove workaround code across projects
 	public void testURIHashCode() {
 		final URI uri1 = URI.create("http://www.example.com/foo%2Abar");
 		final URI uri2 = URI.create("http://www.example.com/foo%2abar");
