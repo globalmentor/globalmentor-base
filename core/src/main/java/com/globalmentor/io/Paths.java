@@ -35,6 +35,91 @@ public class Paths {
 	private Paths() {
 	}
 
+	/**
+	 * Changes a path from one base to another. For example, <code>/example/base1/test.txt</code> changed from base <code>/example/base1/</code> to base
+	 * <code>/example/base2/level2/</code> yields <code>/example/base2/level2/test.txt</code>. If the old and new base paths are the same, the given path is
+	 * returned.
+	 * <p>
+	 * The paths are normalized before the base is changed.
+	 * </p>
+	 * @param path The path the base of which to change.
+	 * @param oldBasePath The current base path.
+	 * @param newBasePath The base path of the new path to return .
+	 * @return A new path constructed by relativizing the path to the old base path and resolving the resulting path against the new base path.
+	 * @see Path#relativize(Path)
+	 * @see Path#resolveSibling(Path)
+	 * @throws IllegalArgumentException if the old base path is not a base path (or the same path) of the given path.
+	 */
+	public static Path changeBase(@Nonnull final Path path, Path oldBasePath, Path newBasePath) {
+		oldBasePath = oldBasePath.normalize();
+		newBasePath = newBasePath.normalize();
+		if(oldBasePath.equals(newBasePath)) {
+			return path; //the URI will not change
+		}
+		checkArgumentSubPath(oldBasePath, path);
+		final Path relativePath = oldBasePath.relativize(path);
+		assert !relativePath.isAbsolute() : "A path relativized against a base path is not expected to be absolute.";
+		return newBasePath.resolve(relativePath);
+	}
+
+	/**
+	 * Ensures that a path is absolute.
+	 * @param path The path to check to be absolute.
+	 * @return The given path.
+	 * @throws IllegalArgumentException if the given path is not absolute.
+	 * @see Path#isAbsolute()
+	 */
+	public static Path checkArgumentAbsolute(@Nonnull final Path path) {
+		checkArgument(path.isAbsolute(), "The path %s is not absolute.", path);
+		return path;
+	}
+
+	/**
+	 * Ensures one path is a subpath of another; that is, they both share a base path with no backtracking. This method allows the paths to be identical.
+	 * @param basePath The base path against which the other path will be compared.
+	 * @param subPath The potential subpath.
+	 * @return The given subpath.
+	 * @throws IllegalArgumentException if the given subpath is not a subpath of (or the same path as) the base path.
+	 * @see #isSubPath(Path, Path)
+	 */
+	public static Path checkArgumentSubPath(@Nonnull final Path basePath, @Nonnull final Path subPath) {
+		checkArgument(isSubPath(basePath, subPath), "The path %s is not a subpath of the path %s.", subPath, basePath);
+		return subPath;
+	}
+
+	/**
+	 * Ensures two paths are <dfn>disjoint</dfn>, that is, neither one is a subpath of (or equal to) the other.
+	 * @param path1 The first path to compare.
+	 * @param path2 The second path.
+	 * @throws IllegalArgumentException if the two path trees overlap.
+	 * @see #isDisjoint(Path, Path)
+	 */
+	public static void checkArgumentDisjoint(@Nonnull final Path path1, @Nonnull final Path path2) {
+		checkArgument(isDisjoint(path1, path2), "The paths %s and %s are not allowed to overlap.", path1, path2);
+	}
+
+	/**
+	 * Determines whether two paths are <dfn>disjoint</dfn>, that is, neither one is a subpath of (or equal to) the other.
+	 * @param path1 The first path to compare.
+	 * @param path2 The second path.
+	 * @return <code>true</code> if the two path trees do not overlap.
+	 * @see #isSubPath(Path, Path)
+	 */
+	public static boolean isDisjoint(@Nonnull final Path path1, @Nonnull final Path path2) {
+		return !isSubPath(path1, path2) && !isSubPath(path2, path1);
+	}
+
+	/**
+	 * Determines whether one path is a subpath of another; that is, they both share a base path with no backtracking. This method allows the paths to be
+	 * identical.
+	 * @param basePath The base path against which the other path will be compared.
+	 * @param subPath The potential subpath.
+	 * @return <code>true</code> if the given subpath is truly a subpath of (or the same path as) the base path.
+	 */
+	public static boolean isSubPath(@Nonnull final Path basePath, @Nonnull final Path subPath) {
+		return subPath.normalize().startsWith(basePath.normalize()); //normalize files to compare apples to apples
+	}
+
 	//#filenames
 
 	//##dotfiles
@@ -87,6 +172,19 @@ public class Paths {
 		final Path filename = path.getFileName();
 		checkArgument(filename != null, "Path %s has no filename for changing its extension.");
 		return path.resolveSibling(Filenames.changeExtension(filename.toString(), extension));
+	}
+
+	/**
+	 * Removes the last extension, if any, of a path's filename and returns a new filename with no extension.
+	 * @implSpec This method delegates to {@link Filenames#removeExtension(String)}.
+	 * @param path The path for which an extension will be removed.
+	 * @return The path with the filename with no extension.
+	 * @see Filenames#removeExtension(String)
+	 */
+	public static Path removeExtension(@Nonnull final Path path) {
+		final Path filename = path.getFileName();
+		checkArgument(filename != null, "Path %s has no filename for changing its extension.");
+		return path.resolveSibling(Filenames.removeExtension(filename.toString()));
 	}
 
 }

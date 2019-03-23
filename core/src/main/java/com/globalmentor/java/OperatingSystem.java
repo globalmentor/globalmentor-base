@@ -16,7 +16,8 @@
 
 package com.globalmentor.java;
 
-import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import static com.globalmentor.java.Strings.*;
 
@@ -62,8 +63,8 @@ public class OperatingSystem {
 	 * @throws SecurityException if a security manager exists and its <code>checkPropertyAccess</code> method doesn't allow access to this system property.
 	 * @see #USER_HOME_PROPERTY
 	 */
-	public static File getUserHomeDirectory() throws SecurityException {
-		return new File(System.getProperty(USER_HOME_PROPERTY)); //return the user home directory
+	public static Path getUserHomeDirectory() throws SecurityException {
+		return Paths.get(System.getProperty(USER_HOME_PROPERTY)); //return the user home directory
 	}
 
 	/**
@@ -72,8 +73,8 @@ public class OperatingSystem {
 	 * @throws SecurityException if a security manager exists and its <code>checkPropertyAccess</code> method doesn't allow access to this system property.
 	 * @see #JAVA_IO_TMPDIR_PROPERTY
 	 */
-	public static File getTempDirectory() throws SecurityException {
-		return new File(System.getProperty(JAVA_IO_TMPDIR_PROPERTY)); //return the system temporary directory
+	public static Path getTempDirectory() throws SecurityException {
+		return Paths.get(System.getProperty(JAVA_IO_TMPDIR_PROPERTY)); //return the system temporary directory
 	}
 
 	/**
