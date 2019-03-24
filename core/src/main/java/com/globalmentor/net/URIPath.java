@@ -224,15 +224,16 @@ public final class URIPath {
 	}
 
 	/**
-	 * Relativizes the given path against this path. This is a convenience method that functions by creating a new {@link URIPath} from the given string and
-	 * delegating to {@link #relativize(URIPath)}.
+	 * Relativizes the given path against this path.
+	 * @implSpec This is a convenience method that functions by creating a new {@link URIPath} from the given string and delegating to
+	 *           {@link #relativizeChildPath(URIPath)}.
 	 * @param path The path to be relativized against this path.
 	 * @return The resulting path.
 	 * @throws NullPointerException if the given path is <code>null</code>.
 	 * @see URIPath#of(String)
 	 */
-	public URIPath relativize(final String path) {
-		return relativize(URIPath.of(path)); //convert the String to a URI path and relativize it against this path
+	public URIPath relativizeChildPath(final String path) {
+		return relativizeChildPath(URIPath.of(path)); //convert the String to a URI path and relativize it against this path
 	}
 
 	/**
@@ -241,35 +242,108 @@ public final class URIPath {
 	 * @return The resulting path.
 	 * @throws NullPointerException if the given path is <code>null</code>.
 	 */
-	public URIPath relativize(final URIPath path) {
+	public URIPath relativizeChildPath(final URIPath path) {
 		return URIPath.of(uri.relativize(requireNonNull(path, "Path cannot be null.").toURI()).getRawPath()); //relativize the URI form of the given path against the URI form of this path and create a new path from the resulting URI's raw path
 	}
 
 	/**
-	 * Relativizes a URI against a base URI and returns a {@link URIPath} object indicating the path relative to the base.
-	 * @implNote Note that this does not properly relativize URIs that require backtracking, such as siblings; see
-	 *           <a href="https://bugs.java.com/bugdatabase/view_bug.do?bug_id=6226081">JDK-6226081</a>.
-	 * @param baseURI The base URI against which to relativize.
-	 * @param uri The URI to relativize against the base.
-	 * @return A new URI path relative to the base URI.
-	 * @see URI#relativize(URI)
-	 * @throws NullPointerException if the given base URI and/or URI is <code>null</code>.
-	 * @throws IllegalArgumentException if the given base URI is not actually a base URI of the given URI.
+	 * Returns the path of a target path relative to this path, which may be a sibling path or even a child path of the other path. A path relativized against
+	 * itself will return an empty path. A non-collection relativized against its parent will also return an empty path. Otherwise if this path is not a parent of
+	 * (or the same path as) the target path, the path will backtrack using <code>..</code> path segments as appropriate.
+	 * @implSpec This is a convenience method that functions by creating a new {@link URIPath} from the given string and delegating to
+	 *           {@link #relativize(URIPath)}.
+	 * @param targetPath The path that will be relativized against this path.
+	 * @return The relative path of the source URI to the target URI, or the given target path if the two paths have no base in common.
+	 * @throws NullPointerException if the given path string is <code>null</code>.
+	 * @see URIs#findRelativePath(URI, URI)
 	 */
-	public static URIPath relativize(final URI baseURI, final URI uri) {
-		final URI relativeURI = baseURI.relativize(uri); //get a URI relative to the base URI
-		if(relativeURI.isAbsolute()) { //if we couldn't relativize the the URI to the old base URI and come up with a relative URI
-			throw new IllegalArgumentException(baseURI.toASCIIString() + " is not a base URI of " + uri);
-		}
-		return URIPath.fromURI(relativeURI);
+	public URIPath relativize(@Nonnull final String targetPath) {
+		return relativize(URIPath.of(targetPath));
 	}
 
 	/**
-	 * Resolves the given path against this path. This is a convenience method that functions by creating a new {@link URIPath} from the given string and
-	 * delegating to {@link #resolve(URIPath)}.
+	 * Returns the path of a target path relative to this path, which may be a sibling path or even a child path of the other path. A path relativized against
+	 * itself will return an empty path. A non-collection relativized against its parent will also return an empty path. Otherwise if this path is not a parent of
+	 * (or the same path as) the target path, the path will backtrack using <code>..</code> path segments as appropriate.
+	 * @implSpec This is a convenience method that functions by creating a new {@link URIPath} from the given string and delegating to
+	 *           {@link #findRelativePath(URIPath)}.
+	 * @param targetPath The path that will be relativized against this path.
+	 * @return The relative path of the source URI to the target URI, which will not be present if the two paths have no base in common.
+	 * @throws NullPointerException if the given path string is <code>null</code>.
+	 * @see URIs#findRelativePath(URI, URI)
+	 */
+	public Optional<URIPath> findRelativePath(@Nonnull final String targetPath) {
+		return findRelativePath(URIPath.of(targetPath));
+	}
+
+	/**
+	 * Returns the path of a target path relative to this path, which may be a sibling path or even a child path of the other path. A path relativized against
+	 * itself will return an empty path. A non-collection relativized against its parent will also return an empty path. Otherwise if this path is not a parent of
+	 * (or the same path as) the target path, the path will backtrack using <code>..</code> path segments as appropriate.
+	 * @param targetPath The path that will be relativized against this path.
+	 * @return The relative path of the source URI to the target URI, or the target path if the two paths have no base in common.
+	 * @throws NullPointerException if the given target path is <code>null</code>.
+	 * @see URIs#findRelativePath(URI, URI)
+	 */
+	public URIPath relativize(@Nonnull final URIPath targetPath) {
+		return findRelativePath(targetPath).orElse(targetPath);
+	}
+
+	/**
+	 * Returns the path of a target path relative to this path, which may be a sibling path or even a child path of the other path. A path relativized against
+	 * itself will return an empty path. A non-collection relativized against its parent will also return an empty path. Otherwise if this path is not a parent of
+	 * (or the same path as) the target path, the path will backtrack using <code>..</code> path segments as appropriate.
+	 * @param targetPath The path that will be relativized against this path.
+	 * @return The relative path of the source URI to the target URI, which will not be present if the two paths have no base in common.
+	 * @throws NullPointerException if the given target path is <code>null</code>.
+	 * @see URIs#findRelativePath(URI, URI)
+	 */
+	public Optional<URIPath> findRelativePath(@Nonnull final URIPath targetPath) {
+		return findRelativePath(uri, targetPath.toURI());
+	}
+
+	/**
+	 * Returns the path of a target URI relative to some source URI, which may be a sibling URI or even a child URI. A collection URI relativized against itself
+	 * will return an empty path. A non-collection relativized against its parent will also return an empty path. Otherwise if the source URI is not a parent of
+	 * (or the same URI as) the target URI, the path will backtrack using <code>..</code> path segments as appropriate.
+	 * @implSpec This implementation delegates to {@link #findRelativePath(URI, URI)}
+	 * @implNote This implementation properly relativizes URIs that require backtracking, such as siblings, unlike Java URI relativization methods; see
+	 *           <a href="https://bugs.java.com/bugdatabase/view_bug.do?bug_id=6226081">JDK-6226081</a>.
+	 * @param sourceURI The URI to which the other URI will be relativized.
+	 * @param targetURI The URI that will be relativized against the base URI.
+	 * @return The relative path of the source URI to the target URI.
+	 * @return A new URI path relative to the base URI.
+	 * @throws NullPointerException if the given source URI and/or target URI is <code>null</code>.
+	 * @throws IllegalArgumentException if the given base URI is not actually a base URI of the given URI.
+	 * @see URIs#relativizePath(URI, URI)
+	 */
+	public static URIPath relativize(@Nonnull final URI sourceURI, @Nonnull final URI targetURI) {
+		return findRelativePath(sourceURI, targetURI)
+				.orElseThrow(() -> new IllegalArgumentException("The source URI " + sourceURI + " has no base URI in common with the target URI " + targetURI + "."));
+	}
+
+	/**
+	 * Returns the path of a target URI relative to some source URI, which may be a sibling URI or even a child URI. A collection URI relativized against itself
+	 * will return an empty path. A non-collection relativized against its parent will also return an empty path. Otherwise if the source URI is not a parent of
+	 * (or the same URI as) the target URI, the path will backtrack using <code>..</code> path segments as appropriate.
+	 * @implNote This implementation properly relativizes URIs that require backtracking, such as siblings, unlike Java URI relativization methods; see
+	 *           <a href="https://bugs.java.com/bugdatabase/view_bug.do?bug_id=6226081">JDK-6226081</a>.
+	 * @param sourceURI The URI to which the other URI will be relativized.
+	 * @param targetURI The URI that will be relativized against the base URI.
+	 * @return The relative path of the source URI to the target URI, which will not be present if the two URIs have no base in common.
+	 * @throws NullPointerException if the given source URI and/or target URI is <code>null</code>.
+	 * @see URIs#findRelativePath(URI, URI)
+	 */
+	public static Optional<URIPath> findRelativePath(@Nonnull final URI sourceURI, @Nonnull final URI targetURI) {
+		return URIs.findRelativePath(sourceURI, targetURI).map(URIPath::fromURI);
+	}
+
+	/**
+	 * Resolves the given path against this path.
 	 * <p>
 	 * This method works correctly with Windows UNC path URIs.
 	 * </p>
+	 * @implSpec This is a convenience method that functions by creating a new {@link URIPath} from the given string and delegating to {@link #resolve(URIPath)}.
 	 * @param path The path to be resolved against this path.
 	 * @return The resulting path.
 	 * @throws NullPointerException if the given path is <code>null</code>.

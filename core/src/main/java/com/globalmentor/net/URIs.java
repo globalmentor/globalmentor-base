@@ -1070,51 +1070,91 @@ public class URIs {
 	/**
 	 * Returns a URI relative to the given parent URI. A collection URI relativized against itself will return an empty URI.
 	 * <p>
-	 * This method does not support backtracking, that is, creating a path to a parent or child path. For that functionality use {@link #relativizePath(URI, URI)}
-	 * instead.
+	 * This method does not support backtracking, that is, creating a path to a parent or child path. For that functionality use
+	 * {@link #findRelativePath(URI, URI)} instead.
 	 * </p>
-	 * @apiNote This method differs from {@link URI#relativize(URI)} in that the parent URI must be a collection URI (i.e. end with a slash).
-	 * @implSpec This method first normalizes both URIs.
+	 * @apiNote This method differs from {@link URI#relativize(URI)} in that the parent URI must be a collection URI (i.e. end with a slash) for a relative child
+	 *          path to be found.
+	 * @implSpec This method delegates to {@link #findRelativeChildPath(URI, URI)}
 	 * @param parentURI The URI to which the child URI is relative.
 	 * @param childURI The URI that will be relativized against the parent URI.
-	 * @return The URI representing path of the child URI to the parent URI.
-	 * @throws IllegalArgumentException if the given child URI is a child of the given parent URI.
+	 * @return The URI representing path of the child URI to the parent URI, or the child URI if the given child URI is not a child of the given parent URI.
 	 * @see #normalize(URI)
 	 */
 	public static URI relativizeChildPath(final URI parentURI, final URI childURI) {
-		checkCollectionURI(parentURI);
-		final URI relativeURI = normalize(parentURI).relativize(normalize(childURI)); //get a relative URI
-		checkArgument(!relativeURI.isAbsolute(), "URI %s is not a child URI of %s.", childURI, parentURI);
-		return relativeURI;
+		return findRelativeChildPath(parentURI, childURI).orElse(childURI);
 	}
 
 	/**
-	 * Returns the path of a URI relative to some base URI, which may be a sibling URI or even a child URI. A collection URI relativized against itself will
-	 * return an empty URI. A non-collection relativized against its parent will also return an empty URI. Otherwise if the given URI is not a parent of (or the
-	 * same URI as) the base URI, the path will backtrack using <code>..</code> path segments as appropriate.
+	 * Returns a URI relative to the given parent URI. A collection URI relativized against itself will return an empty URI.
+	 * <p>
+	 * This method does not support backtracking, that is, creating a path to a parent or child path. For that functionality use
+	 * {@link #findRelativePath(URI, URI)} instead.
+	 * </p>
+	 * @apiNote This method differs from {@link URI#relativize(URI)} in that the parent URI must be a collection URI (i.e. end with a slash) for a relative child
+	 *          path to be found.
 	 * @implSpec This method first normalizes both URIs.
-	 * @param baseURI The URI to which the other URI will be relativized.
-	 * @param uri The URI that will be relativized against the base URI.
-	 * @return The relative path of the given URI to the base URI.
+	 * @param parentURI The URI to which the child URI is relative.
+	 * @param childURI The URI that will be relativized against the parent URI.
+	 * @return The URI representing path of the child URI to the parent URI, which will not be present if the given child URI is not a child of the given parent
+	 *         URI.
+	 * @see #normalize(URI)
+	 */
+	public static Optional<URI> findRelativeChildPath(@Nonnull final URI parentURI, @Nonnull final URI childURI) {
+		if(isCollectionURI(parentURI)) {
+			final URI relativeURI = normalize(parentURI).relativize(normalize(childURI)); //get a relative URI
+			if(!relativeURI.isAbsolute()) {
+				return Optional.of(relativeURI);
+			}
+		}
+		return Optional.empty();
+	}
+
+	/**
+	 * Returns the path of a target URI relative to some source URI, which may be a sibling URI or even a child URI. A collection URI relativized against itself
+	 * will return an empty URI. A non-collection relativized against its parent will also return an empty URI. Otherwise if the source URI is not a parent of (or
+	 * the same URI as) the target URI, the path will backtrack using <code>..</code> path segments as appropriate.
+	 * @implSpec This method delegates to {@link #findRelativePath(URI, URI)}
+	 * @implNote This implementation properly relativizes URIs that require backtracking, such as siblings, unlike Java URI relativization methods; see
+	 *           <a href="https://bugs.java.com/bugdatabase/view_bug.do?bug_id=6226081">JDK-6226081</a>.
+	 * @param sourceURI The URI to which the other URI will be relativized.
+	 * @param targetURI The URI that will be relativized against the base URI.
+	 * @return The relative path of the source URI to the target URI, or the target URI if the two URIs have no base in common.
+	 * @see #normalize(URI)
+	 */
+	public static URI relativizePath(@Nonnull final URI sourceURI, @Nonnull final URI targetURI) {
+		return findRelativePath(sourceURI, targetURI).orElse(targetURI);
+	}
+
+	/**
+	 * Returns the path of a target URI relative to some source URI, which may be a sibling URI or even a child URI. A collection URI relativized against itself
+	 * will return an empty URI. A non-collection relativized against its parent will also return an empty URI. Otherwise if the source URI is not a parent of (or
+	 * the same URI as) the target URI, the path will backtrack using <code>..</code> path segments as appropriate.
+	 * @implSpec This method first normalizes both URIs.
+	 * @implNote This implementation properly relativizes URIs that require backtracking, such as siblings, unlike Java URI relativization methods; see
+	 *           <a href="https://bugs.java.com/bugdatabase/view_bug.do?bug_id=6226081">JDK-6226081</a>.
+	 * @param sourceURI The URI to which the other URI will be relativized.
+	 * @param targetURI The URI that will be relativized against the base URI.
+	 * @return The relative path of the source URI to the target URI, which will not be present if the two URIs have no base in common.
 	 * @throws IllegalArgumentException if the two URIs have no base URI in common.
 	 * @see #normalize(URI)
 	 */
-	public static URI relativizePath(URI baseURI, URI uri) {
-		baseURI = normalize(baseURI);
-		uri = normalize(uri);
-		baseURI = getCurrentLevel(baseURI); //normalize and remove any file from the base path TODO but will file URIs for directories end in /?
+	public static Optional<URI> findRelativePath(@Nonnull URI sourceURI, @Nonnull URI targetURI) {
+		sourceURI = normalize(sourceURI);
+		targetURI = normalize(targetURI);
+		sourceURI = getCurrentLevel(sourceURI); //normalize and remove any file from the base path TODO but will file URIs for directories end in /?
 		StringBuilder backtrackPathBuilder = null; //only backtrack if we need to, but keep the string builder around for efficiency each time
 		//		String backtrackPath = null; //we start out not having to backtrack
-		URI parentURI = baseURI;
+		URI parentURI = sourceURI;
 		URI relativeURI;
-		while((relativeURI = parentURI.relativize(uri)).isAbsolute()) { //keep looking for a relative path
+		while((relativeURI = parentURI.relativize(targetURI)).isAbsolute()) { //keep looking for a relative path
 			if(backtrackPathBuilder == null) { //if this is the first attempt and finding a common parent
 				backtrackPathBuilder = new StringBuilder(); //lazily create the string builder for back tracking
 			}
 			backtrackPathBuilder.append(PARENT_LEVEL_PATH_SEGMENT).append(PATH_SEPARATOR); //<../>
 			parentURI = getParentLevel(parentURI); //move the parent URI up a level; equivalent to getParentURI(parentURI)
 			if(parentURI == null) { //if we ran out of parents
-				throw new IllegalArgumentException("URI " + uri + " does not have any parent URI in common with " + baseURI + " and cannot be relativized.");
+				return Optional.empty();
 			}
 		}
 		//At this point relativeURI will have a relative path to the URI _from the common parent_,
@@ -1125,22 +1165,8 @@ public class URIs {
 			assert backtrackPathBuilder.length() > 0;
 			relativeURI = URI.create(backtrackPathBuilder.toString()).resolve(relativeURI); //prepend backtracking
 		}
-		return relativeURI;
+		return Optional.of(relativeURI);
 	}
-
-	/**
-	 * Creates a URI from a URL. JDK 1.5 provides an equivalent {@link URL#toURI()}. This method is provided for backwards-compatibility using for example
-	 * Retroweaver.
-	 * @param url The URL to convert to a URI. The URL should already be properly encoded.
-	 * @return The URI form of the URL.
-	 * @throws URISyntaxException Thrown if the URL could not be converted to a URI.
-	 */
-	/*TODO del
-		public static URI createURI(final URL url) throws URISyntaxException
-		{
-			return new URI(url.toString());	//assuming the URL is already escaped, create a new URI from the string representation of the URL
-		}
-	*/
 
 	/**
 	 * Creates a URN in the form <code>urn:<var>nid</var>:nss</code>.

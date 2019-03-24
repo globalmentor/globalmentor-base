@@ -16,6 +16,7 @@
 
 package com.globalmentor.net;
 
+import static com.github.npathai.hamcrestopt.OptionalMatchers.*;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -932,128 +933,126 @@ public class URIsTest {
 		assertThrows(NullPointerException.class, () -> URIs.isPlainURI((URI)null));
 	}
 
-	/** @see URIs#relativizeChildPath(URI, URI) */
+	/** @see URIs#findRelativeChildPath(URI, URI) */
 	@Test
-	public void testRelativizeChildPath() {
+	public void testFindRelativeChildPath() {
 		//collection relativized against itself
-		assertThat(URIs.relativizeChildPath(URI.create("http://example.com/"), URI.create("http://example.com/")), is(URI.create("")));
-		assertThat(URIs.relativizeChildPath(URI.create("http://example.com/foo/"), URI.create("http://example.com/foo/")), is(URI.create("")));
-		assertThat(URIs.relativizeChildPath(URI.create("http://example.com/foo/bar/"), URI.create("http://example.com/foo/bar/")), is(URI.create("")));
+		assertThat(URIs.findRelativeChildPath(URI.create("http://example.com/"), URI.create("http://example.com/")), isPresentAndIs(URI.create("")));
+		assertThat(URIs.findRelativeChildPath(URI.create("http://example.com/foo/"), URI.create("http://example.com/foo/")), isPresentAndIs(URI.create("")));
+		assertThat(URIs.findRelativeChildPath(URI.create("http://example.com/foo/bar/"), URI.create("http://example.com/foo/bar/")),
+				isPresentAndIs(URI.create("")));
 
 		//non-collection relativized against itself
-		assertThrows(IllegalArgumentException.class,
-				() -> URIs.relativizeChildPath(URI.create("http://example.com/foo/bar/test.txt"), URI.create("http://example.com/foo/bar/test.txt")));
+		assertThat(URIs.findRelativeChildPath(URI.create("http://example.com/foo/bar/test.txt"), URI.create("http://example.com/foo/bar/test.txt")), isEmpty());
 
 		//same-level resolution
-		assertThrows(IllegalArgumentException.class, () -> URIs.relativizeChildPath(URI.create("http://example.com/foo"), URI.create("http://example.com/bar")));
-		assertThrows(IllegalArgumentException.class,
-				() -> URIs.relativizeChildPath(URI.create("http://example.com/foo/bar"), URI.create("http://example.com/foo/other")));
-		assertThrows(IllegalArgumentException.class,
-				() -> URIs.relativizeChildPath(URI.create("http://example.com/foo.txt"), URI.create("http://example.com/bar.txt")));
-		assertThrows(IllegalArgumentException.class,
-				() -> URIs.relativizeChildPath(URI.create("http://example.com/foo/test.txt"), URI.create("http://example.com/foo/other.txt")));
-		assertThrows(IllegalArgumentException.class,
-				() -> URIs.relativizeChildPath(URI.create("http://example.com/foo/bar/test.txt"), URI.create("http://example.com/foo/bar/other.txt")));
+		assertThat(URIs.findRelativeChildPath(URI.create("http://example.com/foo"), URI.create("http://example.com/bar")), isEmpty());
+		assertThat(URIs.findRelativeChildPath(URI.create("http://example.com/foo/bar"), URI.create("http://example.com/foo/other")), isEmpty());
+		assertThat(URIs.findRelativeChildPath(URI.create("http://example.com/foo.txt"), URI.create("http://example.com/bar.txt")), isEmpty());
+		assertThat(URIs.findRelativeChildPath(URI.create("http://example.com/foo/test.txt"), URI.create("http://example.com/foo/other.txt")), isEmpty());
+		assertThat(URIs.findRelativeChildPath(URI.create("http://example.com/foo/bar/test.txt"), URI.create("http://example.com/foo/bar/other.txt")), isEmpty());
 
 		//child of collection
-		assertThat(URIs.relativizeChildPath(URI.create("http://example.com/foo/bar/"), URI.create("http://example.com/foo/bar/test.txt")),
-				is(URI.create("test.txt")));
-		assertThat(URIs.relativizeChildPath(URI.create("http://example.com/foo/bar/"), URI.create("http://example.com/foo/bar/test")), is(URI.create("test")));
-		assertThat(URIs.relativizeChildPath(URI.create("http://example.com/foo/"), URI.create("http://example.com/foo/bar/test.txt")),
-				is(URI.create("bar/test.txt")));
-		assertThat(URIs.relativizeChildPath(URI.create("http://example.com/"), URI.create("http://example.com/foo/bar/test.txt")),
-				is(URI.create("foo/bar/test.txt")));
+		assertThat(URIs.findRelativeChildPath(URI.create("http://example.com/foo/bar/"), URI.create("http://example.com/foo/bar/test.txt")),
+				isPresentAndIs(URI.create("test.txt")));
+		assertThat(URIs.findRelativeChildPath(URI.create("http://example.com/foo/bar/"), URI.create("http://example.com/foo/bar/test")),
+				isPresentAndIs(URI.create("test")));
+		assertThat(URIs.findRelativeChildPath(URI.create("http://example.com/foo/"), URI.create("http://example.com/foo/bar/test.txt")),
+				isPresentAndIs(URI.create("bar/test.txt")));
+		assertThat(URIs.findRelativeChildPath(URI.create("http://example.com/"), URI.create("http://example.com/foo/bar/test.txt")),
+				isPresentAndIs(URI.create("foo/bar/test.txt")));
 
 		//child of non-collection
-		assertThrows(IllegalArgumentException.class,
-				() -> URIs.relativizeChildPath(URI.create("http://example.com/foo/bar"), URI.create("http://example.com/foo/bar/test.txt")));
-		assertThrows(IllegalArgumentException.class,
-				() -> URIs.relativizeChildPath(URI.create("http://example.com/foo/bar.txt"), URI.create("http://example.com/foo/bar/test.txt")));
+
+		assertThat(URIs.findRelativeChildPath(URI.create("http://example.com/foo/bar"), URI.create("http://example.com/foo/bar/test.txt")), isEmpty());
+		assertThat(URIs.findRelativeChildPath(URI.create("http://example.com/foo/bar.txt"), URI.create("http://example.com/foo/bar/test.txt")), isEmpty());
 
 		//parent references; note that currently <foo/bar> and <foo/bar/> are distinguished regardless
-		assertThrows(IllegalArgumentException.class,
-				() -> URIs.relativizeChildPath(URI.create("http://example.com/foo/bar"), URI.create("http://example.com/foo/")));
-		assertThrows(IllegalArgumentException.class,
-				() -> URIs.relativizeChildPath(URI.create("http://example.com/foo/bar/"), URI.create("http://example.com/foo/")));
-		assertThrows(IllegalArgumentException.class,
-				() -> URIs.relativizeChildPath(URI.create("http://example.com/foo/test.txt"), URI.create("http://example.com/foo/")));
-		assertThrows(IllegalArgumentException.class,
-				() -> URIs.relativizeChildPath(URI.create("http://example.com/foo/bar/test.txt"), URI.create("http://example.com/foo/bar/")));
+		assertThat(URIs.findRelativeChildPath(URI.create("http://example.com/foo/bar"), URI.create("http://example.com/foo/")), isEmpty());
+		assertThat(URIs.findRelativeChildPath(URI.create("http://example.com/foo/bar/"), URI.create("http://example.com/foo/")), isEmpty());
+		assertThat(URIs.findRelativeChildPath(URI.create("http://example.com/foo/test.txt"), URI.create("http://example.com/foo/")), isEmpty());
+		assertThat(URIs.findRelativeChildPath(URI.create("http://example.com/foo/bar/test.txt"), URI.create("http://example.com/foo/bar/")), isEmpty());
 
 		//sibling references; note that currently <foo/bar> and <foo/bar/> are distinguished regardless
-		assertThrows(IllegalArgumentException.class,
-				() -> URIs.relativizeChildPath(URI.create("http://example.com/foo/bar/"), URI.create("http://example.com/foo/other/")));
-		assertThrows(IllegalArgumentException.class,
-				() -> URIs.relativizeChildPath(URI.create("http://example.com/foo/bar"), URI.create("http://example.com/foo/other/")));
-		assertThrows(IllegalArgumentException.class,
-				() -> URIs.relativizeChildPath(URI.create("http://example.com/foo/bar/"), URI.create("http://example.com/foo/other")));
-		assertThrows(IllegalArgumentException.class,
-				() -> URIs.relativizeChildPath(URI.create("http://example.com/foo/bar"), URI.create("http://example.com/foo/other")));
-		assertThrows(IllegalArgumentException.class,
-				() -> URIs.relativizeChildPath(URI.create("http://example.com/foo/bar/"), URI.create("http://example.com/example/other/")));
-		assertThrows(IllegalArgumentException.class,
-				() -> URIs.relativizeChildPath(URI.create("http://example.com/foo/bar"), URI.create("http://example.com/example/other/")));
-		assertThrows(IllegalArgumentException.class,
-				() -> URIs.relativizeChildPath(URI.create("http://example.com/foo/bar/"), URI.create("http://example.com/example/other")));
-		assertThrows(IllegalArgumentException.class,
-				() -> URIs.relativizeChildPath(URI.create("http://example.com/foo/bar"), URI.create("http://example.com/example/other")));
+		assertThat(URIs.findRelativeChildPath(URI.create("http://example.com/foo/bar/"), URI.create("http://example.com/foo/other/")), isEmpty());
+		assertThat(URIs.findRelativeChildPath(URI.create("http://example.com/foo/bar"), URI.create("http://example.com/foo/other/")), isEmpty());
+		assertThat(URIs.findRelativeChildPath(URI.create("http://example.com/foo/bar/"), URI.create("http://example.com/foo/other")), isEmpty());
+		assertThat(URIs.findRelativeChildPath(URI.create("http://example.com/foo/bar"), URI.create("http://example.com/foo/other")), isEmpty());
+		assertThat(URIs.findRelativeChildPath(URI.create("http://example.com/foo/bar/"), URI.create("http://example.com/example/other/")), isEmpty());
+		assertThat(URIs.findRelativeChildPath(URI.create("http://example.com/foo/bar"), URI.create("http://example.com/example/other/")), isEmpty());
+		assertThat(URIs.findRelativeChildPath(URI.create("http://example.com/foo/bar/"), URI.create("http://example.com/example/other")), isEmpty());
+		assertThat(URIs.findRelativeChildPath(URI.create("http://example.com/foo/bar"), URI.create("http://example.com/example/other")), isEmpty());
 	}
 
-	/** @see URIs#relativizePath(URI, URI) */
+	/** @see URIs#findRelativePath(URI, URI) */
 	@Test
-	public void testRelativizePath() {
+	public void testFindRelativePath() {
 		//collection relativized against itself
-		assertThat(URIs.relativizePath(URI.create("http://example.com/"), URI.create("http://example.com/")), is(URI.create("")));
-		assertThat(URIs.relativizePath(URI.create("http://example.com/foo/"), URI.create("http://example.com/foo/")), is(URI.create("")));
-		assertThat(URIs.relativizePath(URI.create("http://example.com/foo/bar/"), URI.create("http://example.com/foo/bar/")), is(URI.create("")));
+		assertThat(URIs.findRelativePath(URI.create("http://example.com/"), URI.create("http://example.com/")), isPresentAndIs(URI.create("")));
+		assertThat(URIs.findRelativePath(URI.create("http://example.com/foo/"), URI.create("http://example.com/foo/")), isPresentAndIs(URI.create("")));
+		assertThat(URIs.findRelativePath(URI.create("http://example.com/foo/bar/"), URI.create("http://example.com/foo/bar/")), isPresentAndIs(URI.create("")));
 
 		//non-collection relativized against itself
-		assertThat(URIs.relativizePath(URI.create("http://example.com/foo"), URI.create("http://example.com/foo")), is(URI.create("foo")));
-		assertThat(URIs.relativizePath(URI.create("http://example.com/foo/bar"), URI.create("http://example.com/foo/bar")), is(URI.create("bar")));
-		assertThat(URIs.relativizePath(URI.create("http://example.com/test.txt"), URI.create("http://example.com/test.txt")), is(URI.create("test.txt")));
-		assertThat(URIs.relativizePath(URI.create("http://example.com/foo/test.txt"), URI.create("http://example.com/foo/test.txt")), is(URI.create("test.txt")));
-		assertThat(URIs.relativizePath(URI.create("http://example.com/foo/bar/test.txt"), URI.create("http://example.com/foo/bar/test.txt")),
-				is(URI.create("test.txt")));
+		assertThat(URIs.findRelativePath(URI.create("http://example.com/foo"), URI.create("http://example.com/foo")), isPresentAndIs(URI.create("foo")));
+		assertThat(URIs.findRelativePath(URI.create("http://example.com/foo/bar"), URI.create("http://example.com/foo/bar")), isPresentAndIs(URI.create("bar")));
+		assertThat(URIs.findRelativePath(URI.create("http://example.com/test.txt"), URI.create("http://example.com/test.txt")),
+				isPresentAndIs(URI.create("test.txt")));
+		assertThat(URIs.findRelativePath(URI.create("http://example.com/foo/test.txt"), URI.create("http://example.com/foo/test.txt")),
+				isPresentAndIs(URI.create("test.txt")));
+		assertThat(URIs.findRelativePath(URI.create("http://example.com/foo/bar/test.txt"), URI.create("http://example.com/foo/bar/test.txt")),
+				isPresentAndIs(URI.create("test.txt")));
 
 		//same-level resolution
-		assertThat(URIs.relativizePath(URI.create("http://example.com/foo"), URI.create("http://example.com/bar")), is(URI.create("bar")));
-		assertThat(URIs.relativizePath(URI.create("http://example.com/foo/bar"), URI.create("http://example.com/foo/other")), is(URI.create("other")));
-		assertThat(URIs.relativizePath(URI.create("http://example.com/foo.txt"), URI.create("http://example.com/bar.txt")), is(URI.create("bar.txt")));
-		assertThat(URIs.relativizePath(URI.create("http://example.com/foo/test.txt"), URI.create("http://example.com/foo/other.txt")), is(URI.create("other.txt")));
-		assertThat(URIs.relativizePath(URI.create("http://example.com/foo/bar/test.txt"), URI.create("http://example.com/foo/bar/other.txt")),
-				is(URI.create("other.txt")));
+		assertThat(URIs.findRelativePath(URI.create("http://example.com/foo"), URI.create("http://example.com/bar")), isPresentAndIs(URI.create("bar")));
+		assertThat(URIs.findRelativePath(URI.create("http://example.com/foo/bar"), URI.create("http://example.com/foo/other")),
+				isPresentAndIs(URI.create("other")));
+		assertThat(URIs.findRelativePath(URI.create("http://example.com/foo.txt"), URI.create("http://example.com/bar.txt")),
+				isPresentAndIs(URI.create("bar.txt")));
+		assertThat(URIs.findRelativePath(URI.create("http://example.com/foo/test.txt"), URI.create("http://example.com/foo/other.txt")),
+				isPresentAndIs(URI.create("other.txt")));
+		assertThat(URIs.findRelativePath(URI.create("http://example.com/foo/bar/test.txt"), URI.create("http://example.com/foo/bar/other.txt")),
+				isPresentAndIs(URI.create("other.txt")));
 
 		//child of collection
-		assertThat(URIs.relativizePath(URI.create("http://example.com/foo/bar/"), URI.create("http://example.com/foo/bar/test.txt")), is(URI.create("test.txt")));
-		assertThat(URIs.relativizePath(URI.create("http://example.com/foo/bar/"), URI.create("http://example.com/foo/bar/test")), is(URI.create("test")));
-		assertThat(URIs.relativizePath(URI.create("http://example.com/foo/"), URI.create("http://example.com/foo/bar/test.txt")), is(URI.create("bar/test.txt")));
-		assertThat(URIs.relativizePath(URI.create("http://example.com/"), URI.create("http://example.com/foo/bar/test.txt")), is(URI.create("foo/bar/test.txt")));
+		assertThat(URIs.findRelativePath(URI.create("http://example.com/foo/bar/"), URI.create("http://example.com/foo/bar/test.txt")),
+				isPresentAndIs(URI.create("test.txt")));
+		assertThat(URIs.findRelativePath(URI.create("http://example.com/foo/bar/"), URI.create("http://example.com/foo/bar/test")),
+				isPresentAndIs(URI.create("test")));
+		assertThat(URIs.findRelativePath(URI.create("http://example.com/foo/"), URI.create("http://example.com/foo/bar/test.txt")),
+				isPresentAndIs(URI.create("bar/test.txt")));
+		assertThat(URIs.findRelativePath(URI.create("http://example.com/"), URI.create("http://example.com/foo/bar/test.txt")),
+				isPresentAndIs(URI.create("foo/bar/test.txt")));
 
 		//child of non-collection
-		assertThat(URIs.relativizePath(URI.create("http://example.com/foo/bar"), URI.create("http://example.com/foo/bar/test.txt")),
-				is(URI.create("bar/test.txt")));
-		assertThat(URIs.relativizePath(URI.create("http://example.com/foo/bar.txt"), URI.create("http://example.com/foo/bar/test.txt")),
-				is(URI.create("bar/test.txt")));
+		assertThat(URIs.findRelativePath(URI.create("http://example.com/foo/bar"), URI.create("http://example.com/foo/bar/test.txt")),
+				isPresentAndIs(URI.create("bar/test.txt")));
+		assertThat(URIs.findRelativePath(URI.create("http://example.com/foo/bar.txt"), URI.create("http://example.com/foo/bar/test.txt")),
+				isPresentAndIs(URI.create("bar/test.txt")));
 
 		//parent references; note that currently <foo/bar> and <foo/bar/> are distinguished regardless
-		assertThat(URIs.relativizePath(URI.create("http://example.com/foo/bar"), URI.create("http://example.com/foo/")), is(URI.create("")));
-		assertThat(URIs.relativizePath(URI.create("http://example.com/foo/bar/"), URI.create("http://example.com/foo/")), is(URI.create("../")));
-		assertThat(URIs.relativizePath(URI.create("http://example.com/foo/test.txt"), URI.create("http://example.com/foo/")), is(URI.create("")));
-		assertThat(URIs.relativizePath(URI.create("http://example.com/foo/bar/test.txt"), URI.create("http://example.com/foo/bar/")), is(URI.create("")));
+		assertThat(URIs.findRelativePath(URI.create("http://example.com/foo/bar"), URI.create("http://example.com/foo/")), isPresentAndIs(URI.create("")));
+		assertThat(URIs.findRelativePath(URI.create("http://example.com/foo/bar/"), URI.create("http://example.com/foo/")), isPresentAndIs(URI.create("../")));
+		assertThat(URIs.findRelativePath(URI.create("http://example.com/foo/test.txt"), URI.create("http://example.com/foo/")), isPresentAndIs(URI.create("")));
+		assertThat(URIs.findRelativePath(URI.create("http://example.com/foo/bar/test.txt"), URI.create("http://example.com/foo/bar/")),
+				isPresentAndIs(URI.create("")));
 
 		//sibling references; note that currently <foo/bar> and <foo/bar/> are distinguished regardless
-		assertThat(URIs.relativizePath(URI.create("http://example.com/foo/bar/"), URI.create("http://example.com/foo/other/")), is(URI.create("../other/")));
-		assertThat(URIs.relativizePath(URI.create("http://example.com/foo/bar"), URI.create("http://example.com/foo/other/")), is(URI.create("other/")));
-		assertThat(URIs.relativizePath(URI.create("http://example.com/foo/bar/"), URI.create("http://example.com/foo/other")), is(URI.create("../other")));
-		assertThat(URIs.relativizePath(URI.create("http://example.com/foo/bar"), URI.create("http://example.com/foo/other")), is(URI.create("other")));
-		assertThat(URIs.relativizePath(URI.create("http://example.com/foo/bar/"), URI.create("http://example.com/example/other/")),
-				is(URI.create("../../example/other/")));
-		assertThat(URIs.relativizePath(URI.create("http://example.com/foo/bar"), URI.create("http://example.com/example/other/")),
-				is(URI.create("../example/other/")));
-		assertThat(URIs.relativizePath(URI.create("http://example.com/foo/bar/"), URI.create("http://example.com/example/other")),
-				is(URI.create("../../example/other")));
-		assertThat(URIs.relativizePath(URI.create("http://example.com/foo/bar"), URI.create("http://example.com/example/other")),
-				is(URI.create("../example/other")));
+		assertThat(URIs.findRelativePath(URI.create("http://example.com/foo/bar/"), URI.create("http://example.com/foo/other/")),
+				isPresentAndIs(URI.create("../other/")));
+		assertThat(URIs.findRelativePath(URI.create("http://example.com/foo/bar"), URI.create("http://example.com/foo/other/")),
+				isPresentAndIs(URI.create("other/")));
+		assertThat(URIs.findRelativePath(URI.create("http://example.com/foo/bar/"), URI.create("http://example.com/foo/other")),
+				isPresentAndIs(URI.create("../other")));
+		assertThat(URIs.findRelativePath(URI.create("http://example.com/foo/bar"), URI.create("http://example.com/foo/other")),
+				isPresentAndIs(URI.create("other")));
+		assertThat(URIs.findRelativePath(URI.create("http://example.com/foo/bar/"), URI.create("http://example.com/example/other/")),
+				isPresentAndIs(URI.create("../../example/other/")));
+		assertThat(URIs.findRelativePath(URI.create("http://example.com/foo/bar"), URI.create("http://example.com/example/other/")),
+				isPresentAndIs(URI.create("../example/other/")));
+		assertThat(URIs.findRelativePath(URI.create("http://example.com/foo/bar/"), URI.create("http://example.com/example/other")),
+				isPresentAndIs(URI.create("../../example/other")));
+		assertThat(URIs.findRelativePath(URI.create("http://example.com/foo/bar"), URI.create("http://example.com/example/other")),
+				isPresentAndIs(URI.create("../example/other")));
 	}
 
 	/** Tests whether {@link URIs#resolve(URI, URI)} is working properly. */
