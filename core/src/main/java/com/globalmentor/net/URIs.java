@@ -135,6 +135,9 @@ public class URIs {
 	/** The path to root, consisting of a single path separator ("/"). */
 	public static final String ROOT_PATH = String.valueOf(PATH_SEPARATOR);
 
+	/** A URI consisting only of a single path separator ("/"). */
+	public static final URI ROOT_PATH_URI = URI.create(ROOT_PATH);
+
 	/** The path Java returns when it tries to resolve <code>..</code> to the root path. */
 	public static final String ROOT_PATH_PARENT_LEVEL = ROOT_PATH + PARENT_LEVEL_PATH_SEGMENT;
 

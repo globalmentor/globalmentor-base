@@ -31,16 +31,16 @@ public class URIPathTest {
 	/** Tests retrieving base paths of a path. */
 	@Test
 	public void testBasePaths() {
-		assertThat(new URIPath("").getBasePaths(), equalTo(asList(new URIPath(""))));
-		assertThat(new URIPath("/").getBasePaths(), equalTo(asList(new URIPath("/"))));
-		assertThat(new URIPath("one").getBasePaths(), equalTo(asList(new URIPath("one"))));
-		assertThat(new URIPath("one/").getBasePaths(), equalTo(asList(new URIPath("one/"))));
-		assertThat(new URIPath("one/two/three").getBasePaths(), equalTo(asList(new URIPath("one/"), new URIPath("one/two/"), new URIPath("one/two/three"))));
-		assertThat(new URIPath("one/two/three/").getBasePaths(), equalTo(asList(new URIPath("one/"), new URIPath("one/two/"), new URIPath("one/two/three/"))));
-		assertThat(new URIPath("/one").getBasePaths(), equalTo(asList(new URIPath("/one"))));
-		assertThat(new URIPath("/one/").getBasePaths(), equalTo(asList(new URIPath("/one/"))));
-		assertThat(new URIPath("/one/two/three").getBasePaths(), equalTo(asList(new URIPath("/one/"), new URIPath("/one/two/"), new URIPath("/one/two/three"))));
-		assertThat(new URIPath("/one/two/three/").getBasePaths(), equalTo(asList(new URIPath("/one/"), new URIPath("/one/two/"), new URIPath("/one/two/three/"))));
+		assertThat(URIPath.of("").getBasePaths(), equalTo(asList(URIPath.of(""))));
+		assertThat(URIPath.of("/").getBasePaths(), equalTo(asList(URIPath.of("/"))));
+		assertThat(URIPath.of("one").getBasePaths(), equalTo(asList(URIPath.of("one"))));
+		assertThat(URIPath.of("one/").getBasePaths(), equalTo(asList(URIPath.of("one/"))));
+		assertThat(URIPath.of("one/two/three").getBasePaths(), equalTo(asList(URIPath.of("one/"), URIPath.of("one/two/"), URIPath.of("one/two/three"))));
+		assertThat(URIPath.of("one/two/three/").getBasePaths(), equalTo(asList(URIPath.of("one/"), URIPath.of("one/two/"), URIPath.of("one/two/three/"))));
+		assertThat(URIPath.of("/one").getBasePaths(), equalTo(asList(URIPath.of("/one"))));
+		assertThat(URIPath.of("/one/").getBasePaths(), equalTo(asList(URIPath.of("/one/"))));
+		assertThat(URIPath.of("/one/two/three").getBasePaths(), equalTo(asList(URIPath.of("/one/"), URIPath.of("/one/two/"), URIPath.of("/one/two/three"))));
+		assertThat(URIPath.of("/one/two/three/").getBasePaths(), equalTo(asList(URIPath.of("/one/"), URIPath.of("/one/two/"), URIPath.of("/one/two/three/"))));
 	}
 
 }
