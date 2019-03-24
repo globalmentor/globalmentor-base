@@ -1102,27 +1102,13 @@ public class URIs {
 	public static URI relativizePath(URI baseURI, URI uri) {
 		baseURI = normalize(baseURI);
 		uri = normalize(uri);
-		//TODO delete if we don't need strict mode switch		
-		//		final boolean isBaseCollection = isCollectionURI(baseURI);
-		//		final boolean nonCollectionAgainstSelf = !isBaseCollection && baseURI.equals(uri);
-		//		//TODO in strict mode, a non-collection URI such as <foo/bar> would not be the parent of <foo/bar/test.txt>, but file system paths probably don't distinguish between the two
-		//		if(/*TODO strict ||*/ nonCollectionAgainstSelf) {
 		baseURI = getCurrentLevel(baseURI); //normalize and remove any file from the base path TODO but will file URIs for directories end in /?
-		//		}
 		StringBuilder backtrackPathBuilder = null; //only backtrack if we need to, but keep the string builder around for efficiency each time
 		//		String backtrackPath = null; //we start out not having to backtrack
 		URI parentURI = baseURI;
 		URI relativeURI;
 		while((relativeURI = parentURI.relativize(uri)).isAbsolute()) { //keep looking for a relative path
 			if(backtrackPathBuilder == null) { //if this is the first attempt and finding a common parent
-				//TODO delete if we don't need strict mode
-				//				assert parentURI.equals(baseURI);
-				//				if(!isBaseCollection) { //try again against the current level, e.g. for <…/base/foo.txt> try again against <…/base/>
-				//					relativeURI = getCurrentLevel(parentURI).relativize(uri);
-				//					if(!relativeURI.isAbsolute()) {
-				//						break;
-				//					}
-				//				}
 				backtrackPathBuilder = new StringBuilder(); //lazily create the string builder for back tracking
 			}
 			backtrackPathBuilder.append(PARENT_LEVEL_PATH_SEGMENT).append(PATH_SEPARATOR); //<../>

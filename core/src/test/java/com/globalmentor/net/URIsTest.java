@@ -965,16 +965,12 @@ public class URIsTest {
 				is(URI.create("foo/bar/test.txt")));
 
 		//child of non-collection
-		//TODO non-strict mode		
-		//		assertThat(URIs.relativizeChildPath(URI.create("http://example.com/foo/bar"), URI.create("http://example.com/foo/bar/test.txt")), is(URI.create("test.txt")));
-		//		assertThat(URIs.relativizeChildPath(URI.create("http://example.com/foo/bar.txt"), URI.create("http://example.com/foo/bar/test.txt")),
-		//				is(URI.create("bar/test.txt")));
 		assertThrows(IllegalArgumentException.class,
 				() -> URIs.relativizeChildPath(URI.create("http://example.com/foo/bar"), URI.create("http://example.com/foo/bar/test.txt")));
 		assertThrows(IllegalArgumentException.class,
 				() -> URIs.relativizeChildPath(URI.create("http://example.com/foo/bar.txt"), URI.create("http://example.com/foo/bar/test.txt")));
 
-		//parent references; note that currently <foo/bar> and <foo/bar/> are distinguished regardless of strict mode
+		//parent references; note that currently <foo/bar> and <foo/bar/> are distinguished regardless
 		assertThrows(IllegalArgumentException.class,
 				() -> URIs.relativizeChildPath(URI.create("http://example.com/foo/bar"), URI.create("http://example.com/foo/")));
 		assertThrows(IllegalArgumentException.class,
@@ -984,7 +980,7 @@ public class URIsTest {
 		assertThrows(IllegalArgumentException.class,
 				() -> URIs.relativizeChildPath(URI.create("http://example.com/foo/bar/test.txt"), URI.create("http://example.com/foo/bar/")));
 
-		//sibling references; note that currently <foo/bar> and <foo/bar/> are distinguished regardless of strict mode
+		//sibling references; note that currently <foo/bar> and <foo/bar/> are distinguished regardless
 		assertThrows(IllegalArgumentException.class,
 				() -> URIs.relativizeChildPath(URI.create("http://example.com/foo/bar/"), URI.create("http://example.com/foo/other/")));
 		assertThrows(IllegalArgumentException.class,
@@ -1034,22 +1030,18 @@ public class URIsTest {
 		assertThat(URIs.relativizePath(URI.create("http://example.com/"), URI.create("http://example.com/foo/bar/test.txt")), is(URI.create("foo/bar/test.txt")));
 
 		//child of non-collection
-		//TODO non-strict mode		
-		//		assertThat(URIs.relativizePath(URI.create("http://example.com/foo/bar"), URI.create("http://example.com/foo/bar/test.txt")), is(URI.create("test.txt")));
-		//		assertThat(URIs.relativizePath(URI.create("http://example.com/foo/bar.txt"), URI.create("http://example.com/foo/bar/test.txt")),
-		//				is(URI.create("bar/test.txt")));
 		assertThat(URIs.relativizePath(URI.create("http://example.com/foo/bar"), URI.create("http://example.com/foo/bar/test.txt")),
 				is(URI.create("bar/test.txt")));
 		assertThat(URIs.relativizePath(URI.create("http://example.com/foo/bar.txt"), URI.create("http://example.com/foo/bar/test.txt")),
 				is(URI.create("bar/test.txt")));
 
-		//parent references; note that currently <foo/bar> and <foo/bar/> are distinguished regardless of strict mode
+		//parent references; note that currently <foo/bar> and <foo/bar/> are distinguished regardless
 		assertThat(URIs.relativizePath(URI.create("http://example.com/foo/bar"), URI.create("http://example.com/foo/")), is(URI.create("")));
 		assertThat(URIs.relativizePath(URI.create("http://example.com/foo/bar/"), URI.create("http://example.com/foo/")), is(URI.create("../")));
 		assertThat(URIs.relativizePath(URI.create("http://example.com/foo/test.txt"), URI.create("http://example.com/foo/")), is(URI.create("")));
 		assertThat(URIs.relativizePath(URI.create("http://example.com/foo/bar/test.txt"), URI.create("http://example.com/foo/bar/")), is(URI.create("")));
 
-		//sibling references; note that currently <foo/bar> and <foo/bar/> are distinguished regardless of strict mode
+		//sibling references; note that currently <foo/bar> and <foo/bar/> are distinguished regardless
 		assertThat(URIs.relativizePath(URI.create("http://example.com/foo/bar/"), URI.create("http://example.com/foo/other/")), is(URI.create("../other/")));
 		assertThat(URIs.relativizePath(URI.create("http://example.com/foo/bar"), URI.create("http://example.com/foo/other/")), is(URI.create("other/")));
 		assertThat(URIs.relativizePath(URI.create("http://example.com/foo/bar/"), URI.create("http://example.com/foo/other")), is(URI.create("../other")));
