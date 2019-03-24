@@ -35,11 +35,61 @@ import com.globalmentor.model.NameValuePair;
  */
 public class URIsTest {
 
+	/** @see URIs#changeBase(URI, URI, URI) */
+	@Test
+	public void testChangeBase() {
+		//same base
+		assertThat(URIs.changeBase(URI.create("http://example.com/foo"), URI.create("http://example.com/"), URI.create("http://example.com/")),
+				is(URI.create("http://example.com/foo")));
+		assertThat(URIs.changeBase(URI.create("http://example.com/foo/"), URI.create("http://example.com/"), URI.create("http://example.com/")),
+				is(URI.create("http://example.com/foo/")));
+		assertThat(URIs.changeBase(URI.create("http://example.com/foo.txt"), URI.create("http://example.com/"), URI.create("http://example.com/")),
+				is(URI.create("http://example.com/foo.txt")));
+		assertThat(URIs.changeBase(URI.create("http://example.com/foo/bar"), URI.create("http://example.com/"), URI.create("http://example.com/")),
+				is(URI.create("http://example.com/foo/bar")));
+		assertThat(URIs.changeBase(URI.create("http://example.com/foo/bar/"), URI.create("http://example.com/"), URI.create("http://example.com/")),
+				is(URI.create("http://example.com/foo/bar/")));
+		assertThat(URIs.changeBase(URI.create("http://example.com/foo/bar.txt"), URI.create("http://example.com/"), URI.create("http://example.com/")),
+				is(URI.create("http://example.com/foo/bar.txt")));
+		assertThat(
+				URIs.changeBase(URI.create("http://example.com/base/base/foo"), URI.create("http://example.com/base/base/"), URI.create("http://example.com/base/")),
+				is(URI.create("http://example.com/base/foo")));
+		assertThat(URIs.changeBase(URI.create("http://example.com/base/foo/"), URI.create("http://example.com/base/"), URI.create("http://example.com/base/")),
+				is(URI.create("http://example.com/base/foo/")));
+		assertThat(URIs.changeBase(URI.create("http://example.com/base/foo.txt"), URI.create("http://example.com/base/"), URI.create("http://example.com/base/")),
+				is(URI.create("http://example.com/base/foo.txt")));
+		assertThat(URIs.changeBase(URI.create("http://example.com/base/foo/bar"), URI.create("http://example.com/base/"), URI.create("http://example.com/base/")),
+				is(URI.create("http://example.com/base/foo/bar")));
+		assertThat(URIs.changeBase(URI.create("http://example.com/base/foo/bar/"), URI.create("http://example.com/base/"), URI.create("http://example.com/base/")),
+				is(URI.create("http://example.com/base/foo/bar/")));
+		assertThat(
+				URIs.changeBase(URI.create("http://example.com/base/foo/bar.txt"), URI.create("http://example.com/base/"), URI.create("http://example.com/base/")),
+				is(URI.create("http://example.com/base/foo/bar.txt")));
+
+		//different base
+		assertThat(URIs.changeBase(URI.create("http://example.com/base/foo"), URI.create("http://example.com/base/"), URI.create("http://example.com/other/")),
+				is(URI.create("http://example.com/other/foo")));
+		assertThat(URIs.changeBase(URI.create("http://example.com/base/foo/"), URI.create("http://example.com/base/"), URI.create("http://example.com/other/")),
+				is(URI.create("http://example.com/other/foo/")));
+		assertThat(URIs.changeBase(URI.create("http://example.com/base/foo/bar/"), URI.create("http://example.com/base/"), URI.create("http://example.com/other/")),
+				is(URI.create("http://example.com/other/foo/bar/")));
+		assertThat(URIs.changeBase(URI.create("http://example.com/base/foo/bar/test.txt"), URI.create("http://example.com/base/"),
+				URI.create("http://example.com/other/")), is(URI.create("http://example.com/other/foo/bar/test.txt")));
+
+		//nested base
+		assertThat(URIs.changeBase(URI.create("http://example.com/foo/test.txt"), URI.create("http://example.com/foo/"), URI.create("http://example.com/foo/bar/")),
+				is(URI.create("http://example.com/foo/bar/test.txt")));
+
+		//not a base
+		assertThrows(IllegalArgumentException.class, () -> URIs.changeBase(URI.create("http://example.com/base/foo/bar/test.txt"),
+				URI.create("http://example.com/bad/"), URI.create("http://example.com/other/")));
+	}
+
 	/** Tests whether {@link URIs#createURIList(URI...)} is working properly. */
 	@Test
 	public void testCreateURIList() {
 		// No URI given.
-		assertThat(URIs.createURIList(), isEmptyString());
+		assertThat(URIs.createURIList(), is(emptyString()));
 
 		final String baseTestURI = "http://example.com/";
 
@@ -190,6 +240,26 @@ public class URIsTest {
 	@Test
 	public void testGetInfoRawIdentifierNullFail() {
 		assertThrows(NullPointerException.class, () -> URIs.getInfoRawIdentifier(null));
+	}
+
+	/** See {@link URIs#isChild(URI, URI)}. */
+	@Test
+	public void testIsChild() {
+		assertThat(URIs.isChild(URI.create("http://example.com/"), URI.create("http://example.com/")), is(true));
+		assertThat(URIs.isChild(URI.create("http://example.com/"), URI.create("http://example.com/foo")), is(true));
+		assertThat(URIs.isChild(URI.create("http://example.com/"), URI.create("http://example.com/foo/")), is(true));
+		assertThat(URIs.isChild(URI.create("http://example.com/"), URI.create("http://example.com/foo/bar")), is(true));
+		assertThat(URIs.isChild(URI.create("http://example.com/foo"), URI.create("http://example.com/")), is(false));
+		assertThat(URIs.isChild(URI.create("http://example.com/foo/"), URI.create("http://example.com/")), is(false));
+		assertThat(URIs.isChild(URI.create("http://example.com/foo/bar"), URI.create("http://example.com/")), is(false));
+		assertThat(URIs.isChild(URI.create("http://example.com/base/"), URI.create("http://example.com/base/")), is(true));
+		assertThat(URIs.isChild(URI.create("http://example.com/base/"), URI.create("http://example.com/base/foo/")), is(true));
+		assertThat(URIs.isChild(URI.create("http://example.com/base/"), URI.create("http://example.com/base/foo/bar/")), is(true));
+		assertThat(URIs.isChild(URI.create("http://example.com/base/"), URI.create("http://example.com/base/foo/bar/test.txt")), is(true));
+		assertThat(URIs.isChild(URI.create("http://example.com/base/foo/"), URI.create("http://example.com/base/foo/bar/test.txt")), is(true));
+		assertThat(URIs.isChild(URI.create("http://example.com/base/foo/"), URI.create("http://example.com/base/bar/test.txt")), is(false));
+		assertThat(URIs.isChild(URI.create("http://example.com/base/foo/"), URI.create("http://example.com/base/bar/")), is(false));
+		assertThat(URIs.isChild(URI.create("http://example.com/base/foo/"), URI.create("http://example.com/base/")), is(false));
 	}
 
 	/** Tests whether {@link URIs#isInfoNamespace(URI, String)} is working properly. */
@@ -860,6 +930,138 @@ public class URIsTest {
 	@Test
 	public void testIsPlainURINullURIFail() {
 		assertThrows(NullPointerException.class, () -> URIs.isPlainURI((URI)null));
+	}
+
+	/** @see URIs#relativizeChildPath(URI, URI) */
+	@Test
+	public void testRelativizeChildPath() {
+		//collection relativized against itself
+		assertThat(URIs.relativizeChildPath(URI.create("http://example.com/"), URI.create("http://example.com/")), is(URI.create("")));
+		assertThat(URIs.relativizeChildPath(URI.create("http://example.com/foo/"), URI.create("http://example.com/foo/")), is(URI.create("")));
+		assertThat(URIs.relativizeChildPath(URI.create("http://example.com/foo/bar/"), URI.create("http://example.com/foo/bar/")), is(URI.create("")));
+
+		//non-collection relativized against itself
+		assertThrows(IllegalArgumentException.class,
+				() -> URIs.relativizeChildPath(URI.create("http://example.com/foo/bar/test.txt"), URI.create("http://example.com/foo/bar/test.txt")));
+
+		//same-level resolution
+		assertThrows(IllegalArgumentException.class, () -> URIs.relativizeChildPath(URI.create("http://example.com/foo"), URI.create("http://example.com/bar")));
+		assertThrows(IllegalArgumentException.class,
+				() -> URIs.relativizeChildPath(URI.create("http://example.com/foo/bar"), URI.create("http://example.com/foo/other")));
+		assertThrows(IllegalArgumentException.class,
+				() -> URIs.relativizeChildPath(URI.create("http://example.com/foo.txt"), URI.create("http://example.com/bar.txt")));
+		assertThrows(IllegalArgumentException.class,
+				() -> URIs.relativizeChildPath(URI.create("http://example.com/foo/test.txt"), URI.create("http://example.com/foo/other.txt")));
+		assertThrows(IllegalArgumentException.class,
+				() -> URIs.relativizeChildPath(URI.create("http://example.com/foo/bar/test.txt"), URI.create("http://example.com/foo/bar/other.txt")));
+
+		//child of collection
+		assertThat(URIs.relativizeChildPath(URI.create("http://example.com/foo/bar/"), URI.create("http://example.com/foo/bar/test.txt")),
+				is(URI.create("test.txt")));
+		assertThat(URIs.relativizeChildPath(URI.create("http://example.com/foo/bar/"), URI.create("http://example.com/foo/bar/test")), is(URI.create("test")));
+		assertThat(URIs.relativizeChildPath(URI.create("http://example.com/foo/"), URI.create("http://example.com/foo/bar/test.txt")),
+				is(URI.create("bar/test.txt")));
+		assertThat(URIs.relativizeChildPath(URI.create("http://example.com/"), URI.create("http://example.com/foo/bar/test.txt")),
+				is(URI.create("foo/bar/test.txt")));
+
+		//child of non-collection
+		//TODO non-strict mode		
+		//		assertThat(URIs.relativizeChildPath(URI.create("http://example.com/foo/bar"), URI.create("http://example.com/foo/bar/test.txt")), is(URI.create("test.txt")));
+		//		assertThat(URIs.relativizeChildPath(URI.create("http://example.com/foo/bar.txt"), URI.create("http://example.com/foo/bar/test.txt")),
+		//				is(URI.create("bar/test.txt")));
+		assertThrows(IllegalArgumentException.class,
+				() -> URIs.relativizeChildPath(URI.create("http://example.com/foo/bar"), URI.create("http://example.com/foo/bar/test.txt")));
+		assertThrows(IllegalArgumentException.class,
+				() -> URIs.relativizeChildPath(URI.create("http://example.com/foo/bar.txt"), URI.create("http://example.com/foo/bar/test.txt")));
+
+		//parent references; note that currently <foo/bar> and <foo/bar/> are distinguished regardless of strict mode
+		assertThrows(IllegalArgumentException.class,
+				() -> URIs.relativizeChildPath(URI.create("http://example.com/foo/bar"), URI.create("http://example.com/foo/")));
+		assertThrows(IllegalArgumentException.class,
+				() -> URIs.relativizeChildPath(URI.create("http://example.com/foo/bar/"), URI.create("http://example.com/foo/")));
+		assertThrows(IllegalArgumentException.class,
+				() -> URIs.relativizeChildPath(URI.create("http://example.com/foo/test.txt"), URI.create("http://example.com/foo/")));
+		assertThrows(IllegalArgumentException.class,
+				() -> URIs.relativizeChildPath(URI.create("http://example.com/foo/bar/test.txt"), URI.create("http://example.com/foo/bar/")));
+
+		//sibling references; note that currently <foo/bar> and <foo/bar/> are distinguished regardless of strict mode
+		assertThrows(IllegalArgumentException.class,
+				() -> URIs.relativizeChildPath(URI.create("http://example.com/foo/bar/"), URI.create("http://example.com/foo/other/")));
+		assertThrows(IllegalArgumentException.class,
+				() -> URIs.relativizeChildPath(URI.create("http://example.com/foo/bar"), URI.create("http://example.com/foo/other/")));
+		assertThrows(IllegalArgumentException.class,
+				() -> URIs.relativizeChildPath(URI.create("http://example.com/foo/bar/"), URI.create("http://example.com/foo/other")));
+		assertThrows(IllegalArgumentException.class,
+				() -> URIs.relativizeChildPath(URI.create("http://example.com/foo/bar"), URI.create("http://example.com/foo/other")));
+		assertThrows(IllegalArgumentException.class,
+				() -> URIs.relativizeChildPath(URI.create("http://example.com/foo/bar/"), URI.create("http://example.com/example/other/")));
+		assertThrows(IllegalArgumentException.class,
+				() -> URIs.relativizeChildPath(URI.create("http://example.com/foo/bar"), URI.create("http://example.com/example/other/")));
+		assertThrows(IllegalArgumentException.class,
+				() -> URIs.relativizeChildPath(URI.create("http://example.com/foo/bar/"), URI.create("http://example.com/example/other")));
+		assertThrows(IllegalArgumentException.class,
+				() -> URIs.relativizeChildPath(URI.create("http://example.com/foo/bar"), URI.create("http://example.com/example/other")));
+	}
+
+	/** @see URIs#relativizePath(URI, URI) */
+	@Test
+	public void testRelativizePath() {
+		//collection relativized against itself
+		assertThat(URIs.relativizePath(URI.create("http://example.com/"), URI.create("http://example.com/")), is(URI.create("")));
+		assertThat(URIs.relativizePath(URI.create("http://example.com/foo/"), URI.create("http://example.com/foo/")), is(URI.create("")));
+		assertThat(URIs.relativizePath(URI.create("http://example.com/foo/bar/"), URI.create("http://example.com/foo/bar/")), is(URI.create("")));
+
+		//non-collection relativized against itself
+		assertThat(URIs.relativizePath(URI.create("http://example.com/foo"), URI.create("http://example.com/foo")), is(URI.create("foo")));
+		assertThat(URIs.relativizePath(URI.create("http://example.com/foo/bar"), URI.create("http://example.com/foo/bar")), is(URI.create("bar")));
+		assertThat(URIs.relativizePath(URI.create("http://example.com/test.txt"), URI.create("http://example.com/test.txt")), is(URI.create("test.txt")));
+		assertThat(URIs.relativizePath(URI.create("http://example.com/foo/test.txt"), URI.create("http://example.com/foo/test.txt")), is(URI.create("test.txt")));
+		assertThat(URIs.relativizePath(URI.create("http://example.com/foo/bar/test.txt"), URI.create("http://example.com/foo/bar/test.txt")),
+				is(URI.create("test.txt")));
+
+		//same-level resolution
+		assertThat(URIs.relativizePath(URI.create("http://example.com/foo"), URI.create("http://example.com/bar")), is(URI.create("bar")));
+		assertThat(URIs.relativizePath(URI.create("http://example.com/foo/bar"), URI.create("http://example.com/foo/other")), is(URI.create("other")));
+		assertThat(URIs.relativizePath(URI.create("http://example.com/foo.txt"), URI.create("http://example.com/bar.txt")), is(URI.create("bar.txt")));
+		assertThat(URIs.relativizePath(URI.create("http://example.com/foo/test.txt"), URI.create("http://example.com/foo/other.txt")), is(URI.create("other.txt")));
+		assertThat(URIs.relativizePath(URI.create("http://example.com/foo/bar/test.txt"), URI.create("http://example.com/foo/bar/other.txt")),
+				is(URI.create("other.txt")));
+
+		//child of collection
+		assertThat(URIs.relativizePath(URI.create("http://example.com/foo/bar/"), URI.create("http://example.com/foo/bar/test.txt")), is(URI.create("test.txt")));
+		assertThat(URIs.relativizePath(URI.create("http://example.com/foo/bar/"), URI.create("http://example.com/foo/bar/test")), is(URI.create("test")));
+		assertThat(URIs.relativizePath(URI.create("http://example.com/foo/"), URI.create("http://example.com/foo/bar/test.txt")), is(URI.create("bar/test.txt")));
+		assertThat(URIs.relativizePath(URI.create("http://example.com/"), URI.create("http://example.com/foo/bar/test.txt")), is(URI.create("foo/bar/test.txt")));
+
+		//child of non-collection
+		//TODO non-strict mode		
+		//		assertThat(URIs.relativizePath(URI.create("http://example.com/foo/bar"), URI.create("http://example.com/foo/bar/test.txt")), is(URI.create("test.txt")));
+		//		assertThat(URIs.relativizePath(URI.create("http://example.com/foo/bar.txt"), URI.create("http://example.com/foo/bar/test.txt")),
+		//				is(URI.create("bar/test.txt")));
+		assertThat(URIs.relativizePath(URI.create("http://example.com/foo/bar"), URI.create("http://example.com/foo/bar/test.txt")),
+				is(URI.create("bar/test.txt")));
+		assertThat(URIs.relativizePath(URI.create("http://example.com/foo/bar.txt"), URI.create("http://example.com/foo/bar/test.txt")),
+				is(URI.create("bar/test.txt")));
+
+		//parent references; note that currently <foo/bar> and <foo/bar/> are distinguished regardless of strict mode
+		assertThat(URIs.relativizePath(URI.create("http://example.com/foo/bar"), URI.create("http://example.com/foo/")), is(URI.create("")));
+		assertThat(URIs.relativizePath(URI.create("http://example.com/foo/bar/"), URI.create("http://example.com/foo/")), is(URI.create("../")));
+		assertThat(URIs.relativizePath(URI.create("http://example.com/foo/test.txt"), URI.create("http://example.com/foo/")), is(URI.create("")));
+		assertThat(URIs.relativizePath(URI.create("http://example.com/foo/bar/test.txt"), URI.create("http://example.com/foo/bar/")), is(URI.create("")));
+
+		//sibling references; note that currently <foo/bar> and <foo/bar/> are distinguished regardless of strict mode
+		assertThat(URIs.relativizePath(URI.create("http://example.com/foo/bar/"), URI.create("http://example.com/foo/other/")), is(URI.create("../other/")));
+		assertThat(URIs.relativizePath(URI.create("http://example.com/foo/bar"), URI.create("http://example.com/foo/other/")), is(URI.create("other/")));
+		assertThat(URIs.relativizePath(URI.create("http://example.com/foo/bar/"), URI.create("http://example.com/foo/other")), is(URI.create("../other")));
+		assertThat(URIs.relativizePath(URI.create("http://example.com/foo/bar"), URI.create("http://example.com/foo/other")), is(URI.create("other")));
+		assertThat(URIs.relativizePath(URI.create("http://example.com/foo/bar/"), URI.create("http://example.com/example/other/")),
+				is(URI.create("../../example/other/")));
+		assertThat(URIs.relativizePath(URI.create("http://example.com/foo/bar"), URI.create("http://example.com/example/other/")),
+				is(URI.create("../example/other/")));
+		assertThat(URIs.relativizePath(URI.create("http://example.com/foo/bar/"), URI.create("http://example.com/example/other")),
+				is(URI.create("../../example/other")));
+		assertThat(URIs.relativizePath(URI.create("http://example.com/foo/bar"), URI.create("http://example.com/example/other")),
+				is(URI.create("../example/other")));
 	}
 
 	/** Tests whether {@link URIs#resolve(URI, URI)} is working properly. */
