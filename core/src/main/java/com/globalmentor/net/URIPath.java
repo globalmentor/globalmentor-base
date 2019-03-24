@@ -91,6 +91,7 @@ public final class URIPath {
 	 * segment.
 	 * </p>
 	 * @param path The raw, encoded path information.
+	 * @return A URI path representing the given raw path string.
 	 * @throws NullPointerException if the given path is <code>null</code>.
 	 * @throws IllegalArgumentException if the given string violates URI RFC 2396.
 	 * @throws IllegalArgumentException if the provided path specifies a URI authority, query, and/or fragment.
@@ -103,6 +104,7 @@ public final class URIPath {
 	/**
 	 * Creates a URI path from the raw path of the given path URI.
 	 * @param pathURI The URI that represents a path.
+	 * @return A URI path from the raw path of the given path URI.
 	 * @throws NullPointerException if the given path URI is <code>null</code>.
 	 * @throws IllegalArgumentException if the provided URI specifies a URI scheme (i.e. the URI is absolute), authority, query, and/or fragment.
 	 * @throws IllegalArgumentException if the given URI is not a path.
@@ -312,7 +314,6 @@ public final class URIPath {
 	 * @param sourceURI The URI to which the other URI will be relativized.
 	 * @param targetURI The URI that will be relativized against the base URI.
 	 * @return The relative path of the source URI to the target URI.
-	 * @return A new URI path relative to the base URI.
 	 * @throws NullPointerException if the given source URI and/or target URI is <code>null</code>.
 	 * @throws IllegalArgumentException if the given base URI is not actually a base URI of the given URI.
 	 * @see URIs#relativizePath(URI, URI)
