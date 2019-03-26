@@ -17,14 +17,15 @@
 package com.globalmentor.net;
 
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.StringTokenizer;
+import java.util.*;
+
+import javax.annotation.*;
 
 import static java.util.Objects.*;
 
 import com.globalmentor.java.CharSequences;
 
+import static com.globalmentor.java.Conditions.*;
 import static com.globalmentor.net.URIs.*;
 
 /**
@@ -42,10 +43,10 @@ import static com.globalmentor.net.URIs.*;
 public final class URIPath {
 
 	/** The empty path (""). */
-	public static final URIPath EMPTY_URI_PATH = new URIPath("");
+	public static final URIPath EMPTY_URI_PATH = new URIPath(EMPTY_PATH_URI);
 
 	/** The path to root, consisting of a single path separator ("/"). */
-	public static final URIPath ROOT_URI_PATH = new URIPath(ROOT_PATH);
+	public static final URIPath ROOT_URI_PATH = new URIPath(ROOT_PATH_URI);
 
 	/**
 	 * The root path in the {@value URIs#PATH_SCHEME} scheme; used for creating URI paths using {@link URI#relativize(URI)} for initial relative segments
@@ -62,7 +63,9 @@ public final class URIPath {
 	 * @throws NullPointerException if the given path is <code>null</code>.
 	 * @throws IllegalArgumentException if the given string violates URI RFC 2396.
 	 * @throws IllegalArgumentException if the provided path specifies a URI authority, query, and/or fragment.
+	 * @deprecated To be replaced by the static factory method {@link #of(String)}.
 	 */
+	@Deprecated
 	public URIPath(final String path) {
 		this(createURIPathURI(requireNonNull(path, "Path cannot be null."))); //construct the class with a URI created from the path, compensating for relative paths that contain a colon in the first path segment
 	}
@@ -73,9 +76,42 @@ public final class URIPath {
 	 * @throws NullPointerException if the given path URI is <code>null</code>.
 	 * @throws IllegalArgumentException if the provided URI specifies a URI scheme (i.e. the URI is absolute), authority, query, and/or fragment.
 	 * @throws IllegalArgumentException if the given URI is not a path.
+	 * @deprecated Will be made private in favor of the static factory method {@link #fromURI(URI)}.
 	 */
+	@Deprecated
 	public URIPath(final URI pathURI) {
 		this.uri = checkPathURI(pathURI); //check and store the path URI		
+	}
+
+	/**
+	 * Creates a URI path from the given string version of the raw path.
+	 * <p>
+	 * This method performs special processing for relative paths that begin with a segment containing {@value URIs#SCHEME_SEPARATOR}. This method is no more than
+	 * a URI factory that compensates for a path known to be a path and not a URI and that may contain a {@value URIs#SCHEME_SEPARATOR} in its relative first
+	 * segment.
+	 * </p>
+	 * @param path The raw, encoded path information.
+	 * @return A URI path representing the given raw path string.
+	 * @throws NullPointerException if the given path is <code>null</code>.
+	 * @throws IllegalArgumentException if the given string violates URI RFC 2396.
+	 * @throws IllegalArgumentException if the provided path specifies a URI authority, query, and/or fragment.
+	 * @see #createURIPathURI(String)
+	 */
+	public static URIPath of(@Nonnull final String path) {
+		return new URIPath(createURIPathURI(requireNonNull(path, "Path cannot be null."))); //construct the class with a URI created from the path, compensating for relative paths that contain a colon in the first path segment
+	}
+
+	/**
+	 * Creates a URI path from the raw path of the given path URI.
+	 * @param pathURI The URI that represents a path.
+	 * @return A URI path from the raw path of the given path URI.
+	 * @throws NullPointerException if the given path URI is <code>null</code>.
+	 * @throws IllegalArgumentException if the provided URI specifies a URI scheme (i.e. the URI is absolute), authority, query, and/or fragment.
+	 * @throws IllegalArgumentException if the given URI is not a path.
+	 * @see URIs#checkPathURI(URI)
+	 */
+	public static URIPath fromURI(final URI pathURI) {
+		return new URIPath(pathURI); //check and store the path URI		
 	}
 
 	/**
@@ -103,9 +139,7 @@ public final class URIPath {
 	 * @see #isAbsolute()
 	 */
 	public URIPath checkAbsolute() throws IllegalArgumentException {
-		if(!isAbsolute()) { //if this path is not absolute
-			throw new IllegalArgumentException("The path " + this + " is not absolute.");
-		}
+		checkArgument(isAbsolute(), "The path %s is not absolute.", this);
 		return this; //return this path
 	}
 
@@ -124,9 +158,7 @@ public final class URIPath {
 	 * @see #isCollection()
 	 */
 	public URIPath checkCollection() throws IllegalArgumentException {
-		if(!isCollection()) { //if this path is not a collection
-			throw new IllegalArgumentException("The path " + this + " is not a collection.");
-		}
+		checkArgument(isCollection(), "The path %s is not a collection.", this);
 		return this; //return this path
 	}
 
@@ -145,9 +177,7 @@ public final class URIPath {
 	 * @see #isRelative()
 	 */
 	public URIPath checkRelative() throws IllegalArgumentException {
-		if(!isRelative()) { //if this path is absolute
-			throw new IllegalArgumentException("The path " + this + " is not relative.");
-		}
+		checkArgument(isRelative(), "The path %s is not relative.", this);
 		return this; //return this path
 	}
 
@@ -161,7 +191,7 @@ public final class URIPath {
 	 */
 	public URIPath normalize() {
 		final URI normalizedURI = URIs.normalize(uri); //normalize the URI
-		return normalizedURI == uri ? this : new URIPath(normalizedURI); //if the URI was already normalized and we got back the same URI, we're already normalized
+		return normalizedURI == uri ? this : URIPath.fromURI(normalizedURI); //if the URI was already normalized and we got back the same URI, we're already normalized
 	}
 
 	/**
@@ -170,7 +200,7 @@ public final class URIPath {
 	 */
 	public URIPath getCurrentLevel() {
 		final URI currentLevelURI = URIs.getCurrentLevel(uri); //get the current level as a URI
-		return currentLevelURI.equals(uri) ? this : new URIPath(currentLevelURI); //only create a new URI path if it's a different path than this one
+		return currentLevelURI.equals(uri) ? this : URIPath.fromURI(currentLevelURI); //only create a new URI path if it's a different path than this one
 	}
 
 	/**
@@ -179,7 +209,7 @@ public final class URIPath {
 	 */
 	public URIPath getParentLevel() {
 		final URI parentLevelURI = URIs.getParentLevel(uri); //get the parent level as a URI
-		return parentLevelURI.equals(uri) ? this : new URIPath(parentLevelURI); //only create a new URI path if it's a different path than this one
+		return parentLevelURI.equals(uri) ? this : URIPath.fromURI(parentLevelURI); //only create a new URI path if it's a different path than this one
 	}
 
 	/**
@@ -196,14 +226,16 @@ public final class URIPath {
 	}
 
 	/**
-	 * Relativizes the given path against this path. This is a convenience method that functions by creating a new {@link URIPath} from the given string and
-	 * delegating to {@link #relativize(URIPath)}.
+	 * Relativizes the given path against this path.
+	 * @implSpec This is a convenience method that functions by creating a new {@link URIPath} from the given string and delegating to
+	 *           {@link #relativizeChildPath(URIPath)}.
 	 * @param path The path to be relativized against this path.
 	 * @return The resulting path.
 	 * @throws NullPointerException if the given path is <code>null</code>.
+	 * @see URIPath#of(String)
 	 */
-	public URIPath relativize(final String path) {
-		return relativize(new URIPath(requireNonNull(path, "Path cannot be null."))); //convert the String to a URI path and relativize it against this path
+	public URIPath relativizeChildPath(final String path) {
+		return relativizeChildPath(URIPath.of(path)); //convert the String to a URI path and relativize it against this path
 	}
 
 	/**
@@ -212,44 +244,117 @@ public final class URIPath {
 	 * @return The resulting path.
 	 * @throws NullPointerException if the given path is <code>null</code>.
 	 */
-	public URIPath relativize(final URIPath path) {
-		return new URIPath(uri.relativize(requireNonNull(path, "Path cannot be null.").toURI()).getRawPath()); //relativize the URI form of the given path against the URI form of this path and create a new path from the resulting URI's raw path
+	public URIPath relativizeChildPath(final URIPath path) {
+		return URIPath.of(uri.relativize(requireNonNull(path, "Path cannot be null.").toURI()).getRawPath()); //relativize the URI form of the given path against the URI form of this path and create a new path from the resulting URI's raw path
 	}
 
 	/**
-	 * Relativizes a URI against a base URI and returns a {@link URIPath} object indicating the path relative to the base.
-	 * @implNote Note that this does not properly relativize URIs that require backtracking, such as siblings; see
-	 *           <a href="https://bugs.java.com/bugdatabase/view_bug.do?bug_id=6226081">JDK-6226081</a>.
-	 * @param baseURI The base URI against which to relativize.
-	 * @param uri The URI to relativize against the base.
-	 * @return A new URI path relative to the base URI.
-	 * @see URI#relativize(URI)
-	 * @throws NullPointerException if the given base URI and/or URI is <code>null</code>.
-	 * @throws IllegalArgumentException if the given base URI is not actually a base URI of the given URI.
+	 * Returns the path of a target path relative to this path, which may be a sibling path or even a child path of the other path. A path relativized against
+	 * itself will return an empty path. A non-collection relativized against its parent will also return an empty path. Otherwise if this path is not a parent of
+	 * (or the same path as) the target path, the path will backtrack using <code>..</code> path segments as appropriate.
+	 * @implSpec This is a convenience method that functions by creating a new {@link URIPath} from the given string and delegating to
+	 *           {@link #relativize(URIPath)}.
+	 * @param targetPath The path that will be relativized against this path.
+	 * @return The relative path of the source URI to the target URI, or the given target path if the two paths have no base in common.
+	 * @throws NullPointerException if the given path string is <code>null</code>.
+	 * @see URIs#findRelativePath(URI, URI)
 	 */
-	public static URIPath relativize(final URI baseURI, final URI uri) {
-		final URI relativeURI = baseURI.relativize(uri); //get a URI relative to the base URI
-		if(relativeURI.isAbsolute()) { //if we couldn't relativize the the URI to the old base URI and come up with a relative URI
-			throw new IllegalArgumentException(baseURI.toASCIIString() + " is not a base URI of " + uri);
-		}
-		return new URIPath(relativeURI);
+	public URIPath relativize(@Nonnull final String targetPath) {
+		return relativize(URIPath.of(targetPath));
 	}
 
 	/**
-	 * Resolves the given path against this path. This is a convenience method that functions by creating a new {@link URIPath} from the given string and
-	 * delegating to {@link #resolve(URIPath)}.
+	 * Returns the path of a target path relative to this path, which may be a sibling path or even a child path of the other path. A path relativized against
+	 * itself will return an empty path. A non-collection relativized against its parent will also return an empty path. Otherwise if this path is not a parent of
+	 * (or the same path as) the target path, the path will backtrack using <code>..</code> path segments as appropriate.
+	 * @implSpec This is a convenience method that functions by creating a new {@link URIPath} from the given string and delegating to
+	 *           {@link #findRelativePath(URIPath)}.
+	 * @param targetPath The path that will be relativized against this path.
+	 * @return The relative path of the source URI to the target URI, which will not be present if the two paths have no base in common.
+	 * @throws NullPointerException if the given path string is <code>null</code>.
+	 * @see URIs#findRelativePath(URI, URI)
+	 */
+	public Optional<URIPath> findRelativePath(@Nonnull final String targetPath) {
+		return findRelativePath(URIPath.of(targetPath));
+	}
+
+	/**
+	 * Returns the path of a target path relative to this path, which may be a sibling path or even a child path of the other path. A path relativized against
+	 * itself will return an empty path. A non-collection relativized against its parent will also return an empty path. Otherwise if this path is not a parent of
+	 * (or the same path as) the target path, the path will backtrack using <code>..</code> path segments as appropriate.
+	 * @param targetPath The path that will be relativized against this path.
+	 * @return The relative path of the source URI to the target URI, or the target path if the two paths have no base in common.
+	 * @throws NullPointerException if the given target path is <code>null</code>.
+	 * @see URIs#findRelativePath(URI, URI)
+	 */
+	public URIPath relativize(@Nonnull final URIPath targetPath) {
+		return findRelativePath(targetPath).orElse(targetPath);
+	}
+
+	/**
+	 * Returns the path of a target path relative to this path, which may be a sibling path or even a child path of the other path. A path relativized against
+	 * itself will return an empty path. A non-collection relativized against its parent will also return an empty path. Otherwise if this path is not a parent of
+	 * (or the same path as) the target path, the path will backtrack using <code>..</code> path segments as appropriate.
+	 * @param targetPath The path that will be relativized against this path.
+	 * @return The relative path of the source URI to the target URI, which will not be present if the two paths have no base in common.
+	 * @throws NullPointerException if the given target path is <code>null</code>.
+	 * @see URIs#findRelativePath(URI, URI)
+	 */
+	public Optional<URIPath> findRelativePath(@Nonnull final URIPath targetPath) {
+		return findRelativePath(uri, targetPath.toURI());
+	}
+
+	/**
+	 * Returns the path of a target URI relative to some source URI, which may be a sibling URI or even a child URI. A collection URI relativized against itself
+	 * will return an empty path. A non-collection relativized against its parent will also return an empty path. Otherwise if the source URI is not a parent of
+	 * (or the same URI as) the target URI, the path will backtrack using <code>..</code> path segments as appropriate.
+	 * @implSpec This implementation delegates to {@link #findRelativePath(URI, URI)}
+	 * @implNote This implementation properly relativizes URIs that require backtracking, such as siblings, unlike Java URI relativization methods; see
+	 *           <a href="https://bugs.java.com/bugdatabase/view_bug.do?bug_id=6226081">JDK-6226081</a>.
+	 * @param sourceURI The URI to which the other URI will be relativized.
+	 * @param targetURI The URI that will be relativized against the base URI.
+	 * @return The relative path of the source URI to the target URI.
+	 * @throws NullPointerException if the given source URI and/or target URI is <code>null</code>.
+	 * @throws IllegalArgumentException if the given base URI is not actually a base URI of the given URI.
+	 * @see URIs#relativizePath(URI, URI)
+	 */
+	public static URIPath relativize(@Nonnull final URI sourceURI, @Nonnull final URI targetURI) {
+		return findRelativePath(sourceURI, targetURI)
+				.orElseThrow(() -> new IllegalArgumentException("The source URI " + sourceURI + " has no base URI in common with the target URI " + targetURI + "."));
+	}
+
+	/**
+	 * Returns the path of a target URI relative to some source URI, which may be a sibling URI or even a child URI. A collection URI relativized against itself
+	 * will return an empty path. A non-collection relativized against its parent will also return an empty path. Otherwise if the source URI is not a parent of
+	 * (or the same URI as) the target URI, the path will backtrack using <code>..</code> path segments as appropriate.
+	 * @implNote This implementation properly relativizes URIs that require backtracking, such as siblings, unlike Java URI relativization methods; see
+	 *           <a href="https://bugs.java.com/bugdatabase/view_bug.do?bug_id=6226081">JDK-6226081</a>.
+	 * @param sourceURI The URI to which the other URI will be relativized.
+	 * @param targetURI The URI that will be relativized against the base URI.
+	 * @return The relative path of the source URI to the target URI, which will not be present if the two URIs have no base in common.
+	 * @throws NullPointerException if the given source URI and/or target URI is <code>null</code>.
+	 * @see URIs#findRelativePath(URI, URI)
+	 */
+	public static Optional<URIPath> findRelativePath(@Nonnull final URI sourceURI, @Nonnull final URI targetURI) {
+		return URIs.findRelativePath(sourceURI, targetURI).map(URIPath::fromURI);
+	}
+
+	/**
+	 * Resolves the given path against this path.
 	 * <p>
 	 * This method works correctly with Windows UNC path URIs.
 	 * </p>
+	 * @implSpec This is a convenience method that functions by creating a new {@link URIPath} from the given string and delegating to {@link #resolve(URIPath)}.
 	 * @param path The path to be resolved against this path.
 	 * @return The resulting path.
 	 * @throws NullPointerException if the given path is <code>null</code>.
 	 * @throws IllegalArgumentException if the given string violates URI RFC 2396.
 	 * @throws IllegalArgumentException if the provided path specifies a URI scheme (i.e. the path represents an absolute URI) and/or authority.
+	 * @see #of(String)
 	 * @see #resolve(URIPath)
 	 */
 	public final URIPath resolve(final String path) {
-		return resolve(new URIPath(requireNonNull(path, "Path cannot be null."))); //convert the String to a URI path and resolve it against this path
+		return resolve(URIPath.of(path)); //convert the String to a URI path and resolve it against this path
 	}
 
 	/**
@@ -263,7 +368,7 @@ public final class URIPath {
 	 * @see URIs#resolve(URI, String)
 	 */
 	public URIPath resolve(final URIPath path) {
-		return new URIPath(URIs.resolve(uri, requireNonNull(path, "Path cannot be null.").toURI()).getRawPath()); //resolve the URI form of the given path against the URI form of this path and create a new path from the resulting URI's raw path
+		return URIPath.of(URIs.resolve(uri, requireNonNull(path, "Path cannot be null.").toURI()).getRawPath()); //resolve the URI form of the given path against the URI form of this path and create a new path from the resulting URI's raw path
 	}
 
 	/**
@@ -333,7 +438,7 @@ public final class URIPath {
 	 * @return A form of the URI path that indicates a collection.
 	 */
 	public URIPath toCollectionURIPath() {
-		return isCollection() ? this : new URIPath(uri.getRawPath() + PATH_SEPARATOR); //if the URI path is not already a collection, append a path separator
+		return isCollection() ? this : URIPath.of(uri.getRawPath() + PATH_SEPARATOR); //if the URI path is not already a collection, append a path separator
 	}
 
 	/**
@@ -342,7 +447,7 @@ public final class URIPath {
 	 * @return A form of the URI path that is relative.
 	 */
 	public URIPath toRelativeURIPath() {
-		return isRelative() ? this : new URIPath(uri.getRawPath().substring(1)); //if the URI path is not relative, remove the beginning path separator
+		return isRelative() ? this : URIPath.of(uri.getRawPath().substring(1)); //if the URI path is not relative, remove the beginning path separator
 	}
 
 	/** @return A string representation of the raw, encoded path as it would appear in a URI. */
@@ -443,7 +548,7 @@ public final class URIPath {
 			final String token = tokenizer.nextToken(); //get the next token
 			stringBuilder.append(token); //add the token to the path string builder
 			if(!CharSequences.equals(token, PATH_SEPARATOR)) { //if this is not the path separator
-				basePaths.add(new URIPath(tokenizer.hasMoreTokens() ? stringBuilder.toString() + PATH_SEPARATOR : stringBuilder.toString())); //append a path separator to the segment string if there is a path separator following this path segment (that's all that can follow this segment, as the path separator is the delimiter)
+				basePaths.add(URIPath.of(tokenizer.hasMoreTokens() ? stringBuilder.toString() + PATH_SEPARATOR : stringBuilder.toString())); //append a path separator to the segment string if there is a path separator following this path segment (that's all that can follow this segment, as the path separator is the delimiter)
 			}
 		}
 		return basePaths; //return the segments we collected

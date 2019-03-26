@@ -30,6 +30,7 @@ import com.globalmentor.io.*;
 import com.globalmentor.java.Characters;
 import com.globalmentor.model.NameValuePair;
 import static com.globalmentor.java.CharSequences.*;
+import static com.globalmentor.java.Conditions.*;
 import static com.globalmentor.java.StringBuilders.*;
 import static com.globalmentor.text.TextFormatter.*;
 
@@ -49,6 +50,12 @@ public class URIs {
 
 	/** The shared static empty array of URIs. */
 	public static final URI[] NO_URIS = new URI[0];
+
+	/**
+	 * A shared URI constant equal to creating a URI from an empty path.
+	 * @apiNote This constant is useful for detecting a URI relativized against itself, for example.
+	 */
+	public static final URI EMPTY_PATH_URI = URI.create("");
 
 	/** The file scheme identifier. */
 	public static final String FILE_SCHEME = "file";
@@ -127,6 +134,9 @@ public class URIs {
 
 	/** The path to root, consisting of a single path separator ("/"). */
 	public static final String ROOT_PATH = String.valueOf(PATH_SEPARATOR);
+
+	/** A URI consisting only of a single path separator ("/"). */
+	public static final URI ROOT_PATH_URI = URI.create(ROOT_PATH);
 
 	/** The path Java returns when it tries to resolve <code>..</code> to the root path. */
 	public static final String ROOT_PATH_PARENT_LEVEL = ROOT_PATH + PARENT_LEVEL_PATH_SEGMENT;
@@ -991,9 +1001,7 @@ public class URIs {
 	 * @see #isPlainURI(URI)
 	 */
 	public static URI checkPlainURI(final URI uri) {
-		if(!isPlainURI(uri)) { //if the URI is not a plain URI
-			throw new IllegalArgumentException("The given URI " + uri + " is not a plain URI.");
-		}
+		checkArgument(isPlainURI(uri), "The given URI %s is not a plain URI.", uri);
 		return uri; //return the plain URI
 	}
 
@@ -1060,36 +1068,105 @@ public class URIs {
 	}
 
 	/**
-	 * Returns the path relative to the given parent URI.
+	 * Returns a URI relative to the given parent URI. A collection URI relativized against itself will return an empty URI.
+	 * <p>
+	 * This method does not support backtracking, that is, creating a path to a parent or child path. For that functionality use
+	 * {@link #findRelativePath(URI, URI)} instead.
+	 * </p>
+	 * @apiNote This method differs from {@link URI#relativize(URI)} in that the parent URI must be a collection URI (i.e. end with a slash) for a relative child
+	 *          path to be found.
+	 * @implSpec This method delegates to {@link #findRelativeChildPath(URI, URI)}
 	 * @param parentURI The URI to which the child URI is relative.
 	 * @param childURI The URI that will be relativized against the parent URI.
-	 * @return The relative path of the child URI to the parent URI.
-	 * @throws IllegalArgumentException if the given parent URI and/or child URI is not a plain URI (that is, if it contains a query and/or fragment).
-	 * @throws IllegalArgumentException if the child URI is not relative to the parent URI.
+	 * @return The URI representing path of the child URI to the parent URI, or the child URI if the given child URI is not a child of the given parent URI.
+	 * @see #normalize(URI)
 	 */
-	public static URIPath relativize(final URI parentURI, final URI childURI) {
-		checkPlainURI(parentURI);
-		checkPlainURI(childURI);
-		final URI relativeURI = parentURI.relativize(childURI); //get a relative URI
-		if(relativeURI.isAbsolute()) { //if the resulting "relative" URI is not relative
-			throw new IllegalArgumentException("URI " + childURI + " is not relative to " + parentURI);
-		}
-		return new URIPath(relativeURI);
+	public static URI relativizeChildPath(final URI parentURI, final URI childURI) {
+		return findRelativeChildPath(parentURI, childURI).orElse(childURI);
 	}
 
 	/**
-	 * Creates a URI from a URL. JDK 1.5 provides an equivalent {@link URL#toURI()}. This method is provided for backwards-compatibility using for example
-	 * Retroweaver.
-	 * @param url The URL to convert to a URI. The URL should already be properly encoded.
-	 * @return The URI form of the URL.
-	 * @throws URISyntaxException Thrown if the URL could not be converted to a URI.
+	 * Returns a URI relative to the given parent URI. A collection URI relativized against itself will return an empty URI.
+	 * <p>
+	 * This method does not support backtracking, that is, creating a path to a parent or child path. For that functionality use
+	 * {@link #findRelativePath(URI, URI)} instead.
+	 * </p>
+	 * @apiNote This method differs from {@link URI#relativize(URI)} in that the parent URI must be a collection URI (i.e. end with a slash) for a relative child
+	 *          path to be found.
+	 * @implSpec This method first normalizes both URIs.
+	 * @param parentURI The URI to which the child URI is relative.
+	 * @param childURI The URI that will be relativized against the parent URI.
+	 * @return The URI representing path of the child URI to the parent URI, which will not be present if the given child URI is not a child of the given parent
+	 *         URI.
+	 * @see #normalize(URI)
 	 */
-	/*TODO del
-		public static URI createURI(final URL url) throws URISyntaxException
-		{
-			return new URI(url.toString());	//assuming the URL is already escaped, create a new URI from the string representation of the URL
+	public static Optional<URI> findRelativeChildPath(@Nonnull final URI parentURI, @Nonnull final URI childURI) {
+		if(isCollectionURI(parentURI)) {
+			final URI relativeURI = normalize(parentURI).relativize(normalize(childURI)); //get a relative URI
+			if(!relativeURI.isAbsolute()) {
+				return Optional.of(relativeURI);
+			}
 		}
-	*/
+		return Optional.empty();
+	}
+
+	/**
+	 * Returns the path of a target URI relative to some source URI, which may be a sibling URI or even a child URI. A collection URI relativized against itself
+	 * will return an empty URI. A non-collection relativized against its parent will also return an empty URI. Otherwise if the source URI is not a parent of (or
+	 * the same URI as) the target URI, the path will backtrack using <code>..</code> path segments as appropriate.
+	 * @implSpec This method delegates to {@link #findRelativePath(URI, URI)}
+	 * @implNote This implementation properly relativizes URIs that require backtracking, such as siblings, unlike Java URI relativization methods; see
+	 *           <a href="https://bugs.java.com/bugdatabase/view_bug.do?bug_id=6226081">JDK-6226081</a>.
+	 * @param sourceURI The URI to which the other URI will be relativized.
+	 * @param targetURI The URI that will be relativized against the base URI.
+	 * @return The relative path of the source URI to the target URI, or the target URI if the two URIs have no base in common.
+	 * @see #normalize(URI)
+	 */
+	public static URI relativizePath(@Nonnull final URI sourceURI, @Nonnull final URI targetURI) {
+		return findRelativePath(sourceURI, targetURI).orElse(targetURI);
+	}
+
+	/**
+	 * Returns the path of a target URI relative to some source URI, which may be a sibling URI or even a child URI. A collection URI relativized against itself
+	 * will return an empty URI. A non-collection relativized against its parent will also return an empty URI. Otherwise if the source URI is not a parent of (or
+	 * the same URI as) the target URI, the path will backtrack using <code>..</code> path segments as appropriate.
+	 * @implSpec This method first normalizes both URIs.
+	 * @implNote This implementation properly relativizes URIs that require backtracking, such as siblings, unlike Java URI relativization methods; see
+	 *           <a href="https://bugs.java.com/bugdatabase/view_bug.do?bug_id=6226081">JDK-6226081</a>.
+	 * @param sourceURI The URI to which the other URI will be relativized.
+	 * @param targetURI The URI that will be relativized against the base URI.
+	 * @return The relative path of the source URI to the target URI, which will not be present if the two URIs have no base in common.
+	 * @throws IllegalArgumentException if the two URIs have no base URI in common.
+	 * @see #normalize(URI)
+	 */
+	public static Optional<URI> findRelativePath(@Nonnull URI sourceURI, @Nonnull URI targetURI) {
+		sourceURI = normalize(sourceURI);
+		targetURI = normalize(targetURI);
+		sourceURI = getCurrentLevel(sourceURI); //normalize and remove any file from the base path TODO but will file URIs for directories end in /?
+		StringBuilder backtrackPathBuilder = null; //only backtrack if we need to, but keep the string builder around for efficiency each time
+		//		String backtrackPath = null; //we start out not having to backtrack
+		URI parentURI = sourceURI;
+		URI relativeURI;
+		while((relativeURI = parentURI.relativize(targetURI)).isAbsolute()) { //keep looking for a relative path
+			if(backtrackPathBuilder == null) { //if this is the first attempt and finding a common parent
+				backtrackPathBuilder = new StringBuilder(); //lazily create the string builder for back tracking
+			}
+			backtrackPathBuilder.append(PARENT_LEVEL_PATH_SEGMENT).append(PATH_SEPARATOR); //<../>
+			parentURI = getParentLevel(parentURI); //move the parent URI up a level; equivalent to getParentURI(parentURI)
+			if(parentURI == null) { //if we ran out of parents
+				return Optional.empty();
+			}
+		}
+		//At this point relativeURI will have a relative path to the URI _from the common parent_,
+		//so we need to prepend enough backtracking to get to the common parent.
+		assert parentURI != null && parentURI.isAbsolute();
+		assert relativeURI != null && !relativeURI.isAbsolute();
+		if(backtrackPathBuilder != null) { //if we backtracked, add the extra resolution back to the original base
+			assert backtrackPathBuilder.length() > 0;
+			relativeURI = URI.create(backtrackPathBuilder.toString()).resolve(relativeURI); //prepend backtracking
+		}
+		return Optional.of(relativeURI);
+	}
 
 	/**
 	 * Creates a URN in the form <code>urn:<var>nid</var>:nss</code>.
@@ -1464,7 +1541,7 @@ public class URIs {
 	/**
 	 * Determines whether the given URI is a UNC file path URI in the form <code>file:////server/file.ext</code>.
 	 * <p>
-	 * Strangly, the Java URI form of a UNC path will contain a path prefixed with <code>//</code>, but the entire scheme-specific part will be prefixed with
+	 * Strangely, the Java URI form of a UNC path will contain a path prefixed with <code>//</code>, but the entire scheme-specific part will be prefixed with
 	 * <code>////</code>.
 	 * </p>
 	 * @param uri The URI to test.
@@ -1968,13 +2045,7 @@ public class URIs {
 	/**
 	 * Changes a URI from one base to another. For example, <code>http://example.com/base1/test.txt</code> changed from base
 	 * <code>http://example.com/base1/</code> to base <code>http://example.com/base2/level2/</code> yields <code>http://example.com/base2/level2/test.txt</code>.
-	 * <p>
-	 * If the old and new base URIs are the same, the given URI is returned.
-	 * </p>
-	 * <p>
-	 * This method correctly works with Windows UNC path file URIs, working around a JDK 5.x/6.x bug that chops off the first few forward slashes for Windows
-	 * network names.
-	 * </p>
+	 * If the old and new base URIs are the same, a URI equal to given URI is returned.
 	 * @param uri The URI the base of which to change.
 	 * @param oldBaseURI The current base URI.
 	 * @param newBaseURI The base URI of the new URI to construct.
@@ -1982,9 +2053,12 @@ public class URIs {
 	 * @see #isUNCFileURI(URI)
 	 * @see URI#relativize(URI)
 	 * @see #resolve(URI, URI)
-	 * @throws IllegalArgumentException if <code><var>oldBaseURI</var></code> is not a base URI of <code><var>uri</var></code>.
+	 * @throws IllegalArgumentException if the old base URI is is not a base URI of the given URI.
 	 */
 	public static URI changeBase(final URI uri, final URI oldBaseURI, final URI newBaseURI) {
+		//The documentation at one point said: "This method correctly works with Windows UNC path file URIs,
+		// working around a JDK 5.x/6.x bug that chops off the first few forward slashes for Windows network names."
+		//TODO see if the JDK Windows UNC path bug still exists, and whether a workaround needs to be added back.
 		if(oldBaseURI.equals(newBaseURI)) { //if the old and new base URIs are the same
 			return uri; //the URI will not change
 		}
@@ -1999,6 +2073,8 @@ public class URIs {
 	 * Determines whether the given URI is a child relative to the given base URI. The base URI is considered a child of itself. This for the base URI
 	 * <code>http://www.example.com/base/</code>, the URIs <code>http://www.example.com/base/</code> and <code>http://www.example.com/base/child/</code> are
 	 * considered child URIs, while <code>http://www.example.com/</code> and <code>http://www.example.com/other/</code> are not.
+	 * @implNote This implementation relies on the behavior of {@link URI#relativize(URI)} not to relativize URIs that require backtracking, such as siblings, as
+	 *           described in <a href="https://bugs.java.com/bugdatabase/view_bug.do?bug_id=6226081">JDK-6226081</a>.
 	 * @param baseURI The assumed base URI.
 	 * @param uri The URI which may be relative to the given base URI.
 	 * @return <code>true</code> if the given URI can be made relative to the given base URI resulting in a non-absolute form.
@@ -2361,6 +2437,7 @@ public class URIs {
 	 * @throws NullPointerException if one of the given paths is <code>null</code>.
 	 * @throws IllegalArgumentException if one of the provided path specifies a URI scheme (i.e. the URI is absolute) and/or authority.
 	 */
+	@Deprecated //TODO shouldn't this go elsewhere? reconcile with child path vs backtracking as well
 	public static String relativizePath(final String basePath, final String fullPath) {
 		final URI baseURI = createPathURI(basePath); //create a URI for the base path, ensuring it's a path
 		final URI fullURI = createPathURI(fullPath); //create a URI for the full path, ensuring it's a path

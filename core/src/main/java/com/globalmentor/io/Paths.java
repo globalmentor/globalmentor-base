@@ -37,8 +37,8 @@ public class Paths {
 
 	/**
 	 * Changes a path from one base to another. For example, <code>/example/base1/test.txt</code> changed from base <code>/example/base1/</code> to base
-	 * <code>/example/base2/level2/</code> yields <code>/example/base2/level2/test.txt</code>. If the old and new base paths are the same, the given path is
-	 * returned.
+	 * <code>/example/base2/level2/</code> yields <code>/example/base2/level2/test.txt</code>. If the old and new base paths are the same, a path equal to the
+	 * given path is returned.
 	 * <p>
 	 * The paths are normalized before the base is changed.
 	 * </p>
