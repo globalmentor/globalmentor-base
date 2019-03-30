@@ -26,7 +26,7 @@ import javax.annotation.*;
 
 /**
  * A predicate that matches paths based on whether the path filename matches a given pattern.
- * @implSpe This predicate may be used by multiple threads.
+ * @implSpec This predicate may be used by multiple threads.
  * @author Garret Wilson
  * @see Pattern
  */
