@@ -21,6 +21,8 @@ import static com.globalmentor.java.Conditions.*;
 import static java.util.Objects.*;
 
 import java.nio.file.Path;
+import java.util.function.Predicate;
+import java.util.regex.Pattern;
 
 import javax.annotation.*;
 
@@ -185,6 +187,28 @@ public class Paths {
 		final Path filename = path.getFileName();
 		checkArgument(filename != null, "Path %s has no filename for changing its extension.");
 		return path.resolveSibling(Filenames.removeExtension(filename.toString()));
+	}
+
+	//#predicates
+
+	/**
+	 * Returns a predicate for matching paths by a base filename. Only paths that have a filename and which filename has the given base name (the given base name
+	 * followed by one or more filename extensions) will pass the predicate.
+	 * @param baseFilename The filename base name to match.
+	 * @return A predicate for matching path filenames against the given base name.
+	 */
+	public static Predicate<Path> byBaseFilename(@Nonnull final String baseFilename) {
+		return PathFilenamePatternPredicate.forPattern(Pattern.compile(Pattern.quote(baseFilename) + "\\..+")); //TODO test
+	}
+
+	/**
+	 * Returns a predicate for a given filename pattern. Only paths that have a filename and which filename matches the given filename pattern will pass the
+	 * predicate.
+	 * @param filenamePattern The pattern for matching a filename.
+	 * @return A predicate for matching path filenames against the given pattern.
+	 */
+	public static Predicate<Path> byFilenamePattern(@Nonnull final Pattern filenamePattern) {
+		return PathFilenamePatternPredicate.forPattern(filenamePattern);
 	}
 
 }
