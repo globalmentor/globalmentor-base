@@ -196,9 +196,10 @@ public class Paths {
 	 * followed by one or more filename extensions) will pass the predicate.
 	 * @param baseFilename The filename base name to match.
 	 * @return A predicate for matching path filenames against the given base name.
+	 * @see Filenames#getBaseFilenamePattern(String)
 	 */
 	public static Predicate<Path> byBaseFilename(@Nonnull final String baseFilename) {
-		return PathFilenamePatternPredicate.forPattern(Pattern.compile(Pattern.quote(baseFilename) + "\\..+")); //TODO test
+		return PathFilenamePatternPredicate.forPattern(getBaseFilenamePattern(baseFilename)); //TODO test
 	}
 
 	/**

@@ -21,6 +21,7 @@ import static com.globalmentor.java.Conditions.*;
 import static com.globalmentor.java.OperatingSystem.*;
 import static java.util.Objects.*;
 
+import java.util.regex.Pattern;
 import java.util.stream.*;
 
 import javax.annotation.*;
@@ -108,6 +109,15 @@ public class Filenames {
 	 */
 
 	//TODO for all base filename and extension methods implement a way to ignore invalid extensions, e.g. with spaces or that are empty, such as "Hello World. Nice to see you..txt"
+
+	/**
+	 * Creates a pattern for matching a base filename (the given base name followed by one or more filename extensions).
+	 * @param baseFilename The filename base name to match.
+	 * @return A pattern for for matching filenames against the given base name.
+	 */
+	public static Pattern getBaseFilenamePattern(@Nonnull final String baseFilename) {
+		return Pattern.compile(Pattern.quote(baseFilename) + "\\..+"); //TODO test
+	}
 
 	/**
 	 * Appends a given string to the end of a filename before the extension, if any. This is useful for forming a locale-aware filename, such as
