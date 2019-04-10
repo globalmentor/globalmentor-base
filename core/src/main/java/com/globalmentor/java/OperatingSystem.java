@@ -41,7 +41,7 @@ public class OperatingSystem {
 	public static final String USER_NAME_PROPERTY = "user.name";
 	/** The property for the user's home directory. */
 	public static final String USER_HOME_PROPERTY = "user.home";
-	/** The property for the user's current directory. */
+	/** The property for the user's current working directory. */
 	public static final String USER_DIR_PROPERTY = "user.dir";
 
 	/** The string, "windows", which is a case-insensitive substring of a Windows operating system identification string. */
@@ -75,6 +75,16 @@ public class OperatingSystem {
 	 */
 	public static Path getTempDirectory() throws SecurityException {
 		return Paths.get(System.getProperty(JAVA_IO_TMPDIR_PROPERTY)); //return the system temporary directory
+	}
+
+	/**
+	 * Returns the current directory of the user.
+	 * @return The user's current working directory.
+	 * @throws SecurityException if a security manager exists and its <code>checkPropertyAccess</code> method doesn't allow access to this system property.
+	 * @see #USER_DIR_PROPERTY
+	 */
+	public static Path getWorkingDirectory() throws SecurityException {
+		return Paths.get(System.getProperty(USER_DIR_PROPERTY)); //return the user working directory
 	}
 
 	/**
