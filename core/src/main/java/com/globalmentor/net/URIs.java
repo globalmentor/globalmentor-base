@@ -111,11 +111,23 @@ public class URIs {
 	/** The slash character (<code>'/'</code>) that separates components in a URI path. */
 	public static final char PATH_SEPARATOR = '/';
 
-	/** The URI path segment that represents the current hierarchical level of a hierarchical URI. */
+	/** The path segment {@value #CURRENT_LEVEL_PATH_SEGMENT} representing the current hierarchical level of a hierarchical URI. */
 	public static final String CURRENT_LEVEL_PATH_SEGMENT = ".";
 
-	/** The URI path segment that represents the parent hierarchical level of a hierarchical URI. */
+	/** The collection path {@value #CURRENT_LEVEL_PATH} representing the current hierarchical level of a hierarchical URI. */
+	public static final String CURRENT_LEVEL_PATH = CURRENT_LEVEL_PATH_SEGMENT + PATH_SEPARATOR;
+
+	/** The URI collection path of {@value #CURRENT_LEVEL_PATH} representing the current hierarchical level of a hierarchical URI. */
+	public static final URI CURRENT_LEVEL_PATH_URI = URI.create(CURRENT_LEVEL_PATH);
+
+	/** The path segment {@value #PARENT_LEVEL_PATH_SEGMENT} representing the parent hierarchical level of a hierarchical URI. */
 	public static final String PARENT_LEVEL_PATH_SEGMENT = "..";
+
+	/** The collection path {@value #PARENT_LEVEL_PATH} representing the parent hierarchical level of a hierarchical URI. */
+	public static final String PARENT_LEVEL_PATH = PARENT_LEVEL_PATH_SEGMENT + PATH_SEPARATOR;
+
+	/** The URI collection path {@value #PARENT_LEVEL_PATH} representing the parent hierarchical level of a hierarchical URI. */
+	public static final URI PARENT_LEVEL_PATH_URI = URI.create(PARENT_LEVEL_PATH);
 
 	/** The character that separates the query from the rest of a URI. */
 	public static final char QUERY_SEPARATOR = '?';
@@ -1112,11 +1124,15 @@ public class URIs {
 
 	/**
 	 * Returns the path of a target URI relative to some source URI, which may be a sibling URI or even a child URI. A collection URI relativized against itself
-	 * will return an empty URI. A non-collection relativized against its parent will also return an empty URI. Otherwise if the source URI is not a parent of (or
-	 * the same URI as) the target URI, the path will backtrack using <code>..</code> path segments as appropriate.
+	 * will return an empty URI. A non-collection URI relativized against its parent will return <code>./</code>. Otherwise if the source URI is not a parent of
+	 * (or the same URI as) the target URI, the path will backtrack using <code>..</code> path segments as appropriate.
 	 * @implSpec This method delegates to {@link #findRelativePath(URI, URI)}
 	 * @implNote This implementation properly relativizes URIs that require backtracking, such as siblings, unlike Java URI relativization methods; see
 	 *           <a href="https://bugs.java.com/bugdatabase/view_bug.do?bug_id=6226081">JDK-6226081</a>.
+	 * @implNote This method differs from {@link URI#relativize(URI)}, which would return an empty URI when relativizing <code>foo/bar</code> against
+	 *           <code>foo/</code>. This method instead would return <code>./</code>, compliant with browser relative resolution behavior and with
+	 *           <a href="https://tools.ietf.org/html/rfc3986">RFC 3986</a>, as discussed at <a href="https://stackoverflow.com/q/22203111/421049">Is Java's
+	 *           URI.resolve incompatible with RFC 3986 when the relative URI contains an empty path?</a>.
 	 * @param sourceURI The URI to which the other URI will be relativized.
 	 * @param targetURI The URI that will be relativized against the base URI.
 	 * @return The relative path of the source URI to the target URI, or the target URI if the two URIs have no base in common.
@@ -1128,11 +1144,15 @@ public class URIs {
 
 	/**
 	 * Returns the path of a target URI relative to some source URI, which may be a sibling URI or even a child URI. A collection URI relativized against itself
-	 * will return an empty URI. A non-collection relativized against its parent will also return an empty URI. Otherwise if the source URI is not a parent of (or
-	 * the same URI as) the target URI, the path will backtrack using <code>..</code> path segments as appropriate.
+	 * will return an empty URI. A non-collection URI relativized against its parent will return <code>./</code>. Otherwise if the source URI is not a parent of
+	 * (or the same URI as) the target URI, the path will backtrack using <code>..</code> path segments as appropriate.
 	 * @implSpec This method first normalizes both URIs.
 	 * @implNote This implementation properly relativizes URIs that require backtracking, such as siblings, unlike Java URI relativization methods; see
 	 *           <a href="https://bugs.java.com/bugdatabase/view_bug.do?bug_id=6226081">JDK-6226081</a>.
+	 * @implNote This method differs from {@link URI#relativize(URI)}, which would return an empty URI when relativizing <code>foo/bar</code> against
+	 *           <code>foo/</code>. This method instead would return <code>./</code>, compliant with browser relative resolution behavior and with
+	 *           <a href="https://tools.ietf.org/html/rfc3986">RFC 3986</a>, as discussed at <a href="https://stackoverflow.com/q/22203111/421049">Is Java's
+	 *           URI.resolve incompatible with RFC 3986 when the relative URI contains an empty path?</a>.
 	 * @param sourceURI The URI to which the other URI will be relativized.
 	 * @param targetURI The URI that will be relativized against the base URI.
 	 * @return The relative path of the source URI to the target URI, which will not be present if the two URIs have no base in common.
@@ -1142,16 +1162,15 @@ public class URIs {
 	public static Optional<URI> findRelativePath(@Nonnull URI sourceURI, @Nonnull URI targetURI) {
 		sourceURI = normalize(sourceURI);
 		targetURI = normalize(targetURI);
-		sourceURI = getCurrentLevel(sourceURI); //normalize and remove any file from the base path TODO but will file URIs for directories end in /?
 		StringBuilder backtrackPathBuilder = null; //only backtrack if we need to, but keep the string builder around for efficiency each time
-		//		String backtrackPath = null; //we start out not having to backtrack
-		URI parentURI = sourceURI;
+		final URI currentLevelURI = getCurrentLevel(sourceURI); //normalize and remove any file from the base path TODO but will file URIs for directories end in /?
+		URI parentURI = currentLevelURI;
 		URI relativeURI;
 		while((relativeURI = parentURI.relativize(targetURI)).isAbsolute()) { //keep looking for a relative path
 			if(backtrackPathBuilder == null) { //if this is the first attempt and finding a common parent
 				backtrackPathBuilder = new StringBuilder(); //lazily create the string builder for back tracking
 			}
-			backtrackPathBuilder.append(PARENT_LEVEL_PATH_SEGMENT).append(PATH_SEPARATOR); //<../>
+			backtrackPathBuilder.append(PARENT_LEVEL_PATH); //<../>
 			parentURI = getParentLevel(parentURI); //move the parent URI up a level; equivalent to getParentURI(parentURI)
 			if(parentURI == null) { //if we ran out of parents
 				return Optional.empty();
@@ -1164,6 +1183,10 @@ public class URIs {
 		if(backtrackPathBuilder != null) { //if we backtracked, add the extra resolution back to the original base
 			assert backtrackPathBuilder.length() > 0;
 			relativeURI = URI.create(backtrackPathBuilder.toString()).resolve(relativeURI); //prepend backtracking
+		}
+		//if Java relativizes the relative path using "" but the source URI (e.g. `foo/bar`) was a child of a collection (e.g. `foo/`)
+		if(relativeURI.equals(EMPTY_PATH_URI) && !sourceURI.equals(currentLevelURI)) {
+			relativeURI = CURRENT_LEVEL_PATH_URI; //switch to using the form `./` for RFC 3986 compliance
 		}
 		return Optional.of(relativeURI);
 	}
