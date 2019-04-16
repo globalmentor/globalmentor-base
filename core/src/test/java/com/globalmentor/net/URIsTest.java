@@ -1030,11 +1030,11 @@ public class URIsTest {
 				isPresentAndIs(URI.create("bar/test.txt")));
 
 		//parent references; note that currently <foo/bar> and <foo/bar/> are distinguished regardless
-		assertThat(URIs.findRelativePath(URI.create("http://example.com/foo/bar"), URI.create("http://example.com/foo/")), isPresentAndIs(URI.create("")));
+		assertThat(URIs.findRelativePath(URI.create("http://example.com/foo/bar"), URI.create("http://example.com/foo/")), isPresentAndIs(URI.create("./")));
 		assertThat(URIs.findRelativePath(URI.create("http://example.com/foo/bar/"), URI.create("http://example.com/foo/")), isPresentAndIs(URI.create("../")));
-		assertThat(URIs.findRelativePath(URI.create("http://example.com/foo/test.txt"), URI.create("http://example.com/foo/")), isPresentAndIs(URI.create("")));
+		assertThat(URIs.findRelativePath(URI.create("http://example.com/foo/test.txt"), URI.create("http://example.com/foo/")), isPresentAndIs(URI.create("./")));
 		assertThat(URIs.findRelativePath(URI.create("http://example.com/foo/bar/test.txt"), URI.create("http://example.com/foo/bar/")),
-				isPresentAndIs(URI.create("")));
+				isPresentAndIs(URI.create("./")));
 
 		//sibling references; note that currently <foo/bar> and <foo/bar/> are distinguished regardless
 		assertThat(URIs.findRelativePath(URI.create("http://example.com/foo/bar/"), URI.create("http://example.com/foo/other/")),
