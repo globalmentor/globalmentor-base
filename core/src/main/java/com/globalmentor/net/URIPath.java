@@ -250,8 +250,8 @@ public final class URIPath {
 
 	/**
 	 * Returns the path of a target path relative to this path, which may be a sibling path or even a child path of the other path. A path relativized against
-	 * itself will return an empty path. A non-collection relativized against its parent will also return an empty path. Otherwise if this path is not a parent of
-	 * (or the same path as) the target path, the path will backtrack using <code>..</code> path segments as appropriate.
+	 * itself will return an empty path. A non-collection URI relativized against its parent will return <code>./</code>. Otherwise if this path is not a parent
+	 * of (or the same path as) the target path, the path will backtrack using <code>..</code> path segments as appropriate.
 	 * @implSpec This is a convenience method that functions by creating a new {@link URIPath} from the given string and delegating to
 	 *           {@link #relativize(URIPath)}.
 	 * @param targetPath The path that will be relativized against this path.
@@ -265,8 +265,8 @@ public final class URIPath {
 
 	/**
 	 * Returns the path of a target path relative to this path, which may be a sibling path or even a child path of the other path. A path relativized against
-	 * itself will return an empty path. A non-collection relativized against its parent will also return an empty path. Otherwise if this path is not a parent of
-	 * (or the same path as) the target path, the path will backtrack using <code>..</code> path segments as appropriate.
+	 * itself will return an empty path. A non-collection URI relativized against its parent will return <code>./</code>. Otherwise if this path is not a parent
+	 * of (or the same path as) the target path, the path will backtrack using <code>..</code> path segments as appropriate.
 	 * @implSpec This is a convenience method that functions by creating a new {@link URIPath} from the given string and delegating to
 	 *           {@link #findRelativePath(URIPath)}.
 	 * @param targetPath The path that will be relativized against this path.
@@ -280,8 +280,8 @@ public final class URIPath {
 
 	/**
 	 * Returns the path of a target path relative to this path, which may be a sibling path or even a child path of the other path. A path relativized against
-	 * itself will return an empty path. A non-collection relativized against its parent will also return an empty path. Otherwise if this path is not a parent of
-	 * (or the same path as) the target path, the path will backtrack using <code>..</code> path segments as appropriate.
+	 * itself will return an empty path. A non-collection URI relativized against its parent will return <code>./</code>. Otherwise if this path is not a parent
+	 * of (or the same path as) the target path, the path will backtrack using <code>..</code> path segments as appropriate.
 	 * @param targetPath The path that will be relativized against this path.
 	 * @return The relative path of the source URI to the target URI, or the target path if the two paths have no base in common.
 	 * @throws NullPointerException if the given target path is <code>null</code>.
@@ -293,8 +293,8 @@ public final class URIPath {
 
 	/**
 	 * Returns the path of a target path relative to this path, which may be a sibling path or even a child path of the other path. A path relativized against
-	 * itself will return an empty path. A non-collection relativized against its parent will also return an empty path. Otherwise if this path is not a parent of
-	 * (or the same path as) the target path, the path will backtrack using <code>..</code> path segments as appropriate.
+	 * itself will return an empty path. A non-collection URI relativized against its parent will return <code>./</code>. Otherwise if this path is not a parent
+	 * of (or the same path as) the target path, the path will backtrack using <code>..</code> path segments as appropriate.
 	 * @param targetPath The path that will be relativized against this path.
 	 * @return The relative path of the source URI to the target URI, which will not be present if the two paths have no base in common.
 	 * @throws NullPointerException if the given target path is <code>null</code>.
@@ -306,7 +306,7 @@ public final class URIPath {
 
 	/**
 	 * Returns the path of a target URI relative to some source URI, which may be a sibling URI or even a child URI. A collection URI relativized against itself
-	 * will return an empty path. A non-collection relativized against its parent will also return an empty path. Otherwise if the source URI is not a parent of
+	 * will return an empty path. A non-collection URI relativized against its parent will return <code>./</code>. Otherwise if the source URI is not a parent of
 	 * (or the same URI as) the target URI, the path will backtrack using <code>..</code> path segments as appropriate.
 	 * @implSpec This implementation delegates to {@link #findRelativePath(URI, URI)}
 	 * @implNote This implementation properly relativizes URIs that require backtracking, such as siblings, unlike Java URI relativization methods; see
@@ -325,7 +325,7 @@ public final class URIPath {
 
 	/**
 	 * Returns the path of a target URI relative to some source URI, which may be a sibling URI or even a child URI. A collection URI relativized against itself
-	 * will return an empty path. A non-collection relativized against its parent will also return an empty path. Otherwise if the source URI is not a parent of
+	 * will return an empty path. A non-collection URI relativized against its parent will return <code>./</code>. Otherwise if the source URI is not a parent of
 	 * (or the same URI as) the target URI, the path will backtrack using <code>..</code> path segments as appropriate.
 	 * @implNote This implementation properly relativizes URIs that require backtracking, such as siblings, unlike Java URI relativization methods; see
 	 *           <a href="https://bugs.java.com/bugdatabase/view_bug.do?bug_id=6226081">JDK-6226081</a>.

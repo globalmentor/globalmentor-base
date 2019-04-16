@@ -1144,7 +1144,7 @@ public class URIs {
 
 	/**
 	 * Returns the path of a target URI relative to some source URI, which may be a sibling URI or even a child URI. A collection URI relativized against itself
-	 * will return an empty URI. A non-collection URI relativized against its parent will return <code>./</code> Otherwise if the source URI is not a parent of
+	 * will return an empty URI. A non-collection URI relativized against its parent will return <code>./</code>. Otherwise if the source URI is not a parent of
 	 * (or the same URI as) the target URI, the path will backtrack using <code>..</code> path segments as appropriate.
 	 * @implSpec This method first normalizes both URIs.
 	 * @implNote This implementation properly relativizes URIs that require backtracking, such as siblings, unlike Java URI relativization methods; see
