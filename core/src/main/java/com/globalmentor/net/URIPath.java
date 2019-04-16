@@ -254,6 +254,12 @@ public final class URIPath {
 	 * of (or the same path as) the target path, the path will backtrack using <code>..</code> path segments as appropriate.
 	 * @implSpec This is a convenience method that functions by creating a new {@link URIPath} from the given string and delegating to
 	 *           {@link #relativize(URIPath)}.
+	 * @implNote This implementation properly relativizes URIs that require backtracking, such as siblings, unlike Java URI relativization methods; see
+	 *           <a href="https://bugs.java.com/bugdatabase/view_bug.do?bug_id=6226081">JDK-6226081</a>.
+	 * @implNote This method differs from {@link URI#relativize(URI)}, which would return an empty URI when relativizing <code>foo/bar</code> against
+	 *           <code>foo/</code>. This method instead would return <code>./</code>, compliant with browser relative resolution behavior and with
+	 *           <a href="https://tools.ietf.org/html/rfc3986">RFC 3986</a>, as discussed at <a href="https://stackoverflow.com/q/22203111/421049">Is Java's
+	 *           URI.resolve incompatible with RFC 3986 when the relative URI contains an empty path?</a>.
 	 * @param targetPath The path that will be relativized against this path.
 	 * @return The relative path of the source URI to the target URI, or the given target path if the two paths have no base in common.
 	 * @throws NullPointerException if the given path string is <code>null</code>.
@@ -269,6 +275,12 @@ public final class URIPath {
 	 * of (or the same path as) the target path, the path will backtrack using <code>..</code> path segments as appropriate.
 	 * @implSpec This is a convenience method that functions by creating a new {@link URIPath} from the given string and delegating to
 	 *           {@link #findRelativePath(URIPath)}.
+	 * @implNote This implementation properly relativizes URIs that require backtracking, such as siblings, unlike Java URI relativization methods; see
+	 *           <a href="https://bugs.java.com/bugdatabase/view_bug.do?bug_id=6226081">JDK-6226081</a>.
+	 * @implNote This method differs from {@link URI#relativize(URI)}, which would return an empty URI when relativizing <code>foo/bar</code> against
+	 *           <code>foo/</code>. This method instead would return <code>./</code>, compliant with browser relative resolution behavior and with
+	 *           <a href="https://tools.ietf.org/html/rfc3986">RFC 3986</a>, as discussed at <a href="https://stackoverflow.com/q/22203111/421049">Is Java's
+	 *           URI.resolve incompatible with RFC 3986 when the relative URI contains an empty path?</a>.
 	 * @param targetPath The path that will be relativized against this path.
 	 * @return The relative path of the source URI to the target URI, which will not be present if the two paths have no base in common.
 	 * @throws NullPointerException if the given path string is <code>null</code>.
@@ -282,6 +294,12 @@ public final class URIPath {
 	 * Returns the path of a target path relative to this path, which may be a sibling path or even a child path of the other path. A path relativized against
 	 * itself will return an empty path. A non-collection URI relativized against its parent will return <code>./</code>. Otherwise if this path is not a parent
 	 * of (or the same path as) the target path, the path will backtrack using <code>..</code> path segments as appropriate.
+	 * @implNote This implementation properly relativizes URIs that require backtracking, such as siblings, unlike Java URI relativization methods; see
+	 *           <a href="https://bugs.java.com/bugdatabase/view_bug.do?bug_id=6226081">JDK-6226081</a>.
+	 * @implNote This method differs from {@link URI#relativize(URI)}, which would return an empty URI when relativizing <code>foo/bar</code> against
+	 *           <code>foo/</code>. This method instead would return <code>./</code>, compliant with browser relative resolution behavior and with
+	 *           <a href="https://tools.ietf.org/html/rfc3986">RFC 3986</a>, as discussed at <a href="https://stackoverflow.com/q/22203111/421049">Is Java's
+	 *           URI.resolve incompatible with RFC 3986 when the relative URI contains an empty path?</a>.
 	 * @param targetPath The path that will be relativized against this path.
 	 * @return The relative path of the source URI to the target URI, or the target path if the two paths have no base in common.
 	 * @throws NullPointerException if the given target path is <code>null</code>.
@@ -295,6 +313,12 @@ public final class URIPath {
 	 * Returns the path of a target path relative to this path, which may be a sibling path or even a child path of the other path. A path relativized against
 	 * itself will return an empty path. A non-collection URI relativized against its parent will return <code>./</code>. Otherwise if this path is not a parent
 	 * of (or the same path as) the target path, the path will backtrack using <code>..</code> path segments as appropriate.
+	 * @implNote This implementation properly relativizes URIs that require backtracking, such as siblings, unlike Java URI relativization methods; see
+	 *           <a href="https://bugs.java.com/bugdatabase/view_bug.do?bug_id=6226081">JDK-6226081</a>.
+	 * @implNote This method differs from {@link URI#relativize(URI)}, which would return an empty URI when relativizing <code>foo/bar</code> against
+	 *           <code>foo/</code>. This method instead would return <code>./</code>, compliant with browser relative resolution behavior and with
+	 *           <a href="https://tools.ietf.org/html/rfc3986">RFC 3986</a>, as discussed at <a href="https://stackoverflow.com/q/22203111/421049">Is Java's
+	 *           URI.resolve incompatible with RFC 3986 when the relative URI contains an empty path?</a>.
 	 * @param targetPath The path that will be relativized against this path.
 	 * @return The relative path of the source URI to the target URI, which will not be present if the two paths have no base in common.
 	 * @throws NullPointerException if the given target path is <code>null</code>.
@@ -311,6 +335,10 @@ public final class URIPath {
 	 * @implSpec This implementation delegates to {@link #findRelativePath(URI, URI)}
 	 * @implNote This implementation properly relativizes URIs that require backtracking, such as siblings, unlike Java URI relativization methods; see
 	 *           <a href="https://bugs.java.com/bugdatabase/view_bug.do?bug_id=6226081">JDK-6226081</a>.
+	 * @implNote This method differs from {@link URI#relativize(URI)}, which would return an empty URI when relativizing <code>foo/bar</code> against
+	 *           <code>foo/</code>. This method instead would return <code>./</code>, compliant with browser relative resolution behavior and with
+	 *           <a href="https://tools.ietf.org/html/rfc3986">RFC 3986</a>, as discussed at <a href="https://stackoverflow.com/q/22203111/421049">Is Java's
+	 *           URI.resolve incompatible with RFC 3986 when the relative URI contains an empty path?</a>.
 	 * @param sourceURI The URI to which the other URI will be relativized.
 	 * @param targetURI The URI that will be relativized against the base URI.
 	 * @return The relative path of the source URI to the target URI.
@@ -329,6 +357,10 @@ public final class URIPath {
 	 * (or the same URI as) the target URI, the path will backtrack using <code>..</code> path segments as appropriate.
 	 * @implNote This implementation properly relativizes URIs that require backtracking, such as siblings, unlike Java URI relativization methods; see
 	 *           <a href="https://bugs.java.com/bugdatabase/view_bug.do?bug_id=6226081">JDK-6226081</a>.
+	 * @implNote This method differs from {@link URI#relativize(URI)}, which would return an empty URI when relativizing <code>foo/bar</code> against
+	 *           <code>foo/</code>. This method instead would return <code>./</code>, compliant with browser relative resolution behavior and with
+	 *           <a href="https://tools.ietf.org/html/rfc3986">RFC 3986</a>, as discussed at <a href="https://stackoverflow.com/q/22203111/421049">Is Java's
+	 *           URI.resolve incompatible with RFC 3986 when the relative URI contains an empty path?</a>.
 	 * @param sourceURI The URI to which the other URI will be relativized.
 	 * @param targetURI The URI that will be relativized against the base URI.
 	 * @return The relative path of the source URI to the target URI, which will not be present if the two URIs have no base in common.
