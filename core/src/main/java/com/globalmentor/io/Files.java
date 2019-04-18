@@ -19,10 +19,12 @@ package com.globalmentor.io;
 import java.io.*;
 import java.net.*;
 import java.nio.file.*;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.*;
 
 import javax.annotation.*;
 
+import static java.nio.file.Files.*;
 import static java.util.Collections.*;
 import static java.util.Objects.*;
 
@@ -417,11 +419,14 @@ public class Files {
 	 * <p>
 	 * If the file does not exist, no action occurs.
 	 * </p>
+	 * @implNote This implementation appears to follow symbolic links.
 	 * @param file The directory or file to delete. If a directory is passed, all its child files and directories will recursively be deleted if
 	 *          <code>recursive</code> is <code>true</code>. If a file is passed, it will be deleted normally.
 	 * @param recursive <code>true</code> if all child directories and files of a directory should recursively be deleted.
 	 * @throws IOException Thrown if there is an problem deleting any directory or file.
+	 * @deprecated in favor of of {@link #deleteFileTree(Path)}.
 	 */
+	@Deprecated
 	public static void delete(final File file, final boolean recursive) throws IOException {
 		if(recursive && file.isDirectory()) { //if this is a directory and we should recursively delete files
 			final File[] files = file.listFiles(); //get all the files in the directory
@@ -1175,6 +1180,42 @@ public class Files {
 		}
 		destinationFile.setLastModified(sourceFile.lastModified()); //update the destination file's last modified time to match that of the source
 	}
+
+	//## Path
+
+	/**
+	 * Recursively deletes an entire file tree. Symbolic links are deleted, not followed.
+	 * @implSpec This implementation uses {@link java.nio.file.Files#walkFileTree(Path, FileVisitor)}.
+	 * @implNote This implementation was inspired by <a href="https://fahdshariff.blogspot.com/2011/08/java-7-deleting-directory-by-walking.html">Java 7: Deleting
+	 *           a Directory by Walking the File Tree</a>.
+	 * @param fileTreeRoot The root of the file tree to delete.
+	 * @return The given file tree root, which will have been deleted.
+	 * @throws SecurityException if the security manager denies access to the starting file.
+	 * @throws IOException if an I/O error is thrown while deleting the tree.
+	 */
+	public static Path deleteFileTree(@Nonnull final Path fileTreeRoot) throws IOException {
+		return walkFileTree(fileTreeRoot, new SimpleFileVisitor<Path>() {
+
+			/** @implSpec Deletes each file. */
+			@Override
+			public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
+				final FileVisitResult result = super.visitFile(file, attrs);
+				deleteIfExists(file); //if another thread already deleted the file, that's fine, too
+				return result;
+			}
+
+			/** @implSpec Deletes each directory after all files in it have been deleted. */
+			@Override
+			public FileVisitResult postVisitDirectory(final Path dir, final IOException exc) throws IOException {
+				final FileVisitResult result = super.postVisitDirectory(dir, exc);
+				deleteIfExists(dir); //if another thread already deleted the directory, that's fine, too
+				return result;
+			}
+
+		});
+	}
+
+	//### Backup
 
 	/**
 	 * Determines the backup file path to use for the file at the given path without a rolling policy. The backup file will be in the same directory as the given
