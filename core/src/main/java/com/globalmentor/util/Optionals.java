@@ -70,6 +70,24 @@ public class Optionals {
 	}
 
 	/**
+	 * Determines whether an optional value is present and is equal to some other nullable object.
+	 * @apiNote Note that the given object with which to compare the optional object can be <code>null</code>, as per the parameter of
+	 *          {@link Object#equals(Object)}.
+	 * @implSpec This method is equivalent to calling {@link Optional#isPresent()} and if the result is <code>true</code>, calling {@link Object#equals(Object)}
+	 *           on the contained object.
+	 * @param optional The optional to check
+	 * @param object The object to compare for equality with the optional value.
+	 * @return <code>true</code> if the given optional value is present and is equal to the given object.
+	 * @throws NullPointerException if the given optional is <code>null</code>.
+	 * @see Optional#isPresent()
+	 * @see Optional#get()
+	 * @see Optional#equals(Object)
+	 */
+	public static boolean isPresentAndEquals(@Nonnull final Optional<?> optional, @Nullable final Object object) {
+		return optional.isPresent() && optional.get().equals(object);
+	}
+
+	/**
 	 * Converts an optional to a stream.
 	 * @apiNote This method duplicates functionality in Java 9.
 	 * @param <T> The type of value contained in the optional.
