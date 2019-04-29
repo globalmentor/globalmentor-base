@@ -8,4 +8,4 @@ Issues tracked by [JIRA](https://globalmentor.atlassian.net/projects/JAVA).
 
 ## Changelog
 
-- v0.6.0: (2019-04-29) First release; uses GlobalMentor open-source root POM.
+- v0.6.0: (2019-04-29) First release with base POM using GlobalMentor open-source root POM as parent.
