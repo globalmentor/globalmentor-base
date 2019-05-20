@@ -19,9 +19,12 @@ package com.globalmentor.net;
 import com.globalmentor.text.ArgumentSyntaxException;
 
 import static com.globalmentor.collections.Sets.*;
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
-import org.junit.Test;
+import static org.hamcrest.Matchers.*;
+import static org.hamcrest.MatcherAssert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests of {@link ContentType}.
@@ -62,33 +65,33 @@ public class ContentTypeTest {
 		assertThat(ContentType.create("text/plain; charset=us-ascii"), equalTo(ContentType.create("text/plain; charset=\"us-ascii\"")));
 	}
 
-	@Test(expected = ArgumentSyntaxException.class)
+	@Test
 	public void testMissingDelimiter() {
-		ContentType.create("text");
+		assertThrows(ArgumentSyntaxException.class, () -> ContentType.create("text"));
 	}
 
-	@Test(expected = ArgumentSyntaxException.class)
+	@Test
 	public void testMissingSubType() {
-		ContentType.create("text/");
+		assertThrows(ArgumentSyntaxException.class, () -> ContentType.create("text/"));
 	}
 
-	@Test(expected = ArgumentSyntaxException.class)
+	@Test
 	public void testMissingParameters() {
-		ContentType.create("text/plain;");
+		assertThrows(ArgumentSyntaxException.class, () -> ContentType.create("text/plain;"));
 	}
 
-	@Test(expected = ArgumentSyntaxException.class)
+	@Test
 	public void testMissingParameterDelimiter() {
-		ContentType.create("text/plain; charset");
+		assertThrows(ArgumentSyntaxException.class, () -> ContentType.create("text/plain; charset"));
 	}
 
-	@Test(expected = ArgumentSyntaxException.class)
+	@Test
 	public void testMissingParameterValue() {
-		ContentType.create("text/plain; charset=");
+		assertThrows(ArgumentSyntaxException.class, () -> ContentType.create("text/plain; charset="));
 	}
 
-	@Test(expected = ArgumentSyntaxException.class)
+	@Test
 	public void testMissingSecondParameter() {
-		ContentType.create("text/plain; charset=us-ascii;");
+		assertThrows(ArgumentSyntaxException.class, () -> ContentType.create("text/plain; charset=us-ascii;"));
 	}
 }

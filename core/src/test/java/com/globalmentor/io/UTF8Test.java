@@ -16,12 +16,14 @@
 
 package com.globalmentor.io;
 
-import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.*;
+import static org.hamcrest.MatcherAssert.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import org.junit.jupiter.api.Test;
 
 import static com.globalmentor.io.UTF8.*;
 import static java.nio.charset.StandardCharsets.*;
-import static org.hamcrest.Matchers.*;
-import org.junit.*;
 
 /**
  * Tests of {@link UTF8}.
@@ -39,14 +41,14 @@ public class UTF8Test {
 	}
 
 	/** @see UTF8#getEncodedByteCountFromInitialOctet(int) */
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testGetInitialOctetEncodedByteCountISO_8859_1() {
-		getEncodedByteCountFromInitialOctet('¢');
+		assertThrows(IllegalArgumentException.class, () -> getEncodedByteCountFromInitialOctet('¢'));
 	}
 
 	/** @see UTF8#getEncodedByteCountFromInitialOctet(int) */
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testGetInitialOctetEncodedByteCountHigh() {
-		getEncodedByteCountFromInitialOctet(0b11111000);
+		assertThrows(IllegalArgumentException.class, () -> getEncodedByteCountFromInitialOctet(0b11111000));
 	}
 }

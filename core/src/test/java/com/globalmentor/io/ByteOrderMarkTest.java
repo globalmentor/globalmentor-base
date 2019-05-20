@@ -16,12 +16,12 @@
 
 package com.globalmentor.io;
 
-import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.*;
+import static org.hamcrest.MatcherAssert.*;
+
+import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
-
-import static org.hamcrest.Matchers.*;
-import org.junit.*;
 
 public class ByteOrderMarkTest {
 

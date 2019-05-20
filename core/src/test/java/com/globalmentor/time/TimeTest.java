@@ -16,10 +16,10 @@
 
 package com.globalmentor.time;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.*;
+import static org.hamcrest.MatcherAssert.*;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.globalmentor.java.Maths;
 

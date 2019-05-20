@@ -16,12 +16,12 @@
 
 package com.globalmentor.io;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.*;
 import java.util.*;
 
-import static junit.framework.Assert.*;
-
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Various tests for streams.
@@ -59,8 +59,8 @@ public class StreamsTest {
 			final ByteArrayOutputStream output = new ByteArrayOutputStream();
 			Streams.copy(inputStream, output);
 			assertEquals(length, output.toByteArray().length);
-			assertTrue("HTTP chunked output stream did not correctly write data.",
-					Arrays.equals(Arrays.copyOfRange(testData, total, total + length), output.toByteArray()));
+			assertTrue(Arrays.equals(Arrays.copyOfRange(testData, total, total + length), output.toByteArray()),
+					"HTTP chunked output stream did not correctly write data.");
 			total += length;
 		} while(total < testData.length);
 		testInputStream.close();

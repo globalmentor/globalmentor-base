@@ -17,9 +17,10 @@
 package com.globalmentor.java;
 
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.MatcherAssert.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import org.junit.*;
+import org.junit.jupiter.api.Test;
 
 import com.globalmentor.text.ASCII;
 import com.globalmentor.text.Case;
@@ -32,77 +33,77 @@ import com.globalmentor.text.Case;
 public class StringBuildersTest {
 
 	/** Tests to see if the method {@link StringBuilders#escapeHex(StringBuilder, int, char, int)} isn't escaping anything from an empty {@link StringBuilder}. */
-	@Test(expected = StringIndexOutOfBoundsException.class)
+	@Test
 	public void testEscapeHexWithEmptyString() {
 		final StringBuilder stringBuilder = new StringBuilder();
 
-		StringBuilders.escapeHex(stringBuilder, 0, 1, null, null, ASCII.MAX_VALUE, '&', 2, Case.UPPERCASE);
+		assertThrows(StringIndexOutOfBoundsException.class, () -> StringBuilders.escapeHex(stringBuilder, 0, 1, null, null, ASCII.MAX_VALUE, '&', 2, Case.UPPERCASE));
 	}
 
 	/**
 	 * Tests to see if the method {@link StringBuilders#escapeHex(StringBuilder, int, char, int)} is throwing an exception if a surrogate char is not used
 	 * correctly.
 	 */
-	@Test(expected = IllegalStateException.class)
+	@Test
 	public void testEscapeHexWithOnlyHighSurrogate() {
 		final StringBuilder stringBuilder = new StringBuilder(String.valueOf(Character.toChars(0x10014)[0]));
 
-		StringBuilders.escapeHex(stringBuilder, 0, 1, null, null, ASCII.MAX_VALUE, '&', 2, Case.UPPERCASE);
+		assertThrows(IllegalStateException.class, () -> StringBuilders.escapeHex(stringBuilder, 0, 1, null, null, ASCII.MAX_VALUE, '&', 2, Case.UPPERCASE));
 	}
 
 	/**
 	 * Tests to see if the method {@link StringBuilders#escapeHex(StringBuilder, int, char, int)} is throwing an exception if a surrogate char is not used
 	 * correctly.
 	 */
-	@Test(expected = IllegalStateException.class)
+	@Test
 	public void testEscapeHexWithOnlyHighSurrogateInTheBegginingOfAString() {
 		final StringBuilder stringBuilder = new StringBuilder(Character.toChars(0x10014)[0] + "touché");
-
-		StringBuilders.escapeHex(stringBuilder, 0, stringBuilder.length(), null, null, ASCII.MAX_VALUE, '&', 2, Case.UPPERCASE);
+		
+		assertThrows(IllegalStateException.class, () -> StringBuilders.escapeHex(stringBuilder, 0, stringBuilder.length(), null, null, ASCII.MAX_VALUE, '&', 2, Case.UPPERCASE));
 	}
 
 	/**
 	 * Tests to see if the method {@link StringBuilders#escapeHex(StringBuilder, int, char, int)} is throwing an exception if a surrogate char is not used
 	 * correctly.
 	 */
-	@Test(expected = IllegalStateException.class)
+	@Test
 	public void testEscapeHexWithOnlyHighSurrogateInTheEndOfAString() {
 		final StringBuilder stringBuilder = new StringBuilder("touché" + Character.toChars(0x10014)[0]);
 
-		StringBuilders.escapeHex(stringBuilder, 0, stringBuilder.length(), null, null, ASCII.MAX_VALUE, '&', 2, Case.UPPERCASE);
+		assertThrows(IllegalStateException.class, () -> StringBuilders.escapeHex(stringBuilder, 0, stringBuilder.length(), null, null, ASCII.MAX_VALUE, '&', 2, Case.UPPERCASE));
 	}
 
 	/**
 	 * Tests to see if the method {@link StringBuilders#escapeHex(StringBuilder, int, char, int)} is throwing an exception if a surrogate char is not used
 	 * correctly.
 	 */
-	@Test(expected = IllegalStateException.class)
+	@Test
 	public void testEscapeHexWithOnlyLowSurrogate() {
 		final StringBuilder stringBuilder = new StringBuilder(String.valueOf(Character.toChars(0x10014)[1]));
 
-		StringBuilders.escapeHex(stringBuilder, 0, 1, null, null, ASCII.MAX_VALUE, '&', 2, Case.UPPERCASE);
+		assertThrows(IllegalStateException.class, () -> StringBuilders.escapeHex(stringBuilder, 0, 1, null, null, ASCII.MAX_VALUE, '&', 2, Case.UPPERCASE));
 	}
 
 	/**
 	 * Tests to see if the method {@link StringBuilders#escapeHex(StringBuilder, int, char, int)} is throwing an exception if a surrogate char is not used
 	 * correctly.
 	 */
-	@Test(expected = IllegalStateException.class)
+	@Test
 	public void testEscapeHexWithOnlyLowSurrogateInTheBegginingOfAString() {
 		final StringBuilder stringBuilder = new StringBuilder(Character.toChars(0x10014)[1] + "touché");
 
-		StringBuilders.escapeHex(stringBuilder, 0, stringBuilder.length(), null, null, ASCII.MAX_VALUE, '&', 2, Case.UPPERCASE);
+		assertThrows(IllegalStateException.class, () -> StringBuilders.escapeHex(stringBuilder, 0, stringBuilder.length(), null, null, ASCII.MAX_VALUE, '&', 2, Case.UPPERCASE));
 	}
 
 	/**
 	 * Tests to see if the method {@link StringBuilders#escapeHex(StringBuilder, int, char, int)} is throwing an exception if a surrogate char is not used
 	 * correctly.
 	 */
-	@Test(expected = IllegalStateException.class)
+	@Test
 	public void testEscapeHexWithOnlyLowSurrogateInTheEndOfAString() {
 		final StringBuilder stringBuilder = new StringBuilder("touché" + Character.toChars(0x10014)[1]);
 
-		StringBuilders.escapeHex(stringBuilder, 0, stringBuilder.length(), null, null, ASCII.MAX_VALUE, '&', 2, Case.UPPERCASE);
+		assertThrows(IllegalStateException.class, () -> StringBuilders.escapeHex(stringBuilder, 0, stringBuilder.length(), null, null, ASCII.MAX_VALUE, '&', 2, Case.UPPERCASE));
 	}
 
 	/** Tests the method {@link StringBuilders#escapeHex(StringBuilder, int, char, int)} with a {@link StringBuilder} containing a single ASCII character. */

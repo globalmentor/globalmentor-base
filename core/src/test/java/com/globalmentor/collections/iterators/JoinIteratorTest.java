@@ -20,9 +20,9 @@ import static com.globalmentor.collections.iterators.Iterators.*;
 import static java.util.Arrays.*;
 import static java.util.stream.Collectors.*;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.MatcherAssert.*;
 
-import org.junit.*;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 

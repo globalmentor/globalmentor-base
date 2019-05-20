@@ -16,8 +16,6 @@
 
 package com.globalmentor.java;
 
-import static org.junit.Assert.*;
-
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -25,7 +23,9 @@ import java.util.stream.Stream;
 import static com.globalmentor.java.CharSequences.*;
 import static java.util.stream.Collectors.toMap;
 import static org.hamcrest.Matchers.*;
-import org.junit.*;
+import static org.hamcrest.MatcherAssert.*;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests of {@link CharSequences}.

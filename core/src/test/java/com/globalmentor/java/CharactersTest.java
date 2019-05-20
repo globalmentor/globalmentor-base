@@ -17,12 +17,12 @@
 package com.globalmentor.java;
 
 import static com.globalmentor.java.Characters.*;
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.*;
+import static org.hamcrest.MatcherAssert.*;
+
+import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
-
-import org.junit.Test;
 
 /**
  * Tests for {@link Characters}.
