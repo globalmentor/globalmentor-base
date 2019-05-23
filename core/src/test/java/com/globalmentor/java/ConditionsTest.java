@@ -20,12 +20,13 @@ import static com.globalmentor.java.Conditions.*;
 
 import com.globalmentor.model.*;
 
+import static org.junit.jupiter.api.Assertions.*;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.MatcherAssert.*;
 
 import java.util.Optional;
 
-import org.junit.*;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests for {@link Conditions}.
@@ -45,9 +46,9 @@ public class ConditionsTest {
 	}
 
 	/** Tests the {@link Conditions#checkArgument(boolean)} method with a false statement. */
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testCheckArgumentWithAFalseStatement() {
-		checkArgument(false);
+		assertThrows(IllegalArgumentException.class, () -> checkArgument(false));
 	}
 
 	/**
@@ -97,9 +98,9 @@ public class ConditionsTest {
 	}
 
 	/** Tests the {@link Conditions#checkArgumentNotNull(Object)} method with <code>null</code>. */
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testCheckArgumentNotNullWithANullObject() {
-		checkArgumentNotNull(null);
+		assertThrows(IllegalArgumentException.class, () -> checkArgumentNotNull(null));
 	}
 
 	/**
@@ -149,15 +150,15 @@ public class ConditionsTest {
 	}
 
 	/** Tests the {@link Conditions#checkArgumentPresent(Optional)} method with a <code>null</code> object. */
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testCheckArgumentPresentWithANullObject() {
-		checkArgumentPresent(null);
+		assertThrows(NullPointerException.class, () -> checkArgumentPresent(null));
 	}
 
 	/** Tests the {@link Conditions#checkArgumentPresent(Optional)} method with an empty optional. */
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testCheckArgumentPresentWithAnEmptyObject() {
-		checkArgumentPresent(Optional.empty());
+		assertThrows(IllegalArgumentException.class, () -> checkArgumentPresent(Optional.empty()));
 	}
 
 	/**
@@ -204,15 +205,15 @@ public class ConditionsTest {
 	}
 
 	/** Tests the {@link Conditions#checkArgumentMinimum(int, int)} method with a false statement. */
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testCheckArgumentMinimumWithAMinorIntValue() {
-		checkArgumentMinimum(0, 10);
+		assertThrows(IllegalArgumentException.class, () -> checkArgumentMinimum(0, 10));
 	}
 
 	/** Tests the {@link Conditions#checkArgumentMinimum(long, long)} method with a false statement. */
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testCheckArgumentMinimumWithAMinorLongValue() {
-		checkArgumentMinimum(0L, 10L);
+		assertThrows(IllegalArgumentException.class, () -> checkArgumentMinimum(0L, 10L));
 	}
 
 	/**
@@ -229,27 +230,27 @@ public class ConditionsTest {
 	}
 
 	/** Tests the {@link Conditions#checkArgumentNotNegative(int)} method with a false statement. */
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testCheckArgumentNotNegativeWithANegativeIntValue() {
-		checkArgumentNotNegative(-10);
+		assertThrows(IllegalArgumentException.class, () -> checkArgumentNotNegative(-10));
 	}
 
 	/** Tests the {@link Conditions#checkArgumentNotNegative(long)} method with a false statement. */
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testCheckArgumentNotNegativeWithANegativeLongValue() {
-		checkArgumentNotNegative(-10L);
+		assertThrows(IllegalArgumentException.class, () -> checkArgumentNotNegative(-10L));
 	}
 
 	/** Tests the {@link Conditions#checkArgumentPositive(int)} method with a false statement. */
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testCheckArgumentPositiveWithANegativeIntValue() {
-		checkArgumentPositive(-10);
+		assertThrows(IllegalArgumentException.class, () -> checkArgumentPositive(-10));
 	}
 
 	/** Tests the {@link Conditions#checkArgumentPositive(long)} method with a false statement. */
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testCheckArgumentPositiveWithANegativeLongValue() {
-		checkArgumentPositive(-10L);
+		assertThrows(IllegalArgumentException.class, () -> checkArgumentPositive(-10L));
 	}
 
 	/** Tests the method {@link Conditions#checkArgumentRange(int, int, int)}. */
@@ -299,45 +300,45 @@ public class ConditionsTest {
 	}
 
 	/** Tests the {@link Conditions#checkArgumentRange(int, int, int)} method with a false statement. */
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testCheckArgumentRangeWithAMinorIntValue() {
-		checkArgumentRange(-1, 0, 10);
+		assertThrows(IllegalArgumentException.class, () -> checkArgumentRange(-1, 0, 10));
 	}
 
 	/** Tests the {@link Conditions#checkArgumentRange(int, int, int)} method with a false statement. */
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testCheckArgumentRangeWithABiggerIntValue() {
-		checkArgumentRange(11, 0, 10);
+		assertThrows(IllegalArgumentException.class, () -> checkArgumentRange(11, 0, 10));
 	}
 
 	/** Tests the {@link Conditions#checkArgumentRange(long, long, long)} method with a false statement. */
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testCheckArgumentRangeWithAMinorLongValue() {
-		checkArgumentRange(-1L, 0L, 10L);
+		assertThrows(IllegalArgumentException.class, () -> checkArgumentRange(-1L, 0L, 10L));
 	}
 
 	/** Tests the {@link Conditions#checkArgumentRange(long, long, long)} method with a false statement. */
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testCheckArgumentRangeWithABiggerLongValue() {
-		checkArgumentRange(11L, 0L, 10L);
+		assertThrows(IllegalArgumentException.class, () -> checkArgumentRange(11L, 0L, 10L));
 	}
 
 	/** Tests the {@link Conditions#checkArgumentRange(int, int, int, int)} method with a false statement. */
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testCheckArgumentRangeWithAMoreNegativeInterval() {
-		checkArgumentRange(-10, -1, 0, 10);
+		assertThrows(IllegalArgumentException.class, () -> checkArgumentRange(-10, -1, 0, 10));
 	}
 
 	/** Tests the {@link Conditions#checkArgumentRange(int, int, int, int)} method with a false statement. */
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testCheckArgumentRangeWithAMorePositiveInterval() {
-		checkArgumentRange(11, 20, 0, 10);
+		assertThrows(IllegalArgumentException.class, () -> checkArgumentRange(11, 20, 0, 10));
 	}
 
 	/** Tests the {@link Conditions#checkArgumentRange(int, int, int, int)} method with a false statement. */
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testCheckArgumentRangeWithABiggerInterval() {
-		checkArgumentRange(-1, 11, 0, 10);
+		assertThrows(IllegalArgumentException.class, () -> checkArgumentRange(-1, 11, 0, 10));
 	}
 
 	/** Tests the {@link Conditions#checkConfiguration(boolean)} and the {@link Conditions#checkConfiguration(boolean, String, Object...)} methods. */
@@ -350,9 +351,9 @@ public class ConditionsTest {
 	}
 
 	/** Tests the {@link Conditions#checkConfiguration(boolean)} method with a false statement. */
-	@Test(expected = ConfigurationException.class)
+	@Test
 	public void testCheckConfigurationWithAFalseStatement() {
-		checkConfiguration(false);
+		assertThrows(ConfigurationException.class, () -> checkConfiguration(false));
 	}
 
 	/**
@@ -399,9 +400,9 @@ public class ConditionsTest {
 	}
 
 	/** Tests the {@link Conditions#checkConfigurationNotNull(Object)} method with a false statement. */
-	@Test(expected = ConfigurationException.class)
+	@Test
 	public void testCheckConfigurationNotNullWithANullObject() {
-		checkConfigurationNotNull(null);
+		assertThrows(ConfigurationException.class, () -> checkConfigurationNotNull(null));
 	}
 
 	/**
@@ -466,51 +467,51 @@ public class ConditionsTest {
 	}
 
 	/** Tests the {@link Conditions#checkIndexBounds(int, int)} method with a false statement. */
-	@Test(expected = IndexOutOfBoundsException.class)
+	@Test
 	public void testCheckIndexBoundsWithAMinorIntValue() {
-		checkIndexBounds(-1, 10);
+		assertThrows(IndexOutOfBoundsException.class, () -> checkIndexBounds(-1, 10));
 	}
 
 	/** Tests the {@link Conditions#checkIndexBounds(int, int)} method with a false statement. */
-	@Test(expected = IndexOutOfBoundsException.class)
+	@Test
 	public void testCheckIndexBoundsWithABiggerIntValue() {
-		checkIndexBounds(10, 10);
+		assertThrows(IndexOutOfBoundsException.class, () -> checkIndexBounds(10, 10));
 	}
 
 	/** Tests the {@link Conditions#checkIndexBounds(int, int, int)} method with a false statement. */
-	@Test(expected = IndexOutOfBoundsException.class)
+	@Test
 	public void testCheckIndexBoundsWithAMinorIntValueUsingARange() {
-		checkIndexBounds(-1, 0, 10);
+		assertThrows(IndexOutOfBoundsException.class, () -> checkIndexBounds(-1, 0, 10));
 	}
 
 	/** Tests the {@link Conditions#checkIndexBounds(int, int, int)} method with a false statement. */
-	@Test(expected = IndexOutOfBoundsException.class)
+	@Test
 	public void testCheckIndexBoundsWithABiggerIntValueUsingARange() {
-		checkIndexBounds(10, 0, 10);
+		assertThrows(IndexOutOfBoundsException.class, () -> checkIndexBounds(10, 0, 10));
 	}
 
 	/** Tests the {@link Conditions#checkIndexBounds(long, long)} method with a false statement. */
-	@Test(expected = IndexOutOfBoundsException.class)
+	@Test
 	public void testCheckIndexBoundsWithAMinorLongValue() {
-		checkIndexBounds(-1L, 10L);
+		assertThrows(IndexOutOfBoundsException.class, () -> checkIndexBounds(-1L, 10L));
 	}
 
 	/** Tests the {@link Conditions#checkIndexBounds(long, long, long)} method with a false statement. */
-	@Test(expected = IndexOutOfBoundsException.class)
+	@Test
 	public void testCheckIndexBoundsWithAMinorLongValueUsingARange() {
-		checkIndexBounds(-1L, 0L, 10L);
+		assertThrows(IndexOutOfBoundsException.class, () -> checkIndexBounds(-1L, 0L, 10L));
 	}
 
 	/** Tests the {@link Conditions#checkIndexBounds(long, long, long)} method with a false statement. */
-	@Test(expected = IndexOutOfBoundsException.class)
+	@Test
 	public void testCheckIndexBoundsWithABiggerLongValueUsingARange() {
-		checkIndexBounds(10L, 0L, 10L);
+		assertThrows(IndexOutOfBoundsException.class, () -> checkIndexBounds(10L, 0L, 10L));
 	}
 
 	/** Tests the {@link Conditions#checkIndexBounds(long, long)} method with a false statement. */
-	@Test(expected = IndexOutOfBoundsException.class)
+	@Test
 	public void testCheckIndexBoundsWithABiggerLongValue() {
-		checkIndexBounds(10L, 10L);
+		assertThrows(IndexOutOfBoundsException.class, () -> checkIndexBounds(10L, 10L));
 	}
 
 	/** Tests the {@link Conditions#checkState(boolean)} and the {@link Conditions#checkState(boolean, String, Object...)} methods. */
@@ -523,9 +524,9 @@ public class ConditionsTest {
 	}
 
 	/** Tests the {@link Conditions#checkState(boolean)} method with a false statement. */
-	@Test(expected = IllegalStateException.class)
+	@Test
 	public void testCheckStateWithAFalseStatement() {
-		checkState(false);
+		assertThrows(IllegalStateException.class, () -> checkState(false));
 	}
 
 	/**

@@ -17,13 +17,13 @@
 package com.globalmentor.iso.datetime;
 
 import static com.globalmentor.time.TimeZones.*;
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.*;
+import static org.hamcrest.MatcherAssert.*;
+
+import org.junit.jupiter.api.Test;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-
-import org.junit.*;
 
 import com.globalmentor.iso.datetime.ISODateTime;
 import com.globalmentor.time.Milliseconds;

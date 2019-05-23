@@ -18,11 +18,11 @@ package com.globalmentor.time;
 
 import static com.globalmentor.time.TimeZones.*;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.MatcherAssert.*;
+
+import org.junit.jupiter.api.Test;
 
 import java.util.*;
-
-import org.junit.Test;
 
 import com.globalmentor.iso.datetime.ISODate;
 

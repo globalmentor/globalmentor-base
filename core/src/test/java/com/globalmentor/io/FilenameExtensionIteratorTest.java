@@ -16,10 +16,10 @@
 
 package com.globalmentor.io;
 
-import static org.junit.Assert.*;
 import static org.hamcrest.Matchers.*;
+import static org.hamcrest.MatcherAssert.*;
 
-import org.junit.*;
+import org.junit.jupiter.api.Test;
 
 import com.globalmentor.collections.Lists;
 

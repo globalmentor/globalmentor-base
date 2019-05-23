@@ -17,15 +17,17 @@
 package com.globalmentor.io;
 
 import static com.globalmentor.net.URIs.*;
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.hamcrest.MatcherAssert.*;
+
 
 import java.io.*;
 import java.net.URI;
 import java.nio.file.*;
 import java.nio.file.Paths;
 
-import org.junit.*;
+import org.junit.jupiter.api.*;
 
 /**
  * Tests the {@link Files} utility class.
@@ -36,12 +38,12 @@ public class FilesTest {
 
 	private static File tempFile;
 
-	@BeforeClass
+	@BeforeAll
 	public static void createTempFile() throws IOException {
 		tempFile = Files.createTempFile(); //create a plain old type file
 	}
 
-	@AfterClass
+	@AfterAll
 	public static void deleteTempFile() throws IOException {
 		Files.delete(tempFile);
 	}
