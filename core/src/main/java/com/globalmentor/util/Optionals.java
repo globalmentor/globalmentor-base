@@ -61,7 +61,7 @@ public class Optionals {
 	 * @see <a href=
 	 *      "https://docs.oracle.com/javase/9/docs/api/java/util/Optional.html#ifPresentOrElse-java.util.function.Consumer-java.lang.Runnable-">Optional.ifPresentOrElse()</a>
 	 */
-	public static <T> void ifPresentOrElse​(@Nonnull final Optional<T> optional, @Nonnull final Consumer<? super T> action, @Nonnull final Runnable emptyAction) {
+	public static <T> void ifPresentOrElse(@Nonnull final Optional<T> optional, @Nonnull final Consumer<? super T> action, @Nonnull final Runnable emptyAction) {
 		if(optional.isPresent()) {
 			action.accept(optional.get());
 		} else {
