@@ -1211,6 +1211,27 @@ public class URIsTest {
 		assertThat("Equal URIs do not have same hash code.", uri1.hashCode(), equalTo(uri2.hashCode()));
 	}
 
+	/** @see URIs#canonicalize(URI) */
+	@Test
+	public void testCanonicalize() {
+		//TODO decide on whether IRIs should be allowed, and test
+		assertThat(URIs.canonicalize(URI.create("http://example.com/")).toString(), is("http://example.com/")); //compare string versions, because equals() accepts both cases
+		assertThat(URIs.canonicalize(URI.create("http://example.com/touch%C3%A9")).toString(), is("http://example.com/touch%C3%A9"));
+		assertThat(URIs.canonicalize(URI.create("http://example.com/touch%C3%a9")).toString(), is("http://example.com/touch%C3%A9"));
+		assertThat(URIs.canonicalize(URI.create("http://example.com/touch%c3%A9")).toString(), is("http://example.com/touch%C3%A9"));
+		assertThat(URIs.canonicalize(URI.create("http://example.com/touch%c3%a9")).toString(), is("http://example.com/touch%C3%A9"));
+	}
+
+	/** @see URIs#encode(String) */
+	@Test
+	public void testEncode() {
+		assertThat(URIs.encode("%"), is("%25"));
+		assertThat(URIs.encode("$"), is("%24"));
+		assertThat(URIs.encode("touché"), is("touch%C3%A9"));
+		//TODO add higher code UTF-8 tests
+		//TODO add URI vs segment tests when implemented
+	}
+
 	/**
 	 * Tests plain encoding of URIs.
 	 * @see URIs#plainEncode(URI)
