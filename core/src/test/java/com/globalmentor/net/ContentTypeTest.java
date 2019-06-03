@@ -47,6 +47,16 @@ public class ContentTypeTest {
 		assertThat(ContentType.create("text/plain; charset=us-ascii; foo=bar").getSubType(), is("plain"));
 		assertEquals(immutableSetOf(new ContentType.Parameter("charset", "us-ascii"), new ContentType.Parameter("foo", "bar")),
 				ContentType.create("text/plain; charset=us-ascii; foo=bar").getParameters());
+		//without spaces
+		assertThat(ContentType.create("text/plain;charset=us-ascii;foo=bar").getPrimaryType(), is("text"));
+		assertThat(ContentType.create("text/plain;charset=us-ascii;foo=bar").getSubType(), is("plain"));
+		assertEquals(immutableSetOf(new ContentType.Parameter("charset", "us-ascii"), new ContentType.Parameter("foo", "bar")),
+				ContentType.create("text/plain;charset=us-ascii;foo=bar").getParameters());
+		//many spaces
+		assertThat(ContentType.create("text/plain;  charset=us-ascii;   foo=bar").getPrimaryType(), is("text"));
+		assertThat(ContentType.create("text/plain;  charset=us-ascii;   foo=bar").getSubType(), is("plain"));
+		assertEquals(immutableSetOf(new ContentType.Parameter("charset", "us-ascii"), new ContentType.Parameter("foo", "bar")),
+				ContentType.create("text/plain;  charset=us-ascii;   foo=bar").getParameters());
 	}
 
 	/** Tests equality, including parameter order and case insensitivity of content type names. */
@@ -58,6 +68,8 @@ public class ContentTypeTest {
 				ContentType.create("text/plain; charset=us-ascii; foo=bar"));
 		//parameter order
 		assertThat(ContentType.create("text/plain; charset=us-ascii; foo=bar"), equalTo(ContentType.create("text/plain; foo=bar; charset=us-ascii")));
+		//no spaces
+		assertThat(ContentType.create("text/plain;charset=us-ascii;foo=bar"), equalTo(ContentType.create("text/plain; foo=bar; charset=us-ascii")));
 		//case insensitivity
 		assertThat(ContentType.create("text/plain; charset=us-ascii"), equalTo(ContentType.create("TEXT/PLAIN; CHARSET=us-ascii")));
 		assertThat(ContentType.create("text/plain; charset=us-ascii"), not(equalTo(ContentType.create("TEXT/PLAIN; CHARSET=US-ASCII"))));

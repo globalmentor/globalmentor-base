@@ -35,8 +35,9 @@ import com.globalmentor.model.NameValuePair;
 import com.globalmentor.text.ArgumentSyntaxException;
 
 /**
- * An encapsulation of an Internet media content type as originally defined in <a href="http://www.rfc-editor.org/rfc/rfc2046.txt">RFC 2046</a>,
- * "MIME Part 2: Media Types".
+ * An encapsulation of an Internet media content type as originally defined in <a href="https://tools.ietf.org/html/rfc2046"><cite>RFC 2046: MIME Part 2: Media
+ * Types</cite></a>; and most recently in <a href="https://tools.ietf.org/html/rfc6838"><cite>RFC 6838: Media Type Specifications and Registration
+ * Procedures</cite></a>.
  * <p>
  * The content type and names of parameters are compared in a case-insensitive manner as per RFC 2046.
  * </p>
@@ -52,8 +53,9 @@ import com.globalmentor.text.ArgumentSyntaxException;
  * TODO This implementation does not support quoted values containing the {@value #PARAMETER_DELIMITER_CHAR} character.
  * </p>
  * @author Garret Wilson
- * @see <a href="http://www.rfc-editor.org/rfc/rfc2046.txt">RFC 2046</a>
- * @see <a href="http://www.w3.org/TR/xhtml-media-types/">XHTML Media Types</a>
+ * @see <a href="https://tools.ietf.org/html/rfc2046">RFC 2046</a>
+ * @see <a href="https://tools.ietf.org/html/rfc6838">RFC 6838</a>
+ * @see <a href="https://www.w3.org/TR/xhtml-media-types/">XHTML Media Types</a>
  */
 public class ContentType {
 
@@ -78,7 +80,7 @@ public class ContentType {
 	 * A pattern for checking the basic form of parameters. The pattern may be repeated and the two matching groups are the name and value. This pattern does not
 	 * take into account all aspects of a regular expression, e.g. special characters.
 	 */
-	public static final Pattern PARAMETERS_PATTERN = Pattern.compile(";\\s+([\\x21-\\x7F&&[^=;]]+)=([\\x21-\\x7F&&[^=;]]+)");
+	public static final Pattern PARAMETERS_PATTERN = Pattern.compile(";\\s*([\\x21-\\x7F&&[^=;]]+)=([\\x21-\\x7F&&[^=;]]+)");
 	/**
 	 * The parameters pattern matching group for the parameter name.
 	 * @see #PARAMETERS_PATTERN
@@ -92,9 +94,9 @@ public class ContentType {
 
 	/**
 	 * A pattern for checking the basic form of regular expressions. This pattern does not take into account all aspects of a regular expression, e.g. special
-	 * characters. The parameters group will be <code>null</code> if there are no parameters as tll
+	 * characters. The parameters group will be <code>null</code> if there are no parameters at all.
 	 */
-	public static final Pattern PATTERN = Pattern.compile("([\\x21-\\x7F&&[^/;]]+)/([\\x21-\\x7F&&[^/;]]+)((?:" + PARAMETERS_PATTERN.toString() + ")+)?");
+	public static final Pattern PATTERN = Pattern.compile("([\\x21-\\x7F&&[^/;]]+)/([\\x21-\\x7F&&[^/;]]+)((?:" + PARAMETERS_PATTERN + ")+)?");
 	/**
 	 * The pattern matching group for the primary type.
 	 * @see #PATTERN
@@ -339,7 +341,7 @@ public class ContentType {
 	 * @return A content type with the same primary and subtype as the content type, but with no parameters.
 	 */
 	public ContentType getBaseContentType() {
-		return getParameters().isEmpty() ? this : new ContentType(getPrimaryType(), getSubType(), Collections.<Parameter> emptySet()); //if this content type is already just the base type, return that
+		return getParameters().isEmpty() ? this : new ContentType(getPrimaryType(), getSubType(), Collections.<Parameter>emptySet()); //if this content type is already just the base type, return that
 	}
 
 	/**
