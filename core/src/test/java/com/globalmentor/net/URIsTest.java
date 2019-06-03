@@ -1194,16 +1194,13 @@ public class URIsTest {
 	}
 
 	/**
-	 * Illustrates a bug in the JDK in which {@link URI#hashCode()} does not meet it obligations in regard to {@link URI#equals(Object)}.
-	 * <p>
-	 * <em>Apparently fixed in Java 1.8.0_75 as part of <a href="https://bugs.openjdk.java.net/browse/JDK-7171415">JDK-7171415</a>.</em>
-	 * </p>
+	 * Verifies that {@link URI#hashCode()} implementation is consistent with {@link URI#equals(Object)} which was not the case in versions of the JDK before Java
+	 * 1.8.0_75, where it was fixed as part of <a href="https://bugs.openjdk.java.net/browse/JDK-7171415">JDK-7171415</a>.
 	 * @see <a href="https://stackoverflow.com/q/16257996/421049">How to get recognition of Java URI hashCode() bug that has been inappropriately denied</a>
-	 * @see <a href="http://bugs.java.com/bugdatabase/view_bug.do?bug_id=7054089">JDK-7054089</a>
+	 * @see <a href="https://bugs.java.com/bugdatabase/view_bug.do?bug_id=7054089">JDK-7054089</a>
 	 * @see <a href="https://bugs.openjdk.java.net/browse/JDK-7171415">JDK-7171415</a>
 	 */
 	@Test
-	@Disabled //TODO un-ignore and remove workaround code across projects
 	public void testURIHashCode() {
 		final URI uri1 = URI.create("http://www.example.com/foo%2Abar");
 		final URI uri2 = URI.create("http://www.example.com/foo%2abar");
