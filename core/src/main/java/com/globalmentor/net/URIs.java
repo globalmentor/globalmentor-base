@@ -1259,8 +1259,10 @@ public class URIs {
 	 * @see File
 	 * @see URI
 	 * @see URL
+	 * @deprecated because this ancient code doesn't have an obvious utility, is confusing, and jumbles various types, many of them legacy.
 	 */
-	public static URI createURI(final Object contextObject, final String string) throws URISyntaxException { //TODO maybe delete this eventually
+	@Deprecated
+	public static URI createURI(final Object contextObject, final String string) throws URISyntaxException {
 		if(contextObject instanceof URI) { //if the context is a URI
 			//TODO if the string contains illegal URI characters, such as spaces, this won't work
 			//TODO also check to see if the string is null.
