@@ -1194,21 +1194,39 @@ public class URIsTest {
 	}
 
 	/**
-	 * Illustrates a bug in the JDK in which {@link URI#hashCode()} does not meet it obligations in regard to {@link URI#equals(Object)}.
-	 * <p>
-	 * <em>Apparently fixed in Java 1.8.0_75 as part of <a href="https://bugs.openjdk.java.net/browse/JDK-7171415">JDK-7171415</a>.</em>
-	 * </p>
+	 * Verifies that {@link URI#hashCode()} implementation is consistent with {@link URI#equals(Object)} which was not the case in versions of the JDK before Java
+	 * 1.8.0_75, where it was fixed as part of <a href="https://bugs.openjdk.java.net/browse/JDK-7171415">JDK-7171415</a>.
 	 * @see <a href="https://stackoverflow.com/q/16257996/421049">How to get recognition of Java URI hashCode() bug that has been inappropriately denied</a>
-	 * @see <a href="http://bugs.java.com/bugdatabase/view_bug.do?bug_id=7054089">JDK-7054089</a>
+	 * @see <a href="https://bugs.java.com/bugdatabase/view_bug.do?bug_id=7054089">JDK-7054089</a>
 	 * @see <a href="https://bugs.openjdk.java.net/browse/JDK-7171415">JDK-7171415</a>
 	 */
 	@Test
-	@Disabled //TODO un-ignore and remove workaround code across projects
 	public void testURIHashCode() {
 		final URI uri1 = URI.create("http://www.example.com/foo%2Abar");
 		final URI uri2 = URI.create("http://www.example.com/foo%2abar");
 		assertThat("URIs are not equal.", uri1, equalTo(uri2));
 		assertThat("Equal URIs do not have same hash code.", uri1.hashCode(), equalTo(uri2.hashCode()));
+	}
+
+	/** @see URIs#canonicalize(URI) */
+	@Test
+	public void testCanonicalize() {
+		//TODO decide on whether IRIs should be allowed, and test
+		assertThat(URIs.canonicalize(URI.create("http://example.com/")).toString(), is("http://example.com/")); //compare string versions, because equals() accepts both cases
+		assertThat(URIs.canonicalize(URI.create("http://example.com/touch%C3%A9")).toString(), is("http://example.com/touch%C3%A9"));
+		assertThat(URIs.canonicalize(URI.create("http://example.com/touch%C3%a9")).toString(), is("http://example.com/touch%C3%A9"));
+		assertThat(URIs.canonicalize(URI.create("http://example.com/touch%c3%A9")).toString(), is("http://example.com/touch%C3%A9"));
+		assertThat(URIs.canonicalize(URI.create("http://example.com/touch%c3%a9")).toString(), is("http://example.com/touch%C3%A9"));
+	}
+
+	/** @see URIs#encode(String) */
+	@Test
+	public void testEncode() {
+		assertThat(URIs.encode("%"), is("%25"));
+		assertThat(URIs.encode("$"), is("%24"));
+		assertThat(URIs.encode("touché"), is("touch%C3%A9"));
+		//TODO add higher code UTF-8 tests
+		//TODO add URI vs segment tests when implemented
 	}
 
 	/**

@@ -1259,8 +1259,10 @@ public class URIs {
 	 * @see File
 	 * @see URI
 	 * @see URL
+	 * @deprecated because this ancient code doesn't have an obvious utility, is confusing, and jumbles various types, many of them legacy.
 	 */
-	public static URI createURI(final Object contextObject, final String string) throws URISyntaxException { //TODO maybe delete this eventually
+	@Deprecated
+	public static URI createURI(final Object contextObject, final String string) throws URISyntaxException {
 		if(contextObject instanceof URI) { //if the context is a URI
 			//TODO if the string contains illegal URI characters, such as spaces, this won't work
 			//TODO also check to see if the string is null.
@@ -1958,7 +1960,7 @@ public class URIs {
 	 * @return A string containing the escaped data.
 	 * @see URIs#ESCAPE_CHAR
 	 */
-	public static String encode(final String string) {
+	public static String encode(final String string) { //TODO distinguish between full URI and URI path segment encoding
 		return encode(string, ESCAPE_CHAR); //encode the URI using the standard escape character
 	}
 
@@ -1987,7 +1989,7 @@ public class URIs {
 
 	/**
 	 * Encodes the URI reserved characters in the string according to the URI encoding rules in <a href="http://www.ietf.org/rfc/rfc3986.txt">RFC 3986</a>,
-	 * "Uniform Resource Identifiers (URI): Generic Syntax". Following the examples in RFC 3986, this is guaranteed to produce only <em>lowercase</em> hexadecimal
+	 * "Uniform Resource Identifiers (URI): Generic Syntax". Following the examples in RFC 3986, this is guaranteed to produce only <em>uppercase</em> hexadecimal
 	 * escape codes.
 	 * @param string The data to URI-encode.
 	 * @param validCharacters Characters that should not be encoded; all other characters will be encoded.
@@ -1995,7 +1997,7 @@ public class URIs {
 	 * @return A string containing the escaped data.
 	 */
 	static String encode(final String string, final Characters validCharacters, final char escapeChar) {
-		return escapeHex(string, validCharacters, null, Integer.MAX_VALUE, escapeChar, 2, Case.LOWERCASE); //escape the string using two escape hex digits; don't use an upper bound, as the valid characters take inherently care of this
+		return escapeHex(string, validCharacters, null, Integer.MAX_VALUE, escapeChar, 2, Case.UPPERCASE); //escape the string using two escape hex digits; don't use an upper bound, as the valid characters take inherently care of this
 	}
 
 	/**
@@ -2031,7 +2033,7 @@ public class URIs {
 	 * URI.
 	 * </p>
 	 * <p>
-	 * This implementation, following the examples in RFC 3986, ensures that all hexadecimal escape codes are in lowercase. TODO change to uppercase
+	 * This implementation, following the recommendation of RFC 3986, ensures that all hexadecimal escape codes are in uppercase.
 	 * </p>
 	 * <p>
 	 * This method should be distinguished from {@link #normalize(URI)}, which normalizes path segments.
@@ -2042,22 +2044,22 @@ public class URIs {
 	 * @throws IllegalArgumentException if the given URI has an invalid escape sequence.
 	 */
 	public static URI canonicalize(final URI uri) {
-		final String uriString = uri.toASCIIString(); //get the string version of the URI
+		final String uriString = uri.toASCIIString(); //get the string version of the URI TODO consider removing to allow IRIs
 		final int uriStringLength = uriString.length(); //get the length of the string
 		StringBuilder uriStringBuilder = null; //we'll only create a string builder if we need one
-		for(int i = 0; i < uriStringLength; ++i) { //for each character, make sure that the escape sequences are in lowercase
+		for(int i = 0; i < uriStringLength; ++i) { //for each character, make sure that the escape sequences are in uppercase
 			if(uriString.charAt(i) == ESCAPE_CHAR) { //if this is an escape sequence
 				if(i >= uriStringLength - 2) { //if there isn't room for an escape sequence
 					throw new IllegalArgumentException("Invalid escape sequence in URI " + uriString + " at index " + i + ".");
 				}
 				final char hex1 = uriString.charAt(i + 1);
 				final char hex2 = uriString.charAt(i + 2);
-				if((hex1 >= 'A' && hex1 <= 'Z') || (hex2 >= 'A' && hex2 <= 'Z')) { //if the hex code is not in lowercase
+				if(ASCII.isLowerCase(hex1) || ASCII.isLowerCase(hex2)) { //if the hex code is not in uppercase
 					if(uriStringBuilder == null) { //if we haven't yet created a string builder
 						uriStringBuilder = new StringBuilder(uriString); //create a new string builder for manipulating the URI
 					}
-					uriStringBuilder.setCharAt(i + 1, hex1 >= 'A' && hex1 <= 'Z' ? (char)(hex1 + ('a' - 'A')) : hex1); //convert any hex characters to lowercase
-					uriStringBuilder.setCharAt(i + 2, hex2 >= 'A' && hex2 <= 'Z' ? (char)(hex2 + ('a' - 'A')) : hex2);
+					uriStringBuilder.setCharAt(i + 1, ASCII.toUpperCase(hex1)); //convert any hex characters to uppercase
+					uriStringBuilder.setCharAt(i + 2, ASCII.toUpperCase(hex2));
 				}
 				i += 2; //skip the escape sequence
 			}

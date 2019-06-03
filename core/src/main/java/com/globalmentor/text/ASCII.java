@@ -51,9 +51,7 @@ public class ASCII {
 
 	/**
 	 * The ASCII hexadecimal digit characters <code>'0'</code> – <code>'9'</code>, <code>'a'</code> – <code>'f'</code>, and <code>'A'</code> – <code>'F'</code>.
-	 * <p>
-	 * Note that this definition includes both lowercase and uppercase letters.
-	 * </p>
+	 * @apiNote Note that this definition includes both lowercase and uppercase letters.
 	 */
 	public static final Characters HEX_CHARACTERS = DIGIT_CHARACTERS.addRange('a', 'f').addRange('A', 'F');
 
@@ -127,6 +125,26 @@ public class ASCII {
 			}
 		}
 		return true;
+	}
+
+	/**
+	 * Determines whether the given character is an ASCII lowercase character.
+	 * @apiNote This method is typically used for formal language token manipulation, not general human language text processing.
+	 * @param c The character to check.
+	 * @return Whether the given character is an ASCII lowercase character.
+	 */
+	public static boolean isLowerCase(final char c) {
+		return c >= LOWERCASE_LETTER_FIRST && c <= LOWERCASE_LETTER_LAST;
+	}
+
+	/**
+	 * Determines whether the given character is an ASCII uppercase character.
+	 * @apiNote This method is typically used for formal language token manipulation, not general human language text processing.
+	 * @param c The character to check.
+	 * @return Whether the given character is an ASCII uppercase character.
+	 */
+	public static boolean isUpperCase(final char c) {
+		return c >= UPPERCASE_LETTER_FIRST && c <= UPPERCASE_LETTER_LAST;
 	}
 
 	/**
@@ -231,9 +249,7 @@ public class ASCII {
 
 	/**
 	 * Compares the characters in one character sequence with characters in another character sequence without regard to ASCII case.
-	 * <p>
-	 * This method is typically used for formal language token manipulation, not general human language text processing.
-	 * </p>
+	 * @apiNote This method is typically used for formal language token manipulation, not general human language text processing.
 	 * @param charSequence1 The character sequence to compare.
 	 * @param charSequence2 The character sequence to compare with.
 	 * @return <code>true</code> if the characters in the first character sequence equal the characters in the second character sequence.
@@ -248,9 +264,7 @@ public class ASCII {
 	/**
 	 * Compares the characters in one character sequence with characters in another character sequence, starting at the given location to the end of the second
 	 * character sequence, without regard to ASCII case
-	 * <p>
-	 * This method is typically used for formal language token manipulation, not general human language text processing.
-	 * </p>
+	 * @apiNote This method is typically used for formal language token manipulation, not general human language text processing.
 	 * @param charSequence1 The character sequence to compare.
 	 * @param charSequence2 The character sequence to compare with.
 	 * @param start The starting location in the second character sequence, inclusive.
@@ -265,9 +279,7 @@ public class ASCII {
 	 * Compares the characters in one character sequence with characters in another character sequence, without regard to ASCII case. If the given end of the
 	 * second character sequence (the character sequence to which the first is being compared) is past the end, it is adjusted to be equal to the end of the
 	 * second character sequence.
-	 * <p>
-	 * This method is typically used for formal language token manipulation, not general human language text processing.
-	 * </p>
+	 * @apiNote This method is typically used for formal language token manipulation, not general human language text processing.
 	 * @param charSequence1 The character sequence to compare.
 	 * @param charSequence2 The character sequence to compare with.
 	 * @param start The starting location in the second character sequence, inclusive.
@@ -285,9 +297,7 @@ public class ASCII {
 	 * Compares characters in one character sequence with characters in another character sequence, without regard to ASCII case. If the given end of the second
 	 * character sequence (the character sequence to which the first is being compared) is past the end, it is adjusted to be equal to the end of the second
 	 * character sequence.
-	 * <p>
-	 * This method is typically used for formal language token manipulation, not general human language text processing.
-	 * </p>
+	 * @apiNote This method is typically used for formal language token manipulation, not general human language text processing.
 	 * @param charSequence1 The character sequence to compare.
 	 * @param start1 The starting location in the first character sequence, inclusive.
 	 * @param end1 The ending location in the first character sequence, exclusive.
@@ -315,12 +325,12 @@ public class ASCII {
 			final char c2 = charSequence1.charAt(i2);
 			if(c1 == c2) { //if the characters match
 				continue;
-			} else if(c1 >= UPPERCASE_LETTER_FIRST && c2 <= UPPERCASE_LETTER_LAST) { //if the first character is uppercase
-				if(c1 + LOWERCASE_UPPERCASE_LETTER_DIFFERENCE == c2) { //if the characters match after converting the first to uppercase
+			} else if(c1 >= UPPERCASE_LETTER_FIRST && c1 <= UPPERCASE_LETTER_LAST) { //if the first character is uppercase
+				if(c1 + LOWERCASE_UPPERCASE_LETTER_DIFFERENCE == c2) { //if the characters match after converting the first to lowercase
 					continue;
 				}
-			} else if(c1 >= LOWERCASE_LETTER_FIRST && c2 <= LOWERCASE_LETTER_LAST) { //if the first character is lowercase
-				if(c1 - LOWERCASE_UPPERCASE_LETTER_DIFFERENCE == c2) { //if the characters match after converting the first to lowercase
+			} else if(c1 >= LOWERCASE_LETTER_FIRST && c1 <= LOWERCASE_LETTER_LAST) { //if the first character is lowercase
+				if(c1 - LOWERCASE_UPPERCASE_LETTER_DIFFERENCE == c2) { //if the characters match after converting the first to uppercase
 					continue;
 				}
 			}
@@ -330,10 +340,18 @@ public class ASCII {
 	}
 
 	/**
+	 * Converts a character to lowercase if it is an ASCII uppercase letter.
+	 * @apiNote This method is typically used for formal language token manipulation, not general human language text processing.
+	 * @param c The character to convert.
+	 * @return The character, guaranteed <em>not</em> to be an ASCII uppercase letter.
+	 */
+	public static char toLowerCase(final char c) {
+		return c >= UPPERCASE_LETTER_FIRST && c <= UPPERCASE_LETTER_LAST ? (char)(c + LOWERCASE_UPPERCASE_LETTER_DIFFERENCE) : c;
+	}
+
+	/**
 	 * Converts a character sequence to lowercase, converting only ASCII letters. The input character sequence will not be modified.
-	 * <p>
-	 * This method is typically used for formal language token manipulation, not general human language text processing.
-	 * </p>
+	 * @apiNote This method is typically used for formal language token manipulation, not general human language text processing.
 	 * @param charSequence The character sequence containing the text to convert.
 	 * @return A character sequence containing the converted text.
 	 */
@@ -350,9 +368,7 @@ public class ASCII {
 
 	/**
 	 * Converts a string builder to lowercase, converting only ASCII letters.
-	 * <p>
-	 * This method is typically used for formal language token manipulation, not general human language text processing.
-	 * </p>
+	 * @apiNote This method is typically used for formal language token manipulation, not general human language text processing.
 	 * @param stringBuilder The string builder containing the text to convert.
 	 * @return The string builder after the conversions.
 	 */
@@ -362,9 +378,7 @@ public class ASCII {
 
 	/**
 	 * Converts a string builder to lowercase, converting only ASCII letters.
-	 * <p>
-	 * This method is typically used for formal language token manipulation, not general human language text processing.
-	 * </p>
+	 * @apiNote This method is typically used for formal language token manipulation, not general human language text processing.
 	 * @param stringBuilder The string builder containing the text to convert.
 	 * @param start The starting position, inclusive.
 	 * @param end The ending position, exclusive.
@@ -381,10 +395,18 @@ public class ASCII {
 	}
 
 	/**
+	 * Converts a character to uppercase if it is an ASCII lowercase letter.
+	 * @apiNote This method is typically used for formal language token manipulation, not general human language text processing.
+	 * @param c The character to convert.
+	 * @return The character, guaranteed <em>not</em> to be an ASCII lowercase letter.
+	 */
+	public static char toUpperCase(final char c) {
+		return c >= LOWERCASE_LETTER_FIRST && c <= LOWERCASE_LETTER_LAST ? (char)(c - LOWERCASE_UPPERCASE_LETTER_DIFFERENCE) : c;
+	}
+
+	/**
 	 * Converts a character sequence to uppercase, converting only ASCII letters. The input character sequence will not be modified.
-	 * <p>
-	 * This method is typically used for formal language token manipulation, not general human language text processing.
-	 * </p>
+	 * @apiNote This method is typically used for formal language token manipulation, not general human language text processing.
 	 * @param charSequence The character sequence containing the text to convert.
 	 * @return A character sequence containing the converted text.
 	 */
@@ -401,9 +423,7 @@ public class ASCII {
 
 	/**
 	 * Converts a string builder to uppercase, converting only ASCII letters.
-	 * <p>
-	 * This method is typically used for formal language token manipulation, not general human language text processing.
-	 * </p>
+	 * @apiNote This method is typically used for formal language token manipulation, not general human language text processing.
 	 * @param stringBuilder The string builder containing the text to convert.
 	 * @return The string builder after the conversions.
 	 */
@@ -413,9 +433,7 @@ public class ASCII {
 
 	/**
 	 * Converts a string builder to uppercase, converting only ASCII letters.
-	 * <p>
-	 * This method is typically used for formal language token manipulation, not general human language text processing.
-	 * </p>
+	 * @apiNote This method is typically used for formal language token manipulation, not general human language text processing.
 	 * @param stringBuilder The string builder containing the text to convert.
 	 * @param start The starting position, inclusive.
 	 * @param end The ending position, exclusive.
