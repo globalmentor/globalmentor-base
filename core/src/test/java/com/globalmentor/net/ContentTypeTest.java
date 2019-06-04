@@ -77,6 +77,25 @@ public class ContentTypeTest {
 		assertThat(ContentType.create("text/plain; charset=us-ascii"), equalTo(ContentType.create("text/plain; charset=\"us-ascii\"")));
 	}
 
+	/**
+	 * @see ContentType#toString()
+	 * @see ContentType#toString(boolean)
+	 */
+	@Test
+	public void testTotring() {
+		//text/plain
+		assertThat(ContentType.create("text", "plain").toString(), is("text/plain"));
+		assertThat(ContentType.create("text", "plain").toString(false), is("text/plain"));
+		assertThat(ContentType.create("text", "plain").toString(true), is("text/plain"));
+
+		//text/html; charset=UTF-8
+		assertThat(ContentType.create("text/html; charset=UTF-8").toString(), is("text/html;charset=UTF-8"));
+		assertThat(ContentType.create("text/html; charset=UTF-8").toString(false), is("text/html;charset=UTF-8"));
+		assertThat(ContentType.create("text/html; charset=UTF-8").toString(true), is("text/html; charset=UTF-8"));
+
+		//TODO add tests with multiple parameters with some normalized order
+	}
+
 	@Test
 	public void testMissingDelimiter() {
 		assertThrows(ArgumentSyntaxException.class, () -> ContentType.create("text"));

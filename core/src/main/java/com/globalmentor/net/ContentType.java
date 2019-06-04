@@ -433,10 +433,22 @@ public class ContentType {
 				&& getParameters().equals(contentType.getParameters());
 	}
 
-	/** {@inheritDoc} This version returns the canonical representation of the content type according to RFC 2045 */
+	/**
+	 * Returns a possibly formatted string version of the given content type.
+	 * @param formatted Whether the resulting string should be formatted with extra whitespace for human readability.
+	 * @return The canonical representation of the content type according to RFC 6838.
+	 */
+	public String toString(final boolean formatted) {
+		return toString(getPrimaryType(), getSubType(), getParameters(), formatted);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @implSpec This implementation returns the canonical representation of the content type according to RFC 6838, with no added whitespace.
+	 */
 	@Override
 	public String toString() {
-		return toString(getPrimaryType(), getSubType(), getParameters());
+		return toString(false);
 	}
 
 	/**
@@ -444,10 +456,22 @@ public class ContentType {
 	 * @param primaryType The primary type.
 	 * @param subType The subtype.
 	 * @param parameters Optional name-value pairs representing parameters of the content type.
-	 * @return A string representing the type in the form "<var>primaryType</var>/<var>subType</var>[; <var>parameters</var>]".
+	 * @return A string representing the type in the form "<var>primaryType</var>/<var>subType</var>[;<var>parameters</var>]".
 	 */
 	public static String toString(final String primaryType, final String subType, final Parameter... parameters) {
 		return toString(primaryType, subType, immutableSetOf(parameters));
+	}
+
+	/**
+	 * Constructs a string representing a content type in canonical form.
+	 * @param primaryType The primary type.
+	 * @param subType The subtype.
+	 * @param parameters Any name-value pairs representing parameters of the content type.
+	 * @return A string representing the type in the form "<var>primaryType</var>/<var>subType</var>[;<var>parameters</var>]".
+	 * @throws NullPointerException if the given parameters set is <code>null</code>.
+	 */
+	public static String toString(final String primaryType, final String subType, final Set<Parameter> parameters) {
+		return toString(primaryType, subType, parameters, false);
 	}
 
 	/**
@@ -455,17 +479,22 @@ public class ContentType {
 	 * @param primaryType The primary type.
 	 * @param subType The subtype.
 	 * @param parameters Any name-value pairs representing parameters of the content type.
-	 * @return A string representing the type in the form "<var>primaryType</var>/<var>subType</var>[; <var>parameters</var>]".
+	 * @param formatted Whether the resulting string should be formatted with extra whitespace for human readability.
+	 * @return A string representing the type in the form "<var>primaryType</var>/<var>subType</var>[;<var>parameters</var>]".
 	 * @throws NullPointerException if the given parameters set is <code>null</code>.
 	 */
-	public static String toString(final String primaryType, final String subType, final Set<Parameter> parameters) {
+	public static String toString(final String primaryType, final String subType, final Set<Parameter> parameters, final boolean formatted) {
 		final StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append(primaryType).append(TYPE_DIVIDER).append(subType); //primaryType/subType
 		for(final Parameter parameter : parameters) { //for each parameter
 			final String parameterValue = parameter.getValue(); //get the parameter value
 			final boolean hasSpecialCharacters = CharSequences.contains(parameterValue, SPECIAL_CHARACTERS); //see if there are any special characters
 
-			stringBuilder.append(PARAMETER_DELIMITER_CHAR).append(SPACE_CHAR).append(parameter.getName()).append(PARAMETER_ASSIGNMENT_CHAR); //; name=value
+			stringBuilder.append(PARAMETER_DELIMITER_CHAR); //; name=value
+			if(formatted) {
+				stringBuilder.append(SPACE_CHAR);
+			}
+			stringBuilder.append(parameter.getName()).append(PARAMETER_ASSIGNMENT_CHAR);
 			if(hasSpecialCharacters) { //quote the value string if necessary
 				stringBuilder.append(STRING_QUOTE_CHAR);
 			}
