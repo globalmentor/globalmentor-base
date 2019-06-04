@@ -30,7 +30,6 @@ import static com.globalmentor.text.ASCII.*;
 import static java.util.Collections.*;
 
 import com.globalmentor.java.*;
-import com.globalmentor.java.Objects;
 import com.globalmentor.model.NameValuePair;
 import com.globalmentor.text.ArgumentSyntaxException;
 
@@ -200,10 +199,8 @@ public class ContentType {
 
 	/**
 	 * Primary type and subtype constructor.
-	 * <p>
-	 * This private constructor assumes that the given parameter set is immutable and will not be referenced elsewhere, and therefore does not make a defensive
-	 * copy.
-	 * </p>
+	 * @implNote This private constructor assumes that the given parameter set is immutable and will not be referenced elsewhere, and therefore does not make a
+	 *           defensive copy.
 	 * @param primaryType The primary type of the content type.
 	 * @param subType The subtype of the content type.
 	 * @param parameters The content type parameters.
@@ -399,8 +396,9 @@ public class ContentType {
 	}
 
 	/**
-	 * {@inheritDoc} This implementation returns the hash code of the primary type, the subtype, and the parameters, in a case insensitive manner for the types
-	 * and parameter names.
+	 * {@inheritDoc}
+	 * @implSpec This implementation returns the hash code of the primary type, the subtype, and the parameters, in a case insensitive manner for the types and
+	 *           parameter names.
 	 * @return A hash code value for this object.
 	 * @see #getPrimaryType()
 	 * @see #getSubType()
@@ -408,12 +406,14 @@ public class ContentType {
 	 */
 	@Override
 	public int hashCode() {
-		return Objects.getHashCode(toLowerCase(getPrimaryType()).toString(), toLowerCase(getSubType()).toString(), getParameters());
+		return hash(toLowerCase(getPrimaryType()).toString(), toLowerCase(getSubType()).toString(), getParameters());
 	}
 
 	/**
-	 * {@inheritDoc} This implementation considers an object equal if it is another {@link ContentType} with the same primary types and subtypes, the same number
-	 * of parameters, and a matching parameter value for every parameter of this content type. Comparisons are case-insensitive for the types and parameter names.
+	 * {@inheritDoc}
+	 * @implSpec This implementation considers an object equal if it is another {@link ContentType} with the same primary types and subtypes, the same number of
+	 *           parameters, and a matching parameter value for every parameter of this content type. Comparisons are case-insensitive for the types and parameter
+	 *           names.
 	 * @param object The reference object with which to compare.
 	 * @see #getPrimaryType()
 	 * @see #getSubType()
@@ -549,7 +549,7 @@ public class ContentType {
 		/** {@inheritDoc} This version returns a consistent hash code for all cases of a parameter name. */
 		@Override
 		public int hashCode() {
-			return Objects.getHashCode(toLowerCase(getName()).toString(), getValue());
+			return hash(toLowerCase(getName()).toString(), getValue());
 		}
 
 		/** {@inheritDoc} This version compares names in a case-insensitive manner. */
