@@ -17,6 +17,7 @@
 package com.globalmentor.java;
 
 import java.lang.reflect.Array;
+import java.util.Optional;
 
 /**
  * Various utilities for manipulating arrays.
@@ -25,9 +26,6 @@ import java.lang.reflect.Array;
  */
 public class Arrays {
 
-	/** An object array that contains no elements. */
-	public static final Object[] EMPTY_OBJECT_ARRAY = new Object[] {};
-
 	/**
 	 * Creates a new array and appends the value to the contents of the given array.
 	 * @param array The array holding the original values.
@@ -35,7 +33,7 @@ public class Arrays {
 	 * @return A new array containing the contents of the first array followed by the contents of the second array.
 	 */
 	public static int[] append(final int[] array, final int value) {
-		return append(array, new int[] { value }); //create an array containing the value and append it to the first array
+		return append(array, new int[] {value}); //create an array containing the value and append it to the first array
 	}
 
 	/**
@@ -100,6 +98,8 @@ public class Arrays {
 	 * @return The length of the checked range.
 	 * @throws IllegalArgumentException if the start index is greater than the end index.
 	 * @throws ArrayIndexOutOfBoundsException if the start index is less than zero or the end index is greater than the length.
+	 * @see {@link Conditions#checkIndexBounds(int, int, int)} or {@link Conditions#checkIndexBounds(long, long, long)} if you just want to know whether an index
+	 *      is included in a given range.
 	 */
 	public static int checkIndexRange(final int length, int start, int end) {
 		final int rangeLength = end - start;
@@ -168,10 +168,11 @@ public class Arrays {
 	 * @throws IllegalArgumentException if the start index is greater than the end index.
 	 * @throws ArrayIndexOutOfBoundsException if the start index is less than zero or the end index is greater than the length.
 	 */
+	@SuppressWarnings("unchecked")
 	public static <T> T[] createCopy(final T[] source, final int start, final int end) {
 		checkIndexRange(source.length, start, end); //check the validity of the given range
 		final int length = end - start;
-		final T[] destination = createArray(source, length); //create a destination array of the correct length
+		final T[] destination = (T[])new Object[length]; //create a destination array of the correct length
 		System.arraycopy(source, start, destination, 0, length); //copy the specified number of elements to the destination copy
 		return destination; //return the new copy
 	}
@@ -227,8 +228,9 @@ public class Arrays {
 	 * @param elements The elements with which to initialize the array.
 	 * @return A new array of the requested type containing the provided elements.
 	 */
+	@SuppressWarnings("unchecked")
 	public static <T> T[] createArray(final Class<T> elementType, final T... elements) {
-		final T[] array = createArray(elementType, elements.length); //create an array of the given type large enough to hold the given elements
+		final T[] array = (T[])new Object[elements.length]; //create an array of the given type large enough to hold the given elements
 		for(int i = elements.length - 1; i >= 0; --i) { //for each element in the array
 			array[i] = elements[i]; //copy the element to the new array
 		}
@@ -243,6 +245,7 @@ public class Arrays {
 	 * @return A new array of the requested length containing components of the requested type.
 	 */
 	@SuppressWarnings("unchecked")
+	@Deprecated
 	public static <T> T[] createArray(final Class<T> elementType, final int length) {
 		return (T[])Array.newInstance(elementType, length); //create a new array of the specified length to contain the given type
 	}
@@ -256,8 +259,9 @@ public class Arrays {
 	 * @return A new array of the requested length containing components of the requested type, filled with the given value.
 	 * @see #fill(Object[], Object)
 	 */
+	@SuppressWarnings("unchecked")
 	public static <T> T[] createArray(final Class<T> elementType, final int length, final T value) {
-		final T[] array = createArray(elementType, length); //create an array of the appropriate length
+		final T[] array = (T[])new Object[length]; //create an array of the appropriate length
 		fill(array, value); //fill the array
 		return array; //return the array we created
 	}
@@ -270,8 +274,9 @@ public class Arrays {
 	 * @return A new array of the requested length containing the same components as the original array.
 	 */
 	@SuppressWarnings("unchecked")
+	@Deprecated
 	public static <T> T[] createArray(final T[] array, final int length) {
-		return (T[])createArray(array.getClass().getComponentType(), length); //create a new array based upon the component type of the template array
+		return (T[])new Object[length]; //create a new array based upon the component type of the template array
 	}
 
 	/**
@@ -286,9 +291,10 @@ public class Arrays {
 	 * @return An array of at least the requested length containing the same components as the original array; either the original array or a new array.
 	 * @see #createArray(Object[], int)
 	 */
+	@SuppressWarnings("unchecked")
 	public static <T> T[] getArray(T[] array, final int minLength) {
 		if(array.length < minLength) { //if the given array is not large enough
-			array = createArray(array, minLength); //create a new array that is large enough
+			array = (T[])new Object[minLength]; //create a new array that is large enough
 		}
 		return array; //return the array
 	}
@@ -382,16 +388,17 @@ public class Arrays {
 	 * @param <T> The type of object to return.
 	 * @param array The array to search.
 	 * @param objectClass The class of object to return.
-	 * @return The first object that is the instance of the given class, or <code>null</code> if there is no instance of the given class in the array.
+	 * @return An optional with the first object that is the instance of the given class, or {@link Optional#empty()} if there is no instance of the given class
+	 *         in the array.
 	 * @throws NullPointerException if the given array and/or object class is <code>null</code>.
 	 */
-	public static <T> T getInstance(final Object[] array, final Class<T> objectClass) {
+	public static <T> Optional<T> findFirstInstance(final Object[] array, final Class<T> objectClass) {
 		for(final Object object : array) { //look at each object in the array
 			if(objectClass.isInstance(object)) { //if this object is an instance of the given class
-				return objectClass.cast(object); //return the object
+				return Optional.of(objectClass.cast(object)); //return the object
 			}
 		}
-		return null; //an instance of the given class could not be found
+		return Optional.empty(); //an instance of the given class could not be found
 	}
 
 	/**
@@ -400,7 +407,7 @@ public class Arrays {
 	 * @param array The array to iteratate.
 	 * @return The number of objects in the array that are not <code>null</code>.
 	 */
-	public static <T> int getInstanceCount(final T[] array) {
+	public static <T> int getNonNullCount(final T[] array) {
 		int count = 0; //we'll see how many instances are in the row
 		for(int i = array.length - 1; i >= 0; --i) { //for each index
 			if(array[i] != null) { //if there is an object at this position
@@ -458,23 +465,6 @@ public class Arrays {
 				return i; //return this index
 		}
 		return -1; //show that we could not find the value in the array
-	}
-
-	/**
-	 * Creates an array of the string representations of all non-<code>null</code> objects in the given array.
-	 * @param array The array to convert to a string array.
-	 * @return A string array, each element of which contains the string version of the corresponding object array element or <code>null</code> if the
-	 *         corresponding object is <code>null</code>.
-	 * @throws NullPointerException if the given array is <code>null</code>.
-	 */
-	public static String[] toStringArray(final Object[] array) {
-		final int length = array.length; //get the length of the array
-		final String[] strings = new String[length]; //create a string array
-		for(int i = 0; i < length; ++i) { //for each index
-			final Object object = array[i]; //get this object
-			strings[i] = object != null ? object.toString() : null; //store the object or null in the new array
-		}
-		return strings; //return the new array of strings
 	}
 
 }

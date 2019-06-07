@@ -301,6 +301,15 @@ public class Objects {
 	}
 
 	/**
+	 * Checks to see if the elements are instances of any object, and throws a {@link NullPointerException} if any element is <code>null</code>.
+	 * @param objects The objects of which to check.
+	 * @return The given objects.
+	 * @throws NullPointerException if any of the given objects are <code>null</code>.
+	 */
+	public static Object[] requireNonNulls(final Object... objects) {
+		return Arrays.requireNonNulls(objects); //check for null with no description
+	}
+	/**
 	 * Returns the string representation of the object or {@value Java#NULL_KEYWORD}.
 	 * @param object An object to be represented by a string.
 	 * @return The string representation of the object or {@value Java#NULL_KEYWORD} if the object is <code>null</code>.
