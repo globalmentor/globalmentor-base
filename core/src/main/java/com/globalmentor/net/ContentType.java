@@ -20,6 +20,8 @@ import java.net.URLConnection;
 import java.util.*;
 import java.util.regex.*;
 
+import javax.annotation.*;
+
 import static java.util.Objects.*;
 
 import static com.globalmentor.collections.Sets.*;
@@ -27,6 +29,7 @@ import static com.globalmentor.java.CharSequences.*;
 import static com.globalmentor.java.Characters.SPACE_CHAR;
 import static com.globalmentor.java.Characters.QUOTATION_MARK_CHAR;
 import static com.globalmentor.text.ASCII.*;
+import static java.nio.charset.StandardCharsets.*;
 import static java.util.Collections.*;
 
 import com.globalmentor.java.*;
@@ -56,7 +59,7 @@ import com.globalmentor.text.ArgumentSyntaxException;
  * @see <a href="https://tools.ietf.org/html/rfc6838">RFC 6838</a>
  * @see <a href="https://www.w3.org/TR/xhtml-media-types/">XHTML Media Types</a>
  */
-public class ContentType {
+public class ContentType { //TODO major version: rename to MediaType; make final; tighten up value object type
 
 	/** The divider character for media type strings. */
 	public static final char TYPE_DIVIDER = '/';
@@ -218,8 +221,20 @@ public class ContentType {
 	 * @param charSequence The character sequence representation of the content type.
 	 * @return A new content type object parsed from the string.
 	 * @throws ArgumentSyntaxException Thrown if the string is not a syntactically correct content type.
+	 * @deprecated in favor of {@link #of(CharSequence)}; to be removed in next major version.
 	 */
+	@Deprecated
 	public static ContentType create(final CharSequence charSequence) throws ArgumentSyntaxException {
+		return of(charSequence);
+	}
+
+	/**
+	 * Parses a content type object from a string.
+	 * @param charSequence The character sequence representation of the content type.
+	 * @return A new content type object parsed from the string.
+	 * @throws ArgumentSyntaxException Thrown if the string is not a syntactically correct content type.
+	 */
+	public static ContentType of(final CharSequence charSequence) throws ArgumentSyntaxException {
 		final Matcher matcher = PATTERN.matcher(charSequence);
 		if(!matcher.matches()) {
 			throw new ArgumentSyntaxException("Invalid content type syntax", charSequence);
@@ -241,7 +256,7 @@ public class ContentType {
 					parameterValue = parameterValue.substring(1, parameterValue.length() - 1); //remove the surrounding quotes
 				}
 
-				parameters.add(new Parameter(parameterName, parameterValue));
+				parameters.add(Parameter.of(parameterName, parameterValue));
 			}
 			parameters = unmodifiableSet(parameters); //make the parameters set read-only
 		}
@@ -255,8 +270,22 @@ public class ContentType {
 	 * @param parameters Optional name-value pairs representing parameters of the content type.
 	 * @return A new content type object constructed from the given information.
 	 * @throws ArgumentSyntaxException if the primary type or subtype does not have the valid syntax.
+	 * @deprecated in favor of {@link #of(String, String, Parameter...)}; to be removed in next major version.
 	 */
+	@Deprecated
 	public static ContentType create(final String primaryType, final String subType, final Parameter... parameters) {
+		return of(primaryType, subType, parameters);
+	}
+
+	/**
+	 * Creates a content type object from primary type, a subtype, and optional parameters.
+	 * @param primaryType The primary type.
+	 * @param subType The subtype.
+	 * @param parameters Optional name-value pairs representing parameters of the content type.
+	 * @return A new content type object constructed from the given information.
+	 * @throws ArgumentSyntaxException if the primary type or subtype does not have the valid syntax.
+	 */
+	public static ContentType of(final String primaryType, final String subType, final Parameter... parameters) {
 		return new ContentType(primaryType, subType, immutableSetOf(parameters)); //create a new content type from the given values, creating an immutable copy of the parameters
 	}
 
@@ -269,7 +298,7 @@ public class ContentType {
 	 * @throws NullPointerException if the given parameters set is <code>null</code>.
 	 * @throws ArgumentSyntaxException if the primary type or subtype does not have the valid syntax.
 	 */
-	public static ContentType getInstance(final String primaryType, final String subType, final Set<Parameter> parameters) {
+	public static ContentType of(final String primaryType, final String subType, final Set<Parameter> parameters) {
 		return new ContentType(primaryType, subType, immutableSetOf(parameters)); //create a new content type from the given values, creating an immutable copy of the parameters
 	}
 
@@ -371,11 +400,11 @@ public class ContentType {
 	}
 
 	/**
-	 * Returns new content type instance with the given parameter. If this content type already has the given parameter, it will be returned. If this content type
-	 * has a parameter with the same name but with a different value, the parameter will be replaced with the one given. Otherwise, the parameter will be added to
-	 * the parameters. Parameter name comparisons are case-insensitive.
+	 * Returns a content type with the given parameter. If this content type already has the given parameter, it will be returned. If this content type has a
+	 * parameter with the same name but with a different value, the parameter will be replaced with the one given. Otherwise, the parameter will be added to the
+	 * parameters. Parameter name comparisons are case-insensitive.
 	 * @param newParameter The new parameter to add or replace.
-	 * @return The new content type instance with the given parameter.
+	 * @return A content type with the given parameter.
 	 */
 	public ContentType withParameter(final Parameter newParameter) {
 		final Set<Parameter> newParameters = new HashSet<ContentType.Parameter>(getParameters().size());
@@ -383,16 +412,29 @@ public class ContentType {
 			if(equalsIgnoreCase(parameter.getName(), newParameter.getName())) { //if this is the same parameter name
 				if(parameter.getValue().equals(newParameter.getValue())) { //if the parameter values are the same
 					return this; //just use the same content type, because nothing will change; otherwise
-				}
-				//if the parameter values are different
-				else {
+				} else { //if the parameter values are different
 					continue; //skip this parameter; we'll add it manually afterwards
 				}
 			}
 			newParameters.add(parameter); //add all other parameters normally
 		}
 		newParameters.add(newParameter); //here we've either ignored a parameter with the same name, or there was no such parameter; either way, add the new one
-		return new ContentType(getPrimaryType(), getSubType(), unmodifiableSet(newParameters)); //create a new content type with the updated parameters
+		return ContentType.of(getPrimaryType(), getSubType(), unmodifiableSet(newParameters)); //create a new content type with the updated parameters
+	}
+
+	/**
+	 * Returns a content type with the given parameter. If this content type already has the given parameter, it will be returned. If this content type has a
+	 * parameter with the same name but with a different value, the parameter will be replaced with the one given. Otherwise, the parameter will be added to the
+	 * parameters. Parameter name comparisons are case-insensitive.
+	 * @param name The parameter name to add or replace.
+	 * @param value The parameter value.
+	 * @return A content type with the given parameter.
+	 * @throws NullPointerException if the given name and/or value is <code>null</code>.
+	 * @throws ArgumentSyntaxException if the name is not a token; or the value contains a space, non-ASCII, or control character.
+	 * @see Parameter#of(String, String)
+	 */
+	public ContentType withParameter(final String name, final String value) {
+		return withParameter(Parameter.of(name, value));
 	}
 
 	/**
@@ -531,19 +573,44 @@ public class ContentType {
 	 */
 	public static class Parameter extends NameValuePair<String, String> {
 
+		/** The common parameter <code>charset=UTF-8</code>. */
+		public static final Parameter CHARSET_UTF_8 = new Parameter(CHARSET_PARAMETER, UTF_8.name());
+
 		/**
 		 * Constructor specifying the name and value.
 		 * @param name The parameter name.
 		 * @param value The parameter value.
 		 * @throws NullPointerException if the given name and/or value is <code>null</code>.
-		 * @throws ArgumentSyntaxException if the name is not a token; or the value contains a a space, non-ASCII, or control character.
+		 * @throws ArgumentSyntaxException if the name is not a token; or the value contains a space, non-ASCII, or control character.
 		 * @see ContentType#isToken(CharSequence)
+		 * @deprecated in favor of {@link #of(String, String)}; to be made private in next major version.
 		 */
+		@Deprecated
 		public Parameter(final String name, final String value) {
 			super(checkToken(name), value); //make sure the name is a token
 			if(contains(value, SPACE_CHAR) || !isASCIINonControl(value)) { //special characters are allowed in the value; but not spaces, non-ASCII, or control characters
 				throw new ArgumentSyntaxException("Content type parameter value " + value + " must consist only of non-space and non-control ASCII characters.", value);
 			}
+		}
+
+		/**
+		 * Static factory method specifying the name and value.
+		 * @param name The parameter name.
+		 * @param value The parameter value.
+		 * @return A content type for the indicated name and value.
+		 * @throws NullPointerException if the given name and/or value is <code>null</code>.
+		 * @throws ArgumentSyntaxException if the name is not a token; or the value contains a space, non-ASCII, or control character.
+		 * @see ContentType#isToken(CharSequence)
+		 */
+		public static Parameter of(@Nonnull final String name, @Nonnull final String value) {
+			//often-used parameters
+			if(equalsIgnoreCase(name, CHARSET_PARAMETER)) { //charset
+				if(value.equals(UTF_8.name())) { //charset=UTF-8
+					return CHARSET_UTF_8;
+				}
+			}
+			//all other parameters
+			return new Parameter(name, value);
 		}
 
 		/** {@inheritDoc} This version returns a consistent hash code for all cases of a parameter name. */

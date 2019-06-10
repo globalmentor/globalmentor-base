@@ -25,6 +25,7 @@ import static org.hamcrest.Matchers.*;
 import static org.hamcrest.MatcherAssert.*;
 
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
 
@@ -81,6 +82,63 @@ public class ConditionsTest {
 
 		try {
 			checkArgument(false, "error message", 123); // The arguments of the error message should be ignored.
+			fail("The statement above should have thrown an IllegalArgumentExcepton");
+		} catch(final IllegalArgumentException illegalArgumentException) {
+			assertThat(illegalArgumentException.getMessage(), equalTo("error message"));
+		}
+	}
+
+	/**
+	 * Tests the {@link Conditions#checkArgumentIsInstance(Object, Class)} and the {@link Conditions#checkArgumentIsInstance(Object, Class, String, Object...)}
+	 * methods.
+	 */
+	@Test
+	public void testCheckArgumentIsInstance() {
+		final Long testNumber = Long.valueOf(123456789);
+		for(final Class<?> instanceType : (Iterable<Class<?>>)Stream.of(Long.class, Number.class, Object.class)::iterator) {
+			assertThat(checkArgumentIsInstance(testNumber, instanceType), sameInstance(testNumber));
+			assertThat(checkArgumentIsInstance(testNumber, instanceType, "error message"), sameInstance(testNumber));
+			assertThat(checkArgumentIsInstance(testNumber, instanceType, "error message", 123), sameInstance(testNumber));
+			assertThat(checkArgumentIsInstance(testNumber, instanceType, "error message %s", 123), sameInstance(testNumber));
+		}
+	}
+
+	/** Tests the {@link Conditions#checkArgumentIsInstance(Object, Class)} method with <code>null</code>. */
+	@Test
+	public void testCheckArgumentIsInstanceWithANullObject() {
+		assertThrows(IllegalArgumentException.class, () -> checkArgumentIsInstance(null, Boolean.class));
+	}
+
+	/**
+	 * Tests the {@link Conditions#checkArgumentIsInstance(Object, Class)} and {@link Conditions#checkArgumentIsInstance(Object, Class, String, Object...)}
+	 * methods with <code>null</code> and how the messages are being formatted.
+	 */
+	@Test
+	public void testCheckArgumentIsInstanceErrorMessage() {
+
+		try {
+			checkArgumentIsInstance(null, Boolean.class);
+			fail("The statement above should have thrown an IllegalArgumentExcepton");
+		} catch(final IllegalArgumentException illegalArgumentException) {
+			assertThat(illegalArgumentException.getMessage(), equalTo(null));
+		}
+
+		try {
+			checkArgumentIsInstance(null, Boolean.class, "error message");
+			fail("The statement above should have thrown an IllegalArgumentExcepton");
+		} catch(final IllegalArgumentException illegalArgumentException) {
+			assertThat(illegalArgumentException.getMessage(), equalTo("error message"));
+		}
+
+		try {
+			checkArgumentIsInstance(null, Boolean.class, "error message %d", 123);
+			fail("The statement above should have thrown an IllegalArgumentExcepton");
+		} catch(final IllegalArgumentException illegalArgumentException) {
+			assertThat(illegalArgumentException.getMessage(), equalTo("error message 123"));
+		}
+
+		try {
+			checkArgumentIsInstance(null, Boolean.class, "error message", 123); // The arguments of the error message should be ignored.
 			fail("The statement above should have thrown an IllegalArgumentExcepton");
 		} catch(final IllegalArgumentException illegalArgumentException) {
 			assertThat(illegalArgumentException.getMessage(), equalTo("error message"));
