@@ -309,6 +309,7 @@ public class Objects {
 	public static Object[] requireNonNulls(final Object... objects) {
 		return Arrays.requireNonNulls(objects); //check for null with no description
 	}
+
 	/**
 	 * Returns the string representation of the object or {@value Java#NULL_KEYWORD}.
 	 * @param object An object to be represented by a string.

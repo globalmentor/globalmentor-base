@@ -217,6 +217,8 @@ public class Arrays {
 	 * @param elements The elements the array should contain.
 	 * @return An array containing the provided elements.
 	 */
+	@SafeVarargs
+	@Deprecated
 	public static <T> T[] createArray(final T... elements) {
 		return elements; //return the varargs as an array
 	}
@@ -230,7 +232,7 @@ public class Arrays {
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T> T[] createArray(final Class<T> elementType, final T... elements) {
-		final T[] array = (T[])new Object[elements.length]; //create an array of the given type large enough to hold the given elements
+		final T[] array = createArray(elementType, elements.length); //create an array of the given type large enough to hold the given elements
 		for(int i = elements.length - 1; i >= 0; --i) { //for each element in the array
 			array[i] = elements[i]; //copy the element to the new array
 		}
@@ -245,7 +247,6 @@ public class Arrays {
 	 * @return A new array of the requested length containing components of the requested type.
 	 */
 	@SuppressWarnings("unchecked")
-	@Deprecated
 	public static <T> T[] createArray(final Class<T> elementType, final int length) {
 		return (T[])Array.newInstance(elementType, length); //create a new array of the specified length to contain the given type
 	}
@@ -259,9 +260,8 @@ public class Arrays {
 	 * @return A new array of the requested length containing components of the requested type, filled with the given value.
 	 * @see #fill(Object[], Object)
 	 */
-	@SuppressWarnings("unchecked")
 	public static <T> T[] createArray(final Class<T> elementType, final int length, final T value) {
-		final T[] array = (T[])new Object[length]; //create an array of the appropriate length
+		final T[] array = createArray(elementType, length); //create an array of the appropriate length
 		fill(array, value); //fill the array
 		return array; //return the array we created
 	}
@@ -276,7 +276,7 @@ public class Arrays {
 	@SuppressWarnings("unchecked")
 	@Deprecated
 	public static <T> T[] createArray(final T[] array, final int length) {
-		return (T[])new Object[length]; //create a new array based upon the component type of the template array
+		return (T[])createArray(array.getClass().getComponentType(), length); //create a new array based upon the component type of the template arraycreateArray(array, minLength)
 	}
 
 	/**
@@ -294,7 +294,7 @@ public class Arrays {
 	@SuppressWarnings("unchecked")
 	public static <T> T[] getArray(T[] array, final int minLength) {
 		if(array.length < minLength) { //if the given array is not large enough
-			array = (T[])new Object[minLength]; //create a new array that is large enough
+			array = (T[])createArray(array.getClass().getComponentType(), minLength); //create a new array that is large enough
 		}
 		return array; //return the array
 	}
