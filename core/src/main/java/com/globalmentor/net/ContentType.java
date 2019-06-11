@@ -20,6 +20,8 @@ import java.net.URLConnection;
 import java.util.*;
 import java.util.regex.*;
 
+import javax.annotation.*;
+
 import static java.util.Objects.*;
 
 import static com.globalmentor.collections.Sets.*;
@@ -27,16 +29,17 @@ import static com.globalmentor.java.CharSequences.*;
 import static com.globalmentor.java.Characters.SPACE_CHAR;
 import static com.globalmentor.java.Characters.QUOTATION_MARK_CHAR;
 import static com.globalmentor.text.ASCII.*;
+import static java.nio.charset.StandardCharsets.*;
 import static java.util.Collections.*;
 
 import com.globalmentor.java.*;
-import com.globalmentor.java.Objects;
 import com.globalmentor.model.NameValuePair;
 import com.globalmentor.text.ArgumentSyntaxException;
 
 /**
- * An encapsulation of an Internet media content type as originally defined in <a href="http://www.rfc-editor.org/rfc/rfc2046.txt">RFC 2046</a>,
- * "MIME Part 2: Media Types".
+ * An encapsulation of an Internet media content type as originally defined in <a href="https://tools.ietf.org/html/rfc2046"><cite>RFC 2046: MIME Part 2: Media
+ * Types</cite></a>; and most recently in <a href="https://tools.ietf.org/html/rfc6838"><cite>RFC 6838: Media Type Specifications and Registration
+ * Procedures</cite></a>.
  * <p>
  * The content type and names of parameters are compared in a case-insensitive manner as per RFC 2046.
  * </p>
@@ -52,10 +55,11 @@ import com.globalmentor.text.ArgumentSyntaxException;
  * TODO This implementation does not support quoted values containing the {@value #PARAMETER_DELIMITER_CHAR} character.
  * </p>
  * @author Garret Wilson
- * @see <a href="http://www.rfc-editor.org/rfc/rfc2046.txt">RFC 2046</a>
- * @see <a href="http://www.w3.org/TR/xhtml-media-types/">XHTML Media Types</a>
+ * @see <a href="https://tools.ietf.org/html/rfc2046">RFC 2046</a>
+ * @see <a href="https://tools.ietf.org/html/rfc6838">RFC 6838</a>
+ * @see <a href="https://www.w3.org/TR/xhtml-media-types/">XHTML Media Types</a>
  */
-public class ContentType {
+public class ContentType { //TODO major version: rename to MediaType; make final; tighten up value object type
 
 	/** The divider character for media type strings. */
 	public static final char TYPE_DIVIDER = '/';
@@ -78,7 +82,7 @@ public class ContentType {
 	 * A pattern for checking the basic form of parameters. The pattern may be repeated and the two matching groups are the name and value. This pattern does not
 	 * take into account all aspects of a regular expression, e.g. special characters.
 	 */
-	public static final Pattern PARAMETERS_PATTERN = Pattern.compile(";\\s+([\\x21-\\x7F&&[^=;]]+)=([\\x21-\\x7F&&[^=;]]+)");
+	public static final Pattern PARAMETERS_PATTERN = Pattern.compile(";\\s*([\\x21-\\x7F&&[^=;]]+)=([\\x21-\\x7F&&[^=;]]+)");
 	/**
 	 * The parameters pattern matching group for the parameter name.
 	 * @see #PARAMETERS_PATTERN
@@ -92,9 +96,9 @@ public class ContentType {
 
 	/**
 	 * A pattern for checking the basic form of regular expressions. This pattern does not take into account all aspects of a regular expression, e.g. special
-	 * characters. The parameters group will be <code>null</code> if there are no parameters as tll
+	 * characters. The parameters group will be <code>null</code> if there are no parameters at all.
 	 */
-	public static final Pattern PATTERN = Pattern.compile("([\\x21-\\x7F&&[^/;]]+)/([\\x21-\\x7F&&[^/;]]+)((?:" + PARAMETERS_PATTERN.toString() + ")+)?");
+	public static final Pattern PATTERN = Pattern.compile("([\\x21-\\x7F&&[^/;]]+)/([\\x21-\\x7F&&[^/;]]+)((?:" + PARAMETERS_PATTERN + ")+)?");
 	/**
 	 * The pattern matching group for the primary type.
 	 * @see #PATTERN
@@ -198,10 +202,8 @@ public class ContentType {
 
 	/**
 	 * Primary type and subtype constructor.
-	 * <p>
-	 * This private constructor assumes that the given parameter set is immutable and will not be referenced elsewhere, and therefore does not make a defensive
-	 * copy.
-	 * </p>
+	 * @implNote This private constructor assumes that the given parameter set is immutable and will not be referenced elsewhere, and therefore does not make a
+	 *           defensive copy.
 	 * @param primaryType The primary type of the content type.
 	 * @param subType The subtype of the content type.
 	 * @param parameters The content type parameters.
@@ -219,8 +221,20 @@ public class ContentType {
 	 * @param charSequence The character sequence representation of the content type.
 	 * @return A new content type object parsed from the string.
 	 * @throws ArgumentSyntaxException Thrown if the string is not a syntactically correct content type.
+	 * @deprecated in favor of {@link #of(CharSequence)}; to be removed in next major version.
 	 */
+	@Deprecated
 	public static ContentType create(final CharSequence charSequence) throws ArgumentSyntaxException {
+		return of(charSequence);
+	}
+
+	/**
+	 * Parses a content type object from a string.
+	 * @param charSequence The character sequence representation of the content type.
+	 * @return A new content type object parsed from the string.
+	 * @throws ArgumentSyntaxException Thrown if the string is not a syntactically correct content type.
+	 */
+	public static ContentType of(final CharSequence charSequence) throws ArgumentSyntaxException {
 		final Matcher matcher = PATTERN.matcher(charSequence);
 		if(!matcher.matches()) {
 			throw new ArgumentSyntaxException("Invalid content type syntax", charSequence);
@@ -242,7 +256,7 @@ public class ContentType {
 					parameterValue = parameterValue.substring(1, parameterValue.length() - 1); //remove the surrounding quotes
 				}
 
-				parameters.add(new Parameter(parameterName, parameterValue));
+				parameters.add(Parameter.of(parameterName, parameterValue));
 			}
 			parameters = unmodifiableSet(parameters); //make the parameters set read-only
 		}
@@ -256,8 +270,22 @@ public class ContentType {
 	 * @param parameters Optional name-value pairs representing parameters of the content type.
 	 * @return A new content type object constructed from the given information.
 	 * @throws ArgumentSyntaxException if the primary type or subtype does not have the valid syntax.
+	 * @deprecated in favor of {@link #of(String, String, Parameter...)}; to be removed in next major version.
 	 */
+	@Deprecated
 	public static ContentType create(final String primaryType, final String subType, final Parameter... parameters) {
+		return of(primaryType, subType, parameters);
+	}
+
+	/**
+	 * Creates a content type object from primary type, a subtype, and optional parameters.
+	 * @param primaryType The primary type.
+	 * @param subType The subtype.
+	 * @param parameters Optional name-value pairs representing parameters of the content type.
+	 * @return A new content type object constructed from the given information.
+	 * @throws ArgumentSyntaxException if the primary type or subtype does not have the valid syntax.
+	 */
+	public static ContentType of(final String primaryType, final String subType, final Parameter... parameters) {
 		return new ContentType(primaryType, subType, immutableSetOf(parameters)); //create a new content type from the given values, creating an immutable copy of the parameters
 	}
 
@@ -270,7 +298,7 @@ public class ContentType {
 	 * @throws NullPointerException if the given parameters set is <code>null</code>.
 	 * @throws ArgumentSyntaxException if the primary type or subtype does not have the valid syntax.
 	 */
-	public static ContentType getInstance(final String primaryType, final String subType, final Set<Parameter> parameters) {
+	public static ContentType of(final String primaryType, final String subType, final Set<Parameter> parameters) {
 		return new ContentType(primaryType, subType, immutableSetOf(parameters)); //create a new content type from the given values, creating an immutable copy of the parameters
 	}
 
@@ -339,7 +367,7 @@ public class ContentType {
 	 * @return A content type with the same primary and subtype as the content type, but with no parameters.
 	 */
 	public ContentType getBaseContentType() {
-		return getParameters().isEmpty() ? this : new ContentType(getPrimaryType(), getSubType(), Collections.<Parameter> emptySet()); //if this content type is already just the base type, return that
+		return getParameters().isEmpty() ? this : new ContentType(getPrimaryType(), getSubType(), Collections.<Parameter>emptySet()); //if this content type is already just the base type, return that
 	}
 
 	/**
@@ -372,11 +400,11 @@ public class ContentType {
 	}
 
 	/**
-	 * Returns new content type instance with the given parameter. If this content type already has the given parameter, it will be returned. If this content type
-	 * has a parameter with the same name but with a different value, the parameter will be replaced with the one given. Otherwise, the parameter will be added to
-	 * the parameters. Parameter name comparisons are case-insensitive.
+	 * Returns a content type with the given parameter. If this content type already has the given parameter, it will be returned. If this content type has a
+	 * parameter with the same name but with a different value, the parameter will be replaced with the one given. Otherwise, the parameter will be added to the
+	 * parameters. Parameter name comparisons are case-insensitive.
 	 * @param newParameter The new parameter to add or replace.
-	 * @return The new content type instance with the given parameter.
+	 * @return A content type with the given parameter.
 	 */
 	public ContentType withParameter(final Parameter newParameter) {
 		final Set<Parameter> newParameters = new HashSet<ContentType.Parameter>(getParameters().size());
@@ -384,21 +412,35 @@ public class ContentType {
 			if(equalsIgnoreCase(parameter.getName(), newParameter.getName())) { //if this is the same parameter name
 				if(parameter.getValue().equals(newParameter.getValue())) { //if the parameter values are the same
 					return this; //just use the same content type, because nothing will change; otherwise
-				}
-				//if the parameter values are different
-				else {
+				} else { //if the parameter values are different
 					continue; //skip this parameter; we'll add it manually afterwards
 				}
 			}
 			newParameters.add(parameter); //add all other parameters normally
 		}
 		newParameters.add(newParameter); //here we've either ignored a parameter with the same name, or there was no such parameter; either way, add the new one
-		return new ContentType(getPrimaryType(), getSubType(), unmodifiableSet(newParameters)); //create a new content type with the updated parameters
+		return ContentType.of(getPrimaryType(), getSubType(), unmodifiableSet(newParameters)); //create a new content type with the updated parameters
 	}
 
 	/**
-	 * {@inheritDoc} This implementation returns the hash code of the primary type, the subtype, and the parameters, in a case insensitive manner for the types
-	 * and parameter names.
+	 * Returns a content type with the given parameter. If this content type already has the given parameter, it will be returned. If this content type has a
+	 * parameter with the same name but with a different value, the parameter will be replaced with the one given. Otherwise, the parameter will be added to the
+	 * parameters. Parameter name comparisons are case-insensitive.
+	 * @param name The parameter name to add or replace.
+	 * @param value The parameter value.
+	 * @return A content type with the given parameter.
+	 * @throws NullPointerException if the given name and/or value is <code>null</code>.
+	 * @throws ArgumentSyntaxException if the name is not a token; or the value contains a space, non-ASCII, or control character.
+	 * @see Parameter#of(String, String)
+	 */
+	public ContentType withParameter(final String name, final String value) {
+		return withParameter(Parameter.of(name, value));
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @implSpec This implementation returns the hash code of the primary type, the subtype, and the parameters, in a case insensitive manner for the types and
+	 *           parameter names.
 	 * @return A hash code value for this object.
 	 * @see #getPrimaryType()
 	 * @see #getSubType()
@@ -406,12 +448,14 @@ public class ContentType {
 	 */
 	@Override
 	public int hashCode() {
-		return Objects.getHashCode(toLowerCase(getPrimaryType()).toString(), toLowerCase(getSubType()).toString(), getParameters());
+		return hash(toLowerCase(getPrimaryType()).toString(), toLowerCase(getSubType()).toString(), getParameters());
 	}
 
 	/**
-	 * {@inheritDoc} This implementation considers an object equal if it is another {@link ContentType} with the same primary types and subtypes, the same number
-	 * of parameters, and a matching parameter value for every parameter of this content type. Comparisons are case-insensitive for the types and parameter names.
+	 * {@inheritDoc}
+	 * @implSpec This implementation considers an object equal if it is another {@link ContentType} with the same primary types and subtypes, the same number of
+	 *           parameters, and a matching parameter value for every parameter of this content type. Comparisons are case-insensitive for the types and parameter
+	 *           names.
 	 * @param object The reference object with which to compare.
 	 * @see #getPrimaryType()
 	 * @see #getSubType()
@@ -431,10 +475,22 @@ public class ContentType {
 				&& getParameters().equals(contentType.getParameters());
 	}
 
-	/** {@inheritDoc} This version returns the canonical representation of the content type according to RFC 2045 */
+	/**
+	 * Returns a possibly formatted string version of the given content type.
+	 * @param formatted Whether the resulting string should be formatted with extra whitespace for human readability.
+	 * @return The canonical representation of the content type according to RFC 6838.
+	 */
+	public String toString(final boolean formatted) {
+		return toString(getPrimaryType(), getSubType(), getParameters(), formatted);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @implSpec This implementation returns the canonical representation of the content type according to RFC 6838, with no added whitespace.
+	 */
 	@Override
 	public String toString() {
-		return toString(getPrimaryType(), getSubType(), getParameters());
+		return toString(false);
 	}
 
 	/**
@@ -442,10 +498,22 @@ public class ContentType {
 	 * @param primaryType The primary type.
 	 * @param subType The subtype.
 	 * @param parameters Optional name-value pairs representing parameters of the content type.
-	 * @return A string representing the type in the form "<var>primaryType</var>/<var>subType</var>[; <var>parameters</var>]".
+	 * @return A string representing the type in the form "<var>primaryType</var>/<var>subType</var>[;<var>parameters</var>]".
 	 */
 	public static String toString(final String primaryType, final String subType, final Parameter... parameters) {
 		return toString(primaryType, subType, immutableSetOf(parameters));
+	}
+
+	/**
+	 * Constructs a string representing a content type in canonical form.
+	 * @param primaryType The primary type.
+	 * @param subType The subtype.
+	 * @param parameters Any name-value pairs representing parameters of the content type.
+	 * @return A string representing the type in the form "<var>primaryType</var>/<var>subType</var>[;<var>parameters</var>]".
+	 * @throws NullPointerException if the given parameters set is <code>null</code>.
+	 */
+	public static String toString(final String primaryType, final String subType, final Set<Parameter> parameters) {
+		return toString(primaryType, subType, parameters, false);
 	}
 
 	/**
@@ -453,17 +521,22 @@ public class ContentType {
 	 * @param primaryType The primary type.
 	 * @param subType The subtype.
 	 * @param parameters Any name-value pairs representing parameters of the content type.
-	 * @return A string representing the type in the form "<var>primaryType</var>/<var>subType</var>[; <var>parameters</var>]".
+	 * @param formatted Whether the resulting string should be formatted with extra whitespace for human readability.
+	 * @return A string representing the type in the form "<var>primaryType</var>/<var>subType</var>[;<var>parameters</var>]".
 	 * @throws NullPointerException if the given parameters set is <code>null</code>.
 	 */
-	public static String toString(final String primaryType, final String subType, final Set<Parameter> parameters) {
+	public static String toString(final String primaryType, final String subType, final Set<Parameter> parameters, final boolean formatted) {
 		final StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append(primaryType).append(TYPE_DIVIDER).append(subType); //primaryType/subType
 		for(final Parameter parameter : parameters) { //for each parameter
 			final String parameterValue = parameter.getValue(); //get the parameter value
 			final boolean hasSpecialCharacters = CharSequences.contains(parameterValue, SPECIAL_CHARACTERS); //see if there are any special characters
 
-			stringBuilder.append(PARAMETER_DELIMITER_CHAR).append(SPACE_CHAR).append(parameter.getName()).append(PARAMETER_ASSIGNMENT_CHAR); //; name=value
+			stringBuilder.append(PARAMETER_DELIMITER_CHAR); //; name=value
+			if(formatted) {
+				stringBuilder.append(SPACE_CHAR);
+			}
+			stringBuilder.append(parameter.getName()).append(PARAMETER_ASSIGNMENT_CHAR);
 			if(hasSpecialCharacters) { //quote the value string if necessary
 				stringBuilder.append(STRING_QUOTE_CHAR);
 			}
@@ -500,14 +573,19 @@ public class ContentType {
 	 */
 	public static class Parameter extends NameValuePair<String, String> {
 
+		/** The common parameter <code>charset=UTF-8</code>. */
+		public static final Parameter CHARSET_UTF_8 = new Parameter(CHARSET_PARAMETER, UTF_8.name());
+
 		/**
 		 * Constructor specifying the name and value.
 		 * @param name The parameter name.
 		 * @param value The parameter value.
 		 * @throws NullPointerException if the given name and/or value is <code>null</code>.
-		 * @throws ArgumentSyntaxException if the name is not a token; or the value contains a a space, non-ASCII, or control character.
+		 * @throws ArgumentSyntaxException if the name is not a token; or the value contains a space, non-ASCII, or control character.
 		 * @see ContentType#isToken(CharSequence)
+		 * @deprecated in favor of {@link #of(String, String)}; to be made private in next major version.
 		 */
+		@Deprecated
 		public Parameter(final String name, final String value) {
 			super(checkToken(name), value); //make sure the name is a token
 			if(contains(value, SPACE_CHAR) || !isASCIINonControl(value)) { //special characters are allowed in the value; but not spaces, non-ASCII, or control characters
@@ -515,10 +593,30 @@ public class ContentType {
 			}
 		}
 
+		/**
+		 * Static factory method specifying the name and value.
+		 * @param name The parameter name.
+		 * @param value The parameter value.
+		 * @return A content type for the indicated name and value.
+		 * @throws NullPointerException if the given name and/or value is <code>null</code>.
+		 * @throws ArgumentSyntaxException if the name is not a token; or the value contains a space, non-ASCII, or control character.
+		 * @see ContentType#isToken(CharSequence)
+		 */
+		public static Parameter of(@Nonnull final String name, @Nonnull final String value) {
+			//often-used parameters
+			if(equalsIgnoreCase(name, CHARSET_PARAMETER)) { //charset
+				if(value.equals(UTF_8.name())) { //charset=UTF-8
+					return CHARSET_UTF_8;
+				}
+			}
+			//all other parameters
+			return new Parameter(name, value);
+		}
+
 		/** {@inheritDoc} This version returns a consistent hash code for all cases of a parameter name. */
 		@Override
 		public int hashCode() {
-			return Objects.getHashCode(toLowerCase(getName()).toString(), getValue());
+			return hash(toLowerCase(getName()).toString(), getValue());
 		}
 
 		/** {@inheritDoc} This version compares names in a case-insensitive manner. */

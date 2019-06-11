@@ -36,9 +36,7 @@ public class Conditions {
 
 	/**
 	 * Checks the results of an expression to see if an argument is correct, and throws an {@link IllegalArgumentException} if the value is <code>false</code>.
-	 * <p>
-	 * This is a precondition check.
-	 * </p>
+	 * @apiNote This is a precondition check.
 	 * @param test The result of the test.
 	 * @throws IllegalArgumentException if the given value is <code>false</code>.
 	 */
@@ -48,9 +46,7 @@ public class Conditions {
 
 	/**
 	 * Checks the results of an expression to see if an argument is correct, and throws an {@link IllegalArgumentException} if the value is <code>false</code>.
-	 * <p>
-	 * This is a precondition check.
-	 * </p>
+	 * @apiNote This is a precondition check.
 	 * @param test The result of the test.
 	 * @param description A description of the test to be used when generating an exception, optionally formatted with arguments, or <code>null</code> for no
 	 *          description.
@@ -72,10 +68,41 @@ public class Conditions {
 	}
 
 	/**
+	 * Checks to make sure an argument is an instance of a given type, returning the object cast to the appropriate type.
+	 * @apiNote This is a precondition check.
+	 * @param <T> The expected type of the object.
+	 * @param object The object to test.
+	 * @return The given object, cast to the given type.
+	 * @throws IllegalArgumentException if the given object not of the indicated type.
+	 */
+	public static <T> T checkArgumentIsInstance(final Object object, @Nonnull final Class<T> instanceClass) {
+		return checkArgumentIsInstance(object, instanceClass, null);
+	}
+
+	/**
+	 * Checks to make sure an argument is an instance of a given type, returning the object cast to the appropriate type.
+	 * @apiNote This is a precondition check.
+	 * @param <T> The expected type of the object.
+	 * @param object The object to test.
+	 * @param description A description of the test to be used when generating an exception, optionally formatted with arguments, or <code>null</code> for no
+	 *          description.
+	 * @param arguments The arguments to be applied when formatting, or an empty array if the message should not be formatted.
+	 * @return The given object, cast to the given type.
+	 * @throws IllegalArgumentException if the given object not of the indicated type.
+	 * @throws NullPointerException if the given arguments is <code>null</code>.
+	 * @throws IllegalArgumentException if the description is an invalid pattern, or if an argument in the arguments array is not of the type expected by the
+	 *           format element(s) that use it.
+	 * @see String#format(String, Object...)
+	 */
+	public static <T> T checkArgumentIsInstance(final Object object, @Nonnull final Class<T> instanceClass, @Nullable String description,
+			@Nonnull final Object... arguments) {
+		checkArgument(instanceClass.isInstance(object), description, arguments);
+		return instanceClass.cast(object);
+	}
+
+	/**
 	 * Checks to make sure an argument isn't <code>null</code>, throwing {@link IllegalArgumentException} if the object is <code>null</code>.
-	 * <p>
-	 * This is a precondition check.
-	 * </p>
+	 * @apiNote This is a precondition check.
 	 * @param <T> The type of the object to be tested.
 	 * @param object The object to test.
 	 * @return The object, if it is not <code>null</code>.
@@ -87,9 +114,7 @@ public class Conditions {
 
 	/**
 	 * Checks to make sure an argument isn't <code>null</code>, throwing {@link IllegalArgumentException} if the object is <code>null</code>.
-	 * <p>
-	 * This is a precondition check.
-	 * </p>
+	 * @apiNote This is a precondition check.
 	 * @param <T> The type of the object to be tested.
 	 * @param object The object to test.
 	 * @param description A description of the test to be used when generating an exception, optionally formatted with arguments, or <code>null</code> for no
@@ -115,9 +140,7 @@ public class Conditions {
 
 	/**
 	 * Checks to make sure an argument is present, throwing {@link IllegalArgumentException} if the optional is not present.
-	 * <p>
-	 * This is a precondition check.
-	 * </p>
+	 * @apiNote This is a precondition check.
 	 * @param <T> The type of optional object to be tested.
 	 * @param optional The optional object to test.
 	 * @return The optional object.
@@ -132,9 +155,7 @@ public class Conditions {
 
 	/**
 	 * Checks to make sure an argument is present, throwing {@link IllegalArgumentException} if the optional is not present.
-	 * <p>
-	 * This is a precondition check.
-	 * </p>
+	 * @apiNote This is a precondition check.
 	 * @param <T> The type of optional object to be tested.
 	 * @param optional The optional object to test.
 	 * @param description A description of the test to be used when generating an exception, optionally formatted with arguments, or <code>null</code> for no
@@ -157,9 +178,7 @@ public class Conditions {
 
 	/**
 	 * Checks to make sure that a given value is not smaller than the given minimum.
-	 * <p>
-	 * This is a precondition check.
-	 * </p>
+	 * @apiNote This is a precondition check.
 	 * @param value The value to check.
 	 * @param rangeMin The minimum range value, inclusive.
 	 * @throws IllegalArgumentException if the value is less than the range minimum.
@@ -174,9 +193,7 @@ public class Conditions {
 
 	/**
 	 * Checks to make sure that a given value is not smaller than the given minimum.
-	 * <p>
-	 * This is a precondition check.
-	 * </p>
+	 * @apiNote This is a precondition check.
 	 * @param value The value to check.
 	 * @param rangeMin The minimum range value, inclusive.
 	 * @throws IllegalArgumentException if the value is less than the range minimum.
@@ -191,9 +208,7 @@ public class Conditions {
 
 	/**
 	 * Checks to make sure that a given value is not negative.
-	 * <p>
-	 * This is a precondition check.
-	 * </p>
+	 * @apiNote This is a precondition check.
 	 * @param value The value to check.
 	 * @throws IllegalArgumentException if the value is negative.
 	 * @return The given value.
@@ -205,9 +220,7 @@ public class Conditions {
 
 	/**
 	 * Checks to make sure that a given value is not zero or negative
-	 * <p>
-	 * This is a precondition check.
-	 * </p>
+	 * @apiNote This is a precondition check.
 	 * @param value The value to check.
 	 * @throws IllegalArgumentException if the value is not positive.
 	 * @return The given value.
@@ -219,9 +232,7 @@ public class Conditions {
 
 	/**
 	 * Checks to make sure that a given value is not negative.
-	 * <p>
-	 * This is a precondition check.
-	 * </p>
+	 * @apiNote This is a precondition check.
 	 * @param value The value to check.
 	 * @throws IllegalArgumentException if the value is negative.
 	 * @return The given value.
@@ -233,9 +244,7 @@ public class Conditions {
 
 	/**
 	 * Checks to make sure that a given value is not zero or negative
-	 * <p>
-	 * This is a precondition check.
-	 * </p>
+	 * @apiNote This is a precondition check.
 	 * @param value The value to check.
 	 * @throws IllegalArgumentException if the value is not positive.
 	 * @return The given value.
@@ -247,9 +256,7 @@ public class Conditions {
 
 	/**
 	 * Checks to make sure that a given argument value is within the given range.
-	 * <p>
-	 * This is a precondition check.
-	 * </p>
+	 * @apiNote This is a precondition check.
 	 * @param value The value to check.
 	 * @param rangeMin The minimum range value, inclusive.
 	 * @param rangeMax The maximum range value, inclusive.
@@ -265,9 +272,7 @@ public class Conditions {
 
 	/**
 	 * Checks to make sure that the given range is within the given range.
-	 * <p>
-	 * This is a precondition check.
-	 * </p>
+	 * @apiNote This is a precondition check.
 	 * @param from The beginning value to check, inclusive.
 	 * @param to The ending value to check, inclusive.
 	 * @param rangeMin The minimum range value, inclusive.
@@ -289,9 +294,7 @@ public class Conditions {
 
 	/**
 	 * Checks to make sure that a given argument value is within the given range.
-	 * <p>
-	 * This is a precondition check.
-	 * </p>
+	 * @apiNote This is a precondition check.
 	 * @param value The value to check.
 	 * @param rangeMin The minimum range value, inclusive.
 	 * @param rangeMax The maximum range value, inclusive.
