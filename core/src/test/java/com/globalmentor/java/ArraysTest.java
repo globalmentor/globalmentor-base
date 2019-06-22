@@ -32,6 +32,7 @@ public class ArraysTest {
 	/** Tests whether {@link Arrays#createArray(Object[], int)} is working properly. */
 	@Test
 	public void testCreateEmptyArray() {
+		assertThat(Arrays.createArray(String.class, 10).getClass().getComponentType(), equalTo(String.class));
 		assertThat(Arrays.createArray(String.class, 10), equalTo(new String[10]));
 	}
 
@@ -40,6 +41,7 @@ public class ArraysTest {
 	public void testCreateProvidedValuesArray() {
 		final String[] stringArray = Arrays.createArray(String.class, "foo", "bar", "foobar");
 
+		assertThat(stringArray.getClass().getComponentType(), equalTo(String.class));
 		assertThat(stringArray, arrayContaining("foo", "bar", "foobar"));
 		assertThat(stringArray.length, is(3));
 	}
@@ -49,8 +51,16 @@ public class ArraysTest {
 	public void testCreateFilledValuesArray() {
 		final String[] stringArray = Arrays.createArray(String.class, 3, "foobar");
 
+		assertThat(stringArray.getClass().getComponentType(), equalTo(String.class));
 		assertThat(stringArray, arrayContaining("foobar", "foobar", "foobar"));
 		assertThat(stringArray.length, is(3));
+	}
+
+	/** Tests whether {@link Arrays#createCopy(Object[], int, int)} is working properly. */
+	@Test
+	public void testCreateArrayCopy() {
+		assertThat(Arrays.createCopy(new String[] {"foo", "bar", "foobar"}, 0, 2), arrayContaining("foo", "bar"));
+		assertThat(Arrays.createCopy(new String[] {"foo", "bar", "foobar"}, 0, 1).getClass().getComponentType(), equalTo(String.class));
 	}
 
 }
