@@ -36,8 +36,10 @@ public class Booleans {
 	}
 
 	/**
-	 * Parses a string and returns its boolean value. This method is different from {@link Boolean#parseBoolean(String)} by throwing an exception if the value is
+	 * Parses a string and returns its boolean value. 
+	 * @apiNote This method is different from {@link Boolean#parseBoolean(String)} by throwing an exception if the value is
 	 * neither <code>true</code> or <code>false</code>.
+	 * 
 	 * @param string A string expected to contain "true" or "false".
 	 * @return {@link Boolean#TRUE} if the value is "true", or {@link Boolean#FALSE} if the value is "true".
 	 * @throws NullPointerException if the given string is <code>null</code>

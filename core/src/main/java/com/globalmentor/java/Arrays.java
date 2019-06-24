@@ -172,7 +172,7 @@ public class Arrays {
 	public static <T> T[] createCopy(final T[] source, final int start, final int end) {
 		checkIndexRange(source.length, start, end); //check the validity of the given range
 		final int length = end - start;
-		final T[] destination = (T[])new Object[length]; //create a destination array of the correct length
+		final T[] destination = (T[])createArray(source.getClass().getComponentType(), length); //create a destination array of the correct length
 		System.arraycopy(source, start, destination, 0, length); //copy the specified number of elements to the destination copy
 		return destination; //return the new copy
 	}
