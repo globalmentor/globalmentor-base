@@ -287,8 +287,7 @@ public class DecoratorReadWriteLockMap<K, V> extends ReadWriteLockDecorator impl
 
 		writeLock().lock();
 		try {
-			map.replace(key, oldValue, newValue); // this will make the check again in a write lock to avoid any race conditions.
-			return true;
+			return map.replace(key, oldValue, newValue); // this will make the check again in a write lock to avoid any race conditions.
 		} finally {
 			writeLock().unlock();
 		}
@@ -313,7 +312,7 @@ public class DecoratorReadWriteLockMap<K, V> extends ReadWriteLockDecorator impl
 	@Override
 	public V computeIfAbsent(K key, Function<? super K, ? extends V> mappingFunction) {
 		V v;
-		if((v = get(key)) == null) {
+		if((v = get(key)) == null) { // under read lock.
 
 			writeLock().lock();
 			try {

@@ -51,9 +51,8 @@ public abstract class AbstractObjectDecorator<T> {
 	}
 
 	/**
-	 * Returns the hash code of this object.
-	 * @implNote This version returns the hash code of the decorated object if there is one; otherwise this method delegates to the parent class.
-	 * @return The hash code of this object.
+	 * {@inheritDoc}
+	 * @implSpec This version returns the hash code of the decorated object if there is one; otherwise this method delegates to the parent class.
 	 */
 	@Override
 	public int hashCode() {
@@ -62,12 +61,10 @@ public abstract class AbstractObjectDecorator<T> {
 	}
 
 	/**
-	 * Determines if this object equals another object.
-	 * @implNote This version considers the given object equal to this object if it is of the same type as this object, and this object's decorated object's
+	 * {@inheritDoc}
+	 * @implSpec This version considers the given object equal to this object if it is of the same type as this object, and this object's decorated object's
 	 *           {@link Object#equals(Object)} method also returns <code>true</code> for the objects's decorated object or both decorated objects are
 	 *           <code>null</code>.
-	 * @param object The object to compare with this object.
-	 * @return <code>true</code> if the given object is considered equal to this object.
 	 */
 	@Override
 	public boolean equals(final Object object) {
@@ -75,8 +72,8 @@ public abstract class AbstractObjectDecorator<T> {
 	}
 
 	/**
-	 * Returns a string representation of the object.
-	 * @implNote This version returns a string version of the decorated object if there is one; otherwise this method delegates to the parent class.
+	 * {@inheritDoc}
+	 * @implSpec This version returns a string version of the decorated object if there is one; otherwise this method delegates to the parent class.
 	 */
 	@Override
 	public String toString() {

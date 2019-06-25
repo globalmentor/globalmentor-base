@@ -24,12 +24,9 @@ import com.globalmentor.java.Disposable;
 
 /**
  * Wraps an existing output stream.
- * <p>
- * The decorated output stream is released when this stream is closed.
- * </p>
- * <p>
- * This decorator provides convenience methods {@link #beforeClose()} and {@link #afterClose()} called before and after the stream is closed, respectively.
- * </p>
+ * @apiNote The decorated output stream is released when this stream is closed.
+ * @implNote This decorator provides convenience methods {@link #beforeClose()} and {@link #afterClose()} called before and after the stream is closed,
+ *           respectively.
  * @param <O> The type of output stream being decorated.
  * @author Garret Wilson
  */
@@ -157,7 +154,7 @@ public class OutputStreamDecorator<O extends OutputStream> extends OutputStream 
 
 	/**
 	 * {@inheritDoc}
-	 * @implNote This version closes the output stream and releases it, if still available.
+	 * @implSpec This version closes the output stream and releases it, if still available.
 	 */
 	@Override
 	public synchronized void dispose() {
@@ -173,7 +170,7 @@ public class OutputStreamDecorator<O extends OutputStream> extends OutputStream 
 
 	/**
 	 * {@inheritDoc}
-	 * @implNote This version calls {@link #dispose()}.
+	 * @implSpec This version calls {@link #dispose()}.
 	 */
 	@Override
 	protected void finalize() throws Throwable {

@@ -99,12 +99,6 @@ public class DecoratorReadWriteLockCollection<E> extends ReadWriteLockDecorator 
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 * 
-	 * @implNote The returned array will be "safe" in that no references to it are maintained by this collection. (In other words, this method must allocate a new
-	 *           array even if this collection is backed by an array). The caller is thus free to modify the returned array.
-	 */
 	@Override
 	public Object[] toArray() {
 		readLock().lock();
@@ -221,4 +215,35 @@ public class DecoratorReadWriteLockCollection<E> extends ReadWriteLockDecorator 
 		}
 	}
 
+	// Default methods
+
+	@Override
+	public Spliterator<E> spliterator() {
+		readLock().lock();
+		try {
+			return Spliterators.spliterator(this, 0);
+		} finally {
+			readLock().unlock();
+		}
+	}
+
+	@Override
+	public Stream<E> stream() {
+		readLock().lock();
+		try {
+			return StreamSupport.stream(spliterator(), false);
+		} finally {
+			readLock().unlock();
+		}
+	}
+
+	@Override
+	public Stream<E> parallelStream() {
+		readLock().lock();
+		try {
+			return StreamSupport.stream(spliterator(), true);
+		} finally {
+			readLock().unlock();
+		}
+	}
 }

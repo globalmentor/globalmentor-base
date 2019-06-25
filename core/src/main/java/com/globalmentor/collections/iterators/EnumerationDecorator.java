@@ -25,8 +25,8 @@ import static java.util.Objects.*;
 /**
  * An enumeration that wraps an existing enumeration.
  * @apiNote This enumeration also serves as an adapter, converting an enumeration to an {@link Iterator}.
- * @implNote This implementation does not support element removal. Subclasses may override {@link #hasMoreElements()} and/or {@link #nextElement()}, and
- *           {@link Iterator} compatibility will be maintained.
+ * @implNote Subclasses may override {@link #hasMoreElements()} and/or {@link #nextElement()}, and {@link Iterator} compatibility will be maintained.
+ * @implSpec This implementation does not support element removal.
  * 
  * @param <E> the type of elements returned by this enumeration.
  * @author Garret Wilson

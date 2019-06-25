@@ -21,8 +21,8 @@ import java.util.*;
 /**
  * An abstract base implementation of an enumeration that wraps an existing {@link Enumeration}.
  * @apiNote This enumeration also serves as an adapter, converting an enumeration to an {@link Iterator}.
- * @implNote This implementation does not support element removal. Subclasses may override {@link #hasMoreElements()} and/or {@link #nextElement()}, and
- *           {@link Iterator} compatibility will be maintained.
+ * @implNote Subclasses may override {@link #hasMoreElements()} and/or {@link #nextElement()}, and {@link Iterator} compatibility will be maintained.
+ * @implSpec This implementation does not support element removal.
  * 
  * @param <E> the type of elements returned by this enumeration.
  * @author Garret Wilson
@@ -48,7 +48,7 @@ public abstract class AbstractEnumerationDecorator<E> implements Enumeration<E>,
 
 	/**
 	 * {@inheritDoc}
-	 * @implNote This implementation delegates to {@link #hasMoreElements()}.
+	 * @implSpec This implementation delegates to {@link #hasMoreElements()}.
 	 */
 	@Override
 	public final boolean hasNext() {
@@ -57,7 +57,7 @@ public abstract class AbstractEnumerationDecorator<E> implements Enumeration<E>,
 
 	/**
 	 * {@inheritDoc}
-	 * @implNote This implementation delegates to {@link #nextElement()}.
+	 * @implSpec This implementation delegates to {@link #nextElement()}.
 	 */
 	@Override
 	public final E next() {
@@ -66,7 +66,7 @@ public abstract class AbstractEnumerationDecorator<E> implements Enumeration<E>,
 
 	/**
 	 * {@inheritDoc}
-	 * @implNote This implementation thrown an {@link UnsupportedOperationException}.
+	 * @implSpec This implementation throws an {@link UnsupportedOperationException}.
 	 */
 	@Override
 	public void remove() {

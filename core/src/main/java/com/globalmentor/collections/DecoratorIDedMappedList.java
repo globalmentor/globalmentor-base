@@ -23,7 +23,7 @@ import com.globalmentor.model.IDed;
 /**
  * A list that allows quick lookup of {@link IDed} objects. This list will give unpredictable results if multiple objects with the same ID are added to the
  * list.
- * @implNote This list does not support <code>null</code> values.
+ * @implSpec This list does not support <code>null</code> values.
  * @author Garret Wilson
  */
 public class DecoratorIDedMappedList<K, E extends IDed<K>> extends ListDecorator<E> implements MappedList<K, E> { //TODO finish this class if needed

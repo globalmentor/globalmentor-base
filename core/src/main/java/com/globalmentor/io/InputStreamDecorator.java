@@ -166,7 +166,7 @@ public class InputStreamDecorator<I extends InputStream> extends InputStream imp
 
 	/**
 	 * {@inheritDoc}
-	 * @implNote This version closes the input stream and releases it, if still available.
+	 * @implSpec This version closes the input stream and releases it, if still available.
 	 */
 	@Override
 	public synchronized void dispose() {
@@ -182,7 +182,7 @@ public class InputStreamDecorator<I extends InputStream> extends InputStream imp
 
 	/**
 	 * {@inheritDoc}
-	 * @implNote This version calls {@link #dispose()}.
+	 * @implSpec This version calls {@link #dispose()}.
 	 */
 	@Override
 	protected void finalize() throws Throwable {

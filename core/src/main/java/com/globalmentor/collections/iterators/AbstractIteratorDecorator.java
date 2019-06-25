@@ -52,7 +52,7 @@ public abstract class AbstractIteratorDecorator<E> implements Iterator<E>, Enume
 
 	/**
 	 * {@inheritDoc}
-	 * @implNote This implementation delegates to {@link #hasNext()}.
+	 * @implSpec This implementation delegates to {@link #hasNext()}.
 	 */
 	@Override
 	public final boolean hasMoreElements() {
@@ -61,7 +61,7 @@ public abstract class AbstractIteratorDecorator<E> implements Iterator<E>, Enume
 
 	/**
 	 * {@inheritDoc}
-	 * @implNote This implementation delegates to {@link #next()}.
+	 * @implSpec This implementation delegates to {@link #next()}.
 	 */
 	@Override
 	public final E nextElement() {
