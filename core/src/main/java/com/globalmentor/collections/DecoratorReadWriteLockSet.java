@@ -27,7 +27,7 @@ import java.util.concurrent.locks.*;
  */
 public class DecoratorReadWriteLockSet<E> extends DecoratorReadWriteLockCollection<E> implements ReadWriteLockSet<E> {
 
-	/** @return The set this class decorates. */
+	@Override
 	protected Set<E> getCollection() {
 		return (Set<E>)super.getCollection();
 	}

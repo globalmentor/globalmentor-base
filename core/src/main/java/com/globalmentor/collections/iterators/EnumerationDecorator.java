@@ -24,12 +24,10 @@ import static java.util.Objects.*;
 
 /**
  * An enumeration that wraps an existing enumeration.
- * <p>
- * This enumeration also serves as an adapter, converting an enumeration to an {@link Iterator}. This implementation does not support element removal.
- * </p>
- * <p>
- * Subclasses may override {@link #hasMoreElements()} and/or {@link #nextElement()}, and {@link Iterator} compatibility will be maintained.
- * </p>
+ * @apiNote This enumeration also serves as an adapter, converting an enumeration to an {@link Iterator}.
+ * @implNote This implementation does not support element removal. Subclasses may override {@link #hasMoreElements()} and/or {@link #nextElement()}, and
+ *           {@link Iterator} compatibility will be maintained.
+ * 
  * @param <E> the type of elements returned by this enumeration.
  * @author Garret Wilson
  */

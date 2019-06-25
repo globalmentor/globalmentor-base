@@ -20,12 +20,9 @@ import java.util.*;
 
 /**
  * An abstract base implementation of an iterator that wraps an existing {@link Iterator}.
- * <p>
- * This iterator also serves as an adapter, converting an iterator to an {@link Enumeration}.
- * </p>
- * <p>
- * Subclasses may override {@link #hasNext()} and/or {@link #next()}, and {@link Enumeration} compatibility will be maintained.
- * </p>
+ * @apiNote This iterator also serves as an adapter, converting an iterator to an {@link Enumeration}.
+ * @implNote Subclasses may override {@link #hasNext()} and/or {@link #next()}, and {@link Enumeration} compatibility will be maintained.
+ * 
  * @param <E> the type of elements returned by this iterator.
  * @author Garret Wilson
  */
@@ -55,9 +52,7 @@ public abstract class AbstractIteratorDecorator<E> implements Iterator<E>, Enume
 
 	/**
 	 * {@inheritDoc}
-	 * <p>
-	 * This implementation delegates to {@link #hasNext()}.
-	 * </p>
+	 * @implNote This implementation delegates to {@link #hasNext()}.
 	 */
 	@Override
 	public final boolean hasMoreElements() {
@@ -66,9 +61,7 @@ public abstract class AbstractIteratorDecorator<E> implements Iterator<E>, Enume
 
 	/**
 	 * {@inheritDoc}
-	 * <p>
-	 * This implementation delegates to {@link #next()}.
-	 * </p>
+	 * @implNote This implementation delegates to {@link #next()}.
 	 */
 	@Override
 	public final E nextElement() {

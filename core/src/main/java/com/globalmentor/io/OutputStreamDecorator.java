@@ -79,25 +79,21 @@ public class OutputStreamDecorator<O extends OutputStream> extends OutputStream 
 		this.autoDispose = true;
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public void write(int b) throws IOException {
 		checkOutputStream().write(b);
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public void write(byte b[]) throws IOException {
 		checkOutputStream().write(b);
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public void write(byte b[], int off, int len) throws IOException {
 		checkOutputStream().write(b, off, len);
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public void flush() throws IOException {
 		checkOutputStream().flush();
@@ -154,19 +150,15 @@ public class OutputStreamDecorator<O extends OutputStream> extends OutputStream 
 		}
 	}
 
-	/**
-	 * {@inheritDoc} {@link #dispose()} will be called after if closing is successful.
-	 * @see #beforeClose()
-	 * @see #afterClose()
-	 * @see #close(boolean)
-	 * @see #dispose()
-	 */
 	@Override
 	public void close() throws IOException {
 		close(true); //close this stream and the underlying stream
 	}
 
-	/** {@inheritDoc} This version closes the output stream and releases it, if still available. */
+	/**
+	 * {@inheritDoc}
+	 * @implNote This version closes the output stream and releases it, if still available.
+	 */
 	@Override
 	public synchronized void dispose() {
 		if(outputStream != null) { //if we still have an output stream
@@ -179,7 +171,10 @@ public class OutputStreamDecorator<O extends OutputStream> extends OutputStream 
 		}
 	}
 
-	/** {@inheritDoc} This version calls {@link #dispose()}. */
+	/**
+	 * {@inheritDoc}
+	 * @implNote This version calls {@link #dispose()}.
+	 */
 	@Override
 	protected void finalize() throws Throwable {
 		try {

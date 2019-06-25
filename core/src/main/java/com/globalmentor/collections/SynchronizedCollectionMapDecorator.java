@@ -68,75 +68,49 @@ public class SynchronizedCollectionMapDecorator<K, V, C extends Collection<V>> e
 	}
 
 	/**
-	 * Creates a collection in which to store values. This implementation is not synchronized.
+	 * {@inheritDoc}
+	 * @implNote This implementation is not synchronized.
 	 */
 	public C createCollection() {
 		return collectionMap.createCollection();
 	}
 
-	/**
-	 * Retrieves whether there are items in a collection associated with the key.
-	 * @param key The key in the map.
-	 * @return <code>true</code> if there is at least one item associated with the key.
-	 */
+	@Override
 	public boolean hasItems(final K key) {
 		synchronized(mutex) {
 			return collectionMap.hasItems(key);
 		}
 	}
 
-	/**
-	 * Retrieves the number of values in the collection, if any, associated with the key.
-	 * @param key The key in the map.
-	 * @return The number of items associated with the key.
-	 */
+	@Override
 	public int getItemCount(final K key) {
 		synchronized(mutex) {
 			return collectionMap.getItemCount(key);
 		}
 	}
 
-	/**
-	 * Adds a value to the collection of values associated with the key. If no collection of values is associated with the key, one will be created and added to
-	 * the map.
-	 * @param key The key in the map.
-	 * @param value The value to store in the collection.
-	 */
+	@Override
 	public void addItem(final K key, final V value) {
 		synchronized(mutex) {
 			collectionMap.addItem(key, value);
 		}
 	}
 
-	/**
-	 * Retrieves the first value from the collection of values, if any, associated with the key.
-	 * @param key The key in the map.
-	 * @return The first value in the collection, or <code>null</code> if there is no collection associated with the key or no values in the collection.
-	 */
+	@Override
 	public V getItem(final K key) {
 		synchronized(mutex) {
 			return collectionMap.getItem(key);
 		}
 	}
 
-	/**
-	 * Retrieves iterable access to all items, if any, associated with the given key
-	 * @param key The key in the map.
-	 * @return An object that will iterate all items, if any, associated with the given key.
-	 */
+	@Override
 	public Iterable<V> getItems(final K key) {
 		synchronized(mutex) {
 			return collectionMap.getItems(key);
 		}
 	}
 
-	/**
-	 * Removes the first occurence of the given value from the collection of values, if any, associated with the key. If all items from the collection are
-	 * removed, the collection itself is removed from the map.
-	 * @param key The key in the map.
-	 * @param value The item to be removed from the collection, if present.
-	 * @return <code>true</code> if an item was removed as a result of this call.
-	 */
+	@Override
 	public boolean removeItem(final K key, final V value) {
 		synchronized(mutex) {
 			return collectionMap.removeItem(key, value);

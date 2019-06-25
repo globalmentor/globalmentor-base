@@ -61,42 +61,36 @@ public class InputStreamDecorator<I extends InputStream> extends InputStream imp
 		this.autoDispose = true;
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public int read() throws IOException {
 		final InputStream inputStream = getInputStream(); //get the decorated input stream
 		return inputStream != null ? inputStream.read() : -1; //if there is no decorated input stream, indicate that the stream is closed by returning -1
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public int read(byte b[]) throws IOException {
 		final InputStream inputStream = getInputStream(); //get the decorated input stream
 		return inputStream != null ? inputStream.read(b) : -1; //if there is no decorated input stream, indicate that the stream is closed by returning -1
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public int read(byte b[], int off, int len) throws IOException {
 		final InputStream inputStream = getInputStream(); //get the decorated input stream
 		return inputStream != null ? inputStream.read(b, off, len) : -1; //if there is no decorated input stream, indicate that the stream is closed by returning -1
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public long skip(long n) throws IOException {
 		final InputStream inputStream = getInputStream(); //get the decorated input stream
 		return inputStream != null ? inputStream.skip(n) : 0;
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public int available() throws IOException {
 		final InputStream inputStream = getInputStream(); //get the decorated input stream
 		return inputStream != null ? inputStream.available() : 0;
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public synchronized void mark(int readlimit) {
 		final InputStream inputStream = getInputStream(); //get the decorated input stream
@@ -105,7 +99,6 @@ public class InputStreamDecorator<I extends InputStream> extends InputStream imp
 		}
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public synchronized void reset() throws IOException {
 		final InputStream inputStream = getInputStream(); //get the decorated input stream
@@ -114,7 +107,6 @@ public class InputStreamDecorator<I extends InputStream> extends InputStream imp
 		}
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public boolean markSupported() {
 		final InputStream inputStream = getInputStream(); //get the decorated input stream
@@ -172,7 +164,10 @@ public class InputStreamDecorator<I extends InputStream> extends InputStream imp
 		close(true); //close this stream and the underlying stream
 	}
 
-	/** {@inheritDoc} This version closes the input stream and releases it, if still available. */
+	/**
+	 * {@inheritDoc}
+	 * @implNote This version closes the input stream and releases it, if still available.
+	 */
 	@Override
 	public synchronized void dispose() {
 		if(inputStream != null) { //if we still have an input stream
@@ -185,7 +180,10 @@ public class InputStreamDecorator<I extends InputStream> extends InputStream imp
 		}
 	}
 
-	/** {@inheritDoc} This version calls {@link #dispose()}. */
+	/**
+	 * {@inheritDoc}
+	 * @implNote This version calls {@link #dispose()}.
+	 */
 	@Override
 	protected void finalize() throws Throwable {
 		try {

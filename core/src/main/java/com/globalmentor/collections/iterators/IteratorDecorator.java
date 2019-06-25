@@ -24,12 +24,9 @@ import static java.util.Objects.*;
 
 /**
  * An iterator that wraps an existing iterator.
- * <p>
- * This iterator also serves as an adapter, converting an iterator to an {@link Enumeration}.
- * </p>
- * <p>
- * Subclasses may override {@link #hasNext()} and/or {@link #next()}, and {@link Enumeration} compatibility will be maintained.
- * </p>
+ * @apiNote This iterator also serves as an adapter, converting an iterator to an {@link Enumeration}.
+ * @implNote Subclasses may override {@link #hasNext()} and/or {@link #next()}, and {@link Enumeration} compatibility will be maintained.
+ * 
  * @param <E> the type of elements returned by this iterator.
  * @author Garret Wilson
  */

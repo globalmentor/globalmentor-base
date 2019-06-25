@@ -51,30 +51,34 @@ public abstract class AbstractObjectDecorator<T> {
 	}
 
 	/**
-	 * Returns the hash code of this object. This version returns the hash code of the decorated object if there is one; otherwise this method delegates to the
-	 * parent class.
+	 * Returns the hash code of this object.
+	 * @implNote This version returns the hash code of the decorated object if there is one; otherwise this method delegates to the parent class.
 	 * @return The hash code of this object.
 	 */
+	@Override
 	public int hashCode() {
 		final T decoratedObject = getObject(); //get the decorated object
 		return decoratedObject != null ? getObject().hashCode() : super.hashCode(); //return the hash code of the decorated object if possible
 	}
 
 	/**
-	 * Determines if this object equals another object. This version considers the given object equal to this object if it is of the same type as this object, and
-	 * this object's decorated object's {@link Object#equals(Object)} method also returns <code>true</code> for the objects's decorated object or both decorated
-	 * objects are <code>null</code>.
+	 * Determines if this object equals another object.
+	 * @implNote This version considers the given object equal to this object if it is of the same type as this object, and this object's decorated object's
+	 *           {@link Object#equals(Object)} method also returns <code>true</code> for the objects's decorated object or both decorated objects are
+	 *           <code>null</code>.
 	 * @param object The object to compare with this object.
 	 * @return <code>true</code> if the given object is considered equal to this object.
 	 */
+	@Override
 	public boolean equals(final Object object) {
 		return getClass().isInstance(object) && Objects.equals(getObject(), ((ObjectDecorator<?>)object).getObject()); //see if the object is of this class and our decorated object is equal to its decorated object
 	}
 
 	/**
-	 * Returns a string representation of the object. This version returns a string version of the decorated object if there is one; otherwise this method
-	 * delegates to the parent class.
+	 * Returns a string representation of the object.
+	 * @implNote This version returns a string version of the decorated object if there is one; otherwise this method delegates to the parent class.
 	 */
+	@Override
 	public String toString() {
 		final T decoratedObject = getObject(); //get the decorated object
 		return decoratedObject != null ? getObject().toString() : super.toString(); //delegate to the decorated object, if possible
