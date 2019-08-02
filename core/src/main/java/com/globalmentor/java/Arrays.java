@@ -92,14 +92,14 @@ public class Arrays {
 
 	/**
 	 * Checks to make sure that a given index range is within the given sized array.
+	 * @apiNote Use {@link Conditions#checkIndexBounds(int, int, int)} or {@link Conditions#checkIndexBounds(long, long, long)} if you just want to know whether
+	 *          an index is included in a given range.
 	 * @param length The length of the array.
 	 * @param start The first index in the range.
 	 * @param end The index after the last requested position in the array.
 	 * @return The length of the checked range.
 	 * @throws IllegalArgumentException if the start index is greater than the end index.
 	 * @throws ArrayIndexOutOfBoundsException if the start index is less than zero or the end index is greater than the length.
-	 * @see {@link Conditions#checkIndexBounds(int, int, int)} or {@link Conditions#checkIndexBounds(long, long, long)} if you just want to know whether an index
-	 *      is included in a given range.
 	 */
 	public static int checkIndexRange(final int length, int start, int end) {
 		final int rangeLength = end - start;
