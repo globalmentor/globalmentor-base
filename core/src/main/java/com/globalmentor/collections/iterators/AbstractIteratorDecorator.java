@@ -17,15 +17,16 @@
 package com.globalmentor.collections.iterators;
 
 import java.util.*;
+import java.util.function.Consumer;
 
 /**
  * An abstract base implementation of an iterator that wraps an existing {@link Iterator}.
- * <p>
- * This iterator also serves as an adapter, converting an iterator to an {@link Enumeration}.
- * </p>
- * <p>
- * Subclasses may override {@link #hasNext()} and/or {@link #next()}, and {@link Enumeration} compatibility will be maintained.
- * </p>
+ * @apiNote This iterator also serves as an adapter, converting an iterator to an {@link Enumeration}.
+ * @implNote Subclasses may override {@link #hasNext()} and/or {@link #next()}, and {@link Enumeration} compatibility will be maintained.
+ * @implNote This implementation specifically does <em>not</em> override {@link #forEachRemaining(Consumer)} to delegate to the underlying iterator's version of
+ *           the method, because subclasses are allowed to change the decorated iterator during iteration. Therefore the default method version is retained,
+ *           which calls {@link #hasNext()} and {@link #next()} repeatedly, allowing a subclass to acquire a different underlying iterator if it desires.
+ * 
  * @param <E> the type of elements returned by this iterator.
  * @author Garret Wilson
  */
@@ -55,9 +56,7 @@ public abstract class AbstractIteratorDecorator<E> implements Iterator<E>, Enume
 
 	/**
 	 * {@inheritDoc}
-	 * <p>
-	 * This implementation delegates to {@link #hasNext()}.
-	 * </p>
+	 * @implSpec This implementation delegates to {@link #hasNext()}.
 	 */
 	@Override
 	public final boolean hasMoreElements() {
@@ -66,9 +65,7 @@ public abstract class AbstractIteratorDecorator<E> implements Iterator<E>, Enume
 
 	/**
 	 * {@inheritDoc}
-	 * <p>
-	 * This implementation delegates to {@link #next()}.
-	 * </p>
+	 * @implSpec This implementation delegates to {@link #next()}.
 	 */
 	@Override
 	public final E nextElement() {

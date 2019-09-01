@@ -55,13 +55,7 @@ public class DecoratorReadWriteLockCollectionMap<K, V, C extends Collection<V>> 
 		this.collectionMap = requireNonNull(collectionMap, "Collection map cannot be null"); //save the collection map
 	}
 
-	/**
-	 * Retrieves the collection of values associated with the given key. If no collection of values is associated with the key, one will be created and added to
-	 * the map.
-	 * @param key The key in the map.
-	 * @return The collection associated with the given key
-	 * @see #createCollection()
-	 */
+	@Override
 	public C getCollection(final K key) {
 		C collection = get(key); //get the collection of objects for the key, which will be performed with a read lock
 		if(collection == null) { //if there is yet no collection for this key
@@ -75,16 +69,12 @@ public class DecoratorReadWriteLockCollectionMap<K, V, C extends Collection<V>> 
 		return collection; //return the collection
 	}
 
-	/** Creates a collection in which to store values. */
+	@Override
 	public C createCollection() {
 		return collectionMap.createCollection();
 	}
 
-	/**
-	 * Retrieves whether there are items in a collection associated with the key.
-	 * @param key The key in the map.
-	 * @return <code>true</code> if there is at least one item associated with the key.
-	 */
+	@Override
 	public boolean hasItems(final K key) {
 		readLock().lock();
 		try {
@@ -94,11 +84,7 @@ public class DecoratorReadWriteLockCollectionMap<K, V, C extends Collection<V>> 
 		}
 	}
 
-	/**
-	 * Retrieves the number of values in the collection, if any, associated with the key.
-	 * @param key The key in the map.
-	 * @return The number of items associated with the key.
-	 */
+	@Override
 	public int getItemCount(final K key) {
 		readLock().lock();
 		try {
@@ -108,13 +94,7 @@ public class DecoratorReadWriteLockCollectionMap<K, V, C extends Collection<V>> 
 		}
 	}
 
-	/**
-	 * Adds a value to the collection of values associated with the key. If no collection of values is associated with the key, one will be created and added to
-	 * the map.
-	 * @param key The key in the map.
-	 * @param value The value to store in the collection.
-	 * @see #getCollection(Object)
-	 */
+	@Override
 	public void addItem(final K key, final V value) {
 		writeLock().lock();
 		try {
@@ -124,11 +104,7 @@ public class DecoratorReadWriteLockCollectionMap<K, V, C extends Collection<V>> 
 		}
 	}
 
-	/**
-	 * Retrieves the first value from the collection of values, if any, associated with the key.
-	 * @param key The key in the map.
-	 * @return The first value in the collection, or <code>null</code> if there is no collection associated with the key or no values in the collection.
-	 */
+	@Override
 	public V getItem(final K key) {
 		readLock().lock();
 		try {
@@ -138,11 +114,7 @@ public class DecoratorReadWriteLockCollectionMap<K, V, C extends Collection<V>> 
 		}
 	}
 
-	/**
-	 * Retrieves iterable access to all items, if any, associated with the given key
-	 * @param key The key in the map.
-	 * @return An object that will iterate all items, if any, associated with the given key.
-	 */
+	@Override
 	public Iterable<V> getItems(final K key) {
 		readLock().lock();
 		try {
@@ -152,13 +124,7 @@ public class DecoratorReadWriteLockCollectionMap<K, V, C extends Collection<V>> 
 		}
 	}
 
-	/**
-	 * Removes the first occurence of the given value from the collection of values, if any, associated with the key. If all items from the collection are
-	 * removed, the collection itself is removed from the map.
-	 * @param key The key in the map.
-	 * @param value The item to be removed from the collection, if present.
-	 * @return <code>true</code> if an item was removed as a result of this call.
-	 */
+	@Override
 	public boolean removeItem(final K key, final V value) {
 		writeLock().lock();
 		try {

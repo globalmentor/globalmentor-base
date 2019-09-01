@@ -29,18 +29,12 @@ public class ReadWriteLockDecorator implements ReadWriteLock {
 	/** The decorated read write lock. */
 	private final ReadWriteLock readWriteLock;
 
-	/**
-	 * Returns the lock used for reading.
-	 * @return the lock used for reading.
-	 */
+	@Override
 	public Lock readLock() {
 		return readWriteLock.readLock();
 	}
 
-	/**
-	 * Returns the lock used for writing.
-	 * @return the lock used for writing.
-	 */
+	@Override
 	public Lock writeLock() {
 		return readWriteLock.writeLock();
 	}

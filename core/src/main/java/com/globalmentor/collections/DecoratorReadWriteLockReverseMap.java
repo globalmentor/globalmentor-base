@@ -56,14 +56,7 @@ public class DecoratorReadWriteLockReverseMap<K, V> extends DecoratorReadWriteLo
 		this.reverseMap = requireNonNull(reverseMap, "Reverse map cannot be null.");
 	}
 
-	/**
-	 * Returns the key that represents the given value.
-	 * @param value The value whose associated key is to be returned.
-	 * @return The key to which this map reverse maps the specified value, or <code>null</code> if the map contains no reverse mapping for this value.
-	 * @throws ClassCastException Thrown if the value is of an inappropriate type for this map (optional).
-	 * @throws NullPointerException Thrown if the value is <code>null</code> and this map does not not permit <code>null</code> values (optional).
-	 * @see #containsValue(Object)
-	 */
+	@Override
 	public K getKey(final V value) {
 		readLock().lock();
 		try {
@@ -73,14 +66,7 @@ public class DecoratorReadWriteLockReverseMap<K, V> extends DecoratorReadWriteLo
 		}
 	} //return the key keyed to the given value in the key map
 
-	/**
-	 * Removes the mapping for a value from this map if it is present.
-	 * @param value The value whose mapping is to be removed from the map.
-	 * @return The previous key associated with the value, or <code>null</code> if there was no mapping for the value.
-	 * @throws UnsupportedOperationException if the remove operation is not supported by this map
-	 * @throws ClassCastException if the value is of an inappropriate type for this map (optional).
-	 * @throws NullPointerException if the specified value is <code>null</code> and this map does not permit <code>null</code> values (optional).
-	 */
+	@Override
 	public K removeValue(final V value) {
 		writeLock().lock(); //get a lock for writing
 		try {
@@ -94,14 +80,7 @@ public class DecoratorReadWriteLockReverseMap<K, V> extends DecoratorReadWriteLo
 		}
 	}
 
-	/**
-	 * Returns <code>true</code> if this map maps a key to the specified value.
-	 * <p>
-	 * This version uses an internal reverse map to provide faster lookups than the default linear-time lookup.
-	 * </p>
-	 * @param value The value whose presence in this map is to be tested.
-	 * @return <code>true</code> if this map maps a key to the specified value.
-	 */
+	@Override
 	public boolean containsValue(final Object value) {
 		readLock().lock();
 		try {
@@ -111,16 +90,7 @@ public class DecoratorReadWriteLockReverseMap<K, V> extends DecoratorReadWriteLo
 		}
 	} //see if this value is stored in the key map
 
-	/**
-	 * Associates the specified value with the specified key in this map, and associates the specified key with the specified value in the internal reverse map.
-	 * <p>
-	 * If the map previously contained a mapping for this key, the old value is replaced.
-	 * </p>
-	 * @param key The key with which the specified value is to be associated.
-	 * @param value The value to be associated with the specified key.
-	 * @return The previous value associated with specified key, or <code>null</code> if there was no mapping for key. A <code>null</code> return can also
-	 *         indicate that the map previously associated <code>null</code> with the specified key.
-	 */
+	@Override
 	public V put(final K key, final V value) {
 		writeLock().lock(); //get a lock for writing
 		try {
@@ -132,14 +102,7 @@ public class DecoratorReadWriteLockReverseMap<K, V> extends DecoratorReadWriteLo
 		}
 	}
 
-	/**
-	 * Removes the mapping for this key from this map if it is present.
-	 * @param key The key whose mapping is to be removed from the map.
-	 * @return The previous value associated with specified key, or <code>null</code> if there was no mapping for key.
-	 * @throws ClassCastException if the key is of an inappropriate type for this map (optional).
-	 * @throws NullPointerException if the key is <code>null</code> and this map does not permit <code>null</code> keys (optional).
-	 * @throws UnsupportedOperationException if the remove method is not supported by this map.
-	 */
+	@Override
 	public V remove(final Object key) {
 		writeLock().lock(); //get a lock for writing
 		try {
@@ -153,7 +116,7 @@ public class DecoratorReadWriteLockReverseMap<K, V> extends DecoratorReadWriteLo
 		}
 	}
 
-	/** Removes all mappings from this map. */
+	@Override
 	public void clear() {
 		writeLock().lock(); //get a lock for writing
 		try {
