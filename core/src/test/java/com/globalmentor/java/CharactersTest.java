@@ -17,12 +17,11 @@
 package com.globalmentor.java;
 
 import static com.globalmentor.java.Characters.*;
+import static java.util.Arrays.*;
 import static org.hamcrest.Matchers.*;
 import static org.hamcrest.MatcherAssert.*;
 
 import org.junit.jupiter.api.Test;
-
-import java.util.Arrays;
 
 /**
  * Tests for {@link Characters}.
@@ -35,16 +34,16 @@ public class CharactersTest {
 	/** Tests the {@link Characters#split(CharSequence)} method. */
 	@Test
 	public void testSplit() {
-		assertThat(WHITESPACE_CHARACTERS.split("abc"), is(Arrays.<CharSequence> asList("abc")));
-		assertThat(WHITESPACE_CHARACTERS.split(" abc"), is(Arrays.<CharSequence> asList("abc")));
-		assertThat(WHITESPACE_CHARACTERS.split("abc "), is(Arrays.<CharSequence> asList("abc")));
-		assertThat(WHITESPACE_CHARACTERS.split(" abc "), is(Arrays.<CharSequence> asList("abc")));
-		assertThat(WHITESPACE_CHARACTERS.split("  abc  "), is(Arrays.<CharSequence> asList("abc")));
-		assertThat(WHITESPACE_CHARACTERS.split(" \tabc \t"), is(Arrays.<CharSequence> asList("abc")));
-		assertThat(WHITESPACE_CHARACTERS.split("abc def"), is(Arrays.<CharSequence> asList("abc", "def")));
-		assertThat(WHITESPACE_CHARACTERS.split("  abc  def  "), is(Arrays.<CharSequence> asList("abc", "def")));
-		assertThat(WHITESPACE_CHARACTERS.split("a b c d e f"), is(Arrays.<CharSequence> asList("a", "b", "c", "d", "e", "f")));
-		assertThat(WHITESPACE_CHARACTERS.split("\r\na\tb\tc\td\te\tf\r\n"), is(Arrays.<CharSequence> asList("a", "b", "c", "d", "e", "f")));
+		assertThat(WHITESPACE_CHARACTERS.split("abc"), is(asList("abc")));
+		assertThat(WHITESPACE_CHARACTERS.split(" abc"), is(asList("abc")));
+		assertThat(WHITESPACE_CHARACTERS.split("abc "), is(asList("abc")));
+		assertThat(WHITESPACE_CHARACTERS.split(" abc "), is(asList("abc")));
+		assertThat(WHITESPACE_CHARACTERS.split("  abc  "), is(asList("abc")));
+		assertThat(WHITESPACE_CHARACTERS.split(" \tabc \t"), is(asList("abc")));
+		assertThat(WHITESPACE_CHARACTERS.split("abc def"), is(asList("abc", "def")));
+		assertThat(WHITESPACE_CHARACTERS.split("  abc  def  "), is(asList("abc", "def")));
+		assertThat(WHITESPACE_CHARACTERS.split("a b c d e f"), is(asList("a", "b", "c", "d", "e", "f")));
+		assertThat(WHITESPACE_CHARACTERS.split("\r\na\tb\tc\td\te\tf\r\n"), is(asList("a", "b", "c", "d", "e", "f")));
 	}
 
 }

@@ -20,19 +20,18 @@ import java.io.*;
 
 import static java.nio.charset.StandardCharsets.*;
 import static java.util.Arrays.*;
+import static java.util.Collections.*;
 
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-import static com.globalmentor.java.Arrays.checkIndexRange;
+import static com.globalmentor.java.Arrays.*;
 import static com.globalmentor.java.CharSequences.*;
 import static com.globalmentor.java.Integers.*;
 import static com.globalmentor.java.Conditions.*;
 import static com.globalmentor.java.StringBuilders.*;
 
-import com.globalmentor.collections.ObjectList;
 import com.globalmentor.text.ASCII;
 import com.globalmentor.text.RomanNumerals;
 
@@ -421,10 +420,8 @@ public final class Characters {
 
 	/**
 	 * Characters constructor.
-	 * <p>
-	 * This method is only to be used internally with preprocessed data. The given character array is used as-is, and is expected to be sorted, with no surrogate
-	 * characters, and with duplicates removed.
-	 * </p>
+	 * @apiNote This method is only to be used internally with preprocessed data. The given character array is used as-is, and is expected to be sorted, with no
+	 *          surrogate characters, and with duplicates removed.
 	 * @param characters The characters to store.
 	 * @throws NullPointerException if the given characters is <code>null</code>.
 	 */
@@ -657,18 +654,14 @@ public final class Characters {
 
 	/**
 	 * Splits a character sequence on the these characters. Runs of matching characters are removed and the interspersed tokens are returned.
-	 * <p>
-	 * This method is likely more efficient than a regular expression-based approach, especially in situations in which splitting is likely to occur at a small
-	 * frequency, because the setup cost is low and individual character testing is efficient.
-	 * </p>
-	 * <p>
-	 * TODO The current implementation does not support surrogate characters.
-	 * </p>
+	 * @implNote This method is likely more efficient than a regular expression-based approach, especially in situations in which splitting is likely to occur at
+	 *           a small frequency, because the setup cost is low and individual character testing is efficient.
+	 * @implSpec The current implementation does not support surrogate characters.
 	 * @param charSequence The character sequence to split.
 	 * @return A list of subsequences; the list may not be mutable.
 	 */
-	public List<CharSequence> split(final CharSequence charSequence) {
-		ArrayList<CharSequence> subsequences = null; //we'll only create this if we have to
+	public List<String> split(final CharSequence charSequence) {
+		ArrayList<String> tokens = null; //we'll only create this if we have to
 		final int length = charSequence.length();
 		int start = 0;
 		while(start < length) {
@@ -684,16 +677,16 @@ public final class Characters {
 			while(end < length && !contains(charSequence.charAt(end))) {
 				++end;
 			}
-			if(subsequences == null) { //if we haven't created any subsequences
+			if(tokens == null) { //if we haven't created any subsequences
 				if(start == 0 && end == length) { //if the whole character sequence is non-delimiters (there were no delimiters) 
-					return new ObjectList<CharSequence>(charSequence); //there is only one token to return
+					return singletonList(charSequence.toString()); //there is only one token to return
 				}
-				subsequences = new ArrayList<CharSequence>(); //if we're really splitting the string, we'll need a new list
+				tokens = new ArrayList<>(); //if we're really splitting the string, we'll need a new list
 			}
-			subsequences.add(charSequence.subSequence(start, end)); //add this subsequence
+			tokens.add(charSequence.subSequence(start, end).toString()); //add this subsequence
 			start = end; //start over at the end of this subsequence
 		}
-		return subsequences != null ? subsequences : Collections.<CharSequence>emptyList();
+		return tokens != null ? tokens : emptyList();
 	}
 
 	/** @return A string containing these characters. */
@@ -704,9 +697,7 @@ public final class Characters {
 	/**
 	 * Returns a string representing an array of these characters, each character represented as 'x', or if the character is a control character, the Unicode code
 	 * point of this character, e.g. "U+1234". Example: "['a', 0x0020]"
-	 * <p>
-	 * This method does not treat surrogate characters specially.
-	 * </p>
+	 * @implSpec This method does not treat surrogate characters specially.
 	 * @return A string containing an array representation of these characters.
 	 */
 	public String toLabelArrayString() {
@@ -840,9 +831,7 @@ public final class Characters {
 
 	/**
 	 * Returns a string representing the character as 'x', or if the character is a control character, the Unicode code point of this character, e.g. "U+1234".
-	 * <p>
-	 * This method supports Unicode supplementary code points.
-	 * </p>
+	 * @implSpec This method supports Unicode supplementary code points.
 	 * @param c The code point a string representation of which to append.
 	 * @return The string label representing the character.
 	 * @see #appendLabel(StringBuilder, int)
@@ -854,9 +843,7 @@ public final class Characters {
 	/**
 	 * Returns a string representing an array of these characters, each character represented as 'x', or if the character is a control character, the Unicode code
 	 * point of this character, e.g. "U+1234". Example: "['a', 0x0020]"
-	 * <p>
-	 * This method does not treat surrogate characters specially.
-	 * </p>
+	 * @implSpec This method does not treat surrogate characters specially.
 	 * @param characters The characters to return as a string of an array.
 	 * @return A string containing an array representation of these characters.
 	 */
@@ -867,9 +854,7 @@ public final class Characters {
 	/**
 	 * Returns a string representing an array of these characters, each character represented as 'x', or if the character is a control character, the Unicode code
 	 * point of this character, e.g. "U+1234". Example: "['a', 0x0020]"
-	 * <p>
-	 * This method does not treat surrogate characters specially.
-	 * </p>
+	 * @implSpec This method does not treat surrogate characters specially.
 	 * @param characters The characters to return as a string of an array.
 	 * @return A string containing an array representation of these characters.
 	 */
@@ -907,9 +892,7 @@ public final class Characters {
 	/**
 	 * Appends a string representing an array of characters, each character represented as 'x', or if the character is a control character, the Unicode code point
 	 * of this character, e.g. "U+1234". Example: "['a', 0x0020]"
-	 * <p>
-	 * This method does not treat surrogate characters specially.
-	 * </p>
+	 * @implSpec This method does not treat surrogate characters specially.
 	 * @param stringBuilder The string builder to which the string will be appended.
 	 * @param characters The characters the strings of the Unicode code points to append.
 	 * @return The string builder.
@@ -931,9 +914,7 @@ public final class Characters {
 	/**
 	 * Appends a string representing the character as 'x', or if the character is a control character or a surrogate, either a special representation such as '\n'
 	 * or the Unicode code point of this character, e.g. "U+1234".
-	 * <p>
-	 * This method supports Unicode supplementary code points.
-	 * </p>
+	 * @implSpec This method supports Unicode supplementary code points.
 	 * @param stringBuilder The string builder to which the string will be appended.
 	 * @param c The code point a string representation of which to append.
 	 * @return The string builder.

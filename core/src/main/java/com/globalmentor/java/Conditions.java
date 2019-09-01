@@ -72,6 +72,7 @@ public class Conditions {
 	 * @apiNote This is a precondition check.
 	 * @param <T> The expected type of the object.
 	 * @param object The object to test.
+	 * @param instanceClass The class of which to test that the object is an instance.
 	 * @return The given object, cast to the given type.
 	 * @throws IllegalArgumentException if the given object not of the indicated type.
 	 */
@@ -84,6 +85,7 @@ public class Conditions {
 	 * @apiNote This is a precondition check.
 	 * @param <T> The expected type of the object.
 	 * @param object The object to test.
+	 * @param instanceClass The class of which to test that the object is an instance.
 	 * @param description A description of the test to be used when generating an exception, optionally formatted with arguments, or <code>null</code> for no
 	 *          description.
 	 * @param arguments The arguments to be applied when formatting, or an empty array if the message should not be formatted.

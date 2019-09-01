@@ -32,7 +32,6 @@ import com.globalmentor.event.ProgressListener;
 import com.globalmentor.java.*;
 import com.globalmentor.net.*;
 import com.globalmentor.text.*;
-import com.globalmentor.util.StringTemplate;
 
 import static com.globalmentor.io.InputStreams.*;
 import static com.globalmentor.java.Conditions.*;
