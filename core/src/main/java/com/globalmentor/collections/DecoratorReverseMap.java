@@ -47,6 +47,10 @@ public class DecoratorReverseMap<K, V> extends MapDecorator<K, V> implements Rev
 		this.reverseMap = requireNonNull(reverseMap, "Reverse map cannot be null.");
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * @see #containsValue(Object)
+	 */
 	@Override
 	public K getKey(final V value) {
 		return reverseMap.get(value); //return the key keyed to the given value in the key map
@@ -59,6 +63,37 @@ public class DecoratorReverseMap<K, V> extends MapDecorator<K, V> implements Rev
 			super.remove(oldKey); //remove the old key from the map; call the superclass version so that we won't try to remove values from the reverse map again
 		}
 		return oldKey; //return the old key, if any
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @implSpec This version uses an internal reverse map to provide faster lookups than the default linear-time lookup.
+	 */
+	@Override
+	public boolean containsValue(final Object value) {
+		return reverseMap.containsKey(value); //see if this value is stored in the key map
+	}
+
+	@Override
+	public V put(final K key, final V value) {
+		final V oldValue = super.put(key, value); //store the value in the map, keyed to the key
+		reverseMap.put(value, key); //store the key in the key map, keyed to the value
+		return oldValue; //return the old value previously mapped to the key, if any
+	}
+
+	@Override
+	public V remove(final Object key) {
+		final V oldValue = super.remove(key); //remove the key
+		if(oldValue != null) { //if there was a value associated with the key
+			reverseMap.remove(oldValue); //remove the old value from the reverse map
+		}
+		return oldValue; //return the old value, if any
+	}
+
+	@Override
+	public void clear() {
+		super.clear(); //do the default clearing
+		reverseMap.clear(); //clear the key map as well
 	}
 
 }

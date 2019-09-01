@@ -18,8 +18,8 @@ package com.globalmentor.collections;
 
 import java.util.*;
 import java.util.concurrent.locks.*;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 import static java.util.Objects.*;
 
@@ -174,6 +174,16 @@ public class DecoratorReadWriteLockCollection<E> extends ReadWriteLockDecorator 
 	}
 
 	@Override
+	public boolean removeIf(Predicate<? super E> filter) {
+		writeLock().lock();
+		try {
+			return collection.removeIf(filter);
+		} finally {
+			writeLock().unlock();
+		}
+	}
+
+	@Override
 	public boolean retainAll(Collection<?> c) {
 		writeLock().lock();
 		try {
@@ -215,13 +225,11 @@ public class DecoratorReadWriteLockCollection<E> extends ReadWriteLockDecorator 
 		}
 	}
 
-	// Default methods
-
 	@Override
 	public Spliterator<E> spliterator() {
 		readLock().lock();
 		try {
-			return Spliterators.spliterator(this, 0);
+			return getCollection().spliterator();
 		} finally {
 			readLock().unlock();
 		}
@@ -231,7 +239,7 @@ public class DecoratorReadWriteLockCollection<E> extends ReadWriteLockDecorator 
 	public Stream<E> stream() {
 		readLock().lock();
 		try {
-			return StreamSupport.stream(spliterator(), false);
+			return getCollection().stream();
 		} finally {
 			readLock().unlock();
 		}
@@ -241,7 +249,7 @@ public class DecoratorReadWriteLockCollection<E> extends ReadWriteLockDecorator 
 	public Stream<E> parallelStream() {
 		readLock().lock();
 		try {
-			return StreamSupport.stream(spliterator(), true);
+			return getCollection().parallelStream();
 		} finally {
 			readLock().unlock();
 		}

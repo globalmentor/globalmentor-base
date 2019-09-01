@@ -17,8 +17,8 @@
 package com.globalmentor.collections;
 
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 import static java.util.Objects.*;
 
@@ -139,6 +139,13 @@ public class SynchronizedCollectionDecorator<E> implements Collection<E> {
 	}
 
 	@Override
+	public boolean removeIf(Predicate<? super E> filter) {
+		synchronized(mutex) {
+			return collection.removeIf(filter);
+		}
+	}
+
+	@Override
 	public boolean retainAll(Collection<?> c) {
 		synchronized(mutex) {
 			return collection.retainAll(c);
@@ -171,21 +178,21 @@ public class SynchronizedCollectionDecorator<E> implements Collection<E> {
 	@Override
 	public Spliterator<E> spliterator() {
 		synchronized(mutex) {
-			return Spliterators.spliterator(this, 0);
+			return collection.spliterator();
 		}
 	}
 
 	@Override
 	public Stream<E> stream() {
 		synchronized(mutex) {
-			return StreamSupport.stream(spliterator(), false);
+			return collection.stream();
 		}
 	}
 
 	@Override
 	public Stream<E> parallelStream() {
 		synchronized(mutex) {
-			return StreamSupport.stream(spliterator(), true);
+			return collection.parallelStream();
 		}
 	}
 

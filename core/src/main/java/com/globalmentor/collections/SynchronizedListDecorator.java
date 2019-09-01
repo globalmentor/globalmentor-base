@@ -17,6 +17,7 @@
 package com.globalmentor.collections;
 
 import java.util.*;
+import java.util.function.UnaryOperator;
 
 /**
  * A list that wraps an existing list, providing access through the {@link List} interface. All collection access is synchronized on the provided
@@ -46,6 +47,20 @@ public class SynchronizedListDecorator<E> extends SynchronizedCollectionDecorato
 	public boolean addAll(int index, Collection<? extends E> c) {
 		synchronized(mutex) {
 			return list.addAll(index, c);
+		}
+	}
+
+	@Override
+	public void replaceAll(UnaryOperator<E> operator) {
+		synchronized(mutex) {
+			list.replaceAll(operator);
+		}
+	}
+
+	@Override
+	public void sort(Comparator<? super E> c) {
+		synchronized(mutex) {
+			list.sort(c);
 		}
 	}
 
@@ -117,13 +132,6 @@ public class SynchronizedListDecorator<E> extends SynchronizedCollectionDecorato
 	public List<E> subList(int fromIndex, int toIndex) {
 		synchronized(mutex) {
 			return list.subList(fromIndex, toIndex);
-		}
-	}
-
-	@Override
-	public Spliterator<E> spliterator() {
-		synchronized(mutex) {
-			return Spliterators.spliterator(this, Spliterator.ORDERED);
 		}
 	}
 

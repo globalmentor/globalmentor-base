@@ -56,17 +56,10 @@ public class DecoratorIDedMappedList<K, E extends IDed<K>> extends ListDecorator
 		}
 	}
 
-	/**
-	 * 
-	 * Returns <code>true</code> if this list contains the specified element. More formally, returns <code>true</code> if and only if this list contains at least
-	 * one element <code>e</code> such that <code>(o==null&nbsp;?&nbsp;e==null&nbsp;:&nbsp;o.equals(e))</code>.
-	 *
-	 * @param o element whose presence in this list is to be tested.
-	 * @return <code>true</code> if this list contains the specified element.
-	 * @throws ClassCastException if the type of the specified element is incompatible with this list (optional).
-	 * @throws NullPointerException if the specified element is null and this list does not support null elements (optional).
-	 */
-	//TODO fix  boolean contains(Object o);
+	//TODO fix
+	//		@Override
+	//		public boolean contains(Object o) {
+	//		}
 
 	@Override
 	public boolean add(E o) {
@@ -81,7 +74,7 @@ public class DecoratorIDedMappedList<K, E extends IDed<K>> extends ListDecorator
 	public boolean remove(Object o) {
 		final boolean result = super.remove(o); //remove the object normally
 		if(result) { //if we succeeded
-			getMap().remove(o); //remove the objet from the map
+			getMap().remove(o); //remove the object from the map
 		}
 		return result; //return the result
 	}

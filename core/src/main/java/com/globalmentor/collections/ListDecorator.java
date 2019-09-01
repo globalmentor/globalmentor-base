@@ -99,8 +99,8 @@ public class ListDecorator<E> extends CollectionDecorator<E> implements List<E> 
 		return list.subList(fromIndex, toIndex);
 	}
 
-	// Default methods
-	
+	// Default Methods
+
 	@Override
 	public void replaceAll(UnaryOperator<E> operator) {
 		list.replaceAll(operator);
@@ -111,8 +111,4 @@ public class ListDecorator<E> extends CollectionDecorator<E> implements List<E> 
 		list.sort(c);
 	}
 
-	@Override
-	public Spliterator<E> spliterator() {
-		return list.spliterator();
-	}
 }

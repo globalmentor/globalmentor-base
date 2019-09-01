@@ -218,11 +218,11 @@ public class DecoratorReadWriteLockMap<K, V> extends ReadWriteLockDecorator impl
 
 	@Override
 	public void forEach(BiConsumer<? super K, ? super V> action) {
-		writeLock().lock();
+		readLock().lock();
 		try {
 			map.forEach(action);
 		} finally {
-			writeLock().unlock();
+			readLock().unlock();
 		}
 	}
 
@@ -238,9 +238,8 @@ public class DecoratorReadWriteLockMap<K, V> extends ReadWriteLockDecorator impl
 
 	@Override
 	public V putIfAbsent(K key, V value) {
-		V v = get(key);
-
-		if(v == null) {
+		final V currentValue = get(key);
+		if(currentValue == null) {
 			writeLock().lock();
 			try {
 				map.putIfAbsent(key, value); // this will make the check again in a write lock to avoid any race conditions.
@@ -249,15 +248,15 @@ public class DecoratorReadWriteLockMap<K, V> extends ReadWriteLockDecorator impl
 			}
 		}
 
-		return v;
+		return currentValue;
 	}
 
 	@Override
 	public boolean remove(Object key, Object value) {
 		readLock().lock();
 		try {
-			Object curValue = get(key);
-			if(!Objects.equals(curValue, value) || (curValue == null && !containsKey(key))) {
+			final Object currentValue = get(key);
+			if(!Objects.equals(currentValue, value) || (currentValue == null && !containsKey(key))) {
 				return false;
 			}
 		} finally {
@@ -266,7 +265,7 @@ public class DecoratorReadWriteLockMap<K, V> extends ReadWriteLockDecorator impl
 
 		writeLock().lock();
 		try {
-			map.remove(key); // this will make the check again in a write lock to avoid any race conditions.
+			map.remove(key, value); // this will make the check again in a write lock to avoid any race conditions.
 			return true;
 		} finally {
 			writeLock().unlock();
@@ -277,8 +276,8 @@ public class DecoratorReadWriteLockMap<K, V> extends ReadWriteLockDecorator impl
 	public boolean replace(K key, V oldValue, V newValue) {
 		readLock().lock();
 		try {
-			Object curValue = get(key);
-			if(!Objects.equals(curValue, oldValue) || (curValue == null && !containsKey(key))) {
+			final Object currentValue = get(key);
+			if(!Objects.equals(currentValue, oldValue) || (currentValue == null && !containsKey(key))) {
 				return false;
 			}
 		} finally {
@@ -295,18 +294,16 @@ public class DecoratorReadWriteLockMap<K, V> extends ReadWriteLockDecorator impl
 
 	@Override
 	public V replace(K key, V value) {
-		V curValue;
-		if(((curValue = get(key)) != null) || containsKey(key)) {
-
-			writeLock().lock();
-			try {
-				curValue = map.replace(key, value); // this will make the check again in a write lock to avoid any race conditions.
-			} finally {
-				writeLock().unlock();
-			}
-
+		if(!map.containsKey(key)) { //done under read lock
+			return null;
 		}
-		return curValue;
+
+		writeLock().lock();
+		try {
+			return map.replace(key, value); // this will make the check again in a write lock to avoid any race conditions.
+		} finally {
+			writeLock().unlock();
+		}
 	}
 
 	@Override

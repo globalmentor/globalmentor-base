@@ -162,4 +162,5 @@ public class MapDecorator<K, V> implements Map<K, V> {
 	public V merge(K key, V value, BiFunction<? super V, ? super V, ? extends V> remappingFunction) {
 		return map.merge(key, value, remappingFunction);
 	}
+
 }
