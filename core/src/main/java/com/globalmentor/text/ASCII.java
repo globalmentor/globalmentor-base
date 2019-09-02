@@ -322,7 +322,7 @@ public class ASCII {
 		}
 		for(int i1 = start1, i2 = start2; i1 < end1; ++i1, ++i2) { //look at each character; we only need to check one end position because we already made sure the counts are the same
 			final char c1 = charSequence1.charAt(i1);
-			final char c2 = charSequence1.charAt(i2);
+			final char c2 = charSequence2.charAt(i2);
 			if(c1 == c2) { //if the characters match
 				continue;
 			} else if(c1 >= UPPERCASE_LETTER_FIRST && c1 <= UPPERCASE_LETTER_LAST) { //if the first character is uppercase
