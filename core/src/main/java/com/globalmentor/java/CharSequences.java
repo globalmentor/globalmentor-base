@@ -16,11 +16,13 @@
 
 package com.globalmentor.java;
 
+import static com.globalmentor.collections.Lists.*;
 import static com.globalmentor.java.Characters.*;
 import static com.globalmentor.java.Conditions.*;
 import static java.lang.Math.*;
 import static java.lang.String.*;
 import static java.nio.charset.StandardCharsets.*;
+import static java.util.stream.Collectors.toList;
 
 import java.nio.*;
 import java.nio.charset.CharsetDecoder;
@@ -859,6 +861,26 @@ public class CharSequences {
 	}
 
 	/**
+	 * Determines the longest common suffix of segments from a list of character sequences. For example if any combination of the strings
+	 * <code>"www.example.com"</code>, <code>"test.example.com"</code>, and <code>"example.com"</code> are passed using the delimiter <code>'.'</code>, the common
+	 * segment suffix <code>"example.com"</code> is returned.
+	 * @apiNote This method does not make any checks to determine whether a segment is empty, e.g. <code>"foo..bar"</code>.
+	 * @param charSequences The list of character sequences to check.
+	 * @param delimiter The delimiter to use in determining the segments.
+	 * @return A string representing the longest common suffix of segments, which may not be present if there is no longest common segment suffix.
+	 * @throws NullPointerException if the list is <code>null</code> or contains a <code>null</code> value.
+	 */
+	public static Optional<String> longestCommonSegmentSuffix(@Nonnull final List<? extends CharSequence> charSequences, final char delimiter) {
+		final Characters delimiterCharacters = Characters.of(delimiter);
+		final List<List<String>> segmentsLists = charSequences.stream().map(delimiterCharacters::split).collect(toList());
+		final List<String> longestCommonSuffix = longestCommonSuffix(segmentsLists);
+		if(longestCommonSuffix.isEmpty()) {
+			return Optional.empty();
+		}
+		return Optional.of(String.join(String.valueOf(delimiter), longestCommonSuffix));
+	}
+
+	/**
 	 * Searches a character sequence and returns the first index of any character <em>not</em> in the specified characters, starting from the beginning.
 	 * @param charSequence The character sequence to be searched.
 	 * @param notCharacters The characters to check.
@@ -1065,7 +1087,7 @@ public class CharSequences {
 	}
 
 	/**
-	 * Determines whether a character sequeence contains only Roman numerals.
+	 * Determines whether a character sequence contains only Roman numerals.
 	 * @param charSequence The character sequence to examine.
 	 * @return <code>true</code> if all the characters in the sequence are roman numerals.
 	 */
