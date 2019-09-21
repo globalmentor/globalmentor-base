@@ -19,8 +19,11 @@ package com.globalmentor.collections;
 import static com.globalmentor.java.Arrays.*;
 import static java.util.Arrays.*;
 import static java.util.Collections.*;
+import static java.util.Objects.*;
 
 import java.util.*;
+
+import javax.annotation.*;
 
 /**
  * Utilities to be used with lists.
@@ -65,7 +68,7 @@ public class Lists {
 	 * @throws ArrayIndexOutOfBoundsException if the start index is less than zero or the end index is greater than the length.
 	 */
 	public static <E> List<E> immutableListOf(final E[] elements, final int start, final int end) { //TODO improve to return an ImmutableList<E>
-		return immutableListOf(java.util.Collections.<E> emptyList(), elements, start, end);
+		return immutableListOf(java.util.Collections.<E>emptyList(), elements, start, end);
 	}
 
 	/**
@@ -175,4 +178,47 @@ public class Lists {
 		}
 	}
 
+	//sublists
+
+	/**
+	 * Determines the longest common suffix sublist from a list of lists. No element element is allowed to be <code>null</code>.
+	 * @param <T> The common type of element in each of the lists.
+	 * @param lists The lists of lists among which to find a common suffix sublist.
+	 * @return A list representing the common suffix sublist of elements, compared using {@link Object#equals(Object)}.
+	 * @throws NullPointerException if one of the lists is <code>null</code> or contains a <code>null</code> value.
+	 */
+	public static <T> List<T> longestCommonSuffix(@Nonnull final List<List<T>> lists) {
+		if(lists.isEmpty()) {
+			return emptyList();
+		}
+		assert lists.size() > 0;
+		final List<T> commonSuffix = new LinkedList<>();
+		int index = 0;
+		boolean finished = false;
+		do {
+			T common = null;
+			for(final List<? extends T> list : lists) {
+				final int length = list.size();
+				if(index >= length) {
+					finished = true;
+					break;
+				}
+				final T element = requireNonNull(list.get(length - index - 1));
+				if(common == null) { //first list
+					common = element;
+				} else { //other lists
+					if(!element.equals(common)) {
+						finished = true;
+						break;
+					}
+				}
+			}
+			if(!finished) {
+				assert common != null : "The outer list isn't empty, and if the inner list were empty we would be noted as finished.";
+				commonSuffix.add(0, common);
+				index++;
+			}
+		} while(!finished);
+		return commonSuffix;
+	}
 }

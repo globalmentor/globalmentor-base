@@ -16,16 +16,20 @@
 
 package com.globalmentor.java;
 
+import java.util.*;
 import java.util.AbstractMap.SimpleEntry;
-import java.util.Map;
 import java.util.stream.Stream;
 
+import static com.github.npathai.hamcrestopt.OptionalMatchers.*;
 import static com.globalmentor.java.CharSequences.*;
-import static java.util.stream.Collectors.toMap;
+import static java.util.Arrays.*;
+import static java.util.stream.Collectors.*;
 import static org.hamcrest.Matchers.*;
 import static org.hamcrest.MatcherAssert.*;
 
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
+
+import com.globalmentor.collections.ListsTest;
 
 /**
  * Tests of {@link CharSequences}.
@@ -67,6 +71,30 @@ public class CharSequencesTest {
 				assertThat(unescapeHex(test + "^58", '^', 2).toString(), is(expected + "X"));
 			}
 		});
+	}
+
+	/**
+	 * @see CharSequences#longestCommonSegmentSuffix(List, char)
+	 * @see ListsTest#testLongestCommonSuffix()
+	 */
+	@Test
+	public void testLongestCommonSegmentSuffix() {
+		assertThat(longestCommonSegmentSuffix(asList(), '.'), isEmpty());
+		assertThat(longestCommonSegmentSuffix(asList("foo", ""), '.'), isEmpty());
+		assertThat(longestCommonSegmentSuffix(asList("", "bar"), '.'), isEmpty());
+		assertThat(longestCommonSegmentSuffix(asList("foo.bar", ""), '.'), isEmpty());
+		assertThat(longestCommonSegmentSuffix(asList("", "foo.bar"), '.'), isEmpty());
+		assertThat(longestCommonSegmentSuffix(asList("foo", "bar"), '.'), isEmpty());
+		assertThat(longestCommonSegmentSuffix(asList("foo.bar", "bar.foo"), '.'), isEmpty());
+		assertThat(longestCommonSegmentSuffix(asList("bar", "bar"), '.'), isPresentAndIs("bar"));
+		assertThat(longestCommonSegmentSuffix(asList("foo.bar", "bar"), '.'), isPresentAndIs("bar"));
+		assertThat(longestCommonSegmentSuffix(asList("bar", "foo.bar"), '.'), isPresentAndIs("bar"));
+		assertThat(longestCommonSegmentSuffix(asList("foo.bar", "foo.bar"), '.'), isPresentAndIs("foo.bar"));
+		assertThat(longestCommonSegmentSuffix(asList("example.foo.bar", "test.foo.bar"), '.'), isPresentAndIs("foo.bar"));
+		assertThat(longestCommonSegmentSuffix(asList("www.example.com", "example.com"), '.'), isPresentAndIs("example.com"));
+		assertThat(longestCommonSegmentSuffix(asList("example.com", "www.example.com"), '.'), isPresentAndIs("example.com"));
+		assertThat(longestCommonSegmentSuffix(asList("example.com", "www.example.com", "test.example.com"), '.'), isPresentAndIs("example.com"));
+		assertThat(longestCommonSegmentSuffix(asList("www.example.com", "test.example.com"), '.'), isPresentAndIs("example.com"));
 	}
 
 	/** @see CharSequences#removeMarks(CharSequence) */
