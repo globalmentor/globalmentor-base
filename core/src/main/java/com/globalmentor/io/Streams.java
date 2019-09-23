@@ -25,7 +25,7 @@ import com.globalmentor.event.ProgressListener;
  * Utilities for working with streams generally.
  * @author Garret Wilson
  */
-public class Streams {
+public class Streams { //TODO rename to IOStreams to prevent confusion with Java 8+ streams
 
 	/**
 	 * Copies all information from an input stream to an output stream. Both streams are used as-is. If buffered reading and writing is desired, the streams
