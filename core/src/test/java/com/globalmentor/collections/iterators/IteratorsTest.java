@@ -21,13 +21,15 @@ import static java.util.Arrays.*;
 import static java.util.Collections.*;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 import org.junit.jupiter.api.*;
 
 /**
- * Test of the {@link Iterators} utilities.
+ * Tests the {@link Iterators} utilities.
  * @author Garret Wilson
  * @see Iterators
  */
@@ -36,11 +38,33 @@ public class IteratorsTest {
 	/** @see Iterators#findNext(Iterator) */
 	@Test
 	public void testFindFirst() {
-		assertThat(Iterators.findNext(emptySet().iterator()), not(isPresent()));
-		assertThat(Iterators.findNext(emptyList().iterator()), not(isPresent()));
+		assertThat(Iterators.findNext(emptySet().iterator()), isEmpty());
+		assertThat(Iterators.findNext(emptyList().iterator()), isEmpty());
 		assertThat(Iterators.findNext(singleton("foo").iterator()), isPresentAndIs("foo"));
 		assertThat(Iterators.findNext(singletonList("foo").iterator()), isPresentAndIs("foo"));
 		assertThat(Iterators.findNext(asList("foo", "bar").iterator()), isPresentAndIs("foo"));
+	}
+
+	/** @see Iterators#findOnly(Iterator) */
+	@Test
+	public void testFindOnly() {
+		assertThat(Iterators.findOnly(emptySet().iterator()), isEmpty());
+		assertThat(Iterators.findOnly(emptyList().iterator()), isEmpty());
+		assertThat(Iterators.findOnly(singleton("foo").iterator()), isPresentAndIs("foo"));
+		assertThat(Iterators.findOnly(singletonList("foo").iterator()), isPresentAndIs("foo"));
+		assertThrows(IllegalArgumentException.class, () -> Iterators.findOnly(asList("foo", "bar").iterator()));
+		assertThrows(IllegalArgumentException.class, () -> Iterators.findOnly(asList(1, 2, 3).iterator()));
+	}
+
+	/** @see Iterators#getOnly(Iterator) */
+	@Test
+	public void testGetOnly() {
+		assertThrows(NoSuchElementException.class, () -> Iterators.getOnly(emptySet().iterator()));
+		assertThrows(NoSuchElementException.class, () -> Iterators.getOnly(emptyList().iterator()));
+		assertThat(Iterators.getOnly(singleton("foo").iterator()), is("foo"));
+		assertThat(Iterators.getOnly(singletonList("foo").iterator()), is("foo"));
+		assertThrows(IllegalArgumentException.class, () -> Iterators.getOnly(asList("foo", "bar").iterator()));
+		assertThrows(IllegalArgumentException.class, () -> Iterators.getOnly(asList(1, 2, 3).iterator()));
 	}
 
 }

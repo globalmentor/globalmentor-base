@@ -16,7 +16,10 @@
 
 package com.globalmentor.collections.iterators;
 
+import static java.util.Objects.*;
+
 import java.util.*;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -115,32 +118,85 @@ public class Iterators {
 	}
 
 	/**
-	 * Returns the next item from an iterator, or <code>null</code> if there is no next item. This differs from <code>Iterator.next()</code>, which throws an
-	 * exception if there is no next item.
-	 * @param <E> The type of items that the iterator is set up to iterate.
-	 * @param iterator The iterator from which the next object should be retrieved.
-	 * @return The next item of the iterator.
-	 * @see Iterator#next()
-	 * @deprecated Migrate to {@link #findNext(Iterator)}.
-	 */
-	@Deprecated
-	public static <E> E getNext(final Iterator<E> iterator) {
-		//get the next element, or null if there is no next element
-		return iterator.hasNext() ? iterator.next() : null;
-	}
-
-	/**
 	 * Returns an {@link Optional} describing the first element of this iterator, or an empty {@code Optional} if the iterator is empty.
 	 * @apiNote This method is equivalent to calling {@link Iterator#next()}, except an empty optional is returned rather than throwing an exception if there is
 	 *          no next item.
 	 * @param <E> The type of elements returned by the iterator.
 	 * @param iterator The iterator from which the next object should be retrieved.
-	 * @return The next item of the iterator.
+	 * @return An {@code Optional} describing the first element of this iterator, or an empty {@code Optional} if the iterator is empty.
 	 * @see Iterator#next()
 	 * @see Stream#findFirst()
 	 */
 	public static <E> Optional<E> findNext(@Nonnull final Iterator<E> iterator) {
 		return iterator.hasNext() ? Optional.of(iterator.next()) : Optional.empty();
+	}
+
+	/**
+	 * Returns an {@link Optional} describing the first and only element of this iterator, or an empty {@code Optional} if the iterator is empty.
+	 * @implSpec This implementation delegates to {@link #findOnly(Iterator, Supplier)}.
+	 * @param <E> The type of elements returned by the iterator.
+	 * @param iterator The iterator from which the only object should be retrieved.
+	 * @return An {@code Optional} describing the only element of this iterator, or an empty {@code Optional} if the iterator is empty.
+	 * @throws IllegalArgumentException if the given stream has more than one element.
+	 * @see Iterator#next()
+	 */
+	public static <E> Optional<E> findOnly(@Nonnull final Iterator<E> iterator) {
+		return findOnly(iterator, () -> new IllegalArgumentException("Multiple elements encountered when at most one was expected."));
+	}
+
+	/**
+	 * Returns an {@link Optional} describing the first and only element of this iterator, or an empty {@code Optional} if the iterator is empty.
+	 * @param <E> The type of elements returned by the iterator.
+	 * @param <X> The type of exception to be thrown if there are many elements.
+	 * @param iterator The iterator from which the only object should be retrieved.
+	 * @param manyElementsExceptionSupplier The strategy for creating an exception to throw if more than one element is present.
+	 * @return An {@code Optional} describing the only element of this iterator, or an empty {@code Optional} if the iterator is empty.
+	 * @throws RuntimeException if the given stream has more than one element.
+	 * @see Iterator#next()
+	 */
+	public static <E, X extends RuntimeException> Optional<E> findOnly(@Nonnull final Iterator<E> iterator,
+			@Nonnull final Supplier<X> manyElementsExceptionSupplier) {
+		final Optional<E> only;
+		if(iterator.hasNext()) {
+			only = Optional.of(iterator.next());
+			if(iterator.hasNext()) {
+				throw manyElementsExceptionSupplier.get();
+			}
+		} else {
+			only = Optional.empty();
+		}
+		return only;
+	}
+
+	/**
+	 * Retrieves the one and only one element expected to be in the iterator.
+	 * @param <E> The type of element in the iterator.
+	 * @param iterator The iterator from which the only element will be retrieved.
+	 * @return The one and only one element in the iterator.
+	 * @throws NoSuchElementException if the iterator has no more elements
+	 * @throws IllegalArgumentException if the given iterator has more than one element.
+	 */
+	public static <E> E getOnly(@Nonnull final Iterator<E> iterator) {
+		return getOnly(iterator, () -> new IllegalArgumentException("Multiple elements encountered when at most one was expected."));
+	}
+
+	/**
+	 * Retrieves the one and only one element expected to be in the iterator.
+	 * @param <E> The type of element in the iterator.
+	 * @param <X> The type of exception to be thrown if there are many elements.
+	 * @param iterator The iterator from which only element will be retrieved.
+	 * @param manyElementsExceptionSupplier The strategy for creating an exception to throw if more than one element is present.
+	 * @return The one and only one element in the iterator.
+	 * @throws NoSuchElementException if the iterator has no more elements
+	 * @throws RuntimeException if the given stream has more than one element.
+	 */
+	public static <E, X extends RuntimeException> E getOnly(@Nonnull final Iterator<E> iterator, @Nonnull final Supplier<X> manyElementsExceptionSupplier) {
+		requireNonNull(manyElementsExceptionSupplier);
+		final E next = iterator.next();
+		if(iterator.hasNext()) {
+			throw manyElementsExceptionSupplier.get();
+		}
+		return next;
 	}
 
 	/**

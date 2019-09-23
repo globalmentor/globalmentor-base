@@ -22,10 +22,14 @@ import static java.util.Collections.*;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
+import java.util.NoSuchElementException;
+
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.junit.jupiter.api.*;
 
 /**
- * Test of the {@link Iterables} utilities.
+ * Tests the {@link Iterables} utilities.
  * @author Garret Wilson
  * @see Iterables
  */
@@ -34,11 +38,34 @@ public class IterablesTest {
 	/** @see Iterables#findFirst(Iterable) */
 	@Test
 	public void testFindFirst() {
-		assertThat(Iterables.findFirst(emptySet()), not(isPresent()));
-		assertThat(Iterables.findFirst(emptyList()), not(isPresent()));
+		assertThat(Iterables.findFirst(emptySet()), isEmpty());
+		assertThat(Iterables.findFirst(emptyList()), isEmpty());
 		assertThat(Iterables.findFirst(singleton("foo")), isPresentAndIs("foo"));
 		assertThat(Iterables.findFirst(singletonList("foo")), isPresentAndIs("foo"));
 		assertThat(Iterables.findFirst(asList("foo", "bar")), isPresentAndIs("foo"));
+		assertThat(Iterables.findFirst(asList(1, 2, 3)), isPresentAndIs(1));
+	}
+
+	/** @see Iterables#findOnly(Iterable) */
+	@Test
+	public void testFindOnly() {
+		assertThat(Iterables.findOnly(emptySet()), isEmpty());
+		assertThat(Iterables.findOnly(emptyList()), isEmpty());
+		assertThat(Iterables.findOnly(singleton("foo")), isPresentAndIs("foo"));
+		assertThat(Iterables.findOnly(singletonList("foo")), isPresentAndIs("foo"));
+		assertThrows(IllegalArgumentException.class, () -> Iterables.findOnly(asList("foo", "bar")));
+		assertThrows(IllegalArgumentException.class, () -> Iterables.findOnly(asList(1, 2, 3)));
+	}
+
+	/** @see Iterables#getOnly(Iterable) */
+	@Test
+	public void testGetOnly() {
+		assertThrows(NoSuchElementException.class, () -> Iterables.getOnly(emptySet()));
+		assertThrows(NoSuchElementException.class, () -> Iterables.getOnly(emptyList()));
+		assertThat(Iterables.getOnly(singleton("foo")), is("foo"));
+		assertThat(Iterables.getOnly(singletonList("foo")), is("foo"));
+		assertThrows(IllegalArgumentException.class, () -> Iterables.getOnly(asList("foo", "bar")));
+		assertThrows(IllegalArgumentException.class, () -> Iterables.getOnly(asList(1, 2, 3)));
 	}
 
 }
