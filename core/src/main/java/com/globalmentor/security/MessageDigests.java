@@ -49,27 +49,27 @@ public class MessageDigests {
 	public static final Algorithm MD5 = new Algorithm("MD5");
 
 	/**
-	 * A hash algorithms defined in <a href="https://csrc.nist.gov/publications/fips/fips180-4/fips-180-4.pdf">FIPS PUB 180-4<a>. Guaranteed to be supported by
+	 * A hash algorithms defined in <a href="https://csrc.nist.gov/publications/fips/fips180-4/fips-180-4.pdf">FIPS PUB 180-4</a>. Guaranteed to be supported by
 	 * every Java platform implementation as of Java 7.
 	 */
 	public static final Algorithm SHA_1 = new Algorithm("SHA-1");
 
-	/** A hash algorithms defined in <a href="https://csrc.nist.gov/publications/fips/fips180-4/fips-180-4.pdf">FIPS PUB 180-4<a>. */
+	/** A hash algorithms defined in <a href="https://csrc.nist.gov/publications/fips/fips180-4/fips-180-4.pdf">FIPS PUB 180-4</a>. */
 	public static final Algorithm SHA_224 = new Algorithm("SHA-224");
 
 	/**
-	 * A hash algorithms defined in <a href="https://csrc.nist.gov/publications/fips/fips180-4/fips-180-4.pdf">FIPS PUB 180-4<a>. Guaranteed to be supported by
+	 * A hash algorithms defined in <a href="https://csrc.nist.gov/publications/fips/fips180-4/fips-180-4.pdf">FIPS PUB 180-4</a>. Guaranteed to be supported by
 	 * every Java platform implementation as of Java 7.
 	 */
 	public static final Algorithm SHA_256 = new Algorithm("SHA-256");
 
-	/** A hash algorithms defined in <a href="https://csrc.nist.gov/publications/fips/fips180-4/fips-180-4.pdf">FIPS PUB 180-4<a>. */
+	/** A hash algorithms defined in <a href="https://csrc.nist.gov/publications/fips/fips180-4/fips-180-4.pdf">FIPS PUB 180-4</a>. */
 	public static final Algorithm SHA_384 = new Algorithm("SHA-384");
 
-	/** A hash algorithms defined in <a href="https://csrc.nist.gov/publications/fips/fips180-4/fips-180-4.pdf">FIPS PUB 180-4<a>. */
+	/** A hash algorithms defined in <a href="https://csrc.nist.gov/publications/fips/fips180-4/fips-180-4.pdf">FIPS PUB 180-4</a>. */
 	public static final Algorithm SHA_512_224 = new Algorithm("SHA-512/224");
 
-	/** A hash algorithms defined in <a href="https://csrc.nist.gov/publications/fips/fips180-4/fips-180-4.pdf">FIPS PUB 180-4<a>. */
+	/** A hash algorithms defined in <a href="https://csrc.nist.gov/publications/fips/fips180-4/fips-180-4.pdf">FIPS PUB 180-4</a>. */
 	public static final Algorithm SHA_512_256 = new Algorithm("SHA-512/256");
 
 	/**
