@@ -44,7 +44,7 @@ public class TextFormatter {
 	 */
 	public static <A extends Appendable> A formatHex(final A appendable, final byte[] bytes) throws IOException { //TODO make generic to allow different bases 
 		for(final byte b : bytes) { //for each byte
-			appendable.append(Integers.toHexString(b, 2)); //convert the byte to a two-character hex string and add it to our appendable TODO make more efficient			
+			appendable.append(Integers.toHexString(b, 2)); //convert the byte to a two-character hex string and add it to our appendable TODO make more efficient; see https://stackoverflow.com/a/21178195/421049			
 		}
 		return appendable; //return the appendable we used
 	}

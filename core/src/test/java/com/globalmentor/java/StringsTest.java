@@ -100,4 +100,38 @@ public class StringsTest {
 		assertThat(Strings.trimEndLast("foobar", 'r'), equalTo("fooba"));
 	}
 
+	/**
+	 * @see Strings#truncate(String, int) *
+	 */
+	@Test
+	public void testTruncate() {
+		assertThat(Strings.truncate("", 0), is(""));
+		assertThat(Strings.truncate("", 1), is(""));
+		assertThat(Strings.truncate("", 2), is(""));
+		assertThat(Strings.truncate("", 3), is(""));
+		assertThat(Strings.truncate("", 4), is(""));
+		assertThat(Strings.truncate("", 123), is(""));
+		assertThat(Strings.truncate("", 9999), is(""));
+		assertThat(Strings.truncate("a", 0), is(""));
+		assertThat(Strings.truncate("a", 1), is("a"));
+		assertThat(Strings.truncate("a", 2), is("a"));
+		assertThat(Strings.truncate("a", 3), is("a"));
+		assertThat(Strings.truncate("a", 4), is("a"));
+		assertThat(Strings.truncate("a", 123), is("a"));
+		assertThat(Strings.truncate("a", 9999), is("a"));
+		assertThat(Strings.truncate("ab", 0), is(""));
+		assertThat(Strings.truncate("ab", 1), is("a"));
+		assertThat(Strings.truncate("ab", 2), is("ab"));
+		assertThat(Strings.truncate("ab", 3), is("ab"));
+		assertThat(Strings.truncate("ab", 4), is("ab"));
+		assertThat(Strings.truncate("ab", 123), is("ab"));
+		assertThat(Strings.truncate("ab", 9999), is("ab"));
+		assertThat(Strings.truncate("abc", 0), is(""));
+		assertThat(Strings.truncate("abc", 1), is("a"));
+		assertThat(Strings.truncate("abc", 2), is("ab"));
+		assertThat(Strings.truncate("abc", 3), is("abc"));
+		assertThat(Strings.truncate("abc", 4), is("abc"));
+		assertThat(Strings.truncate("abc", 123), is("abc"));
+		assertThat(Strings.truncate("abc", 9999), is("abc"));
+	}
 }

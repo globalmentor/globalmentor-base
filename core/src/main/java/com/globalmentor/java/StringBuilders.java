@@ -799,7 +799,7 @@ public class StringBuilders {
 	 * @param withString The string that will replace replaceString.
 	 * @return The number of replacements made.
 	 */
-	static public int replace(final StringBuilder stringBuilder, final String replaceString, final String withString) {
+	public static int replace(final StringBuilder stringBuilder, final String replaceString, final String withString) {
 		int replacementCount = 0; //show that we have not replaced any characters, yet
 		int beginSearchIndex = 0; //we'll start searching from the beginning of the string
 		int nextReplaceIndex; //this will hold the next location of the replaceString each time we search for it
