@@ -695,7 +695,7 @@ public class Strings {
 	 * @return The string, if the string was shorter than or equal to the maximum length; otherwise, the first <code>maxLength</code> characters of the string.
 	 */
 	public static String truncate(final String string, final int maxLength) {
-		return string.length() < maxLength ? string : string.substring(0, maxLength); //if the string is too long, use only the first maxLength characters
+		return string.length() <= maxLength ? string : string.substring(0, maxLength); //if the string is too long, use only the first maxLength characters
 	}
 
 	/**
