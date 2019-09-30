@@ -21,8 +21,10 @@ import java.security.*;
 
 import javax.annotation.*;
 
+import com.globalmentor.java.Bytes;
 import com.globalmentor.model.Named;
 
+import static com.globalmentor.java.Bytes.*;
 import static com.globalmentor.java.Characters.*;
 import static java.nio.charset.StandardCharsets.*;
 import static java.util.Objects.*;
@@ -198,6 +200,47 @@ public class MessageDigests {
 	}
 
 	/**
+	 * Computes a lowercase hex checksum string for the given input bytes.
+	 * @implSpec This implementation calls {@link MessageDigest#digest(byte[])}.
+	 * @apiNote This method considers a <dfn>checksum</dfn> to be a string version of a message <dfn>digest</dfn>, as the former is often used in the context of
+	 *          file contents verification.
+	 * @param messageDigest The implementation of a message digest algorithm.
+	 * @param input The sequence of bytes for which a digest and then a checksum string should be created.
+	 * @return The lowercase hex checksum string of the resulting hash value.
+	 * @see MessageDigest#digest(byte[])
+	 */
+	public static String checksum(@Nonnull final MessageDigest messageDigest, @Nonnull final byte[] input) {
+		return toHexString(messageDigest.digest(input));
+	}
+
+	/**
+	 * Computes a lowercase hex checksum string for the given character sequence using the UTF-8 charset.
+	 * @implSpec This implementation delegates to {@link #digest(MessageDigest, CharSequence...)}.
+	 * @apiNote This method considers a <dfn>checksum</dfn> to be a string version of a message <dfn>digest</dfn>, as the former is often used in the context of
+	 *          file contents verification.
+	 * @param messageDigest The implementation of a message digest algorithm.
+	 * @param charSequence The character sequence for which a checksum should be created.
+	 * @return The lowercase hex checksum string of the resulting hash value.
+	 */
+	public static String checksum(@Nonnull final MessageDigest messageDigest, @Nonnull final CharSequence charSequence) {
+		return toHexString(digest(messageDigest, charSequence));
+	}
+
+	/**
+	 * Computes a lowercase hex checksum string for the given characters using the UTF-8 charset.
+	 * @implSpec This implementation delegates to {@link #digest(MessageDigest, char[])}.
+	 * @apiNote This method considers a <dfn>checksum</dfn> to be a string version of a message <dfn>digest</dfn>, as the former is often used in the context of
+	 *          file contents verification.
+	 * @param messageDigest The implementation of a message digest algorithm.
+	 * @param characters The characters for which a checksum should be created.
+	 * @return The lowercase hex checksum string of the resulting hash value.
+	 * @see Bytes#toHexString(byte[])
+	 */
+	public static String checksum(@Nonnull final MessageDigest messageDigest, @Nonnull final char[] characters) {
+		return toHexString(digest(messageDigest, characters));
+	}
+
+	/**
 	 * Encapsulation of a standard {@link MessageDigest} algorithm, which may or may not be implemented by any particular Java platform.
 	 * @author Garret Wilson
 	 * @see <a href="https://docs.oracle.com/en/java/javase/11/docs/specs/security/standard-names.html#messagedigest-algorithms"><code>MessageDigest</code>
@@ -279,6 +322,44 @@ public class MessageDigests {
 		 */
 		public byte[] digest(@Nonnull final Charset charset, @Nonnull final char[] characters) {
 			return MessageDigests.digest(getInstance(), charset, characters);
+		}
+
+		/**
+		 * Computes a lowercase hex checksum string for the given input bytes.
+		 * @implSpec This implementation delegates to {@link MessageDigests#checksum(MessageDigest, byte[])}.
+		 * @apiNote This method considers a <dfn>checksum</dfn> to be a string version of a message <dfn>digest</dfn>, as the former is often used in the context of
+		 *          file contents verification.
+		 * @param input The sequence of bytes for which a digest and then a checksum string should be created.
+		 * @return The lowercase hex checksum string of the resulting hash value.
+		 * @see MessageDigest#digest(byte[])
+		 */
+		public String checksum(@Nonnull final byte[] input) {
+			return MessageDigests.checksum(getInstance(), input);
+		}
+
+		/**
+		 * Computes a lowercase hex checksum string for the given character sequence using the UTF-8 charset.
+		 * @implSpec This implementation delegates to {@link MessageDigests#checksum(MessageDigest, CharSequence)}.
+		 * @apiNote This method considers a <dfn>checksum</dfn> to be a string version of a message <dfn>digest</dfn>, as the former is often used in the context of
+		 *          file contents verification.
+		 * @param charSequence The character sequence for which a checksum should be created.
+		 * @return The lowercase hex checksum string of the resulting hash value.
+		 */
+		public String checksum(@Nonnull final CharSequence charSequence) {
+			return MessageDigests.checksum(getInstance(), charSequence);
+		}
+
+		/**
+		 * Computes a lowercase hex checksum string for the given characters using the UTF-8 charset.
+		 * @implSpec This implementation delegates to {@link MessageDigests#checksum(MessageDigest, char[])}.
+		 * @apiNote This method considers a <dfn>checksum</dfn> to be a string version of a message <dfn>digest</dfn>, as the former is often used in the context of
+		 *          file contents verification.
+		 * @param characters The characters for which a checksum should be created.
+		 * @return The lowercase hex checksum string of the resulting hash value.
+		 * @see Bytes#toHexString(byte[])
+		 */
+		public String checksum(@Nonnull final char[] characters) {
+			return MessageDigests.checksum(getInstance(), characters);
 		}
 
 		/**
