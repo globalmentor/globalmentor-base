@@ -366,7 +366,7 @@ public class ParseIOException extends IOException {
 	 * @return The message string constructed
 	 */
 	//TODO convert the characters in these strings so that whitespace gets converted to characters
-	static public String convertStringsToMessage(@Nonnull final List<String> strings) {
+	public static String convertStringsToMessage(@Nonnull final List<String> strings) {
 		final StringBuilder messageStringBuilder = new StringBuilder(); //this will receive the message to return
 		for(int i = 0; i < strings.size(); ++i) { //look at each string
 			messageStringBuilder.append('"').append(strings.get(i)); //add a double quote character followed by this string

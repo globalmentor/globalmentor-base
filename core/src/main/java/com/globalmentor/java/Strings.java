@@ -137,7 +137,7 @@ public class Strings {
 	 * @param c The character to search for.
 	 * @return The index of the character ignoring case, or -1 if the character could not be found.
 	 */
-	static public int indexOfIgnoreCase(final String string, final char c) {
+	public static int indexOfIgnoreCase(final String string, final char c) {
 		return indexOfIgnoreCase(string, c, 0); //attempt to search from the beginning
 	}
 
@@ -148,7 +148,7 @@ public class Strings {
 	 * @param fromIndex The index at which to begin searching
 	 * @return The index of the character ignoring case, or -1 if the character could not be found.
 	 */
-	static public int indexOfIgnoreCase(final String string, final char c, final int fromIndex) {
+	public static int indexOfIgnoreCase(final String string, final char c, final int fromIndex) {
 		return string.toUpperCase().indexOf(Character.toUpperCase(c), fromIndex); //convert the string and character to uppercase and search
 	}
 
@@ -158,7 +158,7 @@ public class Strings {
 	 * @param substring The string to search for.
 	 * @return The index of the substring ignoring case, or -1 if the substring could not be found.
 	 */
-	static public int indexOfIgnoreCase(final String string, final String substring) {
+	public static int indexOfIgnoreCase(final String string, final String substring) {
 		return indexOfIgnoreCase(string, substring, 0); //attempt to search from the beginning
 	}
 
@@ -169,7 +169,7 @@ public class Strings {
 	 * @param fromIndex The index at which to begin searching
 	 * @return The index of the substring ignoring case, or -1 if the substring could not be found.
 	 */
-	static public int indexOfIgnoreCase(final String string, final String substring, final int fromIndex) {
+	public static int indexOfIgnoreCase(final String string, final String substring, final int fromIndex) {
 		return string.toUpperCase().indexOf(substring.toUpperCase(), fromIndex); //convert the strings to uppercase and search
 	}
 
@@ -180,7 +180,7 @@ public class Strings {
 	 * @param insertString The string to insert.
 	 * @return A new string with the specified information inserted at the specified location.
 	 */
-	static public String insert(final String inString, final int index, final String insertString) {
+	public static String insert(final String inString, final int index, final String insertString) {
 		return inString.substring(0, index) + insertString + inString.substring(index); //return a string with the specified string inserted at the specified location
 	}
 
@@ -191,7 +191,7 @@ public class Strings {
 	 * @param insertChar The character to insert.
 	 * @return A new string with the specified information inserted at the specified location.
 	 */
-	static public String insert(final String inString, final int index, final char insertChar) {
+	public static String insert(final String inString, final int index, final char insertChar) {
 		return inString.substring(0, index) + insertChar + inString.substring(index); //return a string with the specified character inserted at the specified location
 	}
 
@@ -202,7 +202,7 @@ public class Strings {
 	 * @param fromIndex The index from which to search.
 	 * @return The index of the last occurrence of the substring at or less than the given index, or -1 if none was found.
 	 */
-	static public int lastIndexOfIgnoreCase(final String string, final String substring, final int fromIndex) {
+	public static int lastIndexOfIgnoreCase(final String string, final String substring, final int fromIndex) {
 		return string.toUpperCase().lastIndexOf(substring.toUpperCase(), fromIndex); //search without regard to case
 	}
 
@@ -212,7 +212,7 @@ public class Strings {
 	 * @param prefix The starting string to check for.
 	 * @return <code>true</code> if the string starts with the given prefix, ignoring case.
 	 */
-	static public boolean startsWithIgnoreCase(final String string, final String prefix) {
+	public static boolean startsWithIgnoreCase(final String string, final String prefix) {
 		return string.toUpperCase().startsWith(prefix.toUpperCase()); //convert the strings to uppercase and check the prefix TODO use a more efficient method that doesn't include creating new strings
 	}
 
@@ -223,7 +223,7 @@ public class Strings {
 	 * @param delimiters The characters to use for delimiters.
 	 * @return The index of the specified token number, or -1 if that token was not found.
 	 */
-	static public int tokenIndex(final String inString, int tokenNumber, final Characters delimiters) {
+	public static int tokenIndex(final String inString, int tokenNumber, final Characters delimiters) {
 		int i = 0; //start at the beginning of the string
 		while(true) {
 			i = CharSequences.notCharIndexOf(inString, delimiters, i); //find the next token
@@ -248,7 +248,7 @@ public class Strings {
 	 * @param delimiters The characters to use for delimiters.
 	 * @return The index of one character past the last character of the specified token number, or -1 if that token was not found.
 	 */
-	static public int tokenEndIndex(final String inString, final int tokenNumber, final Characters delimiters) {
+	public static int tokenEndIndex(final String inString, final int tokenNumber, final Characters delimiters) {
 		int i = tokenIndex(inString, tokenNumber, delimiters); //find the beginning of the specified token
 		if(i != -1) { //if we found the beginning of the specified token
 			i = CharSequences.charIndexOf(inString, delimiters, i); //find the character right after the token
@@ -265,7 +265,7 @@ public class Strings {
 	 * @param delimiters The characters to use for delimiters.
 	 * @return The specified numbered (one-based) token in the specified string, separated by delimiters, or "" if that token was not found.
 	 */
-	static public String stringToken(final String inString, final int tokenNumber, final Characters delimiters) {
+	public static String stringToken(final String inString, final int tokenNumber, final Characters delimiters) {
 		String token = ""; //assume we couldn't find the specified token
 		int beginIndex = tokenIndex(inString, tokenNumber, delimiters); //find the beginning of the specified token
 		if(beginIndex != -1) { //if we found the beginning of the specified token
@@ -281,7 +281,7 @@ public class Strings {
 	 * @param wordNumber The number (one-based) of the token to find.
 	 * @return The index of the specified word, or -1 if that word was not found.
 	 */
-	static public int wordIndex(final String inString, final int wordNumber) {
+	public static int wordIndex(final String inString, final int wordNumber) {
 		return tokenIndex(inString, wordNumber, WORD_DELIMITER_CHARACTERS); //return the index of the word (a word is a token surrounded by word delimiters)
 	}
 
@@ -291,7 +291,7 @@ public class Strings {
 	 * @param wordNumber The number (one-based) of the word to find.
 	 * @return The index of one character past the last character of the specified word number, or -1 if that word was not found.
 	 */
-	static public int wordEndIndex(final String inString, final int wordNumber) {
+	public static int wordEndIndex(final String inString, final int wordNumber) {
 		return tokenEndIndex(inString, wordNumber, WORD_DELIMITER_CHARACTERS); //return the ending index of the word (a word is a token surrounded by word delimiters)
 	}
 
@@ -301,7 +301,7 @@ public class Strings {
 	 * @param wordNumber The number (one-based) of the word to find.
 	 * @return The specified numbered (one-based) word in the specified string, or "" if that word was not found.
 	 */
-	static public String stringWord(final String inString, final int wordNumber) {
+	public static String stringWord(final String inString, final int wordNumber) {
 		return stringToken(inString, wordNumber, WORD_DELIMITER_CHARACTERS); //return the word (a word is a token surrounded by word delimiters)
 	}
 
@@ -311,7 +311,7 @@ public class Strings {
 	 * @param index The index of the character in a word.
 	 * @return The index of the beginning character of the word.
 	 */
-	static public int getWordBeginning(final String inString, final int index) { //TODO del this function
+	public static int getWordBeginning(final String inString, final int index) { //TODO del this function
 		int i;
 		for(i = index; i > 0 && !isWhitespace(inString.charAt(i - 1)); --i)
 			; //start at index and look back
@@ -324,7 +324,7 @@ public class Strings {
 	 * @param index The index of the character in a word.
 	 * @return The index of the ending character of the word.
 	 */
-	static public int getWordEnd(final String inString, final int index) { //TODO del this function
+	public static int getWordEnd(final String inString, final int index) { //TODO del this function
 		int i;
 		for(i = index; i < inString.length() - 1 && !isWhitespace(inString.charAt(i + 1)); ++i)
 			; //start at index and look forward
@@ -336,7 +336,7 @@ public class Strings {
 	 * @param inString The string in which to find hyperlinks.
 	 * @return A string with HTML hyperlink tags embedded.
 	 */
-	static public String makeHTMLHyperlinks(final String inString) {
+	public static String makeHTMLHyperlinks(final String inString) {
 		String outString = inString; //this is the string we'll process
 		int fromIndex = 0; //we'll start looking for links at the beginning of the string
 		while(fromIndex < outString.length()) { //keep looking until we run out of characters
@@ -434,7 +434,7 @@ public class Strings {
 	 * @param index The index of the information to remove.
 	 * @return A new string with the specified information removed from the specified location.
 	 */
-	static public String remove(final String inString, final int index) {
+	public static String remove(final String inString, final int index) {
 		return remove(inString, index, 1); //remove one character from the specified location
 	}
 
@@ -445,7 +445,7 @@ public class Strings {
 	 * @param len The number of characters to remove.
 	 * @return A new string with the specified information removed from the specified location.
 	 */
-	static public String remove(final String inString, final int index, final int len) { //TODO now maybe just call replace() with "" for the replacement text
+	public static String remove(final String inString, final int index, final int len) { //TODO now maybe just call replace() with "" for the replacement text
 		//TODO what if index is zero? will this still work?
 		return inString.substring(0, index) + inString.substring(index + len); //return a string with the specified information removed
 	}
@@ -498,7 +498,7 @@ public class Strings {
 	 * @param removeChar The character to remove from the string.
 	 * @return A new string with its beginning removed.
 	 */
-	static public String trimBeginningFirst(final String inString, final char removeChar) {
+	public static String trimBeginningFirst(final String inString, final char removeChar) {
 		return trimBeginning(inString, removeChar, 1); //trim on the first occurrence of the character
 	}
 
@@ -508,7 +508,7 @@ public class Strings {
 	 * @param removeChar The character to remove from the string.
 	 * @return A new string with its beginning removed.
 	 */
-	static public String trimBeginningLast(final String inString, final char removeChar) {
+	public static String trimBeginningLast(final String inString, final char removeChar) {
 		return trimBeginning(inString, removeChar, Integer.MAX_VALUE); //trim on the last occurrence of the character
 	}
 
@@ -521,7 +521,7 @@ public class Strings {
 	 * @param occurrence The number of occurrences of the remove character before information should be removed.
 	 * @return A new string with its end removed.
 	 */
-	static public String trimBeginning(final String inString, final char removeChar, int occurrence) {
+	public static String trimBeginning(final String inString, final char removeChar, int occurrence) {
 		if(occurrence == Integer.MAX_VALUE) { //if a MAX_VALUE is provided, remove everything up to the last occurrence remove character, but not including it.
 			return inString.substring(inString.lastIndexOf(removeChar) + 1);
 		}
@@ -544,7 +544,7 @@ public class Strings {
 	 * @param removeChar The character to remove from the string.
 	 * @return A new string with its end removed.
 	 */
-	static public String trimEndFirst(final String inString, final char removeChar) {
+	public static String trimEndFirst(final String inString, final char removeChar) {
 		return trimEnd(inString, removeChar, 1); //trim on the first occurrence of the character
 	}
 
@@ -554,7 +554,7 @@ public class Strings {
 	 * @param removeChar The character to remove from the string.
 	 * @return A new string with its end removed.
 	 */
-	static public String trimEndLast(final String inString, final char removeChar) {
+	public static String trimEndLast(final String inString, final char removeChar) {
 		return trimEnd(inString, removeChar, Integer.MAX_VALUE); //trim on the last occurrence of the character
 	}
 
@@ -567,7 +567,7 @@ public class Strings {
 	 * @param occurrence The number of occurrences of the remove character before information should be removed.
 	 * @return A new string with its end removed.
 	 */
-	static public String trimEnd(final String inString, final char removeChar, int occurrence) {
+	public static String trimEnd(final String inString, final char removeChar, int occurrence) {
 		if(occurrence == Integer.MAX_VALUE) { //if a MAX_VALUE is provided, remove everything past the first occurrence of remove character, but not including it.
 			return inString.substring(0, inString.indexOf(removeChar));
 		}
@@ -592,7 +592,7 @@ public class Strings {
 	 * @param replaceString The string of characters to put in the place of the removed characters.
 	 * @return A new string with the specified information removed from the specified location.
 	 */
-	static public String replace(final String inString, final int index, final int len, final String replaceString) {
+	public static String replace(final String inString, final int index, final int len, final String replaceString) {
 		return inString.substring(0, index) + replaceString + inString.substring(index + len); //return a string with the specified information removed
 	}
 
@@ -603,7 +603,7 @@ public class Strings {
 	 * @param withString The string that will replace replaceChar.
 	 * @return A new string with the specified information replaced.
 	 */
-	static public String replace(final String inString, final char replaceChar, final String withString) { //TODO this can be made more efficient with string buffers
+	public static String replace(final String inString, final char replaceChar, final String withString) { //TODO this can be made more efficient with string buffers
 		String outString = inString; //this is the string we'll process
 		int i = 0; //start at the beginning of the string
 		while(i < outString.length()) { //keep going until we reach the end of the string
@@ -733,7 +733,7 @@ public class Strings {
 	 * @param delimiters The string containing delimiter characters.
 	 * @return The string without the delimiters from the beginning and end of the string.
 	 */
-	static public String trim(final String inString, final Characters delimiters) { //TODO call the StringBuffer version---or maybe not---this may be more efficient
+	public static String trim(final String inString, final Characters delimiters) { //TODO call the StringBuffer version---or maybe not---this may be more efficient
 		int beginIndex, endIndex;
 		final int length = inString.length(); //get the length of the original string
 		for(beginIndex = 0; beginIndex < length && delimiters.contains(inString.charAt(beginIndex)); ++beginIndex)
@@ -752,7 +752,7 @@ public class Strings {
 	 * @param inString The string to be processed.
 	 * @return The string without any whitespace on the beginning or the end of the string.
 	 */
-	static public String trimWhitespaceNoBreak(final String inString) { //TODO update with our new Unicode 4.x constants
+	public static String trimWhitespaceNoBreak(final String inString) { //TODO update with our new Unicode 4.x constants
 		final int length = inString.length(); //get the string's length
 		int beginIndex, endIndex;
 		//find the first non-whitespace character in the string
@@ -779,7 +779,7 @@ public class Strings {
 	 * @param inString The string to be processed.
 	 * @return The string without any spaces on the beginning of the string.
 	 */
-	static public String trimWhitespaceNoBreakBeginning(final String inString) {
+	public static String trimWhitespaceNoBreakBeginning(final String inString) {
 		final int length = inString.length(); //get the string's length
 		int beginIndex;
 		//find the first non-whitespace character in the string
@@ -800,7 +800,7 @@ public class Strings {
 	 * @param inString The string to be processed.
 	 * @return The string without any spaces on the end of the string.
 	 */
-	static public String trimWhitespaceNoBreakEnd(final String inString) {
+	public static String trimWhitespaceNoBreakEnd(final String inString) {
 		final int length = inString.length(); //get the string's length
 		int endIndex;
 		//find the last non-whitespace character in the string
@@ -822,7 +822,7 @@ public class Strings {
 	 * @param beginString The string to be trimmed, if it appears at the beginning of inString.
 	 * @return The string, trimmed if needed.
 	 */
-	static public String trimBeginning(final String inString, final String beginString) {
+	public static String trimBeginning(final String inString, final String beginString) {
 		return inString.startsWith(beginString) ? //if the string begins with beginString
 				inString.substring(beginString.length()) : //trim the string
 				inString; //if the string doesn't begin with beginString, return the string itself
@@ -834,7 +834,7 @@ public class Strings {
 	 * @param endString The string to be trimmed, if it appears at the end of inString.
 	 * @return The string, trimmed if needed.
 	 */
-	static public String trimEnd(final String inString, final String endString) {
+	public static String trimEnd(final String inString, final String endString) {
 		return inString.endsWith(endString) ? //if the string ends with beginString
 				inString.substring(0, inString.length() - endString.length()) : //trim the string
 				inString; //if the string doesn't end with endString, return the string itself
@@ -846,7 +846,7 @@ public class Strings {
 	 * @param wrapLength The maximum length of any line.
 	 * @return The string wrapped with the given characters inserted.
 	 */
-	static public String wrap(final String inString, final int wrapLength) {
+	public static String wrap(final String inString, final int wrapLength) {
 		return wrap(inString, wrapLength, UNDEFINED_CHAR, '\n'); //wrap the string using newlines
 	}
 
@@ -858,7 +858,7 @@ public class Strings {
 	 * @param eolChar The string to insert at the end of each line, or <code>UNDEFINED_CHAR</code> if ends of lines should not be marked.
 	 * @return The string wrapped with the given characters inserted.
 	 */
-	static public String wrap(final String inString, final int wrapLength, final char padChar, final char eolChar) {
+	public static String wrap(final String inString, final int wrapLength, final char padChar, final char eolChar) {
 		//TODO del Log.trace("inside wrap() with string: "+inString+", length: "+wrapLength);	//TODO del
 		final StringBuffer outStringBuffer = new StringBuffer(inString.length()); //create a new string buffer that's at least as long as the input string
 		int lineBeginIndex = 0; //this will keep track of the start of each line
