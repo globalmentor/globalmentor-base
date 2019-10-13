@@ -31,10 +31,10 @@ public class Lex {
 	 * @throws NullPointerException if the given identifier is <code>null</code>.
 	 * @see Enums#getSerializationName(Enum)
 	 */
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public static String serialize(final Identifier identifier) {
 		if(identifier instanceof Enum<?>) {
-			return Enums.getSerializationName((Enum)identifier);
+			final Enum<?> enumIdentifier = (Enum<?>)identifier;
+			return Enums.getSerializationName(enumIdentifier);
 		} else {
 			return identifier.toString();
 		}
@@ -53,10 +53,11 @@ public class Lex {
 	 * @throws IllegalArgumentException if the identifier class is not a recognized type to be deserialized.
 	 * @see Enums#getSerializedEnum(Class, String)
 	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static <I extends Identifier> I deserialize(final Class<I> identifierClass, final String lexicalForm) {
 		if(Enum.class.isAssignableFrom(identifierClass)) {
-			return (I)Enums.getSerializedEnum((Class<? extends Enum>)identifierClass, lexicalForm);
+			@SuppressWarnings({"unchecked", "rawtypes"})
+			final I identifier = (I)Enums.getSerializedEnum((Class<? extends Enum>)identifierClass, lexicalForm);
+			return identifier;
 		}
 		throw new IllegalArgumentException("No known way to deserialize identifier type " + identifierClass);
 	}

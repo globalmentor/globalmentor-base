@@ -31,14 +31,17 @@ import static com.globalmentor.java.StringBuilders.*;
 public class Enums {
 
 	/**
-	 * Creates a set of enums using varargs. This method exists because the existing method {@link EnumSet#of(Enum, Enum...)} requires knowledge ahead of time of
-	 * whether there is at least one enum element to be added to the set.
+	 * Creates a set of enums using varargs.
+	 * @apiNote This method exists because the existing method {@link EnumSet#of(Enum, Enum...)} requires knowledge ahead of time of whether there is at least one
+	 *          enum element to be added to the set.
 	 * @param <E> The type of enum to be stored in the set.
 	 * @param enumClass The enum class.
 	 * @param enumElements The elements to be contained in the set.
 	 * @return A set of enums containing the given enum values.
 	 * @throws NullPointerException if the given enum class and/or enum elements is <code>null</code>.
+	 * @see EnumSet#of(Enum, Enum...)
 	 */
+	@SafeVarargs
 	public static <E extends Enum<E>> EnumSet<E> createEnumSet(final Class<E> enumClass, final E... enumElements) {
 		final EnumSet<E> set = EnumSet.noneOf(enumClass); //create an empty enum set
 		for(final E enumElement : enumElements) { //for each of the given enum values
@@ -53,13 +56,14 @@ public class Enums {
 	 * If the enum is a lexical {@link Identifier}, the name is converted to lowercase and all underscore characters ('_') are replaced by hyphens ('-'). For
 	 * example, <code>FILE_NOT_FOUND</code> would produce <code>file-not-found</code>.
 	 * </p>
-	 * @param <E> The type of the enum.
+	 * @implNote JDK 6/7 did not work with some enum generics if {@code <E extends Enum<E>>} was used in the signature, but in Eclipse 4.2.1 it worked fine.
+	 *           Nevertheless using {@code Enum<?>} seems more flexible in general as a parameter.
 	 * @param e The enum instance to convert to a serialization form.
 	 * @return A string representing the enum instance in a style appropriate for use in serialization.
 	 * @see Enum#name()
 	 * @see Identifier
 	 */
-	public static <E extends Enum<?>> String getSerializationName(final E e) { //JDK 6/7 does not work with some enum generics if Enum<E> is used; Eclipse 4.2.1 works fine
+	public static String getSerializationName(final Enum<?> e) {
 		String name = e.name();
 		if(e instanceof Identifier) { //if the enum is an identifier
 			final StringBuilder stringBuilder = new StringBuilder(e.name()); //start with the name of the enum
@@ -98,8 +102,9 @@ public class Enums {
 	}
 
 	/**
-	 * Returns an identifying string for the enum that includes the enum class and the enum name. This ID is useful for resource keys, for example. The ID will be
-	 * in the form <code><var>com.example.EnumClass</var>.<var>NAME</var></code>.
+	 * Returns an identifying string for the enum that includes the enum class and the enum name. The ID will be in the form
+	 * <code><var>com.example.EnumClass</var>.<var>NAME</var></code>.
+	 * @apiNote This ID is useful for resource keys, for example.
 	 * @param <E> The type of the enum.
 	 * @param e The enum instance for which to return an ID.
 	 * @return The identifying string for the given enum.
@@ -114,8 +119,8 @@ public class Enums {
 
 	/**
 	 * Returns an identifying string for the enum that includes the enum class, the enum name, and an optional property or aspect (such as "label" or "glyph").
-	 * This ID is useful for resource keys, for example. The ID will be in the form
-	 * <code><var>com.example.EnumClass</var>.<var>NAME</var>.<var>property</var></code>.
+	 * The ID will be in the form <code><var>com.example.EnumClass</var>.<var>NAME</var>.<var>property</var></code>.
+	 * @apiNote This ID is useful for resource keys, for example.
 	 * @param <E> The type of the enum.
 	 * @param e The enum instance for which to return an ID.
 	 * @param property The name of the enum property, or <code>null</code> if no property is desired.
@@ -129,4 +134,5 @@ public class Enums {
 		final String classPropertyName = Classes.getPropertyName(e.getClass(), e.name()); //com.example.EnumClass.NAME
 		return property != null ? classPropertyName + OBJECT_PREDICATE_SEPARATOR + property : classPropertyName; //if a property was given, append it
 	}
+
 }
