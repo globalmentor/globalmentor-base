@@ -25,7 +25,7 @@ import java.util.*;
 import javax.annotation.*;
 
 /**
- * A base compound tokenization strategy that relies a change from lowercase to uppercase to delimit tokens.
+ * A base compound tokenization strategy that relies a change from non-uppercase to uppercase to delimit tokens.
  * @implSpec This implementation does not recognize delimiters whose code points lie outside the BMP (i.e. that depend on surrogate pairs).
  * @author Garret Wilson
  */
@@ -34,6 +34,7 @@ public abstract class AbstractUppercaseDelimitedCompoundTokenization implements 
 	@Override
 	public List<String> split(final CharSequence charSequence) {
 		ArrayList<String> components = null; //we'll only create this if we have to
+		int componentIndex = 0;
 		final int length = charSequence.length();
 		int start = 0;
 		while(start < length) {
@@ -41,8 +42,8 @@ public abstract class AbstractUppercaseDelimitedCompoundTokenization implements 
 			for(int end = start + 1; end <= length; end++) { //go clear to the end (one past the last character)
 				final boolean isEnd = end == length;
 				final boolean isUppercase = !isEnd && Character.isUpperCase(charSequence.charAt(end));
-				if((isUppercase && !wasUppercase) || isEnd) { //if we switched from lowercase to uppercase (or reached the end)
-					final String component = Introspector.decapitalize(charSequence.subSequence(start, end).toString()); //TODO make more efficient by manually copying characters to an array
+				if((isUppercase && !wasUppercase) || isEnd) { //if we switched from non-uppercase to uppercase (or reached the end)
+					final String component = transformSplitComponent(componentIndex, charSequence.subSequence(start, end)).toString();
 					if(components == null) { //if there are no components yet
 						if(isEnd) { //only one component
 							return singletonList(component);
@@ -50,6 +51,7 @@ public abstract class AbstractUppercaseDelimitedCompoundTokenization implements 
 						components = new ArrayList<>();
 					}
 					components.add(component);
+					componentIndex++;
 					start = end;
 					break;
 				}
@@ -81,13 +83,36 @@ public abstract class AbstractUppercaseDelimitedCompoundTokenization implements 
 	}
 
 	/**
-	 * Determines the component to use when joining.
+	 * Determines the component to use after splitting.
+	 * @implSpec The default implementation changes the first character to lowercase if the first character is uppercase but not followed by another uppercase
+	 *           character.
+	 * @param componentIndex The index of the component being split.
+	 * @param component The non-empty component being split.
+	 * @return The component after splitting.
+	 * @throws NullPointerException if the component is <code>null</code>.
+	 * @throws IllegalArgumentException if the component is the empty string.
+	 * @see Introspector#decapitalize(String)
+	 */
+	protected CharSequence transformSplitComponent(final int componentIndex, @Nonnull final CharSequence component) {
+		checkArgument(component.length() != 0, "Compound token component cannot be empty.");
+		final char firstChar = component.charAt(0);
+		//if the first character is uppercase, only decapitalize if it is not followed by another capital letter
+		if(Character.isUpperCase(firstChar) && (component.length() == 1 || !Character.isUpperCase(component.charAt(1)))) {
+			final StringBuilder stringBuilder = new StringBuilder(component);
+			stringBuilder.setCharAt(0, Character.toLowerCase(firstChar));
+			return stringBuilder;
+		}
+		return component;
+	}
+
+	/**
+	 * Determines the component to use before joining.
 	 * @implSpec The default implementation changes the first character to uppercase.
 	 * @param componentIndex The index of the component being joined.
 	 * @param component The non-empty component being joined.
 	 * @return The component to use for joining.
-	 * @throws NullPointerException if the components is <code>null</code>.
-	 * @throws IllegalArgumentException if the components is the empty string.
+	 * @throws NullPointerException if the component is <code>null</code>.
+	 * @throws IllegalArgumentException if the component is the empty string.
 	 */
 	protected CharSequence transformJoinComponent(final int componentIndex, @Nonnull final CharSequence component) {
 		checkArgument(component.length() != 0, "Compound token component cannot be empty.");

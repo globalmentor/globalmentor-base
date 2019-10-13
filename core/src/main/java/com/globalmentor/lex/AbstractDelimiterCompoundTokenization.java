@@ -16,6 +16,7 @@
 
 package com.globalmentor.lex;
 
+import static com.globalmentor.java.CharSequences.*;
 import static com.globalmentor.java.Conditions.*;
 
 import java.util.*;
@@ -55,6 +56,7 @@ public abstract class AbstractDelimiterCompoundTokenization implements CompoundT
 	 * {@inheritDoc}
 	 * @implNote This implementation performs joining manually rather than calling {@link String#join(CharSequence, Iterable)} for efficiency and to check each
 	 *           component.
+	 * @throws IllegalArgumentException if one of the components already contains the tokenization delimiter.
 	 */
 	@Override
 	public String join(final Iterable<? extends CharSequence> components) {
@@ -68,6 +70,7 @@ public abstract class AbstractDelimiterCompoundTokenization implements CompoundT
 		do { //we know there is at least one component
 			final CharSequence component = componentIterator.next();
 			checkArgument(component.length() != 0, "Compound token component cannot be empty.");
+			checkArgument(!contains(component, delimiter), "Component %s cannot contain the delimiter %s.", component, delimiterString);
 			stringBuilder.append(component);
 			hasNext = componentIterator.hasNext();
 			if(hasNext) {
@@ -82,8 +85,8 @@ public abstract class AbstractDelimiterCompoundTokenization implements CompoundT
 	 * @implSpec This implementation does a simple delimiter replacement, which is more efficient than splitting and joining.
 	 */
 	@Override
-	public String toKebabCase(final String token) {
-		return token.replace(getDelimiter(), KEBAB_CASE_DELIMITER);
+	public String toKebabCase(final CharSequence token) {
+		return token.toString().replace(getDelimiter(), KEBAB_CASE_DELIMITER);
 	}
 
 	/**
@@ -91,8 +94,8 @@ public abstract class AbstractDelimiterCompoundTokenization implements CompoundT
 	 * @implSpec This implementation does a simple delimiter replacement, which is more efficient than splitting and joining.
 	 */
 	@Override
-	public String toSnakeCase(String token) {
-		return token.replace(getDelimiter(), SNAKE_CASE_DELIMITER);
+	public String toSnakeCase(CharSequence token) {
+		return token.toString().replace(getDelimiter(), SNAKE_CASE_DELIMITER);
 	}
 
 }
