@@ -34,7 +34,7 @@ import org.junit.jupiter.api.*;
 public class CompoundTokenizationTest {
 
 	/** The implementations tested by this class that support round-trip split+join. */
-	private static final List<CompoundTokenization> ROUND_TRIP_IMPLEMENTATIONS = unmodifiableList(asList(CAMEL_CASE, KEBAB_CASE, SNAKE_CASE));
+	private static final List<CompoundTokenization> IMPLEMENTATIONS = unmodifiableList(asList(CAMEL_CASE, KEBAB_CASE, SNAKE_CASE));
 
 	/** A list of tokens to use for testing. */
 	private static final List<String> TEST_TOKENS = unmodifiableList(
@@ -45,12 +45,12 @@ public class CompoundTokenizationTest {
 	/**
 	 * @see CompoundTokenization#split(CharSequence)
 	 * @see CompoundTokenization#join(Iterable)
-	 * @see #ROUND_TRIP_IMPLEMENTATIONS
+	 * @see #IMPLEMENTATIONS
 	 * @see #TEST_TOKENS
 	 */
 	@Test
 	public void testSplitJoinRoundTripForAllImplementations() {
-		for(final CompoundTokenization tokenization : ROUND_TRIP_IMPLEMENTATIONS) {
+		for(final CompoundTokenization tokenization : IMPLEMENTATIONS) {
 			for(final String token : TEST_TOKENS) {
 				assertThat("(" + tokenization.getName() + ") " + token, tokenization.join(tokenization.split(token)), is(token));
 			}
@@ -58,6 +58,54 @@ public class CompoundTokenizationTest {
 	}
 
 	//camelCase
+
+	/**
+	 * @see CompoundTokenization#CAMEL_CASE
+	 * @see CamelCase#isDromedaryCase(CharSequence)
+	 */
+	@Test
+	public void testCamelCaseIsDromedaryCase() {
+		assertThat(CAMEL_CASE.isDromedaryCase("fooBar"), is(true));
+		assertThat(CAMEL_CASE.isDromedaryCase("$fooBar"), is(false));
+		assertThat(CAMEL_CASE.isDromedaryCase("$FooBar"), is(false));
+		assertThat(CAMEL_CASE.isDromedaryCase("FooBar"), is(false));
+	}
+
+	/**
+	 * @see CompoundTokenization#CAMEL_CASE
+	 * @see CamelCase#toDromedaryCase(CharSequence)
+	 */
+	@Test
+	public void testCamelCaseToDromedaryCase() {
+		assertThat(CAMEL_CASE.toDromedaryCase("fooBar"), is("fooBar"));
+		assertThat(CAMEL_CASE.toDromedaryCase("$fooBar"), is("$fooBar"));
+		assertThat(CAMEL_CASE.toDromedaryCase("$FooBar"), is("$FooBar"));
+		assertThat(CAMEL_CASE.toDromedaryCase("FooBar"), is("fooBar"));
+	}
+
+	/**
+	 * @see CompoundTokenization#CAMEL_CASE
+	 * @see CamelCase#isPascalCase(CharSequence)
+	 */
+	@Test
+	public void testCamelCaseIsPascalCase() {
+		assertThat(CAMEL_CASE.isPascalCase("fooBar"), is(false));
+		assertThat(CAMEL_CASE.isPascalCase("$fooBar"), is(false));
+		assertThat(CAMEL_CASE.isPascalCase("$FooBar"), is(false));
+		assertThat(CAMEL_CASE.isPascalCase("FooBar"), is(true));
+	}
+
+	/**
+	 * @see CompoundTokenization#CAMEL_CASE
+	 * @see CamelCase#toDromedaryCase(CharSequence)
+	 */
+	@Test
+	public void testCamelCaseToPascalCase() {
+		assertThat(CAMEL_CASE.toPascalCase("fooBar"), is("FooBar"));
+		assertThat(CAMEL_CASE.toPascalCase("$fooBar"), is("$fooBar"));
+		assertThat(CAMEL_CASE.toPascalCase("$FooBar"), is("$FooBar"));
+		assertThat(CAMEL_CASE.toPascalCase("FooBar"), is("FooBar"));
+	}
 
 	/**
 	 * @see CompoundTokenization#CAMEL_CASE
@@ -171,120 +219,6 @@ public class CompoundTokenizationTest {
 		assertThat(CAMEL_CASE.toSnakeCase("oldURL"), is("old_URL"));
 	}
 
-	//PascalCase
-
-	/**
-	 * @see CompoundTokenization#PASCAL_CASE
-	 * @see CompoundTokenization#split(CharSequence)
-	 */
-	@Test
-	public void testPascalCaseSplit() {
-		assertThat(PASCAL_CASE.split(""), is(empty()));
-		assertThat(PASCAL_CASE.split("foobar"), is(asList("foobar")));
-		assertThat(PASCAL_CASE.split("fooBar"), is(asList("foo", "bar")));
-		assertThat(PASCAL_CASE.split("FooBar"), is(asList("foo", "bar")));
-		assertThat(PASCAL_CASE.split("foo-bar"), is(asList("foo-bar")));
-		assertThat(PASCAL_CASE.split("foo-Bar"), is(asList("foo-", "bar")));
-		assertThat(PASCAL_CASE.split("foo_bar"), is(asList("foo_bar")));
-		assertThat(PASCAL_CASE.split("foo_Bar"), is(asList("foo_", "bar")));
-		assertThat(PASCAL_CASE.split("x"), is(asList("x")));
-		assertThat(PASCAL_CASE.split("X"), is(asList("x")));
-		assertThat(PASCAL_CASE.split("CDlibrary"), is(asList("CDlibrary")));
-		assertThat(PASCAL_CASE.split("CdLibrary"), is(asList("cd", "library")));
-		assertThat(PASCAL_CASE.split("userCDlibrary"), is(asList("user", "CDlibrary")));
-		assertThat(PASCAL_CASE.split("userCdLibrary"), is(asList("user", "cd", "library")));
-		assertThat(PASCAL_CASE.split("URL"), is(asList("URL")));
-		assertThat(PASCAL_CASE.split("URLconverter"), is(asList("URLconverter")));
-		assertThat(PASCAL_CASE.split("UrlConverter"), is(asList("url", "converter")));
-		assertThat(PASCAL_CASE.split("oldURLconverter"), is(asList("old", "URLconverter")));
-		assertThat(PASCAL_CASE.split("oldUrlConverter"), is(asList("old", "url", "converter")));
-		assertThat(PASCAL_CASE.split("oldURL"), is(asList("old", "URL")));
-	}
-
-	/**
-	 * @see CompoundTokenization#PASCAL_CASE
-	 * @see CompoundTokenization#join(Iterable)
-	 */
-	@Test
-	public void testPascalCaseJoin() {
-		assertThat(PASCAL_CASE.join(asList()), is(""));
-		assertThat(PASCAL_CASE.join(asList("foobar")), is("Foobar"));
-		assertThat(PASCAL_CASE.join(asList("foo", "bar")), is("FooBar"));
-		assertThat(PASCAL_CASE.join(asList("Foo", "bar")), is("FooBar"));
-		assertThat(PASCAL_CASE.join(asList("foo-bar")), is("Foo-bar"));
-		assertThat(PASCAL_CASE.join(asList("foo-", "bar")), is("Foo-Bar"));
-		assertThat(PASCAL_CASE.join(asList("foo_bar")), is("Foo_bar"));
-		assertThat(PASCAL_CASE.join(asList("foo_", "bar")), is("Foo_Bar"));
-		assertThat(PASCAL_CASE.join(asList("x")), is("X"));
-		assertThat(PASCAL_CASE.join(asList("X")), is("X"));
-		assertThat(PASCAL_CASE.join(asList("CDlibrary")), is("CDlibrary"));
-		assertThat(PASCAL_CASE.join(asList("cd", "library")), is("CdLibrary"));
-		assertThat(PASCAL_CASE.join(asList("user", "CDlibrary")), is("UserCDlibrary"));
-		assertThat(PASCAL_CASE.join(asList("user", "cd", "library")), is("UserCdLibrary"));
-		assertThat(PASCAL_CASE.join(asList("URL")), is("URL"));
-		assertThat(PASCAL_CASE.join(asList("URLconverter")), is("URLconverter"));
-		assertThat(PASCAL_CASE.join(asList("url", "converter")), is("UrlConverter"));
-		assertThat(PASCAL_CASE.join(asList("old", "URLconverter")), is("OldURLconverter"));
-		assertThat(PASCAL_CASE.join(asList("old", "url", "converter")), is("OldUrlConverter"));
-		assertThat(PASCAL_CASE.join(asList("old", "URL")), is("OldURL"));
-	}
-
-	/**
-	 * @see CompoundTokenization#PASCAL_CASE
-	 * @see CompoundTokenization#toKebabCase(CharSequence)
-	 */
-	@Test
-	public void testPascalCaseToKebabCase() {
-		assertThat(PASCAL_CASE.toKebabCase(""), is(""));
-		assertThat(PASCAL_CASE.toKebabCase("foobar"), is("foobar"));
-		assertThat(PASCAL_CASE.toKebabCase("fooBar"), is("foo-bar"));
-		assertThat(PASCAL_CASE.toKebabCase("FooBar"), is("foo-bar"));
-		assertThrows(IllegalArgumentException.class, () -> PASCAL_CASE.toKebabCase("foo-bar"));
-		assertThrows(IllegalArgumentException.class, () -> PASCAL_CASE.toKebabCase("foo-Bar"));
-		assertThat(PASCAL_CASE.toKebabCase("foo_bar"), is("foo_bar"));
-		assertThat(PASCAL_CASE.toKebabCase("foo_Bar"), is("foo_-bar"));
-		assertThat(PASCAL_CASE.toKebabCase("x"), is("x"));
-		assertThat(PASCAL_CASE.toKebabCase("X"), is("x"));
-		assertThat(PASCAL_CASE.toKebabCase("CDlibrary"), is("CDlibrary"));
-		assertThat(PASCAL_CASE.toKebabCase("CdLibrary"), is("cd-library"));
-		assertThat(PASCAL_CASE.toKebabCase("userCDlibrary"), is("user-CDlibrary"));
-		assertThat(PASCAL_CASE.toKebabCase("userCdLibrary"), is("user-cd-library"));
-		assertThat(PASCAL_CASE.toKebabCase("URL"), is("URL"));
-		assertThat(PASCAL_CASE.toKebabCase("URLconverter"), is("URLconverter"));
-		assertThat(PASCAL_CASE.toKebabCase("UrlConverter"), is("url-converter"));
-		assertThat(PASCAL_CASE.toKebabCase("oldURLconverter"), is("old-URLconverter"));
-		assertThat(PASCAL_CASE.toKebabCase("oldUrlConverter"), is("old-url-converter"));
-		assertThat(PASCAL_CASE.toKebabCase("oldURL"), is("old-URL"));
-	}
-
-	/**
-	 * @see CompoundTokenization#PASCAL_CASE
-	 * @see CompoundTokenization#toSnakeCase(CharSequence)
-	 */
-	@Test
-	public void testPascalCaseToSnakeCase() {
-		assertThat(PASCAL_CASE.toSnakeCase(""), is(""));
-		assertThat(PASCAL_CASE.toSnakeCase("foobar"), is("foobar"));
-		assertThat(PASCAL_CASE.toSnakeCase("fooBar"), is("foo_bar"));
-		assertThat(PASCAL_CASE.toSnakeCase("FooBar"), is("foo_bar"));
-		assertThat(PASCAL_CASE.toSnakeCase("foo-bar"), is("foo-bar"));
-		assertThat(PASCAL_CASE.toSnakeCase("foo-Bar"), is("foo-_bar"));
-		assertThrows(IllegalArgumentException.class, () -> PASCAL_CASE.toSnakeCase("foo_bar"));
-		assertThrows(IllegalArgumentException.class, () -> PASCAL_CASE.toSnakeCase("foo_Bar"));
-		assertThat(PASCAL_CASE.toSnakeCase("x"), is("x"));
-		assertThat(PASCAL_CASE.toSnakeCase("X"), is("x"));
-		assertThat(PASCAL_CASE.toSnakeCase("CDlibrary"), is("CDlibrary"));
-		assertThat(PASCAL_CASE.toSnakeCase("CdLibrary"), is("cd_library"));
-		assertThat(PASCAL_CASE.toSnakeCase("userCDlibrary"), is("user_CDlibrary"));
-		assertThat(PASCAL_CASE.toSnakeCase("userCdLibrary"), is("user_cd_library"));
-		assertThat(PASCAL_CASE.toSnakeCase("URL"), is("URL"));
-		assertThat(PASCAL_CASE.toSnakeCase("URLconverter"), is("URLconverter"));
-		assertThat(PASCAL_CASE.toSnakeCase("UrlConverter"), is("url_converter"));
-		assertThat(PASCAL_CASE.toSnakeCase("oldURLconverter"), is("old_URLconverter"));
-		assertThat(PASCAL_CASE.toSnakeCase("oldUrlConverter"), is("old_url_converter"));
-		assertThat(PASCAL_CASE.toSnakeCase("oldURL"), is("old_URL"));
-	}
-
 	//kebab-case
 
 	/**
@@ -344,29 +278,6 @@ public class CompoundTokenizationTest {
 		assertThat(KEBAB_CASE.toCamelCase("URL-converter"), is("URLConverter"));
 		assertThat(KEBAB_CASE.toCamelCase("old-URL-converter"), is("oldURLConverter"));
 		assertThat(KEBAB_CASE.toCamelCase("old-URL"), is("oldURL"));
-	}
-
-	/**
-	 * @see CompoundTokenization#KEBAB_CASE
-	 * @see CompoundTokenization#toPascalCase(CharSequence)
-	 */
-	@Test
-	public void testKebabCaseToPascalCase() {
-		assertThat(KEBAB_CASE.toPascalCase("foobar"), is("Foobar"));
-		assertThat(KEBAB_CASE.toPascalCase("fooBar"), is("FooBar"));
-		assertThat(KEBAB_CASE.toPascalCase("FooBar"), is("FooBar"));
-		assertThat(KEBAB_CASE.toPascalCase("foo-bar"), is("FooBar"));
-		assertThat(KEBAB_CASE.toPascalCase("foo-Bar"), is("FooBar"));
-		assertThat(KEBAB_CASE.toPascalCase("foo_bar"), is("Foo_bar"));
-		assertThat(KEBAB_CASE.toPascalCase("foo_Bar"), is("Foo_Bar"));
-		assertThat(KEBAB_CASE.toPascalCase("x"), is("X"));
-		assertThat(KEBAB_CASE.toPascalCase("X"), is("X"));
-		assertThat(KEBAB_CASE.toPascalCase("CD-library"), is("CDLibrary"));
-		assertThat(KEBAB_CASE.toPascalCase("user-CD-library"), is("UserCDLibrary"));
-		assertThat(KEBAB_CASE.toPascalCase("URL"), is("URL"));
-		assertThat(KEBAB_CASE.toPascalCase("URL-converter"), is("URLConverter"));
-		assertThat(KEBAB_CASE.toPascalCase("old-URL-converter"), is("OldURLConverter"));
-		assertThat(KEBAB_CASE.toPascalCase("old-URL"), is("OldURL"));
 	}
 
 	/**
@@ -474,29 +385,6 @@ public class CompoundTokenizationTest {
 		assertThat(SNAKE_CASE.toCamelCase("URL_converter"), is("URLConverter"));
 		assertThat(SNAKE_CASE.toCamelCase("old_URL_converter"), is("oldURLConverter"));
 		assertThat(SNAKE_CASE.toCamelCase("old_URL"), is("oldURL"));
-	}
-
-	/**
-	 * @see CompoundTokenization#SNAKE_CASE
-	 * @see CompoundTokenization#toPascalCase(CharSequence)
-	 */
-	@Test
-	public void testSnakeCaseToPascalCase() {
-		assertThat(SNAKE_CASE.toPascalCase("foobar"), is("Foobar"));
-		assertThat(SNAKE_CASE.toPascalCase("fooBar"), is("FooBar"));
-		assertThat(SNAKE_CASE.toPascalCase("FooBar"), is("FooBar"));
-		assertThat(SNAKE_CASE.toPascalCase("foo-bar"), is("Foo-bar"));
-		assertThat(SNAKE_CASE.toPascalCase("foo-Bar"), is("Foo-Bar"));
-		assertThat(SNAKE_CASE.toPascalCase("foo_bar"), is("FooBar"));
-		assertThat(SNAKE_CASE.toPascalCase("foo_Bar"), is("FooBar"));
-		assertThat(SNAKE_CASE.toPascalCase("x"), is("X"));
-		assertThat(SNAKE_CASE.toPascalCase("X"), is("X"));
-		assertThat(SNAKE_CASE.toPascalCase("CD_library"), is("CDLibrary"));
-		assertThat(SNAKE_CASE.toPascalCase("user_CD_library"), is("UserCDLibrary"));
-		assertThat(SNAKE_CASE.toPascalCase("URL"), is("URL"));
-		assertThat(SNAKE_CASE.toPascalCase("URL_converter"), is("URLConverter"));
-		assertThat(SNAKE_CASE.toPascalCase("old_URL_converter"), is("OldURLConverter"));
-		assertThat(SNAKE_CASE.toPascalCase("old_URL"), is("OldURL"));
 	}
 
 	/**

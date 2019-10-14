@@ -16,8 +16,6 @@
 
 package com.globalmentor.lex;
 
-import static com.globalmentor.java.Conditions.*;
-
 import java.util.List;
 
 import javax.annotation.*;
@@ -26,10 +24,8 @@ import com.globalmentor.model.Named;
 
 /**
  * A strategy for dealing with compound tokens, such as <code>fooBar</code> or <code>foo-bar</code>.
- * @implNote The if a token may be either in {@link #PASCAL_CASE} or in {@link #CAMEL_CASE}, use {@link #CAMEL_CASE} to convert it to another tokenization if
- *           the capitalization of the first component should be maintained, as {@link #PASCAL_CASE} will normalize the case of the first component.
- * @implNote The default implementations work best if acronyms are formatted the same as non-acronyms. For example in {@link #PASCAL_CASE}, using
- *           <code>DefaultUrlMapper</code> instead of <code>DefaultURLMapper</code>.
+ * @implNote The default implementations work best if acronyms are formatted the same as non-acronyms. For example in {@link #CAMEL_CASE}, use
+ *           <code>oldUrlMapper</code> instead of <code>oldURLMapper</code>.
  * @author Garret Wilson
  */
 public interface CompoundTokenization extends Named<String> {
@@ -76,19 +72,6 @@ public interface CompoundTokenization extends Named<String> {
 	}
 
 	/**
-	 * Converts a token from one tokenization to <code>PascalCase</code>.
-	 * @apiNote Unlike {@link #toCamelCase(CharSequence)}, this method will change the case of the first component, and should thus not be used for round-trip
-	 *          conversions.
-	 * @implSpec The default implementation splits the compound token and then joins the components using {@link #PASCAL_CASE}.
-	 * @param token The compound token.
-	 * @return The same compound token using the <code>PascalCase</code> tokenization.
-	 * @see <a href="https://en.wikipedia.org/wiki/Camel_case">Camel case</a>
-	 */
-	public default String toPascalCase(@Nonnull final CharSequence token) {
-		return PASCAL_CASE.join(split(token));
-	}
-
-	/**
 	 * Converts a token from one tokenization to <code>kebab-case</code>.
 	 * @implSpec The default implementation splits the compound token and then joins the components using {@link #KEBAB_CASE}.
 	 * @param token The compound token.
@@ -111,65 +94,10 @@ public interface CompoundTokenization extends Named<String> {
 	}
 
 	/**
-	 * A general case-based compound tokenization supporting both <code>camelCase</code> and <code>PascalCase</code>. That is, this tokenization is agnostic to
-	 * whether the first component is capitalized, and thus supports round-trip split+join.
+	 * A general case-based compound tokenization, supporting both <code>dromedaryCase</code> and <code>PascalCase</code> variations.
 	 * @see <a href="https://en.wikipedia.org/wiki/Camel_case">Camel case</a>
 	 */
-	public CompoundTokenization CAMEL_CASE = new AbstractUppercaseDelimitedCompoundTokenization() {
-		@Override
-		public String getName() {
-			return "camelCase";
-		}
-
-		@Override
-		protected CharSequence transformSplitComponent(final int componentIndex, final CharSequence component) {
-			if(componentIndex == 0) { //the first component should not be decapitalized
-				checkArgument(component.length() != 0, "Compound token component cannot be empty.");
-				return component;
-			}
-			return super.transformSplitComponent(componentIndex, component);
-		};
-
-		@Override
-		protected CharSequence transformJoinComponent(final int componentIndex, final CharSequence component) {
-			if(componentIndex == 0) { //the first component should not be capitalized
-				checkArgument(component.length() != 0, "Compound token component cannot be empty.");
-				return component;
-			}
-			return super.transformJoinComponent(componentIndex, component);
-		};
-
-		@Override
-		public String toCamelCase(final CharSequence token) {
-			return token.toString();
-		}
-	};
-
-	/**
-	 * A special case of {@link #CAMEL_CASE} that decapitalizes the first component when splitting and capitalizes the first component when joining.
-	 * @implNote Warning: This implementation does <em>not</em> support round-trip split+join.
-	 * @see <a href="https://en.wikipedia.org/wiki/Camel_case">Camel case</a>
-	 */
-	public CompoundTokenization PASCAL_CASE = new AbstractUppercaseDelimitedCompoundTokenization() {
-		@Override
-		public String getName() {
-			return "PascalCase";
-		}
-
-		@Override
-		public String toPascalCase(final CharSequence token) {
-			if(token.length() == 0) {
-				return "";
-			}
-			final char firstChar = token.charAt(0);
-			if(Character.isUpperCase(token.charAt(0))) {
-				return token.toString();
-			}
-			final StringBuilder stringBuilder = new StringBuilder(token);
-			stringBuilder.setCharAt(0, Character.toUpperCase(firstChar));
-			return stringBuilder.toString();
-		}
-	};
+	public CamelCase CAMEL_CASE = new CamelCase();
 
 	/**
 	 * A delimiter-based compound tokenization using {@value #KEBAB_CASE_DELIMITER}.
