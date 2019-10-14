@@ -48,8 +48,9 @@ public abstract class AbstractDelimiterCompoundTokenization implements CompoundT
 	}
 
 	@Override
-	public List<String> split(final CharSequence charSequence) {
-		return delimiterCharacters.split(charSequence);
+	public List<String> split(final CharSequence token) {
+		checkArgument(token.length() > 0, "Token cannot be empty.");
+		return delimiterCharacters.split(token);
 	}
 
 	/**
@@ -62,9 +63,7 @@ public abstract class AbstractDelimiterCompoundTokenization implements CompoundT
 	public String join(final Iterable<? extends CharSequence> components) {
 		final Iterator<? extends CharSequence> componentIterator = components.iterator();
 		boolean hasNext = componentIterator.hasNext();
-		if(!hasNext) { //no need to build a string if there are no components
-			return "";
-		}
+		checkArgument(hasNext, "Cannot create compound tokenization with no components to join.");
 		final char delimiter = getDelimiter();
 		final StringBuilder stringBuilder = new StringBuilder();
 		do { //we know there is at least one component
@@ -86,6 +85,7 @@ public abstract class AbstractDelimiterCompoundTokenization implements CompoundT
 	 */
 	@Override
 	public String toKebabCase(final CharSequence token) {
+		checkArgument(token.length() > 0, "Token cannot be empty.");
 		return token.toString().replace(getDelimiter(), KEBAB_CASE_DELIMITER);
 	}
 
@@ -95,6 +95,7 @@ public abstract class AbstractDelimiterCompoundTokenization implements CompoundT
 	 */
 	@Override
 	public String toSnakeCase(CharSequence token) {
+		checkArgument(token.length() > 0, "Token cannot be empty.");
 		return token.toString().replace(getDelimiter(), SNAKE_CASE_DELIMITER);
 	}
 

@@ -38,7 +38,7 @@ public class CompoundTokenizationTest {
 
 	/** A list of tokens to use for testing. */
 	private static final List<String> TEST_TOKENS = unmodifiableList(
-			asList("", "foobar", "fooBar", "FooBar", "foo-bar", "foo-Bar", "foo_bar", "foo_Bar", "x", "X", "CDlibrary", "CdLibrary", "CD-library", "CD_library",
+			asList("foobar", "fooBar", "FooBar", "foo-bar", "foo-Bar", "foo_bar", "foo_Bar", "x", "X", "CDlibrary", "CdLibrary", "CD-library", "CD_library",
 					"userCDlibrary", "userCdLibrary", "user-CD-library", "user_CD_library", "URL", "URLconverter", "UrlConverter", "URL-converter", "URL_converter",
 					"oldURLconverter", "oldUrlConverter", "old-URL-converter", "old_URL_converter", "oldURL", "old-URL", "old_URL"));
 
@@ -65,6 +65,7 @@ public class CompoundTokenizationTest {
 	 */
 	@Test
 	public void testCamelCaseIsDromedaryCase() {
+		assertThrows(IllegalArgumentException.class, () -> CAMEL_CASE.isDromedaryCase(""));
 		assertThat(CAMEL_CASE.isDromedaryCase("fooBar"), is(true));
 		assertThat(CAMEL_CASE.isDromedaryCase("$fooBar"), is(false));
 		assertThat(CAMEL_CASE.isDromedaryCase("$FooBar"), is(false));
@@ -77,6 +78,7 @@ public class CompoundTokenizationTest {
 	 */
 	@Test
 	public void testCamelCaseToDromedaryCase() {
+		assertThrows(IllegalArgumentException.class, () -> CAMEL_CASE.toDromedaryCase(""));
 		assertThat(CAMEL_CASE.toDromedaryCase("fooBar"), is("fooBar"));
 		assertThat(CAMEL_CASE.toDromedaryCase("$fooBar"), is("$fooBar"));
 		assertThat(CAMEL_CASE.toDromedaryCase("$FooBar"), is("$FooBar"));
@@ -89,6 +91,7 @@ public class CompoundTokenizationTest {
 	 */
 	@Test
 	public void testCamelCaseIsPascalCase() {
+		assertThrows(IllegalArgumentException.class, () -> CAMEL_CASE.isPascalCase(""));
 		assertThat(CAMEL_CASE.isPascalCase("fooBar"), is(false));
 		assertThat(CAMEL_CASE.isPascalCase("$fooBar"), is(false));
 		assertThat(CAMEL_CASE.isPascalCase("$FooBar"), is(false));
@@ -101,6 +104,7 @@ public class CompoundTokenizationTest {
 	 */
 	@Test
 	public void testCamelCaseToPascalCase() {
+		assertThrows(IllegalArgumentException.class, () -> CAMEL_CASE.toPascalCase(""));
 		assertThat(CAMEL_CASE.toPascalCase("fooBar"), is("FooBar"));
 		assertThat(CAMEL_CASE.toPascalCase("$fooBar"), is("$fooBar"));
 		assertThat(CAMEL_CASE.toPascalCase("$FooBar"), is("$FooBar"));
@@ -113,7 +117,7 @@ public class CompoundTokenizationTest {
 	 */
 	@Test
 	public void testCamelCaseSplit() {
-		assertThat(CAMEL_CASE.split(""), is(empty()));
+		assertThrows(IllegalArgumentException.class, () -> CAMEL_CASE.split(""));
 		assertThat(CAMEL_CASE.split("foobar"), is(asList("foobar")));
 		assertThat(CAMEL_CASE.split("fooBar"), is(asList("foo", "bar")));
 		assertThat(CAMEL_CASE.split("FooBar"), is(asList("Foo", "bar")));
@@ -141,7 +145,7 @@ public class CompoundTokenizationTest {
 	 */
 	@Test
 	public void testCamelCaseJoin() {
-		assertThat(CAMEL_CASE.join(asList()), is(""));
+		assertThrows(IllegalArgumentException.class, () -> CAMEL_CASE.join(asList()));
 		assertThat(CAMEL_CASE.join(asList("foobar")), is("foobar"));
 		assertThat(CAMEL_CASE.join(asList("foo", "bar")), is("fooBar"));
 		assertThat(CAMEL_CASE.join(asList("Foo", "bar")), is("FooBar"));
@@ -169,7 +173,7 @@ public class CompoundTokenizationTest {
 	 */
 	@Test
 	public void testCamelCaseToKebabCase() {
-		assertThat(CAMEL_CASE.toKebabCase(""), is(""));
+		assertThrows(IllegalArgumentException.class, () -> CAMEL_CASE.toKebabCase(""));
 		assertThat(CAMEL_CASE.toKebabCase("foobar"), is("foobar"));
 		assertThat(CAMEL_CASE.toKebabCase("fooBar"), is("foo-bar"));
 		assertThat(CAMEL_CASE.toKebabCase("FooBar"), is("Foo-bar"));
@@ -197,7 +201,7 @@ public class CompoundTokenizationTest {
 	 */
 	@Test
 	public void testCamelCaseToSnakeCase() {
-		assertThat(CAMEL_CASE.toSnakeCase(""), is(""));
+		assertThrows(IllegalArgumentException.class, () -> CAMEL_CASE.toSnakeCase(""));
 		assertThat(CAMEL_CASE.toSnakeCase("foobar"), is("foobar"));
 		assertThat(CAMEL_CASE.toSnakeCase("fooBar"), is("foo_bar"));
 		assertThat(CAMEL_CASE.toSnakeCase("FooBar"), is("Foo_bar"));
@@ -227,7 +231,7 @@ public class CompoundTokenizationTest {
 	 */
 	@Test
 	public void testKebabCaseSplit() {
-		assertThat(KEBAB_CASE.split(""), is(empty()));
+		assertThrows(IllegalArgumentException.class, () -> KEBAB_CASE.split(""));
 		assertThat(KEBAB_CASE.split("foobar"), is(asList("foobar")));
 		assertThat(KEBAB_CASE.split("fooBar"), is(asList("fooBar")));
 		assertThat(KEBAB_CASE.split("FooBar"), is(asList("FooBar")));
@@ -245,7 +249,7 @@ public class CompoundTokenizationTest {
 	 */
 	@Test
 	public void testKebabCaseJoin() {
-		assertThat(KEBAB_CASE.join(asList()), is(""));
+		assertThrows(IllegalArgumentException.class, () -> KEBAB_CASE.join(asList()));
 		assertThat(KEBAB_CASE.join(asList("foobar")), is("foobar"));
 		assertThat(KEBAB_CASE.join(asList("foo", "bar")), is("foo-bar"));
 		assertThat(KEBAB_CASE.join(asList("Foo", "bar")), is("Foo-bar"));
@@ -263,6 +267,7 @@ public class CompoundTokenizationTest {
 	 */
 	@Test
 	public void testKebabCaseToCamelCase() {
+		assertThrows(IllegalArgumentException.class, () -> KEBAB_CASE.toCamelCase(""));
 		assertThat(KEBAB_CASE.toCamelCase("foobar"), is("foobar"));
 		assertThat(KEBAB_CASE.toCamelCase("fooBar"), is("fooBar"));
 		assertThat(KEBAB_CASE.toCamelCase("FooBar"), is("FooBar"));
@@ -286,6 +291,7 @@ public class CompoundTokenizationTest {
 	 */
 	@Test
 	public void testKebabCaseToKebabCase() {
+		assertThrows(IllegalArgumentException.class, () -> KEBAB_CASE.toKebabCase(""));
 		assertThat(KEBAB_CASE.toKebabCase("foobar"), is("foobar"));
 		assertThat(KEBAB_CASE.toKebabCase("fooBar"), is("fooBar"));
 		assertThat(KEBAB_CASE.toKebabCase("FooBar"), is("FooBar"));
@@ -309,6 +315,7 @@ public class CompoundTokenizationTest {
 	 */
 	@Test
 	public void testKebabCaseToSnakeCase() {
+		assertThrows(IllegalArgumentException.class, () -> KEBAB_CASE.toSnakeCase(""));
 		assertThat(KEBAB_CASE.toSnakeCase("foobar"), is("foobar"));
 		assertThat(KEBAB_CASE.toSnakeCase("fooBar"), is("fooBar"));
 		assertThat(KEBAB_CASE.toSnakeCase("FooBar"), is("FooBar"));
@@ -334,7 +341,7 @@ public class CompoundTokenizationTest {
 	 */
 	@Test
 	public void testSnakeCaseSplit() {
-		assertThat(SNAKE_CASE.split(""), is(empty()));
+		assertThrows(IllegalArgumentException.class, () -> SNAKE_CASE.split(""));
 		assertThat(SNAKE_CASE.split("foobar"), is(asList("foobar")));
 		assertThat(SNAKE_CASE.split("fooBar"), is(asList("fooBar")));
 		assertThat(SNAKE_CASE.split("FooBar"), is(asList("FooBar")));
@@ -352,7 +359,7 @@ public class CompoundTokenizationTest {
 	 */
 	@Test
 	public void testSnakeCaseJoin() {
-		assertThat(SNAKE_CASE.join(asList()), is(""));
+		assertThrows(IllegalArgumentException.class, () -> SNAKE_CASE.join(asList()));
 		assertThat(SNAKE_CASE.join(asList("foobar")), is("foobar"));
 		assertThat(SNAKE_CASE.join(asList("foo", "bar")), is("foo_bar"));
 		assertThat(SNAKE_CASE.join(asList("Foo", "bar")), is("Foo_bar"));
@@ -370,6 +377,7 @@ public class CompoundTokenizationTest {
 	 */
 	@Test
 	public void testSnakeCaseToCamelCase() {
+		assertThrows(IllegalArgumentException.class, () -> SNAKE_CASE.toCamelCase(""));
 		assertThat(SNAKE_CASE.toCamelCase("foobar"), is("foobar"));
 		assertThat(SNAKE_CASE.toCamelCase("fooBar"), is("fooBar"));
 		assertThat(SNAKE_CASE.toCamelCase("FooBar"), is("FooBar"));
@@ -393,6 +401,7 @@ public class CompoundTokenizationTest {
 	 */
 	@Test
 	public void testSnakeCaseToKebabCase() {
+		assertThrows(IllegalArgumentException.class, () -> SNAKE_CASE.toKebabCase(""));
 		assertThat(SNAKE_CASE.toKebabCase("foobar"), is("foobar"));
 		assertThat(SNAKE_CASE.toKebabCase("fooBar"), is("fooBar"));
 		assertThat(SNAKE_CASE.toKebabCase("FooBar"), is("FooBar"));
@@ -416,6 +425,7 @@ public class CompoundTokenizationTest {
 	 */
 	@Test
 	public void testSnakeCaseToSnakeCase() {
+		assertThrows(IllegalArgumentException.class, () -> SNAKE_CASE.toSnakeCase(""));
 		assertThat(SNAKE_CASE.toSnakeCase("foobar"), is("foobar"));
 		assertThat(SNAKE_CASE.toSnakeCase("fooBar"), is("fooBar"));
 		assertThat(SNAKE_CASE.toSnakeCase("FooBar"), is("FooBar"));

@@ -45,18 +45,19 @@ public class CamelCase implements CompoundTokenization {
 	}
 
 	@Override
-	public List<String> split(final CharSequence charSequence) {
+	public List<String> split(final CharSequence token) {
 		ArrayList<String> components = null; //we'll only create this if we have to
 		int componentIndex = 0;
-		final int length = charSequence.length();
+		final int length = token.length();
+		checkArgument(length > 0, "Token cannot be empty.");
 		int start = 0;
 		while(start < length) {
-			boolean wasUppercase = Character.isUpperCase(charSequence.charAt(start));
+			boolean wasUppercase = Character.isUpperCase(token.charAt(start));
 			for(int end = start + 1; end <= length; end++) { //go clear to the end (one past the last character)
 				final boolean isEnd = end == length;
-				final boolean isUppercase = !isEnd && Character.isUpperCase(charSequence.charAt(end));
+				final boolean isUppercase = !isEnd && Character.isUpperCase(token.charAt(end));
 				if((isUppercase && !wasUppercase) || isEnd) { //if we switched from non-uppercase to uppercase (or reached the end)
-					final String component = transformSplitComponent(componentIndex, charSequence.subSequence(start, end)).toString();
+					final String component = transformSplitComponent(componentIndex, token.subSequence(start, end)).toString();
 					if(components == null) { //if there are no components yet
 						if(isEnd) { //only one component
 							return singletonList(component);
@@ -82,9 +83,7 @@ public class CamelCase implements CompoundTokenization {
 	public String join(final Iterable<? extends CharSequence> components) {
 		final Iterator<? extends CharSequence> componentIterator = components.iterator();
 		boolean hasNext = componentIterator.hasNext();
-		if(!hasNext) { //no need to build a string if there are no components
-			return "";
-		}
+		checkArgument(hasNext, "Cannot create compound tokenization with no components to join.");
 		int componentIndex = 0;
 		final StringBuilder stringBuilder = new StringBuilder();
 		do { //we know there is at least one component
@@ -156,11 +155,10 @@ public class CamelCase implements CompoundTokenization {
 	 *          character is a symbol.
 	 * @param token The compound token in <code>camelCase</code>.
 	 * @return <code>true</code> if the first character is in lowercase.
+	 * @throws IllegalArgumentException if the token is empty.
 	 */
 	public boolean isDromedaryCase(@Nonnull final CharSequence token) {
-		if(token.length() == 0) {
-			return false;
-		}
+		checkArgument(token.length() > 0, "Token cannot be empty.");
 		return Character.isLowerCase(token.charAt(0));
 	}
 
@@ -171,11 +169,10 @@ public class CamelCase implements CompoundTokenization {
 	 * @apiNote This is a one-way conversion; it will not be possible to return to the previous tokenization unless the previous capitalization was known.
 	 * @param token The compound token in <code>camelCase</code>.
 	 * @return The same compound token using the <code>PascalCase</code> tokenization.
+	 * @throws IllegalArgumentException if the token is empty.
 	 */
 	public String toDromedaryCase(@Nonnull final CharSequence token) {
-		if(token.length() == 0) {
-			return "";
-		}
+		checkArgument(token.length() > 0, "Token cannot be empty.");
 		final char firstChar = token.charAt(0);
 		if(!Character.isUpperCase(firstChar)) {
 			return token.toString();
@@ -191,11 +188,10 @@ public class CamelCase implements CompoundTokenization {
 	 *          character is a symbol.
 	 * @param token The compound token in <code>camelCase</code>.
 	 * @return <code>true</code> if the first character is in uppercase.
+	 * @throws IllegalArgumentException if the token is empty.
 	 */
 	public boolean isPascalCase(@Nonnull final CharSequence token) {
-		if(token.length() == 0) {
-			return false;
-		}
+		checkArgument(token.length() > 0, "Token cannot be empty.");
 		return Character.isUpperCase(token.charAt(0));
 	}
 
@@ -206,11 +202,10 @@ public class CamelCase implements CompoundTokenization {
 	 * @apiNote This is a one-way conversion; it will not be possible to return to the previous tokenization unless the previous capitalization was known.
 	 * @param token The compound token in <code>camelCase</code>.
 	 * @return The same compound token using the <code>PascalCase</code> tokenization.
+	 * @throws IllegalArgumentException if the token is empty.
 	 */
 	public String toPascalCase(@Nonnull final CharSequence token) {
-		if(token.length() == 0) {
-			return "";
-		}
+		checkArgument(token.length() > 0, "Token cannot be empty.");
 		final char firstChar = token.charAt(0);
 		if(Character.isUpperCase(firstChar)) {
 			return token.toString();
