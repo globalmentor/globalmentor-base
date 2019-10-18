@@ -1101,6 +1101,8 @@ public class URIsTest {
 		assertThat(URIs.resolve(URI.create("http://example.com/foobar#bar"), URI.create("http://example.com/foobar")), is(URI.create("http://example.com/foobar")));
 		assertThat(URIs.resolve(URI.create("http://example.com/foobar"), URI.create("http://example.com/foobar#bar")),
 				is(URI.create("http://example.com/foobar#bar")));
+		assertThat(URIs.resolve(URI.create("http://example.com/foo"), URI.create("http://example.com/foo#bar")), is(URI.create("http://example.com/foo#bar")));
+		assertThat(URIs.resolve(URI.create("http://example.com/foo"), URI.create("#bar")), is(URI.create("http://example.com/foo#bar")));
 
 		//tests resolving URIs with multiple fragments
 		assertThat(URIs.resolve(URI.create("http://example.com/foobar?type=foo&place=bar#bar"), URI.create("http://example.com/foobar?type=foo&place=bar#bar")),
@@ -1109,6 +1111,14 @@ public class URIsTest {
 				is(URI.create("http://example.com/foobar?type=foo&place=bar#bar")));
 		assertThat(URIs.resolve(URI.create("http://example.com/foobar?type=foo&place=bar#bar"), URI.create("http://example.com/foobar")),
 				is(URI.create("http://example.com/foobar")));
+
+		//compare RFC 2396 versus RFC 3986 behavior 
+		assertThat(URI.create("http://example.com/foo").resolve(""), is(URI.create("http://example.com/"))); //RFC 2396 different from RFC 3986
+		assertThat(URIs.resolve(URI.create("http://example.com/foo"), ""), is(URI.create("http://example.com/foo")));
+		assertThat(URI.create("http://example.com/foo/").resolve(""), is(URI.create("http://example.com/foo/")));
+		assertThat(URIs.resolve(URI.create("http://example.com/foo/"), ""), is(URI.create("http://example.com/foo/")));
+		assertThat(URI.create("http://example.com/foo").resolve("#bar"), is(URI.create("http://example.com/foo#bar"))); //RFC 2396 same as RFC 3986
+		assertThat(URIs.resolve(URI.create("http://example.com/foo"), URI.create("#bar")), is(URI.create("http://example.com/foo#bar")));
 	}
 
 	/** Tests whether {@link URIs#resolve(URI, URI)} is throwing an exception when a null base {@link URI} is provided. */

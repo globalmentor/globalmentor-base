@@ -37,14 +37,14 @@ import static com.globalmentor.text.TextFormatter.*;
 import com.globalmentor.text.*;
 
 /**
- * Various URI manipulating functions for working with URIs as defined in <a href="http://www.ietf.org/rfc/rfc3986.txt">RFC 3986</a>, "Uniform Resource
+ * Various URI manipulating functions for working with URIs as defined in <a href="https://tools.ietf.org/html/rfc3986">RFC 3986</a>, "Uniform Resource
  * Identifiers (URI): Generic Syntax".
  * <p>
  * For file URIs Java incorrectly uses the form <code>file:/mnt/sdcard/...</code> instead of <code>file:///mnt/sdcard/...</code>, but these utilities use the
  * former for consistency.
  * </p>
  * @see URI
- * @see <a href="http://www.ietf.org/rfc/rfc3986.txt">RFC 3986 - Uniform Resource Identifiers (URI): Generic Syntax</a>
+ * @see <a href="https://tools.ietf.org/html/rfc3986">RFC 3986: Uniform Resource Identifiers (URI): Generic Syntax</a>
  */
 public class URIs {
 
@@ -319,8 +319,8 @@ public class URIs {
 
 	/**
 	 * Determines the raw, encoded path of the given {@value #PATH_SCHEME} scheme URI. The path will never be <code>null</code>; the empty relative path
-	 * <code>path:</code> will return the empty string. Any query or fragment is ignored. This method is needed because the {@link URI#getRawPath()} method does
-	 * not recognize relative paths for the {@value #PATH_SCHEME} scheme.
+	 * <code>path:</code> will return the empty string. Any query or fragment is ignored.
+	 * @apiNote This method is needed because the {@link URI#getRawPath()} method does not recognize relative paths for the {@value #PATH_SCHEME} scheme.
 	 * @param uri The path URI from which the path should be retrieved.
 	 * @return The raw, encoded path of the given path URI.
 	 * @throws NullPointerException if the given URI is <code>null</code>.
@@ -411,9 +411,7 @@ public class URIs {
 
 	/**
 	 * Forces a URI to represent a collection by appending a trailing path separator to the URI path, if any. If the URI has no path, no change is made.
-	 * <p>
-	 * This method is most useful for working with file systems that are imprecise about distinguishing between collection and non-collection nodes.
-	 * </p>
+	 * @apiNote This method is most useful for working with file systems that are imprecise about distinguishing between collection and non-collection nodes.
 	 * @param uri The URI to represent a collection.
 	 * @return A form of the URI representing a collection.
 	 * @throws NullPointerException if the given URI is <code>null</code>.
@@ -1615,15 +1613,13 @@ public class URIs {
 
 	/**
 	 * Normalizes a URI.
-	 * <p>
-	 * This method has the same semantics as {@link URI#normalize()}, except that this method has improvements and bug fixes. For example, a UNC path such as
-	 * <code>file:////server/file.ext</code> will retain its correct path, unlike {@link URI#normalize()}, which would reduce this to
-	 * <code>file:/server/file.ext</code>.
-	 * </p>
+	 * @apiNote This method has the same semantics as {@link URI#normalize()}, except that this method has improvements and bug fixes. For example, a UNC path
+	 *          such as <code>file:////server/file.ext</code> will retain its correct path, unlike {@link URI#normalize()}, which would reduce this to
+	 *          <code>file:/server/file.ext</code>.
 	 * @param uri The URI to normalize.
 	 * @return The normalized URI.
 	 * @see #isUNCFileURI(URI)
-	 * @see <a href="http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4723726">Java Bug ID: 4723726</a>
+	 * @see <a href="https://bugs.java.com/bugdatabase/view_bug.do?bug_id=4723726">Java Bug ID: 4723726</a>
 	 */
 	public static URI normalize(URI uri) {
 		final boolean wasUNCFileURI = isUNCFileURI(uri);
@@ -1637,13 +1633,8 @@ public class URIs {
 	}
 
 	/**
-	 * Resolves a string against a base URI with added functionality and bug fixes over {@link URI#resolve(String)}.
-	 * <p>
-	 * This method creates a URI from the child URI using {@link URI#create(String)} and then delegates to {@link #resolve(URI, URI)}.
-	 * </p>
-	 * <p>
-	 * The empty string is appended to the given base URI with no fragment.
-	 * </p>
+	 * Resolves a string against a base URI with added functionality and bug fixes over {@link URI#resolve(String)}, following
+	 * <a href="https://tools.ietf.org/html/rfc3986">RFC 3986</a>.
 	 * <p>
 	 * This method correctly resolves fragment URIs against opaque base URIs.
 	 * </p>
@@ -1651,10 +1642,17 @@ public class URIs {
 	 * This method corrects Java's erroneous collapsing of slashes in UNC paths, so that for example <code>file:////server/file.ext</code> can successfully be
 	 * resolved against.
 	 * </p>
+	 * @apiNote This method follows differs from {@link URI#resolve(URI)}, which would resolve the empty path <code>""</code> as if it were <code>.</code>,
+	 *          following RFC 2396. That is, <code>http://example.com/foo/bar</code> resolved against <code>""</code> would return
+	 *          <code>http://example.com/foo/</code>. This method instead follows <a href="https://tools.ietf.org/html/rfc3986">RFC 3986</a>, as discussed at
+	 *          <a href="https://stackoverflow.com/q/22203111/421049">Is Java's URI.resolve incompatible with RFC 3986 when the relative URI contains an empty
+	 *          path?</a>, and returns the URI itself, e.g. <code>http://example.com/foo/bar</code>.
+	 * @implSpec This method creates a URI from the child URI using {@link URI#create(String)} and then delegates to {@link #resolve(URI, URI)}.
 	 * @param baseURI The URI against which the child URI should be resolved.
 	 * @param childURI The URI to resolve against the base URI.
 	 * @return The child URI resolved against the base URI.
 	 * @throws NullPointerException if the base URI and/or the child URI is <code>null</code>.
+	 * @see <a href="https://tools.ietf.org/html/rfc3986">RFC 3986: Uniform Resource Identifier (URI): Generic Syntax</a>
 	 * @see <a href="http://www.w3.org/TR/rdf-syntax-grammar/#section-baseURIs">RDF/XML Syntax Specification (Revised) 5.3 Resolving URIs</a>
 	 * @see #isUNCFileURI(URI)
 	 */
@@ -1663,10 +1661,8 @@ public class URIs {
 	}
 
 	/**
-	 * Resolves a relative URI against a base URI with added functionality and bug fixes over {@link URI#resolve(URI)}.
-	 * <p>
-	 * The empty string is appended to the given base URI with no fragment.
-	 * </p>
+	 * Resolves a relative URI against a base URI with added functionality and bug fixes over {@link URI#resolve(URI)}, following
+	 * <a href="https://tools.ietf.org/html/rfc3986">RFC 3986</a>.
 	 * <p>
 	 * This method correctly resolves fragment URIs against opaque base URIs.
 	 * </p>
@@ -1674,10 +1670,16 @@ public class URIs {
 	 * This method corrects Java's erroneous collapsing of slashes in UNC paths in {@link URI#resolve(URI)}, so that for example
 	 * <code>file:////server/file.ext</code> can successfully be resolved against.
 	 * </p>
+	 * @apiNote This method follows differs from {@link URI#resolve(URI)}, which would resolve the empty path <code>""</code> as if it were <code>.</code>,
+	 *          following RFC 2396. That is, <code>http://example.com/foo/bar</code> resolved against <code>""</code> would return
+	 *          <code>http://example.com/foo/</code>. This method instead follows <a href="https://tools.ietf.org/html/rfc3986">RFC 3986</a>, as discussed at
+	 *          <a href="https://stackoverflow.com/q/22203111/421049">Is Java's URI.resolve incompatible with RFC 3986 when the relative URI contains an empty
+	 *          path?</a>, and returns the URI itself, e.g. <code>http://example.com/foo/bar</code>.
 	 * @param baseURI The URI against which the child URI should be resolved.
 	 * @param childURI The URI to resolve against the base URI.
 	 * @return The child URI resolved against the base URI.
 	 * @throws NullPointerException if the base URI and/or the child URI is <code>null</code>.
+	 * @see <a href="https://tools.ietf.org/html/rfc3986">RFC 3986: Uniform Resource Identifier (URI): Generic Syntax</a>
 	 * @see <a href="http://www.w3.org/TR/rdf-syntax-grammar/#section-baseURIs">RDF/XML Syntax Specification (Revised) 5.3 Resolving URIs</a>
 	 * @see #isUNCFileURI(URI)
 	 */
@@ -1686,9 +1688,10 @@ public class URIs {
 	}
 
 	/**
-	 * Resolves a relative URI against a base URI with added functionality and bug fixes over {@link URI#resolve(URI)}. If a deep resolution is requested, a URI's
-	 * contents will be further resolved if possible, even if the URI itself is already absolute. For example, a deep resolution of <code>file:/foo/bar.txt</code>
-	 * against <code>file:///C:/test</code> would yield <code>file:///C:/test/foo/bar.txt</code>.
+	 * Resolves a relative URI against a base URI with added functionality and bug fixes over {@link URI#resolve(URI)}, following
+	 * <a href="https://tools.ietf.org/html/rfc3986">RFC 3986</a>. If a deep resolution is requested, a URI's contents will be further resolved if possible, even
+	 * if the URI itself is already absolute. For example, a deep resolution of <code>file:/foo/bar.txt</code> against <code>file:///C:/test</code> would yield
+	 * <code>file:///C:/test/foo/bar.txt</code>.
 	 * <p>
 	 * This implementation supports deep resolution of the following URI schemes:
 	 * </p>
@@ -1696,20 +1699,23 @@ public class URIs {
 	 * <li>Files{@value #FILE_SCHEME}</li>
 	 * </ul>
 	 * <p>
-	 * The empty string is appended to the given base URI with no fragment.
-	 * </p>
-	 * <p>
 	 * This method correctly resolves fragment URIs against opaque base URIs.
 	 * </p>
 	 * <p>
 	 * This method corrects Java's erroneous collapsing of slashes in UNC paths in {@link URI#resolve(URI)}, so that for example
 	 * <code>file:////server/file.ext</code> can successfully be resolved against.
 	 * </p>
+	 * @apiNote This method follows differs from {@link URI#resolve(URI)}, which would resolve the empty path <code>""</code> as if it were <code>.</code>,
+	 *          following RFC 2396. That is, <code>http://example.com/foo/bar</code> resolved against <code>""</code> would return
+	 *          <code>http://example.com/foo/</code>. This method instead follows <a href="https://tools.ietf.org/html/rfc3986">RFC 3986</a>, as discussed at
+	 *          <a href="https://stackoverflow.com/q/22203111/421049">Is Java's URI.resolve incompatible with RFC 3986 when the relative URI contains an empty
+	 *          path?</a>, and returns the URI itself, e.g. <code>http://example.com/foo/bar</code>.
 	 * @param baseURI The URI against which the child URI should be resolved.
 	 * @param childURI The URI to resolve against the base URI.
 	 * @param deep Whether the relative contents of the URI should also be resolved, even if the URI itself is absolute.
 	 * @return The child URI resolved against the base URI.
 	 * @throws NullPointerException if the base URI and/or the child URI is <code>null</code>.
+	 * @see <a href="https://tools.ietf.org/html/rfc3986">RFC 3986: Uniform Resource Identifier (URI): Generic Syntax</a>
 	 * @see <a href="http://www.w3.org/TR/rdf-syntax-grammar/#section-baseURIs">RDF/XML Syntax Specification (Revised) 5.3 Resolving URIs</a>
 	 * @see #isUNCFileURI(URI)
 	 */
@@ -1948,7 +1954,7 @@ public class URIs {
 	}
 
 	/**
-	 * Encodes all URI reserved characters in the URI according to the URI encoding rules in <a href="http://www.ietf.org/rfc/rfc3986.txt">RFC 3986</a>, "Uniform
+	 * Encodes all URI reserved characters in the URI according to the URI encoding rules in <a href="https://tools.ietf.org/html/rfc3986">RFC 3986</a>, "Uniform
 	 * Resource Identifiers (URI): Generic Syntax" using the URI escape character, {@value URIs#ESCAPE_CHAR}.
 	 * @param uri The URI to URI-encode.
 	 * @return A string containing the escaped data.
@@ -1959,7 +1965,7 @@ public class URIs {
 	}
 
 	/**
-	 * Encodes all URI reserved characters in the URI according to the URI encoding rules in <a href="http://www.ietf.org/rfc/rfc3986.txt">RFC 3986</a>, "Uniform
+	 * Encodes all URI reserved characters in the URI according to the URI encoding rules in <a href="https://tools.ietf.org/html/rfc3986">RFC 3986</a>, "Uniform
 	 * Resource Identifiers (URI): Generic Syntax".
 	 * @param uri The URI to URI-encode.
 	 * @param escapeChar The escape character to use, which will always be escaped.
@@ -1970,7 +1976,7 @@ public class URIs {
 	}
 
 	/**
-	 * Encodes all URI reserved characters in the string according to the URI encoding rules in <a href="http://www.ietf.org/rfc/rfc3986.txt">RFC 3986</a>,
+	 * Encodes all URI reserved characters in the string according to the URI encoding rules in <a href="https://tools.ietf.org/html/rfc3986">RFC 3986</a>,
 	 * "Uniform Resource Identifiers (URI): Generic Syntax" using the URI escape character, {@value URIs#ESCAPE_CHAR}.
 	 * @param string The data to URI-encode.
 	 * @return A string containing the escaped data.
@@ -1981,7 +1987,7 @@ public class URIs {
 	}
 
 	/**
-	 * Encodes all URI reserved characters in the string according to the URI encoding rules in <a href="http://www.ietf.org/rfc/rfc3986.txt">RFC 3986</a>,
+	 * Encodes all URI reserved characters in the string according to the URI encoding rules in <a href="https://tools.ietf.org/html/rfc3986">RFC 3986</a>,
 	 * "Uniform Resource Identifiers (URI): Generic Syntax".
 	 * @param string The data to URI-encode.
 	 * @param escapeChar The escape character to use, which will always be escaped.
@@ -1992,7 +1998,7 @@ public class URIs {
 	}
 
 	/**
-	 * Encodes the URI reserved characters in the string according to the URI encoding rules in <a href="http://www.ietf.org/rfc/rfc3986.txt">RFC 3986</a>,
+	 * Encodes the URI reserved characters in the string according to the URI encoding rules in <a href="https://tools.ietf.org/html/rfc3986">RFC 3986</a>,
 	 * "Uniform Resource Identifiers (URI): Generic Syntax" using the URI escape character, {@value URIs#ESCAPE_CHAR}.
 	 * @param string The data to URI-encode.
 	 * @param validCharacters Characters that should not be encoded; all other characters will be encoded.
@@ -2004,7 +2010,7 @@ public class URIs {
 	}
 
 	/**
-	 * Encodes the URI reserved characters in the string according to the URI encoding rules in <a href="http://www.ietf.org/rfc/rfc3986.txt">RFC 3986</a>,
+	 * Encodes the URI reserved characters in the string according to the URI encoding rules in <a href="https://tools.ietf.org/html/rfc3986">RFC 3986</a>,
 	 * "Uniform Resource Identifiers (URI): Generic Syntax". Following the examples in RFC 3986, this is guaranteed to produce only <em>uppercase</em> hexadecimal
 	 * escape codes.
 	 * @param string The data to URI-encode.
