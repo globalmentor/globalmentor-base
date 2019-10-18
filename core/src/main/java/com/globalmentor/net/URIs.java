@@ -667,7 +667,7 @@ public class URIs {
 	 * @throws NullPointerException if the given URI and/or query is <code>null</code>.
 	 */
 	public static URI appendRawQuery(final URI uri, final String rawQuery) {
-		final StringBuilder stringBuilder = new StringBuilder(uri.toASCIIString()); //create a string builder from the URI
+		final StringBuilder stringBuilder = new StringBuilder(uri.toString()); //create a string builder from the URI
 		stringBuilder.append(uri.getRawQuery() != null ? QUERY_NAME_VALUE_PAIR_DELIMITER : QUERY_SEPARATOR); //if there already is a query, separate the new parameters from the existing ones; otherwise, add the query introduction character
 		stringBuilder.append(requireNonNull(rawQuery, "Query cannot be null.")); //add the new query information
 		return URI.create(stringBuilder.toString()); //return the new URI
@@ -1656,7 +1656,7 @@ public class URIs {
 	 * @see <a href="http://www.w3.org/TR/rdf-syntax-grammar/#section-baseURIs">RDF/XML Syntax Specification (Revised) 5.3 Resolving URIs</a>
 	 * @see #isUNCFileURI(URI)
 	 */
-	public static URI resolve(final URI baseURI, final String childURI) { //TODO consider throwing an exception if the child URI is not a valid URI--that is, it has non-ASCII characters
+	public static URI resolve(final URI baseURI, final String childURI) {
 		return resolve(baseURI, URI.create(childURI));
 	}
 
@@ -1721,7 +1721,7 @@ public class URIs {
 	 */
 	public static URI resolve(final URI baseURI, final URI childURI, final boolean deep) {
 		if(baseURI.isOpaque()) { //if the base URI is opaque, do special processing
-			final String childURIString = childURI.toASCIIString(); //get the child URI as a string
+			final String childURIString = childURI.toString(); //get the child URI as a string
 			if(startsWith(childURIString, FRAGMENT_SEPARATOR)) { //if the child URI is a fragment
 				return URI.create(removeFragment(baseURI).toString() + childURIString); //remove the fragment, if any, from the base URI, and append the fragment
 			}
@@ -1825,8 +1825,8 @@ public class URIs {
 	public static URI replaceRawFragment(final URI uri, final String newRawFragment) {
 		final String oldRawFragment = uri.getRawFragment(); //get the raw fragment, if any
 		if(oldRawFragment != null) { //if there is currently a fragment
-			final int oldRawFragmentLength = oldRawFragment.length(); //get theh length of the current raw fragment
-			final StringBuilder uriStringBuilder = new StringBuilder(uri.toASCIIString()); //get the string representation of the URI
+			final int oldRawFragmentLength = oldRawFragment.length(); //get the length of the current raw fragment
+			final StringBuilder uriStringBuilder = new StringBuilder(uri.toString()); //get the string representation of the URI
 			final int uriLength = uriStringBuilder.length(); //get the length of the URI
 			assert uriStringBuilder.toString().endsWith(new StringBuilder().append(FRAGMENT_SEPARATOR).append(oldRawFragment).toString());
 			if(newRawFragment != null) { //if a new raw fragment was given
@@ -1837,7 +1837,7 @@ public class URIs {
 			return URI.create(uriStringBuilder.toString()); //create a URI from the new URI string
 		} else { //if there is no fragment
 			if(newRawFragment != null) { //if a new raw fragment was given
-				return URI.create(uri.toASCIIString() + FRAGMENT_SEPARATOR + newRawFragment); //append the new raw fragment
+				return URI.create(uri.toString() + FRAGMENT_SEPARATOR + newRawFragment); //append the new raw fragment
 			} else { //if no new raw fragment was given
 				return requireNonNull(uri, "URI cannot be null."); //return the original URI
 			}
@@ -1954,8 +1954,8 @@ public class URIs {
 	}
 
 	/**
-	 * Encodes all URI reserved characters in the URI according to the URI encoding rules in <a href="https://tools.ietf.org/html/rfc3986">RFC 3986</a>, "Uniform
-	 * Resource Identifiers (URI): Generic Syntax" using the URI escape character, {@value URIs#ESCAPE_CHAR}.
+	 * Encodes all non-ASCII and URI reserved characters in the URI according to the URI encoding rules in <a href="https://tools.ietf.org/html/rfc3986">RFC
+	 * 3986</a>, "Uniform Resource Identifiers (URI): Generic Syntax" using the URI escape character, {@value URIs#ESCAPE_CHAR}.
 	 * @param uri The URI to URI-encode.
 	 * @return A string containing the escaped data.
 	 * @see URIs#ESCAPE_CHAR
@@ -1965,8 +1965,8 @@ public class URIs {
 	}
 
 	/**
-	 * Encodes all URI reserved characters in the URI according to the URI encoding rules in <a href="https://tools.ietf.org/html/rfc3986">RFC 3986</a>, "Uniform
-	 * Resource Identifiers (URI): Generic Syntax".
+	 * Encodes all non-ASCII and URI reserved characters in the URI according to the URI encoding rules in <a href="https://tools.ietf.org/html/rfc3986">RFC
+	 * 3986</a>, "Uniform Resource Identifiers (URI): Generic Syntax".
 	 * @param uri The URI to URI-encode.
 	 * @param escapeChar The escape character to use, which will always be escaped.
 	 * @return A string containing the escaped data.
@@ -2051,22 +2051,18 @@ public class URIs {
 	/**
 	 * Ensures that the given URI is in canonical form.
 	 * <p>
-	 * Java erroneously allows URIs that contain non-ASCII characters. This method ensures that only valid characters according to RFC 3986 are contained in the
-	 * URI.
+	 * This implementation, following the recommendation of <a href="https://tools.ietf.org/html/rfc3986">RFC 3986</a>, ensures that all hexadecimal escape codes
+	 * are in uppercase.
 	 * </p>
-	 * <p>
-	 * This implementation, following the recommendation of RFC 3986, ensures that all hexadecimal escape codes are in uppercase.
-	 * </p>
-	 * <p>
-	 * This method should be distinguished from {@link #normalize(URI)}, which normalizes path segments.
-	 * </p>
+	 * @apiNote This method should be distinguished from {@link #normalize(URI)}, which normalizes the hierarchy of path segments.
+	 * @implNote This implementation does not currently encode any non-ASCII or reserved characters.
 	 * @param uri The URI to be returned in canonical form.
 	 * @return The canonical form of the given URI.
 	 * @throws NullPointerException if the given URI is <code>null</code>.
 	 * @throws IllegalArgumentException if the given URI has an invalid escape sequence.
 	 */
 	public static URI canonicalize(final URI uri) {
-		final String uriString = uri.toASCIIString(); //get the string version of the URI TODO consider removing to allow IRIs
+		final String uriString = uri.toString(); //get the string version of the URI
 		final int uriStringLength = uriString.length(); //get the length of the string
 		StringBuilder uriStringBuilder = null; //we'll only create a string builder if we need one
 		for(int i = 0; i < uriStringLength; ++i) { //for each character, make sure that the escape sequences are in uppercase
@@ -2111,7 +2107,7 @@ public class URIs {
 		}
 		final URI relativeURI = oldBaseURI.relativize(uri); //get a URI relative to the old base URI
 		if(relativeURI.isAbsolute()) { //if we couldn't relativize the the URI to the old base URI and come up with a relative URI
-			throw new IllegalArgumentException(oldBaseURI.toASCIIString() + " is not a base URI of " + uri);
+			throw new IllegalArgumentException(oldBaseURI.toString() + " is not a base URI of " + uri);
 		}
 		return resolve(newBaseURI, relativeURI); //resolve the relative URI to the new base URI, using our Windows UNC path-aware resolve method
 	}
@@ -2177,7 +2173,7 @@ public class URIs {
 	 */
 	public static String compress(final URI uri) {
 		final int ENCODE_BASE = COMPRESS_ENCODE_CHARS.length(); //this is the base into which we'll encode certain characters
-		final String uriString = uri.toASCIIString();
+		final String uriString = uri.toString();
 		final StringBuilder stringBuilder = new StringBuilder();
 		for(int i = 0; i < uriString.length(); ++i) { //look at each URI character
 			final char character = uriString.charAt(i); //get the next character
@@ -2262,6 +2258,7 @@ public class URIs {
 	 * <p>
 	 * This implementation ensures that all hexadecimal escape codes are in lowercase.
 	 * </p>
+	 * @implNote The implementation encodes all non-ASCII characters.
 	 * @param uri The URI to encode
 	 * @return A string representing the plain encoding of the URI.
 	 * @throws IllegalArgumentException if the given URI is not absolute.
@@ -2271,7 +2268,7 @@ public class URIs {
 		checkAbsolute(uri);
 		final String scheme = uri.getScheme(); //find out the scheme of the URI
 		final int schemeLength = scheme.length();
-		final String uriString = uri.toASCIIString(); //start with the real string form of the URI
+		final String uriString = uri.toASCIIString(); //start with the real string form of the encoded URI
 		final StringBuilder stringBuilder = new StringBuilder(); //do the processing within a string builder
 		stringBuilder.append(scheme); //encode the scheme first
 		escapeHex(stringBuilder, PLAIN_ENCODE_INITIAL_UNRESERVED_CHARACTERS, null, Integer.MAX_VALUE, PLAIN_ENCODING_ESCAPE_CHAR, 2, Case.LOWERCASE); //escape the scheme
