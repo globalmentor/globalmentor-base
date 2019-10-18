@@ -1520,7 +1520,7 @@ public class URIs {
 	 * @param uri The URI which should be checked for a path.
 	 * @return <code>true</code> if the given URI has a path.
 	 */
-	public static boolean hasPath(final URI uri) {
+	public static boolean hasPath(@Nonnull final URI uri) {
 		return uri.getRawPath() != null; //check the raw path; no need for encoding just to check the presence of the path
 	}
 
@@ -1531,9 +1531,25 @@ public class URIs {
 	 * @see #hasPath(URI)
 	 * @see #isPathAbsolute(String)
 	 */
-	public static boolean hasAbsolutePath(final URI uri) {
+	public static boolean hasAbsolutePath(@Nonnull final URI uri) {
 		final String rawPath = uri.getRawPath(); //use the raw path in case the first character is an encoded slash
 		return rawPath != null && isPathAbsolute(rawPath); //see if the path begins with '/'
+	}
+
+	/**
+	 * Determines whether the path of the URI is a relative path that does not backtrack to a higher level. This method considers a URI referring to the current
+	 * level as a "subpath".
+	 * @implSpec This method first normalizes the URI using {@link URI#normalize()} and then checks to see if the path is {@value #PARENT_LEVEL_PATH_SEGMENT} or
+	 *           begins with a backtrack {@value #PARENT_LEVEL_PATH} path segment.
+	 * @param uri The URI the path of which to examine.
+	 * @return <code>true</code> if the URI has a relative path that, when normalized, refers to a location at a higher relative level; that is, when normalized
+	 *         it begins with a backtrack {@value #PARENT_LEVEL_PATH_SEGMENT} path segment.
+	 * @see #hasPath(URI)
+	 * @see #PARENT_LEVEL_PATH_SEGMENT
+	 */
+	public static boolean hasSubPath(@Nonnull final URI uri) {
+		final String rawPath = uri.normalize().getRawPath(); //normalize the URI first, to put all backtrack segments at the first
+		return rawPath != null && !isPathAbsolute(rawPath) && !rawPath.equals(PARENT_LEVEL_PATH_SEGMENT) && !rawPath.startsWith(PARENT_LEVEL_PATH);
 	}
 
 	/**
@@ -2443,7 +2459,7 @@ public class URIs {
 	}
 
 	/**
-	 * Normalizes the given path by resolving the '.' and '..' path segments.
+	 * Normalizes the given path by resolving the <code>.</code> and <code>..</code> path segments.
 	 * @param path The path to normalize.
 	 * @return The normalized form of the given path.
 	 * @throws NullPointerException if the given path is <code>null</code>.

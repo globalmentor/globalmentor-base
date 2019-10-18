@@ -1262,4 +1262,43 @@ public class URIsTest {
 		encodedURIs.add(expectedEncodedURI);
 	}
 
+	/** @see URIs#hasSubPath(URI) */
+	@Test
+	public void testHasSubPath() {
+		assertThat(URIs.hasSubPath(URI.create("")), is(true));
+		assertThat(URIs.hasSubPath(URI.create(".")), is(true));
+		assertThat(URIs.hasSubPath(URI.create("./")), is(true));
+		assertThat(URIs.hasSubPath(URI.create("..")), is(false));
+		assertThat(URIs.hasSubPath(URI.create("../")), is(false));
+		assertThat(URIs.hasSubPath(URI.create(".%46/")), is(true));
+		assertThat(URIs.hasSubPath(URI.create("..%2F")), is(true));
+		assertThat(URIs.hasSubPath(URI.create(".../")), is(true));
+		assertThat(URIs.hasSubPath(URI.create("./../")), is(false));
+		assertThat(URIs.hasSubPath(URI.create("foo")), is(true));
+		assertThat(URIs.hasSubPath(URI.create("foo/")), is(true));
+		assertThat(URIs.hasSubPath(URI.create("foo../")), is(true));
+		assertThat(URIs.hasSubPath(URI.create("foo/../bar")), is(true));
+		assertThat(URIs.hasSubPath(URI.create("foo/../..")), is(false));
+		assertThat(URIs.hasSubPath(URI.create("foo/../../")), is(false));
+		assertThat(URIs.hasSubPath(URI.create("foo/../../bar")), is(false));
+		assertThat(URIs.hasSubPath(URI.create("http://example.com/")), is(false));
+		assertThat(URIs.hasSubPath(URI.create("http://example.com/.")), is(false));
+		assertThat(URIs.hasSubPath(URI.create("http://example.com/./")), is(false));
+		assertThat(URIs.hasSubPath(URI.create("http://example.com/..")), is(false));
+		assertThat(URIs.hasSubPath(URI.create("http://example.com/../")), is(false));
+		assertThat(URIs.hasSubPath(URI.create("http://example.com/.%46/")), is(false));
+		assertThat(URIs.hasSubPath(URI.create("http://example.com/..%2F")), is(false));
+		assertThat(URIs.hasSubPath(URI.create("http://example.com/.../")), is(false));
+		assertThat(URIs.hasSubPath(URI.create("http://example.com/./../")), is(false));
+		assertThat(URIs.hasSubPath(URI.create("http://example.com/foo")), is(false));
+		assertThat(URIs.hasSubPath(URI.create("http://example.com/foo/")), is(false));
+		assertThat(URIs.hasSubPath(URI.create("http://example.com/foo../")), is(false));
+		assertThat(URIs.hasSubPath(URI.create("http://example.com/foo/../bar")), is(false));
+		assertThat(URIs.hasSubPath(URI.create("http://example.com/foo/../bar")), is(false));
+		assertThat(URIs.hasSubPath(URI.create("http://example.com/foo/../..")), is(false));
+		assertThat(URIs.hasSubPath(URI.create("http://example.com/foo/../../")), is(false));
+		assertThat(URIs.hasSubPath(URI.create("http://example.com/foo/../../bar")), is(false));
+		assertThat(URIs.hasSubPath(URI.create("urn:uuid:f81d4fae-7dec-11d0-a765-00a0c91e6bf6")), is(false));
+	}
+
 }

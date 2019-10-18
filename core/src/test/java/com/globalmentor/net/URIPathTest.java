@@ -43,4 +43,41 @@ public class URIPathTest {
 		assertThat(URIPath.of("/one/two/three/").getBasePaths(), equalTo(asList(URIPath.of("/one/"), URIPath.of("/one/two/"), URIPath.of("/one/two/three/"))));
 	}
 
+	/** @see URIPath#isSubPath() */
+	@Test
+	public void testIsSubPath() {
+		assertThat(URIPath.of("").isSubPath(), is(true));
+		assertThat(URIPath.of(".").isSubPath(), is(true));
+		assertThat(URIPath.of("./").isSubPath(), is(true));
+		assertThat(URIPath.of("..").isSubPath(), is(false));
+		assertThat(URIPath.of("../").isSubPath(), is(false));
+		assertThat(URIPath.of(".%46/").isSubPath(), is(true));
+		assertThat(URIPath.of("..%2F").isSubPath(), is(true));
+		assertThat(URIPath.of(".../").isSubPath(), is(true));
+		assertThat(URIPath.of("./../").isSubPath(), is(false));
+		assertThat(URIPath.of("foo").isSubPath(), is(true));
+		assertThat(URIPath.of("foo/").isSubPath(), is(true));
+		assertThat(URIPath.of("foo../").isSubPath(), is(true));
+		assertThat(URIPath.of("foo/../bar").isSubPath(), is(true));
+		assertThat(URIPath.of("foo/../..").isSubPath(), is(false));
+		assertThat(URIPath.of("foo/../../").isSubPath(), is(false));
+		assertThat(URIPath.of("foo/../../bar").isSubPath(), is(false));
+		assertThat(URIPath.of("/").isSubPath(), is(false));
+		assertThat(URIPath.of("/.").isSubPath(), is(false));
+		assertThat(URIPath.of("/./").isSubPath(), is(false));
+		assertThat(URIPath.of("/..").isSubPath(), is(false));
+		assertThat(URIPath.of("/../").isSubPath(), is(false));
+		assertThat(URIPath.of("/.%46/").isSubPath(), is(false));
+		assertThat(URIPath.of("/..%2F").isSubPath(), is(false));
+		assertThat(URIPath.of("/.../").isSubPath(), is(false));
+		assertThat(URIPath.of("/./../").isSubPath(), is(false));
+		assertThat(URIPath.of("/foo").isSubPath(), is(false));
+		assertThat(URIPath.of("/foo/").isSubPath(), is(false));
+		assertThat(URIPath.of("/foo../").isSubPath(), is(false));
+		assertThat(URIPath.of("/foo/../bar").isSubPath(), is(false));
+		assertThat(URIPath.of("/foo/../..").isSubPath(), is(false));
+		assertThat(URIPath.of("/foo/../../").isSubPath(), is(false));
+		assertThat(URIPath.of("/foo/../../bar").isSubPath(), is(false));
+	}
+
 }
