@@ -63,10 +63,8 @@ public final class URIPath {
 	 * @throws NullPointerException if the given path is <code>null</code>.
 	 * @throws IllegalArgumentException if the given string violates URI RFC 2396.
 	 * @throws IllegalArgumentException if the provided path specifies a URI authority, query, and/or fragment.
-	 * @deprecated To be replaced by the static factory method {@link #of(String)}.
 	 */
-	@Deprecated
-	public URIPath(final String path) {
+	private URIPath(final String path) {
 		this(createURIPathURI(requireNonNull(path, "Path cannot be null."))); //construct the class with a URI created from the path, compensating for relative paths that contain a colon in the first path segment
 	}
 
@@ -76,10 +74,8 @@ public final class URIPath {
 	 * @throws NullPointerException if the given path URI is <code>null</code>.
 	 * @throws IllegalArgumentException if the provided URI specifies a URI scheme (i.e. the URI is absolute), authority, query, and/or fragment.
 	 * @throws IllegalArgumentException if the given URI is not a path.
-	 * @deprecated Will be made private in favor of the static factory method {@link #fromURI(URI)}.
 	 */
-	@Deprecated
-	public URIPath(final URI pathURI) {
+	private URIPath(final URI pathURI) {
 		this.uri = checkPathURI(pathURI); //check and store the path URI		
 	}
 
@@ -116,20 +112,11 @@ public final class URIPath {
 
 	/**
 	 * Determines whether this path is absolute.
-	 * @return <code>true</code> if the path begins with {@link com.globalmentor.net.URIs#ROOT_PATH}.
+	 * @return <code>true</code> if the path begins with {@link URIs#ROOT_PATH}.
 	 * @see #isRelative()
 	 */
 	public boolean isAbsolute() {
-		return uri.getRawPath().startsWith(ROOT_PATH); //see if the path begins with '/'		
-	}
-
-	/**
-	 * Determines whether this path is relative.
-	 * @return <code>true</code> if the path does not begin with {@link com.globalmentor.net.URIs#ROOT_PATH}.
-	 * @see #isAbsolute()
-	 */
-	public boolean isRelative() {
-		return !isAbsolute(); //see if the path is not absolute		
+		return URIs.hasAbsolutePath(uri);
 	}
 
 	/**
@@ -140,6 +127,26 @@ public final class URIPath {
 	 */
 	public URIPath checkAbsolute() throws IllegalArgumentException {
 		checkArgument(isAbsolute(), "The path %s is not absolute.", this);
+		return this; //return this path
+	}
+
+	/**
+	 * Determines whether this path is relative.
+	 * @return <code>true</code> if the path does not begin with {@link URIs#ROOT_PATH}.
+	 * @see #isAbsolute()
+	 */
+	public boolean isRelative() {
+		return !isAbsolute(); //see if the path is not absolute		
+	}
+
+	/**
+	 * Checks to see if the path is relative. If the path is not relative, an exception is thrown.
+	 * @return This path.
+	 * @throws IllegalArgumentException if the path is absolute.
+	 * @see #isRelative()
+	 */
+	public URIPath checkRelative() throws IllegalArgumentException {
+		checkArgument(isRelative(), "The path %s is not relative.", this);
 		return this; //return this path
 	}
 
@@ -171,13 +178,26 @@ public final class URIPath {
 	}
 
 	/**
-	 * Checks to see if the path is relative. If the path is not relative, an exception is thrown.
-	 * @return This path.
-	 * @throws IllegalArgumentException if the path is absolute.
-	 * @see #isRelative()
+	 * Determines whether this path is a relative path that does not backtrack to a higher level. This method considers a path referring to the current level as a
+	 * "subpath".
+	 * @implSpec This method first normalizes the path equivalent to calling {@link #normalize()} and then checks to see if the path is
+	 *           {@value URIs#PARENT_LEVEL_PATH_SEGMENT} or begins with a backtrack {@value URIs#PARENT_LEVEL_PATH} path segment.
+	 * @return <code>true</code> if this is a relative path that, when normalized, refers to a location at a higher relative level; that is, when normalized it
+	 *         begins with a backtrack {@value URIs#PARENT_LEVEL_PATH_SEGMENT} path segment.
+	 * @see URIs#PARENT_LEVEL_PATH_SEGMENT
 	 */
-	public URIPath checkRelative() throws IllegalArgumentException {
-		checkArgument(isRelative(), "The path %s is not relative.", this);
+	public boolean isSubPath() {
+		return URIs.hasSubPath(uri);
+	}
+
+	/**
+	 * Checks to see if the path is a subpath. If the path is not a subpath, an exception is thrown.
+	 * @return This path.
+	 * @throws IllegalArgumentException if the path is not a subpath (that is, it refers to a higher level).
+	 * @see #isSubPath()
+	 */
+	public URIPath checkSubPath() throws IllegalArgumentException {
+		checkArgument(isSubPath(), "The path %s is not a subpath.", this);
 		return this; //return this path
 	}
 

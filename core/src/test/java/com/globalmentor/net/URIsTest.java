@@ -1101,6 +1101,8 @@ public class URIsTest {
 		assertThat(URIs.resolve(URI.create("http://example.com/foobar#bar"), URI.create("http://example.com/foobar")), is(URI.create("http://example.com/foobar")));
 		assertThat(URIs.resolve(URI.create("http://example.com/foobar"), URI.create("http://example.com/foobar#bar")),
 				is(URI.create("http://example.com/foobar#bar")));
+		assertThat(URIs.resolve(URI.create("http://example.com/foo"), URI.create("http://example.com/foo#bar")), is(URI.create("http://example.com/foo#bar")));
+		assertThat(URIs.resolve(URI.create("http://example.com/foo"), URI.create("#bar")), is(URI.create("http://example.com/foo#bar")));
 
 		//tests resolving URIs with multiple fragments
 		assertThat(URIs.resolve(URI.create("http://example.com/foobar?type=foo&place=bar#bar"), URI.create("http://example.com/foobar?type=foo&place=bar#bar")),
@@ -1109,6 +1111,14 @@ public class URIsTest {
 				is(URI.create("http://example.com/foobar?type=foo&place=bar#bar")));
 		assertThat(URIs.resolve(URI.create("http://example.com/foobar?type=foo&place=bar#bar"), URI.create("http://example.com/foobar")),
 				is(URI.create("http://example.com/foobar")));
+
+		//compare RFC 2396 versus RFC 3986 behavior 
+		assertThat(URI.create("http://example.com/foo").resolve(""), is(URI.create("http://example.com/"))); //RFC 2396 different from RFC 3986
+		assertThat(URIs.resolve(URI.create("http://example.com/foo"), ""), is(URI.create("http://example.com/foo")));
+		assertThat(URI.create("http://example.com/foo/").resolve(""), is(URI.create("http://example.com/foo/")));
+		assertThat(URIs.resolve(URI.create("http://example.com/foo/"), ""), is(URI.create("http://example.com/foo/")));
+		assertThat(URI.create("http://example.com/foo").resolve("#bar"), is(URI.create("http://example.com/foo#bar"))); //RFC 2396 same as RFC 3986
+		assertThat(URIs.resolve(URI.create("http://example.com/foo"), URI.create("#bar")), is(URI.create("http://example.com/foo#bar")));
 	}
 
 	/** Tests whether {@link URIs#resolve(URI, URI)} is throwing an exception when a null base {@link URI} is provided. */
@@ -1260,6 +1270,45 @@ public class URIsTest {
 		assertThat(URIs.plainEncode(uri), is(expectedEncodedURI));
 		uris.add(uri);
 		encodedURIs.add(expectedEncodedURI);
+	}
+
+	/** @see URIs#hasSubPath(URI) */
+	@Test
+	public void testHasSubPath() {
+		assertThat(URIs.hasSubPath(URI.create("")), is(true));
+		assertThat(URIs.hasSubPath(URI.create(".")), is(true));
+		assertThat(URIs.hasSubPath(URI.create("./")), is(true));
+		assertThat(URIs.hasSubPath(URI.create("..")), is(false));
+		assertThat(URIs.hasSubPath(URI.create("../")), is(false));
+		assertThat(URIs.hasSubPath(URI.create(".%46/")), is(true));
+		assertThat(URIs.hasSubPath(URI.create("..%2F")), is(true));
+		assertThat(URIs.hasSubPath(URI.create(".../")), is(true));
+		assertThat(URIs.hasSubPath(URI.create("./../")), is(false));
+		assertThat(URIs.hasSubPath(URI.create("foo")), is(true));
+		assertThat(URIs.hasSubPath(URI.create("foo/")), is(true));
+		assertThat(URIs.hasSubPath(URI.create("foo../")), is(true));
+		assertThat(URIs.hasSubPath(URI.create("foo/../bar")), is(true));
+		assertThat(URIs.hasSubPath(URI.create("foo/../..")), is(false));
+		assertThat(URIs.hasSubPath(URI.create("foo/../../")), is(false));
+		assertThat(URIs.hasSubPath(URI.create("foo/../../bar")), is(false));
+		assertThat(URIs.hasSubPath(URI.create("http://example.com/")), is(false));
+		assertThat(URIs.hasSubPath(URI.create("http://example.com/.")), is(false));
+		assertThat(URIs.hasSubPath(URI.create("http://example.com/./")), is(false));
+		assertThat(URIs.hasSubPath(URI.create("http://example.com/..")), is(false));
+		assertThat(URIs.hasSubPath(URI.create("http://example.com/../")), is(false));
+		assertThat(URIs.hasSubPath(URI.create("http://example.com/.%46/")), is(false));
+		assertThat(URIs.hasSubPath(URI.create("http://example.com/..%2F")), is(false));
+		assertThat(URIs.hasSubPath(URI.create("http://example.com/.../")), is(false));
+		assertThat(URIs.hasSubPath(URI.create("http://example.com/./../")), is(false));
+		assertThat(URIs.hasSubPath(URI.create("http://example.com/foo")), is(false));
+		assertThat(URIs.hasSubPath(URI.create("http://example.com/foo/")), is(false));
+		assertThat(URIs.hasSubPath(URI.create("http://example.com/foo../")), is(false));
+		assertThat(URIs.hasSubPath(URI.create("http://example.com/foo/../bar")), is(false));
+		assertThat(URIs.hasSubPath(URI.create("http://example.com/foo/../bar")), is(false));
+		assertThat(URIs.hasSubPath(URI.create("http://example.com/foo/../..")), is(false));
+		assertThat(URIs.hasSubPath(URI.create("http://example.com/foo/../../")), is(false));
+		assertThat(URIs.hasSubPath(URI.create("http://example.com/foo/../../bar")), is(false));
+		assertThat(URIs.hasSubPath(URI.create("urn:uuid:f81d4fae-7dec-11d0-a765-00a0c91e6bf6")), is(false));
 	}
 
 }

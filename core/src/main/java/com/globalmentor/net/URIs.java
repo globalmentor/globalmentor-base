@@ -37,14 +37,14 @@ import static com.globalmentor.text.TextFormatter.*;
 import com.globalmentor.text.*;
 
 /**
- * Various URI manipulating functions for working with URIs as defined in <a href="http://www.ietf.org/rfc/rfc3986.txt">RFC 3986</a>, "Uniform Resource
+ * Various URI manipulating functions for working with URIs as defined in <a href="https://tools.ietf.org/html/rfc3986">RFC 3986</a>, "Uniform Resource
  * Identifiers (URI): Generic Syntax".
  * <p>
  * For file URIs Java incorrectly uses the form <code>file:/mnt/sdcard/...</code> instead of <code>file:///mnt/sdcard/...</code>, but these utilities use the
  * former for consistency.
  * </p>
  * @see URI
- * @see <a href="http://www.ietf.org/rfc/rfc3986.txt">RFC 3986 - Uniform Resource Identifiers (URI): Generic Syntax</a>
+ * @see <a href="https://tools.ietf.org/html/rfc3986">RFC 3986: Uniform Resource Identifiers (URI): Generic Syntax</a>
  */
 public class URIs {
 
@@ -319,8 +319,8 @@ public class URIs {
 
 	/**
 	 * Determines the raw, encoded path of the given {@value #PATH_SCHEME} scheme URI. The path will never be <code>null</code>; the empty relative path
-	 * <code>path:</code> will return the empty string. Any query or fragment is ignored. This method is needed because the {@link URI#getRawPath()} method does
-	 * not recognize relative paths for the {@value #PATH_SCHEME} scheme.
+	 * <code>path:</code> will return the empty string. Any query or fragment is ignored.
+	 * @apiNote This method is needed because the {@link URI#getRawPath()} method does not recognize relative paths for the {@value #PATH_SCHEME} scheme.
 	 * @param uri The path URI from which the path should be retrieved.
 	 * @return The raw, encoded path of the given path URI.
 	 * @throws NullPointerException if the given URI is <code>null</code>.
@@ -346,7 +346,7 @@ public class URIs {
 	 * @throws IllegalArgumentException if the given URI is not a valid {@value #PATH_SCHEME} scheme URI.
 	 */
 	public static final URIPath getPathURIPath(final URI uri) {
-		return new URIPath(getPathRawPath(uri)); //get the raw path and create a URIPath from that
+		return URIPath.of(getPathRawPath(uri)); //get the raw path and create a URIPath from that
 	}
 
 	/**
@@ -411,9 +411,7 @@ public class URIs {
 
 	/**
 	 * Forces a URI to represent a collection by appending a trailing path separator to the URI path, if any. If the URI has no path, no change is made.
-	 * <p>
-	 * This method is most useful for working with file systems that are imprecise about distinguishing between collection and non-collection nodes.
-	 * </p>
+	 * @apiNote This method is most useful for working with file systems that are imprecise about distinguishing between collection and non-collection nodes.
 	 * @param uri The URI to represent a collection.
 	 * @return A form of the URI representing a collection.
 	 * @throws NullPointerException if the given URI is <code>null</code>.
@@ -436,7 +434,7 @@ public class URIs {
 	 */
 	public static URIPath getPath(final URI uri) {
 		final String rawPath = uri.getRawPath(); //get the raw path of the URI
-		return rawPath != null ? new URIPath(rawPath) : null; //return a path object if there is a path
+		return rawPath != null ? URIPath.of(rawPath) : null; //return a path object if there is a path
 	}
 
 	/**
@@ -669,7 +667,7 @@ public class URIs {
 	 * @throws NullPointerException if the given URI and/or query is <code>null</code>.
 	 */
 	public static URI appendRawQuery(final URI uri, final String rawQuery) {
-		final StringBuilder stringBuilder = new StringBuilder(uri.toASCIIString()); //create a string builder from the URI
+		final StringBuilder stringBuilder = new StringBuilder(uri.toString()); //create a string builder from the URI
 		stringBuilder.append(uri.getRawQuery() != null ? QUERY_NAME_VALUE_PAIR_DELIMITER : QUERY_SEPARATOR); //if there already is a query, separate the new parameters from the existing ones; otherwise, add the query introduction character
 		stringBuilder.append(requireNonNull(rawQuery, "Query cannot be null.")); //add the new query information
 		return URI.create(stringBuilder.toString()); //return the new URI
@@ -1520,7 +1518,7 @@ public class URIs {
 	 * @param uri The URI which should be checked for a path.
 	 * @return <code>true</code> if the given URI has a path.
 	 */
-	public static boolean hasPath(final URI uri) {
+	public static boolean hasPath(@Nonnull final URI uri) {
 		return uri.getRawPath() != null; //check the raw path; no need for encoding just to check the presence of the path
 	}
 
@@ -1531,9 +1529,25 @@ public class URIs {
 	 * @see #hasPath(URI)
 	 * @see #isPathAbsolute(String)
 	 */
-	public static boolean hasAbsolutePath(final URI uri) {
+	public static boolean hasAbsolutePath(@Nonnull final URI uri) {
 		final String rawPath = uri.getRawPath(); //use the raw path in case the first character is an encoded slash
 		return rawPath != null && isPathAbsolute(rawPath); //see if the path begins with '/'
+	}
+
+	/**
+	 * Determines whether the path of the URI is a relative path that does not backtrack to a higher level. This method considers a URI referring to the current
+	 * level as a "subpath".
+	 * @implSpec This method first normalizes the URI using {@link URI#normalize()} and then checks to see if the path is {@value #PARENT_LEVEL_PATH_SEGMENT} or
+	 *           begins with a backtrack {@value #PARENT_LEVEL_PATH} path segment.
+	 * @param uri The URI the path of which to examine.
+	 * @return <code>true</code> if the URI has a relative path that, when normalized, refers to a location at a higher relative level; that is, when normalized
+	 *         it begins with a backtrack {@value #PARENT_LEVEL_PATH_SEGMENT} path segment.
+	 * @see #hasPath(URI)
+	 * @see #PARENT_LEVEL_PATH_SEGMENT
+	 */
+	public static boolean hasSubPath(@Nonnull final URI uri) {
+		final String rawPath = uri.normalize().getRawPath(); //normalize the URI first, to put all backtrack segments at the first
+		return rawPath != null && !isPathAbsolute(rawPath) && !rawPath.equals(PARENT_LEVEL_PATH_SEGMENT) && !rawPath.startsWith(PARENT_LEVEL_PATH);
 	}
 
 	/**
@@ -1599,15 +1613,13 @@ public class URIs {
 
 	/**
 	 * Normalizes a URI.
-	 * <p>
-	 * This method has the same semantics as {@link URI#normalize()}, except that this method has improvements and bug fixes. For example, a UNC path such as
-	 * <code>file:////server/file.ext</code> will retain its correct path, unlike {@link URI#normalize()}, which would reduce this to
-	 * <code>file:/server/file.ext</code>.
-	 * </p>
+	 * @apiNote This method has the same semantics as {@link URI#normalize()}, except that this method has improvements and bug fixes. For example, a UNC path
+	 *          such as <code>file:////server/file.ext</code> will retain its correct path, unlike {@link URI#normalize()}, which would reduce this to
+	 *          <code>file:/server/file.ext</code>.
 	 * @param uri The URI to normalize.
 	 * @return The normalized URI.
 	 * @see #isUNCFileURI(URI)
-	 * @see <a href="http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4723726">Java Bug ID: 4723726</a>
+	 * @see <a href="https://bugs.java.com/bugdatabase/view_bug.do?bug_id=4723726">Java Bug ID: 4723726</a>
 	 */
 	public static URI normalize(URI uri) {
 		final boolean wasUNCFileURI = isUNCFileURI(uri);
@@ -1621,13 +1633,8 @@ public class URIs {
 	}
 
 	/**
-	 * Resolves a string against a base URI with added functionality and bug fixes over {@link URI#resolve(String)}.
-	 * <p>
-	 * This method creates a URI from the child URI using {@link URI#create(String)} and then delegates to {@link #resolve(URI, URI)}.
-	 * </p>
-	 * <p>
-	 * The empty string is appended to the given base URI with no fragment.
-	 * </p>
+	 * Resolves a string against a base URI with added functionality and bug fixes over {@link URI#resolve(String)}, following
+	 * <a href="https://tools.ietf.org/html/rfc3986">RFC 3986</a>.
 	 * <p>
 	 * This method correctly resolves fragment URIs against opaque base URIs.
 	 * </p>
@@ -1635,22 +1642,27 @@ public class URIs {
 	 * This method corrects Java's erroneous collapsing of slashes in UNC paths, so that for example <code>file:////server/file.ext</code> can successfully be
 	 * resolved against.
 	 * </p>
+	 * @apiNote This method follows differs from {@link URI#resolve(URI)}, which would resolve the empty path <code>""</code> as if it were <code>.</code>,
+	 *          following RFC 2396. That is, <code>http://example.com/foo/bar</code> resolved against <code>""</code> would return
+	 *          <code>http://example.com/foo/</code>. This method instead follows <a href="https://tools.ietf.org/html/rfc3986">RFC 3986</a>, as discussed at
+	 *          <a href="https://stackoverflow.com/q/22203111/421049">Is Java's URI.resolve incompatible with RFC 3986 when the relative URI contains an empty
+	 *          path?</a>, and returns the URI itself, e.g. <code>http://example.com/foo/bar</code>.
+	 * @implSpec This method creates a URI from the child URI using {@link URI#create(String)} and then delegates to {@link #resolve(URI, URI)}.
 	 * @param baseURI The URI against which the child URI should be resolved.
 	 * @param childURI The URI to resolve against the base URI.
 	 * @return The child URI resolved against the base URI.
 	 * @throws NullPointerException if the base URI and/or the child URI is <code>null</code>.
+	 * @see <a href="https://tools.ietf.org/html/rfc3986">RFC 3986: Uniform Resource Identifier (URI): Generic Syntax</a>
 	 * @see <a href="http://www.w3.org/TR/rdf-syntax-grammar/#section-baseURIs">RDF/XML Syntax Specification (Revised) 5.3 Resolving URIs</a>
 	 * @see #isUNCFileURI(URI)
 	 */
-	public static URI resolve(final URI baseURI, final String childURI) { //TODO consider throwing an exception if the child URI is not a valid URI--that is, it has non-ASCII characters
+	public static URI resolve(final URI baseURI, final String childURI) {
 		return resolve(baseURI, URI.create(childURI));
 	}
 
 	/**
-	 * Resolves a relative URI against a base URI with added functionality and bug fixes over {@link URI#resolve(URI)}.
-	 * <p>
-	 * The empty string is appended to the given base URI with no fragment.
-	 * </p>
+	 * Resolves a relative URI against a base URI with added functionality and bug fixes over {@link URI#resolve(URI)}, following
+	 * <a href="https://tools.ietf.org/html/rfc3986">RFC 3986</a>.
 	 * <p>
 	 * This method correctly resolves fragment URIs against opaque base URIs.
 	 * </p>
@@ -1658,10 +1670,16 @@ public class URIs {
 	 * This method corrects Java's erroneous collapsing of slashes in UNC paths in {@link URI#resolve(URI)}, so that for example
 	 * <code>file:////server/file.ext</code> can successfully be resolved against.
 	 * </p>
+	 * @apiNote This method follows differs from {@link URI#resolve(URI)}, which would resolve the empty path <code>""</code> as if it were <code>.</code>,
+	 *          following RFC 2396. That is, <code>http://example.com/foo/bar</code> resolved against <code>""</code> would return
+	 *          <code>http://example.com/foo/</code>. This method instead follows <a href="https://tools.ietf.org/html/rfc3986">RFC 3986</a>, as discussed at
+	 *          <a href="https://stackoverflow.com/q/22203111/421049">Is Java's URI.resolve incompatible with RFC 3986 when the relative URI contains an empty
+	 *          path?</a>, and returns the URI itself, e.g. <code>http://example.com/foo/bar</code>.
 	 * @param baseURI The URI against which the child URI should be resolved.
 	 * @param childURI The URI to resolve against the base URI.
 	 * @return The child URI resolved against the base URI.
 	 * @throws NullPointerException if the base URI and/or the child URI is <code>null</code>.
+	 * @see <a href="https://tools.ietf.org/html/rfc3986">RFC 3986: Uniform Resource Identifier (URI): Generic Syntax</a>
 	 * @see <a href="http://www.w3.org/TR/rdf-syntax-grammar/#section-baseURIs">RDF/XML Syntax Specification (Revised) 5.3 Resolving URIs</a>
 	 * @see #isUNCFileURI(URI)
 	 */
@@ -1670,9 +1688,10 @@ public class URIs {
 	}
 
 	/**
-	 * Resolves a relative URI against a base URI with added functionality and bug fixes over {@link URI#resolve(URI)}. If a deep resolution is requested, a URI's
-	 * contents will be further resolved if possible, even if the URI itself is already absolute. For example, a deep resolution of <code>file:/foo/bar.txt</code>
-	 * against <code>file:///C:/test</code> would yield <code>file:///C:/test/foo/bar.txt</code>.
+	 * Resolves a relative URI against a base URI with added functionality and bug fixes over {@link URI#resolve(URI)}, following
+	 * <a href="https://tools.ietf.org/html/rfc3986">RFC 3986</a>. If a deep resolution is requested, a URI's contents will be further resolved if possible, even
+	 * if the URI itself is already absolute. For example, a deep resolution of <code>file:/foo/bar.txt</code> against <code>file:///C:/test</code> would yield
+	 * <code>file:///C:/test/foo/bar.txt</code>.
 	 * <p>
 	 * This implementation supports deep resolution of the following URI schemes:
 	 * </p>
@@ -1680,26 +1699,29 @@ public class URIs {
 	 * <li>Files{@value #FILE_SCHEME}</li>
 	 * </ul>
 	 * <p>
-	 * The empty string is appended to the given base URI with no fragment.
-	 * </p>
-	 * <p>
 	 * This method correctly resolves fragment URIs against opaque base URIs.
 	 * </p>
 	 * <p>
 	 * This method corrects Java's erroneous collapsing of slashes in UNC paths in {@link URI#resolve(URI)}, so that for example
 	 * <code>file:////server/file.ext</code> can successfully be resolved against.
 	 * </p>
+	 * @apiNote This method follows differs from {@link URI#resolve(URI)}, which would resolve the empty path <code>""</code> as if it were <code>.</code>,
+	 *          following RFC 2396. That is, <code>http://example.com/foo/bar</code> resolved against <code>""</code> would return
+	 *          <code>http://example.com/foo/</code>. This method instead follows <a href="https://tools.ietf.org/html/rfc3986">RFC 3986</a>, as discussed at
+	 *          <a href="https://stackoverflow.com/q/22203111/421049">Is Java's URI.resolve incompatible with RFC 3986 when the relative URI contains an empty
+	 *          path?</a>, and returns the URI itself, e.g. <code>http://example.com/foo/bar</code>.
 	 * @param baseURI The URI against which the child URI should be resolved.
 	 * @param childURI The URI to resolve against the base URI.
 	 * @param deep Whether the relative contents of the URI should also be resolved, even if the URI itself is absolute.
 	 * @return The child URI resolved against the base URI.
 	 * @throws NullPointerException if the base URI and/or the child URI is <code>null</code>.
+	 * @see <a href="https://tools.ietf.org/html/rfc3986">RFC 3986: Uniform Resource Identifier (URI): Generic Syntax</a>
 	 * @see <a href="http://www.w3.org/TR/rdf-syntax-grammar/#section-baseURIs">RDF/XML Syntax Specification (Revised) 5.3 Resolving URIs</a>
 	 * @see #isUNCFileURI(URI)
 	 */
 	public static URI resolve(final URI baseURI, final URI childURI, final boolean deep) {
 		if(baseURI.isOpaque()) { //if the base URI is opaque, do special processing
-			final String childURIString = childURI.toASCIIString(); //get the child URI as a string
+			final String childURIString = childURI.toString(); //get the child URI as a string
 			if(startsWith(childURIString, FRAGMENT_SEPARATOR)) { //if the child URI is a fragment
 				return URI.create(removeFragment(baseURI).toString() + childURIString); //remove the fragment, if any, from the base URI, and append the fragment
 			}
@@ -1803,8 +1825,8 @@ public class URIs {
 	public static URI replaceRawFragment(final URI uri, final String newRawFragment) {
 		final String oldRawFragment = uri.getRawFragment(); //get the raw fragment, if any
 		if(oldRawFragment != null) { //if there is currently a fragment
-			final int oldRawFragmentLength = oldRawFragment.length(); //get theh length of the current raw fragment
-			final StringBuilder uriStringBuilder = new StringBuilder(uri.toASCIIString()); //get the string representation of the URI
+			final int oldRawFragmentLength = oldRawFragment.length(); //get the length of the current raw fragment
+			final StringBuilder uriStringBuilder = new StringBuilder(uri.toString()); //get the string representation of the URI
 			final int uriLength = uriStringBuilder.length(); //get the length of the URI
 			assert uriStringBuilder.toString().endsWith(new StringBuilder().append(FRAGMENT_SEPARATOR).append(oldRawFragment).toString());
 			if(newRawFragment != null) { //if a new raw fragment was given
@@ -1815,7 +1837,7 @@ public class URIs {
 			return URI.create(uriStringBuilder.toString()); //create a URI from the new URI string
 		} else { //if there is no fragment
 			if(newRawFragment != null) { //if a new raw fragment was given
-				return URI.create(uri.toASCIIString() + FRAGMENT_SEPARATOR + newRawFragment); //append the new raw fragment
+				return URI.create(uri.toString() + FRAGMENT_SEPARATOR + newRawFragment); //append the new raw fragment
 			} else { //if no new raw fragment was given
 				return requireNonNull(uri, "URI cannot be null."); //return the original URI
 			}
@@ -1932,8 +1954,8 @@ public class URIs {
 	}
 
 	/**
-	 * Encodes all URI reserved characters in the URI according to the URI encoding rules in <a href="http://www.ietf.org/rfc/rfc3986.txt">RFC 3986</a>, "Uniform
-	 * Resource Identifiers (URI): Generic Syntax" using the URI escape character, {@value URIs#ESCAPE_CHAR}.
+	 * Encodes all non-ASCII and URI reserved characters in the URI according to the URI encoding rules in <a href="https://tools.ietf.org/html/rfc3986">RFC
+	 * 3986</a>, "Uniform Resource Identifiers (URI): Generic Syntax" using the URI escape character, {@value URIs#ESCAPE_CHAR}.
 	 * @param uri The URI to URI-encode.
 	 * @return A string containing the escaped data.
 	 * @see URIs#ESCAPE_CHAR
@@ -1943,8 +1965,8 @@ public class URIs {
 	}
 
 	/**
-	 * Encodes all URI reserved characters in the URI according to the URI encoding rules in <a href="http://www.ietf.org/rfc/rfc3986.txt">RFC 3986</a>, "Uniform
-	 * Resource Identifiers (URI): Generic Syntax".
+	 * Encodes all non-ASCII and URI reserved characters in the URI according to the URI encoding rules in <a href="https://tools.ietf.org/html/rfc3986">RFC
+	 * 3986</a>, "Uniform Resource Identifiers (URI): Generic Syntax".
 	 * @param uri The URI to URI-encode.
 	 * @param escapeChar The escape character to use, which will always be escaped.
 	 * @return A string containing the escaped data.
@@ -1954,7 +1976,7 @@ public class URIs {
 	}
 
 	/**
-	 * Encodes all URI reserved characters in the string according to the URI encoding rules in <a href="http://www.ietf.org/rfc/rfc3986.txt">RFC 3986</a>,
+	 * Encodes all URI reserved characters in the string according to the URI encoding rules in <a href="https://tools.ietf.org/html/rfc3986">RFC 3986</a>,
 	 * "Uniform Resource Identifiers (URI): Generic Syntax" using the URI escape character, {@value URIs#ESCAPE_CHAR}.
 	 * @param string The data to URI-encode.
 	 * @return A string containing the escaped data.
@@ -1965,7 +1987,7 @@ public class URIs {
 	}
 
 	/**
-	 * Encodes all URI reserved characters in the string according to the URI encoding rules in <a href="http://www.ietf.org/rfc/rfc3986.txt">RFC 3986</a>,
+	 * Encodes all URI reserved characters in the string according to the URI encoding rules in <a href="https://tools.ietf.org/html/rfc3986">RFC 3986</a>,
 	 * "Uniform Resource Identifiers (URI): Generic Syntax".
 	 * @param string The data to URI-encode.
 	 * @param escapeChar The escape character to use, which will always be escaped.
@@ -1976,7 +1998,7 @@ public class URIs {
 	}
 
 	/**
-	 * Encodes the URI reserved characters in the string according to the URI encoding rules in <a href="http://www.ietf.org/rfc/rfc3986.txt">RFC 3986</a>,
+	 * Encodes the URI reserved characters in the string according to the URI encoding rules in <a href="https://tools.ietf.org/html/rfc3986">RFC 3986</a>,
 	 * "Uniform Resource Identifiers (URI): Generic Syntax" using the URI escape character, {@value URIs#ESCAPE_CHAR}.
 	 * @param string The data to URI-encode.
 	 * @param validCharacters Characters that should not be encoded; all other characters will be encoded.
@@ -1988,7 +2010,7 @@ public class URIs {
 	}
 
 	/**
-	 * Encodes the URI reserved characters in the string according to the URI encoding rules in <a href="http://www.ietf.org/rfc/rfc3986.txt">RFC 3986</a>,
+	 * Encodes the URI reserved characters in the string according to the URI encoding rules in <a href="https://tools.ietf.org/html/rfc3986">RFC 3986</a>,
 	 * "Uniform Resource Identifiers (URI): Generic Syntax". Following the examples in RFC 3986, this is guaranteed to produce only <em>uppercase</em> hexadecimal
 	 * escape codes.
 	 * @param string The data to URI-encode.
@@ -2029,22 +2051,18 @@ public class URIs {
 	/**
 	 * Ensures that the given URI is in canonical form.
 	 * <p>
-	 * Java erroneously allows URIs that contain non-ASCII characters. This method ensures that only valid characters according to RFC 3986 are contained in the
-	 * URI.
+	 * This implementation, following the recommendation of <a href="https://tools.ietf.org/html/rfc3986">RFC 3986</a>, ensures that all hexadecimal escape codes
+	 * are in uppercase.
 	 * </p>
-	 * <p>
-	 * This implementation, following the recommendation of RFC 3986, ensures that all hexadecimal escape codes are in uppercase.
-	 * </p>
-	 * <p>
-	 * This method should be distinguished from {@link #normalize(URI)}, which normalizes path segments.
-	 * </p>
+	 * @apiNote This method should be distinguished from {@link #normalize(URI)}, which normalizes the hierarchy of path segments.
+	 * @implNote This implementation does not currently encode any non-ASCII or reserved characters.
 	 * @param uri The URI to be returned in canonical form.
 	 * @return The canonical form of the given URI.
 	 * @throws NullPointerException if the given URI is <code>null</code>.
 	 * @throws IllegalArgumentException if the given URI has an invalid escape sequence.
 	 */
 	public static URI canonicalize(final URI uri) {
-		final String uriString = uri.toASCIIString(); //get the string version of the URI TODO consider removing to allow IRIs
+		final String uriString = uri.toString(); //get the string version of the URI
 		final int uriStringLength = uriString.length(); //get the length of the string
 		StringBuilder uriStringBuilder = null; //we'll only create a string builder if we need one
 		for(int i = 0; i < uriStringLength; ++i) { //for each character, make sure that the escape sequences are in uppercase
@@ -2089,7 +2107,7 @@ public class URIs {
 		}
 		final URI relativeURI = oldBaseURI.relativize(uri); //get a URI relative to the old base URI
 		if(relativeURI.isAbsolute()) { //if we couldn't relativize the the URI to the old base URI and come up with a relative URI
-			throw new IllegalArgumentException(oldBaseURI.toASCIIString() + " is not a base URI of " + uri);
+			throw new IllegalArgumentException(oldBaseURI.toString() + " is not a base URI of " + uri);
 		}
 		return resolve(newBaseURI, relativeURI); //resolve the relative URI to the new base URI, using our Windows UNC path-aware resolve method
 	}
@@ -2155,7 +2173,7 @@ public class URIs {
 	 */
 	public static String compress(final URI uri) {
 		final int ENCODE_BASE = COMPRESS_ENCODE_CHARS.length(); //this is the base into which we'll encode certain characters
-		final String uriString = uri.toASCIIString();
+		final String uriString = uri.toString();
 		final StringBuilder stringBuilder = new StringBuilder();
 		for(int i = 0; i < uriString.length(); ++i) { //look at each URI character
 			final char character = uriString.charAt(i); //get the next character
@@ -2240,6 +2258,7 @@ public class URIs {
 	 * <p>
 	 * This implementation ensures that all hexadecimal escape codes are in lowercase.
 	 * </p>
+	 * @implNote The implementation encodes all non-ASCII characters.
 	 * @param uri The URI to encode
 	 * @return A string representing the plain encoding of the URI.
 	 * @throws IllegalArgumentException if the given URI is not absolute.
@@ -2249,7 +2268,7 @@ public class URIs {
 		checkAbsolute(uri);
 		final String scheme = uri.getScheme(); //find out the scheme of the URI
 		final int schemeLength = scheme.length();
-		final String uriString = uri.toASCIIString(); //start with the real string form of the URI
+		final String uriString = uri.toASCIIString(); //start with the real string form of the encoded URI
 		final StringBuilder stringBuilder = new StringBuilder(); //do the processing within a string builder
 		stringBuilder.append(scheme); //encode the scheme first
 		escapeHex(stringBuilder, PLAIN_ENCODE_INITIAL_UNRESERVED_CHARACTERS, null, Integer.MAX_VALUE, PLAIN_ENCODING_ESCAPE_CHAR, 2, Case.LOWERCASE); //escape the scheme
@@ -2354,6 +2373,7 @@ public class URIs {
 	 * @param pathElements <code>true</code> if the path represents a collection and therefore should end with '/'.
 	 * @return A path constructed according to the given rules.
 	 * @throws IllegalArgumentException if there are no path elements and an absolute non-collection or non-absolute collection is requested.
+	 * @see #encode(String)
 	 */
 	public static String constructPath(final boolean absolute, final boolean collection, final String... pathElements) {
 		if(pathElements.length == 0 && absolute != collection) { //if there are no path elements, an absolute URI must also be a collection
@@ -2363,19 +2383,10 @@ public class URIs {
 		if(absolute) { //if this should be an absolute path
 			stringBuilder.append(PATH_SEPARATOR); //prepend '/'
 		}
-		boolean hasPath = false; //don't assume we have any path elements
 		for(final String pathElement : pathElements) { //look at each path element
-			//TODO fix			try
-			{
-				//TODO fix encoding using a real encoder, not the www-encoding URLEncoder				stringBuilder.append(encode(pathElement, UTF_8));	//encode and append this path element
-				stringBuilder.append(pathElement); //encode and append this path element
-				stringBuilder.append(PATH_SEPARATOR); //separate the path elements
-			}
-			/*TODO fix
-						catch(final UnsupportedEncodingException unsupportedEncodingException) {	//we should always support UTF-8
-							throw new AssertionError(unsupportedEncodingException);
-						}
-			*/
+			stringBuilder.append(encode(pathElement)); //encode and append this path element
+			stringBuilder.append(pathElement); //encode and append this path element
+			stringBuilder.append(PATH_SEPARATOR); //separate the path elements
 		}
 		if(!collection && pathElements.length > 0) { //if there were path elements but this wasn't a collection, we have one too many path separators 
 			stringBuilder.deleteCharAt(stringBuilder.length() - 1); //remove the last character, a '/'
@@ -2443,7 +2454,7 @@ public class URIs {
 	}
 
 	/**
-	 * Normalizes the given path by resolving the '.' and '..' path segments.
+	 * Normalizes the given path by resolving the <code>.</code> and <code>..</code> path segments.
 	 * @param path The path to normalize.
 	 * @return The normalized form of the given path.
 	 * @throws NullPointerException if the given path is <code>null</code>.
@@ -2452,21 +2463,6 @@ public class URIs {
 	 */
 	public static String normalizePath(final String path) {
 		return normalize(createPathURI(path)).getPath(); //get a URI from the path, normalize that URI, and then return the path of the resulting URI
-	}
-
-	/**
-	 * Relativizes the given full path against the given base path. If the full path is not composed of the given base path, the full path is returned.
-	 * @param basePath The path against which the full path should be relativized.
-	 * @param fullPath The full path to be relativized.
-	 * @return A form of the full path relative to the base path.
-	 * @throws NullPointerException if one of the given paths is <code>null</code>.
-	 * @throws IllegalArgumentException if one of the provided path specifies a URI scheme (i.e. the URI is absolute) and/or authority.
-	 */
-	@Deprecated //TODO shouldn't this go elsewhere? reconcile with child path vs backtracking as well
-	public static String relativizePath(final String basePath, final String fullPath) {
-		final URI baseURI = createPathURI(basePath); //create a URI for the base path, ensuring it's a path
-		final URI fullURI = createPathURI(fullPath); //create a URI for the full path, ensuring it's a path
-		return baseURI.relativize(fullURI).getPath(); //relativize the URIs and return the path
 	}
 
 }
