@@ -2473,19 +2473,4 @@ public class URIs {
 		return normalize(createPathURI(path)).getPath(); //get a URI from the path, normalize that URI, and then return the path of the resulting URI
 	}
 
-	/**
-	 * Relativizes the given full path against the given base path. If the full path is not composed of the given base path, the full path is returned.
-	 * @param basePath The path against which the full path should be relativized.
-	 * @param fullPath The full path to be relativized.
-	 * @return A form of the full path relative to the base path.
-	 * @throws NullPointerException if one of the given paths is <code>null</code>.
-	 * @throws IllegalArgumentException if one of the provided path specifies a URI scheme (i.e. the URI is absolute) and/or authority.
-	 */
-	@Deprecated //TODO shouldn't this go elsewhere? reconcile with child path vs backtracking as well
-	public static String relativizePath(final String basePath, final String fullPath) {
-		final URI baseURI = createPathURI(basePath); //create a URI for the base path, ensuring it's a path
-		final URI fullURI = createPathURI(fullPath); //create a URI for the full path, ensuring it's a path
-		return baseURI.relativize(fullURI).getPath(); //relativize the URIs and return the path
-	}
-
 }
