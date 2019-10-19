@@ -2373,6 +2373,7 @@ public class URIs {
 	 * @param pathElements <code>true</code> if the path represents a collection and therefore should end with '/'.
 	 * @return A path constructed according to the given rules.
 	 * @throws IllegalArgumentException if there are no path elements and an absolute non-collection or non-absolute collection is requested.
+	 * @see #encode(String)
 	 */
 	public static String constructPath(final boolean absolute, final boolean collection, final String... pathElements) {
 		if(pathElements.length == 0 && absolute != collection) { //if there are no path elements, an absolute URI must also be a collection
@@ -2382,19 +2383,10 @@ public class URIs {
 		if(absolute) { //if this should be an absolute path
 			stringBuilder.append(PATH_SEPARATOR); //prepend '/'
 		}
-		boolean hasPath = false; //don't assume we have any path elements
 		for(final String pathElement : pathElements) { //look at each path element
-			//TODO fix			try
-			{
-				//TODO fix encoding using a real encoder, not the www-encoding URLEncoder				stringBuilder.append(encode(pathElement, UTF_8));	//encode and append this path element
-				stringBuilder.append(pathElement); //encode and append this path element
-				stringBuilder.append(PATH_SEPARATOR); //separate the path elements
-			}
-			/*TODO fix
-						catch(final UnsupportedEncodingException unsupportedEncodingException) {	//we should always support UTF-8
-							throw new AssertionError(unsupportedEncodingException);
-						}
-			*/
+			stringBuilder.append(encode(pathElement)); //encode and append this path element
+			stringBuilder.append(pathElement); //encode and append this path element
+			stringBuilder.append(PATH_SEPARATOR); //separate the path elements
 		}
 		if(!collection && pathElements.length > 0) { //if there were path elements but this wasn't a collection, we have one too many path separators 
 			stringBuilder.deleteCharAt(stringBuilder.length() - 1); //remove the last character, a '/'
