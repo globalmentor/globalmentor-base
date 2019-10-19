@@ -142,9 +142,6 @@ public class URIs {
 	/** The pound character ('#') that separates a fragment from the rest of a URI. */
 	public static final char FRAGMENT_SEPARATOR = '#';
 
-	/** The domain "localhost". */
-	public static final String LOCALHOST_DOMAIN = "localhost"; //TODO eventually make a separate Domain class
-
 	/** The path to root, consisting of a single path separator ("/"). */
 	public static final String ROOT_PATH = String.valueOf(PATH_SEPARATOR);
 
