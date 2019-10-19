@@ -63,10 +63,8 @@ public final class URIPath {
 	 * @throws NullPointerException if the given path is <code>null</code>.
 	 * @throws IllegalArgumentException if the given string violates URI RFC 2396.
 	 * @throws IllegalArgumentException if the provided path specifies a URI authority, query, and/or fragment.
-	 * @deprecated To be replaced by the static factory method {@link #of(String)}.
 	 */
-	@Deprecated
-	public URIPath(final String path) {
+	private URIPath(final String path) {
 		this(createURIPathURI(requireNonNull(path, "Path cannot be null."))); //construct the class with a URI created from the path, compensating for relative paths that contain a colon in the first path segment
 	}
 
@@ -76,10 +74,8 @@ public final class URIPath {
 	 * @throws NullPointerException if the given path URI is <code>null</code>.
 	 * @throws IllegalArgumentException if the provided URI specifies a URI scheme (i.e. the URI is absolute), authority, query, and/or fragment.
 	 * @throws IllegalArgumentException if the given URI is not a path.
-	 * @deprecated Will be made private in favor of the static factory method {@link #fromURI(URI)}.
 	 */
-	@Deprecated
-	public URIPath(final URI pathURI) {
+	private URIPath(final URI pathURI) {
 		this.uri = checkPathURI(pathURI); //check and store the path URI		
 	}
 

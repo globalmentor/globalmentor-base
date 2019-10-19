@@ -81,7 +81,7 @@ public class DefaultTypeConverter implements TypeConverter {
 				} else if(Pattern.class.isAssignableFrom(requiredType)) { //if the required type is Pattern
 					return (T)Pattern.compile(stringObject); //compile a pattern from the string
 				} else if(URIPath.class.isAssignableFrom(requiredType)) { //if the required type is URIPath
-					return (T)new URIPath(stringObject); //create a URI path from the string
+					return (T)URIPath.of(stringObject); //create a URI path from the string
 				}
 			}
 		}

@@ -346,7 +346,7 @@ public class URIs {
 	 * @throws IllegalArgumentException if the given URI is not a valid {@value #PATH_SCHEME} scheme URI.
 	 */
 	public static final URIPath getPathURIPath(final URI uri) {
-		return new URIPath(getPathRawPath(uri)); //get the raw path and create a URIPath from that
+		return URIPath.of(getPathRawPath(uri)); //get the raw path and create a URIPath from that
 	}
 
 	/**
@@ -434,7 +434,7 @@ public class URIs {
 	 */
 	public static URIPath getPath(final URI uri) {
 		final String rawPath = uri.getRawPath(); //get the raw path of the URI
-		return rawPath != null ? new URIPath(rawPath) : null; //return a path object if there is a path
+		return rawPath != null ? URIPath.of(rawPath) : null; //return a path object if there is a path
 	}
 
 	/**
