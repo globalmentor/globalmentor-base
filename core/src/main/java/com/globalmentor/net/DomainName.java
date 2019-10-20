@@ -19,6 +19,8 @@ package com.globalmentor.net;
 import static com.globalmentor.java.CharSequences.*;
 import static com.globalmentor.java.Conditions.*;
 
+import java.util.*;
+
 import javax.annotation.*;
 
 import com.globalmentor.java.CharSequences;
@@ -218,6 +220,42 @@ public final class DomainName {
 	@Override
 	public String toString() {
 		return name;
+	}
+
+	/**
+	 * Determines the domain name with the longest sequence of common base domains. For example if any combination of the domain names
+	 * <code>www.example.com.</code>, <code>test.example.com.</code>, and <code>example.com.</code> are passed, the common base domain name
+	 * <code>example.com.</code> is returned.
+	 * <p>
+	 * This method requires that all domain names be relative or all be absolute.
+	 * </p>
+	 * @apiNote This method does not make any checks to determine whether a segment is empty, e.g. <code>"foo..bar"</code>.
+	 * @param domainNames The domain names to check.
+	 * @return The greatest base domain name, which may not be present if there is no longest base.
+	 * @throws NullPointerException if the iterable is <code>null</code> or contains a <code>null</code> value.
+	 * @throws IllegalArgumentException if both relative and absolute domains names are passed.
+	 */
+	public static Optional<DomainName> findGreatestCommonBase(@Nonnull final Iterable<DomainName> domainNames) {
+		final Iterator<DomainName> domainNameIterator = domainNames.iterator();
+		if(!domainNameIterator.hasNext()) { //no domains given
+			return Optional.empty();
+		}
+		Boolean areAbsolute = null;
+		final List<String> domainNameStrings = new ArrayList<>();
+		do {
+			final DomainName domainName = domainNameIterator.next();
+			final boolean isAbsolute = domainName.isAbsolute();
+			if(areAbsolute != null) {
+				checkArgument(areAbsolute == isAbsolute, "Cannot determine greatest common base domain name from a mix of relative and absolute domain names.");
+			} else {
+				areAbsolute = isAbsolute;
+			}
+			domainNameStrings.add(domainName.toString());
+		} while(domainNameIterator.hasNext());
+		assert areAbsolute != null : "At least one domain name was present; it should be known whether it was absolute.";
+		final boolean shouldResolveToRoot = areAbsolute; //see if we need to resolve the result back to root
+		return longestCommonSegmentSuffix(domainNameStrings, DELIMITER).map(DomainName::of)
+				.map(baseDomainName -> shouldResolveToRoot ? ROOT.resolve(baseDomainName) : baseDomainName);
 	}
 
 }

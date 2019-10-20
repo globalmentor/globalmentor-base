@@ -16,6 +16,8 @@
 
 package com.globalmentor.net;
 
+import static com.github.npathai.hamcrestopt.OptionalMatchers.*;
+import static java.util.Arrays.*;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -140,6 +142,63 @@ public final class DomainNameTest {
 				}
 			}
 		}
+	}
+
+	/** @see DomainName#findGreatestCommonBase(Iterable) */
+	@Test
+	public void testGreatestCommonBase() {
+		assertThat(DomainName.findGreatestCommonBase(asList()), isEmpty());
+		assertThat(DomainName.findGreatestCommonBase(asList(DomainName.of("foo"), DomainName.of(""))), isEmpty());
+		assertThrows(IllegalArgumentException.class, () -> DomainName.findGreatestCommonBase(asList(DomainName.of("foo."), DomainName.of(""))));
+		assertThat(DomainName.findGreatestCommonBase(asList(DomainName.of(""), DomainName.of("bar"))), isEmpty());
+		assertThrows(IllegalArgumentException.class, () -> DomainName.findGreatestCommonBase(asList(DomainName.of("."), DomainName.of("bar"))));
+		assertThat(DomainName.findGreatestCommonBase(asList(DomainName.of("foo.bar"), DomainName.of(""))), isEmpty());
+		assertThrows(IllegalArgumentException.class, () -> DomainName.findGreatestCommonBase(asList(DomainName.of("foo.bar."), DomainName.of(""))));
+		assertThat(DomainName.findGreatestCommonBase(asList(DomainName.of(""), DomainName.of("foo.bar"))), isEmpty());
+		assertThrows(IllegalArgumentException.class, () -> DomainName.findGreatestCommonBase(asList(DomainName.of("."), DomainName.of("foo.bar"))));
+		assertThat(DomainName.findGreatestCommonBase(asList(DomainName.of("foo"), DomainName.of("bar"))), isEmpty());
+		assertThrows(IllegalArgumentException.class, () -> DomainName.findGreatestCommonBase(asList(DomainName.of("foo."), DomainName.of("bar"))));
+		assertThat(DomainName.findGreatestCommonBase(asList(DomainName.of("foo.bar"), DomainName.of("bar.foo"))), isEmpty());
+		assertThrows(IllegalArgumentException.class, () -> DomainName.findGreatestCommonBase(asList(DomainName.of("foo.bar."), DomainName.of("bar.foo"))));
+		assertThrows(IllegalArgumentException.class, () -> DomainName.findGreatestCommonBase(asList(DomainName.of("foo.bar"), DomainName.of("bar.foo."))));
+		assertThat(DomainName.findGreatestCommonBase(asList(DomainName.of("foo.bar."), DomainName.of("bar.foo."))), isEmpty());
+		assertThat(DomainName.findGreatestCommonBase(asList(DomainName.of("bar"), DomainName.of("bar"))), isPresentAndIs(DomainName.of("bar")));
+		assertThrows(IllegalArgumentException.class, () -> DomainName.findGreatestCommonBase(asList(DomainName.of("bar."), DomainName.of("bar"))));
+		assertThrows(IllegalArgumentException.class, () -> DomainName.findGreatestCommonBase(asList(DomainName.of("bar"), DomainName.of("bar."))));
+		assertThat(DomainName.findGreatestCommonBase(asList(DomainName.of("bar."), DomainName.of("bar."))), isPresentAndIs(DomainName.of("bar.")));
+		assertThat(DomainName.findGreatestCommonBase(asList(DomainName.of("foo.bar"), DomainName.of("bar"))), isPresentAndIs(DomainName.of("bar")));
+		assertThrows(IllegalArgumentException.class, () -> DomainName.findGreatestCommonBase(asList(DomainName.of("foo.bar."), DomainName.of("bar"))));
+		assertThrows(IllegalArgumentException.class, () -> DomainName.findGreatestCommonBase(asList(DomainName.of("foo.bar"), DomainName.of("bar."))));
+		assertThat(DomainName.findGreatestCommonBase(asList(DomainName.of("foo.bar."), DomainName.of("bar."))), isPresentAndIs(DomainName.of("bar.")));
+		assertThat(DomainName.findGreatestCommonBase(asList(DomainName.of("bar"), DomainName.of("foo.bar"))), isPresentAndIs(DomainName.of("bar")));
+		assertThrows(IllegalArgumentException.class, () -> DomainName.findGreatestCommonBase(asList(DomainName.of("bar."), DomainName.of("foo.bar"))));
+		assertThrows(IllegalArgumentException.class, () -> DomainName.findGreatestCommonBase(asList(DomainName.of("bar"), DomainName.of("foo.bar."))));
+		assertThat(DomainName.findGreatestCommonBase(asList(DomainName.of("bar."), DomainName.of("foo.bar."))), isPresentAndIs(DomainName.of("bar.")));
+		assertThrows(IllegalArgumentException.class, () -> DomainName.findGreatestCommonBase(asList(DomainName.of(".bar"), DomainName.of("foo.bar."))));
+		assertThat(DomainName.findGreatestCommonBase(asList(DomainName.of("foo.bar"), DomainName.of("foo.bar"))), isPresentAndIs(DomainName.of("foo.bar")));
+		assertThrows(IllegalArgumentException.class, () -> DomainName.findGreatestCommonBase(asList(DomainName.of("foo.bar."), DomainName.of("foo.bar"))));
+		assertThrows(IllegalArgumentException.class, () -> DomainName.findGreatestCommonBase(asList(DomainName.of("foo.bar"), DomainName.of("foo.bar."))));
+		assertThat(DomainName.findGreatestCommonBase(asList(DomainName.of("foo.bar."), DomainName.of("foo.bar."))), isPresentAndIs(DomainName.of("foo.bar.")));
+		assertThat(DomainName.findGreatestCommonBase(asList(DomainName.of("example.foo.bar"), DomainName.of("test.foo.bar"))),
+				isPresentAndIs(DomainName.of("foo.bar")));
+		assertThat(DomainName.findGreatestCommonBase(asList(DomainName.of("example.foo.bar."), DomainName.of("test.foo.bar."))),
+				isPresentAndIs(DomainName.of("foo.bar.")));
+		assertThat(DomainName.findGreatestCommonBase(asList(DomainName.of("www.example.com"), DomainName.of("example.com"))),
+				isPresentAndIs(DomainName.of("example.com")));
+		assertThat(DomainName.findGreatestCommonBase(asList(DomainName.of("www.example.com."), DomainName.of("example.com."))),
+				isPresentAndIs(DomainName.of("example.com.")));
+		assertThat(DomainName.findGreatestCommonBase(asList(DomainName.of("example.com"), DomainName.of("www.example.com"))),
+				isPresentAndIs(DomainName.of("example.com")));
+		assertThat(DomainName.findGreatestCommonBase(asList(DomainName.of("example.com."), DomainName.of("www.example.com."))),
+				isPresentAndIs(DomainName.of("example.com.")));
+		assertThat(DomainName.findGreatestCommonBase(asList(DomainName.of("example.com"), DomainName.of("www.example.com"), DomainName.of("test.example.com"))),
+				isPresentAndIs(DomainName.of("example.com")));
+		assertThat(DomainName.findGreatestCommonBase(asList(DomainName.of("example.com."), DomainName.of("www.example.com."), DomainName.of("test.example.com."))),
+				isPresentAndIs(DomainName.of("example.com.")));
+		assertThat(DomainName.findGreatestCommonBase(asList(DomainName.of("www.example.com"), DomainName.of("test.example.com"))),
+				isPresentAndIs(DomainName.of("example.com")));
+		assertThat(DomainName.findGreatestCommonBase(asList(DomainName.of("www.example.com."), DomainName.of("test.example.com."))),
+				isPresentAndIs(DomainName.of("example.com.")));
 	}
 
 }
