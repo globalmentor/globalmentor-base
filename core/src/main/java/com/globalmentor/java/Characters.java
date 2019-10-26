@@ -654,6 +654,7 @@ public final class Characters {
 
 	/**
 	 * Splits a character sequence on the these characters. Runs of matching characters are removed and the interspersed tokens are returned.
+	 * @apiNote This method produces the same result without regard to whether one or more character sequences begin and/or end with the delimiter.
 	 * @implNote This method is likely more efficient than a regular expression-based approach, especially in situations in which splitting is likely to occur at
 	 *           a small frequency, because the setup cost is low and individual character testing is efficient.
 	 * @implSpec The current implementation does not support surrogate characters.

@@ -1,4 +1,5 @@
 /*
+ * Copyright © 1996-2011 GlobalMentor, Inc. <http://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -140,9 +141,6 @@ public class URIs {
 
 	/** The pound character ('#') that separates a fragment from the rest of a URI. */
 	public static final char FRAGMENT_SEPARATOR = '#';
-
-	/** The domain "localhost". */
-	public static final String LOCALHOST_DOMAIN = "localhost"; //TODO eventually make a separate Domain class
 
 	/** The path to root, consisting of a single path separator ("/"). */
 	public static final String ROOT_PATH = String.valueOf(PATH_SEPARATOR);

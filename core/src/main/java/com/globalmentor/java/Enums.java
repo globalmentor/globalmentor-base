@@ -17,6 +17,7 @@
 package com.globalmentor.java;
 
 import java.util.EnumSet;
+import java.util.Optional;
 
 import com.globalmentor.lex.Identifier;
 import com.globalmentor.text.ASCII;
@@ -29,6 +30,25 @@ import static com.globalmentor.java.StringBuilders.*;
  * @author Garret Wilson
  */
 public class Enums {
+
+	/**
+	 * Returns the enum constant specified by the given name for the indicated enum type, if the name is in fact of the indicated enum type.
+	 * @apiNote This method is equivalent to calling {@link Enum#valueOf(Class, String)} except that it returns {@link Optional#empty()} instead of throwing an
+	 *          exception if the name is unrecognized for the indicated enum type.
+	 * @param <E> The enum type whose constant is to be returned.
+	 * @param enumClass The class identifying the type of enum.
+	 * @param name The name of the enum constant to return.
+	 * @return The enum constant of the specified enum type with the specified name, which will be empty if the specified enum type has no constant with the
+	 *         specified name.
+	 * @throws NullPointerException if the enum class and/or name is <code>null</code>.
+	 */
+	public static <E extends Enum<E>> Optional<E> asEnum(final Class<E> enumClass, final String name) {
+		try {
+			return Optional.of(Enum.valueOf(enumClass, name));
+		} catch(final IllegalArgumentException illegalArgumentException) {
+			return Optional.empty();
+		}
+	}
 
 	/**
 	 * Creates a set of enums using varargs.

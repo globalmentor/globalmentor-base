@@ -865,6 +865,8 @@ public class CharSequences {
 	 * <code>"www.example.com"</code>, <code>"test.example.com"</code>, and <code>"example.com"</code> are passed using the delimiter <code>'.'</code>, the common
 	 * segment suffix <code>"example.com"</code> is returned.
 	 * @apiNote This method does not make any checks to determine whether a segment is empty, e.g. <code>"foo..bar"</code>.
+	 * @implNote The current implementation does not distinguish between sequences beginning and/or ending with the delimiter. That is <code>foo.bar</code> and
+	 *           <code>foo.bar.</code> are considered to have the same common segment suffix <code>foo.bar</code>, for example.
 	 * @param charSequences The list of character sequences to check.
 	 * @param delimiter The delimiter to use in determining the segments.
 	 * @return A string representing the longest common suffix of segments, which may not be present if there is no longest common segment suffix.
@@ -877,7 +879,7 @@ public class CharSequences {
 		if(longestCommonSuffix.isEmpty()) {
 			return Optional.empty();
 		}
-		return Optional.of(String.join(String.valueOf(delimiter), longestCommonSuffix));
+		return Optional.of(String.join(String.valueOf(delimiter), longestCommonSuffix)); //TODO improve to better handle beginning ending delimters
 	}
 
 	/**

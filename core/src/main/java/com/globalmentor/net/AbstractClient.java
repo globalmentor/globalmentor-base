@@ -110,7 +110,7 @@ public class AbstractClient implements Client {
 	/**
 	 * Retrieves the realms stored for a given root URI.
 	 * @param rootURI The root URI of the domain governing the realms and user passwords.
-	 * @return A read-only set of reallms of the given root URI.
+	 * @return A read-only set of realms of the given root URI.
 	 */
 	public Set<String> getRealms(final URI rootURI) {
 		final Map<String, Map<String, char[]>> realmMap = authenticationMap.get(rootURI); //get the map with realm keys
@@ -146,7 +146,7 @@ public class AbstractClient implements Client {
 		final Map<String, Map<String, char[]>> realmMap = authenticationMap.get(rootURI); //get the map with realm keys
 		if(realmMap != null) { //if we found this realm
 			final Map<String, char[]> userMap = realmMap.get(realm); //get the map of users and passwords
-			if(userMap != null) { //if there is a map for useres
+			if(userMap != null) { //if there is a map for users
 				final char[] password = userMap.get(username); //get the password for this user
 				return password != null ? password.clone() : null; //return the password TODO check and improve cloning
 			}
@@ -185,7 +185,7 @@ public class AbstractClient implements Client {
 		final Map<String, Map<String, char[]>> realmMap = authenticationMap.get(rootURI); //get the map with realm keys
 		if(realmMap != null) { //if we found this realm
 			final Map<String, char[]> userMap = realmMap.get(realm); //get the map of users and passwords
-			if(userMap != null) { //if there is a map for useres
+			if(userMap != null) { //if there is a map for users
 				userMap.remove(username); //remove any password stored for this user
 				if(userMap.size() == 0) { //if we removed the last password
 					realmMap.remove(userMap); //remove the user map from the map of users keyed to realms
