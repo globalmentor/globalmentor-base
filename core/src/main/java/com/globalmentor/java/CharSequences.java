@@ -362,11 +362,24 @@ public class CharSequences {
 	 * Determines if the character sequence ends with the given character.
 	 * @param charSequence The character sequence to examine.
 	 * @param character The character to compare.
-	 * @return <code>true</code> if the last character of the character sequence matches that of the given string.
+	 * @return <code>true</code> if the last character of the character sequence matches the given character.
 	 */
 	public static boolean endsWith(final CharSequence charSequence, final char character) {
 		//see if the character sequence has at least one character, and the last character matches our character
-		return charSequence.length() > 0 && charSequence.charAt(charSequence.length() - 1) == character;
+		final int length = charSequence.length();
+		return length > 0 && charSequence.charAt(length - 1) == character;
+	}
+
+	/**
+	 * Determines if the character sequence ends with one of the given characters.
+	 * @param charSequence The character sequence to examine.
+	 * @param characters The characters to compare.
+	 * @return <code>true</code> if the last character of the character sequence matches one of the given characters.
+	 * @see Characters#contains(char)
+	 */
+	public static boolean endsWith(final CharSequence charSequence, final Characters characters) {
+		final int length = charSequence.length();
+		return length > 0 && characters.contains(charSequence.charAt(length - 1));
 	}
 
 	/**
@@ -1251,11 +1264,22 @@ public class CharSequences {
 	 * Determines if the character sequence starts with the given character.
 	 * @param charSequence The character sequence to examine.
 	 * @param character The character to compare.
-	 * @return <code>true</code> if the first character of the character sequence matches that of the given string.
+	 * @return <code>true</code> if the first character of the character sequence matches the given character.
 	 */
 	public static boolean startsWith(final CharSequence charSequence, final char character) {
 		//see if the character sequence has at least one character, and the first character matches our character
 		return charSequence.length() > 0 && charSequence.charAt(0) == character;
+	}
+
+	/**
+	 * Determines if the character sequence starts with one of the given characters.
+	 * @param charSequence The character sequence to examine.
+	 * @param characters The characters to compare.
+	 * @return <code>true</code> if the first character of the character sequence matches one of the given characters.
+	 * @see Characters#contains(char)
+	 */
+	public static boolean startsWith(final CharSequence charSequence, final Characters characters) {
+		return charSequence.length() > 0 && characters.contains(charSequence.charAt(0));
 	}
 
 	/**
