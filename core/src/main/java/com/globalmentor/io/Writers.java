@@ -19,7 +19,7 @@ package com.globalmentor.io;
 import java.io.*;
 
 /**
- * Utility methods for writers.
+ * Utility methods for working with {@link Writer} instances.
  * @author Garret Wilson
  */
 public class Writers {

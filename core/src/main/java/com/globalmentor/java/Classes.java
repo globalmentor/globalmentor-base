@@ -1008,7 +1008,7 @@ public class Classes {
 				try {
 					final OutputStream outputStream = new FileOutputStream(file); //create an output stream to the file
 					try {
-						Streams.copy(inputStream, outputStream); //copy the resource input stream to the output stream to the temporary file
+						IOStreams.copy(inputStream, outputStream); //copy the resource input stream to the output stream to the temporary file
 					} finally {
 						outputStream.close(); //always close the output stream
 					}

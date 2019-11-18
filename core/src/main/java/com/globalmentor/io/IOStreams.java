@@ -25,7 +25,7 @@ import com.globalmentor.event.ProgressListener;
  * Utilities for working with streams generally.
  * @author Garret Wilson
  */
-public class Streams { //TODO rename to IOStreams to prevent confusion with Java 8+ streams
+public class IOStreams {
 
 	/**
 	 * Copies all information from an input stream to an output stream. Both streams are used as-is. If buffered reading and writing is desired, the streams
@@ -104,18 +104,18 @@ public class Streams { //TODO rename to IOStreams to prevent confusion with Java
 		long totalBytesCopied = 0; //show that we have not copied any data
 		int bytesRead; //this will store the number of bytes read each time
 		if(progressListener != null) { //if we have a progress listener
-			progressListener.progressed(new ProgressEvent(Streams.class, bufferSize, 0, expectedContentLength)); //indicate that we are starting but have made no progress
+			progressListener.progressed(new ProgressEvent(IOStreams.class, bufferSize, 0, expectedContentLength)); //indicate that we are starting but have made no progress
 		}
 		while((bytesRead = inputStream.read(buffer)) >= 0) { //read bytes until the end of the input stream is reached
 			outputStream.write(buffer, 0, bytesRead); //write the bytes to the output stream
 			totalBytesCopied += bytesRead; //update the total bytes read
 			if(progressListener != null) { //if we have a progress listener
-				progressListener.progressed(new ProgressEvent(Streams.class, bytesRead, totalBytesCopied, expectedContentLength)); //indicate our progress
+				progressListener.progressed(new ProgressEvent(IOStreams.class, bytesRead, totalBytesCopied, expectedContentLength)); //indicate our progress
 			}
 		}
 		if(expectedContentLength >= 0 && totalBytesCopied != expectedContentLength) { //if we didn't copy what was expected
-			throw new IOException("Error transferring information; expected to transfer " + expectedContentLength + " bytes and instead transferred "
-					+ totalBytesCopied);
+			throw new IOException(
+					"Error transferring information; expected to transfer " + expectedContentLength + " bytes and instead transferred " + totalBytesCopied);
 		}
 		return totalBytesCopied; //return the total number of bytes copied
 	}
