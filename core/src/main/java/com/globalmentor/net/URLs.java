@@ -246,7 +246,7 @@ public class URLs {
 	public static void write(final URL url, final OutputStream outputStream) throws IOException {
 		final InputStream bufferedInputStream = new BufferedInputStream(url.openConnection().getInputStream()); //created a buffered input stream to the URL
 		try {
-			Streams.copy(bufferedInputStream, outputStream); //copy the contents of the input stream to the output stream
+			IOStreams.copy(bufferedInputStream, outputStream); //copy the contents of the input stream to the output stream
 		} finally {
 			bufferedInputStream.close(); //always close the file input stream
 		}

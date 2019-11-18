@@ -935,7 +935,7 @@ public class Files {
 	public static void copy(final InputStream inputStream, final File file, final ProgressListener progressListener) throws IOException {
 		final OutputStream fileOutputStream = new BufferedOutputStream(new FileOutputStream(file)); //created a buffered output stream to the file
 		try {
-			Streams.copy(inputStream, fileOutputStream, progressListener); //copy the contents of the input stream to the output stream
+			IOStreams.copy(inputStream, fileOutputStream, progressListener); //copy the contents of the input stream to the output stream
 		} finally {
 			fileOutputStream.close(); //always close the file output stream
 		}
@@ -1058,7 +1058,7 @@ public class Files {
 	public static void copy(final File file, final OutputStream outputStream, final ProgressListener progressListener) throws IOException {
 		final InputStream fileInputStream = new BufferedInputStream(new FileInputStream(file)); //created a buffered input stream to the file
 		try {
-			Streams.copy(fileInputStream, outputStream, file.length(), progressListener); //copy the contents of the input stream to the output stream
+			IOStreams.copy(fileInputStream, outputStream, file.length(), progressListener); //copy the contents of the input stream to the output stream
 		} finally {
 			fileInputStream.close(); //always close the file input stream
 		}

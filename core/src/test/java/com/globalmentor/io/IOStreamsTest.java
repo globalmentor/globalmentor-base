@@ -24,10 +24,10 @@ import java.util.*;
 import org.junit.jupiter.api.Test;
 
 /**
- * Various tests for streams.
+ * Various tests for the {@link IOStreams} utilities.
  * @author Garret Wilson
  */
-public class StreamsTest {
+public class IOStreamsTest {
 
 	/**
 	 * Generates a buffer of data for testing using sequential bytes.
@@ -57,7 +57,7 @@ public class StreamsTest {
 			final int length = Math.min(random.nextInt(Short.MAX_VALUE / 3), testData.length - total); //get the next size to retrieve; require at least three passes
 			final InputStream inputStream = new FixedLengthInputStream(testInputStream, length, false); //don't close the underlying stream on each pass
 			final ByteArrayOutputStream output = new ByteArrayOutputStream();
-			Streams.copy(inputStream, output);
+			IOStreams.copy(inputStream, output);
 			assertEquals(length, output.toByteArray().length);
 			assertTrue(Arrays.equals(Arrays.copyOfRange(testData, total, total + length), output.toByteArray()),
 					"HTTP chunked output stream did not correctly write data.");
