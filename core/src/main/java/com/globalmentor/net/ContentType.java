@@ -39,7 +39,8 @@ import com.globalmentor.text.ArgumentSyntaxException;
 /**
  * An encapsulation of an Internet media content type as originally defined in <a href="https://tools.ietf.org/html/rfc2046"><cite>RFC 2046: MIME Part 2: Media
  * Types</cite></a>; and most recently in <a href="https://tools.ietf.org/html/rfc6838"><cite>RFC 6838: Media Type Specifications and Registration
- * Procedures</cite></a>.
+ * Procedures</cite></a>. The full syntax for a content type and its parameters are found in <a href="https://tools.ietf.org/html/rfc2045"><cite>RFC 2045: MIME
+ * Part 1: Format of Internet Message Bodies</cite></a>
  * <p>
  * The content type and names of parameters are compared in a case-insensitive manner as per RFC 2046.
  * </p>
@@ -55,6 +56,7 @@ import com.globalmentor.text.ArgumentSyntaxException;
  * TODO This implementation does not support quoted values containing the {@value #PARAMETER_DELIMITER_CHAR} character.
  * </p>
  * @author Garret Wilson
+ * @see <a href="https://tools.ietf.org/html/rfc2045">RFC 2045</a>
  * @see <a href="https://tools.ietf.org/html/rfc2046">RFC 2046</a>
  * @see <a href="https://tools.ietf.org/html/rfc6838">RFC 6838</a>
  * @see <a href="https://www.w3.org/TR/xhtml-media-types/">XHTML Media Types</a>
@@ -221,11 +223,23 @@ public class ContentType { //TODO major version: rename to MediaType; make final
 	 * @param charSequence The character sequence representation of the content type.
 	 * @return A new content type object parsed from the string.
 	 * @throws ArgumentSyntaxException Thrown if the string is not a syntactically correct content type.
-	 * @deprecated in favor of {@link #of(CharSequence)}; to be removed in next major version.
+	 * @deprecated in favor of {@link #parse(CharSequence)}; to be removed in next major version.
 	 */
 	@Deprecated
 	public static ContentType create(final CharSequence charSequence) throws ArgumentSyntaxException {
-		return of(charSequence);
+		return parse(charSequence);
+	}
+
+	/**
+	 * Parses a content type object from a string.
+	 * @param charSequence The character sequence representation of the content type.
+	 * @return A new content type object parsed from the string.
+	 * @throws ArgumentSyntaxException Thrown if the string is not a syntactically correct content type.
+	 * @deprecated in favor of {@link #parse(CharSequence)}; to be removed in next major version.
+	 */
+	@Deprecated
+	public static ContentType of(final CharSequence charSequence) throws ArgumentSyntaxException {
+		return parse(charSequence);
 	}
 
 	/**
@@ -234,7 +248,7 @@ public class ContentType { //TODO major version: rename to MediaType; make final
 	 * @return A new content type object parsed from the string.
 	 * @throws ArgumentSyntaxException Thrown if the string is not a syntactically correct content type.
 	 */
-	public static ContentType of(final CharSequence charSequence) throws ArgumentSyntaxException {
+	public static ContentType parse(final CharSequence charSequence) throws ArgumentSyntaxException {
 		final Matcher matcher = PATTERN.matcher(charSequence);
 		if(!matcher.matches()) {
 			throw new ArgumentSyntaxException("Invalid content type syntax", charSequence);

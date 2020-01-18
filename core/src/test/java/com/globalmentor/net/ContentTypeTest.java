@@ -32,49 +32,49 @@ import org.junit.jupiter.api.Test;
  */
 public class ContentTypeTest {
 
-	/** Tests of {@link ContentType#of(CharSequence)}. */
+	/** Tests of {@link ContentType#parse(CharSequence)}. */
 	@Test
 	public void testParseContentTypes() {
 		//simple
-		assertThat(ContentType.of("text/plain").getPrimaryType(), is("text"));
-		assertThat(ContentType.of("text/plain").getSubType(), is("plain"));
+		assertThat(ContentType.parse("text/plain").getPrimaryType(), is("text"));
+		assertThat(ContentType.parse("text/plain").getSubType(), is("plain"));
 		//one parameter
-		assertThat(ContentType.of("text/plain; charset=us-ascii").getPrimaryType(), is("text"));
-		assertThat(ContentType.of("text/plain; charset=us-ascii").getSubType(), is("plain"));
-		assertEquals(immutableSetOf(ContentType.Parameter.of("charset", "us-ascii")), ContentType.of("text/plain; charset=us-ascii").getParameters());
+		assertThat(ContentType.parse("text/plain; charset=us-ascii").getPrimaryType(), is("text"));
+		assertThat(ContentType.parse("text/plain; charset=us-ascii").getSubType(), is("plain"));
+		assertEquals(immutableSetOf(ContentType.Parameter.of("charset", "us-ascii")), ContentType.parse("text/plain; charset=us-ascii").getParameters());
 		//two parameters
-		assertThat(ContentType.of("text/plain; charset=us-ascii; foo=bar").getPrimaryType(), is("text"));
-		assertThat(ContentType.of("text/plain; charset=us-ascii; foo=bar").getSubType(), is("plain"));
+		assertThat(ContentType.parse("text/plain; charset=us-ascii; foo=bar").getPrimaryType(), is("text"));
+		assertThat(ContentType.parse("text/plain; charset=us-ascii; foo=bar").getSubType(), is("plain"));
 		assertEquals(immutableSetOf(ContentType.Parameter.of("charset", "us-ascii"), ContentType.Parameter.of("foo", "bar")),
-				ContentType.of("text/plain; charset=us-ascii; foo=bar").getParameters());
+				ContentType.parse("text/plain; charset=us-ascii; foo=bar").getParameters());
 		//without spaces
-		assertThat(ContentType.of("text/plain;charset=us-ascii;foo=bar").getPrimaryType(), is("text"));
-		assertThat(ContentType.of("text/plain;charset=us-ascii;foo=bar").getSubType(), is("plain"));
+		assertThat(ContentType.parse("text/plain;charset=us-ascii;foo=bar").getPrimaryType(), is("text"));
+		assertThat(ContentType.parse("text/plain;charset=us-ascii;foo=bar").getSubType(), is("plain"));
 		assertEquals(immutableSetOf(ContentType.Parameter.of("charset", "us-ascii"), ContentType.Parameter.of("foo", "bar")),
-				ContentType.of("text/plain;charset=us-ascii;foo=bar").getParameters());
+				ContentType.parse("text/plain;charset=us-ascii;foo=bar").getParameters());
 		//many spaces
-		assertThat(ContentType.of("text/plain;  charset=us-ascii;   foo=bar").getPrimaryType(), is("text"));
-		assertThat(ContentType.of("text/plain;  charset=us-ascii;   foo=bar").getSubType(), is("plain"));
+		assertThat(ContentType.parse("text/plain;  charset=us-ascii;   foo=bar").getPrimaryType(), is("text"));
+		assertThat(ContentType.parse("text/plain;  charset=us-ascii;   foo=bar").getSubType(), is("plain"));
 		assertEquals(immutableSetOf(ContentType.Parameter.of("charset", "us-ascii"), ContentType.Parameter.of("foo", "bar")),
-				ContentType.of("text/plain;  charset=us-ascii;   foo=bar").getParameters());
+				ContentType.parse("text/plain;  charset=us-ascii;   foo=bar").getParameters());
 	}
 
 	/** Tests equality, including parameter order and case insensitivity of content type names. */
 	@Test
 	public void testEquality() {
 		//parsing versus construction
-		assertEquals(ContentType.of("text", "plain"), ContentType.of("text/plain"));
+		assertEquals(ContentType.of("text", "plain"), ContentType.parse("text/plain"));
 		assertEquals(ContentType.of("text", "plain", ContentType.Parameter.of("charset", "us-ascii"), ContentType.Parameter.of("foo", "bar")),
-				ContentType.of("text/plain; charset=us-ascii; foo=bar"));
+				ContentType.parse("text/plain; charset=us-ascii; foo=bar"));
 		//parameter order
-		assertThat(ContentType.of("text/plain; charset=us-ascii; foo=bar"), equalTo(ContentType.of("text/plain; foo=bar; charset=us-ascii")));
+		assertThat(ContentType.parse("text/plain; charset=us-ascii; foo=bar"), equalTo(ContentType.parse("text/plain; foo=bar; charset=us-ascii")));
 		//no spaces
-		assertThat(ContentType.of("text/plain;charset=us-ascii;foo=bar"), equalTo(ContentType.of("text/plain; foo=bar; charset=us-ascii")));
+		assertThat(ContentType.parse("text/plain;charset=us-ascii;foo=bar"), equalTo(ContentType.parse("text/plain; foo=bar; charset=us-ascii")));
 		//case insensitivity
-		assertThat(ContentType.of("text/plain; charset=us-ascii"), equalTo(ContentType.of("TEXT/PLAIN; CHARSET=us-ascii")));
-		assertThat(ContentType.of("text/plain; charset=us-ascii"), not(equalTo(ContentType.of("TEXT/PLAIN; CHARSET=US-ASCII"))));
+		assertThat(ContentType.parse("text/plain; charset=us-ascii"), equalTo(ContentType.parse("TEXT/PLAIN; CHARSET=us-ascii")));
+		assertThat(ContentType.parse("text/plain; charset=us-ascii"), not(equalTo(ContentType.parse("TEXT/PLAIN; CHARSET=US-ASCII"))));
 		//optional parameter value quotes
-		assertThat(ContentType.of("text/plain; charset=us-ascii"), equalTo(ContentType.of("text/plain; charset=\"us-ascii\"")));
+		assertThat(ContentType.parse("text/plain; charset=us-ascii"), equalTo(ContentType.parse("text/plain; charset=\"us-ascii\"")));
 	}
 
 	/**
@@ -89,40 +89,40 @@ public class ContentTypeTest {
 		assertThat(ContentType.of("text", "plain").toString(true), is("text/plain"));
 
 		//text/html; charset=UTF-8
-		assertThat(ContentType.of("text/html; charset=UTF-8").toString(), is("text/html;charset=UTF-8"));
-		assertThat(ContentType.of("text/html; charset=UTF-8").toString(false), is("text/html;charset=UTF-8"));
-		assertThat(ContentType.of("text/html; charset=UTF-8").toString(true), is("text/html; charset=UTF-8"));
+		assertThat(ContentType.parse("text/html; charset=UTF-8").toString(), is("text/html;charset=UTF-8"));
+		assertThat(ContentType.parse("text/html; charset=UTF-8").toString(false), is("text/html;charset=UTF-8"));
+		assertThat(ContentType.parse("text/html; charset=UTF-8").toString(true), is("text/html; charset=UTF-8"));
 
 		//TODO add tests with multiple parameters with some normalized order
 	}
 
 	@Test
 	public void testMissingDelimiter() {
-		assertThrows(ArgumentSyntaxException.class, () -> ContentType.of("text"));
+		assertThrows(ArgumentSyntaxException.class, () -> ContentType.parse("text"));
 	}
 
 	@Test
 	public void testMissingSubType() {
-		assertThrows(ArgumentSyntaxException.class, () -> ContentType.of("text/"));
+		assertThrows(ArgumentSyntaxException.class, () -> ContentType.parse("text/"));
 	}
 
 	@Test
 	public void testMissingParameters() {
-		assertThrows(ArgumentSyntaxException.class, () -> ContentType.of("text/plain;"));
+		assertThrows(ArgumentSyntaxException.class, () -> ContentType.parse("text/plain;"));
 	}
 
 	@Test
 	public void testMissingParameterDelimiter() {
-		assertThrows(ArgumentSyntaxException.class, () -> ContentType.of("text/plain; charset"));
+		assertThrows(ArgumentSyntaxException.class, () -> ContentType.parse("text/plain; charset"));
 	}
 
 	@Test
 	public void testMissingParameterValue() {
-		assertThrows(ArgumentSyntaxException.class, () -> ContentType.of("text/plain; charset="));
+		assertThrows(ArgumentSyntaxException.class, () -> ContentType.parse("text/plain; charset="));
 	}
 
 	@Test
 	public void testMissingSecondParameter() {
-		assertThrows(ArgumentSyntaxException.class, () -> ContentType.of("text/plain; charset=us-ascii;"));
+		assertThrows(ArgumentSyntaxException.class, () -> ContentType.parse("text/plain; charset=us-ascii;"));
 	}
 }
