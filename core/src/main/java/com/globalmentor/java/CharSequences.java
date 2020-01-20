@@ -417,6 +417,22 @@ public class CharSequences {
 	}
 
 	/**
+	 * Escapes a given string by inserting an escape character before every restricted character, including any occurrence of the given escape character.
+	 * @implSpec This implementation delegates to {@link StringBuilders#escape(StringBuilder, Characters, char)}.
+	 * @param charSequence The data to escape.
+	 * @param restricted The characters to be escaped; should not include the escape character.
+	 * @param escape The character used to escape the restricted characters.
+	 * @return A string containing the escaped data.
+	 * @throws NullPointerException if the given character sequence is <code>null</code>.
+	 */
+	public static String escape(final CharSequence charSequence, final Characters restricted, final char escape) {
+		if(!contains(charSequence, restricted)) { //if there are no restricted characters in the string (assuming that most strings won't need to be escaped, it's less expensive to check up-front before we start allocating and copying)
+			return charSequence.toString(); //the string doesn't need to be escaped
+		}
+		return StringBuilders.escape(new StringBuilder(charSequence), restricted, escape).toString(); //make a string builder copy and escape its contents
+	}
+
+	/**
 	 * Escapes the indicated characters in the character sequence using the supplied escape character. All characters are first encoded using UTF-8. Every invalid
 	 * character is converted to its Unicode hex equivalent and prefixed with the given escape character. This method uses <em>lowercase</em> hexadecimal escape
 	 * codes. Characters are assumed to be valid unless specified otherwise. The escape character, if encountered, is not escaped unless it specifically meets one

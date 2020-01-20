@@ -250,6 +250,39 @@ public class StringBuilders {
 	}
 
 	/**
+	 * Escapes a given string builder by inserting an escape character before every restricted character, including any occurrence of the given escape character.
+	 * @implSpec This implementation delegates to {@link #escape(StringBuilder, Characters, char, boolean)}.
+	 * @param stringBuilder The data to escape.
+	 * @param restricted The characters to be escaped; should not include the escape character.
+	 * @param escape The character used to escape the restricted characters.
+	 * @return A string containing the escaped data.
+	 * @throws NullPointerException if the given string builder is <code>null</code>.
+	 */
+	public static StringBuilder escape(final StringBuilder stringBuilder, final Characters restricted, final char escape) {
+		return escape(stringBuilder, restricted, escape, true);
+	}
+
+	/**
+	 * Escapes a given string builder by inserting an escape character before every restricted character, optionally including any occurrence of the given escape
+	 * character.
+	 * @param stringBuilder The data to escape.
+	 * @param restricted The characters to be escaped; should not include the escape character.
+	 * @param escape The character used to escape the restricted characters.
+	 * @param escapeEscape <code>true</code> if the escape character should also be escaped.
+	 * @return A string containing the escaped data.
+	 * @throws NullPointerException if the given string builder is <code>null</code>.
+	 */
+	public static StringBuilder escape(final StringBuilder stringBuilder, final Characters restricted, final char escape, final boolean escapeEscape) {
+		for(int characterIndex = stringBuilder.length() - 1; characterIndex >= 0; --characterIndex) { //work backwards; this keeps us from having a separate variable for the length, but it also makes it simpler to calculate the next position when we swap out characters
+			final char c = stringBuilder.charAt(characterIndex); //get the current character
+			if((escapeEscape && c == escape) || restricted.contains(c)) { //if we should encode this character (always encode the escape character)
+				stringBuilder.insert(characterIndex, escape); //insert the escape character
+			}
+		}
+		return stringBuilder; //return the escaped version of the string builder
+	}
+
+	/**
 	 * Escapes the indicated characters in the string builder using the supplied escape character. All characters are first encoded using UTF-8. Every invalid
 	 * character is converted to its Unicode hex equivalent and prefixed with the given escape character. Characters are assumed to be valid unless specified
 	 * otherwise. The escape character, if encountered, is not escaped unless it specifically meets one of the specified criteria; this allows re-escaping strings

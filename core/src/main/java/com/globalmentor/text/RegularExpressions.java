@@ -16,13 +16,18 @@
 
 package com.globalmentor.text;
 
-import static com.globalmentor.text.Text.*;
+import static com.globalmentor.java.CharSequences.*;
+
+import java.util.regex.Pattern;
 
 import com.globalmentor.java.Characters;
 
 /**
  * Constants and utility methods for regular expression-related tasks.
+ * @apiNote Many of these constants and utilities assist in forming regular expressions to use with {@link Pattern}.
+ * @implNote Several solutions implemented here were inspired from <cite>Mastering Regular Expressions, Third Edition</cite>.
  * @author Garret Wilson
+ * @see Pattern
  */
 public class RegularExpressions {
 
@@ -44,22 +49,48 @@ public class RegularExpressions {
 	/** The ending character of a character class. */
 	public static final char CHARACTER_CLASS_END = ']';
 
-	/** The restricted characters which must be escaped in regular expressions. */
-	public static final Characters RESTRICTED = Characters.of(ZERO_OR_ONE_CHAR, ZERO_OR_MORE_CHAR, ONE_OR_MORE_CHAR, WILDCARD_CHAR, '-', '(', ')',
-			CHARACTER_CLASS_BEGIN, CHARACTER_CLASS_END);
+	/** The character class negation character. */
+	public static final char CHARACTER_CLASS_NEGATION_CHAR = '^';
 
 	/** The character used for escaping regular expressions. */
 	public static final char ESCAPE = '\\';
+
+	/**
+	 * The restricted characters which must be escaped in regular expressions at least in some places.
+	 * @see <a href="https://stackoverflow.com/q/399078/421049">What special characters must be escaped in regular expressions?</a>
+	 * @see <a href="https://www.regular-expressions.info/characters.html">regular-exprssions.info: Special Characters</a>
+	 */
+	public static final Characters RESTRICTED = Characters.of(ESCAPE, ZERO_OR_ONE_CHAR, ZERO_OR_MORE_CHAR, ONE_OR_MORE_CHAR, WILDCARD_CHAR, '-', '(', ')',
+			CHARACTER_CLASS_BEGIN, CHARACTER_CLASS_END, CHARACTER_CLASS_NEGATION_CHAR, '{', '}', '|');
+
+	/**
+	 * The restricted characters which must be escaped in regular expressions at least in some places.
+	 * @see <a href="https://stackoverflow.com/q/5484084/421049">What literal characters should be escaped in a regex?</a>
+	 * @see <a href="https://stackoverflow.com/a/19976308/421049">Does a dot have to be escaped in a character class (square brackets) of a regular
+	 *      expression?</a>
+	 * @see <a href="https://www.regular-expressions.info/refcharclass.html">Regular Expression Reference: Character Classes</a>
+	 */
+	public static final Characters CHARACTER_CLASS_RESTRICTED = Characters.of(ESCAPE, CHARACTER_CLASS_NEGATION_CHAR, '-', CHARACTER_CLASS_END);
+
+	/** Regular expression requiring matching quotes and not recognizing any escaping. */
+	public static final String QUOTED_STRING = "\"[^\"]*\"";
+
+	/** Regular expression requiring matching quotes, and allowing escaping of the quote using the backslash, as well as escaping the escape character itself. */
+	public static final String QUOTED_STRING_ALLOWING_ESCAPE_QUOTE = "\"(?:[^\\\\\"]++|\\\\\"|\\\\\\\\)*+\"";
+
+	/** Regular expression requiring matching quotes, and allowing escaping of any character using the backslash. */
+	public static final String QUOTED_STRING_ALLOWING_ESCAPE_ANYTHING = "\"(?:[^\\\\\"]++|\\\\.)*+\"";
 
 	/**
 	 * Creates a regular expression character class (e.g. "[abc]") from the given characters (e.g. 'a', 'b', and 'c').
 	 * @param characters The characters to be included in the character class.
 	 * @return The new character class including the given characters.
 	 * @throws NullPointerException if the given characters is <code>null</code>.
-	 * @see #escapePatternString(String)
+	 * @deprecated in favor of {@link #characterClassOf(char...)}.
 	 */
+	@Deprecated
 	public static String createCharacterClass(final char... characters) {
-		return createCharacterClass(Characters.of(characters));
+		return characterClassOf(characters);
 	}
 
 	/**
@@ -67,10 +98,71 @@ public class RegularExpressions {
 	 * @param characters The characters to be included in the character class.
 	 * @return The new character class including the given characters.
 	 * @throws NullPointerException if the given characters is <code>null</code>.
+	 * @deprecated in favor of {@link #characterClassOf(Characters)}.
+	 */
+	@Deprecated
+	public static String createCharacterClass(final Characters characters) {
+		return characterClassOf(characters);
+	}
+
+	/**
+	 * Creates a regular expression character class (e.g. "[abc]") from the given characters (e.g. 'a', 'b', and 'c').
+	 * @implSpec This implementation delegates to {@link #characterClassOf(Characters)}.
+	 * @param characters The characters to be included in the character class.
+	 * @return The new character class including the given characters.
+	 * @throws NullPointerException if the given characters is <code>null</code>.
 	 * @see #escapePatternString(String)
 	 */
-	public static String createCharacterClass(final Characters characters) {
-		return new StringBuilder().append(CHARACTER_CLASS_BEGIN).append(escapePatternString(characters.toString())).append(CHARACTER_CLASS_END).toString(); //escape the characters and surround them with character class characters
+	public static String characterClassOf(final char... characters) {
+		return characterClassOf(Characters.of(characters));
+	}
+
+	/**
+	 * Creates a regular expression negative character class (e.g. "[^abc]") from the given characters (e.g. 'a', 'b', and 'c').
+	 * @implSpec This implementation delegates to {@link #characterClassNotOf(Characters)}.
+	 * @param characters The characters to be included in the character class.
+	 * @return The new character class including the given characters.
+	 * @throws NullPointerException if the given characters is <code>null</code>.
+	 * @see #escapePatternString(String)
+	 */
+	public static String characterClassNotOf(final char... characters) {
+		return characterClassNotOf(Characters.of(characters));
+	}
+
+	/**
+	 * Creates a regular expression character class (e.g. "[abc]") from the given characters (e.g. 'a', 'b', and 'c').
+	 * @param characters The characters to be included in the character class.
+	 * @return The new character class including the given characters.
+	 * @throws NullPointerException if the given characters is <code>null</code>.
+	 */
+	public static String characterClassOf(final Characters characters) {
+		return createCharacterClass(characters, false);
+	}
+
+	/**
+	 * Creates a regular expression negative character class (e.g. "[^abc]") from the given characters (e.g. 'a', 'b', and 'c').
+	 * @param characters The characters to be included in the character class.
+	 * @return The new character class including the given characters.
+	 * @throws NullPointerException if the given characters is <code>null</code>.
+	 */
+	public static String characterClassNotOf(final Characters characters) {
+		return createCharacterClass(characters, true);
+	}
+
+	/**
+	 * Creates a regular expression character class (e.g. "[abc]") from the given characters (e.g. 'a', 'b', and 'c'), optionally with negation.
+	 * @param characters The characters to be included in the character class.
+	 * @return The new character class including the given characters.
+	 * @throws NullPointerException if the given characters is <code>null</code>.
+	 * @see #CHARACTER_CLASS_RESTRICTED
+	 * @see #ESCAPE
+	 */
+	private static String createCharacterClass(final Characters characters, final boolean not) {
+		final StringBuilder stringBuilder = new StringBuilder().append(CHARACTER_CLASS_BEGIN);
+		if(not) {
+			stringBuilder.append(CHARACTER_CLASS_NEGATION_CHAR); //^
+		}
+		return stringBuilder.append(escape(characters.toString(), CHARACTER_CLASS_RESTRICTED, ESCAPE)).append(CHARACTER_CLASS_END).toString();
 	}
 
 	/**
