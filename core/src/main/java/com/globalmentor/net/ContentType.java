@@ -28,13 +28,14 @@ import static com.globalmentor.collections.Sets.*;
 import static com.globalmentor.java.CharSequences.*;
 import static com.globalmentor.java.Characters.SPACE_CHAR;
 import static com.globalmentor.java.Characters.QUOTATION_MARK_CHAR;
-import static com.globalmentor.text.ASCII.*;
+import static com.globalmentor.text.ABNF.*;
+import static com.globalmentor.text.RegularExpressions.*;
 import static java.nio.charset.StandardCharsets.*;
 import static java.util.Collections.*;
 
 import com.globalmentor.java.*;
 import com.globalmentor.model.NameValuePair;
-import com.globalmentor.text.ArgumentSyntaxException;
+import com.globalmentor.text.*;
 
 /**
  * An encapsulation of an Internet media content type as originally defined in <a href="https://tools.ietf.org/html/rfc2046"><cite>RFC 2046: MIME Part 2: Media
@@ -52,9 +53,6 @@ import com.globalmentor.text.ArgumentSyntaxException;
  * <code>javax.activation</code> package is not included in the Android Development Kit, however, and seeing that neither <code>javax.activation.MimeType</code>
  * nor <code>javax.mail.internet.ContentType</code> are in common use, the current implementation provides a fully independent version.
  * </p>
- * <p>
- * TODO This implementation does not support quoted values containing the {@value #PARAMETER_DELIMITER_CHAR} character.
- * </p>
  * @author Garret Wilson
  * @see <a href="https://tools.ietf.org/html/rfc2045">RFC 2045</a>
  * @see <a href="https://tools.ietf.org/html/rfc2046">RFC 2046</a>
@@ -71,20 +69,43 @@ public class ContentType { //TODO major version: rename to MediaType; make final
 	public static final char PARAMETER_ASSIGNMENT_CHAR = '=';
 	/** The character for quoting a string, such as a parameter value with special characters. */
 	public static final char STRING_QUOTE_CHAR = '"';
+	/** The character delimiting a facet name from the rest of the name as per RFC 6838. */
+	public static final char FACET_DELIMITER_CHAR = '.';
+	/** The separator character that begins a non-standard extension type. */
+	public static final String SUBTYPE_EXTENSION_PREFIX = "x-";
+	/** The separator character that delimits a subtype suffix. */
+	public static final char SUBTYPE_SUFFIX_DELIMITER_CHAR = '+';
 	/** The wildcard character. */
 	public static final char TYPE_WILDCARD_CHAR = '*';
 	/** The wildcard subtype, matching any subtype. */
 	public static final String WILDCARD_SUBTYPE = String.valueOf(TYPE_WILDCARD_CHAR);
-	/** The <code>tspecials</code> characters of RFC 2046, which require a string to be quoted in a parameter value. */
+	/** The <code>restricted-name-first</code> characters of RFC 6838, defining the first character of a <code>restricted-name</code>. */
+	public static final Characters RESTRICTED_NAME_FIRST_CHARACTERS = ALPHA_CHARACTERS.add(DIGIT_CHARACTERS);
+	/** The <code>restricted-name-chars</code> characters of RFC 6838, making up a <code>restricted-name</code>. */
+	public static final Characters RESTRICTED_NAME_CHARACTERS = RESTRICTED_NAME_FIRST_CHARACTERS.add('!', '#', '$', '&', '-', '^', '_', FACET_DELIMITER_CHAR,
+			SUBTYPE_SUFFIX_DELIMITER_CHAR);
+	/** The maximum number of <code>restricted-name-chars</code> of a <code>restricted-name</code> according to RFC 6838. */
+	public static final byte RESTRICTED_NAME_CHARS_MAX_LENGTH = 126;
+	/** The maximum length of a <code>restricted-name</code> according to RFC 6838. */
+	public static final byte RESTRICTED_NAME_MAX_LENGTH = RESTRICTED_NAME_CHARS_MAX_LENGTH + 1;
+	/** The regular expression pattern defining a <code>restricted-name</code> as per RFC 6838. */
+	public static final Pattern RESTRICTED_NAME_PATTERN = Pattern.compile(String.format("%s%s{0,%d}+", characterClassOf(RESTRICTED_NAME_FIRST_CHARACTERS),
+			characterClassOf(RESTRICTED_NAME_CHARACTERS), RESTRICTED_NAME_CHARS_MAX_LENGTH));
+	/** The <code>tspecials</code> characters of RFC 2045, which require a string to be quoted in a parameter value. */
 	public static final Characters SPECIAL_CHARACTERS = Characters.of('(', ')', '<', '>', '@', ',', ';', ':', '\\', '"', '/', '[', ']', '?', '=');
+	/** The regular expression pattern defining a <code>restricted-name</code> as per RFC 6838. */
+	public static final Pattern RESTRICTED_NAME_WITHOUT_SPECIAL_CHARACTERS_PATTERN = Pattern
+			.compile(String.format("%s%s{0,%d}+", characterClassOf(RESTRICTED_NAME_FIRST_CHARACTERS),
+					characterClassOf(RESTRICTED_NAME_CHARACTERS.remove(SPECIAL_CHARACTERS)), RESTRICTED_NAME_CHARS_MAX_LENGTH));
 	/** The characters of RFC 2046 which are considered illegal in tokens; control characters and non-ASCII characters are not included. */
 	public static final Characters ILLEGAL_TOKEN_CHARACTERS = SPECIAL_CHARACTERS.add(SPACE_CHAR);
 
 	/**
-	 * A pattern for checking the basic form of parameters. The pattern may be repeated and the two matching groups are the name and value. This pattern does not
-	 * take into account all aspects of a regular expression, e.g. special characters.
+	 * A pattern for checking the basic form of parameters <em>after</em> the {@value #PARAMETER_DELIMITER_CHAR} delimiter. The pattern may be repeated and the
+	 * two matching groups are the name and value. This pattern does not take into account all aspects of a regular expression, e.g. special characters.
 	 */
-	public static final Pattern PARAMETERS_PATTERN = Pattern.compile(";\\s*([\\x21-\\x7F&&[^=;]]+)=([\\x21-\\x7F&&[^=;]]+)");
+	public static final Pattern PARAMETERS_PATTERN = Pattern.compile(String.format("%s\\s*(%s)=(%s|%s)", PARAMETER_DELIMITER_CHAR, RESTRICTED_NAME_PATTERN,
+			RESTRICTED_NAME_WITHOUT_SPECIAL_CHARACTERS_PATTERN, QUOTED_STRING_ALLOWING_ESCAPE_QUOTE)); //TODO use special characters pattern
 	/**
 	 * The parameters pattern matching group for the parameter name.
 	 * @see #PARAMETERS_PATTERN
@@ -100,7 +121,8 @@ public class ContentType { //TODO major version: rename to MediaType; make final
 	 * A pattern for checking the basic form of regular expressions. This pattern does not take into account all aspects of a regular expression, e.g. special
 	 * characters. The parameters group will be <code>null</code> if there are no parameters at all.
 	 */
-	public static final Pattern PATTERN = Pattern.compile("([\\x21-\\x7F&&[^/;]]+)/([\\x21-\\x7F&&[^/;]]+)((?:" + PARAMETERS_PATTERN + ")+)?");
+	public static final Pattern PATTERN = Pattern
+			.compile(String.format("(%s)/(%s)((?:%s)+)?", RESTRICTED_NAME_PATTERN, RESTRICTED_NAME_PATTERN, PARAMETERS_PATTERN));
 	/**
 	 * The pattern matching group for the primary type.
 	 * @see #PATTERN
@@ -129,11 +151,6 @@ public class ContentType { //TODO major version: rename to MediaType; make final
 	/** The pseudo top-level type used by Java {@link URLConnection} to indicate unknown content by <code>content/unknown</code>. */
 	public static final String CONTENT_PRIMARY_TYPE = "content";
 
-	/** The separator character that begins a non-standard extension type. */
-	public static final String SUBTYPE_EXTENSION_PREFIX = "x-";
-	/** The separator character that delimits a subtype suffix. */
-	public static final char SUBTYPE_SUFFIX_DELIMITER_CHAR = '+';
-
 	//parameters
 	/** The character set parameters. */
 	public static final String CHARSET_PARAMETER = "charset";
@@ -161,7 +178,7 @@ public class ContentType { //TODO major version: rename to MediaType; make final
 	 * @see #ILLEGAL_TOKEN_CHARACTERS
 	 */
 	public static final boolean isToken(final CharSequence charSequence) {
-		return isASCIINonControl(charSequence) && notContains(charSequence, ILLEGAL_TOKEN_CHARACTERS);
+		return ASCII.isASCIINonControl(charSequence) && notContains(charSequence, ILLEGAL_TOKEN_CHARACTERS);
 	}
 
 	/**
@@ -222,7 +239,7 @@ public class ContentType { //TODO major version: rename to MediaType; make final
 	 * Parses a content type object from a string.
 	 * @param charSequence The character sequence representation of the content type.
 	 * @return A new content type object parsed from the string.
-	 * @throws ArgumentSyntaxException Thrown if the string is not a syntactically correct content type.
+	 * @throws ArgumentSyntaxException if the string is not a syntactically correct content type.
 	 * @deprecated in favor of {@link #parse(CharSequence)}; to be removed in next major version.
 	 */
 	@Deprecated
@@ -234,47 +251,12 @@ public class ContentType { //TODO major version: rename to MediaType; make final
 	 * Parses a content type object from a string.
 	 * @param charSequence The character sequence representation of the content type.
 	 * @return A new content type object parsed from the string.
-	 * @throws ArgumentSyntaxException Thrown if the string is not a syntactically correct content type.
+	 * @throws ArgumentSyntaxException if the string is not a syntactically correct content type.
 	 * @deprecated in favor of {@link #parse(CharSequence)}; to be removed in next major version.
 	 */
 	@Deprecated
 	public static ContentType of(final CharSequence charSequence) throws ArgumentSyntaxException {
 		return parse(charSequence);
-	}
-
-	/**
-	 * Parses a content type object from a string.
-	 * @param charSequence The character sequence representation of the content type.
-	 * @return A new content type object parsed from the string.
-	 * @throws ArgumentSyntaxException Thrown if the string is not a syntactically correct content type.
-	 */
-	public static ContentType parse(final CharSequence charSequence) throws ArgumentSyntaxException {
-		final Matcher matcher = PATTERN.matcher(charSequence);
-		if(!matcher.matches()) {
-			throw new ArgumentSyntaxException("Invalid content type syntax", charSequence);
-		}
-		final String primaryType = matcher.group(PATTERN_PRIMARY_TYPE_GROUP);
-		final String subType = matcher.group(PATTERN_SUBTYPE_GROUP);
-		Set<Parameter> parameters = emptySet();
-		final String parameterString = matcher.group(PATTERN_PARAMETERS_GROUP);
-		if(parameterString != null) { //if there are parameters
-			parameters = new HashSet<Parameter>(); //create a new hash set
-			final Matcher parameterMatcher = PARAMETERS_PATTERN.matcher(parameterString);
-			while(parameterMatcher.find()) {
-				final String parameterName = parameterMatcher.group(PARAMETERS_PATTERN_NAME_GROUP);
-				String parameterValue = parameterMatcher.group(PARAMETERS_PATTERN_VALUE_GROUP);
-				if(startsWith(parameterValue, QUOTATION_MARK_CHAR)) { //if this is a quoted value
-					if(parameterValue.length() < 3 || !endsWith(parameterValue, QUOTATION_MARK_CHAR)) {
-						throw new ArgumentSyntaxException("Illegally quoted content type parameter: " + parameterValue, parameterValue);
-					}
-					parameterValue = parameterValue.substring(1, parameterValue.length() - 1); //remove the surrounding quotes
-				}
-
-				parameters.add(Parameter.of(parameterName, parameterValue));
-			}
-			parameters = unmodifiableSet(parameters); //make the parameters set read-only
-		}
-		return new ContentType(primaryType, subType, parameters);
 	}
 
 	/**
@@ -317,6 +299,47 @@ public class ContentType { //TODO major version: rename to MediaType; make final
 	}
 
 	/**
+	 * Parses a content type object from a string.
+	 * @param text The character sequence representation of the content type.
+	 * @return A new content type object parsed from the string.
+	 * @throws ArgumentSyntaxException if the string is not a syntactically correct content type.
+	 */
+	public static ContentType parse(final CharSequence text) throws ArgumentSyntaxException {
+		final Matcher matcher = PATTERN.matcher(text);
+		if(!matcher.matches()) {
+			throw new ArgumentSyntaxException("Invalid content type syntax", text);
+		}
+		final String primaryType = matcher.group(PATTERN_PRIMARY_TYPE_GROUP);
+		final String subType = matcher.group(PATTERN_SUBTYPE_GROUP);
+		final String parameterString = matcher.group(PATTERN_PARAMETERS_GROUP);
+		final Set<Parameter> parameters = parameterString != null ? parseParameters(parameterString) : emptySet();
+		return new ContentType(primaryType, subType, parameters);
+	}
+
+	/**
+	 * Parses parameters of a content type from a string.
+	 * @param text The character sequence representing the parameters of the content type, not including the {@value #PARAMETER_DELIMITER_CHAR} delimiter.
+	 * @return Content type parameters parsed from the string.
+	 * @throws ArgumentSyntaxException if the string is not syntactically correct parameters.
+	 */
+	public static Set<Parameter> parseParameters(final CharSequence text) throws ArgumentSyntaxException {
+		final Set<Parameter> parameters = new HashSet<>();
+		final Matcher parameterMatcher = PARAMETERS_PATTERN.matcher(text);
+		while(parameterMatcher.find()) {
+			final String parameterName = parameterMatcher.group(PARAMETERS_PATTERN_NAME_GROUP);
+			String parameterValue = parameterMatcher.group(PARAMETERS_PATTERN_VALUE_GROUP);
+			if(startsWith(parameterValue, QUOTATION_MARK_CHAR)) { //if this is a quoted value
+				if(parameterValue.length() < 3 || !endsWith(parameterValue, QUOTATION_MARK_CHAR)) {
+					throw new ArgumentSyntaxException("Illegally quoted content type parameter: " + parameterValue, parameterValue);
+				}
+				parameterValue = parameterValue.substring(1, parameterValue.length() - 1); //remove the surrounding quotes
+			}
+			parameters.add(Parameter.of(parameterName, parameterValue));
+		}
+		return unmodifiableSet(parameters); //make the parameters set read-only
+	}
+
+	/**
 	 * Retrieve the parameter value associated with the given parameter name. Names are comparisons are case-insensitive.
 	 * @param name The name of the parameter.
 	 * @return The (always unquoted) value associated with the given name, or <code>null</code> if there is no parameter with the given name.
@@ -325,7 +348,7 @@ public class ContentType { //TODO major version: rename to MediaType; make final
 	public String getParameter(final String name) {
 		requireNonNull(name);
 		for(final Parameter parameter : getParameters()) {
-			if(equalsIgnoreCase(parameter.getName(), name)) {
+			if(ASCII.equalsIgnoreCase(parameter.getName(), name)) {
 				return parameter.getValue();
 			}
 		}
@@ -341,8 +364,8 @@ public class ContentType { //TODO major version: rename to MediaType; make final
 	 */
 	public boolean match(final String primaryType, final String subType) {
 		final String contentTypeSubType = getSubType(); //get the content type's subtype
-		return equalsIgnoreCase(getPrimaryType(), primaryType)
-				&& (equalsIgnoreCase(contentTypeSubType, subType) || WILDCARD_SUBTYPE.equals(contentTypeSubType) || WILDCARD_SUBTYPE.equals(subType)); //check the primary type and subtype and wildcards
+		return ASCII.equalsIgnoreCase(getPrimaryType(), primaryType)
+				&& (ASCII.equalsIgnoreCase(contentTypeSubType, subType) || WILDCARD_SUBTYPE.equals(contentTypeSubType) || WILDCARD_SUBTYPE.equals(subType)); //check the primary type and subtype and wildcards
 	}
 
 	/**
@@ -401,7 +424,7 @@ public class ContentType { //TODO major version: rename to MediaType; make final
 	 * @throws NullPointerException if the primary type and/or subtype is <code>null</code>.
 	 */
 	public boolean hasBaseType(final String primaryType, final String subType) {
-		return equalsIgnoreCase(getPrimaryType(), primaryType) && equalsIgnoreCase(getSubType(), subType); //check the primary type and subtype
+		return ASCII.equalsIgnoreCase(getPrimaryType(), primaryType) && ASCII.equalsIgnoreCase(getSubType(), subType); //check the primary type and subtype
 	}
 
 	/**
@@ -423,7 +446,7 @@ public class ContentType { //TODO major version: rename to MediaType; make final
 	public ContentType withParameter(final Parameter newParameter) {
 		final Set<Parameter> newParameters = new HashSet<ContentType.Parameter>(getParameters().size());
 		for(final Parameter parameter : getParameters()) {
-			if(equalsIgnoreCase(parameter.getName(), newParameter.getName())) { //if this is the same parameter name
+			if(ASCII.equalsIgnoreCase(parameter.getName(), newParameter.getName())) { //if this is the same parameter name
 				if(parameter.getValue().equals(newParameter.getValue())) { //if the parameter values are the same
 					return this; //just use the same content type, because nothing will change; otherwise
 				} else { //if the parameter values are different
@@ -462,7 +485,7 @@ public class ContentType { //TODO major version: rename to MediaType; make final
 	 */
 	@Override
 	public int hashCode() {
-		return hash(toLowerCase(getPrimaryType()).toString(), toLowerCase(getSubType()).toString(), getParameters());
+		return hash(ASCII.toLowerCase(getPrimaryType()).toString(), ASCII.toLowerCase(getSubType()).toString(), getParameters());
 	}
 
 	/**
@@ -485,7 +508,7 @@ public class ContentType { //TODO major version: rename to MediaType; make final
 			return false;
 		}
 		final ContentType contentType = (ContentType)object;
-		return equalsIgnoreCase(getPrimaryType(), contentType.getPrimaryType()) && equalsIgnoreCase(getSubType(), contentType.getSubType())
+		return ASCII.equalsIgnoreCase(getPrimaryType(), contentType.getPrimaryType()) && ASCII.equalsIgnoreCase(getSubType(), contentType.getSubType())
 				&& getParameters().equals(contentType.getParameters());
 	}
 
@@ -602,7 +625,7 @@ public class ContentType { //TODO major version: rename to MediaType; make final
 		@Deprecated
 		public Parameter(final String name, final String value) {
 			super(checkToken(name), value); //make sure the name is a token
-			if(contains(value, SPACE_CHAR) || !isASCIINonControl(value)) { //special characters are allowed in the value; but not spaces, non-ASCII, or control characters
+			if(contains(value, SPACE_CHAR) || !ASCII.isASCIINonControl(value)) { //special characters are allowed in the value; but not spaces, non-ASCII, or control characters
 				throw new ArgumentSyntaxException("Content type parameter value " + value + " must consist only of non-space and non-control ASCII characters.", value);
 			}
 		}
@@ -618,7 +641,7 @@ public class ContentType { //TODO major version: rename to MediaType; make final
 		 */
 		public static Parameter of(@Nonnull final String name, @Nonnull final String value) {
 			//often-used parameters
-			if(equalsIgnoreCase(name, CHARSET_PARAMETER)) { //charset
+			if(ASCII.equalsIgnoreCase(name, CHARSET_PARAMETER)) { //charset
 				if(value.equals(UTF_8.name())) { //charset=UTF-8
 					return CHARSET_UTF_8;
 				}
@@ -630,7 +653,7 @@ public class ContentType { //TODO major version: rename to MediaType; make final
 		/** {@inheritDoc} This version returns a consistent hash code for all cases of a parameter name. */
 		@Override
 		public int hashCode() {
-			return hash(toLowerCase(getName()).toString(), getValue());
+			return hash(ASCII.toLowerCase(getName()).toString(), getValue());
 		}
 
 		/** {@inheritDoc} This version compares names in a case-insensitive manner. */
@@ -643,7 +666,7 @@ public class ContentType { //TODO major version: rename to MediaType; make final
 				return false;
 			}
 			final Parameter parameter = (Parameter)object;
-			return equalsIgnoreCase(getName(), parameter.getName()) && getValue().equals(parameter.getValue());
+			return ASCII.equalsIgnoreCase(getName(), parameter.getName()) && getValue().equals(parameter.getValue());
 		}
 	}
 
