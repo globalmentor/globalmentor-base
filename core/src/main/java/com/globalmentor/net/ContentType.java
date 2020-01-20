@@ -53,10 +53,13 @@ import com.globalmentor.text.*;
  * <code>javax.activation</code> package is not included in the Android Development Kit, however, and seeing that neither <code>javax.activation.MimeType</code>
  * nor <code>javax.mail.internet.ContentType</code> are in common use, the current implementation provides a fully independent version.
  * </p>
+ * @apiNote <a href="https://tools.ietf.org/html/rfc7231">RFC 7231 § 3.1.1.1. Media Type</a> indicates that a lowercase form of <code>charset</code> value is
+ *          preferred, e.g.<code>text/html;charset=utf-8</code>.
  * @author Garret Wilson
  * @see <a href="https://tools.ietf.org/html/rfc2045">RFC 2045</a>
  * @see <a href="https://tools.ietf.org/html/rfc2046">RFC 2046</a>
  * @see <a href="https://tools.ietf.org/html/rfc6838">RFC 6838</a>
+ * @see <a href="https://tools.ietf.org/html/rfc7231">RFC 7231 § 3.1.1.1. Media Type</a>
  * @see <a href="https://www.iana.org/assignments/media-types/media-types.xhtml">IANA Media Types</a>
  * @see <a href="https://www.w3.org/TR/xhtml-media-types/">XHTML Media Types</a>
  */

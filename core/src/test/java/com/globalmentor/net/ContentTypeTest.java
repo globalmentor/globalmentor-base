@@ -27,6 +27,7 @@ import org.junit.jupiter.api.Test;
 /**
  * Tests of {@link ContentType}.
  * @author Garret Wilson
+ * @see <a href="https://en.wikipedia.org/wiki/Media_type">Media type</a>
  */
 public class ContentTypeTest {
 
@@ -70,6 +71,20 @@ public class ContentTypeTest {
 		assertThat(ContentType.parse("text/plain;  charset=us-ascii;   foo=bar").getSubType(), is("plain"));
 		assertThat(ContentType.parse("text/plain;  charset=us-ascii;   foo=bar").getParameters(),
 				containsInAnyOrder(ContentType.Parameter.of("charset", "us-ascii"), ContentType.Parameter.of("foo", "bar")));
+		//known media types
+		assertThat(ContentType.parse("application/x-www-form-urlencoded").getPrimaryType(), is("application"));
+		assertThat(ContentType.parse("application/x-www-form-urlencoded").getSubType(), is("x-www-form-urlencoded"));
+		assertThat(ContentType.parse("application/vnd.openxmlformats-officedocument.wordprocessingml.document").getPrimaryType(), is("application"));
+		assertThat(ContentType.parse("application/vnd.openxmlformats-officedocument.wordprocessingml.document").getSubType(),
+				is("vnd.openxmlformats-officedocument.wordprocessingml.document"));
+		assertThat(ContentType.parse("application/vnd.openxmlformats-officedocument.presentationml.presentation").getPrimaryType(), is("application"));
+		assertThat(ContentType.parse("application/vnd.openxmlformats-officedocument.presentationml.presentation").getSubType(),
+				is("vnd.openxmlformats-officedocument.presentationml.presentation"));
+		assertThat(ContentType.parse("multipart/form-data").getPrimaryType(), is("multipart"));
+		assertThat(ContentType.parse("multipart/form-data").getSubType(), is("form-data"));
+		assertThat(ContentType.parse("application/vnd.api+json").getPrimaryType(), is("application"));
+		assertThat(ContentType.parse("application/vnd.api+json").getSubType(), is("vnd.api+json"));
+
 	}
 
 	/** @see ContentType#PARAMETER_PATTERN */
