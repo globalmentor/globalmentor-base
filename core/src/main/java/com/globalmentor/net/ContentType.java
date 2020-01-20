@@ -57,6 +57,7 @@ import com.globalmentor.text.*;
  * @see <a href="https://tools.ietf.org/html/rfc2045">RFC 2045</a>
  * @see <a href="https://tools.ietf.org/html/rfc2046">RFC 2046</a>
  * @see <a href="https://tools.ietf.org/html/rfc6838">RFC 6838</a>
+ * @see <a href="https://www.iana.org/assignments/media-types/media-types.xhtml">IANA Media Types</a>
  * @see <a href="https://www.w3.org/TR/xhtml-media-types/">XHTML Media Types</a>
  */
 public class ContentType { //TODO major version: rename to MediaType; make final; tighten up value object type
@@ -101,28 +102,37 @@ public class ContentType { //TODO major version: rename to MediaType; make final
 	public static final Characters ILLEGAL_TOKEN_CHARACTERS = SPECIAL_CHARACTERS.add(SPACE_CHAR);
 
 	/**
-	 * A pattern for checking the basic form of parameters <em>after</em> the {@value #PARAMETER_DELIMITER_CHAR} delimiter. The pattern may be repeated and the
-	 * two matching groups are the name and value. This pattern does not take into account all aspects of a regular expression, e.g. special characters.
+	 * A pattern for checking the basic form of a parameter, <em>including</em> the {@value #PARAMETER_DELIMITER_CHAR} delimiter that precedes and separates each
+	 * parameter. The pattern may be repeated. The two matching groups are the name and value.
+	 * @see #PARAMETER_PATTERN_NAME_GROUP
+	 * @see #PARAMETER_PATTERN_VALUE_GROUP
 	 */
-	public static final Pattern PARAMETERS_PATTERN = Pattern.compile(String.format("%s\\s*(%s)=(%s|%s)", PARAMETER_DELIMITER_CHAR, RESTRICTED_NAME_PATTERN,
-			RESTRICTED_NAME_WITHOUT_SPECIAL_CHARACTERS_PATTERN, QUOTED_STRING_ALLOWING_ESCAPE_QUOTE)); //TODO use special characters pattern
+	public static final Pattern PARAMETER_PATTERN = Pattern.compile(String.format("%s\\s*(%s)=(%s|%s)", PARAMETER_DELIMITER_CHAR, RESTRICTED_NAME_PATTERN,
+			RESTRICTED_NAME_WITHOUT_SPECIAL_CHARACTERS_PATTERN, QUOTED_STRING_ALLOWING_ESCAPE_QUOTE));
+	/**
+	 * A pattern for checking the basic form of a parameter, <em>including</em> the {@value #PARAMETER_DELIMITER_CHAR} delimiter that precedes and separates each
+	 * parameter. Suitable for iterating through parameters using {@link Matcher#find()}. The two matching groups are the name and value.
+	 * @see #PARAMETER_PATTERN_NAME_GROUP
+	 * @see #PARAMETER_PATTERN_VALUE_GROUP
+	 */
+	public static final Pattern PARAMETER_ITERATE_PATTERN = Pattern.compile("\\G" + PARAMETER_PATTERN);
 	/**
 	 * The parameters pattern matching group for the parameter name.
-	 * @see #PARAMETERS_PATTERN
+	 * @see #PARAMETER_PATTERN
 	 */
-	public static final int PARAMETERS_PATTERN_NAME_GROUP = 1;
+	public static final int PARAMETER_PATTERN_NAME_GROUP = 1;
 	/**
 	 * The parameters pattern matching group for the parameter name.
-	 * @see #PARAMETERS_PATTERN
+	 * @see #PARAMETER_PATTERN
 	 */
-	public static final int PARAMETERS_PATTERN_VALUE_GROUP = 2;
+	public static final int PARAMETER_PATTERN_VALUE_GROUP = 2;
 
 	/**
 	 * A pattern for checking the basic form of regular expressions. This pattern does not take into account all aspects of a regular expression, e.g. special
 	 * characters. The parameters group will be <code>null</code> if there are no parameters at all.
 	 */
 	public static final Pattern PATTERN = Pattern
-			.compile(String.format("(%s)/(%s)((?:%s)+)?", RESTRICTED_NAME_PATTERN, RESTRICTED_NAME_PATTERN, PARAMETERS_PATTERN));
+			.compile(String.format("(%s)/(%s)((?:%s)+)?", RESTRICTED_NAME_PATTERN, RESTRICTED_NAME_PATTERN, PARAMETER_PATTERN));
 	/**
 	 * The pattern matching group for the primary type.
 	 * @see #PATTERN
@@ -323,20 +333,27 @@ public class ContentType { //TODO major version: rename to MediaType; make final
 	 * @throws ArgumentSyntaxException if the string is not syntactically correct parameters.
 	 */
 	public static Set<Parameter> parseParameters(final CharSequence text) throws ArgumentSyntaxException {
-		final Set<Parameter> parameters = new HashSet<>();
-		final Matcher parameterMatcher = PARAMETERS_PATTERN.matcher(text);
+		Set<Parameter> parameters = null;
+		int lastEnd = 0;
+		final Matcher parameterMatcher = PARAMETER_ITERATE_PATTERN.matcher(text);
 		while(parameterMatcher.find()) {
-			final String parameterName = parameterMatcher.group(PARAMETERS_PATTERN_NAME_GROUP);
-			String parameterValue = parameterMatcher.group(PARAMETERS_PATTERN_VALUE_GROUP);
+			lastEnd = parameterMatcher.end();
+			final String parameterName = parameterMatcher.group(PARAMETER_PATTERN_NAME_GROUP);
+			String parameterValue = parameterMatcher.group(PARAMETER_PATTERN_VALUE_GROUP);
 			if(startsWith(parameterValue, QUOTATION_MARK_CHAR)) { //if this is a quoted value
-				if(parameterValue.length() < 3 || !endsWith(parameterValue, QUOTATION_MARK_CHAR)) {
-					throw new ArgumentSyntaxException("Illegally quoted content type parameter: " + parameterValue, parameterValue);
-				}
+				assert parameterValue.length() >= 3 && endsWith(parameterValue, QUOTATION_MARK_CHAR) : "Regex expected to ensure matched quotes.";
 				parameterValue = parameterValue.substring(1, parameterValue.length() - 1); //remove the surrounding quotes
+				parameterValue = parameterValue.replace("\\\"", "\"").replace("\\\\", "\\"); //replace escapes
+			}
+			if(parameters == null) { //lazily create the parameters
+				parameters = new HashSet<>();
 			}
 			parameters.add(Parameter.of(parameterName, parameterValue));
 		}
-		return unmodifiableSet(parameters); //make the parameters set read-only
+		if(lastEnd < text.length()) { //if not all the string was matched
+			throw new ArgumentSyntaxException("Invalid parameter syntax: " + text);
+		}
+		return parameters != null ? unmodifiableSet(parameters) : emptySet(); //make the parameters set read-only
 	}
 
 	/**

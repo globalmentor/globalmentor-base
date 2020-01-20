@@ -52,25 +52,30 @@ public class RegularExpressions {
 	/** The character class negation character. */
 	public static final char CHARACTER_CLASS_NEGATION_CHAR = '^';
 
+	/** The character class range character. */
+	public static final char CHARACTER_CLASS_RANGE_CHAR = '-';
+
 	/** The character used for escaping regular expressions. */
 	public static final char ESCAPE = '\\';
 
 	/**
-	 * The restricted characters which must be escaped in regular expressions at least in some places.
+	 * The restricted characters that must be escaped in regular expressions at least in some places.
+	 * @implNote This implementation is overly restrictive, including some closing grouping characters that may not strictly be necessary.
 	 * @see <a href="https://stackoverflow.com/q/399078/421049">What special characters must be escaped in regular expressions?</a>
 	 * @see <a href="https://www.regular-expressions.info/characters.html">regular-exprssions.info: Special Characters</a>
 	 */
-	public static final Characters RESTRICTED = Characters.of(ESCAPE, ZERO_OR_ONE_CHAR, ZERO_OR_MORE_CHAR, ONE_OR_MORE_CHAR, WILDCARD_CHAR, '-', '(', ')',
-			CHARACTER_CLASS_BEGIN, CHARACTER_CLASS_END, CHARACTER_CLASS_NEGATION_CHAR, '{', '}', '|');
+	public static final Characters RESTRICTED = Characters.of(ESCAPE, ZERO_OR_ONE_CHAR, ZERO_OR_MORE_CHAR, ONE_OR_MORE_CHAR, WILDCARD_CHAR,
+			CHARACTER_CLASS_RANGE_CHAR, '(', ')', CHARACTER_CLASS_BEGIN, CHARACTER_CLASS_END, CHARACTER_CLASS_NEGATION_CHAR, '{', '}', '|');
 
 	/**
-	 * The restricted characters which must be escaped in regular expressions at least in some places.
+	 * The restricted characters that must be escaped in regular expression character classes.
 	 * @see <a href="https://stackoverflow.com/q/5484084/421049">What literal characters should be escaped in a regex?</a>
 	 * @see <a href="https://stackoverflow.com/a/19976308/421049">Does a dot have to be escaped in a character class (square brackets) of a regular
 	 *      expression?</a>
 	 * @see <a href="https://www.regular-expressions.info/refcharclass.html">Regular Expression Reference: Character Classes</a>
 	 */
-	public static final Characters CHARACTER_CLASS_RESTRICTED = Characters.of(ESCAPE, CHARACTER_CLASS_NEGATION_CHAR, '-', CHARACTER_CLASS_END);
+	public static final Characters CHARACTER_CLASS_RESTRICTED = Characters.of(ESCAPE, CHARACTER_CLASS_NEGATION_CHAR, CHARACTER_CLASS_RANGE_CHAR,
+			CHARACTER_CLASS_END);
 
 	/** Regular expression requiring matching quotes and not recognizing any escaping. */
 	public static final String QUOTED_STRING = "\"[^\"]*\"";

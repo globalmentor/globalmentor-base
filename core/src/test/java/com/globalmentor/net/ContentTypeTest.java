@@ -56,11 +56,10 @@ public class ContentTypeTest {
 		assertThat(ContentType.parse("text/plain; charset=us-ascii; foo=\"bar\"").getParameters(),
 				containsInAnyOrder(ContentType.Parameter.of("charset", "us-ascii"), ContentType.Parameter.of("foo", "bar")));
 		//quoted parameters with special characters
-		//TODO fix; finish
-		//		assertThat(ContentType.parse("text/plain; charset=us-ascii; foo=\"(foo)<bar>@,;:\\/[foobar]?=\"").getPrimaryType(), is("text"));
-		//		assertThat(ContentType.parse("text/plain; charset=us-ascii; foo=\"bar\"").getSubType(), is("plain"));
-		//		assertThat(ContentType.parse("text/plain; charset=us-ascii; foo=\"bar\"").getParameters(),
-		//				containsInAnyOrder(ContentType.Parameter.of("charset", "us-ascii"), ContentType.Parameter.of("foo", "bar")));
+		assertThat(ContentType.parse("text/plain; charset=us-ascii; test=\"(foo)<bar>@\\\",;:\\\\/[foobar]?=\"").getPrimaryType(), is("text"));
+		assertThat(ContentType.parse("text/plain; charset=us-ascii; test=\"(foo)<bar>@\\\",;:\\\\/[foobar]?=\"").getSubType(), is("plain"));
+		assertThat(ContentType.parse("text/plain; charset=us-ascii; test=\"(foo)<bar>@\\\",;:\\\\/[foobar]?=\"").getParameters(),
+				containsInAnyOrder(ContentType.Parameter.of("charset", "us-ascii"), ContentType.Parameter.of("test", "(foo)<bar>@\",;:\\/[foobar]?=")));
 		//without spaces
 		assertThat(ContentType.parse("text/plain;charset=us-ascii;foo=bar").getPrimaryType(), is("text"));
 		assertThat(ContentType.parse("text/plain;charset=us-ascii;foo=bar").getSubType(), is("plain"));
@@ -73,46 +72,43 @@ public class ContentTypeTest {
 				containsInAnyOrder(ContentType.Parameter.of("charset", "us-ascii"), ContentType.Parameter.of("foo", "bar")));
 	}
 
-	/** @see ContentType#PARAMETERS_PATTERN */
+	/** @see ContentType#PARAMETER_PATTERN */
 	@Test
 	public void testParametersPattern() {
-		assertThat(ContentType.PARAMETERS_PATTERN.matcher("; charset=us-ascii").matches(), is(true));
-		assertThat(ContentType.PARAMETERS_PATTERN.matcher("; test=foobar").matches(), is(true));
-		assertThat(ContentType.PARAMETERS_PATTERN.matcher("; x=foobar").matches(), is(true));
-		assertThat(ContentType.PARAMETERS_PATTERN.matcher("; 3=foobar").matches(), is(true));
-		assertThat(ContentType.PARAMETERS_PATTERN.matcher("; ?=foobar").matches(), is(false));
-		assertThat(ContentType.PARAMETERS_PATTERN.matcher("; _=foobar").matches(), is(false));
-		assertThat(ContentType.PARAMETERS_PATTERN.matcher("; x?=foobar").matches(), is(false));
-		assertThat(ContentType.PARAMETERS_PATTERN.matcher("; x_=foobar").matches(), is(true));
-		assertThat(ContentType.PARAMETERS_PATTERN.matcher("; x3=foobar").matches(), is(true));
-		assertThat(ContentType.PARAMETERS_PATTERN.matcher("; test=foo;bar").matches(), is(false));
-		assertThat(ContentType.PARAMETERS_PATTERN.matcher("; charset=\"us-ascii\"").matches(), is(true));
-		assertThat(ContentType.PARAMETERS_PATTERN.matcher("; test=\"foo;bar\"").matches(), is(true));
-		assertThat(ContentType.PARAMETERS_PATTERN.matcher("; test=\"foo\\\"bar\"").matches(), is(true));
-		assertThat(ContentType.PARAMETERS_PATTERN.matcher("; test=\"foo\\\\bar\"").matches(), is(true));
-		assertThat(ContentType.PARAMETERS_PATTERN.matcher("; test=\"foo\\xbar\"").matches(), is(false));
+		assertThat(ContentType.PARAMETER_PATTERN.matcher("; charset=us-ascii").matches(), is(true));
+		assertThat(ContentType.PARAMETER_PATTERN.matcher("; test=foobar").matches(), is(true));
+		assertThat(ContentType.PARAMETER_PATTERN.matcher("; x=foobar").matches(), is(true));
+		assertThat(ContentType.PARAMETER_PATTERN.matcher("; 3=foobar").matches(), is(true));
+		assertThat(ContentType.PARAMETER_PATTERN.matcher("; ?=foobar").matches(), is(false));
+		assertThat(ContentType.PARAMETER_PATTERN.matcher("; _=foobar").matches(), is(false));
+		assertThat(ContentType.PARAMETER_PATTERN.matcher("; x?=foobar").matches(), is(false));
+		assertThat(ContentType.PARAMETER_PATTERN.matcher("; x_=foobar").matches(), is(true));
+		assertThat(ContentType.PARAMETER_PATTERN.matcher("; x3=foobar").matches(), is(true));
+		assertThat(ContentType.PARAMETER_PATTERN.matcher("; test=foo;bar").matches(), is(false));
+		assertThat(ContentType.PARAMETER_PATTERN.matcher("; charset=\"us-ascii\"").matches(), is(true));
+		assertThat(ContentType.PARAMETER_PATTERN.matcher("; test=\"foo;bar\"").matches(), is(true));
+		assertThat(ContentType.PARAMETER_PATTERN.matcher("; test=\"foo\\\"bar\"").matches(), is(true));
+		assertThat(ContentType.PARAMETER_PATTERN.matcher("; test=\"foo\\\\bar\"").matches(), is(true));
+		assertThat(ContentType.PARAMETER_PATTERN.matcher("; test=\"foo\\xbar\"").matches(), is(false));
 	}
 
 	/** Tests of {@link ContentType#parseParameters(CharSequence)}. */
 	@Test
 	public void testParseParameters() {
-
-		assertThat(ContentType.parseParameters("; charset=\"us-ascii\""), containsInAnyOrder(ContentType.Parameter.of("charset", "us-ascii")));
-
 		assertThat(ContentType.parseParameters("; charset=us-ascii; foo=bar"),
 				containsInAnyOrder(ContentType.Parameter.of("charset", "us-ascii"), ContentType.Parameter.of("foo", "bar")));
+		assertThat(ContentType.parseParameters("; charset=US-ASCII; foo=bar"),
+				containsInAnyOrder(ContentType.Parameter.of("charset", "US-ASCII"), ContentType.Parameter.of("foo", "bar"))); //TODO fix charset case comparison
+		assertThat(ContentType.parseParameters("; charset=\"us-ascii\""), containsInAnyOrder(ContentType.Parameter.of("charset", "us-ascii")));
 		assertThat(ContentType.parseParameters("; charset=\"us-ascii\"; foo=bar"),
 				containsInAnyOrder(ContentType.Parameter.of("charset", "us-ascii"), ContentType.Parameter.of("foo", "bar")));
 		assertThat(ContentType.parseParameters("; charset=us-ascii; test=\"foo;bar\""),
 				containsInAnyOrder(ContentType.Parameter.of("charset", "us-ascii"), ContentType.Parameter.of("test", "foo;bar")));
-
-		//TODO fix
-		//		assertThat(ContentType.parseParameters("charset=us-ascii foo=bar"),
-		//				containsInAnyOrder(ContentType.Parameter.of("charset", "us-ascii"), ContentType.Parameter.of("foo", "bar")));
-		//		assertThat(ContentType.parseParameters("charset=us-ascii= foo=bar"),
-		//				containsInAnyOrder(ContentType.Parameter.of("charset", "us-ascii"), ContentType.Parameter.of("foo", "bar")));
-		//		assertThat(ContentType.parseParameters("charset=us-ascii=foo=bar"),
-		//				containsInAnyOrder(ContentType.Parameter.of("charset", "us-ascii"), ContentType.Parameter.of("foo", "bar")));
+		assertThat(ContentType.parseParameters("; test=\"(foo)<bar>@\\\",;:\\\\/[foobar]?=\""),
+				containsInAnyOrder(ContentType.Parameter.of("test", "(foo)<bar>@\",;:\\/[foobar]?=")));
+		assertThrows(ArgumentSyntaxException.class, () -> ContentType.parseParameters("charset=us-ascii foo=bar"));
+		assertThrows(ArgumentSyntaxException.class, () -> ContentType.parseParameters("; charset=us-ascii= foo=bar"));
+		assertThrows(ArgumentSyntaxException.class, () -> ContentType.parseParameters("charset=us-ascii=foo=bar"));
 	}
 
 	/** Tests equality, including parameter order and case insensitivity of content type names. */
@@ -181,4 +177,5 @@ public class ContentTypeTest {
 	public void testMissingSecondParameter() {
 		assertThrows(ArgumentSyntaxException.class, () -> ContentType.parse("text/plain; charset=us-ascii;"));
 	}
+
 }
