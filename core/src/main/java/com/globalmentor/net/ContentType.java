@@ -58,7 +58,7 @@ import com.globalmentor.text.*;
  *           to lowercase. Note also that <a href="https://tools.ietf.org/html/rfc7231">RFC 7231 § 3.1.1.1. Media Type</a> indicates that a lowercase form of
  *           <code>charset</code> value is preferred, e.g.<code>text/html;charset=utf-8</code>. In addition <a href="https://tools.ietf.org/html/rfc2046">RFC
  *           2046 § 4.1.2. Charset Parameter</a> indicates that if non-<code>text</code> types specify a <code>charset</code> value, "the same syntax and values
- *           should be used".</blockquote>
+ *           should be used".
  * @author Garret Wilson
  * @see <a href="https://tools.ietf.org/html/rfc2045">RFC 2045</a>
  * @see <a href="https://tools.ietf.org/html/rfc2046">RFC 2046</a>
@@ -67,7 +67,7 @@ import com.globalmentor.text.*;
  * @see <a href="https://www.iana.org/assignments/media-types/media-types.xhtml">IANA Media Types</a>
  * @see <a href="https://www.w3.org/TR/xhtml-media-types/">XHTML Media Types</a>
  */
-public class ContentType { //TODO major version: rename to MediaType; make final; tighten up value object type
+public final class ContentType { //TODO major version: rename to MediaType
 
 	/** The divider character for media type strings. */
 	public static final char TYPE_DIVIDER = '/';
@@ -111,6 +111,7 @@ public class ContentType { //TODO major version: rename to MediaType; make final
 	/**
 	 * Confirms that the given input conforms to the rules for <code>restricted-name</code> according to RFC 6838, returning the given input.
 	 * @apiNote This method is useful for checking a type, subtype, or parameter name.
+	 * @param <C> The type of character sequence input.
 	 * @param input The character sequence to check.
 	 * @return The given input.
 	 * @throws NullPointerException if the given input is <code>null</code>.
@@ -200,35 +201,6 @@ public class ContentType { //TODO major version: rename to MediaType; make final
 	/** The shared <code>application/octet-stream</code> content type. */
 	public static final ContentType APPLICATION_OCTET_STREAM_CONTENT_TYPE = create(APPLICATION_PRIMARY_TYPE, OCTET_STREAM_SUBTYPE);
 
-	/**
-	 * Determines if the given character sequence is a content type token, that is, consisting only of non-control ASCII characters with no special characters or
-	 * spaces.
-	 * @param charSequence The character sequence to check.
-	 * @return <code>true</code> if the given characters sequence contains only ASCII characters with no control characters, special characters, or spaces.
-	 * @throws NullPointerException if the given character sequence is <code>null</code>.
-	 * @see #ILLEGAL_TOKEN_CHARACTERS
-	 */
-	public static final boolean isToken(final CharSequence charSequence) {
-		return ASCII.isASCIINonControl(charSequence) && notContains(charSequence, ILLEGAL_TOKEN_CHARACTERS);
-	}
-
-	/**
-	 * Checks to ensure that the given character sequence is a content type token, that is, consisting only of non-control ASCII characters with no special
-	 * characters or spaces.
-	 * @param <CS> The type of the char sequence.
-	 * @param charSequence The character sequence to check.
-	 * @return The given character sequence.
-	 * @throws NullPointerException if the given character sequence is <code>null</code>.
-	 * @throws ArgumentSyntaxException if the given character sequence is not a content type token.
-	 * @see #isToken(CharSequence)
-	 */
-	protected static final <CS extends CharSequence> CS checkToken(final CS charSequence) {
-		if(!isToken(charSequence)) {
-			throw new ArgumentSyntaxException("Content type token " + charSequence + " must consist only of non-space and non-control ASCII characters.");
-		}
-		return charSequence;
-	}
-
 	private final String primaryType;
 
 	/** @return The primary type of the content type. */
@@ -252,25 +224,29 @@ public class ContentType { //TODO major version: rename to MediaType; make final
 
 	/**
 	 * Primary type and subtype constructor.
+	 * @implSpec The primary type and subtype are each normalized to lowercase.
 	 * @implNote This private constructor assumes that the given parameter set is immutable and will not be referenced elsewhere, and therefore does not make a
 	 *           defensive copy.
 	 * @param primaryType The primary type of the content type.
 	 * @param subType The subtype of the content type.
 	 * @param parameters The content type parameters.
 	 * @throws NullPointerException if the given primary type, subtype, and/or parameters is <code>null</code>.
-	 * @throws ArgumentSyntaxException if the primary type or subtype does not have the valid syntax.
+	 * @throws ArgumentSyntaxException if the primary type and/or subtype does not conform to the {@link ContentType#RESTRICTED_NAME_PATTERN} pattern.
 	 */
 	private ContentType(final String primaryType, final String subType, final Set<Parameter> parameters) {
-		this.primaryType = checkToken(primaryType); //TODO use: ASCII.toLowerCase(getPrimaryType()).toString()
-		this.subType = checkToken(subType);
+		this.primaryType = ASCII.toLowerCase(checkArgumentRestrictedName(primaryType)).toString();
+		this.subType = ASCII.toLowerCase(checkArgumentRestrictedName(subType)).toString();
 		this.parameters = requireNonNull(parameters);
 	}
 
 	/**
 	 * Parses a content type object from a string.
+	 * @implSpec The primary type, subtype, and parameter names, if any, are each normalized to lowercase. The value of the {@value ContentType#CHARSET_PARAMETER}
+	 *           parameter, if present, is normalized to lowercase.
 	 * @param charSequence The character sequence representation of the content type.
 	 * @return A new content type object parsed from the string.
-	 * @throws ArgumentSyntaxException if the string is not a syntactically correct content type.
+	 * @throws ArgumentSyntaxException if the primary type, subtype, and/or a parameter name does not conform to the {@link ContentType#RESTRICTED_NAME_PATTERN}
+	 *           pattern.
 	 * @deprecated in favor of {@link #parse(CharSequence)}; to be removed in next major version.
 	 */
 	@Deprecated
@@ -280,9 +256,13 @@ public class ContentType { //TODO major version: rename to MediaType; make final
 
 	/**
 	 * Parses a content type object from a string.
+	 * @implSpec The primary type, subtype, and parameter names, if any, are each normalized to lowercase. The value of the {@value ContentType#CHARSET_PARAMETER}
+	 *           parameter, if present, is normalized to lowercase.
 	 * @param charSequence The character sequence representation of the content type.
 	 * @return A new content type object parsed from the string.
-	 * @throws ArgumentSyntaxException if the string is not a syntactically correct content type.
+	 * @throws ArgumentSyntaxException if the name does not conform to the {@link ContentType#RESTRICTED_NAME_PATTERN} pattern.
+	 * @throws ArgumentSyntaxException if the primary type, subtype, and/or a parameter name does not conform to the {@link ContentType#RESTRICTED_NAME_PATTERN}
+	 *           pattern.
 	 * @deprecated in favor of {@link #parse(CharSequence)}; to be removed in next major version.
 	 */
 	@Deprecated
@@ -292,11 +272,12 @@ public class ContentType { //TODO major version: rename to MediaType; make final
 
 	/**
 	 * Creates a content type object from primary type, a subtype, and optional parameters.
+	 * @implSpec The primary type and subtype are each normalized to lowercase.
 	 * @param primaryType The primary type.
 	 * @param subType The subtype.
 	 * @param parameters Optional name-value pairs representing parameters of the content type.
 	 * @return A new content type object constructed from the given information.
-	 * @throws ArgumentSyntaxException if the primary type or subtype does not have the valid syntax.
+	 * @throws ArgumentSyntaxException if the primary type and/or subtype does not conform to the {@link ContentType#RESTRICTED_NAME_PATTERN} pattern.
 	 * @deprecated in favor of {@link #of(String, String, Parameter...)}; to be removed in next major version.
 	 */
 	@Deprecated
@@ -305,25 +286,27 @@ public class ContentType { //TODO major version: rename to MediaType; make final
 	}
 
 	/**
-	 * Creates a content type object from primary type, a subtype, and optional parameters.
+	 * Returns a content type object from primary type, a subtype, and optional parameters.
+	 * @implSpec The primary type and subtype are each normalized to lowercase.
 	 * @param primaryType The primary type.
 	 * @param subType The subtype.
 	 * @param parameters Optional name-value pairs representing parameters of the content type.
 	 * @return A new content type object constructed from the given information.
-	 * @throws ArgumentSyntaxException if the primary type or subtype does not have the valid syntax.
+	 * @throws ArgumentSyntaxException if the primary type and/or subtype does not conform to the {@link ContentType#RESTRICTED_NAME_PATTERN} pattern.
 	 */
 	public static ContentType of(final String primaryType, final String subType, final Parameter... parameters) {
 		return new ContentType(primaryType, subType, immutableSetOf(parameters)); //create a new content type from the given values, creating an immutable copy of the parameters
 	}
 
 	/**
-	 * Creates a content type object from primary type, a subtype, and optional parameters.
+	 * Returns a content type object from primary type, a subtype, and optional parameters.
+	 * @implSpec The primary type and subtype are each normalized to lowercase.
 	 * @param primaryType The primary type.
 	 * @param subType The subtype.
 	 * @param parameters Zero or more name-value pairs representing parameters of the content type.
 	 * @return A new content type object constructed from the given information.
 	 * @throws NullPointerException if the given parameters set is <code>null</code>.
-	 * @throws ArgumentSyntaxException if the primary type or subtype does not have the valid syntax.
+	 * @throws ArgumentSyntaxException if the primary type and/or subtype does not conform to the {@link ContentType#RESTRICTED_NAME_PATTERN} pattern.
 	 */
 	public static ContentType of(final String primaryType, final String subType, final Set<Parameter> parameters) {
 		return new ContentType(primaryType, subType, immutableSetOf(parameters)); //create a new content type from the given values, creating an immutable copy of the parameters
@@ -331,9 +314,12 @@ public class ContentType { //TODO major version: rename to MediaType; make final
 
 	/**
 	 * Parses a content type object from a string.
+	 * @implSpec The primary type, subtype, and parameter names, if any, are each normalized to lowercase. The value of the {@value ContentType#CHARSET_PARAMETER}
+	 *           parameter, if present, is normalized to lowercase.
 	 * @param text The character sequence representation of the content type.
 	 * @return A new content type object parsed from the string.
-	 * @throws ArgumentSyntaxException if the string is not a syntactically correct content type.
+	 * @throws ArgumentSyntaxException if the primary type, subtype, and/or a parameter name does not conform to the {@link ContentType#RESTRICTED_NAME_PATTERN}
+	 *           pattern.
 	 */
 	public static ContentType parse(final CharSequence text) throws ArgumentSyntaxException {
 		final Matcher matcher = PATTERN.matcher(text);
@@ -349,9 +335,12 @@ public class ContentType { //TODO major version: rename to MediaType; make final
 
 	/**
 	 * Parses parameters of a content type from a string.
+	 * @implSpec The parameter names are each normalized to lowercase. The value of the {@value ContentType#CHARSET_PARAMETER} parameter, if present, is
+	 *           normalized to lowercase.
 	 * @param text The character sequence representing the parameters of the content type, not including the {@value #PARAMETER_DELIMITER_CHAR} delimiter.
 	 * @return Content type parameters parsed from the string.
-	 * @throws ArgumentSyntaxException if the string is not syntactically correct parameters.
+	 * @throws ArgumentSyntaxException if the string is not syntactically correct parameters, or if a parameter name does not conform to the
+	 *           {@link ContentType#RESTRICTED_NAME_PATTERN} pattern.
 	 */
 	public static Set<Parameter> parseParameters(final CharSequence text) throws ArgumentSyntaxException {
 		Set<Parameter> parameters = null;
@@ -647,11 +636,11 @@ public class ContentType { //TODO major version: rename to MediaType; make final
 	 *           attribute to lowercase. Note also that <a href="https://tools.ietf.org/html/rfc7231">RFC 7231 § 3.1.1.1. Media Type</a> indicates that a
 	 *           lowercase form of <code>charset</code> value is preferred, e.g.<code>text/html;charset=utf-8</code>. In addition
 	 *           <a href="https://tools.ietf.org/html/rfc2046">RFC 2046 § 4.1.2. Charset Parameter</a> indicates that if non-<code>text</code> types specify a
-	 *           <code>charset</code> value, "the same syntax and values should be used".</blockquote>
+	 *           <code>charset</code> value, "the same syntax and values should be used".
 	 * @implNote This class considers value quoting a syntax issue of serialization, and thus interprets all values as logical, non-quoted values.
 	 * @author Garret Wilson
 	 */
-	public static class Parameter extends NameValuePair<String, String> {
+	public static final class Parameter extends NameValuePair<String, String> {
 
 		/** The common parameter <code>charset=UTF-8</code>. */
 		public static final Parameter CHARSET_UTF_8 = new Parameter(CHARSET_PARAMETER, UTF_8.name());
@@ -663,7 +652,6 @@ public class ContentType { //TODO major version: rename to MediaType; make final
 		 * @param value The parameter value.
 		 * @throws NullPointerException if the given name and/or value is <code>null</code>.
 		 * @throws ArgumentSyntaxException if the name does not conform to the {@link ContentType#RESTRICTED_NAME_PATTERN} pattern.
-		 * @see ContentType#isToken(CharSequence)
 		 * @deprecated in favor of {@link #of(String, String)}; to be made private in next major version.
 		 */
 		@Deprecated

@@ -129,7 +129,7 @@ public class ContentTypeTest {
 		assertThat(ContentType.parseParameters("; charset=us-ascii; foo=bar"),
 				containsInAnyOrder(ContentType.Parameter.of("charset", "us-ascii"), ContentType.Parameter.of("foo", "bar")));
 		assertThat(ContentType.parseParameters("; charset=US-ASCII; foo=bar"),
-				containsInAnyOrder(ContentType.Parameter.of("charset", "US-ASCII"), ContentType.Parameter.of("foo", "bar"))); //TODO fix charset case comparison
+				containsInAnyOrder(ContentType.Parameter.of("charset", "us-ascii"), ContentType.Parameter.of("foo", "bar")));
 		assertThat(ContentType.parseParameters("; charset=\"us-ascii\""), containsInAnyOrder(ContentType.Parameter.of("charset", "us-ascii")));
 		assertThat(ContentType.parseParameters("; charset=\"us-ascii\"; foo=bar"),
 				containsInAnyOrder(ContentType.Parameter.of("charset", "us-ascii"), ContentType.Parameter.of("foo", "bar")));
@@ -154,6 +154,12 @@ public class ContentTypeTest {
 		//no spaces
 		assertThat(ContentType.parse("text/plain;charset=us-ascii;foo=bar"), equalTo(ContentType.parse("text/plain; foo=bar; charset=us-ascii")));
 		//case insensitivity
+		assertThat(ContentType.parse("text/plain; charset=us-ascii"), equalTo(ContentType.parse("text/plain; charset=us-ascii")));
+		assertThat(ContentType.parse("text/plain; charset=us-ascii"), equalTo(ContentType.parse("text/Plain; charset=us-ascii")));
+		assertThat(ContentType.parse("text/plain; charset=us-ascii"), equalTo(ContentType.parse("text/plain; charSet=us-ascii")));
+		assertThat(ContentType.parse("text/plain; charset=us-ascii"), equalTo(ContentType.parse("text/plain; charset=us-Ascii")));
+		assertThat(ContentType.parse("text/plain; charset=us-ascii"), equalTo(ContentType.parse("Text/Plain; charset=US-ascii")));
+		assertThat(ContentType.parse("text/plain; charset=us-ascii"), equalTo(ContentType.parse("text/plain; charset=us-ascii")));
 		assertThat(ContentType.parse("text/plain; charset=us-ascii"), equalTo(ContentType.parse("TEXT/PLAIN; CHARSET=us-ascii")));
 		assertThat(ContentType.parse("text/plain; charset=us-ascii"), equalTo(ContentType.parse("TEXT/PLAIN; CHARSET=US-ASCII")));
 		//optional parameter value quotes
@@ -210,6 +216,39 @@ public class ContentTypeTest {
 	}
 
 	//parameters
+
+	/** @see ContentType.Parameter#getName() */
+	@Test
+	public void testParameterCharsetNameNormalizedToLowercase() {
+		assertThat(ContentType.Parameter.of("foo", "bar").getName(), equalTo("foo"));
+		assertThat(ContentType.Parameter.of("foo", "BAR").getName(), equalTo("foo"));
+		assertThat(ContentType.Parameter.of("Foo", "bar").getName(), equalTo("foo"));
+		assertThat(ContentType.Parameter.of("FOO", "bar").getName(), equalTo("foo"));
+		assertThat(ContentType.Parameter.of("FOO", "BAR").getName(), equalTo("foo"));
+		assertThat(ContentType.Parameter.of("charset", "us-ascii").getName(), equalTo("charset"));
+		assertThat(ContentType.Parameter.of("charset", "US-ASCII").getName(), equalTo("charset"));
+		assertThat(ContentType.Parameter.of("Charset", "us-ascii").getName(), equalTo("charset"));
+		assertThat(ContentType.Parameter.of("charSet", "us-ascii").getName(), equalTo("charset"));
+		assertThat(ContentType.Parameter.of("CHARSET", "us-ascii").getName(), equalTo("charset"));
+	}
+
+	/** @see ContentType.Parameter#getValue() */
+	@Test
+	public void testParameterOnlyCharsetValueNormalizedToLowercase() {
+		assertThat(ContentType.Parameter.of("foo", "bar").getValue(), equalTo("bar"));
+		assertThat(ContentType.Parameter.of("foo", "Bar").getValue(), equalTo("Bar"));
+		assertThat(ContentType.Parameter.of("foo", "baR").getValue(), equalTo("baR"));
+		assertThat(ContentType.Parameter.of("foo", "BAR").getValue(), equalTo("BAR"));
+		assertThat(ContentType.Parameter.of("FOO", "bar").getValue(), equalTo("bar"));
+		assertThat(ContentType.Parameter.of("FOO", "Bar").getValue(), equalTo("Bar"));
+		assertThat(ContentType.Parameter.of("FOO", "BAR").getValue(), equalTo("BAR"));
+		assertThat(ContentType.Parameter.of("charset", "us-ascii").getValue(), equalTo("us-ascii"));
+		assertThat(ContentType.Parameter.of("charset", "US-ascii").getValue(), equalTo("us-ascii"));
+		assertThat(ContentType.Parameter.of("charset", "US-ASCII").getValue(), equalTo("us-ascii"));
+		assertThat(ContentType.Parameter.of("charSet", "us-Ascii").getValue(), equalTo("us-ascii"));
+		assertThat(ContentType.Parameter.of("CHARSET", "us-ascii").getValue(), equalTo("us-ascii"));
+		assertThat(ContentType.Parameter.of("CHARSET", "US-ASCII").getValue(), equalTo("us-ascii"));
+	}
 
 	/** @see ContentType.Parameter#equals(Object) */
 	@Test
