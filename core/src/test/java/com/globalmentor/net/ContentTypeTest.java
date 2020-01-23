@@ -84,7 +84,23 @@ public class ContentTypeTest {
 		assertThat(ContentType.parse("multipart/form-data").getSubType(), is("form-data"));
 		assertThat(ContentType.parse("application/vnd.api+json").getPrimaryType(), is("application"));
 		assertThat(ContentType.parse("application/vnd.api+json").getSubType(), is("vnd.api+json"));
+	}
 
+	/** @see ContentType#RESTRICTED_NAME_PATTERN */
+	@Test
+	public void testRestrictedNamePattern() {
+		assertThat(ContentType.RESTRICTED_NAME_PATTERN.matcher("").matches(), is(false));
+		assertThat(ContentType.RESTRICTED_NAME_PATTERN.matcher("charset").matches(), is(true));
+		assertThat(ContentType.RESTRICTED_NAME_PATTERN.matcher("x").matches(), is(true));
+		assertThat(ContentType.RESTRICTED_NAME_PATTERN.matcher("3").matches(), is(true));
+		assertThat(ContentType.RESTRICTED_NAME_PATTERN.matcher("?").matches(), is(false));
+		assertThat(ContentType.RESTRICTED_NAME_PATTERN.matcher("_").matches(), is(false));
+		assertThat(ContentType.RESTRICTED_NAME_PATTERN.matcher("x?").matches(), is(false));
+		assertThat(ContentType.RESTRICTED_NAME_PATTERN.matcher("x_").matches(), is(true));
+		assertThat(ContentType.RESTRICTED_NAME_PATTERN.matcher("x3").matches(), is(true));
+		assertThat(ContentType.RESTRICTED_NAME_PATTERN.matcher("fooBar").matches(), is(true));
+		assertThat(ContentType.RESTRICTED_NAME_PATTERN.matcher("foo bar").matches(), is(false));
+		assertThat(ContentType.RESTRICTED_NAME_PATTERN.matcher("foo:bar").matches(), is(false));
 	}
 
 	/** @see ContentType#PARAMETER_PATTERN */
@@ -139,7 +155,7 @@ public class ContentTypeTest {
 		assertThat(ContentType.parse("text/plain;charset=us-ascii;foo=bar"), equalTo(ContentType.parse("text/plain; foo=bar; charset=us-ascii")));
 		//case insensitivity
 		assertThat(ContentType.parse("text/plain; charset=us-ascii"), equalTo(ContentType.parse("TEXT/PLAIN; CHARSET=us-ascii")));
-		assertThat(ContentType.parse("text/plain; charset=us-ascii"), not(equalTo(ContentType.parse("TEXT/PLAIN; CHARSET=US-ASCII"))));
+		assertThat(ContentType.parse("text/plain; charset=us-ascii"), equalTo(ContentType.parse("TEXT/PLAIN; CHARSET=US-ASCII")));
 		//optional parameter value quotes
 		assertThat(ContentType.parse("text/plain; charset=us-ascii"), equalTo(ContentType.parse("text/plain; charset=\"us-ascii\"")));
 	}
@@ -156,9 +172,9 @@ public class ContentTypeTest {
 		assertThat(ContentType.of("text", "plain").toString(true), is("text/plain"));
 
 		//text/html; charset=UTF-8
-		assertThat(ContentType.parse("text/html; charset=UTF-8").toString(), is("text/html;charset=UTF-8"));
-		assertThat(ContentType.parse("text/html; charset=UTF-8").toString(false), is("text/html;charset=UTF-8"));
-		assertThat(ContentType.parse("text/html; charset=UTF-8").toString(true), is("text/html; charset=UTF-8"));
+		assertThat(ContentType.parse("text/html; charset=UTF-8").toString(), is("text/html;charset=utf-8"));
+		assertThat(ContentType.parse("text/html; charset=UTF-8").toString(false), is("text/html;charset=utf-8"));
+		assertThat(ContentType.parse("text/html; charset=UTF-8").toString(true), is("text/html; charset=utf-8"));
 
 		//TODO add tests with multiple parameters with some normalized order
 	}
@@ -191,6 +207,21 @@ public class ContentTypeTest {
 	@Test
 	public void testMissingSecondParameter() {
 		assertThrows(ArgumentSyntaxException.class, () -> ContentType.parse("text/plain; charset=us-ascii;"));
+	}
+
+	//parameters
+
+	/** @see ContentType.Parameter#equals(Object) */
+	@Test
+	public void testParameterEquality() {
+		assertThat(ContentType.Parameter.of("foo", "bar"), equalTo(ContentType.Parameter.of("foo", "bar")));
+		assertThat(ContentType.Parameter.of("foo", "bar"), equalTo(ContentType.Parameter.of("Foo", "bar")));
+		assertThat(ContentType.Parameter.of("fOO", "bar"), equalTo(ContentType.Parameter.of("FOO", "bar")));
+		assertThat(ContentType.Parameter.of("foo", "bar"), not(equalTo(ContentType.Parameter.of("foo", "Bar"))));
+		assertThat(ContentType.Parameter.of("foo", "bar"), not(equalTo(ContentType.Parameter.of("foo", "BAR"))));
+		//charset value case insensitive
+		assertThat(ContentType.Parameter.of("charset", "utf-8"), equalTo(ContentType.Parameter.of("charset", "utf-8")));
+		assertThat(ContentType.Parameter.of("charset", "utf-8"), equalTo(ContentType.Parameter.of("charset", "UTF-8")));
 	}
 
 }

@@ -17,8 +17,13 @@
 package com.globalmentor.text;
 
 import static com.globalmentor.java.CharSequences.*;
+import static com.globalmentor.java.Conditions.*;
+import static java.util.Objects.*;
 
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javax.annotation.*;
 
 import com.globalmentor.java.Characters;
 
@@ -85,6 +90,44 @@ public class RegularExpressions {
 
 	/** Regular expression requiring matching quotes, and allowing escaping of any character using the backslash. */
 	public static final String QUOTED_STRING_ALLOWING_ESCAPE_ANYTHING = "\"(?:[^\\\\\"]++|\\\\.)*+\"";
+
+	/**
+	 * Checks to make sure an argument matches a given regular expression pattern, returning the successful matcher.
+	 * @apiNote This is a precondition check.
+	 * @apiNote Unlike other precondition checks, this method returns a {@link Matcher} to allow subsequent checks on the input. If the original text is desired,
+	 *          call {@link Matcher#group()} after a successful match, which will return group 0, indicating the entire matched string.
+	 * @param input The character sequence to be matched.
+	 * @param pattern The regular expression pattern against which the input will be matched.
+	 * @return A matcher that has successfully matched the given string.
+	 * @throws IllegalArgumentException if the given input does not match the pattern.
+	 */
+	public static Matcher checkArgumentMatches(final CharSequence input, @Nonnull final Pattern pattern) {
+		return checkArgumentMatches(input, pattern, null);
+	}
+
+	/**
+	 * Checks to make sure an argument matches a given regular expression pattern, returning the successful matcher.
+	 * @apiNote This is a precondition check.
+	 * @apiNote Unlike other precondition checks, this method returns a {@link Matcher} to allow subsequent checks on the input. If the original text is desired,
+	 *          call {@link Matcher#group()} after a successful match, which will return group 0, indicating the entire matched string.
+	 * @param input The character sequence to be matched.
+	 * @param pattern The regular expression pattern against which the input will be matched.
+	 * @param description A description of the test to be used when generating an exception, optionally formatted with arguments, or <code>null</code> for no
+	 *          description.
+	 * @param arguments The arguments to be applied when formatting, or an empty array if the message should not be formatted.
+	 * @return A matcher that has successfully matched the given string.
+	 * @throws IllegalArgumentException if the given input does not match the pattern.
+	 * @throws NullPointerException if the given arguments is <code>null</code>.
+	 * @throws IllegalArgumentException if the description is an invalid pattern, or if an argument in the arguments array is not of the type expected by the
+	 *           format element(s) that use it.
+	 * @see String#format(String, Object...)
+	 */
+	public static Matcher checkArgumentMatches(final CharSequence input, @Nonnull final Pattern pattern, @Nullable String description,
+			@Nonnull final Object... arguments) {
+		final Matcher matcher = pattern.matcher(requireNonNull(input));
+		checkArgument(matcher.matches(), description, arguments);
+		return matcher;
+	}
 
 	/**
 	 * Creates a regular expression character class (e.g. "[abc]") from the given characters (e.g. 'a', 'b', and 'c').

@@ -42,19 +42,23 @@ import com.globalmentor.text.*;
  * Types</cite></a>; and most recently in <a href="https://tools.ietf.org/html/rfc6838"><cite>RFC 6838: Media Type Specifications and Registration
  * Procedures</cite></a>. The full syntax for a content type and its parameters are found in <a href="https://tools.ietf.org/html/rfc2045"><cite>RFC 2045: MIME
  * Part 1: Format of Internet Message Bodies</cite></a>
- * <p>
- * The content type and names of parameters are compared in a case-insensitive manner as per RFC 2046.
- * </p>
- * <p>
- * Neither <code>javax.activation.MimeType</code> nor <code>javax.mail.internet.ContentType</code> correctly implements {@link Object#equals(Object)} and
- * therefore cannot reliably be used in sets and maps. Furthermore, <code>javax.mail.internet.ContentType</code> as of JDK 6 is not included in default JDK
- * distributions. <code>javax.activation.MimeType</code> was recently added to JDK distributions, so in an earlier implementation this class provided
- * appropriate factory methods, to provide special <code>javax.activation.MimeType</code> instances that provide correct equality checking. Because the
- * <code>javax.activation</code> package is not included in the Android Development Kit, however, and seeing that neither <code>javax.activation.MimeType</code>
- * nor <code>javax.mail.internet.ContentType</code> are in common use, the current implementation provides a fully independent version.
- * </p>
- * @apiNote <a href="https://tools.ietf.org/html/rfc7231">RFC 7231 § 3.1.1.1. Media Type</a> indicates that a lowercase form of <code>charset</code> value is
- *          preferred, e.g.<code>text/html;charset=utf-8</code>.
+ * @apiNote Neither <code>javax.activation.MimeType</code> nor <code>javax.mail.internet.ContentType</code> correctly implements {@link Object#equals(Object)}
+ *          and therefore cannot reliably be used in sets and maps. Furthermore, <code>javax.mail.internet.ContentType</code> as of JDK 6 is not included in
+ *          default JDK distributions. <code>javax.activation.MimeType</code> was recently added to JDK distributions, so in an earlier implementation this
+ *          class provided appropriate factory methods, to provide special <code>javax.activation.MimeType</code> instances that provide correct equality
+ *          checking. Because the <code>javax.activation</code> package is not included in the Android Development Kit, however, and seeing that neither
+ *          <code>javax.activation.MimeType</code> nor <code>javax.mail.internet.ContentType</code> are in common use, the current implementation provides a
+ *          fully independent version.
+ * @implSpec This class normalizes type, subtype, and parameter names, which are case-insensitive, to lowercase; along with the <code>charset</code> parameter
+ *           value. All other parameter values are left as-is. All other parameter values that are case-insensitive should be passed as lowercase to ensure
+ *           correct equality comparisons.
+ * @implNote Compare this implementation to that of
+ *           <a href="https://guava.dev/releases/snapshot-jre/api/docs/com/google/common/net/MediaType.html"><code>com.google.common.net.MediaType</code></a>
+ *           which, in addition to normalizing type, subtype, and parameter names to lowercase, also normalizes the value of the <code>charset</code> attribute
+ *           to lowercase. Note also that <a href="https://tools.ietf.org/html/rfc7231">RFC 7231 § 3.1.1.1. Media Type</a> indicates that a lowercase form of
+ *           <code>charset</code> value is preferred, e.g.<code>text/html;charset=utf-8</code>. In addition <a href="https://tools.ietf.org/html/rfc2046">RFC
+ *           2046 § 4.1.2. Charset Parameter</a> indicates that if non-<code>text</code> types specify a <code>charset</code> value, "the same syntax and values
+ *           should be used".</blockquote>
  * @author Garret Wilson
  * @see <a href="https://tools.ietf.org/html/rfc2045">RFC 2045</a>
  * @see <a href="https://tools.ietf.org/html/rfc2046">RFC 2046</a>
@@ -103,6 +107,20 @@ public class ContentType { //TODO major version: rename to MediaType; make final
 					characterClassOf(RESTRICTED_NAME_CHARACTERS.remove(SPECIAL_CHARACTERS)), RESTRICTED_NAME_CHARS_MAX_LENGTH));
 	/** The characters of RFC 2046 which are considered illegal in tokens; control characters and non-ASCII characters are not included. */
 	public static final Characters ILLEGAL_TOKEN_CHARACTERS = SPECIAL_CHARACTERS.add(SPACE_CHAR);
+
+	/**
+	 * Confirms that the given input conforms to the rules for <code>restricted-name</code> according to RFC 6838, returning the given input.
+	 * @apiNote This method is useful for checking a type, subtype, or parameter name.
+	 * @param input The character sequence to check.
+	 * @return The given input.
+	 * @throws NullPointerException if the given input is <code>null</code>.
+	 * @throws IllegalArgumentException if the given input does not conform to the rules for <code>restricted-name</code>.
+	 * @see #RESTRICTED_NAME_PATTERN
+	 */
+	public static <C extends CharSequence> C checkArgumentRestrictedName(final C input) {
+		checkArgumentMatches(input, RESTRICTED_NAME_PATTERN, "Invalid restricted name `%s`.", input);
+		return input;
+	}
 
 	/**
 	 * A pattern for checking the basic form of a parameter, <em>including</em> the {@value #PARAMETER_DELIMITER_CHAR} delimiter that precedes and separates each
@@ -243,7 +261,7 @@ public class ContentType { //TODO major version: rename to MediaType; make final
 	 * @throws ArgumentSyntaxException if the primary type or subtype does not have the valid syntax.
 	 */
 	private ContentType(final String primaryType, final String subType, final Set<Parameter> parameters) {
-		this.primaryType = checkToken(primaryType);
+		this.primaryType = checkToken(primaryType); //TODO use: ASCII.toLowerCase(getPrimaryType()).toString()
 		this.subType = checkToken(subType);
 		this.parameters = requireNonNull(parameters);
 	}
@@ -620,12 +638,17 @@ public class ContentType { //TODO major version: rename to MediaType; make final
 
 	/**
 	 * A content type parameter name/value pair. Neither the name nor the value of a content type parameter can be <code>null</code>.
-	 * <p>
-	 * The names of parameters are compared in a case-insensitive manner as per RFC 2046.
-	 * </p>
-	 * <p>
-	 * This class considers value quoting a syntax issue of serialization, and thus interprets all values as logical, non-quoted values.
-	 * </p>
+	 * @implSpec This class normalizes parameter names, which are case-insensitive, to lowercase; along with the <code>charset</code> parameter value. All other
+	 *           parameter values are left as-is. All other parameter values that are case-insensitive should be passed as lowercase to ensure correct equality
+	 *           comparisons.
+	 * @implNote Compare this implementation to that of
+	 *           <a href="https://guava.dev/releases/snapshot-jre/api/docs/com/google/common/net/MediaType.html"><code>com.google.common.net.MediaType</code></a>
+	 *           which, in addition to normalizing type, subtype, and parameter names to lowercase, also normalizes the value of the <code>charset</code>
+	 *           attribute to lowercase. Note also that <a href="https://tools.ietf.org/html/rfc7231">RFC 7231 § 3.1.1.1. Media Type</a> indicates that a
+	 *           lowercase form of <code>charset</code> value is preferred, e.g.<code>text/html;charset=utf-8</code>. In addition
+	 *           <a href="https://tools.ietf.org/html/rfc2046">RFC 2046 § 4.1.2. Charset Parameter</a> indicates that if non-<code>text</code> types specify a
+	 *           <code>charset</code> value, "the same syntax and values should be used".</blockquote>
+	 * @implNote This class considers value quoting a syntax issue of serialization, and thus interprets all values as logical, non-quoted values.
 	 * @author Garret Wilson
 	 */
 	public static class Parameter extends NameValuePair<String, String> {
@@ -635,34 +658,33 @@ public class ContentType { //TODO major version: rename to MediaType; make final
 
 		/**
 		 * Constructor specifying the name and value.
+		 * @implSpec The parameter name is normalized to lowercase. The value of the {@value ContentType#CHARSET_PARAMETER} parameter is normalized to lowercase.
 		 * @param name The parameter name.
 		 * @param value The parameter value.
 		 * @throws NullPointerException if the given name and/or value is <code>null</code>.
-		 * @throws ArgumentSyntaxException if the name is not a token; or the value contains a space, non-ASCII, or control character.
+		 * @throws ArgumentSyntaxException if the name does not conform to the {@link ContentType#RESTRICTED_NAME_PATTERN} pattern.
 		 * @see ContentType#isToken(CharSequence)
 		 * @deprecated in favor of {@link #of(String, String)}; to be made private in next major version.
 		 */
 		@Deprecated
 		public Parameter(final String name, final String value) {
-			super(checkToken(name), value); //make sure the name is a token
-			if(contains(value, SPACE_CHAR) || !ASCII.isASCIINonControl(value)) { //special characters are allowed in the value; but not spaces, non-ASCII, or control characters
-				throw new ArgumentSyntaxException("Content type parameter value " + value + " must consist only of non-space and non-control ASCII characters.", value);
-			}
+			super(ASCII.toLowerCase(checkArgumentRestrictedName(name)).toString(),
+					ASCII.equalsIgnoreCase(name, CHARSET_PARAMETER) ? ASCII.toLowerCase(value).toString() : value);
 		}
 
 		/**
 		 * Static factory method specifying the name and value.
+		 * @implSpec The parameter name is normalized to lowercase. The value of the {@value ContentType#CHARSET_PARAMETER} parameter is normalized to lowercase.
 		 * @param name The parameter name.
 		 * @param value The parameter value.
 		 * @return A content type for the indicated name and value.
 		 * @throws NullPointerException if the given name and/or value is <code>null</code>.
-		 * @throws ArgumentSyntaxException if the name is not a token; or the value contains a space, non-ASCII, or control character.
-		 * @see ContentType#isToken(CharSequence)
+		 * @throws ArgumentSyntaxException if the name does not conform to the {@link ContentType#RESTRICTED_NAME_PATTERN} pattern.
 		 */
 		public static Parameter of(@Nonnull final String name, @Nonnull final String value) {
 			//often-used parameters
 			if(ASCII.equalsIgnoreCase(name, CHARSET_PARAMETER)) { //charset
-				if(value.equals(UTF_8.name())) { //charset=UTF-8
+				if(ASCII.equalsIgnoreCase(value, UTF_8.name())) { //charset=UTF-8 (without regard to case)
 					return CHARSET_UTF_8;
 				}
 			}
@@ -670,24 +692,6 @@ public class ContentType { //TODO major version: rename to MediaType; make final
 			return new Parameter(name, value);
 		}
 
-		/** {@inheritDoc} This version returns a consistent hash code for all cases of a parameter name. */
-		@Override
-		public int hashCode() {
-			return hash(ASCII.toLowerCase(getName()).toString(), getValue());
-		}
-
-		/** {@inheritDoc} This version compares names in a case-insensitive manner. */
-		@Override
-		public boolean equals(final Object object) {
-			if(this == object) {
-				return true;
-			}
-			if(!(object instanceof Parameter)) {
-				return false;
-			}
-			final Parameter parameter = (Parameter)object;
-			return ASCII.equalsIgnoreCase(getName(), parameter.getName()) && getValue().equals(parameter.getValue());
-		}
 	}
 
 }
