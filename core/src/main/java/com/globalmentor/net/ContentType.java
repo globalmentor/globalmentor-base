@@ -503,8 +503,8 @@ public final class ContentType { //TODO major version: rename to MediaType
 
 	/**
 	 * {@inheritDoc}
-	 * @implSpec This implementation returns the hash code of the primary type, the subtype, and the parameters, in a case insensitive manner for the types and
-	 *           parameter names.
+	 * @implSpec This implementation returns the hash code of the primary type, the subtype, the parameter names, and the {@value #CHARSET_PARAMETER} parameter
+	 *           value in a case insensitive manner, as these items have already been normalized by this class.
 	 * @return A hash code value for this object.
 	 * @see #getPrimaryType()
 	 * @see #getSubType()
@@ -512,14 +512,14 @@ public final class ContentType { //TODO major version: rename to MediaType
 	 */
 	@Override
 	public int hashCode() {
-		return hash(ASCII.toLowerCase(getPrimaryType()).toString(), ASCII.toLowerCase(getSubType()).toString(), getParameters());
+		return hash(getPrimaryType(), getSubType(), getParameters());
 	}
 
 	/**
 	 * {@inheritDoc}
 	 * @implSpec This implementation considers an object equal if it is another {@link ContentType} with the same primary types and subtypes, the same number of
-	 *           parameters, and a matching parameter value for every parameter of this content type. Comparisons are case-insensitive for the types and parameter
-	 *           names.
+	 *           parameters, and a matching parameter value for every parameter of this content type. Comparisons are case-insensitive for the primary type, the
+	 *           subtype, the parameter names, and the {@value #CHARSET_PARAMETER} parameter value, as these items have already been normalized by this class.
 	 * @param object The reference object with which to compare.
 	 * @see #getPrimaryType()
 	 * @see #getSubType()
@@ -535,7 +535,7 @@ public final class ContentType { //TODO major version: rename to MediaType
 			return false;
 		}
 		final ContentType contentType = (ContentType)object;
-		return ASCII.equalsIgnoreCase(getPrimaryType(), contentType.getPrimaryType()) && ASCII.equalsIgnoreCase(getSubType(), contentType.getSubType())
+		return getPrimaryType().equals(contentType.getPrimaryType()) && getSubType().equals(contentType.getSubType())
 				&& getParameters().equals(contentType.getParameters());
 	}
 
