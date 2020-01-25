@@ -74,22 +74,23 @@ public class RegularExpressions {
 
 	/**
 	 * The restricted characters that must be escaped in regular expression character classes.
+	 * @implNote The character class begin character {@value #CHARACTER_CLASS_BEGIN} must be escaped to prevent the creation of a nested character class.
 	 * @see <a href="https://stackoverflow.com/q/5484084/421049">What literal characters should be escaped in a regex?</a>
 	 * @see <a href="https://stackoverflow.com/a/19976308/421049">Does a dot have to be escaped in a character class (square brackets) of a regular
 	 *      expression?</a>
 	 * @see <a href="https://www.regular-expressions.info/refcharclass.html">Regular Expression Reference: Character Classes</a>
 	 */
 	public static final Characters CHARACTER_CLASS_RESTRICTED = Characters.of(ESCAPE, CHARACTER_CLASS_NEGATION_CHAR, CHARACTER_CLASS_RANGE_CHAR,
-			CHARACTER_CLASS_END);
+			CHARACTER_CLASS_BEGIN, CHARACTER_CLASS_END);
+
+	//TODO add method for generating various quoted strings patterns rather than publicizing the quoted string constants below
 
 	/** Regular expression requiring matching quotes and not recognizing any escaping. */
-	public static final String QUOTED_STRING = "\"[^\"]*\"";
-
+	static final String QUOTED_STRING = "\"[^\"]*\"";
 	/** Regular expression requiring matching quotes, and allowing escaping of the quote using the backslash, as well as escaping the escape character itself. */
-	public static final String QUOTED_STRING_ALLOWING_ESCAPE_QUOTE = "\"(?:[^\\\\\"]++|\\\\\"|\\\\\\\\)*+\"";
-
+	static final String QUOTED_STRING_ALLOWING_ESCAPE_QUOTE = "\"(?:[^\\\\\"]++|\\\\\"|\\\\\\\\)*+\"";
 	/** Regular expression requiring matching quotes, and allowing escaping of any character using the backslash. */
-	public static final String QUOTED_STRING_ALLOWING_ESCAPE_ANYTHING = "\"(?:[^\\\\\"]++|\\\\.)*+\"";
+	static final String QUOTED_STRING_ALLOWING_ESCAPE_ANYTHING = "\"(?:[^\\\\\"]++|\\\\.)*+\"";
 
 	/**
 	 * Checks to make sure an argument matches a given regular expression pattern, returning the successful matcher.
@@ -156,6 +157,7 @@ public class RegularExpressions {
 	/**
 	 * Creates a regular expression character class (e.g. "[abc]") from the given characters (e.g. 'a', 'b', and 'c').
 	 * @implSpec This implementation delegates to {@link #characterClassOf(Characters)}.
+	 * @implNote The current implementation includes control characters literally rather than escaping them.
 	 * @param characters The characters to be included in the character class.
 	 * @return The new character class including the given characters.
 	 * @throws NullPointerException if the given characters is <code>null</code>.
@@ -168,6 +170,7 @@ public class RegularExpressions {
 	/**
 	 * Creates a regular expression negative character class (e.g. "[^abc]") from the given characters (e.g. 'a', 'b', and 'c').
 	 * @implSpec This implementation delegates to {@link #characterClassNotOf(Characters)}.
+	 * @implNote The current implementation includes control characters literally rather than escaping them.
 	 * @param characters The characters to be included in the character class.
 	 * @return The new character class including the given characters.
 	 * @throws NullPointerException if the given characters is <code>null</code>.
@@ -179,6 +182,7 @@ public class RegularExpressions {
 
 	/**
 	 * Creates a regular expression character class (e.g. "[abc]") from the given characters (e.g. 'a', 'b', and 'c').
+	 * @implNote The current implementation includes control characters literally rather than escaping them.
 	 * @param characters The characters to be included in the character class.
 	 * @return The new character class including the given characters.
 	 * @throws NullPointerException if the given characters is <code>null</code>.
@@ -189,6 +193,7 @@ public class RegularExpressions {
 
 	/**
 	 * Creates a regular expression negative character class (e.g. "[^abc]") from the given characters (e.g. 'a', 'b', and 'c').
+	 * @implNote The current implementation includes control characters literally rather than escaping them.
 	 * @param characters The characters to be included in the character class.
 	 * @return The new character class including the given characters.
 	 * @throws NullPointerException if the given characters is <code>null</code>.
@@ -199,6 +204,7 @@ public class RegularExpressions {
 
 	/**
 	 * Creates a regular expression character class (e.g. "[abc]") from the given characters (e.g. 'a', 'b', and 'c'), optionally with negation.
+	 * @implNote The current implementation includes control characters literally rather than escaping them.
 	 * @param characters The characters to be included in the character class.
 	 * @return The new character class including the given characters.
 	 * @throws NullPointerException if the given characters is <code>null</code>.

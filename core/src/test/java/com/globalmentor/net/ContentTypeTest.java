@@ -19,8 +19,15 @@ package com.globalmentor.net;
 import com.globalmentor.text.ArgumentSyntaxException;
 
 import static org.hamcrest.Matchers.*;
+import static java.util.stream.Collectors.*;
 import static org.hamcrest.MatcherAssert.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.zalando.fauxpas.FauxPas.*;
+
+import java.io.IOException;
+import java.util.*;
+import java.util.AbstractMap.SimpleImmutableEntry;
+import java.util.stream.*;
 
 import org.junit.jupiter.api.Test;
 
@@ -61,6 +68,11 @@ public class ContentTypeTest {
 		assertThat(ContentType.parse("text/plain; charset=us-ascii; test=\"(foo)<bar>@\\\",;:\\\\/[foobar]?=\"").getSubType(), is("plain"));
 		assertThat(ContentType.parse("text/plain; charset=us-ascii; test=\"(foo)<bar>@\\\",;:\\\\/[foobar]?=\"").getParameters(),
 				containsInAnyOrder(ContentType.Parameter.of("charset", "us-ascii"), ContentType.Parameter.of("test", "(foo)<bar>@\",;:\\/[foobar]?=")));
+		//quoted parameters with escaped parameters and tab
+		assertThat(ContentType.parse("text/plain; charset=us-ascii; test=\"foo\\\"bar\tand\\xmore\\\\stuff\"").getPrimaryType(), is("text"));
+		assertThat(ContentType.parse("text/plain; charset=us-ascii; test=\"foo\\\"bar\tand\\xmore\\\\stuff\"").getSubType(), is("plain"));
+		assertThat(ContentType.parse("text/plain; charset=us-ascii; test=\"foo\\\"bar\tand\\xmore\\\\stuff\"").getParameters(),
+				containsInAnyOrder(ContentType.Parameter.of("charset", "us-ascii"), ContentType.Parameter.of("test", "foo\"bar\tandxmore\\stuff")));
 		//without spaces
 		assertThat(ContentType.parse("text/plain;charset=us-ascii;foo=bar").getPrimaryType(), is("text"));
 		assertThat(ContentType.parse("text/plain;charset=us-ascii;foo=bar").getSubType(), is("plain"));
@@ -120,12 +132,17 @@ public class ContentTypeTest {
 		assertThat(ContentType.PARAMETER_PATTERN.matcher("; test=\"foo;bar\"").matches(), is(true));
 		assertThat(ContentType.PARAMETER_PATTERN.matcher("; test=\"foo\\\"bar\"").matches(), is(true));
 		assertThat(ContentType.PARAMETER_PATTERN.matcher("; test=\"foo\\\\bar\"").matches(), is(true));
-		assertThat(ContentType.PARAMETER_PATTERN.matcher("; test=\"foo\\xbar\"").matches(), is(false));
+		assertThat(ContentType.PARAMETER_PATTERN.matcher("; test=\"foo\tbar\"").matches(), is(true)); //literal tab
+		assertThat(ContentType.PARAMETER_PATTERN.matcher("; test=\"foo\\tbar\"").matches(), is(true)); //escaped `t` (not tab)
+		assertThat(ContentType.PARAMETER_PATTERN.matcher("; test=\"foo\\xbar\"").matches(), is(true)); //escaped `x`
 	}
 
 	/** Tests of {@link ContentType#parseParameters(CharSequence)}. */
 	@Test
 	public void testParseParameters() {
+		assertThat(ContentType.parseParameters("; foo=bar"), containsInAnyOrder(ContentType.Parameter.of("foo", "bar")));
+		assertThat(ContentType.parseParameters("; foo=\"bar\""), containsInAnyOrder(ContentType.Parameter.of("foo", "bar")));
+		assertThat(ContentType.parseParameters("; foo=\" bar\""), containsInAnyOrder(ContentType.Parameter.of("foo", " bar")));
 		assertThat(ContentType.parseParameters("; charset=us-ascii; foo=bar"),
 				containsInAnyOrder(ContentType.Parameter.of("charset", "us-ascii"), ContentType.Parameter.of("foo", "bar")));
 		assertThat(ContentType.parseParameters("; charset=US-ASCII; foo=bar"),
@@ -137,6 +154,7 @@ public class ContentTypeTest {
 				containsInAnyOrder(ContentType.Parameter.of("charset", "us-ascii"), ContentType.Parameter.of("test", "foo;bar")));
 		assertThat(ContentType.parseParameters("; test=\"(foo)<bar>@\\\",;:\\\\/[foobar]?=\""),
 				containsInAnyOrder(ContentType.Parameter.of("test", "(foo)<bar>@\",;:\\/[foobar]?=")));
+		assertThrows(ArgumentSyntaxException.class, () -> ContentType.parseParameters("; foo= bar"));
 		assertThrows(ArgumentSyntaxException.class, () -> ContentType.parseParameters("charset=us-ascii foo=bar"));
 		assertThrows(ArgumentSyntaxException.class, () -> ContentType.parseParameters("; charset=us-ascii= foo=bar"));
 		assertThrows(ArgumentSyntaxException.class, () -> ContentType.parseParameters("charset=us-ascii=foo=bar"));
@@ -181,8 +199,6 @@ public class ContentTypeTest {
 		assertThat(ContentType.parse("text/html; charset=UTF-8").toString(), is("text/html;charset=utf-8"));
 		assertThat(ContentType.parse("text/html; charset=UTF-8").toString(false), is("text/html;charset=utf-8"));
 		assertThat(ContentType.parse("text/html; charset=UTF-8").toString(true), is("text/html; charset=utf-8"));
-
-		//TODO add tests with multiple parameters with some normalized order
 	}
 
 	@Test
@@ -261,6 +277,45 @@ public class ContentTypeTest {
 		//charset value case insensitive
 		assertThat(ContentType.Parameter.of("charset", "utf-8"), equalTo(ContentType.Parameter.of("charset", "utf-8")));
 		assertThat(ContentType.Parameter.of("charset", "utf-8"), equalTo(ContentType.Parameter.of("charset", "UTF-8")));
+	}
+
+	/** A map of parameter serializations, quoted if needed, associated with their raw values. */
+	private static final Map<String, String> PARAMETER_VALUE_STRINGS_BY_VALUE = Stream.of(
+			//TODO switch to Java 11 Entry.of()
+			new SimpleImmutableEntry<>("", "\"\""), new SimpleImmutableEntry<>("x", "x"), new SimpleImmutableEntry<>("3", "3"),
+			new SimpleImmutableEntry<>("foo", "foo"), new SimpleImmutableEntry<>("fooBar", "fooBar"), new SimpleImmutableEntry<>("FooBar", "FooBar"),
+			new SimpleImmutableEntry<>("FOOBAR", "FOOBAR"), new SimpleImmutableEntry<>("foo bar", "\"foo bar\""),
+			new SimpleImmutableEntry<>("foo@bar", "\"foo@bar\""), new SimpleImmutableEntry<>("foo?bar", "\"foo?bar\""),
+			new SimpleImmutableEntry<>("foo=bar", "\"foo=bar\""), new SimpleImmutableEntry<>("foo\tbar", "\"foo\tbar\""),
+			new SimpleImmutableEntry<>("foo\"bar\"", "\"foo\\\"bar\\\"\""), new SimpleImmutableEntry<>("\\foo\\\"bar\"", "\"\\\\foo\\\\\\\"bar\\\"\""),
+			new SimpleImmutableEntry<>("foo(bar)", "\"foo(bar)\""))
+			//TODO switch to Java 10 Collectors.toUnmodifiableMap()
+			.collect(Collectors.collectingAndThen(toMap(Map.Entry::getKey, Map.Entry::getValue), Collections::unmodifiableMap));
+
+	/** @see ContentType.Parameter#parseValue(CharSequence) */
+	@Test
+	public void testParameterParseValue() {
+		PARAMETER_VALUE_STRINGS_BY_VALUE.forEach((value, valueString) -> {
+			assertThat(ContentType.Parameter.parseValue(valueString), is(value));
+		});
+		assertThat(ContentType.Parameter.parseValue("\\"), is("\\"));
+		assertThat(ContentType.Parameter.parseValue("a\\bc"), is("a\\bc"));
+		assertThat(ContentType.Parameter.parseValue("a\\\\bc"), is("a\\\\bc"));
+		assertThat(ContentType.Parameter.parseValue("\"\\abc\""), is("abc"));
+		assertThat(ContentType.Parameter.parseValue("\"a\\bc\""), is("abc"));
+		assertThat(ContentType.Parameter.parseValue("\"ab\\c\""), is("abc"));
+		assertThat(ContentType.Parameter.parseValue("\"\"a\\bc\""), is("\"abc"));
+		//unfinished escape sequences
+		assertThrows(ArgumentSyntaxException.class, () -> ContentType.Parameter.parseValue("\"\\\""));
+		assertThrows(ArgumentSyntaxException.class, () -> ContentType.Parameter.parseValue("\"abc\\\""));
+	}
+
+	/** @see ContentType.Parameter#appendValueTo(Appendable, String) */
+	@Test
+	public void testParameterAppendValueTo() throws IOException {
+		PARAMETER_VALUE_STRINGS_BY_VALUE.forEach(throwingBiConsumer((value, valueString) -> {
+			assertThat(ContentType.Parameter.appendValueTo(new StringBuilder(), value).toString(), is(valueString));
+		}));
 	}
 
 }

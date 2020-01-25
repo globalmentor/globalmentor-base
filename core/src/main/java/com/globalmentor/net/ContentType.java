@@ -24,9 +24,12 @@ import javax.annotation.*;
 
 import static java.util.Objects.*;
 
+import java.io.IOException;
+
 import static com.globalmentor.collections.Sets.*;
 import static com.globalmentor.java.CharSequences.*;
 import static com.globalmentor.java.Characters.SPACE_CHAR;
+import static com.globalmentor.java.Conditions.checkArgument;
 import static com.globalmentor.java.Characters.QUOTATION_MARK_CHAR;
 import static com.globalmentor.text.ABNF.*;
 import static com.globalmentor.text.RegularExpressions.*;
@@ -49,9 +52,18 @@ import com.globalmentor.text.*;
  *          checking. Because the <code>javax.activation</code> package is not included in the Android Development Kit, however, and seeing that neither
  *          <code>javax.activation.MimeType</code> nor <code>javax.mail.internet.ContentType</code> are in common use, the current implementation provides a
  *          fully independent version.
+ * @apiNote Internet media types are currently governed by <a href="https://tools.ietf.org/html/rfc6838"><cite>RFC 6838: Media Type Specifications and
+ *          Registration Procedures</cite></a>. <a href="https://tools.ietf.org/html/rfc6532"><cite>RFC 6532: Internationalized Email Headers § 3.2. Syntax
+ *          Extensions to RFC 5322</cite></a> extends extends the syntax to support UTF-8. According to the
+ *          <a href="https://mimesniff.spec.whatwg.org/#http-quoted-string-token-code-point">WhatWG</a>, a quoted string follows
+ *          <a href="https://tools.ietf.org/html/rfc7230#section-3.2.6">RFC 7230: Hypertext Transfer Protocol (HTTP/1.1): Message Syntax and Routing § 3.2.6.
+ *          Field Value Components</a>.
  * @implSpec This class normalizes type, subtype, and parameter names, which are case-insensitive, to lowercase; along with the <code>charset</code> parameter
  *           value. All other parameter values are left as-is. All other parameter values that are case-insensitive should be passed as lowercase to ensure
  *           correct equality comparisons.
+ * @implSpec This implementation does not support parameter values containing control characters except for the horizontal tab character, permitted by
+ *           <a href="https://tools.ietf.org/html/rfc7230#section-3.2.6">RFC 7230 § 3.2.6.</a>.
+ * @implSpec This implementation supports empty parameter values if they are quoted.
  * @implNote Compare this implementation to that of
  *           <a href="https://guava.dev/releases/snapshot-jre/api/docs/com/google/common/net/MediaType.html"><code>com.google.common.net.MediaType</code></a>
  *           which, in addition to normalizing type, subtype, and parameter names to lowercase, also normalizes the value of the <code>charset</code> attribute
@@ -77,6 +89,8 @@ public final class ContentType { //TODO major version: rename to MediaType
 	public static final char PARAMETER_ASSIGNMENT_CHAR = '=';
 	/** The character for quoting a string, such as a parameter value with special characters. */
 	public static final char STRING_QUOTE_CHAR = '"';
+	/** The character for escaping a quoted string. */
+	public static final char STRING_ESCAPE_CHAR = '\\';
 	/** The character delimiting a facet name from the rest of the name as per RFC 6838. */
 	public static final char FACET_DELIMITER_CHAR = '.';
 	/** The separator character that begins a non-standard extension type. */
@@ -101,12 +115,20 @@ public final class ContentType { //TODO major version: rename to MediaType
 			characterClassOf(RESTRICTED_NAME_CHARACTERS), RESTRICTED_NAME_CHARS_MAX_LENGTH));
 	/** The <code>tspecials</code> characters of RFC 2045, which require a string to be quoted in a parameter value. */
 	public static final Characters SPECIAL_CHARACTERS = Characters.of('(', ')', '<', '>', '@', ',', ';', ':', '\\', '"', '/', '[', ']', '?', '=');
-	/** The regular expression pattern defining a <code>restricted-name</code> as per RFC 6838. */
-	public static final Pattern RESTRICTED_NAME_WITHOUT_SPECIAL_CHARACTERS_PATTERN = Pattern
-			.compile(String.format("%s%s{0,%d}+", characterClassOf(RESTRICTED_NAME_FIRST_CHARACTERS),
-					characterClassOf(RESTRICTED_NAME_CHARACTERS.remove(SPECIAL_CHARACTERS)), RESTRICTED_NAME_CHARS_MAX_LENGTH));
-	/** The characters of RFC 2046 which are considered illegal in tokens; control characters and non-ASCII characters are not included. */
-	public static final Characters ILLEGAL_TOKEN_CHARACTERS = SPECIAL_CHARACTERS.add(SPACE_CHAR);
+	/**
+	 * The characters of RFC 2045 which are considered illegal in tokens such as non-quoted strings.
+	 * @implSpec This currently does not include the control characters other than the horizontal tab. A future version may detect this using the
+	 *           <code>\p{Cntrl}</code> character class; for now the implementation checks manually and forbids control characters except for tab.
+	 * @see ABNF#CTL_CHARACTERS
+	 */
+	public static final Characters ILLEGAL_TOKEN_CHARACTERS = SPECIAL_CHARACTERS.add(SPACE_CHAR).add(HTAB);
+	/**
+	 * The control characters not allowed in a quoted string as per RFC 7230.
+	 * @see <a href="https://tools.ietf.org/html/rfc7230#section-3.2.6">RFC 7230 § 3.2.6.</a>
+	 */
+	public static final Characters QUOTED_STRING_PROHIBITED_CONTROL_CHARACTERS = CTL_CHARACTERS.remove(HTAB);
+	/** Characters required to be escaped in a quoted string. */
+	public static final Characters QUOTED_STRING_REQUIRED_ESCAPED_CHARACTERS = Characters.of(STRING_ESCAPE_CHAR, STRING_QUOTE_CHAR);
 
 	/**
 	 * Confirms that the given input conforms to the rules for <code>restricted-name</code> according to RFC 6838, returning the given input.
@@ -129,8 +151,8 @@ public final class ContentType { //TODO major version: rename to MediaType
 	 * @see #PARAMETER_PATTERN_NAME_GROUP
 	 * @see #PARAMETER_PATTERN_VALUE_GROUP
 	 */
-	public static final Pattern PARAMETER_PATTERN = Pattern.compile(String.format("%s\\s*(%s)=(%s|%s)", PARAMETER_DELIMITER_CHAR, RESTRICTED_NAME_PATTERN,
-			RESTRICTED_NAME_WITHOUT_SPECIAL_CHARACTERS_PATTERN, QUOTED_STRING_ALLOWING_ESCAPE_QUOTE));
+	public static final Pattern PARAMETER_PATTERN = Pattern.compile(String.format("%s\\s*(%s)=(%s+|%s)", PARAMETER_DELIMITER_CHAR, RESTRICTED_NAME_PATTERN,
+			characterClassNotOf(ILLEGAL_TOKEN_CHARACTERS), "\"(?:[^\\\\\"]++|\\\\.)*+\""));
 	/**
 	 * A pattern for checking the basic form of a parameter, <em>including</em> the {@value #PARAMETER_DELIMITER_CHAR} delimiter that precedes and separates each
 	 * parameter. Suitable for iterating through parameters using {@link Matcher#find()}. The two matching groups are the name and value.
@@ -240,7 +262,7 @@ public final class ContentType { //TODO major version: rename to MediaType
 	}
 
 	/**
-	 * Parses a content type object from a string.
+	 * Parses a content type object from a sequence of characters.
 	 * @implSpec The primary type, subtype, and parameter names, if any, are each normalized to lowercase. The value of the {@value ContentType#CHARSET_PARAMETER}
 	 *           parameter, if present, is normalized to lowercase.
 	 * @param charSequence The character sequence representation of the content type.
@@ -255,7 +277,7 @@ public final class ContentType { //TODO major version: rename to MediaType
 	}
 
 	/**
-	 * Parses a content type object from a string.
+	 * Parses a content type object from a sequence of characters.
 	 * @implSpec The primary type, subtype, and parameter names, if any, are each normalized to lowercase. The value of the {@value ContentType#CHARSET_PARAMETER}
 	 *           parameter, if present, is normalized to lowercase.
 	 * @param charSequence The character sequence representation of the content type.
@@ -313,7 +335,7 @@ public final class ContentType { //TODO major version: rename to MediaType
 	}
 
 	/**
-	 * Parses a content type object from a string.
+	 * Parses a content type object from a sequence of characters.
 	 * @implSpec The primary type, subtype, and parameter names, if any, are each normalized to lowercase. The value of the {@value ContentType#CHARSET_PARAMETER}
 	 *           parameter, if present, is normalized to lowercase.
 	 * @param text The character sequence representation of the content type.
@@ -334,7 +356,7 @@ public final class ContentType { //TODO major version: rename to MediaType
 	}
 
 	/**
-	 * Parses parameters of a content type from a string.
+	 * Parses parameters of a content type from a sequence of characters.
 	 * @implSpec The parameter names are each normalized to lowercase. The value of the {@value ContentType#CHARSET_PARAMETER} parameter, if present, is
 	 *           normalized to lowercase.
 	 * @param text The character sequence representing the parameters of the content type, not including the {@value #PARAMETER_DELIMITER_CHAR} delimiter.
@@ -349,12 +371,7 @@ public final class ContentType { //TODO major version: rename to MediaType
 		while(parameterMatcher.find()) {
 			lastEnd = parameterMatcher.end();
 			final String parameterName = parameterMatcher.group(PARAMETER_PATTERN_NAME_GROUP);
-			String parameterValue = parameterMatcher.group(PARAMETER_PATTERN_VALUE_GROUP);
-			if(startsWith(parameterValue, QUOTATION_MARK_CHAR)) { //if this is a quoted value
-				assert parameterValue.length() >= 3 && endsWith(parameterValue, QUOTATION_MARK_CHAR) : "Regex expected to ensure matched quotes.";
-				parameterValue = parameterValue.substring(1, parameterValue.length() - 1); //remove the surrounding quotes
-				parameterValue = parameterValue.replace("\\\"", "\"").replace("\\\\", "\\"); //replace escapes
-			}
+			final String parameterValue = Parameter.parseValue(parameterMatcher.group(PARAMETER_PATTERN_VALUE_GROUP));
 			if(parameters == null) { //lazily create the parameters
 				parameters = new HashSet<>();
 			}
@@ -588,25 +605,22 @@ public final class ContentType { //TODO major version: rename to MediaType
 	 * @param formatted Whether the resulting string should be formatted with extra whitespace for human readability.
 	 * @return A string representing the type in the form "<var>primaryType</var>/<var>subType</var>[;<var>parameters</var>]".
 	 * @throws NullPointerException if the given parameters set is <code>null</code>.
+	 * @see Parameter#toValueString()
 	 */
 	public static String toString(final String primaryType, final String subType, final Set<Parameter> parameters, final boolean formatted) {
 		final StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append(primaryType).append(TYPE_DIVIDER).append(subType); //primaryType/subType
 		for(final Parameter parameter : parameters) { //for each parameter
-			final String parameterValue = parameter.getValue(); //get the parameter value
-			final boolean hasSpecialCharacters = CharSequences.contains(parameterValue, SPECIAL_CHARACTERS); //see if there are any special characters
-
 			stringBuilder.append(PARAMETER_DELIMITER_CHAR); //; name=value
 			if(formatted) {
 				stringBuilder.append(SPACE_CHAR);
 			}
 			stringBuilder.append(parameter.getName()).append(PARAMETER_ASSIGNMENT_CHAR);
-			if(hasSpecialCharacters) { //quote the value string if necessary
-				stringBuilder.append(STRING_QUOTE_CHAR);
-			}
-			stringBuilder.append(parameterValue);
-			if(hasSpecialCharacters) { //quote the value string if necessary
-				stringBuilder.append(STRING_QUOTE_CHAR);
+			final String parameterValue = parameter.getValue(); //get the parameter value
+			try {
+				Parameter.appendValueTo(stringBuilder, parameterValue);
+			} catch(final IOException ioException) {
+				throw new AssertionError(ioException); //string builders do not throw I/O exceptions when appending
 			}
 		}
 		return stringBuilder.toString();
@@ -630,6 +644,7 @@ public final class ContentType { //TODO major version: rename to MediaType
 	 * @implSpec This class normalizes parameter names, which are case-insensitive, to lowercase; along with the <code>charset</code> parameter value. All other
 	 *           parameter values are left as-is. All other parameter values that are case-insensitive should be passed as lowercase to ensure correct equality
 	 *           comparisons.
+	 * @implSpec This implementation does not allow control characters.
 	 * @implNote Compare this implementation to that of
 	 *           <a href="https://guava.dev/releases/snapshot-jre/api/docs/com/google/common/net/MediaType.html"><code>com.google.common.net.MediaType</code></a>
 	 *           which, in addition to normalizing type, subtype, and parameter names to lowercase, also normalizes the value of the <code>charset</code>
@@ -652,12 +667,15 @@ public final class ContentType { //TODO major version: rename to MediaType
 		 * @param value The parameter value.
 		 * @throws NullPointerException if the given name and/or value is <code>null</code>.
 		 * @throws ArgumentSyntaxException if the name does not conform to the {@link ContentType#RESTRICTED_NAME_PATTERN} pattern.
+		 * @throws IllegalArgumentException if the parameter value includes control characters other than horizontal tab.
 		 * @deprecated in favor of {@link #of(String, String)}; to be made private in next major version.
 		 */
 		@Deprecated
 		public Parameter(final String name, final String value) {
 			super(ASCII.toLowerCase(checkArgumentRestrictedName(name)).toString(),
 					ASCII.equalsIgnoreCase(name, CHARSET_PARAMETER) ? ASCII.toLowerCase(value).toString() : value);
+			checkArgument(!contains(value, QUOTED_STRING_PROHIBITED_CONTROL_CHARACTERS), "Parameter value `%s` containing non-tab control characters not supported.",
+					value);
 		}
 
 		/**
@@ -668,6 +686,7 @@ public final class ContentType { //TODO major version: rename to MediaType
 		 * @return A content type for the indicated name and value.
 		 * @throws NullPointerException if the given name and/or value is <code>null</code>.
 		 * @throws ArgumentSyntaxException if the name does not conform to the {@link ContentType#RESTRICTED_NAME_PATTERN} pattern.
+		 * @throws IllegalArgumentException if the parameter value includes control characters.
 		 */
 		public static Parameter of(@Nonnull final String name, @Nonnull final String value) {
 			//often-used parameters
@@ -680,6 +699,91 @@ public final class ContentType { //TODO major version: rename to MediaType
 			return new Parameter(name, value);
 		}
 
+		/**
+		 * Parses a parameter of a content type from a sequence of characters. Quoted/escaped values are supported and decoded, but otherwise no normalization is
+		 * performed.
+		 * @implSpec This implementation supports an empty string value only if it is quoted.
+		 * @implSpec This implementation allows any character except control characters to be escaped.
+		 * @implSpec This implementation does not allow control characters other than horizontal tab.
+		 * @param text The character sequence representing the parameters of the value.
+		 * @return The parsed value.
+		 * @throws ArgumentSyntaxException if the string is not syntactically correct parameters, or if a parameter name does not conform to the
+		 *           {@link ContentType#RESTRICTED_NAME_PATTERN} pattern.
+		 */
+		public static String parseValue(CharSequence text) throws ArgumentSyntaxException {
+			checkArgument(text.length() > 0, "Unquoted empty parameter value not supported.");
+			checkArgument(!contains(text, QUOTED_STRING_PROHIBITED_CONTROL_CHARACTERS), "Parameter value `%s` containing non-tab control characters not supported.",
+					text);
+			if(startsWith(text, QUOTATION_MARK_CHAR)) { //if this is a quoted value
+				final int length = text.length();
+				checkArgument(length >= 2 && endsWith(text, QUOTATION_MARK_CHAR), "Parameter value `%s` missing ending quote.", text);
+				final StringBuilder stringBuilder = new StringBuilder(length - 2); //we'll leave off the quotes
+				for(int i = 1; i < length - 1; i++) {
+					char c = text.charAt(i);
+					if(c == STRING_ESCAPE_CHAR) {
+						i++; //skip the escape character
+						if(i == length - 1) {
+							throw new ArgumentSyntaxException("Incomplete ending escape sequence in parameter values `%`.", text);
+						}
+						c = text.charAt(i);
+					}
+					stringBuilder.append(c);
+				}
+				return stringBuilder.toString(); //we decoded the string manually, so short-circuit and return the value
+			}
+			return text.toString();
+		}
+
+		/**
+		 * Returns a string representation of the value, quoting and escaping it as necessary.
+		 * @implSpec This implementation delegates to {@link #appendValueTo(Appendable, CharSequence)}.
+		 * @apiNote This method differs from {@link #getValue()}, which returns the raw value with no quoting or escaping.
+		 * @implSpec This implementation does not allow control characters.
+		 * @return The string version of the value.
+		 */
+		public String toValueString() {
+			try {
+				return appendValueTo(new StringBuilder(), getValue()).toString();
+			} catch(final IOException ioException) {
+				throw new AssertionError(ioException); //string builders do not throw I/O exceptions when appending
+			}
+		}
+
+		/**
+		 * Appends a string representing a parameter value to an appendable, quoting and escaping it as necessary.
+		 * @implSpec This implementation does not allow control characters other than horizontal tab.
+		 * @implSpec This implementation quotes empty strings.
+		 * @param <A> The type of appendable being used.
+		 * @param appendable The appendable, such as a {@link StringBuilder}, to which the value should be appended.
+		 * @param parameterValue The parameter value.
+		 * @return The given appendable.
+		 * @throws IllegalArgumentException if the parameter value includes control characters.
+		 * @throws IOException If an I/O error occurs appending the value.
+		 */
+		public static <A extends Appendable> A appendValueTo(@Nonnull final A appendable, @Nonnull CharSequence parameterValue) throws IOException {
+			checkArgument(!contains(parameterValue, QUOTED_STRING_PROHIBITED_CONTROL_CHARACTERS),
+					"Parameter value `%s` containing non-tab control characters not supported.", parameterValue);
+			final boolean needsQuotes = contains(parameterValue, ILLEGAL_TOKEN_CHARACTERS) || parameterValue.length() == 0; //see if there are any characters requiring quoting
+			if(needsQuotes) { //quote the value if necessary
+				appendable.append(STRING_QUOTE_CHAR);
+				if(contains(parameterValue, QUOTED_STRING_REQUIRED_ESCAPED_CHARACTERS)) { //if there are characters needing escaping, append one at a time to be more efficient
+					for(int i = 0, length = parameterValue.length(); i < length; i++) {
+						final char c = parameterValue.charAt(i);
+						if(QUOTED_STRING_REQUIRED_ESCAPED_CHARACTERS.contains(c)) { //escape if needed
+							appendable.append(STRING_ESCAPE_CHAR);
+						}
+						appendable.append(c);
+					}
+					appendable.append(STRING_QUOTE_CHAR);
+					return appendable; //we appended manually and are finished
+				}
+			}
+			appendable.append(parameterValue); //no escaping was needed; just append normally
+			if(needsQuotes) {
+				appendable.append(STRING_QUOTE_CHAR);
+			}
+			return appendable;
+		}
 	}
 
 }

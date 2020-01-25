@@ -13,6 +13,14 @@
 	<name>GlobalMentor Core</name>
 	<description>GlobalMentor core Java library.</description>
 
+	<dependencies>
+		<dependency>
+			<groupId>org.zalando</groupId>
+			<artifactId>faux-pas</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
 	<build>
 		<resources>
 			<resource>
