@@ -16,8 +16,6 @@
 
 package com.globalmentor.net;
 
-import com.globalmentor.text.ArgumentSyntaxException;
-
 import static org.hamcrest.Matchers.*;
 import static java.util.stream.Collectors.*;
 import static org.hamcrest.MatcherAssert.*;
@@ -154,10 +152,10 @@ public class ContentTypeTest {
 				containsInAnyOrder(ContentType.Parameter.of("charset", "us-ascii"), ContentType.Parameter.of("test", "foo;bar")));
 		assertThat(ContentType.parseParameters("; test=\"(foo)<bar>@\\\",;:\\\\/[foobar]?=\""),
 				containsInAnyOrder(ContentType.Parameter.of("test", "(foo)<bar>@\",;:\\/[foobar]?=")));
-		assertThrows(ArgumentSyntaxException.class, () -> ContentType.parseParameters("; foo= bar"));
-		assertThrows(ArgumentSyntaxException.class, () -> ContentType.parseParameters("charset=us-ascii foo=bar"));
-		assertThrows(ArgumentSyntaxException.class, () -> ContentType.parseParameters("; charset=us-ascii= foo=bar"));
-		assertThrows(ArgumentSyntaxException.class, () -> ContentType.parseParameters("charset=us-ascii=foo=bar"));
+		assertThrows(IllegalArgumentException.class, () -> ContentType.parseParameters("; foo= bar"));
+		assertThrows(IllegalArgumentException.class, () -> ContentType.parseParameters("charset=us-ascii foo=bar"));
+		assertThrows(IllegalArgumentException.class, () -> ContentType.parseParameters("; charset=us-ascii= foo=bar"));
+		assertThrows(IllegalArgumentException.class, () -> ContentType.parseParameters("charset=us-ascii=foo=bar"));
 	}
 
 	/** Tests equality, including parameter order and case insensitivity of content type names. */
@@ -203,32 +201,59 @@ public class ContentTypeTest {
 
 	@Test
 	public void testMissingDelimiter() {
-		assertThrows(ArgumentSyntaxException.class, () -> ContentType.parse("text"));
+		assertThrows(IllegalArgumentException.class, () -> ContentType.parse("text"));
 	}
 
 	@Test
 	public void testMissingSubType() {
-		assertThrows(ArgumentSyntaxException.class, () -> ContentType.parse("text/"));
+		assertThrows(IllegalArgumentException.class, () -> ContentType.parse("text/"));
 	}
 
 	@Test
 	public void testMissingParameters() {
-		assertThrows(ArgumentSyntaxException.class, () -> ContentType.parse("text/plain;"));
+		assertThrows(IllegalArgumentException.class, () -> ContentType.parse("text/plain;"));
 	}
 
 	@Test
 	public void testMissingParameterDelimiter() {
-		assertThrows(ArgumentSyntaxException.class, () -> ContentType.parse("text/plain; charset"));
+		assertThrows(IllegalArgumentException.class, () -> ContentType.parse("text/plain; charset"));
 	}
 
 	@Test
 	public void testMissingParameterValue() {
-		assertThrows(ArgumentSyntaxException.class, () -> ContentType.parse("text/plain; charset="));
+		assertThrows(IllegalArgumentException.class, () -> ContentType.parse("text/plain; charset="));
 	}
 
 	@Test
 	public void testMissingSecondParameter() {
-		assertThrows(ArgumentSyntaxException.class, () -> ContentType.parse("text/plain; charset=us-ascii;"));
+		assertThrows(IllegalArgumentException.class, () -> ContentType.parse("text/plain; charset=us-ascii;"));
+	}
+
+	/** @see ContentType#hasSubTypeSuffix(String...) */
+	@Test
+	public void testHasSubTypeSuffix() {
+		assertThat(ContentType.of("text", "plain").hasSubTypeSuffix("foo"), is(false));
+		assertThat(ContentType.of("text", "test").hasSubTypeSuffix("foo"), is(false));
+		assertThat(ContentType.of("text", "test+foo").hasSubTypeSuffix("foo"), is(true));
+		assertThat(ContentType.of("text", "TEST+Foo").hasSubTypeSuffix("FOO"), is(true));
+		assertThat(ContentType.of("text", "test+foo+bar").hasSubTypeSuffix("foo"), is(false));
+		assertThat(ContentType.of("text", "test+foo").hasSubTypeSuffix("foo", "bar"), is(false));
+		assertThat(ContentType.of("text", "test+foo+bar").hasSubTypeSuffix("foo", "bar"), is(true));
+		assertThat(ContentType.of("TEXT", "TEST+FOO+BAR").hasSubTypeSuffix("fOO", "Bar"), is(true));
+	}
+
+	/** @see ContentType#createSubTypeSuffix(String...) */
+	@Test
+	public void testCreateSubTypeSuffix() {
+		assertThat(ContentType.createSubTypeSuffix("foo"), is("+foo"));
+		assertThat(ContentType.createSubTypeSuffix("123"), is("+123"));
+		assertThat(ContentType.createSubTypeSuffix("FOO"), is("+foo"));
+		assertThat(ContentType.createSubTypeSuffix("foo", "bar"), is("+foo+bar"));
+		assertThat(ContentType.createSubTypeSuffix("Foo", "BAR"), is("+foo+bar"));
+		assertThrows(IllegalArgumentException.class, () -> ContentType.createSubTypeSuffix(""));
+		assertThrows(IllegalArgumentException.class, () -> ContentType.createSubTypeSuffix("+"));
+		assertThrows(IllegalArgumentException.class, () -> ContentType.createSubTypeSuffix("?"));
+		assertThrows(IllegalArgumentException.class, () -> ContentType.createSubTypeSuffix("+foo"));
 	}
 
 	//parameters
@@ -306,8 +331,8 @@ public class ContentTypeTest {
 		assertThat(ContentType.Parameter.parseValue("\"ab\\c\""), is("abc"));
 		assertThat(ContentType.Parameter.parseValue("\"\"a\\bc\""), is("\"abc"));
 		//unfinished escape sequences
-		assertThrows(ArgumentSyntaxException.class, () -> ContentType.Parameter.parseValue("\"\\\""));
-		assertThrows(ArgumentSyntaxException.class, () -> ContentType.Parameter.parseValue("\"abc\\\""));
+		assertThrows(IllegalArgumentException.class, () -> ContentType.Parameter.parseValue("\"\\\""));
+		assertThrows(IllegalArgumentException.class, () -> ContentType.Parameter.parseValue("\"abc\\\""));
 	}
 
 	/** @see ContentType.Parameter#appendValueTo(Appendable, String) */

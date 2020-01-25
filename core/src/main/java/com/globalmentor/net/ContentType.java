@@ -58,9 +58,9 @@ import com.globalmentor.text.*;
  *          <a href="https://mimesniff.spec.whatwg.org/#http-quoted-string-token-code-point">WhatWG</a>, a quoted string follows
  *          <a href="https://tools.ietf.org/html/rfc7230#section-3.2.6">RFC 7230: Hypertext Transfer Protocol (HTTP/1.1): Message Syntax and Routing § 3.2.6.
  *          Field Value Components</a>.
- * @implSpec This class normalizes type, subtype, and parameter names, which are case-insensitive, to lowercase; along with the <code>charset</code> parameter
- *           value. All other parameter values are left as-is. All other parameter values that are case-insensitive should be passed as lowercase to ensure
- *           correct equality comparisons.
+ * @implSpec This class normalizes type, subtype, and parameter names, which are ASCII case-insensitive, to ASCII lowercase; along with the <code>charset</code>
+ *           parameter value. All other parameter values are left as-is. All other parameter values that are case-insensitive should be passed as lowercase to
+ *           ensure correct equality comparisons.
  * @implSpec This implementation does not support parameter values containing control characters except for the horizontal tab character, permitted by
  *           <a href="https://tools.ietf.org/html/rfc7230#section-3.2.6">RFC 7230 § 3.2.6.</a>.
  * @implSpec This implementation supports empty parameter values if they are quoted.
@@ -253,7 +253,7 @@ public final class ContentType { //TODO major version: rename to MediaType
 	 * @param subType The subtype of the content type.
 	 * @param parameters The content type parameters.
 	 * @throws NullPointerException if the given primary type, subtype, and/or parameters is <code>null</code>.
-	 * @throws ArgumentSyntaxException if the primary type and/or subtype does not conform to the {@link ContentType#RESTRICTED_NAME_PATTERN} pattern.
+	 * @throws IllegalArgumentException if the primary type and/or subtype does not conform to the {@link ContentType#RESTRICTED_NAME_PATTERN} pattern.
 	 */
 	private ContentType(final String primaryType, final String subType, final Set<Parameter> parameters) {
 		this.primaryType = ASCII.toLowerCase(checkArgumentRestrictedName(primaryType)).toString();
@@ -267,12 +267,12 @@ public final class ContentType { //TODO major version: rename to MediaType
 	 *           parameter, if present, is normalized to lowercase.
 	 * @param charSequence The character sequence representation of the content type.
 	 * @return A new content type object parsed from the string.
-	 * @throws ArgumentSyntaxException if the primary type, subtype, and/or a parameter name does not conform to the {@link ContentType#RESTRICTED_NAME_PATTERN}
+	 * @throws IllegalArgumentException if the primary type, subtype, and/or a parameter name does not conform to the {@link ContentType#RESTRICTED_NAME_PATTERN}
 	 *           pattern.
 	 * @deprecated in favor of {@link #parse(CharSequence)}; to be removed in next major version.
 	 */
 	@Deprecated
-	public static ContentType create(final CharSequence charSequence) throws ArgumentSyntaxException {
+	public static ContentType create(final CharSequence charSequence) {
 		return parse(charSequence);
 	}
 
@@ -282,13 +282,13 @@ public final class ContentType { //TODO major version: rename to MediaType
 	 *           parameter, if present, is normalized to lowercase.
 	 * @param charSequence The character sequence representation of the content type.
 	 * @return A new content type object parsed from the string.
-	 * @throws ArgumentSyntaxException if the name does not conform to the {@link ContentType#RESTRICTED_NAME_PATTERN} pattern.
-	 * @throws ArgumentSyntaxException if the primary type, subtype, and/or a parameter name does not conform to the {@link ContentType#RESTRICTED_NAME_PATTERN}
+	 * @throws IllegalArgumentException if the name does not conform to the {@link ContentType#RESTRICTED_NAME_PATTERN} pattern.
+	 * @throws IllegalArgumentException if the primary type, subtype, and/or a parameter name does not conform to the {@link ContentType#RESTRICTED_NAME_PATTERN}
 	 *           pattern.
 	 * @deprecated in favor of {@link #parse(CharSequence)}; to be removed in next major version.
 	 */
 	@Deprecated
-	public static ContentType of(final CharSequence charSequence) throws ArgumentSyntaxException {
+	public static ContentType of(final CharSequence charSequence) {
 		return parse(charSequence);
 	}
 
@@ -299,7 +299,7 @@ public final class ContentType { //TODO major version: rename to MediaType
 	 * @param subType The subtype.
 	 * @param parameters Optional name-value pairs representing parameters of the content type.
 	 * @return A new content type object constructed from the given information.
-	 * @throws ArgumentSyntaxException if the primary type and/or subtype does not conform to the {@link ContentType#RESTRICTED_NAME_PATTERN} pattern.
+	 * @throws IllegalArgumentException if the primary type and/or subtype does not conform to the {@link ContentType#RESTRICTED_NAME_PATTERN} pattern.
 	 * @deprecated in favor of {@link #of(String, String, Parameter...)}; to be removed in next major version.
 	 */
 	@Deprecated
@@ -314,7 +314,7 @@ public final class ContentType { //TODO major version: rename to MediaType
 	 * @param subType The subtype.
 	 * @param parameters Optional name-value pairs representing parameters of the content type.
 	 * @return A new content type object constructed from the given information.
-	 * @throws ArgumentSyntaxException if the primary type and/or subtype does not conform to the {@link ContentType#RESTRICTED_NAME_PATTERN} pattern.
+	 * @throws IllegalArgumentException if the primary type and/or subtype does not conform to the {@link ContentType#RESTRICTED_NAME_PATTERN} pattern.
 	 */
 	public static ContentType of(final String primaryType, final String subType, final Parameter... parameters) {
 		return new ContentType(primaryType, subType, immutableSetOf(parameters)); //create a new content type from the given values, creating an immutable copy of the parameters
@@ -328,7 +328,7 @@ public final class ContentType { //TODO major version: rename to MediaType
 	 * @param parameters Zero or more name-value pairs representing parameters of the content type.
 	 * @return A new content type object constructed from the given information.
 	 * @throws NullPointerException if the given parameters set is <code>null</code>.
-	 * @throws ArgumentSyntaxException if the primary type and/or subtype does not conform to the {@link ContentType#RESTRICTED_NAME_PATTERN} pattern.
+	 * @throws IllegalArgumentException if the primary type and/or subtype does not conform to the {@link ContentType#RESTRICTED_NAME_PATTERN} pattern.
 	 */
 	public static ContentType of(final String primaryType, final String subType, final Set<Parameter> parameters) {
 		return new ContentType(primaryType, subType, immutableSetOf(parameters)); //create a new content type from the given values, creating an immutable copy of the parameters
@@ -340,14 +340,11 @@ public final class ContentType { //TODO major version: rename to MediaType
 	 *           parameter, if present, is normalized to lowercase.
 	 * @param text The character sequence representation of the content type.
 	 * @return A new content type object parsed from the string.
-	 * @throws ArgumentSyntaxException if the primary type, subtype, and/or a parameter name does not conform to the {@link ContentType#RESTRICTED_NAME_PATTERN}
+	 * @throws IllegalArgumentException if the primary type, subtype, and/or a parameter name does not conform to the {@link ContentType#RESTRICTED_NAME_PATTERN}
 	 *           pattern.
 	 */
-	public static ContentType parse(final CharSequence text) throws ArgumentSyntaxException {
-		final Matcher matcher = PATTERN.matcher(text);
-		if(!matcher.matches()) {
-			throw new ArgumentSyntaxException("Invalid content type syntax", text);
-		}
+	public static ContentType parse(final CharSequence text) {
+		final Matcher matcher = checkArgumentMatches(text, PATTERN, "Invalid content type syntax for `%s`.", text);
 		final String primaryType = matcher.group(PATTERN_PRIMARY_TYPE_GROUP);
 		final String subType = matcher.group(PATTERN_SUBTYPE_GROUP);
 		final String parameterString = matcher.group(PATTERN_PARAMETERS_GROUP);
@@ -361,10 +358,10 @@ public final class ContentType { //TODO major version: rename to MediaType
 	 *           normalized to lowercase.
 	 * @param text The character sequence representing the parameters of the content type, not including the {@value #PARAMETER_DELIMITER_CHAR} delimiter.
 	 * @return Content type parameters parsed from the string.
-	 * @throws ArgumentSyntaxException if the string is not syntactically correct parameters, or if a parameter name does not conform to the
+	 * @throws IllegalArgumentException if the string is not syntactically correct parameters, or if a parameter name does not conform to the
 	 *           {@link ContentType#RESTRICTED_NAME_PATTERN} pattern.
 	 */
-	public static Set<Parameter> parseParameters(final CharSequence text) throws ArgumentSyntaxException {
+	public static Set<Parameter> parseParameters(final CharSequence text) {
 		Set<Parameter> parameters = null;
 		int lastEnd = 0;
 		final Matcher parameterMatcher = PARAMETER_ITERATE_PATTERN.matcher(text);
@@ -384,7 +381,7 @@ public final class ContentType { //TODO major version: rename to MediaType
 	}
 
 	/**
-	 * Retrieve the parameter value associated with the given parameter name. Names are comparisons are case-insensitive.
+	 * Retrieve the parameter value associated with the given parameter name. Names are comparisons are ASCII case-insensitive.
 	 * @param name The name of the parameter.
 	 * @return The (always unquoted) value associated with the given name, or <code>null</code> if there is no parameter with the given name.
 	 * @throws NullPointerException if the given parameter name is <code>null</code>.
@@ -400,7 +397,7 @@ public final class ContentType { //TODO major version: rename to MediaType
 	}
 
 	/**
-	 * Matches a content type against a primary type and subtype. Comparisons are case-insensitive. This method supports wildcard subtypes.
+	 * Matches a content type against a primary type and subtype. Comparisons are ASCII case-insensitive. This method supports wildcard subtypes.
 	 * @param primaryType The primary type with which to compare the content type.
 	 * @param subType The subtype with which to compare the content type.
 	 * @return <code>true</code> if the content type has the same primary type and subtype as that given.
@@ -461,7 +458,7 @@ public final class ContentType { //TODO major version: rename to MediaType
 	}
 
 	/**
-	 * Matches a content type against a primary type and subtype with no wildcard support. Comparisons are case-insensitive.
+	 * Matches a content type against a primary type and subtype with no wildcard support. Comparisons are ASCII case-insensitive.
 	 * @param primaryType The primary type with which to compare the content type.
 	 * @param subType The subtype with which to compare the content type.
 	 * @return <code>true</code> if the content type has the same primary type and subtype as that given.
@@ -473,17 +470,22 @@ public final class ContentType { //TODO major version: rename to MediaType
 
 	/**
 	 * Determines if the subtype of the content type has the given suffix.
+	 * @implSpec Suffixes are compared on an ASCII case-insensitive basis.
+	 * @implNote This implementation restricts each suffix to the {@link ContentType#RESTRICTED_NAME_PATTERN} pattern, the same pattern applicable to a subtype,
+	 *           although this requirement is not explicit in RFC 6838.
 	 * @param suffixes The suffix strings that will be checked, after they are combined into a single suffix, each part prepended with '+'.
 	 * @return <code>true</code> if the content type's subtype has the given suffixes.
+	 * @throws IllegalArgumentException if a suffix does not conform to the {@link ContentType#RESTRICTED_NAME_PATTERN} pattern, including if it already begins
+	 *           with the {@value #SUBTYPE_SUFFIX_DELIMITER_CHAR} delimiter.
 	 */
-	public boolean hasSubTypeSuffix(final String... suffixes) { //TODO implement case insensitivity
-		return getSubType().endsWith(createSubTypeSuffix(suffixes)); //see if the content type subtype ends with the given suffixes
+	public boolean hasSubTypeSuffix(final String... suffixes) {
+		return getSubType().endsWith(createSubTypeSuffix(suffixes));
 	}
 
 	/**
 	 * Returns a content type with the given parameter. If this content type already has the given parameter, it will be returned. If this content type has a
 	 * parameter with the same name but with a different value, the parameter will be replaced with the one given. Otherwise, the parameter will be added to the
-	 * parameters. Parameter name comparisons are case-insensitive.
+	 * parameters. Parameter name comparisons are ASCII case-insensitive.
 	 * @param newParameter The new parameter to add or replace.
 	 * @return A content type with the given parameter.
 	 */
@@ -506,12 +508,12 @@ public final class ContentType { //TODO major version: rename to MediaType
 	/**
 	 * Returns a content type with the given parameter. If this content type already has the given parameter, it will be returned. If this content type has a
 	 * parameter with the same name but with a different value, the parameter will be replaced with the one given. Otherwise, the parameter will be added to the
-	 * parameters. Parameter name comparisons are case-insensitive.
+	 * parameters. Parameter name comparisons are ASCII case-insensitive.
 	 * @param name The parameter name to add or replace.
 	 * @param value The parameter value.
 	 * @return A content type with the given parameter.
 	 * @throws NullPointerException if the given name and/or value is <code>null</code>.
-	 * @throws ArgumentSyntaxException if the name is not a token; or the value contains a space, non-ASCII, or control character.
+	 * @throws IllegalArgumentException if the name is not a token; or the value contains a space, non-ASCII, or control character.
 	 * @see Parameter#of(String, String)
 	 */
 	public ContentType withParameter(final String name, final String value) {
@@ -535,8 +537,8 @@ public final class ContentType { //TODO major version: rename to MediaType
 	/**
 	 * {@inheritDoc}
 	 * @implSpec This implementation considers an object equal if it is another {@link ContentType} with the same primary types and subtypes, the same number of
-	 *           parameters, and a matching parameter value for every parameter of this content type. Comparisons are case-insensitive for the primary type, the
-	 *           subtype, the parameter names, and the {@value #CHARSET_PARAMETER} parameter value, as these items have already been normalized by this class.
+	 *           parameters, and a matching parameter value for every parameter of this content type. Comparisons are ASCII case-insensitive for the primary type,
+	 *           the subtype, the parameter names, and the {@value #CHARSET_PARAMETER} parameter value, as these items have already been normalized by this class.
 	 * @param object The reference object with which to compare.
 	 * @see #getPrimaryType()
 	 * @see #getSubType()
@@ -628,22 +630,28 @@ public final class ContentType { //TODO major version: rename to MediaType
 
 	/**
 	 * Creates a content type suffix by prepending '+' to each suffix and concatenating the suffixes.
+	 * @implSpec Each suffix is normalized to lowercase.
+	 * @implNote This implementation restricts each suffix to the {@link ContentType#RESTRICTED_NAME_PATTERN} pattern, the same pattern applicable to a subtype,
+	 *           although this requirement is not explicit in RFC 6838.
 	 * @param suffixes The suffix strings to combine into a suffix.
 	 * @return A suffix composed of the given suffix strings.
+	 * @throws IllegalArgumentException if a suffix does not conform to the {@link ContentType#RESTRICTED_NAME_PATTERN} pattern, including if it already begins
+	 *           with the {@value #SUBTYPE_SUFFIX_DELIMITER_CHAR} delimiter.
+	 * @see #createSubTypeSuffix(String...)
 	 */
 	public static String createSubTypeSuffix(final String... suffixes) {
 		final StringBuilder stringBuilder = new StringBuilder();
 		for(final String suffix : suffixes) { //for each suffix
-			stringBuilder.append(SUBTYPE_SUFFIX_DELIMITER_CHAR).append(suffix); //+suffix
+			stringBuilder.append(SUBTYPE_SUFFIX_DELIMITER_CHAR).append(ASCII.toLowerCase(checkArgumentRestrictedName(suffix))); //+suffix
 		}
 		return stringBuilder.toString(); //return the suffix we constructed
 	}
 
 	/**
 	 * A content type parameter name/value pair. Neither the name nor the value of a content type parameter can be <code>null</code>.
-	 * @implSpec This class normalizes parameter names, which are case-insensitive, to lowercase; along with the <code>charset</code> parameter value. All other
-	 *           parameter values are left as-is. All other parameter values that are case-insensitive should be passed as lowercase to ensure correct equality
-	 *           comparisons.
+	 * @implSpec This class normalizes parameter names, which are ASCII case-insensitive, to lowercase; along with the <code>charset</code> parameter value. All
+	 *           other parameter values are left as-is. All other parameter values that are case-insensitive should be passed as lowercase to ensure correct
+	 *           equality comparisons.
 	 * @implSpec This implementation does not allow control characters.
 	 * @implNote Compare this implementation to that of
 	 *           <a href="https://guava.dev/releases/snapshot-jre/api/docs/com/google/common/net/MediaType.html"><code>com.google.common.net.MediaType</code></a>
@@ -666,7 +674,7 @@ public final class ContentType { //TODO major version: rename to MediaType
 		 * @param name The parameter name.
 		 * @param value The parameter value.
 		 * @throws NullPointerException if the given name and/or value is <code>null</code>.
-		 * @throws ArgumentSyntaxException if the name does not conform to the {@link ContentType#RESTRICTED_NAME_PATTERN} pattern.
+		 * @throws IllegalArgumentException if the name does not conform to the {@link ContentType#RESTRICTED_NAME_PATTERN} pattern.
 		 * @throws IllegalArgumentException if the parameter value includes control characters other than horizontal tab.
 		 * @deprecated in favor of {@link #of(String, String)}; to be made private in next major version.
 		 */
@@ -685,7 +693,7 @@ public final class ContentType { //TODO major version: rename to MediaType
 		 * @param value The parameter value.
 		 * @return A content type for the indicated name and value.
 		 * @throws NullPointerException if the given name and/or value is <code>null</code>.
-		 * @throws ArgumentSyntaxException if the name does not conform to the {@link ContentType#RESTRICTED_NAME_PATTERN} pattern.
+		 * @throws IllegalArgumentException if the name does not conform to the {@link ContentType#RESTRICTED_NAME_PATTERN} pattern.
 		 * @throws IllegalArgumentException if the parameter value includes control characters.
 		 */
 		public static Parameter of(@Nonnull final String name, @Nonnull final String value) {
@@ -707,10 +715,10 @@ public final class ContentType { //TODO major version: rename to MediaType
 		 * @implSpec This implementation does not allow control characters other than horizontal tab.
 		 * @param text The character sequence representing the parameters of the value.
 		 * @return The parsed value.
-		 * @throws ArgumentSyntaxException if the string is not syntactically correct parameters, or if a parameter name does not conform to the
+		 * @throws IllegalArgumentException if the string is not syntactically correct parameters, or if a parameter name does not conform to the
 		 *           {@link ContentType#RESTRICTED_NAME_PATTERN} pattern.
 		 */
-		public static String parseValue(CharSequence text) throws ArgumentSyntaxException {
+		public static String parseValue(CharSequence text) {
 			checkArgument(text.length() > 0, "Unquoted empty parameter value not supported.");
 			checkArgument(!contains(text, QUOTED_STRING_PROHIBITED_CONTROL_CHARACTERS), "Parameter value `%s` containing non-tab control characters not supported.",
 					text);
