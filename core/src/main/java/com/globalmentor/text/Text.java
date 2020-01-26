@@ -39,7 +39,7 @@ public class Text {
 	public static final String PLAIN_SUBTYPE = "plain";
 
 	/** The content type for plain text: <code>text/plain</code>. */
-	public static final ContentType PLAIN_CONTENT_TYPE = ContentType.create(ContentType.TEXT_PRIMARY_TYPE, PLAIN_SUBTYPE);
+	public static final ContentType PLAIN_CONTENT_TYPE = ContentType.of(ContentType.TEXT_PRIMARY_TYPE, PLAIN_SUBTYPE);
 
 	/** The name extension for text files. */
 	public static final String TXT_NAME_EXTENSION = "txt";

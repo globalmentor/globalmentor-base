@@ -25,7 +25,7 @@ import com.globalmentor.net.ContentType;
 public class JNLP {
 
 	/** The content type for JNLP: <code>application/x-java-jnlp-file</code>. */
-	public static final ContentType CONTENT_TYPE = ContentType.create(ContentType.APPLICATION_PRIMARY_TYPE, "x-java-jnlp-file");
+	public static final ContentType CONTENT_TYPE = ContentType.of(ContentType.APPLICATION_PRIMARY_TYPE, "x-java-jnlp-file");
 
 	/** The name of the JNLP servlet or JSP file. */
 	public static final String JNLP_SERVLET_NAME = "jnlp";

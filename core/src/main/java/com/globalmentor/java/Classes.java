@@ -139,7 +139,7 @@ public class Classes {
 	 * @throws IllegalArgumentException if the given object class is <code>null</code>.
 	 */
 	public static ContentType getObjectContentType(final Class<?> objectClass) {
-		return ContentType.create(ContentType.APPLICATION_PRIMARY_TYPE, ContentType.X_JAVA_OBJECT, new ContentType.Parameter("class", objectClass.getName())); //create a content type appropriate for this object class TODO use a constant; testing
+		return ContentType.of(ContentType.APPLICATION_PRIMARY_TYPE, ContentType.X_JAVA_OBJECT, ContentType.Parameter.of("class", objectClass.getName())); //create a content type appropriate for this object class TODO use a constant; testing
 	}
 
 	/**
