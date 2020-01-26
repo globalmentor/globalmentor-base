@@ -17,19 +17,22 @@
 package com.globalmentor.net;
 
 import java.net.URLConnection;
+import java.nio.charset.Charset;
 import java.util.*;
 import java.util.regex.*;
+import java.util.stream.Stream;
 
 import javax.annotation.*;
 
 import static java.util.Objects.*;
+import static java.util.stream.Collectors.*;
 
 import java.io.IOException;
 
 import static com.globalmentor.collections.Sets.*;
 import static com.globalmentor.java.CharSequences.*;
 import static com.globalmentor.java.Characters.SPACE_CHAR;
-import static com.globalmentor.java.Conditions.checkArgument;
+import static com.globalmentor.java.Conditions.*;
 import static com.globalmentor.java.Characters.QUOTATION_MARK_CHAR;
 import static com.globalmentor.text.ABNF.*;
 import static com.globalmentor.text.RegularExpressions.*;
@@ -41,7 +44,7 @@ import com.globalmentor.model.NameValuePair;
 import com.globalmentor.text.*;
 
 /**
- * An encapsulation of an Internet media content type as originally defined in <a href="https://tools.ietf.org/html/rfc2046"><cite>RFC 2046: MIME Part 2: Media
+ * An encapsulation of an Internet media content type as previously defined in <a href="https://tools.ietf.org/html/rfc2046"><cite>RFC 2046: MIME Part 2: Media
  * Types</cite></a>; and most recently in <a href="https://tools.ietf.org/html/rfc6838"><cite>RFC 6838: Media Type Specifications and Registration
  * Procedures</cite></a>. The full syntax for a content type and its parameters are found in <a href="https://tools.ietf.org/html/rfc2045"><cite>RFC 2045: MIME
  * Part 1: Format of Internet Message Bodies</cite></a>
@@ -64,7 +67,7 @@ import com.globalmentor.text.*;
  * @implSpec This implementation does not support parameter values containing control characters except for the horizontal tab character, permitted by
  *           <a href="https://tools.ietf.org/html/rfc7230#section-3.2.6">RFC 7230 § 3.2.6.</a>.
  * @implSpec This implementation supports empty parameter values if they are quoted.
- * @implNote Compare this implementation to that of
+ * @implNote Compare this implementation to that of Guava's
  *           <a href="https://guava.dev/releases/snapshot-jre/api/docs/com/google/common/net/MediaType.html"><code>com.google.common.net.MediaType</code></a>
  *           which, in addition to normalizing type, subtype, and parameter names to lowercase, also normalizes the value of the <code>charset</code> attribute
  *           to lowercase. Note also that <a href="https://tools.ietf.org/html/rfc7231">RFC 7231 § 3.1.1.1. Media Type</a> indicates that a lowercase form of
@@ -221,7 +224,7 @@ public final class ContentType { //TODO major version: rename to MediaType
 	public static final String X_JAVA_OBJECT = SUBTYPE_EXTENSION_PREFIX + "java-object";
 
 	/** The shared <code>application/octet-stream</code> content type. */
-	public static final ContentType APPLICATION_OCTET_STREAM_CONTENT_TYPE = create(APPLICATION_PRIMARY_TYPE, OCTET_STREAM_SUBTYPE);
+	public static final ContentType APPLICATION_OCTET_STREAM_CONTENT_TYPE = ContentType.of(APPLICATION_PRIMARY_TYPE, OCTET_STREAM_SUBTYPE);
 
 	private final String primaryType;
 
@@ -483,41 +486,67 @@ public final class ContentType { //TODO major version: rename to MediaType
 	}
 
 	/**
-	 * Returns a content type with the given parameter. If this content type already has the given parameter, it will be returned. If this content type has a
-	 * parameter with the same name but with a different value, the parameter will be replaced with the one given. Otherwise, the parameter will be added to the
-	 * parameters. Parameter name comparisons are ASCII case-insensitive.
+	 * Returns a content type with the given parameter, replacing any existing parameter with the same name. If this content type already has the given parameter,
+	 * this content type will be returned. If this content type has a parameter with the same name but with a different value, the parameter will be replaced with
+	 * the one given. Otherwise, the parameter will be added to the parameters.
+	 * @implSpec Parameter name comparisons are ASCII case-insensitive. The comparison of the {@value #CHARSET_PARAMETER} parameter value is performed in an ASCII
+	 *           case-insensitive manner. All other parameter values are compared with case sensitivity.
 	 * @param newParameter The new parameter to add or replace.
 	 * @return A content type with the given parameter.
 	 */
 	public ContentType withParameter(final Parameter newParameter) {
-		final Set<Parameter> newParameters = new HashSet<ContentType.Parameter>(getParameters().size());
-		for(final Parameter parameter : getParameters()) {
-			if(ASCII.equalsIgnoreCase(parameter.getName(), newParameter.getName())) { //if this is the same parameter name
-				if(parameter.getValue().equals(newParameter.getValue())) { //if the parameter values are the same
-					return this; //just use the same content type, because nothing will change; otherwise
-				} else { //if the parameter values are different
-					continue; //skip this parameter; we'll add it manually afterwards
-				}
-			}
-			newParameters.add(parameter); //add all other parameters normally
+		//As the given parameter names and value has already been normalized to lowercase as needed,
+		//comparisons can be performed normally. However we can't short-circuit with `getParameters().contains(newParameter)`,
+		//because there may be multiple parameters with the same name, and we need to remove the others.
+		final String parameterName = newParameter.getName();
+		//the parameter wasn't found; see if there is one we need to remove
+		final Set<Parameter> newParameters = Stream.concat(
+				//remove any parameter with the same name
+				getParameters().stream().filter(param -> !param.getName().equals(parameterName)),
+				//add the new parameter
+				Stream.of(newParameter))
+				//collect into an immutable set
+				.collect(collectingAndThen(toSet(), Collections::unmodifiableSet));
+		if(getParameters().equals(newParameters)) { //if our change didn't actually result in changes
+			return this; //just return this instance, as there would be no difference
 		}
-		newParameters.add(newParameter); //here we've either ignored a parameter with the same name, or there was no such parameter; either way, add the new one
-		return ContentType.of(getPrimaryType(), getSubType(), unmodifiableSet(newParameters)); //create a new content type with the updated parameters
+		return ContentType.of(getPrimaryType(), getSubType(), newParameters); //create a new content type with the updated parameters
 	}
 
 	/**
-	 * Returns a content type with the given parameter. If this content type already has the given parameter, it will be returned. If this content type has a
-	 * parameter with the same name but with a different value, the parameter will be replaced with the one given. Otherwise, the parameter will be added to the
-	 * parameters. Parameter name comparisons are ASCII case-insensitive.
+	 * Returns a content type with the given parameter, replacing any existing parameter with the same name. If this content type already has the given parameter,
+	 * this content type will be returned. If this content type has a parameter with the same name but with a different value, the parameter will be replaced with
+	 * the one given. Otherwise, the parameter will be added to the parameters.
+	 * @implSpec Parameter name comparisons are ASCII case-insensitive. The comparison of the {@value #CHARSET_PARAMETER} parameter value is performed in an ASCII
+	 *           case-insensitive manner. All other parameter values are compared with case sensitivity.
+	 * @implSpec This implementation delegates to {@link #withParameter(Parameter)}.
 	 * @param name The parameter name to add or replace.
 	 * @param value The parameter value.
 	 * @return A content type with the given parameter.
 	 * @throws NullPointerException if the given name and/or value is <code>null</code>.
-	 * @throws IllegalArgumentException if the name is not a token; or the value contains a space, non-ASCII, or control character.
+	 * @throws IllegalArgumentException if the parameter name does not conform to the {@link ContentType#RESTRICTED_NAME_PATTERN} pattern.
 	 * @see Parameter#of(String, String)
 	 */
 	public ContentType withParameter(final String name, final String value) {
 		return withParameter(Parameter.of(name, value));
+	}
+
+	/**
+	 * Returns a content type with the given charset as a {@value #CHARSET_PARAMETER} parameter, replacing any existing parameter with the same name. If this
+	 * content type already has the given parameter, this content type will be returned. If this content type has a parameter with the same name but with a
+	 * different value, the parameter will be replaced with the one given. Otherwise, the parameter will be added to the parameters.
+	 * @implSpec Parameter name comparisons are ASCII case-insensitive. The comparison of the {@value #CHARSET_PARAMETER} parameter value is performed in an ASCII
+	 *           case-insensitive manner.
+	 * @implSpec This implementation delegates to {@link #withParameter(String, String)}.
+	 * @param charset The charset value to add or replace.
+	 * @return A content type with the given parameter.
+	 * @throws NullPointerException if the given charset is <code>null</code>.
+	 * @see #withParameter(String, String)
+	 * @see #CHARSET_PARAMETER
+	 * @see Charset#name()
+	 */
+	public ContentType withCharset(@Nonnull final Charset charset) {
+		return withParameter(CHARSET_PARAMETER, charset.name());
 	}
 
 	/**
@@ -653,7 +682,7 @@ public final class ContentType { //TODO major version: rename to MediaType
 	 *           other parameter values are left as-is. All other parameter values that are case-insensitive should be passed as lowercase to ensure correct
 	 *           equality comparisons.
 	 * @implSpec This implementation does not allow control characters.
-	 * @implNote Compare this implementation to that of
+	 * @implNote Compare this implementation to that of Guava's
 	 *           <a href="https://guava.dev/releases/snapshot-jre/api/docs/com/google/common/net/MediaType.html"><code>com.google.common.net.MediaType</code></a>
 	 *           which, in addition to normalizing type, subtype, and parameter names to lowercase, also normalizes the value of the <code>charset</code>
 	 *           attribute to lowercase. Note also that <a href="https://tools.ietf.org/html/rfc7231">RFC 7231 § 3.1.1.1. Media Type</a> indicates that a

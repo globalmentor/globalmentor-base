@@ -17,12 +17,14 @@
 package com.globalmentor.net;
 
 import static org.hamcrest.Matchers.*;
+import static java.nio.charset.StandardCharsets.*;
 import static java.util.stream.Collectors.*;
 import static org.hamcrest.MatcherAssert.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.zalando.fauxpas.FauxPas.*;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.*;
 import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.stream.*;
@@ -56,6 +58,11 @@ public class ContentTypeTest {
 		assertThat(ContentType.parse("text/plain; charset=us-ascii; foo=bar; test=example").getSubType(), is("plain"));
 		assertThat(ContentType.parse("text/plain; charset=us-ascii; foo=bar; test=example").getParameters(), containsInAnyOrder(
 				ContentType.Parameter.of("charset", "us-ascii"), ContentType.Parameter.of("foo", "bar"), ContentType.Parameter.of("test", "example")));
+		//duplicate parameter names
+		assertThat(ContentType.parse("text/plain; test=foo; charset=us-ascii; test=bar").getPrimaryType(), is("text"));
+		assertThat(ContentType.parse("text/plain; test=foo; charset=us-ascii; test=bar").getSubType(), is("plain"));
+		assertThat(ContentType.parse("text/plain; test=foo; charset=us-ascii; test=bar").getParameters(),
+				containsInAnyOrder(ContentType.Parameter.of("charset", "us-ascii"), ContentType.Parameter.of("test", "foo"), ContentType.Parameter.of("test", "bar")));
 		//quoted parameters
 		assertThat(ContentType.parse("text/plain; charset=us-ascii; foo=\"bar\"").getPrimaryType(), is("text"));
 		assertThat(ContentType.parse("text/plain; charset=us-ascii; foo=\"bar\"").getSubType(), is("plain"));
@@ -157,6 +164,101 @@ public class ContentTypeTest {
 		assertThrows(IllegalArgumentException.class, () -> ContentType.parseParameters("charset=us-ascii foo=bar"));
 		assertThrows(IllegalArgumentException.class, () -> ContentType.parseParameters("; charset=us-ascii= foo=bar"));
 		assertThrows(IllegalArgumentException.class, () -> ContentType.parseParameters("charset=us-ascii=foo=bar"));
+	}
+
+	/** @see ContentType#withParameter(String, String) */
+	@Test
+	public void testWithParameterAddsNewParameterName() {
+		{
+			final ContentType contentType = ContentType.parse("text/plain; charset=us-ascii; foo=bar; test=example");
+			final ContentType contentTypeWithParameter = contentType.withParameter("new", "foobar");
+			assertThat(contentTypeWithParameter.getPrimaryType(), is("text"));
+			assertThat(contentTypeWithParameter.getSubType(), is("plain"));
+			assertThat(contentTypeWithParameter.getParameters(), containsInAnyOrder(ContentType.Parameter.of("charset", "us-ascii"),
+					ContentType.Parameter.of("foo", "bar"), ContentType.Parameter.of("test", "example"), ContentType.Parameter.of("new", "foobar")));
+		}
+		{ //different case
+			final ContentType contentType = ContentType.parse("text/plain; charset=us-ascii; foo=bar; test=example");
+			final ContentType contentTypeWithParameter = contentType.withParameter("NEW", "foobar");
+			assertThat(contentTypeWithParameter.getPrimaryType(), is("text"));
+			assertThat(contentTypeWithParameter.getSubType(), is("plain"));
+			assertThat(contentTypeWithParameter.getParameters(), containsInAnyOrder(ContentType.Parameter.of("charset", "us-ascii"),
+					ContentType.Parameter.of("foo", "bar"), ContentType.Parameter.of("test", "example"), ContentType.Parameter.of("new", "foobar")));
+		}
+		{ //duplicate parameter names
+			final ContentType contentType = ContentType.parse("text/plain; test=foo; charset=us-ascii; test=bar");
+			final ContentType contentTypeWithParameter = contentType.withParameter("new", "foobar");
+			assertThat(contentTypeWithParameter.getPrimaryType(), is("text"));
+			assertThat(contentTypeWithParameter.getSubType(), is("plain"));
+			assertThat(contentTypeWithParameter.getParameters(), containsInAnyOrder(ContentType.Parameter.of("charset", "us-ascii"),
+					ContentType.Parameter.of("test", "foo"), ContentType.Parameter.of("test", "bar"), ContentType.Parameter.of("new", "foobar")));
+		}
+	}
+
+	/** @see ContentType#withParameter(String, String) */
+	@Test
+	public void testWithParameterReplacesExistingParameterName() {
+		{
+			final ContentType contentType = ContentType.parse("text/plain; charset=us-ascii; foo=bar; test=example");
+			final ContentType contentTypeWithParameter = contentType.withParameter("test", "foobar");
+			assertThat(contentTypeWithParameter.getPrimaryType(), is("text"));
+			assertThat(contentTypeWithParameter.getSubType(), is("plain"));
+			assertThat(contentTypeWithParameter.getParameters(), containsInAnyOrder(ContentType.Parameter.of("charset", "us-ascii"),
+					ContentType.Parameter.of("foo", "bar"), ContentType.Parameter.of("test", "foobar")));
+		}
+		{ //different case
+			final ContentType contentType = ContentType.parse("text/plain; charset=us-ascii; foo=bar; test=example");
+			final ContentType contentTypeWithParameter = contentType.withParameter("test", "foobar");
+			assertThat(contentTypeWithParameter.getPrimaryType(), is("text"));
+			assertThat(contentTypeWithParameter.getSubType(), is("plain"));
+			assertThat(contentTypeWithParameter.getParameters(), containsInAnyOrder(ContentType.Parameter.of("charset", "us-ascii"),
+					ContentType.Parameter.of("foo", "bar"), ContentType.Parameter.of("test", "foobar")));
+		}
+		{ //duplicate parameter names
+			final ContentType contentType = ContentType.parse("text/plain; test=foo; charset=us-ascii; test=bar");
+			final ContentType contentTypeWithParameter = contentType.withParameter("test", "foobar");
+			assertThat(contentTypeWithParameter.getPrimaryType(), is("text"));
+			assertThat(contentTypeWithParameter.getSubType(), is("plain"));
+			assertThat(contentTypeWithParameter.getParameters(),
+					containsInAnyOrder(ContentType.Parameter.of("charset", "us-ascii"), ContentType.Parameter.of("test", "foobar")));
+		}
+		{ //duplicate parameter names; value matches that to replace
+			final ContentType contentType = ContentType.parse("text/plain; test=foo; charset=us-ascii; test=bar");
+			final ContentType contentTypeWithParameter = contentType.withParameter("test", "foo");
+			assertThat(contentTypeWithParameter.getPrimaryType(), is("text"));
+			assertThat(contentTypeWithParameter.getSubType(), is("plain"));
+			assertThat(contentTypeWithParameter.getParameters(),
+					containsInAnyOrder(ContentType.Parameter.of("charset", "us-ascii"), ContentType.Parameter.of("test", "foo")));
+		}
+	}
+
+	/** @see ContentType#withCharset(Charset) */
+	@Test
+	public void testWithCharset() {
+		{
+			final ContentType contentType = ContentType.parse("text/plain; charset=us-ascii; foo=bar; test=example");
+			final ContentType contentTypeWithCharset = contentType.withCharset(US_ASCII);
+			assertThat(contentTypeWithCharset.getPrimaryType(), is("text"));
+			assertThat(contentTypeWithCharset.getSubType(), is("plain"));
+			assertThat(contentTypeWithCharset.getParameters(), containsInAnyOrder(ContentType.Parameter.of("charset", "us-ascii"),
+					ContentType.Parameter.of("foo", "bar"), ContentType.Parameter.of("test", "example")));
+		}
+		{
+			final ContentType contentType = ContentType.parse("text/plain; charset=us-ascii; foo=bar; test=example");
+			final ContentType contentTypeWithCharset = contentType.withCharset(UTF_8);
+			assertThat(contentTypeWithCharset.getPrimaryType(), is("text"));
+			assertThat(contentTypeWithCharset.getSubType(), is("plain"));
+			assertThat(contentTypeWithCharset.getParameters(), containsInAnyOrder(ContentType.Parameter.of("charset", "utf-8"),
+					ContentType.Parameter.of("foo", "bar"), ContentType.Parameter.of("test", "example")));
+		}
+		{
+			final ContentType contentType = ContentType.parse("text/plain; foo=bar; test=example");
+			final ContentType contentTypeWithCharset = contentType.withCharset(UTF_8);
+			assertThat(contentTypeWithCharset.getPrimaryType(), is("text"));
+			assertThat(contentTypeWithCharset.getSubType(), is("plain"));
+			assertThat(contentTypeWithCharset.getParameters(), containsInAnyOrder(ContentType.Parameter.of("charset", "utf-8"),
+					ContentType.Parameter.of("foo", "bar"), ContentType.Parameter.of("test", "example")));
+		}
 	}
 
 	/** Tests equality, including parameter order and case insensitivity of content type names. */
