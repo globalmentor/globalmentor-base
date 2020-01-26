@@ -18,6 +18,7 @@ package com.globalmentor.net;
 
 import java.net.URLConnection;
 import java.nio.charset.Charset;
+import java.nio.charset.UnsupportedCharsetException;
 import java.util.*;
 import java.util.regex.*;
 import java.util.stream.Stream;
@@ -245,6 +246,16 @@ public final class ContentType { //TODO major version: rename to MediaType
 	/** @return The set of parameters, which may be empty, but will never be <code>null</code>. */
 	public Set<Parameter> getParameters() {
 		return parameters;
+	}
+
+	/**
+	 * Convenience method for returning the {@value #CHARSET_PARAMETER} parameter. If there are multiple {@value #CHARSET_PARAMETER} parameters, it is undefined
+	 * which one is used to return the value.
+	 * @return The charset specified by one of the {@value #CHARSET_PARAMETER} parameters, if any.
+	 * @throws UnsupportedCharsetException If no support for the named charset is available in this instance of the Java virtual machine
+	 */
+	public Optional<Charset> findCharset() {
+		return getParameters().stream().filter(param -> param.getName().equals(CHARSET_PARAMETER)).map(Parameter::getValue).map(Charset::forName).findAny();
 	}
 
 	/**

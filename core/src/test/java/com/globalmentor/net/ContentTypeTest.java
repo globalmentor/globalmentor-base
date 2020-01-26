@@ -17,6 +17,7 @@
 package com.globalmentor.net;
 
 import static org.hamcrest.Matchers.*;
+import static com.github.npathai.hamcrestopt.OptionalMatchers.*;
 import static java.nio.charset.StandardCharsets.*;
 import static java.util.stream.Collectors.*;
 import static org.hamcrest.MatcherAssert.*;
@@ -164,6 +165,16 @@ public class ContentTypeTest {
 		assertThrows(IllegalArgumentException.class, () -> ContentType.parseParameters("charset=us-ascii foo=bar"));
 		assertThrows(IllegalArgumentException.class, () -> ContentType.parseParameters("; charset=us-ascii= foo=bar"));
 		assertThrows(IllegalArgumentException.class, () -> ContentType.parseParameters("charset=us-ascii=foo=bar"));
+	}
+
+	/** @see ContentType#findCharset() */
+	@Test
+	public void testFindCharset() {
+		assertThat(ContentType.parse("text/plain").findCharset(), isEmpty());
+		assertThat(ContentType.parse("text/plain; foo=bar").findCharset(), isEmpty());
+		assertThat(ContentType.parse("text/plain; charset=us-ascii").findCharset(), isPresentAndIs(US_ASCII));
+		assertThat(ContentType.parse("text/plain; charset=us-ascii; foo=bar").findCharset(), isPresentAndIs(US_ASCII));
+		assertThat(ContentType.parse("text/plain; foo=bar; charset=us-ascii; test=example").findCharset(), isPresentAndIs(US_ASCII));
 	}
 
 	/** @see ContentType#withParameter(String, String) */
