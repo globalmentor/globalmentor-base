@@ -705,7 +705,10 @@ public final class ContentType { //TODO major version: rename to MediaType
 	 */
 	public static final class Parameter extends NameValuePair<String, String> {
 
-		/** The common parameter <code>charset=UTF-8</code>. */
+		/**
+		 * The common parameter <code>charset=utf-8</code>.
+		 * @apiNote For adding a new charset parameter to an existing content type, it is preferred to call {@link ContentType#withCharset(Charset)}.
+		 */
 		public static final Parameter CHARSET_UTF_8 = new Parameter(CHARSET_PARAMETER, UTF_8.name());
 
 		/**
