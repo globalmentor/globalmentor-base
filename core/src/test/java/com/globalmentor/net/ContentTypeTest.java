@@ -87,11 +87,12 @@ public class ContentTypeTest {
 		assertThat(ContentType.parse("application/vnd.openxmlformats-officedocument.wordprocessingml.document").getPrimaryType(), is("application"));
 		assertThat(ContentType.parse("application/vnd.openxmlformats-officedocument.wordprocessingml.document").getSubType(),
 				is("vnd.openxmlformats-officedocument.wordprocessingml.document"));
-		assertThat(ContentType.parse("application/vnd.openxmlformats-officedocument.presentationml.presentation").getPrimaryType(), is("application"));
-		assertThat(ContentType.parse("application/vnd.openxmlformats-officedocument.presentationml.presentation").getSubType(),
-				is("vnd.openxmlformats-officedocument.presentationml.presentation"));
-		assertThat(ContentType.parse("multipart/form-data").getPrimaryType(), is("multipart"));
-		assertThat(ContentType.parse("multipart/form-data").getSubType(), is("form-data"));
+		assertThat(ContentType.parse("application/vnd.oasis.opendocument.text").getPrimaryType(), is("application"));
+		assertThat(ContentType.parse("application/vnd.oasis.opendocument.text").getSubType(), is("vnd.oasis.opendocument.text"));
+		assertThat(ContentType.parse("multipart/form-data; charset=utf-8; boundary=\"q1w2e3r4ty:9-5xyz\"").getPrimaryType(), is("multipart"));
+		assertThat(ContentType.parse("multipart/form-data; charset=utf-8; boundary=\"q1w2e3r4ty:9-5xyz\"").getSubType(), is("form-data"));
+		assertThat(ContentType.parse("multipart/form-data; charset=utf-8; boundary=\"q1w2e3r4ty:9-5xyz\"").getParameters(),
+				containsInAnyOrder(ContentType.Parameter.of("charset", "utf-8"), ContentType.Parameter.of("boundary", "q1w2e3r4ty:9-5xyz")));
 		assertThat(ContentType.parse("application/vnd.api+json").getPrimaryType(), is("application"));
 		assertThat(ContentType.parse("application/vnd.api+json").getSubType(), is("vnd.api+json"));
 	}
