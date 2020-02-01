@@ -17,11 +17,12 @@
 package com.globalmentor.net;
 
 /**
- * Constant values related to MIME media types, as originally defined in <a href="http://www.rfc-editor.org/rfc/rfc2046.txt">RFC 2046</a>,
- * "MIME Part 2: Media Types".
+ * Constant values related to MIME media types, as originally defined in <a href="http://www.rfc-editor.org/rfc/rfc2046.txt">RFC 2046</a>, "MIME Part 2: Media
+ * Types".
  * @author Garret Wilson
  * @see <a href="http://www.rfc-editor.org/rfc/rfc2046.txt">RFC 2046</a>
  */
+@Deprecated
 public class ContentTypeConstants //TODO transfer these constants to specific relevant classes and remove this class
 {
 
@@ -38,8 +39,8 @@ public class ContentTypeConstants //TODO transfer these constants to specific re
 	public static final String CALENDAR_SUBTYPE = "calendar";
 	public static final String DIRECTORY_SUBTYPE = "directory";
 	/**
-	 * A <code>text/uri-list</code> content type as defined in <a href="http://www.ietf.org/rfc/rfc2483.txt">RFC 2483</a>,
-	 * "URI Resolution Services Necessary for URN Resolution".
+	 * A <code>text/uri-list</code> content type as defined in <a href="http://www.ietf.org/rfc/rfc2483.txt">RFC 2483</a>, "URI Resolution Services Necessary for
+	 * URN Resolution".
 	 */
 	public static final String URI_LIST_SUBTYPE = "uri-list";
 	public static final String XML_SUBTYPE = "xml";
@@ -72,8 +73,8 @@ public class ContentTypeConstants //TODO transfer these constants to specific re
 	/** A Java application. */
 	public static final String JAVA_SUBTYPE = "java";
 	/**
-	 * A Microsoft Word document; see <a
-	 * href="http://www.iana.org/assignments/media-types/application/msword">http://www.iana.org/assignments/media-types/application/msword</a>.
+	 * A Microsoft Word document; see
+	 * <a href="http://www.iana.org/assignments/media-types/application/msword">http://www.iana.org/assignments/media-types/application/msword</a>.
 	 */
 	public static final String MSWORD_SUBTYPE = "msword";
 	/** An Adobe PDF file. */

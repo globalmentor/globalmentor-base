@@ -372,6 +372,18 @@ public class ContentTypeTest {
 
 	//parameters
 
+	/**
+	 * Tests that ContentType.Parameter#of(String, String) functions correctly with standard charsets, which the implementation may cache or use existing
+	 * singletons.
+	 * @implSpec This implementation uses the non-public constructor to bypass the static factory method to confirm it functions correctly.
+	 */
+	@Test
+	public void testParameterOfStandardCharsets() {
+		assertThat(ContentType.Parameter.of("charset", "us-ascii"), is(equalTo(new ContentType.Parameter("charset", "us-ascii"))));
+		assertThat(ContentType.Parameter.of("charset", "iso-8859-1"), is(equalTo(new ContentType.Parameter("charset", "iso-8859-1"))));
+		assertThat(ContentType.Parameter.of("charset", "utf-8"), is(equalTo(new ContentType.Parameter("charset", "utf-8"))));
+	}
+
 	/** @see ContentType.Parameter#getName() */
 	@Test
 	public void testParameterCharsetNameNormalizedToLowercase() {

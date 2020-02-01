@@ -623,24 +623,25 @@ public final class ContentType { //TODO major version: rename to MediaType
 	 * @param parameters Optional name-value pairs representing parameters of the content type.
 	 * @return A string representing the type in the form "<var>primaryType</var>/<var>subType</var>[;<var>parameters</var>]".
 	 */
-	public static String toString(final String primaryType, final String subType, final Parameter... parameters) {
+	public static String toString(@Nonnull final String primaryType, @Nonnull final String subType, final Parameter... parameters) {
 		return toString(primaryType, subType, immutableSetOf(parameters));
 	}
 
 	/**
-	 * Constructs a string representing a content type in canonical form.
+	 * Constructs a string representing a content type in canonical form with no extra whitespace or other formatting. The parameters will be placed in the string
+	 * in iteration order.
 	 * @param primaryType The primary type.
 	 * @param subType The subtype.
 	 * @param parameters Any name-value pairs representing parameters of the content type.
 	 * @return A string representing the type in the form "<var>primaryType</var>/<var>subType</var>[;<var>parameters</var>]".
 	 * @throws NullPointerException if the given parameters set is <code>null</code>.
 	 */
-	public static String toString(final String primaryType, final String subType, final Set<Parameter> parameters) {
+	public static String toString(@Nonnull final String primaryType, @Nonnull final String subType, @Nonnull final Iterable<Parameter> parameters) {
 		return toString(primaryType, subType, parameters, false);
 	}
 
 	/**
-	 * Constructs a string representing a content type.
+	 * Constructs a string representing a content type. The parameters will be placed in the string in iteration order.
 	 * @param primaryType The primary type.
 	 * @param subType The subtype.
 	 * @param parameters Any name-value pairs representing parameters of the content type.
@@ -649,7 +650,8 @@ public final class ContentType { //TODO major version: rename to MediaType
 	 * @throws NullPointerException if the given parameters set is <code>null</code>.
 	 * @see Parameter#toValueString()
 	 */
-	public static String toString(final String primaryType, final String subType, final Set<Parameter> parameters, final boolean formatted) {
+	public static String toString(@Nonnull final String primaryType, @Nonnull final String subType, @Nonnull final Iterable<Parameter> parameters,
+			final boolean formatted) {
 		final StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append(primaryType).append(TYPE_DIVIDER).append(subType); //primaryType/subType
 		for(final Parameter parameter : parameters) { //for each parameter
@@ -706,6 +708,18 @@ public final class ContentType { //TODO major version: rename to MediaType
 	public static final class Parameter extends NameValuePair<String, String> {
 
 		/**
+		 * The common parameter <code>charset=us-ascii</code>.
+		 * @apiNote For adding a new charset parameter to an existing content type, it is preferred to call {@link ContentType#withCharset(Charset)}.
+		 */
+		public static final Parameter CHARSET_US_ASCII = new Parameter(CHARSET_PARAMETER, US_ASCII.name());
+
+		/**
+		 * The common parameter <code>charset=iso-8859-1</code>.
+		 * @apiNote For adding a new charset parameter to an existing content type, it is preferred to call {@link ContentType#withCharset(Charset)}.
+		 */
+		public static final Parameter CHARSET_ISO_8859_1 = new Parameter(CHARSET_PARAMETER, ISO_8859_1.name());
+
+		/**
 		 * The common parameter <code>charset=utf-8</code>.
 		 * @apiNote For adding a new charset parameter to an existing content type, it is preferred to call {@link ContentType#withCharset(Charset)}.
 		 */
@@ -744,6 +758,11 @@ public final class ContentType { //TODO major version: rename to MediaType
 			if(ASCII.equalsIgnoreCase(name, CHARSET_PARAMETER)) { //charset
 				if(ASCII.equalsIgnoreCase(value, UTF_8.name())) { //charset=UTF-8 (without regard to case)
 					return CHARSET_UTF_8;
+				} else if(ASCII.equalsIgnoreCase(value, ISO_8859_1.name())) { //charset=ISO-8859-1 (without regard to case)
+					return CHARSET_ISO_8859_1;
+				}
+				if(ASCII.equalsIgnoreCase(value, US_ASCII.name())) { //charset=US-ASCII (without regard to case)
+					return CHARSET_US_ASCII;
 				}
 			}
 			//all other parameters
