@@ -39,7 +39,7 @@ public class Text {
 	public static final String PLAIN_SUBTYPE = "plain";
 
 	/** The content type for plain text: <code>text/plain</code>. */
-	public static final ContentType PLAIN_CONTENT_TYPE = ContentType.create(ContentType.TEXT_PRIMARY_TYPE, PLAIN_SUBTYPE);
+	public static final ContentType PLAIN_CONTENT_TYPE = ContentType.of(ContentType.TEXT_PRIMARY_TYPE, PLAIN_SUBTYPE);
 
 	/** The name extension for text files. */
 	public static final String TXT_NAME_EXTENSION = "txt";
@@ -184,53 +184,6 @@ public class Text {
 	public static String recode(final String string, final String oldEncoding, final String newEncoding) throws UnsupportedEncodingException {
 		final byte[] bytes = string.getBytes(oldEncoding); //get the bytes of the string as they were before they were encoded
 		return new String(bytes, newEncoding); //create a string from the bytes using the new encoding
-	}
-
-	/**
-	 * Escapes a given string by inserting an escape character before every restricted character, including any occurrence of the given escape character.
-	 * @param charSequence The data to escape.
-	 * @param restricted The characters to be escaped; should not include the escape character.
-	 * @param escape The character used to escape the restricted characters.
-	 * @return A string containing the escaped data.
-	 * @throws NullPointerException if the given character sequence is <code>null</code>.
-	 */
-	public static String escape(final CharSequence charSequence, final Characters restricted, final char escape) { //TODO consolidate either in CharSequences or Formatter
-		if(!contains(charSequence, restricted)) { //if there are no restricted characters in the string (assuming that most strings won't need to be escaped, it's less expensive to check up-front before we start allocating and copying)
-			return charSequence.toString(); //the string doesn't need to be escaped
-		}
-		return escape(new StringBuilder(charSequence), restricted, escape).toString(); //make a string builder copy and escape its contents
-	}
-
-	/**
-	 * Escapes a given string builder by inserting an escape character before every restricted character, including any occurrence of the given escape character.
-	 * @param stringBuilder The data to escape.
-	 * @param restricted The characters to be escaped; should not include the escape character.
-	 * @param escape The character used to escape the restricted characters.
-	 * @return A string containing the escaped data.
-	 * @throws NullPointerException if the given string builder is <code>null</code>.
-	 */
-	public static StringBuilder escape(final StringBuilder stringBuilder, final Characters restricted, final char escape) {
-		return escape(stringBuilder, restricted, escape, true);
-	}
-
-	/**
-	 * Escapes a given string builder by inserting an escape character before every restricted character, optionally including any occurrence of the given escape
-	 * character.
-	 * @param stringBuilder The data to escape.
-	 * @param restricted The characters to be escaped; should not include the escape character.
-	 * @param escape The character used to escape the restricted characters.
-	 * @param escapeEscape <code>true</code> if the escape character should also be escaped.
-	 * @return A string containing the escaped data.
-	 * @throws NullPointerException if the given string builder is <code>null</code>.
-	 */
-	public static StringBuilder escape(final StringBuilder stringBuilder, final Characters restricted, final char escape, final boolean escapeEscape) {
-		for(int characterIndex = stringBuilder.length() - 1; characterIndex >= 0; --characterIndex) { //work backwards; this keeps us from having a separate variable for the length, but it also makes it simpler to calculate the next position when we swap out characters
-			final char c = stringBuilder.charAt(characterIndex); //get the current character
-			if((escapeEscape && c == escape) || restricted.contains(c)) { //if we should encode this character (always encode the escape character)
-				stringBuilder.insert(characterIndex, escape); //insert the escape character
-			}
-		}
-		return stringBuilder; //return the encoded version of the string
 	}
 
 	/**

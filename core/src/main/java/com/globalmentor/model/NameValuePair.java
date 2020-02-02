@@ -17,10 +17,9 @@
 package com.globalmentor.model;
 
 import java.util.Map;
+import java.util.Objects;
 
 import javax.annotation.*;
-
-import com.globalmentor.java.Objects;
 
 /**
  * A convenience tuple for a name and a value. The class allows identification (though not necessarily unique) through its name object.
@@ -65,7 +64,7 @@ public class NameValuePair<N, V> extends DefaultNamed<N> implements IDed<N>, Val
 
 	@Override
 	public int hashCode() {
-		return Objects.getHashCode(getName(), getValue()); //calculate a hash code from the name and value
+		return Objects.hash(getName(), getValue()); //calculate a hash code from the name and value
 	}
 
 	/**

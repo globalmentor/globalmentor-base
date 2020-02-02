@@ -49,7 +49,7 @@ public class Locales {
 	 * </ul>
 	 * @see <a href="http://www.ietf.org/rfc/rfc4646.txt">RFC 4646</a>
 	 */
-	private static final Pattern LANGUAGE_TAG_DELIMITER_PATTERN = Pattern.compile(createCharacterClass(LOCALE_SEPARATOR, LANGUAGE_TAG_SEPARATOR));
+	private static final Pattern LANGUAGE_TAG_DELIMITER_PATTERN = Pattern.compile(characterClassOf(LOCALE_SEPARATOR, LANGUAGE_TAG_SEPARATOR));
 
 	/**
 	 * Constructs a locale object from a locale string with a language, an optional country code, and an optional variant. These components can be separated by

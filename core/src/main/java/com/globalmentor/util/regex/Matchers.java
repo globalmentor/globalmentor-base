@@ -18,10 +18,14 @@ package com.globalmentor.util.regex;
 
 import java.util.regex.Matcher;
 
+import com.globalmentor.text.RegularExpressions;
+
 /**
  * Utilities for regular expression matchers.
  * @author Garret Wilson
+ * @deprecated Will be moved to {@link RegularExpressions}.
  */
+@Deprecated
 public class Matchers {
 
 	/**
