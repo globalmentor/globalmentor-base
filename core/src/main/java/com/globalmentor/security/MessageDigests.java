@@ -297,7 +297,7 @@ public class MessageDigests {
 
 	/**
 	 * Computes a lowercase hex checksum string for the contents of the given input stream. All the remaining contents of the input stream are consumed.
-	 * @implSpect This implementation delegates to {@link #digest(MessageDigest, InputStream)}
+	 * @implSpec This implementation delegates to {@link #digest(MessageDigest, InputStream)}
 	 * @apiNote This method considers a <dfn>checksum</dfn> to be a string version of a message <dfn>digest</dfn>, as the former is often used in the context of
 	 *          file contents verification.
 	 * @param messageDigest The implementation of a message digest algorithm.
@@ -311,7 +311,7 @@ public class MessageDigests {
 
 	/**
 	 * Computes a lowercase hex checksum string for the contents of the given file.
-	 * @implSpect This implementation delegates to {@link #digest(MessageDigest, Path)}
+	 * @implSpec This implementation delegates to {@link #digest(MessageDigest, Path)}
 	 * @apiNote This method considers a <dfn>checksum</dfn> to be a string version of a message <dfn>digest</dfn>, as the former is often used in the context of
 	 *          file contents verification.
 	 * @param messageDigest The implementation of a message digest algorithm.
