@@ -17,6 +17,7 @@
 package com.globalmentor.security;
 
 import java.nio.charset.Charset;
+import java.nio.file.Path;
 import java.security.*;
 
 import javax.annotation.*;
@@ -27,7 +28,10 @@ import com.globalmentor.model.Named;
 import static com.globalmentor.java.Bytes.*;
 import static com.globalmentor.java.Characters.*;
 import static java.nio.charset.StandardCharsets.*;
+import static java.nio.file.Files.*;
 import static java.util.Objects.*;
+
+import java.io.*;
 
 /**
  * Utility methods for working with message digests.
@@ -140,6 +144,28 @@ public class MessageDigests {
 	}
 
 	/**
+	 * Computes a digest from the contents of the given input stream. All the remaining contents of the input stream are consumed.
+	 * @param messageDigest The implementation of a message digest algorithm.
+	 * @param inputStream The input stream on which to perform a digest.
+	 * @return The array of bytes for the resulting hash value.
+	 * @throws IOException if there is an I/O exception reading from the input stream.
+	 */
+	public static byte[] digest(@Nonnull final MessageDigest messageDigest, @Nonnull final InputStream inputStream) throws IOException {
+		return update(messageDigest, inputStream).digest();
+	}
+
+	/**
+	 * Computes a digest from the contents of the given file.
+	 * @param messageDigest The implementation of a message digest algorithm.
+	 * @param file The path of the file on which to perform a digest.
+	 * @return The array of bytes for the resulting hash value.
+	 * @throws IOException if there is an I/O exception reading from the file.
+	 */
+	public static byte[] digest(@Nonnull final MessageDigest messageDigest, @Nonnull final Path file) throws IOException {
+		return update(messageDigest, file).digest();
+	}
+
+	/**
 	 * Updates a digest from the given character sequences using the UTF-8 charset.
 	 * @param messageDigest The implementation of a message digest algorithm.
 	 * @param charSequences The character sequences to digest.
@@ -200,6 +226,35 @@ public class MessageDigests {
 	}
 
 	/**
+	 * Updates a digest with the contents of the given input stream. All the remaining contents of the input stream are consumed.
+	 * @param messageDigest The implementation of a message digest algorithm.
+	 * @param inputStream The input stream on which to perform a digest.
+	 * @return The message digest.
+	 * @throws IOException if there is an I/O exception reading from the input stream.
+	 */
+	public static MessageDigest update(@Nonnull final MessageDigest messageDigest, @Nonnull final InputStream inputStream) throws IOException {
+		final byte[] buffer = new byte[1 << 13]; //compare with BufferedInputStream, which uses a 8192 byte buffer as of Java 11
+		int readCount;
+		while((readCount = inputStream.read(buffer)) != -1) {
+			messageDigest.update(buffer, 0, readCount);
+		}
+		return messageDigest;
+	}
+
+	/**
+	 * Updates a digest with the contents of the given file.
+	 * @param messageDigest The implementation of a message digest algorithm.
+	 * @param file The path of the file on which to perform a digest.
+	 * @return The message digest.
+	 * @throws IOException if there is an I/O exception reading from the file.
+	 */
+	public static MessageDigest update(@Nonnull final MessageDigest messageDigest, @Nonnull final Path file) throws IOException {
+		try (final InputStream inputStream = newInputStream(file)) { //our message digest utility will do its own buffering
+			return update(messageDigest, inputStream);
+		}
+	}
+
+	/**
 	 * Computes a lowercase hex checksum string for the given input bytes.
 	 * @implSpec This implementation calls {@link MessageDigest#digest(byte[])}.
 	 * @apiNote This method considers a <dfn>checksum</dfn> to be a string version of a message <dfn>digest</dfn>, as the former is often used in the context of
@@ -238,6 +293,34 @@ public class MessageDigests {
 	 */
 	public static String checksum(@Nonnull final MessageDigest messageDigest, @Nonnull final char[] characters) {
 		return toHexString(digest(messageDigest, characters));
+	}
+
+	/**
+	 * Computes a lowercase hex checksum string for the contents of the given input stream. All the remaining contents of the input stream are consumed.
+	 * @implSpec This implementation delegates to {@link #digest(MessageDigest, InputStream)}
+	 * @apiNote This method considers a <dfn>checksum</dfn> to be a string version of a message <dfn>digest</dfn>, as the former is often used in the context of
+	 *          file contents verification.
+	 * @param messageDigest The implementation of a message digest algorithm.
+	 * @param inputStream The input stream on which to perform a digest.
+	 * @return The lowercase hex checksum string of the resulting hash value.
+	 * @throws IOException if there is an I/O exception reading from the input stream.
+	 */
+	public static String checksum(@Nonnull final MessageDigest messageDigest, @Nonnull final InputStream inputStream) throws IOException {
+		return toHexString(digest(messageDigest, inputStream));
+	}
+
+	/**
+	 * Computes a lowercase hex checksum string for the contents of the given file.
+	 * @implSpec This implementation delegates to {@link #digest(MessageDigest, Path)}
+	 * @apiNote This method considers a <dfn>checksum</dfn> to be a string version of a message <dfn>digest</dfn>, as the former is often used in the context of
+	 *          file contents verification.
+	 * @param messageDigest The implementation of a message digest algorithm.
+	 * @param file The path to the file on which to perform a digest.
+	 * @return The lowercase hex checksum string of the resulting hash value.
+	 * @throws IOException if there is an I/O exception reading from the file.
+	 */
+	public static String checksum(@Nonnull final MessageDigest messageDigest, @Nonnull final Path file) throws IOException {
+		return toHexString(digest(messageDigest, file));
 	}
 
 	/**
@@ -325,12 +408,37 @@ public class MessageDigests {
 		}
 
 		/**
+		 * Computes a digest using this algorithm for the contents of the given input stream. All the remaining contents of the input stream are consumed.
+		 * @implSpec This convenience method delegates to {@link MessageDigests#digest(MessageDigest, InputStream)}.
+		 * @param inputStream The input stream on which to perform a digest.
+		 * @return The array of bytes for the resulting hash value.
+		 * @throws RuntimeException if no {@link Provider} supports a {@link MessageDigestSpi} implementation for this algorithm.
+		 * @throws IOException if there is an I/O exception reading from the input stream.
+		 */
+		public byte[] digest(@Nonnull final InputStream inputStream) throws IOException {
+			return MessageDigests.digest(getInstance(), inputStream);
+		}
+
+		/**
+		 * Computes a digest using this algorithm for the contents of the given file.
+		 * @implSpec This convenience method delegates to {@link MessageDigests#digest(MessageDigest, Path)}.
+		 * @param file The path to the file on which to perform a digest.
+		 * @return The array of bytes for the resulting hash value.
+		 * @throws RuntimeException if no {@link Provider} supports a {@link MessageDigestSpi} implementation for this algorithm.
+		 * @throws IOException if there is an I/O exception reading from the file.
+		 */
+		public byte[] digest(@Nonnull final Path file) throws IOException {
+			return MessageDigests.digest(getInstance(), file);
+		}
+
+		/**
 		 * Computes a lowercase hex checksum string for the given input bytes.
 		 * @implSpec This implementation delegates to {@link MessageDigests#checksum(MessageDigest, byte[])}.
 		 * @apiNote This method considers a <dfn>checksum</dfn> to be a string version of a message <dfn>digest</dfn>, as the former is often used in the context of
 		 *          file contents verification.
 		 * @param input The sequence of bytes for which a digest and then a checksum string should be created.
 		 * @return The lowercase hex checksum string of the resulting hash value.
+		 * @throws RuntimeException if no {@link Provider} supports a {@link MessageDigestSpi} implementation for this algorithm.
 		 * @see MessageDigest#digest(byte[])
 		 */
 		public String checksum(@Nonnull final byte[] input) {
@@ -343,6 +451,7 @@ public class MessageDigests {
 		 * @apiNote This method considers a <dfn>checksum</dfn> to be a string version of a message <dfn>digest</dfn>, as the former is often used in the context of
 		 *          file contents verification.
 		 * @param charSequence The character sequence for which a checksum should be created.
+		 * @throws RuntimeException if no {@link Provider} supports a {@link MessageDigestSpi} implementation for this algorithm.
 		 * @return The lowercase hex checksum string of the resulting hash value.
 		 */
 		public String checksum(@Nonnull final CharSequence charSequence) {
@@ -356,10 +465,41 @@ public class MessageDigests {
 		 *          file contents verification.
 		 * @param characters The characters for which a checksum should be created.
 		 * @return The lowercase hex checksum string of the resulting hash value.
+		 * @throws RuntimeException if no {@link Provider} supports a {@link MessageDigestSpi} implementation for this algorithm.
 		 * @see Bytes#toHexString(byte[])
 		 */
 		public String checksum(@Nonnull final char[] characters) {
 			return MessageDigests.checksum(getInstance(), characters);
+		}
+
+		/**
+		 * Computes a lowercase hex checksum string for the contents of the given input stream. All the remaining contents of the input stream are consumed.
+		 * @implSpec This implementation delegates to {@link MessageDigests#checksum(MessageDigest, InputStream)}.
+		 * @apiNote This method considers a <dfn>checksum</dfn> to be a string version of a message <dfn>digest</dfn>, as the former is often used in the context of
+		 *          file contents verification.
+		 * @param inputStream The input stream for which a checksum should be created.
+		 * @return The lowercase hex checksum string of the resulting hash value.
+		 * @throws RuntimeException if no {@link Provider} supports a {@link MessageDigestSpi} implementation for this algorithm.
+		 * @throws IOException if there is an I/O exception reading from the input stream.
+		 * @see Bytes#toHexString(byte[])
+		 */
+		public String checksum(@Nonnull final InputStream inputStream) throws IOException {
+			return MessageDigests.checksum(getInstance(), inputStream);
+		}
+
+		/**
+		 * Computes a lowercase hex checksum string for the contents of the given file.
+		 * @implSpec This implementation delegates to {@link MessageDigests#checksum(MessageDigest, Path)}.
+		 * @apiNote This method considers a <dfn>checksum</dfn> to be a string version of a message <dfn>digest</dfn>, as the former is often used in the context of
+		 *          file contents verification.
+		 * @param file The path to the file for which a checksum should be created.
+		 * @return The lowercase hex checksum string of the resulting hash value.
+		 * @throws RuntimeException if no {@link Provider} supports a {@link MessageDigestSpi} implementation for this algorithm.
+		 * @throws IOException if there is an I/O exception reading from the file.
+		 * @see Bytes#toHexString(byte[])
+		 */
+		public String checksum(@Nonnull final Path file) throws IOException {
+			return MessageDigests.checksum(getInstance(), file);
 		}
 
 		/**
