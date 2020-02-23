@@ -18,6 +18,7 @@ package com.globalmentor.java;
 
 import java.lang.reflect.*;
 import java.util.Optional;
+import java.util.function.Function;
 
 import static java.util.Objects.*;
 
@@ -106,13 +107,15 @@ public class Objects {
 	/**
 	 * Convenience method that returns the given object if and only if it is an instance of the given class. This method is equivalent to
 	 * <code><var>object</var> instanceof <var>Type</var> ? Optional.of((Type)object) : Optional.empty();</code>.
-	 * @param <T> The type of object to check for.
+	 * @param <T> The type of object given.
+	 * @param <I> The type of object instance to check for.
 	 * @param object The object to examine.
 	 * @param instanceClass The class of which the object may be an instance.
 	 * @return The object if it is an instance of the given class.
+	 * @see #ifInstance(Class)
 	 */
-	public static <T> Optional<T> asInstance(final Object object, final Class<T> instanceClass) {
-		return instanceClass.isInstance(object) ? Optional.of(instanceClass.cast(object)) : Optional.<T>empty();
+	public static <T, I extends T> Optional<I> asInstance(final T object, final Class<I> instanceClass) {
+		return instanceClass.isInstance(object) ? Optional.of(instanceClass.cast(object)) : Optional.<I>empty();
 	}
 
 	/**
@@ -163,6 +166,21 @@ public class Objects {
 			}
 		}
 		return null; //we couldn't find such an instance
+	}
+
+	/**
+	 * Convenience method that returns a function that casts some object to a given class if and only if it is an instance of that class.
+	 * @apiNote This method may be used to cast an optional value using {@code optional.flatMap(ifInstance(instanceClass)}. In this way it is equivalent to
+	 *          {@code optional.filter(instanceClass::isInstance).map(instanceClass::cast)}.
+	 * @implSpec This implementation returns a function that delegates to {@link #asInstance(Object, Class)}.
+	 * @param <T> The type of object given.
+	 * @param <I> The type of object instance to check for.
+	 * @param instanceClass The class of which the object may be an instance.
+	 * @return The a function that returns the object if it is an instance of the given class; otherwise an empty {@link Optional}.
+	 * @see #asInstance(Object, Class)
+	 */
+	public static <T, I extends T> Function<T, Optional<I>> ifInstance(final Class<I> instanceClass) {
+		return object -> asInstance(object, instanceClass);
 	}
 
 	/**
