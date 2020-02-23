@@ -38,16 +38,17 @@ public class Optionals {
 	/**
 	 * Convenience method that returns a value if and only if it the given optional is present and is an instance of the given class. This method is equivalent to
 	 * {@code optional.filter(instanceClass::isInstance).map(instanceClass::cast)}.
-	 * @apiNote Depending on the circumstances, it may be more natural to call {@code optional.flatMap(object -> Objects.asInstance(object, instanceClass))},
-	 *          which has the same effect.
+	 * @apiNote Depending on the circumstances, it may be more natural to call {@code optional.flatMap(Objects.asInstance(instanceClass)}, which has the same
+	 *          effect and is equivalent to {@code optional.flatMap(object -> Objects.asInstance(object, instanceClass))}.
 	 * @implSpec This implementation delegates to {@link Objects#asInstance(Object, Class)}
 	 * @param <T> The type of object to check for.
 	 * @param optional The optional to examine.
 	 * @param instanceClass The class of which the optional value may be an instance.
 	 * @return The optional's value if it is present and is an instance of the given class.
 	 * @see Objects#asInstance(Object, Class)
+	 * @see Objects#asInstance(Class)
 	 */
-	public static <T> Optional<T> asInstance(final Optional<? super T> optional, final Class<T> instanceClass) {
+	public static <T> Optional<T> filterAsInstance(final Optional<? super T> optional, final Class<T> instanceClass) {
 		return optional.flatMap(object -> Objects.asInstance(object, instanceClass));
 	}
 
