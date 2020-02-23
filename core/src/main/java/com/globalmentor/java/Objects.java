@@ -19,12 +19,14 @@ package com.globalmentor.java;
 import java.lang.reflect.*;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 import static java.util.Objects.*;
 
 import static com.globalmentor.java.Classes.*;
 import static com.globalmentor.java.Conditions.*;
 import static com.globalmentor.java.Java.*;
+import static com.globalmentor.util.Optionals.*;
 
 /**
  * Various utilities to manipulate Java objects.
@@ -120,8 +122,8 @@ public class Objects {
 
 	/**
 	 * Convenience method that returns a function that casts some object to a given class if and only if it is an instance of that class.
-	 * @apiNote This method may be used to cast an optional value using {@code optional.flatMap(asInstance(instanceClass)}. In this way it is equivalent to
-	 *          {@code optional.filter(instanceClass::isInstance).map(instanceClass::cast)}.
+	 * @apiNote This method may be used to cast an {@link Optional} value using {@code optional.flatMap(asInstance(instanceClass)}. In this way it is equivalent
+	 *          to {@code optional.filter(instanceClass::isInstance).map(instanceClass::cast)}.
 	 * @implSpec This implementation returns a function that delegates to {@link #asInstance(Object, Class)}.
 	 * @param <T> The type of object given.
 	 * @param <I> The type of object instance to check for.
@@ -131,6 +133,22 @@ public class Objects {
 	 */
 	public static <T, I extends T> Function<T, Optional<I>> asInstance(final Class<I> instanceClass) {
 		return object -> asInstance(object, instanceClass);
+	}
+
+	/**
+	 * Convenience method that returns a function that casts some object to a given class if and only if it is an instance of that class, returning a potentially
+	 * empty stream.
+	 * @apiNote This method may be used to cast {@link Stream} values using {@code stream.flatMap(asInstances(instanceClass)}. In this way it is equivalent to
+	 *          {@code stream.filter(instanceClass::isInstance).map(instanceClass::cast)}.
+	 * @implSpec This implementation returns a function that delegates to {@link #asInstance(Object, Class)}.
+	 * @param <T> The type of object given.
+	 * @param <I> The type of object instance to check for.
+	 * @param instanceClass The class of which the object may be an instance.
+	 * @return The a function that returns the object if it is an instance of the given class; otherwise an empty {@link Stream}.
+	 * @see #asInstance(Object, Class)
+	 */
+	public static <T, I extends T> Function<T, Stream<I>> asInstances(final Class<I> instanceClass) {
+		return object -> stream(asInstance(object, instanceClass));
 	}
 
 	/**
