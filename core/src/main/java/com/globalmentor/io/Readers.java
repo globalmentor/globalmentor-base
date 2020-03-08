@@ -16,6 +16,9 @@
 
 package com.globalmentor.io;
 
+import static com.globalmentor.java.Conditions.*;
+import static java.lang.Math.*;
+
 import java.io.*;
 
 import javax.annotation.*;
@@ -36,16 +39,36 @@ public class Readers {
 	 * Reads all characters remaining in the reader into a string. This method will block until some input is available, an I/O error occurs, or the end of the
 	 * stream is reached.
 	 * @apiNote This method is analogous to {{java.nio.file.Files.readString(Path path)}}, introduced in Java 11.
+	 * @implSpec This implementation delegates to {@link #readString(Reader, int)} with a maximum length of {@value Integer#MAX_VALUE}.
 	 * @param reader The reader from which to read content.
 	 * @return A string containing all the remaining characters read from the reader.
 	 * @throws IOException if an I/O error occurs.
 	 */
 	public static String readString(@Nonnull final Reader reader) throws IOException {
-		final StringBuilder stringBuilder = new StringBuilder(BUFFER_SIZE);
-		final char[] buffer = new char[BUFFER_SIZE];
-		int charsRead;
-		while((charsRead = reader.read(buffer)) != -1) {
-			stringBuilder.append(buffer, 0, charsRead);
+		return readString(reader, Integer.MAX_VALUE);
+	}
+
+	/**
+	 * Reads all characters remaining in the reader into a string up until the given maximum length. This method will block until some input is available, an I/O
+	 * error occurs, or the end of the stream is reached.
+	 * @param reader The reader from which to read content.
+	 * @param maxLength The maximum number of characters to read; may be {@value Integer#MAX_VALUE}.
+	 * @return A string containing all the remaining characters read from the reader but no longer that the given maximum length.
+	 * @throws IllegalArgumentException if the given maximum length is negative.
+	 * @throws IOException if an I/O error occurs.
+	 */
+	public static String readString(@Nonnull final Reader reader, @Nonnegative final int maxLength) throws IOException {
+		if(maxLength == 0) {
+			return ""; //if they don't want anything, no need to do anything
+		}
+		final int bufferSize = min(BUFFER_SIZE, checkArgumentNotNegative(maxLength)); //no need for a bigger buffer than necessary
+		final StringBuilder stringBuilder = new StringBuilder();
+		final char[] buffer = new char[bufferSize];
+		int totalRemainingCount = maxLength;
+		int readCount;
+		while(totalRemainingCount > 0 && (readCount = reader.read(buffer, 0, min(bufferSize, totalRemainingCount))) != -1) {
+			stringBuilder.append(buffer, 0, readCount);
+			totalRemainingCount -= readCount;
 		}
 		return stringBuilder.toString();
 	}
