@@ -21,14 +21,13 @@ import static com.globalmentor.java.Conditions.*;
 import static com.globalmentor.java.OperatingSystem.*;
 import static java.util.Objects.*;
 
+import java.nio.file.*;
 import java.util.regex.Pattern;
 import java.util.stream.*;
 
 import javax.annotation.*;
 
-import com.globalmentor.java.CharSequences;
-import com.globalmentor.java.Characters;
-import com.globalmentor.java.StringBuilders;
+import com.globalmentor.java.*;
 import com.globalmentor.text.Case;
 
 /**
@@ -46,6 +45,36 @@ public class Filenames {
 
 	/** The character used to separate an extension from the rest of a filename. */
 	public static final char EXTENSION_SEPARATOR = '.';
+
+	/**
+	 * The special name {@value #CURRENT_DIRECTORY_NAME} indicating the current directory.
+	 * @apiNote This is not necessarily a special name on <em>every</em> implementation of a {@link FileSystem}. See further
+	 *          <a href="https://stackoverflow.com/q/60834114/421049">discussion on Stack Overflow</a>.
+	 * @see Path#normalize()
+	 */
+	public static final String CURRENT_DIRECTORY_NAME = ".";
+
+	/**
+	 * The special name {@value #PARENT_DIRECTORY_NAME} indicating the parent directory.
+	 * @apiNote This is not necessarily a special name on <em>every</em> implementation of a {@link FileSystem}. See further
+	 *          <a href="https://stackoverflow.com/q/60834114/421049">discussion on Stack Overflow</a>.
+	 * @see Path#normalize()
+	 */
+	public static final String PARENT_DIRECTORY_NAME = "..";
+
+	/**
+	 * Determines if a filename is considered "special" (such as a parent directory designation) on file systems in general and cannot therefore be used as a
+	 * normal filename.
+	 * @apiNote If this method returns <code>true</code> for a name, it does not necessarily mean that the name is considered special on <em>every</em>
+	 *          implementation of a {@link FileSystem}. See further <a href="https://stackoverflow.com/q/60834114/421049">discussion on Stack Overflow</a>.
+	 * @param name The filename to test.
+	 * @return <code>true</code> if the given name is special and should not be used as a filename.
+	 * @see #CURRENT_DIRECTORY_NAME
+	 * @see #PARENT_DIRECTORY_NAME
+	 */
+	public static boolean isSpecialName(@Nonnull final String name) {
+		return name.equals(CURRENT_DIRECTORY_NAME) || name.equals(PARENT_DIRECTORY_NAME);
+	}
 
 	/**
 	 * The character to use for escaping reserved characters.
