@@ -16,7 +16,11 @@
 
 package com.globalmentor.collections.comparators;
 
-import java.util.Comparator;
+import static com.globalmentor.java.Conditions.*;
+
+import java.util.*;
+
+import javax.annotation.*;
 
 /**
  * The order in which sorting should be performed.
@@ -26,9 +30,89 @@ import java.util.Comparator;
 public enum SortOrder {
 
 	/** Indicates that items should be sorted in increasing order. */
-	ASCENDING,
+	ASCENDING('+'),
 
 	/** Indicates that items should be sorted in decreasing order. */
-	DESCENDING;
+	DESCENDING('-');
+
+	private char sign;
+
+	/** @return The sign indicating the order: <code>+</code> for {@link #ASCENDING} or <code>-</code> for {@link #DESCENDING}. */
+	public char getSign() {
+		return sign;
+	}
+
+	/**
+	 * Constructor.
+	 * @param sign The sign of <code>+</code> for {@link #ASCENDING} or <code>-</code> for {@link #DESCENDING} order.
+	 */
+	private SortOrder(final char sign) {
+		this.sign = sign;
+	}
+
+	/**
+	 * Attempts to determine a sort order from its sign.
+	 * @param sign The sign to check; <code>+</code> for {@link #ASCENDING} or <code>-</code> for {@link #DESCENDING} order.
+	 * @return The corresponding sort order, which will not be present if the sign was not recognized.
+	 */
+	public static Optional<SortOrder> findFromSign(final char sign) {
+		if(sign == ASCENDING.getSign()) {
+			return Optional.of(ASCENDING);
+		} else if(sign == DESCENDING.getSign()) {
+			return Optional.of(DESCENDING);
+		} else {
+			return Optional.empty();
+		}
+	}
+
+	/**
+	 * Determines a sort order from its sign.
+	 * @param sign The sign to check; <code>+</code> for {@link #ASCENDING} or <code>-</code> for {@link #DESCENDING} order.
+	 * @return The corresponding sort order.
+	 * @throws IllegalArgumentException if the given sign is not recognized.
+	 */
+	public static SortOrder fromSign(final char sign) {
+		return findFromSign(sign).orElseThrow(() -> new IllegalArgumentException(String.format("Unrecognized sort order sign `%s`", sign)));
+	}
+
+	/**
+	 * Parses a sort order from its sign as text.
+	 * @param text The text to parse.
+	 * @return The parsed sort order.
+	 * @throws IllegalArgumentException if the given sign text is not recognized.
+	 * @see #fromSign(char)
+	 */
+	public static SortOrder parse(@Nonnull final CharSequence text) {
+		checkArgument(text.length() == 1, "Invalid sort order `%`; must be a single character.", text);
+		return fromSign(text.charAt(0));
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @implSpec This implementation returns the string form of {@link #getSign()}.
+	 */
+	@Override
+	public String toString() {
+		return String.valueOf(getSign());
+	}
+
+	/**
+	 * Applies the sort order to a comparator by reversing the comparator's order if needed.
+	 * @apiNote If this sort order is {@link #ASCENDING}, there will be no change in the comparator's order.
+	 * @param <T> The type of objects that may be compared by the comparator.
+	 * @param comparator The comparator to which a sort order should be applied; used as the ascending order.
+	 * @return The comparator or its reverse order, based on this sort order.
+	 * @see Comparator#reversed()
+	 */
+	public <T> Comparator<T> applyTo(@Nonnull final Comparator<T> comparator) {
+		switch(this) {
+			case ASCENDING:
+				return comparator;
+			case DESCENDING:
+				return comparator.reversed();
+			default:
+				throw new AssertionError(String.format("Unrecognized sort order `%s`.", this));
+		}
+	}
 
 }
