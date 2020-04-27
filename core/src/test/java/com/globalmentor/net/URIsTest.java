@@ -556,43 +556,43 @@ public class URIsTest {
 		assertThrows(NullPointerException.class, () -> URIs.addRawNameExtension(URI.create("http://example.com"), null));
 	}
 
-	/** Tests whether {@link URIs#getNameExtension(URI)} is working properly. */
+	/** Tests whether {@link URIs#findNameExtension(URI)} is working properly. */
 	@Test
-	public void testGetNameExtensionURI() {
-		assertThat(URIs.getNameExtension(URI.create("http://example.com/foobar.txt")), is("txt"));
-		assertThat(URIs.getNameExtension(URI.create("http://example.com/foobar")), is((String)null));
-		assertThat(URIs.getNameExtension(URI.create("http://example.com/")), is((String)null));
+	public void testFindNameExtensionURI() {
+		assertThat(URIs.findNameExtension(URI.create("http://example.com/foobar.txt")), isPresentAndIs("txt"));
+		assertThat(URIs.findNameExtension(URI.create("http://example.com/foobar")), isEmpty());
+		assertThat(URIs.findNameExtension(URI.create("http://example.com/")), isEmpty());
 
-		assertThat(URIs.getNameExtension(URI.create("http://example.com/.foobar")), is("foobar"));
-		assertThat(URIs.getNameExtension(URI.create("http://example.com/.")), is(""));
-		assertThat(URIs.getNameExtension(URI.create("http://example.com/")), is((String)null));
+		assertThat(URIs.findNameExtension(URI.create("http://example.com/.foobar")), isPresentAndIs("foobar"));
+		assertThat(URIs.findNameExtension(URI.create("http://example.com/.")), isPresentAndIs(""));
+		assertThat(URIs.findNameExtension(URI.create("http://example.com/")), isEmpty());
 
-		assertThat(URIs.getNameExtension(URI.create("http://example.com")), is((String)null));
+		assertThat(URIs.findNameExtension(URI.create("http://example.com")), isEmpty());
 	}
 
-	/** Tests whether {@link URIs#getNameExtension(URI)} is throwing an exception when a null {@link URI} is provided. */
+	/** Tests whether {@link URIs#findNameExtension(URI)} is throwing an exception when a null {@link URI} is provided. */
 	@Test
-	public void testGetNameExtensionNullURIFail() {
-		assertThrows(NullPointerException.class, () -> URIs.getNameExtension((URI)null));
+	public void testFindNameExtensionNullURIFail() {
+		assertThrows(NullPointerException.class, () -> URIs.findNameExtension((URI)null));
 	}
 
-	/** Tests whether {@link URIs#getNameExtension(URI)} is working properly. */
+	/** Tests whether {@link URIs#findNameExtension(URI)} is working properly. */
 	@Test
-	public void testGetNameExtensionString() {
-		assertThat(URIs.getNameExtension(URI.create("http://example.com/foobar.%2Axml")), is("*xml"));
-		assertThat(URIs.getNameExtension(URI.create("http://example.com/foobar.*xml")), is("*xml"));
+	public void testFindNameExtensionString() {
+		assertThat(URIs.findNameExtension(URI.create("http://example.com/foobar.%2Axml")), isPresentAndIs("*xml"));
+		assertThat(URIs.findNameExtension(URI.create("http://example.com/foobar.*xml")), isPresentAndIs("*xml"));
 	}
 
-	/** Tests whether {@link URIs#getRawNameExtension(URI, String)} is working properly. */
+	/** Tests whether {@link URIs#findRawNameExtension(URI, String)} is working properly. */
 	@Test
-	public void testGetRawNameExtensionString() {
-		assertThat(URIs.getRawNameExtension(URI.create("http://example.com/foobar.xml")), is("xml"));
-		assertThat(URIs.getRawNameExtension(URI.create("http://example.com/foobar")), is((String)null));
-		assertThat(URIs.getRawNameExtension(URI.create("http://example.com/")), is((String)null));
-		assertThat(URIs.getRawNameExtension(URI.create("http://example.com")), is((String)null));
+	public void testFindRawNameExtensionString() {
+		assertThat(URIs.findRawNameExtension(URI.create("http://example.com/foobar.xml")), isPresentAndIs("xml"));
+		assertThat(URIs.findRawNameExtension(URI.create("http://example.com/foobar")), isEmpty());
+		assertThat(URIs.findRawNameExtension(URI.create("http://example.com/")), isEmpty());
+		assertThat(URIs.findRawNameExtension(URI.create("http://example.com")), isEmpty());
 
-		assertThat(URIs.getRawNameExtension(URI.create("http://example.com/foobar.%2Axml")), is("%2Axml"));
-		assertThat(URIs.getRawNameExtension(URI.create("http://example.com/foobar.*xml")), is("*xml"));
+		assertThat(URIs.findRawNameExtension(URI.create("http://example.com/foobar.%2Axml")), isPresentAndIs("%2Axml"));
+		assertThat(URIs.findRawNameExtension(URI.create("http://example.com/foobar.*xml")), isPresentAndIs("*xml"));
 	}
 
 	/** Tests whether {@link URIs#changeRawNameExtension(URI, String)} is working properly. */

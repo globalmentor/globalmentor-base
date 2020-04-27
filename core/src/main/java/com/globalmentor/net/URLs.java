@@ -54,9 +54,11 @@ public class URLs {
 	 * Returns the media type for the specified URL based on its file extension.
 	 * @param url The URL for which to return a media type.
 	 * @return The default media type for the URL's file extension, or <code>null</code> if no known media type is associated with this URL's extension.
+	 * @deprecated to be removed in favor of some other content type discovery mechanism.
 	 */
+	@Deprecated
 	public static ContentType getMediaType(final URL url) {
-		return Files.getExtensionContentType(Files.getExtension(getFile(url))); //return the media type based on the extension of the URL filename
+		return Files.findExtension(getFile(url)).map(Files::getExtensionContentType).orElse(null); //return the media type based on the extension of the URL filename
 	}
 
 	/**
@@ -134,7 +136,6 @@ public class URLs {
 			    hconn.setInstanceFollowRedirects(false);
 			    int response = hconn.getResponseCode();
 			    boolean redirect = (response >= 300 && response <= 399);
-
 			    if (redirect) {
 				String loc = conn.getHeaderField("Location");
 				if (loc.startsWith("http", 0)) {

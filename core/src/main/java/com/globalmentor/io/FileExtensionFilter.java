@@ -19,7 +19,7 @@ package com.globalmentor.io;
 import java.io.*;
 import java.util.*;
 import static java.util.Collections.*;
-
+import static com.globalmentor.io.Filenames.*;
 import static com.globalmentor.io.Files.*;
 
 /**
@@ -51,7 +51,7 @@ public class FileExtensionFilter implements FileFilter, FilenameFilter {
 	 * @return <code>true</code> if and only if the name should be included in the file list; <code>false</code> otherwise.
 	 */
 	public boolean accept(final File directory, final String name) {
-		return getExtensionSet().contains(Filenames.getExtension(name)); //see if the extension set contains the extension of the filename
+		return findExtension(name).map(getExtensionSet()::contains).orElse(false); //see if the extension set contains the extension of the filename
 	}
 
 	/**
@@ -61,6 +61,6 @@ public class FileExtensionFilter implements FileFilter, FilenameFilter {
 	 * @return <code>true</code> if and only if <code>pathname</code> should be included
 	 */
 	public boolean accept(final File file) {
-		return getExtensionSet().contains(getExtension(file)); //see if the extension set contains the extension of the file  	
+		return findExtension(file).map(getExtensionSet()::contains).orElse(false); //see if the extension set contains the extension of the file  	
 	}
 }
