@@ -560,15 +560,39 @@ public class URIs {
 	}
 
 	/**
+	 * Extracts the extension from a URI's name.
+	 * @apiNote This this the preferred method for extracting an extension from a URI, as this method correctly parses the raw form of the URI path to find the
+	 *          extension before decoding.
+	 * @param uri The URI to examine.
+	 * @return The extension of the URI's name (not including '.'), which may not be present.
+	 * @see #getName(URI)
+	 */
+	public static Optional<String> findNameExtension(@Nonnull final URI uri) {
+		return findRawNameExtension(uri).map(URIs::decode); //if there is a raw extension, decode it
+	}
+
+	/**
 	 * Extracts the extension from a URI's name. This this the preferred method for extracting an extension from a URI, as this method correctly parses the raw
 	 * form of the URI path to find the extension before decoding.
 	 * @param uri The URI to examine.
 	 * @return The extension of the URI's name (not including '.'), or <code>null</code> if no extension is present.
 	 * @see #getName(URI)
+	 * @deprecated to be removed in favor of {@link #findNameExtension(URI)}.
 	 */
-	public static String getNameExtension(final URI uri) {
-		final String rawNameExtension = getRawNameExtension(uri);
-		return rawNameExtension != null ? decode(rawNameExtension) : null; //if there is a raw extension, decode it
+	@Deprecated
+	public static String getNameExtension(@Nonnull final URI uri) {
+		return findNameExtension(uri).orElse(null);
+	}
+
+	/**
+	 * Extracts the raw, encoded extension from a URI's name.
+	 * @param uri The URI to examine.
+	 * @return The raw, encoded extension of the URI's name (not including '.'), which may not be present.
+	 * @see #getRawName(URI)
+	 */
+	public static Optional<String> findRawNameExtension(@Nonnull final URI uri) {
+		final String rawName = getRawName(uri); //get the raw name of the URI, if any
+		return rawName != null ? Filenames.findExtension(rawName) : Optional.empty(); //if there is a raw name, return its extension, if any
 	}
 
 	/**
@@ -576,10 +600,11 @@ public class URIs {
 	 * @param uri The URI to examine.
 	 * @return The raw, encoded extension of the URI's name (not including '.'), or <code>null</code> if no extension is present.
 	 * @see #getRawName(URI)
+	 * @deprecated to be removed in favor of {@link #findRawNameExtension(URI)}.
 	 */
-	public static String getRawNameExtension(final URI uri) {
-		final String rawName = getRawName(uri); //get the raw name of the URI, if any
-		return rawName != null ? Filenames.getExtension(rawName) : null; //if there is a raw name, return its extension, if any
+	@Deprecated
+	public static String getRawNameExtension(@Nonnull final URI uri) {
+		return findRawNameExtension(uri).orElse(null);
 	}
 
 	/**
@@ -1068,11 +1093,13 @@ public class URIs {
 	 * @return The default content type for the URI's name extension, or <code>null</code> if no known content type is associated with this URI's extension.
 	 * @see Files#getExtensionContentType(String)
 	 * @see #getRawName(URI)
-	 * @see Filenames#getExtension(String)
+	 * @see Filenames#findExtension(String)
+	 * @deprecated to be removed in favor of some other content type discovery mechanism.
 	 */
+	@Deprecated
 	public static ContentType getContentType(final URI uri) {
 		final String rawPath = uri.getRawPath(); //get the raw path
-		return rawPath != null ? Files.getExtensionContentType(getNameExtension(uri)) : null; //return the content type based on the extension of the URI name, if there is one
+		return rawPath != null ? Files.getExtensionContentType(findNameExtension(uri).orElse(null)) : null; //return the content type based on the extension of the URI name, if there is one
 	}
 
 	/**

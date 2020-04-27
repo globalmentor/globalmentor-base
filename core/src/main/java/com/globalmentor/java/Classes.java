@@ -1000,7 +1000,7 @@ public class Classes {
 				//			TODO del Log.trace("resource filename:", filename);
 				final String baseName = removeExtension(filename); //get the base name
 				//			TODO del Log.trace("baseName:", baseName);
-				final String extension = getExtension(filename); //get the extension
+				final String extension = findExtension(filename).orElse(null); //get the extension TODO check for null
 				//			TODO del Log.trace("extension:", extension);
 				file = File.createTempFile(baseName, new StringBuilder().append(Filenames.EXTENSION_SEPARATOR).append(extension).toString()); //create a temp file with the base name as the prefix and the extension (with separator) as the suffix
 				file.deleteOnExit(); //indicate that the temporary file should be deleted when the JVM exits

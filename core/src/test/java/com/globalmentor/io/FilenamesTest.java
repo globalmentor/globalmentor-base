@@ -16,6 +16,7 @@
 
 package com.globalmentor.io;
 
+import static com.github.npathai.hamcrestopt.OptionalMatchers.*;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -140,20 +141,20 @@ public class FilenamesTest {
 		assertThrows(NullPointerException.class, () -> Filenames.addExtension("foobar", null));
 	}
 
-	/** Tests whether {@link Filenames#getExtension(String)} is working properly. */
+	/** Tests whether {@link Filenames#findExtension(String)} is working properly. */
 	@Test
-	public void testGetNameExtensionString() {
-		assertThat(Filenames.getExtension("foobar.txt"), is("txt"));
-		assertThat(Filenames.getExtension("foobar"), is((String)null));
-		assertThat(Filenames.getExtension(""), is((String)null));
+	public void testFindNameExtensionString() {
+		assertThat(Filenames.findExtension("foobar.txt"), isPresentAndIs("txt"));
+		assertThat(Filenames.findExtension("foobar"), isEmpty());
+		assertThat(Filenames.findExtension(""), isEmpty());
 
-		assertThat(Filenames.getExtension(".foobar"), is("foobar"));
-		assertThat(Filenames.getExtension("."), is(""));
+		assertThat(Filenames.findExtension(".foobar"), isPresentAndIs("foobar"));
+		assertThat(Filenames.findExtension("."), isPresentAndIs(""));
 	}
 
-	/** Tests whether {@link Filenames#getExtension(String)} is throwing an exception when a <code>null</code> name is provided. */
-	public void testGetNameExtensionNullStringFail() {
-		assertThrows(NullPointerException.class, () -> Filenames.getExtension((String)null));
+	/** Tests whether {@link Filenames#findExtension(String)} is throwing an exception when a <code>null</code> name is provided. */
+	public void testFindNameExtensionNullStringFail() {
+		assertThrows(NullPointerException.class, () -> Filenames.findExtension(null));
 	}
 
 }

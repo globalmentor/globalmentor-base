@@ -22,6 +22,7 @@ import static com.globalmentor.java.OperatingSystem.*;
 import static java.util.Objects.*;
 
 import java.nio.file.*;
+import java.util.Optional;
 import java.util.regex.Pattern;
 import java.util.stream.*;
 
@@ -407,9 +408,20 @@ public class Filenames {
 	 * @param filename The filename to examine.
 	 * @return The extension of the name (not including '.'), which may not be present.
 	 */
-	public static String getExtension(final String filename) {
+	public static Optional<String> findExtension(@Nonnull final String filename) {
 		final int separatorIndex = filename.lastIndexOf(EXTENSION_SEPARATOR); //see if we can find the extension separator, which will be the last such character in the string
-		return separatorIndex >= 0 ? filename.substring(separatorIndex + 1) : null; //if we found a separator, return everything after it 
+		return separatorIndex >= 0 ? Optional.of(filename.substring(separatorIndex + 1)) : Optional.empty(); //if we found a separator, return everything after it 
+	}
+
+	/**
+	 * Extracts the extension from a filename.
+	 * @param filename The filename to examine.
+	 * @return The extension of the name (not including '.'), which may not be present.
+	 * @deprecated to be removed in favor of {@link #findExtension(String)}.
+	 */
+	@Deprecated
+	public static String getExtension(@Nonnull final String filename) {
+		return findExtension(filename).orElse(null);
 	}
 
 	/**

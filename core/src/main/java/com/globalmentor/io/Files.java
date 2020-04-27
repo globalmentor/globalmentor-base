@@ -444,8 +444,19 @@ public class Files {
 	 * @param file The file to examine.
 	 * @return The extension of the file (not including '.'), or <code>null</code> if no extension is present.
 	 */
-	public static String getExtension(final File file) {
-		return Filenames.getExtension(file.getName()); //return the extension of the filename
+	public static Optional<String> findExtension(@Nonnull final File file) {
+		return Filenames.findExtension(file.getName());
+	}
+
+	/**
+	 * Extracts the extension from a file. Anything after the last path character ('/' or '\\') is ignored.
+	 * @param file The file to examine.
+	 * @return The extension of the file (not including '.'), or <code>null</code> if no extension is present.
+	 * @deprecated to be removed in favor of {@link #findExtension(File)}.
+	 */
+	@Deprecated
+	public static String getExtension(@Nonnull final File file) {
+		return findExtension(file).orElse(null);
 	}
 
 	/**
@@ -453,7 +464,9 @@ public class Files {
 	 * type.
 	 * @param fileExtension The file extension, without the '.', or <code>null</code> if there is no extension.
 	 * @return The default media type for the file extension, or <code>null</code> if no known media type is associated with this file extension.
+	 * @deprecated to be removed in favor of some other content type discovery mechanism.
 	 */
+	@Deprecated
 	public static ContentType getExtensionContentType(final String fileExtension) {
 		return FILE_EXTENSION_CONTENT_TYPE_MAP.get(fileExtension != null ? fileExtension.toLowerCase() : null); //see if the file extension exists as a key in the file extension map
 	}
@@ -528,10 +541,11 @@ public class Files {
 	 * @param file The file for which to return a media type.
 	 * @return The default media type for the file's extension, or <code>null</code> if no known media type is associated with this file's extension.
 	 * @see #getExtensionContentType(String)
+	 * @deprecated to be removed in favor of some other content type discovery mechanism.
 	 */
+	@Deprecated
 	public static ContentType getContentType(final File file) {
-		final String extension = getExtension(file); //get the file's extension
-		return getExtensionContentType(extension); //return the media type based on the file's extension
+		return findExtension(file).map(Files::getExtensionContentType).orElse(null);
 	}
 
 	/**
@@ -540,10 +554,11 @@ public class Files {
 	 * @return The default media type for the filename's extension, or <code>null</code> if no known media type is associated with this file's extension or if the
 	 *         filename has no extension.
 	 * @see #getExtensionContentType(String)
+	 * @deprecated to be removed in favor of some other content type discovery mechanism.
 	 */
+	@Deprecated
 	public static ContentType getMediaType(final String filename) {
-		final String extension = Filenames.getExtension(filename); //get the file's extension
-		return extension != null ? getExtensionContentType(extension) : null; //return the media type based on the filename's extension, if there is one
+		return Filenames.findExtension(filename).map(Files::getExtensionContentType).orElse(null);
 	}
 
 	/**
