@@ -18,6 +18,9 @@ package com.globalmentor.java;
 
 import java.util.EnumSet;
 import java.util.Optional;
+import java.util.function.Function;
+
+import javax.annotation.*;
 
 import com.globalmentor.lex.Identifier;
 import com.globalmentor.text.ASCII;
@@ -111,7 +114,7 @@ public class Enums {
 	 * @see Enum#valueOf(Class, String)
 	 * @see Identifier
 	 */
-	public static <E extends Enum<E>> E getSerializedEnum(final Class<E> enumType, String serializationName) {
+	public static <E extends Enum<E>> E getSerializedEnum(@Nonnull final Class<E> enumType, @Nonnull String serializationName) {
 		if(Identifier.class.isAssignableFrom(enumType)) { //if the enum is an identifier
 			final StringBuilder stringBuilder = new StringBuilder(serializationName); //start with the serialization name
 			replace(stringBuilder, '-', '_'); //convert hyphens to underscores
@@ -119,6 +122,19 @@ public class Enums {
 			serializationName = stringBuilder.toString();
 		}
 		return Enum.valueOf(enumType, serializationName); //try to retrieve a corresponding enum from the original form of the name
+	}
+
+	/**
+	 * Creates a function for mapping from a serialized form of some enum type to an instance of that enum type.
+	 * @implSpec Deserialization is performed using {@link #getSerializedEnum(Class, String)}.
+	 * @param <E> The type of the enum.
+	 * @param enumType The class object of the enum type from which to return an enum.
+	 * @return A function for mapping to an instance of the specified enum type from a serialization name.
+	 * @throws NullPointerException if the enum type is <code>null</code>.
+	 * @see #getSerializedEnum(Class, String)
+	 */
+	public static <E extends Enum<E>> Function<String, E> fromSerializionOf(@Nonnull final Class<E> enumType) {
+		return serializationName -> getSerializedEnum(enumType, serializationName);
 	}
 
 	/**
