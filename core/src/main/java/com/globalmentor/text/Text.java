@@ -41,6 +41,11 @@ public class Text {
 	/** The content type for plain text: <code>text/plain</code>. */
 	public static final ContentType PLAIN_CONTENT_TYPE = ContentType.of(ContentType.TEXT_PRIMARY_TYPE, PLAIN_SUBTYPE);
 
+	/**
+	 * The name extension for text list files.
+	 * @see <a href="https://www.file-extensions.org/lst-file-extension">LST file extension - List text</a>
+	 */
+	public static final String LST_NAME_EXTENSION = "lst";
 	/** The name extension for text files. */
 	public static final String TXT_NAME_EXTENSION = "txt";
 
@@ -160,12 +165,12 @@ public class Text {
 			if(ContentType.APPLICATION_PRIMARY_TYPE.equals(contentType.getPrimaryType())) { //if this is "application/*"
 				final String subType = contentType.getSubType(); //get the subtype
 				if("xml".equals(subType) //see if the subtype is "xml"
-						|| contentType.hasSubTypeSuffix("xml")) {	//see if the subtype has an XML suffix
-					return true;	//application/*+xml is considered text
+						|| contentType.hasSubTypeSuffix("xml")) { //see if the subtype has an XML suffix
+					return true; //application/*+xml is considered text
 				}
 				if("xml-external-parsed-entity".equals(subType) //if the subtype is /xml-external-parsed-entity
-						|| contentType.hasSubTypeSuffix("xml-external-parsed-entity")) {	//or if the subtype has an XML external parsed entity suffix
-					return true;	//application/*+xml-external-parsed-entity is considered text
+						|| contentType.hasSubTypeSuffix("xml-external-parsed-entity")) { //or if the subtype has an XML external parsed entity suffix
+					return true; //application/*+xml-external-parsed-entity is considered text
 				}
 			}
 		}
