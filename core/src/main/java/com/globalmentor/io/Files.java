@@ -1277,6 +1277,7 @@ public class Files {
 	/**
 	 * Searches up a path hierarchy to find a given file, stopping the search after some root directory.
 	 * @apiNote For the purposes of this method, the given directory is considered an ancestor.
+	 * @implSpec This implementation delegates to {@link #findAncestorFileByName(Path, Iterable, Predicate, Path)}.
 	 * @param directory The directory in which to start the search; may or may not exist.
 	 * @param filename The name of the file to locate.
 	 * @param filter A predicate to indicate whether the file should be accepted.
@@ -1288,9 +1289,28 @@ public class Files {
 	 */
 	public static Optional<Path> findAncestorFileByName(@Nonnull Path directory, @Nonnull final String filename, @Nonnull final Predicate<Path> filter,
 			@Nullable final Path rootDirectory) throws IOException {
-		final Path file = directory.resolve(requireNonNull(filename));
-		if(exists(file) && filter.test(file)) {
-			return Optional.of(file);
+		return findAncestorFileByName(directory, singleton(filename), filter, rootDirectory);
+	}
+
+	/**
+	 * Searches up a path hierarchy to find one of several possible files, stopping the search after some root directory.
+	 * @apiNote For the purposes of this method, the given directory is considered an ancestor.
+	 * @param directory The directory in which to start the search; may or may not exist.
+	 * @param filenames The names of the file to locate. The iteration order is maintained when searching.
+	 * @param filter A predicate to indicate whether the file should be accepted.
+	 * @param rootDirectory The highest directory to search.
+	 * @return The path to the matching file, if present in the given directory or up the hierarchy.
+	 * @throws IllegalArgumentException if a root directory was given and the given root directory was not encountered up the hierarchy; that is, the given
+	 *           directory was not in the given root directory.
+	 * @throws IOException if an I/O error occurred during the search.
+	 */
+	public static Optional<Path> findAncestorFileByName(@Nonnull Path directory, @Nonnull final Iterable<String> filenames, @Nonnull final Predicate<Path> filter,
+			@Nullable final Path rootDirectory) throws IOException {
+		for(final String filename : filenames) {
+			final Path file = directory.resolve(requireNonNull(filename));
+			if(exists(file) && filter.test(file)) {
+				return Optional.of(file);
+			}
 		}
 		if(directory.equals(rootDirectory)) { //if we have reached the root directory (if specified), don't go any higher
 			return Optional.empty();
@@ -1300,7 +1320,7 @@ public class Files {
 			checkArgument(rootDirectory == null, "Directory `%s` was not in given root directory `%s`.", directory, rootDirectory);
 			return Optional.empty(); //if no root directory was specified, that's OK; we just didn't find the file
 		}
-		return findAncestorFileByName(parentDirectory, filename, filter, rootDirectory);
+		return findAncestorFileByName(parentDirectory, filenames, filter, rootDirectory);
 	}
 
 	//### Backup
