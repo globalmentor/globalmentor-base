@@ -69,39 +69,39 @@ public class PathsTest {
 
 	//#filenames
 
-	/** Tests whether the extension is being added correctly using {@link Paths#addExtension(Path, String)}. */
+	/** Tests whether the extension is being added correctly using {@link Paths#addFilenameExtension(Path, String)}. */
 	@Test
-	public void testAddExtension() {
+	public void testAddFilenameExtension() {
 		final Path basePath = getTempDirectory();
-		assertThat(Paths.addExtension(basePath.resolve("testFile"), "ext"), is(basePath.resolve("testFile.ext")));
+		assertThat(Paths.addFilenameExtension(basePath.resolve("testFile"), "ext"), is(basePath.resolve("testFile.ext")));
 	}
 
-	/** Tests whether an additional extension is being added correctly using {@link Paths#addExtension(Path, String)}. */
+	/** Tests whether an additional extension is being added correctly using {@link Paths#addFilenameExtension(Path, String)}. */
 	@Test
-	public void testAddSecondExtension() {
+	public void testAddSecondFilenameExtension() {
 		final Path basePath = getTempDirectory();
-		assertThat(Paths.addExtension(basePath.resolve("testFile.foo"), "ext"), is(basePath.resolve("testFile.foo.ext")));
+		assertThat(Paths.addFilenameExtension(basePath.resolve("testFile.foo"), "ext"), is(basePath.resolve("testFile.foo.ext")));
 	}
 
-	/** Tests whether the extension is being added correctly using {@link Paths#addExtension(Path, String)} with a file name path. */
+	/** Tests whether the extension is being added correctly using {@link Paths#addFilenameExtension(Path, String)} with a file name path. */
 	@Test
-	public void testAddExtensionUsingFileName() {
+	public void testAddFilenameExtensionUsingFileName() {
 		final Path testPath = java.nio.file.Paths.get("test");
-		assertThat(Paths.addExtension(testPath, "ext"), is(java.nio.file.Paths.get("test.ext")));
+		assertThat(Paths.addFilenameExtension(testPath, "ext"), is(java.nio.file.Paths.get("test.ext")));
 	}
 
-	/** Tests whether the extension is being changed correctly using {@link Paths#addExtension(Path, String)}. */
+	/** Tests whether the extension is being changed correctly using {@link Paths#addFilenameExtension(Path, String)}. */
 	@Test
-	public void testCchangeExtension() {
+	public void testChangeFilenameExtension() {
 		final Path basePath = getTempDirectory();
-		assertThat(Paths.changeExtension(basePath.resolve("testFile.foo"), "bar"), is(basePath.resolve("testFile.bar")));
+		assertThat(Paths.changeFilenameExtension(basePath.resolve("testFile.foo"), "bar"), is(basePath.resolve("testFile.bar")));
 	}
 
-	/** Tests whether the extension is being removed correctly using {@link Paths#addExtension(Path, String)}. */
+	/** Tests whether the extension is being removed correctly using {@link Paths#addFilenameExtension(Path, String)}. */
 	@Test
-	public void testRemoveExtension() {
+	public void testRemoveFilenameExtension() {
 		final Path basePath = getTempDirectory();
-		assertThat(Paths.removeExtension(basePath.resolve("testFile.foo")), is(basePath.resolve("testFile")));
+		assertThat(Paths.removeFilenameExtension(basePath.resolve("testFile.foo")), is(basePath.resolve("testFile")));
 	}
 
 }
