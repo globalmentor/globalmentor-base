@@ -398,59 +398,75 @@ public class URIsTest {
 		assertThrows(NullPointerException.class, () -> URIs.toCollectionURI(null));
 	}
 
-	/** Tests whether {@link URIs#getPath(URI)} is working properly. */
+	/** Tests whether {@link URIs#findURIPath(URI)} is working properly. */
 	@Test
-	public void testGetPath() {
-		assertThat(URIs.getPath(URI.create("http://example.com")), is(URIPath.EMPTY_URI_PATH));
-		assertThat(URIs.getPath(URI.create("http://example.com/")), is(URIPath.asPathURIPath(URI.create("path:/"))));
-		assertThat(URIs.getPath(URI.create("http://example.com/foo")), is(URIPath.asPathURIPath(URI.create("path:/foo"))));
-		assertThat(URIs.getPath(URI.create("http://example.com/foo/")), is(URIPath.asPathURIPath(URI.create("path:/foo/"))));
+	public void testFindURIPath() {
+		assertThat(URIs.findURIPath(URI.create("http://example.com")), isPresentAndIs(URIPath.EMPTY_URI_PATH));
+		assertThat(URIs.findURIPath(URI.create("http://example.com/")), isPresentAndIs(URIPath.of("/")));
+		assertThat(URIs.findURIPath(URI.create("http://example.com/foo")), isPresentAndIs(URIPath.of("/foo")));
+		assertThat(URIs.findURIPath(URI.create("http://example.com/foo/")), isPresentAndIs(URIPath.of("/foo/")));
 	}
 
-	/** Tests whether {@link URIs#getPath(URI)} is throwing an exception when a null {@link URI} is provided. */
+	/** Tests whether {@link URIs#findURIPath(URI)} is throwing an exception when a null {@link URI} is provided. */
 	@Test
 	public void testGetPathNullURIFail() {
-		assertThrows(NullPointerException.class, () -> URIs.getPath(null));
+		assertThrows(NullPointerException.class, () -> URIs.findURIPath(null));
 	}
 
-	/** Tests whether {@link URIs#getRawName(URI)} is working properly. */
+	/** Tests whether {@link URIs#findRawName(URI)} is working properly. */
 	@Test
 	public void testGetRawName() {
-		assertThat(URIs.getRawName(URI.create("http://example.com")), is(""));
-		assertThat(URIs.getRawName(URI.create("http://example.com/%2A")), is("%2A"));
-		assertThat(URIs.getRawName(URI.create("http://example.com/foo%2A")), is("foo%2A"));
-		assertThat(URIs.getRawName(URI.create("http://example.com/foo%2A/")), is("foo%2A"));
-		assertThat(URIs.getRawName(URI.create("http://example.com/foo/bar/foobar.txt")), is("foobar.txt"));
-		assertThat(URIs.getRawName(URI.create("http://example.com/foo/bar/foo%2Abar.txt")), is("foo%2Abar.txt"));
+		assertThat(URIs.findRawName(URI.create("http://example.com")), isPresentAndIs(""));
+		assertThat(URIs.findRawName(URI.create("http://example.com/")), isPresentAndIs("/"));
+		assertThat(URIs.findRawName(URI.create("http://example.com/%2A")), isPresentAndIs("%2A"));
+		assertThat(URIs.findRawName(URI.create("http://example.com/foo%2A")), isPresentAndIs("foo%2A"));
+		assertThat(URIs.findRawName(URI.create("http://example.com/foo%2A/")), isPresentAndIs("foo%2A"));
+		assertThat(URIs.findRawName(URI.create("http://example.com/foo/bar/foobar.txt")), isPresentAndIs("foobar.txt"));
+		assertThat(URIs.findRawName(URI.create("http://example.com/foo/bar/foo%2Abar.txt")), isPresentAndIs("foo%2Abar.txt"));
 
-		assertThat(URIs.getRawName(URI.create("info:ddc/22/eng//004.678")), is("004.678"));
+		assertThat(URIs.findRawName(URI.create("info:ddc/22/eng//004.678")), isPresentAndIs("004.678"));
 	}
 
-	/** Tests whether {@link URIs#getRawName(URI)} is throwing an exception when a null {@link URI} is provided. */
+	/** Tests whether {@link URIs#findRawName(URI)} is throwing an exception when a null {@link URI} is provided. */
 	@Test
 	public void testGetRawNameNullURIFail() {
-		assertThrows(NullPointerException.class, () -> URIs.getRawName(null));
+		assertThrows(NullPointerException.class, () -> URIs.findRawName(null));
 	}
 
-	/** Tests whether {@link URIs#getName(URI)} is working properly. */
+	/** Tests whether {@link URIs#findName(URI)} is working properly. */
 	@Test
-	public void testGetName() {
-		assertThat(URIs.getName(URI.create("http://example.com")), is(""));
-		assertThat(URIs.getName(URI.create("http://example.com/%2A")), is("*"));
-		assertThat(URIs.getName(URI.create("http://example.com/foo%2A")), is("foo*"));
-		assertThat(URIs.getName(URI.create("http://example.com/foo%2A/")), is("foo*"));
-		assertThat(URIs.getName(URI.create("http://example.com/foo/bar/foo%2Abar.txt")), is("foo*bar.txt"));
+	public void testFindName() {
+		assertThat(URIs.findName(URI.create("http://example.com")), isPresentAndIs(""));
+		assertThat(URIs.findName(URI.create("http://example.com/")), isPresentAndIs("/"));
+		assertThat(URIs.findName(URI.create("http://example.com/%2A")), isPresentAndIs("*"));
+		assertThat(URIs.findName(URI.create("http://example.com/foo%2A")), isPresentAndIs("foo*"));
+		assertThat(URIs.findName(URI.create("http://example.com/foo%2A/")), isPresentAndIs("foo*"));
+		assertThat(URIs.findName(URI.create("http://example.com/foo/bar/foo%2Abar.txt")), isPresentAndIs("foo*bar.txt"));
 
-		assertThat(URIs.getName(URI.create("info:ddc/22/eng//004.678")), is("004.678"));
+		assertThat(URIs.findName(URI.create("info:ddc/22/eng//004.678")), isPresentAndIs("004.678"));
 	}
 
-	/** Tests whether {@link URIs#getName(URI)} is throwing an exception when a null {@link URI} is provided. */
+	/** Tests whether {@link URIs#findName(URI)} is throwing an exception when a null {@link URI} is provided. */
 	@Test
-	public void testGetNameNullURIFail() {
-		assertThrows(NullPointerException.class, () -> URIs.getName((URI)null));
+	public void testFindNameNullURIFail() {
+		assertThrows(NullPointerException.class, () -> URIs.findName((URI)null));
 	}
 
-	/** Tests whether {@link URIs#changeName(String, String)} is working properly. */
+	/** @see URIs#changePathName(String, String) */
+	@Test
+	public void testChangePathName() {
+		assertThat(URIs.changePathName("foo/bar/", "name"), is("foo/name/"));
+		assertThat(URIs.changePathName("/foo/bar/", "name"), is("/foo/name/"));
+		assertThat(URIs.changePathName("foo/bar", "name"), is("foo/name"));
+		assertThat(URIs.changePathName("/foo/bar", "name"), is("/foo/name"));
+		assertThat(URIs.changePathName("/foo/", "name"), is("/name/"));
+		assertThat(URIs.changePathName("foo/", "name"), is("name/"));
+		assertThat(URIs.changePathName("foo", "name"), is("name"));
+		assertThat(URIs.changePathName("", "name"), is("name"));
+		assertThat(URIs.changePathName("/", "name"), is("/name/"));
+	}
+
+	/** Tests whether {@link URIs#changeName(URI, String)} is working properly. */
 	@Test
 	public void testChangeName() {
 		assertThat(URIs.changeName(URI.create("http://example.com/foo"), "foo*bar.txt"), is(URI.create("http://example.com/foo*bar.txt")));
@@ -462,31 +478,31 @@ public class URIsTest {
 		assertThat(URIs.changeName(URI.create("info:ddc/22/eng//004.678"), "foo*bar.txt"), is(URI.create("info:ddc/22/eng//foo*bar.txt")));
 	}
 
-	/** Tests whether {@link URIs#changeName(String, String)} is throwing an exception when an empty name for the {@link URI} is provided. */
+	/** Tests whether {@link URIs#changeName(URI, String)} is throwing an exception when an empty name for the {@link URI} is provided. */
 	@Test
 	public void testChangeNameEmptyURINameFail() {
 		assertThrows(IllegalArgumentException.class, () -> URIs.changeName(URI.create("http://example.com"), "foo*bar.txt"));
 	}
 
-	/** Tests whether {@link URIs#changeName(String, String)} is throwing an exception when a "/" name for the {@link URI} is provided. */
+	/** Tests whether {@link URIs#changeName(URI, String)} is throwing an exception when a "/" name for the {@link URI} is provided. */
 	@Test
 	public void testChangeNameSlashURINameFail() {
 		assertThrows(IllegalArgumentException.class, () -> URIs.changeName(URI.create("http://example.com/"), "foo*bar.txt"));
 	}
 
-	/** Tests whether {@link URIs#changeName(String, String)} is throwing an exception when a null {@link URI} is provided. */
+	/** Tests whether {@link URIs#changeName(URI, String)} is throwing an exception when a null {@link URI} is provided. */
 	@Test
 	public void testChangeNameNullURIFail() {
 		assertThrows(NullPointerException.class, () -> URIs.changeName((URI)null, ""));
 	}
 
-	/** Tests whether {@link URIs#changeName(String, String)} is throwing an exception when a null name is provided. */
+	/** Tests whether {@link URIs#changeName(URI, String)} is throwing an exception when a null name is provided. */
 	@Test
 	public void testChangeNameNullNameFail() {
 		assertThrows(NullPointerException.class, () -> URIs.changeName(URI.create("http://example.com/"), null));
 	}
 
-	/** Tests whether {@link URIs#changeRawName(String, String)} is working properly. */
+	/** Tests whether {@link URIs#changeRawName(URI, String)} is working properly. */
 	@Test
 	public void testChangeRawName() {
 		assertThat(URIs.changeRawName(URI.create("http://example.com/foo"), "foo%2Abar.txt"), is(URI.create("http://example.com/foo%2Abar.txt")));
@@ -498,25 +514,25 @@ public class URIsTest {
 		assertThat(URIs.changeRawName(URI.create("info:ddc/22/eng//004.678"), "foo%2Abar.txt"), is(URI.create("info:ddc/22/eng//foo%2Abar.txt")));
 	}
 
-	/** Tests whether {@link URIs#changeRawName(String, String)} is throwing an exception when an empty {@link URI} name is provided. */
+	/** Tests whether {@link URIs#changeRawName(URI, String)} is throwing an exception when an empty {@link URI} name is provided. */
 	@Test
 	public void testChangeRawNameEmptyURINameFail() {
 		assertThrows(IllegalArgumentException.class, () -> URIs.changeRawName(URI.create("http://example.com"), "foo%2Abar.txt"));
 	}
 
-	/** Tests whether {@link URIs#changeRawName(String, String)} is throwing an exception when a "/" {@link URI} name is provided. */
+	/** Tests whether {@link URIs#changeRawName(URI, String)} is throwing an exception when a "/" {@link URI} name is provided. */
 	@Test
 	public void testChangeRawNameSlashURINameFail() {
 		assertThrows(IllegalArgumentException.class, () -> URIs.changeRawName(URI.create("http://example.com/"), "foo%2Abar.txt"));
 	}
 
-	/** Tests whether {@link URIs#changeRawName(String, String)} is throwing an exception when a null {@link URI} is provided. */
+	/** Tests whether {@link URIs#changeRawName(URI, String)} is throwing an exception when a null {@link URI} is provided. */
 	@Test
 	public void testChangeRawNameNullURIFail() {
 		assertThrows(NullPointerException.class, () -> URIs.changeRawName((URI)null, ""));
 	}
 
-	/** Tests whether {@link URIs#changeRawName(String, String)} is throwing an exception when a null name is provided. */
+	/** Tests whether {@link URIs#changeRawName(URI, String)} is throwing an exception when a null name is provided. */
 	@Test
 	public void testChangeRawNameNullNameFail() {
 		assertThrows(NullPointerException.class, () -> URIs.changeRawName(URI.create("http://example.com/foo"), null));
