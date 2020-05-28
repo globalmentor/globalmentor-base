@@ -35,6 +35,7 @@ import com.globalmentor.net.*;
 import com.globalmentor.text.*;
 
 import static com.globalmentor.io.InputStreams.*;
+import static com.globalmentor.io.Paths.*;
 import static com.globalmentor.java.Conditions.*;
 import static com.globalmentor.java.StringBuilders.*;
 import static com.globalmentor.net.ContentTypeConstants.*;
@@ -1363,9 +1364,9 @@ public class Files {
 		Path backupFile = null;
 
 		if(maxBackupCount == 1) {
-			backupFile = Paths.addExtension(path, BACKUP_EXTENSION); //if the backups are not numbered, we return the simple backup path.
+			backupFile = addFilenameExtension(path, BACKUP_EXTENSION); //if the backups are not numbered, we return the simple backup path.
 		} else {
-			backupFile = Paths.addExtension(path, LATEST_NUMBERED_BACKUP_EXTENSION); //if the backup file is numbered, we return the path for the latest one.
+			backupFile = addFilenameExtension(path, LATEST_NUMBERED_BACKUP_EXTENSION); //if the backup file is numbered, we return the path for the latest one.
 		}
 
 		return backupFile;
@@ -1438,10 +1439,10 @@ public class Files {
 		checkArgument(maxBackupCount > 1, "The maximum number of rolling backup files to be used must be greater than one.");
 
 		for(long i = maxBackupCount - 1; i >= 1; i--) {
-			final Path sourceBackupFile = Paths.addExtension(path, NUMBERED_BACKUP_EXTENSION_TEMPLATE.apply(i));
+			final Path sourceBackupFile = addFilenameExtension(path, NUMBERED_BACKUP_EXTENSION_TEMPLATE.apply(i));
 
 			if(java.nio.file.Files.exists(sourceBackupFile)) {
-				final Path destinationBackupFile = Paths.addExtension(path, NUMBERED_BACKUP_EXTENSION_TEMPLATE.apply(i + 1));
+				final Path destinationBackupFile = addFilenameExtension(path, NUMBERED_BACKUP_EXTENSION_TEMPLATE.apply(i + 1));
 
 				java.nio.file.Files.move(sourceBackupFile, destinationBackupFile, StandardCopyOption.REPLACE_EXISTING);
 			}

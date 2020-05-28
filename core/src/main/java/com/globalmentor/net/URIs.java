@@ -426,55 +426,114 @@ public class URIs {
 	}
 
 	/**
+	 * Returns a path object to represent the path of the URI, if it has one.
+	 * @param uri The URI for which a path object should be returned.
+	 * @return An object representing the path if any.
+	 */
+	public static Optional<URIPath> findURIPath(@Nonnull final URI uri) {
+		return Optional.ofNullable(uri.getRawPath()).map(URIPath::of);
+	}
+
+	/**
 	 * Returns a path object to represent the path of the URI.
 	 * @param uri The URI for which a path object should be returned.
 	 * @return An object representing the path, or <code>null</code> if the URI has no path.
+	 * @deprecated to remove in favor of {@link #findURIPath(URI)}
 	 */
+	@Deprecated
 	public static URIPath getPath(final URI uri) {
-		final String rawPath = uri.getRawPath(); //get the raw path of the URI
-		return rawPath != null ? URIPath.of(rawPath) : null; //return a path object if there is a path
+		return findURIPath(uri).orElse(null);
 	}
 
 	/**
 	 * Returns the raw name of the resource at the given URI's path, which will be the raw name of the last path component. If the path is a collection (i.e. it
 	 * ends with slash), the component before the last slash will be returned. As examples, "/path/name.ext" and "name.ext" will return "name.ext". "/path/",
-	 * "path/", and "path" will all return "path". This method correctly handles {@value URIs#INFO_SCHEME} URIs.
+	 * "path/", and "path" will all return "path". A empty path will return "", while the root path will return "/".
+	 * @apiNote The return value of "/" for <code>http://example.com</code> indicates that it is a special resource that doesn't have a name, but still
+	 *          distinguishes between that case and the resource <code>http://example.com</code>, which has an empty relative path and is not equivalent to the
+	 *          root. Thus "" and "/" should be considered special values indicating certain conditions, not actual names.
+	 * @implSpec This method correctly handles {@value URIs#INFO_SCHEME} URIs.
+	 * @implSpec This implementation calls {@link #getName(String)}.
+	 * @param uri The URI the path of which will be examined.
+	 * @return The name of the last last path component, the empty string if the path is the empty string, "/" if the path is the root path, or empty if the URI
+	 *         has no path.
+	 * @throws NullPointerException if the given URI is <code>null</code>.
+	 */
+	public static Optional<String> findRawName(@Nonnull final URI uri) {
+		final String rawPath = uri.isOpaque() && INFO_SCHEME.equals(uri.getScheme()) ? uri.getRawSchemeSpecificPart() : uri.getRawPath(); //get the raw path, using the scheme-specific part of any info URI
+		return Optional.ofNullable(rawPath).map(URIs::getName); //if we have a raw path, return the name
+	}
+
+	/**
+	 * Returns the raw name of the resource at the given URI's path, which will be the raw name of the last path component. If the path is a collection (i.e. it
+	 * ends with slash), the component before the last slash will be returned. As examples, "/path/name.ext" and "name.ext" will return "name.ext". "/path/",
+	 * "path/", and "path" will all return "path".
+	 * @apiNote The return value of "/" for <code>http://example.com</code> indicates that it is a special resource that doesn't have a name, but still
+	 *          distinguishes between that case and the resource <code>http://example.com</code>, which has an empty relative path and is not equivalent to the
+	 *          root. Thus "" and "/" should be considered special values indicating certain conditions, not actual names.
+	 * @implSpec This method correctly handles {@value URIs#INFO_SCHEME} URIs.
 	 * @param uri The URI the path of which will be examined.
 	 * @return The name of the last last path component, the empty string if the path is the empty string, "/" if the path is the root path, or <code>null</code>
 	 *         if the URI has no path.
 	 * @throws NullPointerException if the given URI is <code>null</code>.
+	 * @deprecated to be removed in favor of {@link #findRawName(URI)}.
 	 */
-	public static String getRawName(final URI uri) { //TODO important: update all references to check for null
-		final String rawPath = uri.isOpaque() && INFO_SCHEME.equals(uri.getScheme()) ? uri.getRawSchemeSpecificPart() : uri.getRawPath(); //get the raw path, using the scheme-specific part of any info URI
-		return rawPath != null ? getName(rawPath) : null; //if we have a raw path, return the name
+	@Deprecated
+	public static String getRawName(final URI uri) {
+		return findRawName(uri).orElse(null);
 	}
 
 	/**
 	 * Returns the decoded name of the resource at the given URI's path, which will be the decoded name of the last path component. If the path is a collection
 	 * (i.e. it ends with slash), the component before the last slash will be returned. As examples, "/path/name.ext" and "name.ext" will return "name.ext".
 	 * "/path/", "path/", and "path" will all return "path". The path name is first extracted from the URI's raw path and then decoded so that encoded
-	 * {@value URIs#PATH_SEPARATOR} characters will not prevent correct parsing. This method correctly handles {@value URIs#INFO_SCHEME} URIs.
+	 * {@value URIs#PATH_SEPARATOR} characters will not prevent correct parsing.
+	 * @apiNote The return value of "/" for <code>http://example.com</code> indicates that it is a special resource that doesn't have a name, but still
+	 *          distinguishes between that case and the resource <code>http://example.com</code>, which has an empty relative path and is not equivalent to the
+	 *          root. Thus "" and "/" should be considered special values indicating certain conditions, not actual names.
+	 * @implSpec This method correctly handles {@value URIs#INFO_SCHEME} URIs.
+	 * @param uri The URI the path of which will be examined.
+	 * @return The name of the last path component, the empty string if the path is the empty string, "/" if the path is the root path, or empty if the URI has no
+	 *         path.
+	 * @throws NullPointerException if the given URI is <code>null</code>.
+	 */
+	public static Optional<String> findName(final URI uri) {
+		return findRawName(uri).map(URIs::decode);
+	}
+
+	/**
+	 * Returns the decoded name of the resource at the given URI's path, which will be the decoded name of the last path component. If the path is a collection
+	 * (i.e. it ends with slash), the component before the last slash will be returned. As examples, "/path/name.ext" and "name.ext" will return "name.ext".
+	 * "/path/", "path/", and "path" will all return "path". The path name is first extracted from the URI's raw path and then decoded so that encoded
+	 * {@value URIs#PATH_SEPARATOR} characters will not prevent correct parsing.
+	 * @apiNote The return value of "/" for <code>http://example.com</code> indicates that it is a special resource that doesn't have a name, but still
+	 *          distinguishes between that case and the resource <code>http://example.com</code>, which has an empty relative path and is not equivalent to the
+	 *          root. Thus "" and "/" should be considered special values indicating certain conditions, not actual names.
+	 * @implSpec This method correctly handles {@value URIs#INFO_SCHEME} URIs.
 	 * @param uri The URI the path of which will be examined.
 	 * @return The name of the last path component, the empty string if the path is the empty string, "/" if the path is the root path, or <code>null</code> if
 	 *         the URI has no path.
 	 * @throws NullPointerException if the given URI is <code>null</code>.
+	 * @deprecated to be removed in favor of {@link #findName(URI)}.
 	 */
-	public static String getName(final URI uri) { //TODO important: update all references to check for null
-		final String rawName = getRawName(uri); //get the raw name of the URI
-		return rawName != null ? decode(rawName) : null; //if there is a raw name, decode and return it
+	@Deprecated
+	public static String getName(final URI uri) {
+		return findName(uri).orElse(null);
 	}
 
 	/**
 	 * Changes the name of the path of the given URI to the given name. If the path is a collection (i.e. it ends with slash), the name is the last component
-	 * before the last slash. As examples, "/path/name.ext" and "name.ext" will change "name.ext". "/path/", "path/", and "path" will all change "path". "" with
-	 * return "name" and "/" will return "/name/"
+	 * before the last slash. As examples, "/path/name.ext" and "name.ext" will change "name.ext". "/path/", "path/", and "path" will all change "path". For a
+	 * requested name of "name", a path of "" will return "name", and a path of "/" will return "/name/".
+	 * @apiNote Neither an empty path or the root path are considered to have names, and thus are not allowed to have their names changed.
 	 * @param path The path, which should be encoded if {@value URIs#PATH_SEPARATOR} characters are present.
 	 * @param name The new name of the path.
 	 * @return A new path with the name changed to the given name.
 	 * @throws NullPointerException if the given path and/or name is <code>null</code>.
+	 * @throws IllegalArgumentException if the given path is the empty string or is the root path.
 	 * @see #getName(String)
 	 */
-	public static String changeName(final String path, final String name) {
+	public static String changePathName(final String path, final String name) {
 		requireNonNull(name, "Name cannot be null."); //TODO check to see if the name has illegal characters
 		final int length = requireNonNull(path, "Path cannot be null.").length(); //get the length of the path
 		if(length == 0) { //if there are no characters
@@ -496,48 +555,64 @@ public class URIs {
 	}
 
 	/**
+	 * Changes the name of the path of the given URI to the given name. If the path is a collection (i.e. it ends with slash), the name is the last component
+	 * before the last slash. As examples, "/path/name.ext" and "name.ext" will change "name.ext". "/path/", "path/", and "path" will all change "path". For a
+	 * requested name of "name", a path of "" will return "name", and a path of "/" will return "/name/".
+	 * @apiNote Neither an empty path or the root path are considered to have names, and thus are not allowed to have their names changed.
+	 * @param path The path, which should be encoded if {@value URIs#PATH_SEPARATOR} characters are present.
+	 * @param name The new name of the path.
+	 * @return A new path with the name changed to the given name.
+	 * @throws NullPointerException if the given path and/or name is <code>null</code>.
+	 * @throws IllegalArgumentException if the given path is the empty string or is the root path.
+	 * @see #getName(String)
+	 * @deprecated to be removed in favor of {@link #changePathName(String, String)}
+	 */
+	@Deprecated
+	public static String changeName(final String path, final String name) {
+		return changePathName(path, name);
+	}
+
+	/**
 	 * Changes the raw name of the path of the given URI to the given raw name. If the path is a collection (i.e. it ends with slash), the name is the last
 	 * component before the last slash. As examples, "/path/name.ext" and "name.ext" will change "name.ext". "/path/", "path/", and "path" will all change "path".
-	 * "" with return "name" and "/" will return "/name/" This method correctly handles {@value URIs#INFO_SCHEME} URIs.
+	 * For a requested name of "name", a path of "" will return "name", and a path of "/" will return "/name/".
+	 * @apiNote Neither an empty path or the root path are considered to have names, and thus are not allowed to have their names changed.
+	 * @implSpec This method correctly handles {@value URIs#INFO_SCHEME} URIs.
 	 * @param uri The URI the raw name of which to change.
 	 * @param rawName The new raw name of the URI.
 	 * @return A new URI with the raw name changed to the given raw name.
 	 * @throws NullPointerException if the given URI and/or name is <code>null</code>.
-	 * @throws IllegalArgumentException if the given URI has no path, if the name is empty, or if the name is just a "/".
-	 * @see #getRawName(URI)
+	 * @throws IllegalArgumentException if the given URI has no path, if the path is empty, or if the path is just a "/".
+	 * @see #findRawName(URI)
 	 */
 	public static URI changeRawName(final URI uri, final String rawName) {
-		final String currentUriRawName = getRawName(uri);
-
-		if(currentUriRawName.equals("") || currentUriRawName.equals("/")) {
-			throw new IllegalArgumentException("The name of the given URI cannot be empty or \"/\".");
-		}
-
 		if(uri.isOpaque() && INFO_SCHEME.equals(uri.getScheme())) { //if this is an info URI
 			final String rawSSP = uri.getRawSchemeSpecificPart(); //get the raw scheme-specific part
-			final String newRawSSP = changeName(rawSSP, rawName); //change the name to the given name
+			final String newRawSSP = changePathName(rawSSP, rawName); //change the name to the given name
 			return changeRawSchemeSpecificPart(uri, newRawSSP); //change the URI's scheme-specific part to the new scheme-specific part			
 		} else { //if this is not an info URI
 			final String rawPath = requireNonNull(uri, "URI cannot be null").getRawPath(); //get the raw path
-			if(rawPath == null) { //if the URI has no path
-				throw new IllegalArgumentException("URI " + uri + " has no path.");
-			}
-			final String newRawPath = changeName(rawPath, rawName); //change the name to the given name
+			checkArgument(rawPath != null, "URI <%s> has no path.", uri);
+			checkArgument(!rawPath.isEmpty(), "URI <%s> has no raw name, which cannot be changed to `%s`.", uri, rawName);
+			checkArgument(!rawPath.equals(ROOT_PATH), "URI <%s> has only a root path with no raw name, which cannot be changed to `%s`.", uri, rawName);
+			final String newRawPath = changePathName(rawPath, rawName); //change the name to the given name
 			return changeRawPath(uri, newRawPath); //change the URI's raw path to the new raw path
 		}
 	}
 
 	/**
 	 * Changes the name of the path of the given URI to the given name. If the path is a collection (i.e. it ends with slash), the name is the last component
-	 * before the last slash. As examples, "/path/name.ext" and "name.ext" will change "name.ext". "/path/", "path/", and "path" will all change "path". "" with
-	 * return "name" and "/" will return "/name/" This method correctly handles {@value URIs#INFO_SCHEME} URIs.
+	 * before the last slash. As examples, "/path/name.ext" and "name.ext" will change "name.ext". "/path/", "path/", and "path" will all change "path". For a
+	 * requested name of "name", a path of "" will return "name", and a path of "/" will return "/name/".
+	 * @apiNote Neither an empty path or the root path are considered to have names, and thus are not allowed to have their names changed.
+	 * @implSpec This method correctly handles {@value URIs#INFO_SCHEME} URIs.
 	 * @param uri The URI the name of which to change.
 	 * @param name The new unencoded name of the URI, which will be encoded.
 	 * @return A new URI with the name changed to the given name.
 	 * @throws NullPointerException if the given URI and/or name is <code>null</code>.
-	 * @throws IllegalArgumentException if the given URI has no path.
+	 * @throws IllegalArgumentException if the given URI has no path, if the path is empty, or if the path is just a "/".
 	 * @see URIPath#encodeSegment(String)
-	 * @see #getName(URI)
+	 * @see #findName(URI)
 	 */
 	public static URI changeName(final URI uri, final String name) {
 		return changeRawName(uri, URIPath.encodeSegment(name)); //encode the name and change the name of the URI's path
@@ -549,13 +624,11 @@ public class URIs {
 	 * @param extension The raw, encoded extension to add.
 	 * @return The URI with the new extension.
 	 * @throws NullPointerException if the given extension is <code>null</code>.
-	 * @throws IllegalArgumentException if the given URI has no path.
+	 * @throws IllegalArgumentException if the given URI has no path, if the path is empty, or if the path is just a "/".
 	 */
 	public static URI addRawNameExtension(final URI uri, final String extension) {
-		final String rawName = getRawName(uri); //get the URI raw name
-		if(rawName == null) { //if there is no raw name
-			throw new IllegalArgumentException("Cannot add name extension to URI " + uri + ", which has no path.");
-		}
+		final String rawName = findRawName(uri)
+				.orElseThrow(() -> new IllegalArgumentException(String.format("Cannot add name extension to URI <%s>, which has no path.", uri)));
 		return changeRawName(uri, Filenames.addExtension(rawName, extension));
 	}
 
@@ -565,7 +638,7 @@ public class URIs {
 	 *          extension before decoding.
 	 * @param uri The URI to examine.
 	 * @return The extension of the URI's name (not including '.'), which may not be present.
-	 * @see #getName(URI)
+	 * @see #findName(URI)
 	 */
 	public static Optional<String> findNameExtension(@Nonnull final URI uri) {
 		return findRawNameExtension(uri).map(URIs::decode); //if there is a raw extension, decode it
@@ -576,7 +649,6 @@ public class URIs {
 	 * form of the URI path to find the extension before decoding.
 	 * @param uri The URI to examine.
 	 * @return The extension of the URI's name (not including '.'), or <code>null</code> if no extension is present.
-	 * @see #getName(URI)
 	 * @deprecated to be removed in favor of {@link #findNameExtension(URI)}.
 	 */
 	@Deprecated
@@ -588,18 +660,16 @@ public class URIs {
 	 * Extracts the raw, encoded extension from a URI's name.
 	 * @param uri The URI to examine.
 	 * @return The raw, encoded extension of the URI's name (not including '.'), which may not be present.
-	 * @see #getRawName(URI)
+	 * @see #findRawName(URI)
 	 */
 	public static Optional<String> findRawNameExtension(@Nonnull final URI uri) {
-		final String rawName = getRawName(uri); //get the raw name of the URI, if any
-		return rawName != null ? Filenames.findExtension(rawName) : Optional.empty(); //if there is a raw name, return its extension, if any
+		return findRawName(uri).flatMap(Filenames::findExtension);
 	}
 
 	/**
 	 * Extracts the raw, encoded extension from a URI's name.
 	 * @param uri The URI to examine.
 	 * @return The raw, encoded extension of the URI's name (not including '.'), or <code>null</code> if no extension is present.
-	 * @see #getRawName(URI)
 	 * @deprecated to be removed in favor of {@link #findRawNameExtension(URI)}.
 	 */
 	@Deprecated
@@ -613,18 +683,13 @@ public class URIs {
 	 * @param uri The URI to examine.
 	 * @param extension The raw extension to set, or <code>null</code> if the extension should be removed.
 	 * @return The name with the new extension.
-	 * @throws IllegalArgumentException if the given URI has no path and a non-<code>null</code> extension was given.
+	 * @throws IllegalArgumentException if the given URI has no path, if the path is empty, or if the path is just a "/".
 	 */
 	public static URI changeRawNameExtension(final URI uri, final String extension) {
-		String rawName = getRawName(uri); //get the URI raw name
-		if(rawName == null) { //if there is no raw name
-			if(extension == null) { //if they didn't want an extension, anyway
-				return uri; //just return the URI, which has no extension
-			}
-			throw new IllegalArgumentException("Cannot change the name extension of URI " + uri + ", which has no path.");
-		}
-		rawName = Filenames.changeExtension(rawName, extension); //change the extension of the name
-		return changeRawName(uri, rawName); //change the raw name of the URI
+		final String oldRawName = findRawName(uri)
+				.orElseThrow(() -> new IllegalArgumentException(String.format("Cannot change the name extension of URI <%s>, which has no path.", uri)));
+		final String newRawName = Filenames.changeExtension(oldRawName, extension); //change the extension of the name
+		return changeRawName(uri, newRawName); //change the raw name of the URI
 	}
 
 	/**
@@ -1092,7 +1157,7 @@ public class URIs {
 	 * @param uri The URI for which to return a content type.
 	 * @return The default content type for the URI's name extension, or <code>null</code> if no known content type is associated with this URI's extension.
 	 * @see Files#getExtensionContentType(String)
-	 * @see #getRawName(URI)
+	 * @see #findRawName(URI)
 	 * @see Filenames#findExtension(String)
 	 * @deprecated to be removed in favor of some other content type discovery mechanism.
 	 */
