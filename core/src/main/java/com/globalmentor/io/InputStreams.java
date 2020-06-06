@@ -157,23 +157,63 @@ public class InputStreams {
 	}
 
 	/**
-	 * Fills a buffer with bytes from an input stream, blocking until the buffer is full or the end of the stream is reached.
+	 * Fills a buffer with bytes from an input stream, starting at its beginning, blocking until the buffer is full or the end of the stream is reached.
+	 * @apiNote This method functions identically to {@link InputStream#read(byte[])} except that this method guarantees that the buffer will <em>always</em> be
+	 *          filled unless the end of the stream is reached or an error is encountered.
+	 * @implSpec This implementation delegates to {@link #read(InputStream, byte[], int)}.
 	 * @param inputStream The input stream from which to read.
 	 * @param buffer The buffer to fill.
 	 * @return The number of bytes actually read; if less than the size of the buffer, the end of the stream has been reached.
+	 * @throws IndexOutOfBoundsException If the length is negative or the length is greater than the size of the buffer.
 	 * @throws IOException if there is an error reading from the input stream.
+	 * @see InputStream#read(byte[])
 	 */
 	public static int read(final InputStream inputStream, final byte[] buffer) throws IOException {
-		final int bufferLength = buffer.length; //get the length of the buffer
-		int bufferBytesRead = 0; //show that we haven't read any bytes in this buffer
-		int segmentBytesRead; //we'll use this to hold the number of bytes we read in each segment
-		do { //read each segment of the buffer; the buffer may take several segments, since we're not guaranteed to have a buffered reader
-			//read as much as we can into this buffer, at the next location, although this may not fill up the buffer
-			segmentBytesRead = inputStream.read(buffer, bufferBytesRead, bufferLength - bufferBytesRead);
-			if(segmentBytesRead >= 0) //if we haven't hit the end of the stream
-				bufferBytesRead += segmentBytesRead; //update the number of bytes we've read for the buffer
-		} while(segmentBytesRead >= 0 && bufferBytesRead < bufferLength); //keep reading segments while we haven't reached the end of the file and we haven't filled up the buffer
-		return bufferBytesRead; //return the number of bytes read
+		return read(inputStream, buffer, buffer.length);
+	}
+
+	/**
+	 * Fills a section of a buffer with bytes from an input stream, starting at its beginning, blocking until the buffer is full or the end of the stream is
+	 * reached.
+	 * @apiNote This method functions identically to {@link InputStream#read(byte[], int, int)} with an offset of <code>0</code> except that this method
+	 *          guarantees that the requested number of bytes will <em>always</em> be read unless the end of the stream is reached or an error is encountered.
+	 * @implSpec This implementation delegates to {@link #read(InputStream, byte[], int, int)}.
+	 * @param inputStream The input stream from which to read.
+	 * @param buffer The buffer to fill.
+	 * @param length The maximum number of bytes to read.
+	 * @return The number of bytes actually read; if less than the requested length, the end of the stream has been reached.
+	 * @throws IndexOutOfBoundsException If the length is negative or the length is greater than the size of the buffer.
+	 * @throws IOException if there is an error reading from the input stream.
+	 * @see InputStream#read(byte[], int, int)
+	 */
+	public static int read(final InputStream inputStream, final byte[] buffer, final int length) throws IOException {
+		return read(inputStream, buffer, 0, length);
+	}
+
+	/**
+	 * Fills a section of a buffer with bytes from an input stream, blocking until the buffer is full or the end of the stream is reached.
+	 * @apiNote This method functions identically to {@link InputStream#read(byte[], int, int)} except that this method guarantees that the requested number of
+	 *          bytes will <em>always</em> be read unless the end of the stream is reached or an error is encountered.
+	 * @param inputStream The input stream from which to read.
+	 * @param buffer The buffer to fill.
+	 * @param offset The start offset in the buffer at which the data is written.
+	 * @param length The maximum number of bytes to read.
+	 * @return The number of bytes actually read; if less than the requested length, the end of the stream has been reached.
+	 * @throws IndexOutOfBoundsException If the offset is negative, the length is negative, or the length is greater than the remaining bytes in the buffer
+	 *           starting at the given offset.
+	 * @throws IOException if there is an error reading from the input stream.
+	 * @see InputStream#read(byte[], int, int)
+	 */
+	public static int read(final InputStream inputStream, final byte[] buffer, int offset, int length) throws IOException {
+		int totalReadCount = 0;
+		int eachReadCount;
+		//use `length!=0` instead of `length>0` so that InputStream.read() can check for us to make sure it is not negative
+		while(length != 0 && (eachReadCount = inputStream.read(buffer, offset, length)) != -1) {
+			totalReadCount += eachReadCount;
+			offset += eachReadCount; //the offset goes forward
+			length -= eachReadCount; //the remaining length diminishes
+		}
+		return totalReadCount;
 	}
 
 	/**
@@ -209,9 +249,8 @@ public class InputStreams {
 		checkArgument(inputStream.markSupported(), "Inputstream must support mark/reset.");
 		final int BYTE_ORDER_MARK_LENGTH = 4; //the number of bytes in the largest byte order mark
 		inputStream.mark(BYTE_ORDER_MARK_LENGTH); //we won't read more than the byte order mark
-		final byte[] bytes = new byte[BYTE_ORDER_MARK_LENGTH]; //create an array to hold the byte order mark
-		Arrays.fill(bytes, (byte)0); //fill the array with zeros, in case we can't completely fill it with bytes from the input stream
-		final int byteOrderMarkCount = inputStream.read(bytes); //read as many characters of the byte order mark as we can
+		final byte[] bytes = new byte[BYTE_ORDER_MARK_LENGTH]; //create an array to hold the byte order mark; Java initializes the array with zeros
+		final int byteOrderMarkCount = read(inputStream, bytes); //read as many characters of the byte order mark as we can
 		if(byteOrderMarkCount > 0) { //if we read any characters as all
 			final Optional<ByteOrderMark> optionalBOM = ByteOrderMark.detect(bytes); //try to detect the byte order mark
 			if(optionalBOM.isPresent()) { //if we discovered a BOM

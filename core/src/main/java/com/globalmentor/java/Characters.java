@@ -57,10 +57,17 @@ import com.globalmentor.text.RomanNumerals;
 public final class Characters {
 
 	/** A shared instance of an empty array of characters. */
-	public static final char[] EMPTY_ARRAY = new char[0];
+	public static final char[] NO_CHARS = new char[0];
+
+	/**
+	 * A shared instance of an empty array of characters.
+	 * @deprecated to be removed in favor of {@link #NO_CHARS}.
+	 */
+	@Deprecated
+	public static final char[] EMPTY_ARRAY = NO_CHARS;
 
 	/** The shared instance of no characters. */
-	public static final Characters NONE = new Characters(EMPTY_ARRAY); //must be defined before the predefined instances below
+	public static final Characters NONE = new Characters(NO_CHARS); //must be defined before the predefined instances below
 
 	/** The character with Unicode code point zero. */
 	public static final char NULL_CHAR = 0x0000;
