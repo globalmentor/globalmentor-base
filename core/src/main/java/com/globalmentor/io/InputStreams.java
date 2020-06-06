@@ -249,9 +249,8 @@ public class InputStreams {
 		checkArgument(inputStream.markSupported(), "Inputstream must support mark/reset.");
 		final int BYTE_ORDER_MARK_LENGTH = 4; //the number of bytes in the largest byte order mark
 		inputStream.mark(BYTE_ORDER_MARK_LENGTH); //we won't read more than the byte order mark
-		final byte[] bytes = new byte[BYTE_ORDER_MARK_LENGTH]; //create an array to hold the byte order mark
-		Arrays.fill(bytes, (byte)0); //fill the array with zeros, in case we can't completely fill it with bytes from the input stream
-		final int byteOrderMarkCount = inputStream.read(bytes); //read as many characters of the byte order mark as we can
+		final byte[] bytes = new byte[BYTE_ORDER_MARK_LENGTH]; //create an array to hold the byte order mark; Java initializes the array with zeros
+		final int byteOrderMarkCount = read(inputStream, bytes); //read as many characters of the byte order mark as we can
 		if(byteOrderMarkCount > 0) { //if we read any characters as all
 			final Optional<ByteOrderMark> optionalBOM = ByteOrderMark.detect(bytes); //try to detect the byte order mark
 			if(optionalBOM.isPresent()) { //if we discovered a BOM

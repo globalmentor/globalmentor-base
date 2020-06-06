@@ -24,6 +24,7 @@ import javax.annotation.*;
 
 import com.globalmentor.java.Characters;
 
+import static com.globalmentor.io.Readers.*;
 import static com.globalmentor.java.Conditions.*;
 
 /**
@@ -267,7 +268,7 @@ public class ReaderParser {
 		final int length = charSequence.length();
 		final char[] buffer = new char[length]; //create a buffer for reading all the characters more efficiently than one at a time
 		reader.mark(length); //mark our current position
-		if(reader.read(buffer) < length) { //read the characters; if there weren't enough characters left before the end
+		if(read(reader, buffer) < length) { //read the characters; if there weren't enough characters left before the end
 			reader.reset(); //reset to the last mark, right before we read the string
 			return false;
 		}
@@ -600,7 +601,7 @@ public class ReaderParser {
 			throws IOException, ParseUnexpectedDataException {
 		checkArgumentNotNegative(count); //make sure the count isn't negative
 		final char[] buffer = new char[count]; //create a new buffer
-		if(reader.read(buffer) != count) { //read the characters; if all the character weren't read
+		if(read(reader, buffer) != count) { //read the characters; if all the character weren't read
 			throw new ParseEOFException(reader);
 		}
 		for(int i = 0; i < count; ++i) { //look at each character
@@ -763,4 +764,5 @@ public class ReaderParser {
 	public static int skip(@Nonnull final Reader reader, @Nonnull final Characters characters) throws IOException {
 		return consumeWhile(reader, characters, null); //skip the characters without saving them
 	}
+
 }
