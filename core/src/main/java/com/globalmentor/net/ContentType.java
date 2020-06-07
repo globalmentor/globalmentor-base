@@ -447,25 +447,46 @@ public final class ContentType { //TODO major version: rename to MediaType
 		return match(APPLICATION_PRIMARY_TYPE, X_JAVA_OBJECT); //check for application/x-java-object and class name
 	}
 
-	/** @return A string representation of the the base content type, that is, the same primary and subtype as the content type, but with no parameters. */
+	/**
+	 * @return A string representation of the the base content type, that is, the same primary and subtype as the content type, but with no parameters.
+	 * @deprecated to be removed in favor of {@link #toBaseTypeString()}.
+	 */
 	@Deprecated
-	public String getBaseType() { //for compatibility with javax.activiation.MimeType; remove in favor of getBaseContentType()
-		return toString(getPrimaryType(), getSubType());
+	public String getBaseType() {
+		return toBaseTypeString();
 	}
 
 	/**
 	 * Determines the base content type, with no parameters, of the content type. Useful for making comparisons or for storing in canonical form in a hash table.
 	 * If this content type is already a base content type, this content type is returned.
 	 * @return A content type with the same primary and subtype as the content type, but with no parameters.
+	 * @deprecated to be removed in favor of {@link #toBaseType()}.
 	 */
+	@Deprecated
 	public ContentType getBaseContentType() {
-		return getParameters().isEmpty() ? this : new ContentType(getPrimaryType(), getSubType(), Collections.<Parameter>emptySet()); //if this content type is already just the base type, return that
+		return toBaseType();
 	}
 
 	/**
-	 * Checks to see if the given content type has the same primary type and subtype as this content type. This method does <em>not</em> support wildcards.
+	 * Returns an instance of the "base type"; that is, the content type with no parameters.
+	 * @apiNote The base type is useful for making comparisons or for storing in canonical form in a hash table.
+	 * @implSpec If this content type is already a base content type, this content type is returned.
+	 * @return A content type with the same primary and subtype as the content type, but with no parameters.
+	 * @see #toBaseTypeString()
+	 * @see #hasBaseType(ContentType)
+	 * @see #hasBaseType(String, String)
+	 */
+	public ContentType toBaseType() {
+		return getParameters().isEmpty() ? this : ContentType.of(getPrimaryType(), getSubType()); //if this content type is already just the base type, return it as-is
+	}
+
+	/**
+	 * Checks to see if the given content type has the same primary type and subtype as this content type. The parameters of the this content type and the given
+	 * content type are ignored. This method does <em>not</em> support wildcards.
 	 * @param contentType The content type with which to compare this content type.
 	 * @return <code>true</code> if the primary types and base types of the two content types are equal.
+	 * @see #toBaseType()
+	 * @see #toBaseTypeString()
 	 */
 	public boolean hasBaseType(final ContentType contentType) {
 		return hasBaseType(contentType.getPrimaryType(), contentType.getSubType());
@@ -477,6 +498,8 @@ public final class ContentType { //TODO major version: rename to MediaType
 	 * @param subType The subtype with which to compare the content type.
 	 * @return <code>true</code> if the content type has the same primary type and subtype as that given.
 	 * @throws NullPointerException if the primary type and/or subtype is <code>null</code>.
+	 * @see #toBaseType()
+	 * @see #toBaseTypeString()
 	 */
 	public boolean hasBaseType(final String primaryType, final String subType) {
 		return ASCII.equalsIgnoreCase(getPrimaryType(), primaryType) && ASCII.equalsIgnoreCase(getSubType(), subType); //check the primary type and subtype
@@ -614,6 +637,18 @@ public final class ContentType { //TODO major version: rename to MediaType
 	@Override
 	public String toString() {
 		return toString(false);
+	}
+
+	/**
+	 * Returns a string representation of the base type; that is, the same primary and subtype as the content type, but with no parameters
+	 * @apiNote Compare with <code>javax.activiation.MimeType.getBaseType()</code>.
+	 * @return A string representation of the content type with no parameters.
+	 * @see #toBaseType()
+	 * @see #hasBaseType(ContentType)
+	 * @see #hasBaseType(String, String)
+	 */
+	public String toBaseTypeString() {
+		return toString(getPrimaryType(), getSubType());
 	}
 
 	/**
