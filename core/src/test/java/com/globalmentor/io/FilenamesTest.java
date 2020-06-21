@@ -32,9 +32,9 @@ import org.junit.jupiter.api.*;
  */
 public class FilenamesTest {
 
-	//#filenames
+	//# filenames
 
-	//##dotfiles
+	//## dotfiles
 
 	/** @see Filenames #isDotfileFilename(String) */
 	@Test
@@ -66,7 +66,7 @@ public class FilenamesTest {
 		assertThat(Filenames.isDotfileFilename("foo.bar."), is(false));
 	}
 
-	//#encode/decode
+	//# encode/decode
 
 	/**
 	 * Test to verify if the method {@link Filenames#encodeCrossPlatformFilename(String)} and {@link Filenames#decodeFilename(String)} are encoding and decoding
@@ -117,7 +117,7 @@ public class FilenamesTest {
 		assertThat(Filenames.decodeFilename(publicationName), equalTo("/ (Dream of the Red Chamber)"));
 	}
 
-	//#extensions
+	//# extensions
 
 	/** Tests whether {@link Filenames#addExtension(String, String)} is working properly. */
 	@Test

@@ -67,7 +67,7 @@ public class PathsTest {
 		assertThrows(IllegalArgumentException.class, () -> Paths.changeBase(testFile, tempDirectory.resolve("bad"), tempDirectory.resolve("bar")));
 	}
 
-	//#filenames
+	//# filenames
 
 	/** Tests whether the extension is being added correctly using {@link Paths#addFilenameExtension(Path, String)}. */
 	@Test

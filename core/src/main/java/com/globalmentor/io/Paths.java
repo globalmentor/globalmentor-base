@@ -169,7 +169,7 @@ public class Paths {
 		return subPath.normalize().startsWith(basePath.normalize()); //normalize files to compare apples to apples
 	}
 
-	//#filenames
+	//# filenames
 
 	/**
 	 * Return a path's filename, if any, as a string.
@@ -181,7 +181,7 @@ public class Paths {
 		return Optional.ofNullable(path.getFileName()).map(Path::toString);
 	}
 
-	//##dotfiles
+	//## dotfiles
 
 	/**
 	 * Determines whether the path is for a so-called "dotfile", the filename of which begins with a dot but is neither <code>"."</code> or <code>".."</code>.
@@ -198,7 +198,7 @@ public class Paths {
 		return filename != null && isDotfileFilename(filename.toString());
 	}
 
-	//#extensions
+	//# extensions
 
 	/**
 	 * Adds the given extension to a path and returns the new path with the new extension. The filename is not checked to see if it currently has an extension.
@@ -300,7 +300,7 @@ public class Paths {
 		return path.resolveSibling(Filenames.removeExtension(filename.toString()));
 	}
 
-	//#predicates
+	//# predicates
 
 	/**
 	 * Returns a predicate for matching paths by a base filename. Only paths that have a filename and which filename has the given base name (the given base name
