@@ -61,6 +61,6 @@ public class FileExtensionFilter implements FileFilter, FilenameFilter {
 	 * @return <code>true</code> if and only if <code>pathname</code> should be included
 	 */
 	public boolean accept(final File file) {
-		return findExtension(file).map(getExtensionSet()::contains).orElse(false); //see if the extension set contains the extension of the file  	
+		return findNameExtension(file).map(getExtensionSet()::contains).orElse(false); //see if the extension set contains the extension of the file  	
 	}
 }

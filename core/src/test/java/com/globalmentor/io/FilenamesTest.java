@@ -23,8 +23,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.*;
 
-import com.globalmentor.io.Filenames;
-
 /**
  * Various tests for working with filenames.
  * 
@@ -123,7 +121,7 @@ public class FilenamesTest {
 
 	/** Tests whether {@link Filenames#addExtension(String, String)} is working properly. */
 	@Test
-	public void testAddNameExtension() {
+	public void testAddExtension() {
 		assertThat(Filenames.addExtension("foobar", "txt"), is("foobar.txt"));
 		assertThat(Filenames.addExtension("foobar", ""), is("foobar."));
 
@@ -132,18 +130,18 @@ public class FilenamesTest {
 	}
 
 	/** Tests whether {@link Filenames#addExtension(String, String)} is throwing an exception when a <code>null</code> name is provided. */
-	public void testAddNameExtensionNullNameFail() {
+	public void testAddExtensionNullNameFail() {
 		assertThrows(NullPointerException.class, () -> Filenames.addExtension(null, "txt"));
 	}
 
 	/** Tests whether {@link Filenames#addExtension(String, String)} is throwing an exception when a <code>null</code> extension is provided. */
-	public void testAddNameExtensionNullExtensionFail() {
+	public void testAddExtensionNullExtensionFail() {
 		assertThrows(NullPointerException.class, () -> Filenames.addExtension("foobar", null));
 	}
 
 	/** Tests whether {@link Filenames#findExtension(String)} is working properly. */
 	@Test
-	public void testFindNameExtensionString() {
+	public void testFindExtensionString() {
 		assertThat(Filenames.findExtension("foobar.txt"), isPresentAndIs("txt"));
 		assertThat(Filenames.findExtension("foobar"), isEmpty());
 		assertThat(Filenames.findExtension(""), isEmpty());
@@ -153,7 +151,7 @@ public class FilenamesTest {
 	}
 
 	/** Tests whether {@link Filenames#findExtension(String)} is throwing an exception when a <code>null</code> name is provided. */
-	public void testFindNameExtensionNullStringFail() {
+	public void testFindExtensionNullStringFail() {
 		assertThrows(NullPointerException.class, () -> Filenames.findExtension(null));
 	}
 

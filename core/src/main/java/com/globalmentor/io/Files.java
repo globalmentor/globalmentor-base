@@ -160,14 +160,26 @@ public class Files {
 
 	/**
 	 * Adds the given extension to a file and returns the new file with the new extension. The filename is not checked to see if it currently has an extension.
-	 * <p>
-	 * This implementation requires the given file to have a parent.
-	 * </p>
 	 * @param file The file to which to add an extension.
 	 * @param extension The extension to add.
 	 * @return The file with the new extension.
+	 * @deprecated to be removed in favor of {@link #addNameExtension(File, String)}.
 	 */
+	@Deprecated
 	public static File addExtension(final File file, final String extension) {
+		return addNameExtension(file, extension);
+	}
+
+	/**
+	 * Adds the given extension to a file name and returns the new file with the new extension. The filename is not checked to see if it currently has an
+	 * extension.
+	 * @implNote This implementation requires the given file to have a parent.
+	 * @param file The file to which to add an extension.
+	 * @param extension The extension to add.
+	 * @return The file with the new name extension.
+	 * @see File#getName()
+	 */
+	public static File addNameExtension(@Nonnull final File file, @Nonnull final String extension) {
 		return new File(file.getParent(), Filenames.addExtension(file.getName(), extension)); //return the file with a "temp" extension
 	}
 
@@ -244,8 +256,8 @@ public class Files {
 	}
 
 	/**
-	 * Creates a temporary file in the standard temporary directory with no automatic deletion on JVM exit. This convenience method provides more intuitive
-	 * parameters than {@link File#createTempFile(String, String)}.
+	 * Creates a temporary file in the standard temporary directory with no automatic deletion on JVM exit.
+	 * @apiNote This convenience method provides more intuitive parameters than {@link File#createTempFile(String, String)}.
 	 * @param baseName The base filename to be used in generating the filename.
 	 * @param extension The extension to use for the temporary file, or <code>null</code> if a default extension should be used.
 	 * @return A new temporary file.
@@ -259,8 +271,8 @@ public class Files {
 	}
 
 	/**
-	 * Creates a temporary file in the standard temporary directory with optional automatic deletion, using a {@value #TEMP_EXTENSION} extension. This convenience
-	 * method provides more intuitive parameters than {@link File#createTempFile(String, String)}.
+	 * Creates a temporary file in the standard temporary directory with optional automatic deletion, using a {@value #TEMP_EXTENSION} extension.
+	 * @apiNote This convenience method provides more intuitive parameters than {@link File#createTempFile(String, String)}.
 	 * @param baseName The base filename to be used in generating the filename.
 	 * @param deleteOnExit Whether the file should be deleted when the JVM exits.
 	 * @return A new temporary file.
@@ -276,8 +288,8 @@ public class Files {
 	}
 
 	/**
-	 * Creates a temporary file in the standard temporary directory with optional automatic deletion. This convenience method provides more intuitive parameters
-	 * than {@link File#createTempFile(String, String)}.
+	 * Creates a temporary file in the standard temporary directory with optional automatic deletion.
+	 * @apiNote This convenience method provides more intuitive parameters than {@link File#createTempFile(String, String)}.
 	 * @param baseName The base filename to be used in generating the filename.
 	 * @param extension The extension to use for the temporary file, or <code>null</code> if a default extension should be used.
 	 * @param deleteOnExit Whether the file should be deleted when the JVM exits.
@@ -325,8 +337,8 @@ public class Files {
 	}
 
 	/**
-	 * Creates a temporary file in a given directory, using a {@value #TEMP_EXTENSION} extension. This convenience method provides more intuitive parameters than
-	 * {@link File#createTempFile(String, String, File)}.
+	 * Creates a temporary file in a given directory, using a {@value #TEMP_EXTENSION} extension.
+	 * @apiNote This convenience method provides more intuitive parameters than {@link File#createTempFile(String, String, File)}.
 	 * @param baseName The base filename to be used in generating the filename.
 	 * @param directory The directory in which the file is to be created, or <code>null</code> if the default temporary-file directory is to be used.
 	 * @return A new temporary file.
@@ -341,8 +353,8 @@ public class Files {
 	}
 
 	/**
-	 * Creates a temporary file in a given directory with optional automatic deletion, using a {@value #TEMP_EXTENSION} extension. This convenience method
-	 * provides more intuitive parameters than {@link File#createTempFile(String, String, File)}.
+	 * Creates a temporary file in a given directory with optional automatic deletion, using a {@value #TEMP_EXTENSION} extension.
+	 * @apiNote This convenience method provides more intuitive parameters than {@link File#createTempFile(String, String, File)}.
 	 * @param baseName The base filename to be used in generating the filename.
 	 * @param directory The directory in which the file is to be created, or <code>null</code> if the default temporary-file directory is to be used.
 	 * @param deleteOnExit Whether the file should be deleted when the JVM exits.
@@ -359,8 +371,8 @@ public class Files {
 	}
 
 	/**
-	 * Creates a temporary file in a given directory with optional automatic deletion. This convenience method provides more intuitive parameters than
-	 * {@link File#createTempFile(String, String, File)}.
+	 * Creates a temporary file in a given directory with optional automatic deletion.
+	 * @apiNote This convenience method provides more intuitive parameters than {@link File#createTempFile(String, String, File)}.
 	 * @param baseName The base filename to be used in generating the filename.
 	 * @param extension The extension to use for the temporary file, or <code>null</code> if a default extension should be used.
 	 * @param directory The directory in which the file is to be created, or <code>null</code> if the default temporary-file directory is to be used.
@@ -445,7 +457,7 @@ public class Files {
 	 * @param file The file to examine.
 	 * @return The extension of the file (not including '.'), or <code>null</code> if no extension is present.
 	 */
-	public static Optional<String> findExtension(@Nonnull final File file) {
+	public static Optional<String> findNameExtension(@Nonnull final File file) {
 		return Filenames.findExtension(file.getName());
 	}
 
@@ -453,11 +465,11 @@ public class Files {
 	 * Extracts the extension from a file. Anything after the last path character ('/' or '\\') is ignored.
 	 * @param file The file to examine.
 	 * @return The extension of the file (not including '.'), or <code>null</code> if no extension is present.
-	 * @deprecated to be removed in favor of {@link #findExtension(File)}.
+	 * @deprecated to be removed in favor of {@link #findNameExtension(File)}.
 	 */
 	@Deprecated
 	public static String getExtension(@Nonnull final File file) {
-		return findExtension(file).orElse(null);
+		return findNameExtension(file).orElse(null);
 	}
 
 	/**
@@ -493,8 +505,21 @@ public class Files {
 	 * @param file The file to examine.
 	 * @param extension The extension to set, or <code>null</code> if the extension should be removed.
 	 * @return The file with the new extension.
+	 * @deprecated to be removed in favor of {@link #changeNameExtension(File, String)}.
 	 */
+	@Deprecated
 	public static File changeExtension(final File file, final String extension) {
+		return changeNameExtension(file, extension);
+	}
+
+	/**
+	 * Changes the extension of a file name and returns a new file with the new extension. If the filename does not currently have an extension, one will be
+	 * added.
+	 * @param file The file to examine.
+	 * @param extension The extension to set, or <code>null</code> if the extension should be removed.
+	 * @return The file with the new extension.
+	 */
+	public static File changeNameExtension(@Nonnull final File file, @Nullable final String extension) {
 		return changeName(file, Filenames.changeExtension(file.getName(), extension)); //return a file based on the name with the new extension
 	}
 
@@ -528,13 +553,24 @@ public class Files {
 	}
 
 	/**
-	 * Removes the extension of a filename, if any, and returns a new file with no extension. This is a convenience method that delegates to
-	 * {@link #changeExtension(File, String)}.
+	 * Removes the extension of a filename, if any, and returns a new file with no extension.
+	 * @param file The file to examine.
+	 * @return The file with no extension.
+	 * @deprecated to be removed in favor of {@link #removeNameExtension(File)}.
+	 */
+	@Deprecated
+	public static File removeExtension(final File file) {
+		return removeNameExtension(file);
+	}
+
+	/**
+	 * Removes the extension of a filename, if any, and returns a new file with no extension.
+	 * @implSpec This is a convenience method that delegates to {@link #changeNameExtension(File, String)}.
 	 * @param file The file to examine.
 	 * @return The file with no extension.
 	 */
-	public static File removeExtension(final File file) {
-		return changeExtension(file, null); //replace the extension with nothing
+	public static File removeNameExtension(@Nonnull final File file) {
+		return changeNameExtension(file, null); //replace the extension with nothing
 	}
 
 	/**
@@ -546,7 +582,7 @@ public class Files {
 	 */
 	@Deprecated
 	public static ContentType getContentType(final File file) {
-		return findExtension(file).map(Files::getExtensionContentType).orElse(null);
+		return findNameExtension(file).map(Files::getExtensionContentType).orElse(null);
 	}
 
 	/**
@@ -801,9 +837,7 @@ public class Files {
 
 	/**
 	 * Reads the contents of the given file.
-	 * <p>
-	 * This is a convenience that obviates the need for boilerplate for getting an {@link InputStream} from a {@link File}.
-	 * </p>
+	 * @apiNote This is a convenience that obviates the need for boilerplate for getting an {@link InputStream} from a {@link File}.
 	 * @param file The file from which the information will be read.
 	 * @param inputStreamReadable The object to read the information from the file.
 	 * @throws IOException if there is an error loading the contents of the file.
@@ -819,9 +853,7 @@ public class Files {
 
 	/**
 	 * Writes to the given file.
-	 * <p>
-	 * This is a convenience that obviates the need for boilerplate for getting an {@link OutputStream} to a {@link File}.
-	 * </p>
+	 * @apiNote This is a convenience that obviates the need for boilerplate for getting an {@link OutputStream} to a {@link File}.
 	 * @param file The file to which the information will be written.
 	 * @param outputStreamWritable The object to write the information to the file.
 	 * @throws IOException if there is an error writing the contents to the file.
@@ -1328,11 +1360,9 @@ public class Files {
 
 	/**
 	 * Determines the backup file path to use for the file at the given path without a rolling policy. The backup file will be in the same directory as the given
-	 * path; and the filename will be in the form <code>filename.ext.bak</code>, i.e. with a <code>bak</code> extension added. This is a convenience method that
-	 * delegates to {@link #getBackupPath(Path, long)} with the value <code>1</code> for <var>maxBackupCount</var>.
-	 * 
+	 * path; and the filename will be in the form <code>filename.ext.bak</code>, i.e. with a <code>bak</code> extension added.
+	 * @implSpec This is a convenience method that delegates to {@link #getBackupPath(Path, long)} with the value <code>1</code> for <var>maxBackupCount</var>.
 	 * @param path The path of the file to back up.
-	 * 
 	 * @return The path to the backup file to use.
 	 */
 	public static Path getBackupPath(@Nonnull final Path path) { //TODO move to Paths?
@@ -1374,11 +1404,9 @@ public class Files {
 
 	/**
 	 * Backs up a given file without a rolling policy. If the backup filename does not exist, the indicated file will simply be copied to the backup file
-	 * destination. If the backup file destination exists, it will be overwritten. This is a convenience method that delegates to {@link #backupFile(Path, long)}
-	 * with the value <code>1</code> for <var>maxBackupCount</var>.
-	 * 
+	 * destination. If the backup file destination exists, it will be overwritten.
+	 * @implSpec This is a convenience method that delegates to {@link #backupFile(Path, long)} with the value <code>1</code> for <var>maxBackupCount</var>.
 	 * @param path The path of the file to back up.
-	 * 
 	 * @return The path to the backup file used.
 	 * @throws IllegalArgumentException if <var><code>maxBackupCount</code></var> is zero or negative.
 	 * @throws IOException If an error occurs while rolling the backup files.
@@ -1452,12 +1480,11 @@ public class Files {
 
 	/**
 	 * Opens or creates a file after first creating a backup without a rolling policy of the file if it exists, returning an output stream that may be used to
-	 * write bytes to the file. The maximum number of backups used on this method will be 1. This is a convenience method that delegates to
-	 * {@link #newOutputStreamWithBackup(Path, long, OpenOption...)} with the value <code>1</code> for <var>maxBackupCount</var>.
-	 * 
+	 * write bytes to the file. The maximum number of backups used on this method will be 1.
+	 * @implSpec This is a convenience method that delegates to {@link #newOutputStreamWithBackup(Path, long, OpenOption...)} with the value <code>1</code> for
+	 *           <var>maxBackupCount</var>.
 	 * @param path The path of the file to back up.
 	 * @param options The options specifying how the file is opened.
-	 * 
 	 * @return The new {@link OutputStream} after the creation of a backup for the given file.
 	 * @throws IllegalArgumentException if <var><code>maxBackupCount</code></var> is negative.
 	 * @throws IOException If an error occurs while creating the backup file.

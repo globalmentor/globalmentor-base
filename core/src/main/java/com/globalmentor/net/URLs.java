@@ -58,7 +58,7 @@ public class URLs {
 	 */
 	@Deprecated
 	public static ContentType getMediaType(final URL url) {
-		return Files.findExtension(getFile(url)).map(Files::getExtensionContentType).orElse(null); //return the media type based on the extension of the URL filename
+		return Files.findNameExtension(getFile(url)).map(Files::getExtensionContentType).orElse(null); //return the media type based on the extension of the URL filename
 	}
 
 	/**
