@@ -23,8 +23,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.*;
 
-import com.globalmentor.io.Filenames;
-
 /**
  * Various tests for working with filenames.
  * 
@@ -34,9 +32,9 @@ import com.globalmentor.io.Filenames;
  */
 public class FilenamesTest {
 
-	//#filenames
+	//# filenames
 
-	//##dotfiles
+	//## dotfiles
 
 	/** @see Filenames #isDotfileFilename(String) */
 	@Test
@@ -68,7 +66,7 @@ public class FilenamesTest {
 		assertThat(Filenames.isDotfileFilename("foo.bar."), is(false));
 	}
 
-	//#encode/decode
+	//## encode/decode
 
 	/**
 	 * Test to verify if the method {@link Filenames#encodeCrossPlatformFilename(String)} and {@link Filenames#decodeFilename(String)} are encoding and decoding
@@ -119,11 +117,27 @@ public class FilenamesTest {
 		assertThat(Filenames.decodeFilename(publicationName), equalTo("/ (Dream of the Red Chamber)"));
 	}
 
-	//#extensions
+	//## base filenames
+
+	/** @see Filenames#changeBase(String, String) */
+	@Test
+	public void testChangeBase() {
+		assertThrows(IllegalArgumentException.class, () -> Filenames.changeBase("", ""));
+		assertThrows(IllegalArgumentException.class, () -> Filenames.changeBase("foo", ""));
+		assertThrows(IllegalArgumentException.class, () -> Filenames.changeBase("", "bar"));
+		assertThat(Filenames.changeBase("test", "test"), is("test"));
+		assertThat(Filenames.changeBase("test", "foo"), is("foo"));
+		assertThat(Filenames.changeBase("test.bar", "test"), is("test.bar"));
+		assertThat(Filenames.changeBase("test.bar", "foo"), is("foo.bar"));
+		assertThat(Filenames.changeBase("test.foo.bar", "test"), is("test.foo.bar"));
+		assertThat(Filenames.changeBase("test.foo.bar", "other"), is("other.foo.bar"));
+	}
+
+	//## extensions
 
 	/** Tests whether {@link Filenames#addExtension(String, String)} is working properly. */
 	@Test
-	public void testAddNameExtension() {
+	public void testAddExtension() {
 		assertThat(Filenames.addExtension("foobar", "txt"), is("foobar.txt"));
 		assertThat(Filenames.addExtension("foobar", ""), is("foobar."));
 
@@ -132,18 +146,18 @@ public class FilenamesTest {
 	}
 
 	/** Tests whether {@link Filenames#addExtension(String, String)} is throwing an exception when a <code>null</code> name is provided. */
-	public void testAddNameExtensionNullNameFail() {
+	public void testAddExtensionNullNameFail() {
 		assertThrows(NullPointerException.class, () -> Filenames.addExtension(null, "txt"));
 	}
 
 	/** Tests whether {@link Filenames#addExtension(String, String)} is throwing an exception when a <code>null</code> extension is provided. */
-	public void testAddNameExtensionNullExtensionFail() {
+	public void testAddExtensionNullExtensionFail() {
 		assertThrows(NullPointerException.class, () -> Filenames.addExtension("foobar", null));
 	}
 
 	/** Tests whether {@link Filenames#findExtension(String)} is working properly. */
 	@Test
-	public void testFindNameExtensionString() {
+	public void testFindExtensionString() {
 		assertThat(Filenames.findExtension("foobar.txt"), isPresentAndIs("txt"));
 		assertThat(Filenames.findExtension("foobar"), isEmpty());
 		assertThat(Filenames.findExtension(""), isEmpty());
@@ -153,8 +167,19 @@ public class FilenamesTest {
 	}
 
 	/** Tests whether {@link Filenames#findExtension(String)} is throwing an exception when a <code>null</code> name is provided. */
-	public void testFindNameExtensionNullStringFail() {
+	@Test
+	public void testFindExtensionNullStringFail() {
 		assertThrows(NullPointerException.class, () -> Filenames.findExtension(null));
+	}
+
+	/** @see Filenames#changeExtension(String, String) */
+	@Test
+	public void testChangeExtension() {
+		assertThrows(IllegalArgumentException.class, () -> Filenames.changeExtension("", "foo"));
+		assertThat(Filenames.changeExtension("test", "foo"), is("test.foo"));
+		assertThat(Filenames.changeExtension("test.foo", "foo"), is("test.foo"));
+		assertThat(Filenames.changeExtension("test.foo", "bar"), is("test.bar"));
+		assertThat(Filenames.changeExtension("test.foo.bar", "other"), is("test.foo.other"));
 	}
 
 }

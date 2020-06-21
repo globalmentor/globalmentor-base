@@ -20,8 +20,9 @@ import java.util.*;
 import static java.util.Collections.*;
 import java.util.regex.Pattern;
 
+import com.globalmentor.io.Filenames;
+
 import static java.util.Objects.*;
-import static com.globalmentor.io.Filenames.*;
 import static com.globalmentor.text.RegularExpressions.*;
 
 /**
@@ -172,17 +173,17 @@ public class Locales {
 				final String language = locale.getLanguage(); //get the language
 				if(language.length() > 0) { //if this locale has a language
 					if(depth == 1) { //if depth 1 was requested
-						return appendBaseFilename(basePath, Locales.LOCALE_SEPARATOR + language); //return basePath_language.ext
+						return Filenames.appendBase(basePath, Locales.LOCALE_SEPARATOR + language); //return basePath_language.ext
 					} else { //if the depth is at least 2
 						final String country = locale.getCountry(); //get the country
 						if(country.length() > 0) { //if this locale has a country
 							if(depth == 2) { //if depth 2 was requested
-								return appendBaseFilename(basePath, Locales.LOCALE_SEPARATOR + language + Locales.LOCALE_SEPARATOR + country); //return basePath_language_country.ext
+								return Filenames.appendBase(basePath, Locales.LOCALE_SEPARATOR + language + Locales.LOCALE_SEPARATOR + country); //return basePath_language_country.ext
 							} else { //if the depth is at least 3
 								final String variant = locale.getVariant(); //get the variant
 								if(variant.length() > 0) { //if this locale has a variant
 									if(depth == 3) { //if depth 3 was requested
-										return appendBaseFilename(basePath,
+										return Filenames.appendBase(basePath,
 												Locales.LOCALE_SEPARATOR + language + Locales.LOCALE_SEPARATOR + country + Locales.LOCALE_SEPARATOR + variant); //return basePath_language_country_variant.ext
 									} else { //if something higher than depth 3 was requested
 										throw new IllegalArgumentException("Depth " + depth + " is higher than 3.");

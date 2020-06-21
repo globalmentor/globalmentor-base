@@ -169,7 +169,7 @@ public class Paths {
 		return subPath.normalize().startsWith(basePath.normalize()); //normalize files to compare apples to apples
 	}
 
-	//#filenames
+	//# filenames
 
 	/**
 	 * Return a path's filename, if any, as a string.
@@ -181,7 +181,7 @@ public class Paths {
 		return Optional.ofNullable(path.getFileName()).map(Path::toString);
 	}
 
-	//##dotfiles
+	//## dotfiles
 
 	/**
 	 * Determines whether the path is for a so-called "dotfile", the filename of which begins with a dot but is neither <code>"."</code> or <code>".."</code>.
@@ -198,7 +198,26 @@ public class Paths {
 		return filename != null && isDotfileFilename(filename.toString());
 	}
 
-	//#extensions
+	//## base filenames
+
+	/**
+	 * Changes the base of the path's filename, preserving the extension(s), if any.
+	 * @apiNote Here "base filename" refers to the filename with <em>all</em> extensions removed. That is both <code>example.bar</code> and
+	 *          <code>example.foo.bar</code> would result in a base filename of <code>example</code>.
+	 * @implSpec This method delegates to {@link Filenames#changeBase(String, String)}.
+	 * @param path The path to examine.
+	 * @param base The new filename base to set.
+	 * @return The path with the new filename base.
+	 * @throws NullPointerException if the given path's filename and/or the new base is <code>null</code>.
+	 * @throws IllegalArgumentException if the given path's filename and/or the new base is empty.
+	 */
+	public static Path changeFilenameBase(@Nonnull Path path, @Nonnull final String base) {
+		final String filename = findFilename(path)
+				.orElseThrow(() -> new IllegalArgumentException(String.format("Path %s has no filename for changing its base.", path)));
+		return path.resolveSibling(Filenames.changeBase(filename, base));
+	}
+
+	//## extensions
 
 	/**
 	 * Adds the given extension to a path and returns the new path with the new extension. The filename is not checked to see if it currently has an extension.
@@ -227,9 +246,9 @@ public class Paths {
 	public static Path addFilenameExtension(@Nonnull final Path path, @Nonnull final String extension) {
 		requireNonNull(path, "the <path> cannot be null.");
 		requireNonNull(extension, "the <extension> to be added cannot be null.");
-		final Path filename = path.getFileName();
-		checkArgument(filename != null, "Path %s has no filename to which an extension can be added.", path);
-		return path.resolveSibling(Filenames.addExtension(filename.toString(), extension));
+		final String filename = findFilename(path)
+				.orElseThrow(() -> new IllegalArgumentException(String.format("Path %s has no filename to which an extension can be added.", path)));
+		return path.resolveSibling(Filenames.addExtension(filename, extension));
 	}
 
 	/**
@@ -259,9 +278,9 @@ public class Paths {
 	 * @see Filenames#changeExtension(String, String)
 	 */
 	public static Path changeFilenameExtension(@Nonnull final Path path, @Nullable final String extension) {
-		final Path filename = path.getFileName();
-		checkArgument(filename != null, "Path %s has no filename for changing its extension.");
-		return path.resolveSibling(Filenames.changeExtension(filename.toString(), extension));
+		final String filename = findFilename(path)
+				.orElseThrow(() -> new IllegalArgumentException(String.format("Path %s has no filename for changing its extension.", path)));
+		return path.resolveSibling(Filenames.changeExtension(filename, extension));
 	}
 
 	/**
@@ -295,12 +314,12 @@ public class Paths {
 	 * @see Filenames#removeExtension(String)
 	 */
 	public static Path removeFilenameExtension(@Nonnull final Path path) {
-		final Path filename = path.getFileName();
-		checkArgument(filename != null, "Path %s has no filename for changing its extension.");
-		return path.resolveSibling(Filenames.removeExtension(filename.toString()));
+		final String filename = findFilename(path)
+				.orElseThrow(() -> new IllegalArgumentException(String.format("Path %s has no filename for removing its extension.", path)));
+		return path.resolveSibling(Filenames.removeExtension(filename));
 	}
 
-	//#predicates
+	//## predicates
 
 	/**
 	 * Returns a predicate for matching paths by a base filename. Only paths that have a filename and which filename has the given base name (the given base name
