@@ -619,6 +619,24 @@ public class URIs {
 	}
 
 	/**
+	 * Changes the base of a URI name, preserving the extension(s), if any.
+	 * @apiNote Here "base name" refers to the filename with <em>all</em> extensions removed. That is both <code>example.bar</code> and
+	 *          <code>example.foo.bar</code> would result in a base name of <code>example</code>.
+	 * @implSpec This implementation delegates to {@link Filenames#changeBase(String, String)}.
+	 * @param uri The URI to examine.
+	 * @param base The new base to set.
+	 * @return A URI with a raw name with the new base.
+	 * @throws NullPointerException if the given URI's raw name and/or the new base is <code>null</code>.
+	 * @throws IllegalArgumentException if the given URI's raw name and/or the new base is empty.
+	 */
+	public static URI changeRawNameBase(@Nonnull URI uri, @Nonnull final String base) {
+		final String oldRawName = findRawName(uri)
+				.orElseThrow(() -> new IllegalArgumentException(String.format("Cannot change the name base of URI <%s>, which has no name.", uri)));
+		final String newRawName = Filenames.changeBase(oldRawName, base); //change the base of the name
+		return changeRawName(uri, newRawName); //change the raw name of the URI
+	}
+
+	/**
 	 * Adds the given extension to a URI name and returns the new URI with the new extension. The URI name is not checked to see if it currently has an extension.
 	 * @param uri The URI the name of which an extension should be added.
 	 * @param extension The raw, encoded extension to add.
@@ -628,7 +646,7 @@ public class URIs {
 	 */
 	public static URI addRawNameExtension(final URI uri, final String extension) {
 		final String rawName = findRawName(uri)
-				.orElseThrow(() -> new IllegalArgumentException(String.format("Cannot add name extension to URI <%s>, which has no path.", uri)));
+				.orElseThrow(() -> new IllegalArgumentException(String.format("Cannot add name extension to URI <%s>, which has no name.", uri)));
 		return changeRawName(uri, Filenames.addExtension(rawName, extension));
 	}
 
@@ -682,12 +700,12 @@ public class URIs {
 	 * added.
 	 * @param uri The URI to examine.
 	 * @param extension The raw extension to set, or <code>null</code> if the extension should be removed.
-	 * @return The name with the new extension.
+	 * @return A URI with a raw name with the new extension.
 	 * @throws IllegalArgumentException if the given URI has no path, if the path is empty, or if the path is just a "/".
 	 */
 	public static URI changeRawNameExtension(final URI uri, final String extension) {
 		final String oldRawName = findRawName(uri)
-				.orElseThrow(() -> new IllegalArgumentException(String.format("Cannot change the name extension of URI <%s>, which has no path.", uri)));
+				.orElseThrow(() -> new IllegalArgumentException(String.format("Cannot change the name extension of URI <%s>, which has no name.", uri)));
 		final String newRawName = Filenames.changeExtension(oldRawName, extension); //change the extension of the name
 		return changeRawName(uri, newRawName); //change the raw name of the URI
 	}
@@ -697,7 +715,7 @@ public class URIs {
 	 * a non-<code>null</code> extension is given.
 	 * @param uri The URI to examine.
 	 * @param extension The raw, encoded extension to add, or <code>null</code> if no extension should be added.
-	 * @return The name with the new extension, if any.
+	 * @return A URI with a raw name with the new extension, if any.
 	 */
 	public static URI setRawNameExtension(final URI uri, final String extension) {
 		return extension != null ? addRawNameExtension(uri, extension) : uri; //if an extension was given, add it; otherwise, return the URI unmodified
