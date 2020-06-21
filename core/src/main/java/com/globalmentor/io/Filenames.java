@@ -131,12 +131,7 @@ public class Filenames {
 	private Filenames() {
 	}
 
-	//#base filenames
-
-	/*
-	 * Here "base filename" refers to the filename with _all_ extensions removed. That is both `example.bar` and `example.foo.bar`
-	 * would result in a base filename of `example`.
-	 */
+	//# base filenames
 
 	//TODO for all base filename and extension methods implement a way to ignore invalid extensions, e.g. with spaces or that are empty, such as "Hello World. Nice to see you..txt"
 
@@ -152,27 +147,59 @@ public class Filenames {
 	/**
 	 * Appends a given string to the end of a filename before the extension, if any. This is useful for forming a locale-aware filename, such as
 	 * <code>test_fr.txt</code> from <code>test.txt</code>.
+	 * @apiNote Here "base filename" refers to the filename with <em>all</em> extensions removed. That is both <code>example.bar</code> and
+	 *          <code>example.foo.bar</code> would result in a base filename of <code>example</code>.
 	 * @param filename The filename that may contain an extension.
 	 * @param charSequence The characters to append to the filename.
 	 * @return A filename with the given string appended before the filename extension, if any.
 	 */
-	public static String appendBaseFilename(final String filename, final CharSequence charSequence) {
+	public static String appendBase(@Nonnull final String filename, @Nonnull final CharSequence charSequence) {
 		final int separatorIndex = filename.indexOf(EXTENSION_SEPARATOR); //see if we can find the extension separator
 		final int insertionIndex = separatorIndex >= 0 ? separatorIndex : filename.length(); //insert the characters before the extension or, if there is no extension, at the end of the string
 		return StringBuilders.insert(new StringBuilder(filename), insertionIndex, charSequence).toString(); //create a new string builder, insert the characters, and return the new string
 	}
 
 	/**
+	 * Appends a given string to the end of a filename before the extension, if any. This is useful for forming a locale-aware filename, such as
+	 * <code>test_fr.txt</code> from <code>test.txt</code>.
+	 * @apiNote Here "base filename" refers to the filename with <em>all</em> extensions removed. That is both <code>example.bar</code> and
+	 *          <code>example.foo.bar</code> would result in a base filename of <code>example</code>.
+	 * @param filename The filename that may contain an extension.
+	 * @param charSequence The characters to append to the filename.
+	 * @return A filename with the given string appended before the filename extension, if any.
+	 * @deprecated to be removed in favor of {@link #appendBase(String, CharSequence)}.
+	 */
+	@Deprecated
+	public static String appendBaseFilename(final String filename, final CharSequence charSequence) {
+		return appendBase(filename, charSequence);
+	}
+
+	/**
 	 * Retrieves a base filename with no extensions
+	 * @apiNote Here "base filename" refers to the filename with <em>all</em> extensions removed. That is both <code>example.bar</code> and
+	 *          <code>example.foo.bar</code> would result in a base filename of <code>example</code>.
 	 * @param filename The filename that may contain an extension.
 	 * @return A filename with all extensions, if any, removed.
 	 */
-	public static String getBaseFilename(final String filename) {
+	public static String getBase(@Nonnull final String filename) {
 		final int separatorIndex = filename.indexOf(EXTENSION_SEPARATOR); //see if we can find the extension separator
 		return separatorIndex >= 0 ? filename.substring(0, separatorIndex) : filename; //insert the characters before the extension or, if there is no extension, at the end of the string
 	}
 
-	//#filenames
+	/**
+	 * Retrieves a base filename with no extensions
+	 * @apiNote Here "base filename" refers to the filename with <em>all</em> extensions removed. That is both <code>example.bar</code> and
+	 *          <code>example.foo.bar</code> would result in a base filename of <code>example</code>.
+	 * @param filename The filename that may contain an extension.
+	 * @return A filename with all extensions, if any, removed.
+	 * @deprecated to be removed in favor of {@link #getBase(String)}.
+	 */
+	@Deprecated
+	public static String getBaseFilename(final String filename) {
+		return getBase(filename);
+	}
+
+	//# filenames
 
 	/**
 	 * Checks to ensure that a particular string is a valid filename across operating systems.
@@ -183,7 +210,7 @@ public class Filenames {
 		return isValidFilename(string, CROSS_PLATFORM_RESERVED_CHARACTERS, CROSS_PLATFORM_RESERVED_FINAL_CHARACTERS); //check the filename using cross-platform reserved characters
 	}
 
-	//##dotfiles
+	//## dotfiles
 
 	/**
 	 * Determines whether the filename is for a so-called "dotfile", beginning with a dot but including at least one other character. This method does not
@@ -243,7 +270,7 @@ public class Filenames {
 		return isFilename; //return what we thought to begin with
 	}
 
-	//##encode/decode
+	//## encode/decode
 
 	/**
 	 * Escape all reserved filename characters to a two-digit <em>uppercase</em> hex representation using <code>'^'</code> as an escape character so that the
@@ -334,7 +361,7 @@ public class Filenames {
 		return unescapeHex(filename, ESCAPE_CHAR, 2).toString(); //decode the filename
 	}
 
-	//#extensions
+	//# extensions
 
 	/**
 	 * Returns all the possible extensions of a filename, from the most specific to the most general.
