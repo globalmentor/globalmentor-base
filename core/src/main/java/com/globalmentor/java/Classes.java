@@ -923,11 +923,15 @@ public class Classes {
 		}
 	}
 
+	//## resources
+
 	/**
 	 * Determines the base path necessary to access a named resource using the class loader of the given context class.
 	 * @param contextClass The class in relation to which the resource name should be resolved.
-	 * @return The full base path, ending with a path separator, necessary to access resources using the resource loader of the given class.
+	 * @return The full relative base path, ending with a path separator, necessary to access resources using the resource loader of the given class.
 	 * @see #resolveResourcePath(Class, String)
+	 * @see ClassLoader#getResource(String)
+	 * @see ClassLoader#getResourceAsStream(String)
 	 */
 	public static String getResourceBasePath(@Nonnull final Class<?> contextClass) {
 		return contextClass.getPackage().getName().replace(PACKAGE_SEPARATOR, RESOURCE_PATH_SEPARATOR) + RESOURCE_PATH_SEPARATOR;
@@ -947,11 +951,13 @@ public class Classes {
 	 * class loader.
 	 * </p>
 	 * @param contextClass The class in relation to which the resource name should be resolved
-	 * @param resourceName The name of the resource to access.
-	 * @return The full path of the resource necessary to access it using the resource loader of the given class.
+	 * @param resourcePath The relative path of the resource to access.
+	 * @return The full relative path of the resource necessary to access it using the resource loader of the given class.
+	 * @see ClassLoader#getResource(String)
+	 * @see ClassLoader#getResourceAsStream(String)
 	 */
-	public static String resolveResourcePath(@Nonnull final Class<?> contextClass, @Nonnull final String resourceName) {
-		return getResourceBasePath(contextClass) + resourceName;
+	public static String resolveResourcePath(@Nonnull final Class<?> contextClass, @Nonnull final String resourcePath) {
+		return getResourceBasePath(contextClass) + resourcePath;
 	}
 
 	/**
