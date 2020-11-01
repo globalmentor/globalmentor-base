@@ -18,11 +18,8 @@ package com.globalmentor.io;
 
 import static com.globalmentor.io.Filenames.*;
 import static com.globalmentor.java.Conditions.*;
-import static java.nio.file.Files.*;
 import static java.util.Objects.*;
 
-import java.nio.file.Files;
-import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -78,48 +75,6 @@ public class Paths {
 	 */
 	public static Path checkArgumentAbsolute(@Nonnull final Path path) {
 		checkArgument(path.isAbsolute(), "The path %s is not absolute.", path);
-		return path;
-	}
-
-	/**
-	 * Ensures that a path is a directory.
-	 * @param path The path to check.
-	 * @return The given path.
-	 * @throws IllegalArgumentException if the given path is not a directory.
-	 * @see Files#isDirectory(Path, LinkOption...)
-	 */
-	public static Path checkArgumentDirectory(@Nonnull final Path path) {
-		checkArgument(isDirectory(path), "Path %s does not exist or is not a directory.", path);
-		return path;
-	}
-
-	/**
-	 * Ensures that a path exists.
-	 * @param path The path to check.
-	 * @return The given path.
-	 * @throws IllegalArgumentException if the given path does not exist.
-	 * @see Files#exists(Path, LinkOption...)
-	 */
-	public static Path checkArgumentExists(@Nonnull final Path path) {
-		checkArgument(exists(path), "Path %s does not exist.", path);
-		return path;
-	}
-
-	/**
-	 * Ensures that a path is a regular file with opaque content.
-	 * <p>
-	 * The {@code options} array may be used to indicate how symbolic links are handled for the case that the file is a symbolic link. By default, symbolic links
-	 * are followed and the file attribute of the final target of the link is read. If the option {@link LinkOption#NOFOLLOW_LINKS NOFOLLOW_LINKS} is present then
-	 * symbolic links are not followed.
-	 * </p>
-	 * @param path The path to check.
-	 * @param options The options indicating how symbolic links are handled.
-	 * @return The given path.
-	 * @throws IllegalArgumentException if the given path is not a regular file.
-	 * @see Files#isRegularFile(Path, LinkOption...)
-	 */
-	public static Path checkArgumentRegularFile(@Nonnull final Path path, @Nonnull final LinkOption... options) {
-		checkArgument(isRegularFile(path, options), "Path %s does not exist or is not a regular file.", path);
 		return path;
 	}
 
