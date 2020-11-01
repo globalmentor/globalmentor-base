@@ -29,7 +29,6 @@ import static java.util.Objects.*;
 import javax.annotation.Nonnull;
 
 import static com.globalmentor.io.Filenames.*;
-import static com.globalmentor.java.Conditions.*;
 import static com.globalmentor.java.Java.*;
 import static com.globalmentor.java.Strings.*;
 import static com.globalmentor.net.URIs.*;
@@ -44,7 +43,7 @@ import com.globalmentor.net.*;
  * Utilities for manipulating Java classes.
  * @author Garret Wilson
  */
-public class Classes {
+public final class Classes {
 
 	/** The set of classes that wrap primitive types. */
 	public static final Set<Class<?>> PRIMITIVE_WRAPPER_CLASSES = Sets.<Class<?>>immutableSetOf(Boolean.class, Byte.class, Character.class, Short.class,
@@ -74,8 +73,12 @@ public class Classes {
 	 */
 	public static final Pattern SETTER_METHOD_NAME_PATTERN = Pattern.compile("(" + SET_SETTER_PREFIX + ")(.+)");
 
-	/** The slash character (<code>'/'</code>) that separates components in a resource path. */
-	public static final char RESOURCE_PATH_SEPARATOR = '/';
+	/**
+	 * The slash character (<code>'/'</code>) that separates components in a resource path.
+	 * @deprecated Moved to {@link ClassResources#PATH_SEPARATOR}.
+	 */
+	@Deprecated
+	public static final char RESOURCE_PATH_SEPARATOR = ClassResources.PATH_SEPARATOR;
 
 	/** This class cannot be publicly instantiated. */
 	private Classes() {
@@ -923,7 +926,7 @@ public class Classes {
 		}
 	}
 
-	//## resources
+	//## resources (deprecated; moved to com.globalmentor.io.ClassResources)
 
 	/**
 	 * Determines the base path necessary to access a named resource using the class loader of the given context class.
@@ -932,9 +935,11 @@ public class Classes {
 	 * @see #resolveResourcePath(Class, String)
 	 * @see ClassLoader#getResource(String)
 	 * @see ClassLoader#getResourceAsStream(String)
+	 * @deprecated Moved to {@link ClassResources#getResourceBasePath(Class)}.
 	 */
+	@Deprecated
 	public static String getResourceBasePath(@Nonnull final Class<?> contextClass) {
-		return contextClass.getPackage().getName().replace(PACKAGE_SEPARATOR, RESOURCE_PATH_SEPARATOR) + RESOURCE_PATH_SEPARATOR;
+		return ClassResources.getResourceBasePath(contextClass);
 	}
 
 	/**
@@ -955,9 +960,11 @@ public class Classes {
 	 * @return The full relative path of the resource necessary to access it using the resource loader of the given class.
 	 * @see ClassLoader#getResource(String)
 	 * @see ClassLoader#getResourceAsStream(String)
+	 * @deprecated Moved to {@link ClassResources#resolveResourcePath(Class, String)}.
 	 */
+	@Deprecated
 	public static String resolveResourcePath(@Nonnull final Class<?> contextClass, @Nonnull final String resourcePath) {
-		return getResourceBasePath(contextClass) + resourcePath;
+		return ClassResources.resolveResourcePath(contextClass, resourcePath);
 	}
 
 	/**
@@ -965,17 +972,11 @@ public class Classes {
 	 * @param resourcePath The path to the resource.
 	 * @return The filename of the resource, or {@link Optional#empty()} if the path ends with a separator.
 	 * @throws IllegalArgumentException if the given resource path is empty.
+	 * @deprecated Moved to {@link ClassResources#findResourceName(String)}.
 	 */
+	@Deprecated
 	public static Optional<String> getResourceName(@Nonnull final String resourcePath) {
-		checkArgument(!resourcePath.isEmpty(), "An empty resource path is not accepted.");
-		final int lastPathSeparatorIndex = resourcePath.lastIndexOf(RESOURCE_PATH_SEPARATOR);
-		if(lastPathSeparatorIndex < 0) { //if there is no path separator, the whole path is the filename
-			return Optional.of(resourcePath);
-		}
-		if(lastPathSeparatorIndex == resourcePath.length() - 1) { //if the resource path ends with a slash
-			return Optional.empty();
-		}
-		return Optional.of(resourcePath.substring(lastPathSeparatorIndex + 1)); //return everything after the last path separator
+		return ClassResources.findResourceName(resourcePath);
 	}
 
 	//TODO make a soft reference that deletes the file when garbage-collected
