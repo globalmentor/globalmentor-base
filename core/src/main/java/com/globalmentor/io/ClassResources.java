@@ -25,6 +25,7 @@ import java.util.*;
 
 import javax.annotation.*;
 
+import static com.globalmentor.java.CharSequences.*;
 import static com.globalmentor.java.Conditions.*;
 import static com.globalmentor.java.Java.*;
 
@@ -46,12 +47,12 @@ public final class ClassResources {
 	/**
 	 * Determines the base path necessary to access a named resource using the class loader of the given context class.
 	 * @param contextClass The class in relation to which the resource name should be resolved.
-	 * @return The full relative base path, ending with a path separator, necessary to access resources using the resource loader of the given class.
-	 * @see #resolveResourcePath(Class, String)
+	 * @return The full <em>relative</em> base path, ending with a path separator, necessary to access resources using the resource loader of the given class.
+	 * @see #getClassLoaderResourcePath(Class, String)
 	 * @see ClassLoader#getResource(String)
 	 * @see ClassLoader#getResourceAsStream(String)
 	 */
-	public static String getResourceBasePath(@Nonnull final Class<?> contextClass) {
+	public static String getClassLoaderResourceBasePath(@Nonnull final Class<?> contextClass) {
 		return contextClass.getPackage().getName().replace(PACKAGE_SEPARATOR, PATH_SEPARATOR) + PATH_SEPARATOR;
 	}
 
@@ -62,20 +63,28 @@ public final class ClassResources {
 	 * as <code>"bar"</code>, relative to the class package directory structure; but loading the same resource via {@link ClassLoader#getResource(String)} using
 	 * the class loader for the same class requires the full path to the resource, such as <code>com/example/bar</code>. This method determines the full path that
 	 * would need to be used to access a resource using a class loader for a class. Thus given class <code>com.example.Foo</code> and resource name
-	 * <code>bar</code>, this method will return <code>"com/example/bar"</code>.
+	 * <code>bar</code>, this method will return <code>"com/example/bar"</code>. But if the absolute path <code>/bar</code> is passed, <code>bar</code> will be
+	 * returned.
 	 * </p>
 	 * <p>
 	 * This method performs functionality equivalent to that performed internally to methods such as {@link Class#getResource(String)} before they delegate to the
 	 * class loader.
 	 * </p>
 	 * @param contextClass The class in relation to which the resource name should be resolved
-	 * @param resourcePath The relative path of the resource to access.
-	 * @return The full relative path of the resource necessary to access it using the resource loader of the given class.
+	 * @param resourcePath The relative path of the resource to access; or an absolute path that will be relativized to the context class.
+	 * @return The full <em>relative</em> path of the resource necessary to access it using the resource loader of the given class.
 	 * @see ClassLoader#getResource(String)
 	 * @see ClassLoader#getResourceAsStream(String)
+	 * @throws IllegalArgumentException if the given resource path begins with two path separators (i.e. two forward slashes).
 	 */
-	public static String resolveResourcePath(@Nonnull final Class<?> contextClass, @Nonnull final String resourcePath) {
-		return getResourceBasePath(contextClass) + resourcePath;
+	public static String getClassLoaderResourcePath(@Nonnull final Class<?> contextClass, @Nonnull final String resourcePath) {
+		if(startsWith(resourcePath, PATH_SEPARATOR)) {
+			if(resourcePath.length() > 1) { //prevent returning an absolute path
+				checkArgument(resourcePath.charAt(1) != PATH_SEPARATOR, "Resource path %s must not begin with two path separators.");
+			}
+			return resourcePath.substring(1);
+		}
+		return getClassLoaderResourceBasePath(contextClass) + resourcePath;
 	}
 
 	/**
@@ -111,15 +120,15 @@ public final class ClassResources {
 	 * @throws UnsupportedOperationException if {@code options} contains a copy option that is not supported.
 	 * @throws SecurityException If the security manager does not permit the operation.
 	 */
-	public static long copy(@Nonnull final Class<?> contextClass, @Nonnull final String resourcePath, @Nonnull final Path targetFile,
-			final CopyOption... options) throws IOException {
-		return copy(contextClass.getClassLoader(), resolveResourcePath(contextClass, resourcePath), targetFile, options);
+	public static long copy(@Nonnull final Class<?> contextClass, @Nonnull final String resourcePath, @Nonnull final Path targetFile, final CopyOption... options)
+			throws IOException {
+		return copy(contextClass.getClassLoader(), getClassLoaderResourcePath(contextClass, resourcePath), targetFile, options);
 	}
 
 	/**
 	 * Copies all the bytes of a bytes from a class resource to a file in a file system.
-	 * @apiNote This method requires the full classpath-relative path to the resource, unlike {@link #copy(Class, String, Path, CopyOption...)}, which
-	 *          requires a path relative to a class.
+	 * @apiNote This method requires the full classpath-relative path to the resource, unlike {@link #copy(Class, String, Path, CopyOption...)}, which requires a
+	 *          path relative to a class.
 	 * @implSpec This method delegates to {@link java.nio.file.Files#copy(InputStream, Path, CopyOption...)}.
 	 * @param classLoader The class loader to use for retrieving the resource.
 	 * @param resourcePath The full relative path of the resource in relation to the class loader.

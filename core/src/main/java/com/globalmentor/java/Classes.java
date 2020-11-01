@@ -931,11 +931,11 @@ public final class Classes {
 	 * @see #resolveResourcePath(Class, String)
 	 * @see ClassLoader#getResource(String)
 	 * @see ClassLoader#getResourceAsStream(String)
-	 * @deprecated Moved to {@link ClassResources#getResourceBasePath(Class)}.
+	 * @deprecated Moved to {@link ClassResources#getClassLoaderResourceBasePath(Class)}.
 	 */
 	@Deprecated
 	public static String getResourceBasePath(@Nonnull final Class<?> contextClass) {
-		return ClassResources.getResourceBasePath(contextClass);
+		return ClassResources.getClassLoaderResourceBasePath(contextClass);
 	}
 
 	/**
@@ -956,11 +956,11 @@ public final class Classes {
 	 * @return The full relative path of the resource necessary to access it using the resource loader of the given class.
 	 * @see ClassLoader#getResource(String)
 	 * @see ClassLoader#getResourceAsStream(String)
-	 * @deprecated Moved to {@link ClassResources#resolveResourcePath(Class, String)}.
+	 * @deprecated Moved to {@link ClassResources#getClassLoaderResourcePath(Class, String)}.
 	 */
 	@Deprecated
 	public static String resolveResourcePath(@Nonnull final Class<?> contextClass, @Nonnull final String resourcePath) {
-		return ClassResources.resolveResourcePath(contextClass, resourcePath);
+		return ClassResources.getClassLoaderResourcePath(contextClass, resourcePath);
 	}
 
 	/**

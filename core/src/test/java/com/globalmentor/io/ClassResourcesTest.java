@@ -37,6 +37,30 @@ public class ClassResourcesTest {
 	public static String FOO_TXT_RESOURCE_NAME = "foo.txt";
 	public static String SUBDIR_EXAMPLE_TXT_RESOURCE_NAME = "subdir/example.txt";
 
+	//## resource paths
+
+	/** @see ClassResources#getClassLoaderResourcePath(Class, String) */
+	@Test
+	public void testGetClassLoaderResourcePath() {
+		//relative paths
+		assertThat(ClassResources.getClassLoaderResourcePath(java.lang.Integer.class, ""), is("java/lang/"));
+		assertThat(ClassResources.getClassLoaderResourcePath(java.lang.Integer.class, "foo"), is("java/lang/foo"));
+		assertThat(ClassResources.getClassLoaderResourcePath(java.lang.Integer.class, "foo.bar"), is("java/lang/foo.bar"));
+		assertThat(ClassResources.getClassLoaderResourcePath(java.lang.Integer.class, "foo/bar"), is("java/lang/foo/bar"));
+		assertThat(ClassResources.getClassLoaderResourcePath(java.lang.Integer.class, "foo/bar.txt"), is("java/lang/foo/bar.txt"));
+		//absolute paths
+		assertThat(ClassResources.getClassLoaderResourcePath(java.lang.Integer.class, "/"), is(""));
+		assertThat(ClassResources.getClassLoaderResourcePath(java.lang.Integer.class, "/foo"), is("foo"));
+		assertThat(ClassResources.getClassLoaderResourcePath(java.lang.Integer.class, "/foo.bar"), is("foo.bar"));
+		assertThat(ClassResources.getClassLoaderResourcePath(java.lang.Integer.class, "/foo/bar"), is("foo/bar"));
+		//invalid absolute paths
+		assertThat(ClassResources.getClassLoaderResourcePath(java.lang.Integer.class, "/foo/bar.txt"), is("foo/bar.txt"));
+		assertThrows(IllegalArgumentException.class, () -> ClassResources.getClassLoaderResourcePath(java.lang.Integer.class, "//foo"));
+		assertThrows(IllegalArgumentException.class, () -> ClassResources.getClassLoaderResourcePath(java.lang.Integer.class, "//foo.bar"));
+		assertThrows(IllegalArgumentException.class, () -> ClassResources.getClassLoaderResourcePath(java.lang.Integer.class, "//foo/bar"));
+		assertThrows(IllegalArgumentException.class, () -> ClassResources.getClassLoaderResourcePath(java.lang.Integer.class, "//foo/bar.txt"));
+	}
+
 	//## resource contents
 
 	/** @see ClassResources#copy(ClassLoader, String, Path, CopyOption...) */
