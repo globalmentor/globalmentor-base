@@ -16,6 +16,11 @@
 
 package com.globalmentor.io;
 
+import static java.nio.file.Files.*;
+
+import java.io.*;
+import java.net.URL;
+import java.nio.file.*;
 import java.util.*;
 
 import javax.annotation.*;
@@ -35,6 +40,8 @@ public final class ClassResources {
 	/** This class cannot be publicly instantiated. */
 	private ClassResources() {
 	}
+
+	//## resource paths
 
 	/**
 	 * Determines the base path necessary to access a named resource using the class loader of the given context class.
@@ -87,6 +94,56 @@ public final class ClassResources {
 			return Optional.empty();
 		}
 		return Optional.of(resourcePath.substring(lastPathSeparatorIndex + 1)); //return everything after the last path separator
+	}
+
+	//## resource contents
+
+	/**
+	 * Copies all the bytes of a bytes from a class resource to a file in a file system.
+	 * @implSpec This method delegates to {@link #copy(ClassLoader, String, Path, CopyOption...)}.
+	 * @param contextClass The class the class loader of which to use for retrieving the resource.
+	 * @param resourcePath The path of the resource <em>relative to the context class</em>.
+	 * @param targetFile The path to the destination to where the resource should be copied. Any target parent directories will be created as needed.
+	 * @param options Options specifying how the copy should be performed.
+	 * @return The number of bytes copied.
+	 * @throws IOException if an I/O error occurs when reading or writing. The exception may be a subclass of {@link FileSystemException} as per
+	 *           {@link java.nio.file.Files#copy(InputStream, Path, CopyOption...)}.
+	 * @throws UnsupportedOperationException if {@code options} contains a copy option that is not supported.
+	 * @throws SecurityException If the security manager does not permit the operation.
+	 */
+	public static long copy(@Nonnull final Class<?> contextClass, @Nonnull final String resourcePath, @Nonnull final Path targetFile,
+			final CopyOption... options) throws IOException {
+		return copy(contextClass.getClassLoader(), resolveResourcePath(contextClass, resourcePath), targetFile, options);
+	}
+
+	/**
+	 * Copies all the bytes of a bytes from a class resource to a file in a file system.
+	 * @apiNote This method requires the full classpath-relative path to the resource, unlike {@link #copy(Class, String, Path, CopyOption...)}, which
+	 *          requires a path relative to a class.
+	 * @implSpec This method delegates to {@link java.nio.file.Files#copy(InputStream, Path, CopyOption...)}.
+	 * @param classLoader The class loader to use for retrieving the resource.
+	 * @param resourcePath The full relative path of the resource in relation to the class loader.
+	 * @param targetFile The path to the destination to where the resource should be copied. Any target parent directories will be created as needed.
+	 * @param options Options specifying how the copy should be performed.
+	 * @return The number of bytes copied.
+	 * @throws IOException if an I/O error occurs when reading or writing. The exception may be a subclass of {@link FileSystemException} as per
+	 *           {@link java.nio.file.Files#copy(InputStream, Path, CopyOption...)}.
+	 * @throws UnsupportedOperationException if {@code options} contains a copy option that is not supported.
+	 * @throws SecurityException If the security manager does not permit the operation.
+	 */
+	public static long copy(@Nonnull final ClassLoader classLoader, @Nonnull final String resourcePath, @Nonnull final Path targetFile,
+			final CopyOption... options) throws IOException {
+		final URL resourceUrl = classLoader.getResource(resourcePath); //getResourceAsStream() does this same thing, and this allows us not to throw away an IOException
+		if(resourceUrl == null) {
+			throw new FileNotFoundException("Resource not found: " + resourcePath);
+		}
+		final Path targetParent = targetFile.getParent();
+		if(targetParent != null) {
+			createDirectories(targetParent);
+		}
+		try (final InputStream resourceInputStream = resourceUrl.openStream()) {
+			return java.nio.file.Files.copy(resourceInputStream, targetFile, options);
+		}
 	}
 
 }

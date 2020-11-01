@@ -18,7 +18,6 @@ package com.globalmentor.io;
 
 import static com.globalmentor.io.Paths.*;
 import static com.globalmentor.net.URIs.*;
-import static java.nio.charset.StandardCharsets.*;
 import static java.nio.file.Files.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -59,37 +58,6 @@ public class FilesTest {
 	}
 
 	//## Path
-
-	/** @see Files#copyFromResource(ClassLoader, String, Path, CopyOption...) */
-	@Test
-	public void testCopyFromResourceToFile(@TempDir Path tempDir) throws IOException {
-		final Path targetFooFile = tempDir.resolve("dest.txt");
-		Files.copyFromResource(FilesTest.class, FOO_TXT_RESOURCE_NAME, targetFooFile);
-		assertThat(new String(readAllBytes(targetFooFile), UTF_8), is("bar"));
-	}
-
-	/** @see Files#copyFromResource(ClassLoader, String, Path, CopyOption...) */
-	@Test
-	public void testCopyFromSubDirResourceToFile(@TempDir Path tempDir) throws IOException {
-		final Path targetFile = tempDir.resolve("dest.txt");
-		Files.copyFromResource(FilesTest.class, SUBDIR_EXAMPLE_TXT_RESOURCE_NAME, targetFile);
-		assertThat(new String(readAllBytes(targetFile), UTF_8), is("test"));
-	}
-
-	/** @see Files#copyFromResource(ClassLoader, String, Path, CopyOption...) */
-	@Test
-	public void testCopyFromMissingResourceThrowsFileNotFoundException(@TempDir Path tempDir) throws IOException {
-		final Path targetFile = tempDir.resolve("dest.txt");
-		assertThrows(FileNotFoundException.class, () -> Files.copyFromResource(FilesTest.class, "missing.txt", targetFile));
-	}
-
-	/** @see Files#copyFromResource(ClassLoader, String, Path, CopyOption...) */
-	@Test
-	public void testCopyFromResourceToSubDirFileCreatesSubDir(@TempDir Path tempDir) throws IOException {
-		final Path targetFile = tempDir.resolve("first").resolve("second").resolve("test.txt");
-		Files.copyFromResource(FilesTest.class, FOO_TXT_RESOURCE_NAME, targetFile);
-		assertThat(new String(readAllBytes(targetFile), UTF_8), is("bar"));
-	}
 
 	//### Backup
 
