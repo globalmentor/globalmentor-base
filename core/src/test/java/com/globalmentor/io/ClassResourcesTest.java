@@ -61,6 +61,44 @@ public class ClassResourcesTest {
 		assertThrows(IllegalArgumentException.class, () -> ClassResources.getClassLoaderResourcePath(java.lang.Integer.class, "//foo/bar.txt"));
 	}
 
+	/** @see ClassResources#getPathSegments(String) */
+	@Test
+	public void testGetPathSegments() {
+		assertThat(ClassResources.getPathSegments("/"), is(empty()));
+		assertThat(ClassResources.getPathSegments(""), contains(""));
+		assertThat(ClassResources.getPathSegments("a"), contains("a"));
+		assertThat(ClassResources.getPathSegments("/a"), contains("a"));
+		assertThat(ClassResources.getPathSegments("a/"), contains("a"));
+		assertThat(ClassResources.getPathSegments("/a/"), contains("a"));
+		assertThat(ClassResources.getPathSegments("foo"), contains("foo"));
+		assertThat(ClassResources.getPathSegments("/foo"), contains("foo"));
+		assertThat(ClassResources.getPathSegments("foo/"), contains("foo"));
+		assertThat(ClassResources.getPathSegments("/foo/"), contains("foo"));
+		assertThat(ClassResources.getPathSegments("foo/bar"), contains("foo", "bar"));
+		assertThat(ClassResources.getPathSegments("/foo/bar"), contains("foo", "bar"));
+		assertThat(ClassResources.getPathSegments("foo/bar/"), contains("foo", "bar"));
+		assertThat(ClassResources.getPathSegments("/foo/bar/"), contains("foo", "bar"));
+		assertThat(ClassResources.getPathSegments("foo/bar/test.txt"), contains("foo", "bar", "test.txt"));
+		assertThat(ClassResources.getPathSegments("/foo/bar/test.txt"), contains("foo", "bar", "test.txt"));
+		assertThat(ClassResources.getPathSegments("foo/bar/test.txt/"), contains("foo", "bar", "test.txt"));
+		assertThat(ClassResources.getPathSegments("/foo/bar/test.txt/"), contains("foo", "bar", "test.txt"));
+		assertThrows(IllegalArgumentException.class, () -> ClassResources.getPathSegments("//"));
+		assertThrows(IllegalArgumentException.class, () -> ClassResources.getPathSegments("//"));
+		assertThrows(IllegalArgumentException.class, () -> ClassResources.getPathSegments("///"));
+		assertThrows(IllegalArgumentException.class, () -> ClassResources.getPathSegments("/a//"));
+		assertThrows(IllegalArgumentException.class, () -> ClassResources.getPathSegments("//a/"));
+		assertThrows(IllegalArgumentException.class, () -> ClassResources.getPathSegments("////"));
+		assertThrows(IllegalArgumentException.class, () -> ClassResources.getPathSegments("//foo"));
+		assertThrows(IllegalArgumentException.class, () -> ClassResources.getPathSegments("foo//"));
+		assertThrows(IllegalArgumentException.class, () -> ClassResources.getPathSegments("//foo//"));
+		assertThrows(IllegalArgumentException.class, () -> ClassResources.getPathSegments("//foo/bar"));
+		assertThrows(IllegalArgumentException.class, () -> ClassResources.getPathSegments("foo//bar"));
+		assertThrows(IllegalArgumentException.class, () -> ClassResources.getPathSegments("/foo//bar"));
+		assertThrows(IllegalArgumentException.class, () -> ClassResources.getPathSegments("foo//bar/"));
+		assertThrows(IllegalArgumentException.class, () -> ClassResources.getPathSegments("/foo//bar/"));
+		assertThrows(IllegalArgumentException.class, () -> ClassResources.getPathSegments("//foo//bar//"));
+	}
+
 	//## resource contents
 
 	/** @see ClassResources#copy(ClassLoader, String, Path, CopyOption...) */

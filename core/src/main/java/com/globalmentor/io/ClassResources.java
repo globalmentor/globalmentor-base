@@ -17,6 +17,8 @@
 package com.globalmentor.io;
 
 import static java.nio.file.Files.*;
+import static java.util.Arrays.*;
+import static java.util.Collections.*;
 
 import java.io.*;
 import java.net.URL;
@@ -25,6 +27,7 @@ import java.util.*;
 
 import javax.annotation.*;
 
+import static com.globalmentor.collections.Lists.*;
 import static com.globalmentor.java.CharSequences.*;
 import static com.globalmentor.java.Conditions.*;
 import static com.globalmentor.java.Java.*;
@@ -38,11 +41,105 @@ public final class ClassResources {
 	/** The slash character (<code>'/'</code>) which separates components in a resource path. */
 	public static final char PATH_SEPARATOR = '/';
 
+	/**
+	 * The resource path separator as a string.
+	 * @see #PATH_SEPARATOR
+	 */
+	private static final String PATH_SEPARATOR_STRING = String.valueOf(PATH_SEPARATOR);
+
 	/** This class cannot be publicly instantiated. */
 	private ClassResources() {
 	}
 
 	//## resource paths
+
+	/**
+	 * Determines whether a resource path is absolute.
+	 * @param resourcePath The path to the class resource.
+	 * @return <code>true</code> if the resource path begins with {@value #PATH_SEPARATOR}.
+	 * @see #isPathRelative(String)
+	 */
+	public static boolean isPathAbsolute(@Nonnull final String resourcePath) {
+		return startsWith(resourcePath, PATH_SEPARATOR);
+	}
+
+	/**
+	 * Checks to see if a resource path path is absolute. If the resource path is not absolute, an exception is thrown.
+	 * @param resourcePath The path to the class resource.
+	 * @return The given resource path.
+	 * @throws IllegalArgumentException if the resource path is not absolute.
+	 * @see #isPathAbsolute(String)
+	 */
+	public static String checkArgumentPathAbsolute(@Nonnull final String resourcePath) throws IllegalArgumentException {
+		checkArgument(isPathAbsolute(resourcePath), "The resource path %s is not absolute.", resourcePath);
+		return resourcePath;
+	}
+
+	/**
+	 * Determines whether a resource path is relative.
+	 * @param resourcePath The path to the class resource.
+	 * @return <code>true</code> if the resource path does not begin with {@value #PATH_SEPARATOR}.
+	 * @see #isPathAbsolute(String)
+	 */
+	public static boolean isPathRelative(@Nonnull final String resourcePath) {
+		return !isPathAbsolute(resourcePath);
+	}
+
+	/**
+	 * Checks to see if a resource path is relative. If the path is not relative, an exception is thrown.
+	 * @param resourcePath The path to the class resource.
+	 * @return The given resource path.
+	 * @throws IllegalArgumentException if the resource path is absolute.
+	 * @see #isPathRelative(String)
+	 */
+	public static String checkArgumentPathRelative(@Nonnull final String resourcePath) throws IllegalArgumentException {
+		checkArgument(isPathRelative(resourcePath), "The path %s is not relative.", resourcePath);
+		return resourcePath;
+	}
+
+	/**
+	 * Returns the segments (the characters appearing between {@value #PATH_SEPARATOR} characters) in the given resource path. This method does not take into
+	 * consideration whether the resource path is relative or absolute; or whether it ends with a path separator. Thus <code>com/example/foo/bar</code>,
+	 * <code>/com/example/foo/bar</code>, <code>com/example/foo/bar/</code>, and <code>com/example/foo/bar/</code> will all return the segments
+	 * <code>"com"</code>, <code>"example"</code>, <code>"foo"</code>, and <code>"bar"</code>. However a single path separator will result in an empty list. An
+	 * empty string will result in a single empty string.
+	 * @apiNote Because this method for the most part does not consider whether the path is relative or absolute, if this is relevant it must be checked by the
+	 *          caller.
+	 * @param resourcePath The resource path to divide into segments.
+	 * @return The segments of the given resource path.
+	 * @throws IllegalArgumentException if there are more than one segment and a segment is empty, indicating subsequent path separators.
+	 * @see #PATH_SEPARATOR
+	 */
+	public static List<String> getPathSegments(@Nonnull final String resourcePath) {
+		if(resourcePath.isEmpty()) { //empty string
+			return immutableListOf("");
+		}
+		if(resourcePath.equals(PATH_SEPARATOR_STRING)) { //single slash
+			return emptyList();
+		}
+		//check for beginning and ending slashes
+		int beginIndex = 0;
+		if(resourcePath.charAt(beginIndex) == PATH_SEPARATOR) {
+			beginIndex++; //we know the string must have at least two characters or it would have matched a single separator above
+			checkArgument(resourcePath.charAt(beginIndex) != PATH_SEPARATOR, "Resource path %s must not begin with two path separators.");
+		}
+		final int length = resourcePath.length();
+		int endIndex = length;
+		if(endIndex - 1 > beginIndex) { //if we haven't checked the end yet
+			if(resourcePath.charAt(endIndex - 1) == PATH_SEPARATOR) {
+				endIndex--;
+				if(endIndex - 1 > beginIndex) {
+					checkArgument(resourcePath.charAt(endIndex - 1) != PATH_SEPARATOR, "Resource path %s must not end with two path separators.");
+				}
+			}
+		}
+		if(beginIndex > 0 || endIndex < length) {
+			return getPathSegments(resourcePath.substring(beginIndex, endIndex)); //get the path segments for the relative form of the path
+		}
+		final List<String> segments = asList(resourcePath.split(PATH_SEPARATOR_STRING, -1)); //returned list doesn't need to be immutable
+		checkArgument(segments.size() < 2 || !segments.stream().anyMatch(String::isEmpty), "Empty path segments not allowed in resource path %s.", resourcePath);
+		return segments;
+	}
 
 	/**
 	 * Determines the base path necessary to access a named resource using the class loader of the given context class.
@@ -78,7 +175,7 @@ public final class ClassResources {
 	 * @throws IllegalArgumentException if the given resource path begins with two path separators (i.e. two forward slashes).
 	 */
 	public static String getClassLoaderResourcePath(@Nonnull final Class<?> contextClass, @Nonnull final String resourcePath) {
-		if(startsWith(resourcePath, PATH_SEPARATOR)) {
+		if(isPathAbsolute(resourcePath)) {
 			if(resourcePath.length() > 1) { //prevent returning an absolute path
 				checkArgument(resourcePath.charAt(1) != PATH_SEPARATOR, "Resource path %s must not begin with two path separators.");
 			}
