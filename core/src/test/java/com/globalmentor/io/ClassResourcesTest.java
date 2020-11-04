@@ -16,8 +16,10 @@
 
 package com.globalmentor.io;
 
+import static com.globalmentor.io.ClassResources.PATH_SEPARATOR_STRING;
 import static java.nio.charset.StandardCharsets.*;
 import static java.nio.file.Files.*;
+import static java.util.Arrays.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.hamcrest.MatcherAssert.*;
@@ -64,8 +66,7 @@ public class ClassResourcesTest {
 	/** @see ClassResources#getPathSegments(String) */
 	@Test
 	public void testGetPathSegments() {
-		assertThat(ClassResources.getPathSegments("/"), is(empty()));
-		assertThat(ClassResources.getPathSegments(""), contains(""));
+		assertThat(ClassResources.getPathSegments(""), is(empty()));
 		assertThat(ClassResources.getPathSegments("a"), contains("a"));
 		assertThat(ClassResources.getPathSegments("/a"), contains("a"));
 		assertThat(ClassResources.getPathSegments("a/"), contains("a"));
@@ -82,6 +83,7 @@ public class ClassResourcesTest {
 		assertThat(ClassResources.getPathSegments("/foo/bar/test.txt"), contains("foo", "bar", "test.txt"));
 		assertThat(ClassResources.getPathSegments("foo/bar/test.txt/"), contains("foo", "bar", "test.txt"));
 		assertThat(ClassResources.getPathSegments("/foo/bar/test.txt/"), contains("foo", "bar", "test.txt"));
+		assertThrows(IllegalArgumentException.class, () -> ClassResources.getPathSegments("/"));
 		assertThrows(IllegalArgumentException.class, () -> ClassResources.getPathSegments("//"));
 		assertThrows(IllegalArgumentException.class, () -> ClassResources.getPathSegments("//"));
 		assertThrows(IllegalArgumentException.class, () -> ClassResources.getPathSegments("///"));
@@ -103,7 +105,7 @@ public class ClassResourcesTest {
 
 	/** @see ClassResources#copy(ClassLoader, String, Path, CopyOption...) */
 	@Test
-	public void testCopyFromResourceToFile(@TempDir Path tempDir) throws IOException {
+	public void testCopyResourceToFile(@TempDir Path tempDir) throws IOException {
 		final Path targetFooFile = tempDir.resolve("dest.txt");
 		ClassResources.copy(ClassResourcesTest.class, FOO_TXT_RESOURCE_NAME, targetFooFile);
 		assertThat(new String(readAllBytes(targetFooFile), UTF_8), is("bar"));
@@ -111,7 +113,7 @@ public class ClassResourcesTest {
 
 	/** @see ClassResources#copy(ClassLoader, String, Path, CopyOption...) */
 	@Test
-	public void testCopyFromSubDirResourceToFile(@TempDir Path tempDir) throws IOException {
+	public void testCopySubDirResourceToFile(@TempDir Path tempDir) throws IOException {
 		final Path targetFile = tempDir.resolve("dest.txt");
 		ClassResources.copy(ClassResourcesTest.class, SUBDIR_EXAMPLE_TXT_RESOURCE_NAME, targetFile);
 		assertThat(new String(readAllBytes(targetFile), UTF_8), is("test"));
@@ -119,17 +121,25 @@ public class ClassResourcesTest {
 
 	/** @see ClassResources#copy(ClassLoader, String, Path, CopyOption...) */
 	@Test
-	public void testCopyFromMissingResourceThrowsFileNotFoundException(@TempDir Path tempDir) throws IOException {
+	public void testCopyMissingResourceThrowsFileNotFoundException(@TempDir Path tempDir) throws IOException {
 		final Path targetFile = tempDir.resolve("dest.txt");
 		assertThrows(FileNotFoundException.class, () -> ClassResources.copy(ClassResourcesTest.class, "missing.txt", targetFile));
 	}
 
 	/** @see ClassResources#copy(ClassLoader, String, Path, CopyOption...) */
 	@Test
-	public void testCopyFromResourceToSubDirFileCreatesSubDir(@TempDir Path tempDir) throws IOException {
+	public void testCopyResourceToSubDirFileCreatesSubDir(@TempDir Path tempDir) throws IOException {
 		final Path targetFile = tempDir.resolve("first").resolve("second").resolve("test.txt");
 		ClassResources.copy(ClassResourcesTest.class, FOO_TXT_RESOURCE_NAME, targetFile);
 		assertThat(new String(readAllBytes(targetFile), UTF_8), is("bar"));
+	}
+
+	/** @see ClassResources#copy(Class, Path, Iterable, CopyOption...) */
+	@Test
+	public void testCopyResources(@TempDir Path tempDir) throws IOException {
+		ClassResources.copy(ClassResourcesTest.class, tempDir, asList(FOO_TXT_RESOURCE_NAME, SUBDIR_EXAMPLE_TXT_RESOURCE_NAME));
+		assertThat(new String(readAllBytes(tempDir.resolve(FOO_TXT_RESOURCE_NAME)), UTF_8), is("bar"));
+		assertThat(new String(readAllBytes(Paths.resolve(tempDir, asList(SUBDIR_EXAMPLE_TXT_RESOURCE_NAME.split(PATH_SEPARATOR_STRING)))), UTF_8), is("test"));
 	}
 
 }

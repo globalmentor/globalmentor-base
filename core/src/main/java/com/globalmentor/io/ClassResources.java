@@ -27,7 +27,7 @@ import java.util.*;
 
 import javax.annotation.*;
 
-import static com.globalmentor.collections.Lists.*;
+import static com.globalmentor.io.Paths.*;
 import static com.globalmentor.java.CharSequences.*;
 import static com.globalmentor.java.Conditions.*;
 import static com.globalmentor.java.Java.*;
@@ -45,7 +45,7 @@ public final class ClassResources {
 	 * The resource path separator as a string.
 	 * @see #PATH_SEPARATOR
 	 */
-	private static final String PATH_SEPARATOR_STRING = String.valueOf(PATH_SEPARATOR);
+	static final String PATH_SEPARATOR_STRING = String.valueOf(PATH_SEPARATOR);
 
 	/** This class cannot be publicly instantiated. */
 	private ClassResources() {
@@ -101,8 +101,7 @@ public final class ClassResources {
 	 * Returns the segments (the characters appearing between {@value #PATH_SEPARATOR} characters) in the given resource path. This method does not take into
 	 * consideration whether the resource path is relative or absolute; or whether it ends with a path separator. Thus <code>com/example/foo/bar</code>,
 	 * <code>/com/example/foo/bar</code>, <code>com/example/foo/bar/</code>, and <code>com/example/foo/bar/</code> will all return the segments
-	 * <code>"com"</code>, <code>"example"</code>, <code>"foo"</code>, and <code>"bar"</code>. However a single path separator will result in an empty list. An
-	 * empty string will result in a single empty string.
+	 * <code>"com"</code>, <code>"example"</code>, <code>"foo"</code>, and <code>"bar"</code>. An empty string will result in an empty list.
 	 * @apiNote Because this method for the most part does not consider whether the path is relative or absolute, if this is relevant it must be checked by the
 	 *          caller.
 	 * @param resourcePath The resource path to divide into segments.
@@ -112,16 +111,14 @@ public final class ClassResources {
 	 */
 	public static List<String> getPathSegments(@Nonnull final String resourcePath) {
 		if(resourcePath.isEmpty()) { //empty string
-			return immutableListOf("");
-		}
-		if(resourcePath.equals(PATH_SEPARATOR_STRING)) { //single slash
 			return emptyList();
 		}
+		checkArgument(!resourcePath.equals(PATH_SEPARATOR_STRING), "Cannot get path segments of resource path %s consisting solely of a path separator.");
 		//check for beginning and ending slashes
 		int beginIndex = 0;
 		if(resourcePath.charAt(beginIndex) == PATH_SEPARATOR) {
 			beginIndex++; //we know the string must have at least two characters or it would have matched a single separator above
-			checkArgument(resourcePath.charAt(beginIndex) != PATH_SEPARATOR, "Resource path %s must not begin with two path separators.");
+			checkArgument(resourcePath.charAt(beginIndex) != PATH_SEPARATOR, "Cannot get path segments of resource path %s which begins with two path separators.");
 		}
 		final int length = resourcePath.length();
 		int endIndex = length;
@@ -129,7 +126,8 @@ public final class ClassResources {
 			if(resourcePath.charAt(endIndex - 1) == PATH_SEPARATOR) {
 				endIndex--;
 				if(endIndex - 1 > beginIndex) {
-					checkArgument(resourcePath.charAt(endIndex - 1) != PATH_SEPARATOR, "Resource path %s must not end with two path separators.");
+					checkArgument(resourcePath.charAt(endIndex - 1) != PATH_SEPARATOR,
+							"Cannot get path segments of resource path %s which ends with two path separators.");
 				}
 			}
 		}
@@ -168,7 +166,7 @@ public final class ClassResources {
 	 * class loader.
 	 * </p>
 	 * @param contextClass The class in relation to which the resource name should be resolved
-	 * @param resourcePath The relative path of the resource to access; or an absolute path that will be relativized to the context class.
+	 * @param resourcePath The path of the resource to access, relative to the context class; or an absolute path that will be made relative to the class loader.
 	 * @return The full <em>relative</em> path of the resource necessary to access it using the resource loader of the given class.
 	 * @see ClassLoader#getResource(String)
 	 * @see ClassLoader#getResourceAsStream(String)
@@ -205,10 +203,44 @@ public final class ClassResources {
 	//## resource contents
 
 	/**
+	 * Copies several files from a class resource to a base directory in a file system, maintaining the relative directory hierarchy.
+	 * <p>
+	 * For example copying the files <code>example.txt</code> and <code>foo/bar.txt</code> in the context of class <code>com.example.Test</code> to the target
+	 * base directory <code>/path/to/dest</code> would copy the files to <code>/path/to/dest/example.txt</code> and <code>/path/to/dest/foo/bar.txt</code>.
+	 * </p>
+	 * @apiNote This operation is not atomic; it may fail having copied only some of the resources.
+	 * @implSpec This method delegates to {@link #copy(Class, String, Path, CopyOption...)} for each resource to copy.
+	 * @param contextClass The class the class loader of which to use for retrieving the resources.
+	 * @param targetBaseDirectory The base directory of the destination to where the resources should be copied. Any target parent directories will be created as
+	 *          needed.
+	 * @param resourcePaths The paths of the resources, each relative to the context class; or each an absolute path that will be made relative to the class
+	 *          loader. The paths must not end in {@value #PATH_SEPARATOR}, and an empty path is not allowed.
+	 * @param options Options specifying how the copy should be performed.
+	 * @return The total number of bytes copied.
+	 * @throws IOException if an I/O error occurs when reading or writing. The exception may be a subclass of {@link FileSystemException} as per
+	 *           {@link java.nio.file.Files#copy(InputStream, Path, CopyOption...)}.
+	 * @throws UnsupportedOperationException if {@code options} contains a copy option that is not supported.
+	 * @throws SecurityException If the security manager does not permit the operation.
+	 */
+	public static long copy(@Nonnull final Class<?> contextClass, @Nonnull final Path targetBaseDirectory, @Nonnull Iterable<String> resourcePaths,
+			final CopyOption... options) throws IOException {
+		long totalByteCount = 0;
+		for(final String resourcePath : resourcePaths) {
+			checkArgument(!resourcePath.isEmpty(), "Cannot copy empty resource path.");
+			checkArgument(!endsWith(resourcePath, PATH_SEPARATOR), "Cannot copy resource path %s because it ends with a %s.", resourcePath, PATH_SEPARATOR_STRING);
+			final List<String> pathSegments = getPathSegments(resourcePath);
+			assert !pathSegments.isEmpty() : "Checked for empty path; expected at least one path segment.";
+			final Path targetFile = resolve(targetBaseDirectory, pathSegments); //resolve the path segments against the base directory to get the target file
+			totalByteCount += copy(contextClass.getClassLoader(), getClassLoaderResourcePath(contextClass, resourcePath), targetFile, options);
+		}
+		return totalByteCount;
+	}
+
+	/**
 	 * Copies all the bytes of a bytes from a class resource to a file in a file system.
 	 * @implSpec This method delegates to {@link #copy(ClassLoader, String, Path, CopyOption...)}.
 	 * @param contextClass The class the class loader of which to use for retrieving the resource.
-	 * @param resourcePath The path of the resource <em>relative to the context class</em>.
+	 * @param resourcePath The path of the resource to access, relative to the context class; or an absolute path that will be made relative to the class loader.
 	 * @param targetFile The path to the destination to where the resource should be copied. Any target parent directories will be created as needed.
 	 * @param options Options specifying how the copy should be performed.
 	 * @return The number of bytes copied.
