@@ -203,7 +203,27 @@ public final class ClassResources {
 	//## resource contents
 
 	/**
-	 * Copies several files from a class resource to a base directory in a file system, maintaining the relative directory hierarchy.
+	 * Copies several class resource to a base directory in a file system, maintaining the relative directory hierarchy.
+	 * @apiNote This is a convenience method for passing multiple resource paths as varargs. It provides no facility to indicate copy options, so if the operation
+	 *          needs to specify an option, to replace existing target files using {@link StandardCopyOption#REPLACE_EXISTING} for example,
+	 *          {@link #copy(Class, Path, Iterable, CopyOption...)} should be used instead.
+	 * @implSpec This method delegates to {@link #copy(Class, Path, Iterable, CopyOption...)}.
+	 * @param contextClass The class the class loader of which to use for retrieving the resources.
+	 * @param targetBaseDirectory The base directory of the destination to where the resources should be copied. Any target parent directories will be created as
+	 *          needed.
+	 * @param resourcePaths The paths of the resources, each relative to the context class; or each an absolute path that will be made relative to the class
+	 *          loader. The paths must not end in {@value #PATH_SEPARATOR}, and an empty path is not allowed.
+	 * @return The total number of bytes copied.
+	 * @throws IOException if an I/O error occurs when reading or writing. The exception may be a subclass of {@link FileSystemException} as per
+	 *           {@link java.nio.file.Files#copy(InputStream, Path, CopyOption...)}.
+	 * @throws SecurityException If the security manager does not permit the operation.
+	 */
+	public static long copy(@Nonnull final Class<?> contextClass, @Nonnull final Path targetBaseDirectory, @Nonnull String... resourcePaths) throws IOException {
+		return copy(contextClass, targetBaseDirectory, asList(resourcePaths));
+	}
+
+	/**
+	 * Copies several class resources to a base directory in a file system, maintaining the relative directory hierarchy.
 	 * <p>
 	 * For example copying the files <code>example.txt</code> and <code>foo/bar.txt</code> in the context of class <code>com.example.Test</code> to the target
 	 * base directory <code>/path/to/dest</code> would copy the files to <code>/path/to/dest/example.txt</code> and <code>/path/to/dest/foo/bar.txt</code>.
@@ -237,7 +257,7 @@ public final class ClassResources {
 	}
 
 	/**
-	 * Copies all the bytes of a bytes from a class resource to a file in a file system.
+	 * Copies all the bytes of a class resource to a file in a file system.
 	 * @implSpec This method delegates to {@link #copy(ClassLoader, String, Path, CopyOption...)}.
 	 * @param contextClass The class the class loader of which to use for retrieving the resource.
 	 * @param resourcePath The path of the resource to access, relative to the context class; or an absolute path that will be made relative to the class loader.
@@ -255,7 +275,7 @@ public final class ClassResources {
 	}
 
 	/**
-	 * Copies all the bytes of a bytes from a class resource to a file in a file system.
+	 * Copies all the bytes of a class resource to a file in a file system.
 	 * @apiNote This method requires the full classpath-relative path to the resource, unlike {@link #copy(Class, String, Path, CopyOption...)}, which requires a
 	 *          path relative to a class.
 	 * @implSpec This method delegates to {@link java.nio.file.Files#copy(InputStream, Path, CopyOption...)}.
