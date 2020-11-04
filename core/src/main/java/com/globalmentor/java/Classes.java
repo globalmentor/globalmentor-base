@@ -737,7 +737,7 @@ public final class Classes {
 
 		/**
 		 * Compares two classes based upon the classes and their height or distance from a particular class. Comparison is performed primarily in terms of maximum
-		 * height (distance from a descendant class), secondarily in terms of concreteness (concrete class, abstract class, and then interface), and tertiarialy by
+		 * height (distance from a descendant class), secondarily in terms of concreteness (concrete class, abstract class, and then interface), and tertiarily by
 		 * class name, in increasing order of height and abstractness.
 		 * @param classHeight1 The first class paired with its distance from a descendant class.
 		 * @param classHeight2 The second class paired with its distance from a descendant class.
@@ -769,7 +769,7 @@ public final class Classes {
 
 	/**
 	 * Determines all super classes and interfaces of the given class, including the given class itself. Classes will be sorted primarily in terms of maximum
-	 * height (distance from a descendant class), secondarily in terms of concreteness (concrete class, abstract class, and then interface), and tertiarialy by
+	 * height (distance from a descendant class), secondarily in terms of concreteness (concrete class, abstract class, and then interface), and tertiarily by
 	 * class name, in increasing order of height and abstractness.
 	 * @param objectClass The class for which super classes and interfaces should be found.
 	 * @return The set of all super classes and implemented interfaces.
@@ -782,7 +782,7 @@ public final class Classes {
 
 	/**
 	 * Determines all super classes and interfaces of the given class, excluding the given class itself. Classes will be sorted primarily in terms of maximum
-	 * height (distance from a descendant class), secondarily in terms of concreteness (concrete class, abstract class, and then interface), and tertiarialy by
+	 * height (distance from a descendant class), secondarily in terms of concreteness (concrete class, abstract class, and then interface), and tertiarily by
 	 * class name, in increasing order of height and abstractness.
 	 * @param objectClass The class for which super classes and interfaces should be found.
 	 * @return The set of all super classes and implemented interfaces.
@@ -796,7 +796,7 @@ public final class Classes {
 	/**
 	 * Determines all super classes and interfaces of the given class, including the given class itself, up to and including the given class. Classes will be
 	 * sorted primarily in terms of maximum height (distance from a descendant class), secondarily in terms of concreteness (concrete class, abstract class, and
-	 * then interface), and tertiarialy by class name, in increasing order of height and abstractness.
+	 * then interface), and tertiarily by class name, in increasing order of height and abstractness.
 	 * @param <R> The type of root class.
 	 * @param objectClass The class for which super classes and interfaces should be found.
 	 * @param rootClass The root class or interface to retrieve, or <code>null</code> if all classes should be retrieved.
@@ -812,7 +812,7 @@ public final class Classes {
 	/**
 	 * Determines all super classes and interfaces of the given class, excluding the given class itself, up to and including the given class. Classes will be
 	 * sorted primarily in terms of maximum height (distance from a descendant class), secondarily in terms of concreteness (concrete class, abstract class, and
-	 * then interface), and tertiarialy by class name, in increasing order of height and abstractness.
+	 * then interface), and tertiarily by class name, in increasing order of height and abstractness.
 	 * @param <R> The type of root class.
 	 * @param objectClass The class for which super classes and interfaces should be found.
 	 * @param rootClass The root class or interface to retrieve, or <code>null</code> if all classes should be retrieved.
@@ -827,7 +827,7 @@ public final class Classes {
 
 	/**
 	 * Determines all super classes and interfaces of the given class. Classes will be sorted primarily in terms of maximum height (distance from a descendant
-	 * class), secondarily in terms of concreteness (concrete class, abstract class, and then interface), and tertiarialy by class name, in increasing order of
+	 * class), secondarily in terms of concreteness (concrete class, abstract class, and then interface), and tertiarily by class name, in increasing order of
 	 * height and abstractness.
 	 * @param <R> The type of root class.
 	 * @param objectClass The class for which super classes and interfaces should be found.
