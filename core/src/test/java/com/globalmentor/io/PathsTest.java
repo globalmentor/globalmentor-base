@@ -17,21 +17,35 @@
 package com.globalmentor.io;
 
 import static com.globalmentor.java.OperatingSystem.*;
+import static java.util.Arrays.*;
+import static java.util.Collections.*;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.nio.file.Path;
+import java.nio.file.*;
+import java.util.Collection;
 
 import org.junit.jupiter.api.*;
 
 /**
  * Tests the {@link Paths} utility class.
- * 
+ * @implNote These tests use the system temp directory rather than using a facility for creating a temporary directory specifically for tests, because these
+ *           utilities work in terms of abstract path identifiers and do not need to actually perform disk operations.
  * @author Magno Nascimento
  * @author Garret Wilson
  */
 public class PathsTest {
+
+	/** @see Paths#getPath(FileSystem, Collection) */
+	@Test
+	public void testGetPath() {
+		final FileSystem fileSystem = FileSystems.getDefault();
+		assertThrows(IllegalArgumentException.class, () -> Paths.getPath(fileSystem, emptyList()));
+		assertThat(Paths.getPath(fileSystem, asList("foo")), is(fileSystem.getPath("foo")));
+		assertThat(Paths.getPath(fileSystem, asList("foo", "bar")), is(fileSystem.getPath("foo", "bar")));
+		assertThat(Paths.getPath(fileSystem, asList("foo", "bar", "test")), is(fileSystem.getPath("foo", "bar", "test")));
+	}
 
 	/** @see Paths#isSubPath(Path, Path) */
 	@Test
@@ -65,6 +79,16 @@ public class PathsTest {
 
 		//not a base
 		assertThrows(IllegalArgumentException.class, () -> Paths.changeBase(testFile, tempDirectory.resolve("bad"), tempDirectory.resolve("bar")));
+	}
+
+	/** @see Paths#resolve(Path, Collection) */
+	@Test
+	public void testResolve() {
+		final Path tempDirectory = getTempDirectory();
+		assertThat(Paths.resolve(tempDirectory, emptyList()), is(tempDirectory));
+		assertThat(Paths.resolve(tempDirectory, asList("foo")), is(tempDirectory.resolve("foo")));
+		assertThat(Paths.resolve(tempDirectory, asList("foo", "bar")), is(tempDirectory.resolve("foo").resolve("bar")));
+		assertThat(Paths.resolve(tempDirectory, asList("foo", "bar", "test")), is(tempDirectory.resolve("foo").resolve("bar").resolve("test")));
 	}
 
 	//# filenames
