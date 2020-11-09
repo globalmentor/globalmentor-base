@@ -158,6 +158,8 @@ public class Files {
 	private Files() {
 	}
 
+	//## File
+
 	/**
 	 * Adds the given extension to a file and returns the new file with the new extension. The filename is not checked to see if it currently has an extension.
 	 * @param file The file to which to add an extension.
@@ -1229,6 +1231,48 @@ public class Files {
 	}
 
 	//## Path
+
+	/**
+	 * Ensures that a path is a directory.
+	 * @param path The path to check.
+	 * @return The given path.
+	 * @throws IllegalArgumentException if the given path is not a directory.
+	 * @see java.nio.file.Files#isDirectory(Path, LinkOption...)
+	 */
+	public static Path checkArgumentDirectory(@Nonnull final Path path) {
+		checkArgument(isDirectory(path), "Path %s does not exist or is not a directory.", path);
+		return path;
+	}
+
+	/**
+	 * Ensures that a path exists.
+	 * @param path The path to check.
+	 * @return The given path.
+	 * @throws IllegalArgumentException if the given path does not exist.
+	 * @see java.nio.file.Files#exists(Path, LinkOption...)
+	 */
+	public static Path checkArgumentExists(@Nonnull final Path path) {
+		checkArgument(exists(path), "Path %s does not exist.", path);
+		return path;
+	}
+
+	/**
+	 * Ensures that a path is a regular file with opaque content.
+	 * <p>
+	 * The {@code options} array may be used to indicate how symbolic links are handled for the case that the file is a symbolic link. By default, symbolic links
+	 * are followed and the file attribute of the final target of the link is read. If the option {@link LinkOption#NOFOLLOW_LINKS NOFOLLOW_LINKS} is present then
+	 * symbolic links are not followed.
+	 * </p>
+	 * @param path The path to check.
+	 * @param options The options indicating how symbolic links are handled.
+	 * @return The given path.
+	 * @throws IllegalArgumentException if the given path is not a regular file.
+	 * @see java.nio.file.Files#isRegularFile(Path, LinkOption...)
+	 */
+	public static Path checkArgumentRegularFile(@Nonnull final Path path, @Nonnull final LinkOption... options) {
+		checkArgument(isRegularFile(path, options), "Path %s does not exist or is not a regular file.", path);
+		return path;
+	}
 
 	/**
 	 * Recursively deletes an entire file tree. Symbolic links are deleted, not followed.

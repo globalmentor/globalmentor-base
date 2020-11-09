@@ -18,12 +18,14 @@ package com.globalmentor.io;
 
 import static com.globalmentor.io.Filenames.*;
 import static com.globalmentor.java.Conditions.*;
-import static java.nio.file.Files.*;
+import static com.globalmentor.java.Strings.*;
 import static java.util.Objects.*;
 
-import java.nio.file.Files;
-import java.nio.file.LinkOption;
+import java.nio.file.FileSystem;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
@@ -31,7 +33,7 @@ import java.util.regex.Pattern;
 import javax.annotation.*;
 
 /**
- * Utility methods to manipulate Paths.
+ * Utility methods to manipulate {@link Path}s.
  * 
  * @author Magno Nascimento
  * @author Garret Wilson
@@ -82,48 +84,6 @@ public class Paths {
 	}
 
 	/**
-	 * Ensures that a path is a directory.
-	 * @param path The path to check.
-	 * @return The given path.
-	 * @throws IllegalArgumentException if the given path is not a directory.
-	 * @see Files#isDirectory(Path, LinkOption...)
-	 */
-	public static Path checkArgumentDirectory(@Nonnull final Path path) {
-		checkArgument(isDirectory(path), "Path %s does not exist or is not a directory.", path);
-		return path;
-	}
-
-	/**
-	 * Ensures that a path exists.
-	 * @param path The path to check.
-	 * @return The given path.
-	 * @throws IllegalArgumentException if the given path does not exist.
-	 * @see Files#exists(Path, LinkOption...)
-	 */
-	public static Path checkArgumentExists(@Nonnull final Path path) {
-		checkArgument(exists(path), "Path %s does not exist.", path);
-		return path;
-	}
-
-	/**
-	 * Ensures that a path is a regular file with opaque content.
-	 * <p>
-	 * The {@code options} array may be used to indicate how symbolic links are handled for the case that the file is a symbolic link. By default, symbolic links
-	 * are followed and the file attribute of the final target of the link is read. If the option {@link LinkOption#NOFOLLOW_LINKS NOFOLLOW_LINKS} is present then
-	 * symbolic links are not followed.
-	 * </p>
-	 * @param path The path to check.
-	 * @param options The options indicating how symbolic links are handled.
-	 * @return The given path.
-	 * @throws IllegalArgumentException if the given path is not a regular file.
-	 * @see Files#isRegularFile(Path, LinkOption...)
-	 */
-	public static Path checkArgumentRegularFile(@Nonnull final Path path, @Nonnull final LinkOption... options) {
-		checkArgument(isRegularFile(path, options), "Path %s does not exist or is not a regular file.", path);
-		return path;
-	}
-
-	/**
 	 * Ensures one path is a subpath of another; that is, they both share a base path with no backtracking. This method allows the paths to be identical.
 	 * @param basePath The base path against which the other path will be compared.
 	 * @param subPath The potential subpath.
@@ -148,6 +108,37 @@ public class Paths {
 	}
 
 	/**
+	 * Converts a sequence of one or more path strings to a {@code Path} by joining them with the given file system.
+	 * @apiNote This method is equivalent to {@link FileSystem#getPath(String, String...)} and is provided as a convenience for programmatic path construction
+	 *          that may have collected all the path strings into a single collection.
+	 * @implSpec This implementation delegates to {@link FileSystem#getPath(String, String...)} and adheres to the restrictions of that method.
+	 * @param fileSystem The file system to use in creating the path.
+	 * @param names The path names to be joined to form the path string.
+	 * @return The resulting path.
+	 * @throws IllegalArgumentException if no names are provided.
+	 * @throws InvalidPathException If the path string cannot be converted.
+	 * @see FileSystem#getPath(String, String...)
+	 */
+	public static Path getPath(@Nonnull final FileSystem fileSystem, @Nonnull Collection<String> names) {
+		final int nameCount = names.size();
+		checkArgument(nameCount > 0, "No names provided for path.");
+		final Iterator<String> nameIterator = names.iterator();
+		assert nameIterator.hasNext();
+		final String first = nameIterator.next();
+		final int moreCount = nameCount - 1;
+		final String[] more;
+		if(moreCount == 0) {
+			more = NO_STRINGS;
+		} else {
+			more = new String[moreCount];
+			for(int i = 0; i < moreCount; i++) {
+				more[i] = nameIterator.next();
+			}
+		}
+		return fileSystem.getPath(first, more);
+	}
+
+	/**
 	 * Determines whether two paths are <dfn>disjoint</dfn>, that is, neither one is a subpath of (or equal to) the other.
 	 * @param path1 The first path to compare.
 	 * @param path2 The second path.
@@ -167,6 +158,23 @@ public class Paths {
 	 */
 	public static boolean isSubPath(@Nonnull final Path basePath, @Nonnull final Path subPath) {
 		return subPath.normalize().startsWith(basePath.normalize()); //normalize files to compare apples to apples
+	}
+
+	/**
+	 * Resolve the given path names against the paths formed by the given names. If no other names are given, the path itself is returned.
+	 * @apiNote This method is equivalent to calling {@link Path#resolve(String)} as many times as needed, or first calling
+	 *          {@link FileSystem#getPath(String, String...)} and resolving the resulting path against the original path.
+	 * @implSpec This implementation delegates to {@link #getPath(FileSystem, Collection)} and then resolves the resulting path against the given path.
+	 * @param path The path against which the other names will be resolved.
+	 * @param otherNames The path names to be joined sequentially and resolved in order to resolve against the given path; may be empty.
+	 * @return The resulting path.
+	 * @throws InvalidPathException If the path string cannot be converted.
+	 */
+	public static Path resolve(@Nonnull Path path, @Nonnull Collection<String> otherNames) {
+		if(otherNames.isEmpty()) {
+			return path;
+		}
+		return path.resolve(getPath(path.getFileSystem(), otherNames));
 	}
 
 	//# filenames

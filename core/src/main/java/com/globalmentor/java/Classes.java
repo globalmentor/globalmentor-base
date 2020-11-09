@@ -16,24 +16,19 @@
 
 package com.globalmentor.java;
 
-import java.io.*;
 import java.lang.reflect.*;
 import java.net.*;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.*;
 
 import static java.util.Collections.*;
 import static java.util.Objects.*;
 
-import javax.annotation.Nonnull;
+import javax.annotation.*;
 
-import static com.globalmentor.io.Filenames.*;
-import static com.globalmentor.java.Conditions.*;
 import static com.globalmentor.java.Java.*;
 import static com.globalmentor.java.Strings.*;
 import static com.globalmentor.net.URIs.*;
-import static com.globalmentor.net.URLs.*;
 
 import com.globalmentor.collections.Sets;
 import com.globalmentor.io.*;
@@ -44,7 +39,7 @@ import com.globalmentor.net.*;
  * Utilities for manipulating Java classes.
  * @author Garret Wilson
  */
-public class Classes {
+public final class Classes {
 
 	/** The set of classes that wrap primitive types. */
 	public static final Set<Class<?>> PRIMITIVE_WRAPPER_CLASSES = Sets.<Class<?>>immutableSetOf(Boolean.class, Byte.class, Character.class, Short.class,
@@ -74,8 +69,12 @@ public class Classes {
 	 */
 	public static final Pattern SETTER_METHOD_NAME_PATTERN = Pattern.compile("(" + SET_SETTER_PREFIX + ")(.+)");
 
-	/** The slash character (<code>'/'</code>) that separates components in a resource path. */
-	public static final char RESOURCE_PATH_SEPARATOR = '/';
+	/**
+	 * The slash character (<code>'/'</code>) that separates components in a resource path.
+	 * @deprecated Moved to {@link ClassResources#PATH_SEPARATOR}.
+	 */
+	@Deprecated
+	public static final char RESOURCE_PATH_SEPARATOR = ClassResources.PATH_SEPARATOR;
 
 	/** This class cannot be publicly instantiated. */
 	private Classes() {
@@ -738,7 +737,7 @@ public class Classes {
 
 		/**
 		 * Compares two classes based upon the classes and their height or distance from a particular class. Comparison is performed primarily in terms of maximum
-		 * height (distance from a descendant class), secondarily in terms of concreteness (concrete class, abstract class, and then interface), and tertiarialy by
+		 * height (distance from a descendant class), secondarily in terms of concreteness (concrete class, abstract class, and then interface), and tertiarily by
 		 * class name, in increasing order of height and abstractness.
 		 * @param classHeight1 The first class paired with its distance from a descendant class.
 		 * @param classHeight2 The second class paired with its distance from a descendant class.
@@ -770,7 +769,7 @@ public class Classes {
 
 	/**
 	 * Determines all super classes and interfaces of the given class, including the given class itself. Classes will be sorted primarily in terms of maximum
-	 * height (distance from a descendant class), secondarily in terms of concreteness (concrete class, abstract class, and then interface), and tertiarialy by
+	 * height (distance from a descendant class), secondarily in terms of concreteness (concrete class, abstract class, and then interface), and tertiarily by
 	 * class name, in increasing order of height and abstractness.
 	 * @param objectClass The class for which super classes and interfaces should be found.
 	 * @return The set of all super classes and implemented interfaces.
@@ -783,7 +782,7 @@ public class Classes {
 
 	/**
 	 * Determines all super classes and interfaces of the given class, excluding the given class itself. Classes will be sorted primarily in terms of maximum
-	 * height (distance from a descendant class), secondarily in terms of concreteness (concrete class, abstract class, and then interface), and tertiarialy by
+	 * height (distance from a descendant class), secondarily in terms of concreteness (concrete class, abstract class, and then interface), and tertiarily by
 	 * class name, in increasing order of height and abstractness.
 	 * @param objectClass The class for which super classes and interfaces should be found.
 	 * @return The set of all super classes and implemented interfaces.
@@ -797,7 +796,7 @@ public class Classes {
 	/**
 	 * Determines all super classes and interfaces of the given class, including the given class itself, up to and including the given class. Classes will be
 	 * sorted primarily in terms of maximum height (distance from a descendant class), secondarily in terms of concreteness (concrete class, abstract class, and
-	 * then interface), and tertiarialy by class name, in increasing order of height and abstractness.
+	 * then interface), and tertiarily by class name, in increasing order of height and abstractness.
 	 * @param <R> The type of root class.
 	 * @param objectClass The class for which super classes and interfaces should be found.
 	 * @param rootClass The root class or interface to retrieve, or <code>null</code> if all classes should be retrieved.
@@ -813,7 +812,7 @@ public class Classes {
 	/**
 	 * Determines all super classes and interfaces of the given class, excluding the given class itself, up to and including the given class. Classes will be
 	 * sorted primarily in terms of maximum height (distance from a descendant class), secondarily in terms of concreteness (concrete class, abstract class, and
-	 * then interface), and tertiarialy by class name, in increasing order of height and abstractness.
+	 * then interface), and tertiarily by class name, in increasing order of height and abstractness.
 	 * @param <R> The type of root class.
 	 * @param objectClass The class for which super classes and interfaces should be found.
 	 * @param rootClass The root class or interface to retrieve, or <code>null</code> if all classes should be retrieved.
@@ -828,7 +827,7 @@ public class Classes {
 
 	/**
 	 * Determines all super classes and interfaces of the given class. Classes will be sorted primarily in terms of maximum height (distance from a descendant
-	 * class), secondarily in terms of concreteness (concrete class, abstract class, and then interface), and tertiarialy by class name, in increasing order of
+	 * class), secondarily in terms of concreteness (concrete class, abstract class, and then interface), and tertiarily by class name, in increasing order of
 	 * height and abstractness.
 	 * @param <R> The type of root class.
 	 * @param objectClass The class for which super classes and interfaces should be found.
@@ -923,14 +922,20 @@ public class Classes {
 		}
 	}
 
+	//## resources (deprecated; moved to com.globalmentor.io.ClassResources)
+
 	/**
 	 * Determines the base path necessary to access a named resource using the class loader of the given context class.
 	 * @param contextClass The class in relation to which the resource name should be resolved.
-	 * @return The full base path, ending with a path separator, necessary to access resources using the resource loader of the given class.
+	 * @return The full relative base path, ending with a path separator, necessary to access resources using the resource loader of the given class.
 	 * @see #resolveResourcePath(Class, String)
+	 * @see ClassLoader#getResource(String)
+	 * @see ClassLoader#getResourceAsStream(String)
+	 * @deprecated Moved to {@link ClassResources#getClassLoaderResourceBasePath(Class)}.
 	 */
+	@Deprecated
 	public static String getResourceBasePath(@Nonnull final Class<?> contextClass) {
-		return contextClass.getPackage().getName().replace(PACKAGE_SEPARATOR, RESOURCE_PATH_SEPARATOR) + RESOURCE_PATH_SEPARATOR;
+		return ClassResources.getClassLoaderResourceBasePath(contextClass);
 	}
 
 	/**
@@ -947,11 +952,15 @@ public class Classes {
 	 * class loader.
 	 * </p>
 	 * @param contextClass The class in relation to which the resource name should be resolved
-	 * @param resourceName The name of the resource to access.
-	 * @return The full path of the resource necessary to access it using the resource loader of the given class.
+	 * @param resourcePath The relative path of the resource to access.
+	 * @return The full relative path of the resource necessary to access it using the resource loader of the given class.
+	 * @see ClassLoader#getResource(String)
+	 * @see ClassLoader#getResourceAsStream(String)
+	 * @deprecated Moved to {@link ClassResources#getClassLoaderResourcePath(Class, String)}.
 	 */
-	public static String resolveResourcePath(@Nonnull final Class<?> contextClass, @Nonnull final String resourceName) {
-		return getResourceBasePath(contextClass) + resourceName;
+	@Deprecated
+	public static String resolveResourcePath(@Nonnull final Class<?> contextClass, @Nonnull final String resourcePath) {
+		return ClassResources.getClassLoaderResourcePath(contextClass, resourcePath);
 	}
 
 	/**
@@ -959,84 +968,11 @@ public class Classes {
 	 * @param resourcePath The path to the resource.
 	 * @return The filename of the resource, or {@link Optional#empty()} if the path ends with a separator.
 	 * @throws IllegalArgumentException if the given resource path is empty.
+	 * @deprecated Moved to {@link ClassResources#findResourceName(String)}.
 	 */
+	@Deprecated
 	public static Optional<String> getResourceName(@Nonnull final String resourcePath) {
-		checkArgument(!resourcePath.isEmpty(), "An empty resource path is not accepted.");
-		final int lastPathSeparatorIndex = resourcePath.lastIndexOf(RESOURCE_PATH_SEPARATOR);
-		if(lastPathSeparatorIndex < 0) { //if there is no path separator, the whole path is the filename
-			return Optional.of(resourcePath);
-		}
-		if(lastPathSeparatorIndex == resourcePath.length() - 1) { //if the resource path ends with a slash
-			return Optional.empty();
-		}
-		return Optional.of(resourcePath.substring(lastPathSeparatorIndex + 1)); //return everything after the last path separator
+		return ClassResources.findResourceName(resourcePath);
 	}
 
-	//TODO make a soft reference that deletes the file when garbage-collected
-
-	/** The shared, thread-safe map of temporary files keyed to resource names. */
-	private static final Map<String, File> resourceFileMap = new ConcurrentHashMap<String, File>();
-
-	/**
-	 * Provides access to a resource in the classpath via a file object. The rules for searching resources associated with a given class are implemented by the
-	 * defining {@linkplain ClassLoader class loader} of the class. The first time a particular resource is accessed a temporary file is created with the contents
-	 * of the resource. The temporary file will be deleted when the JVM exits. This method does not guarantee that any two requests for the same resource will
-	 * result in the same file object or filename. The calling method must not delete the file or modify the file in any way, as the file may be cached and used
-	 * for subsequent calls to this method.
-	 * @param objectClass The class the class loader of which will be used to provide access to the resource.
-	 * @param name The name of the desired resource.
-	 * @return A file object or <code>null</code> if no resource with the given name is found.
-	 * @throws IOException if there is an I/O error accessing the resource.
-	 */
-	public static File getResource(final Class<?> objectClass, final String name) throws IOException {
-		//TODO del Log.trace("ready to get file to resource", name);
-		File file = resourceFileMap.get(name); //get any cached temporary file
-		if(file == null) { //if there is no cached file for this name (there is a benign race condition here; it is better to allow the possibility of multiple temporary files for a single resource than to slow down all accesses to resources while one loads)
-			//		TODO del Log.trace("must create new file");
-			final URL resourceURL = objectClass.getResource(name); //get a URL to the resource
-			//		TODO del Log.trace("got URL to resource", resourceURL);
-			if(resourceURL != null) { //if there is such a resource
-				final String filename = getFileName(resourceURL); //get the filename of the URL
-				//			TODO del Log.trace("resource filename:", filename);
-				final String baseName = removeExtension(filename); //get the base name
-				//			TODO del Log.trace("baseName:", baseName);
-				final String extension = findExtension(filename).orElse(null); //get the extension TODO check for null
-				//			TODO del Log.trace("extension:", extension);
-				file = File.createTempFile(baseName, new StringBuilder().append(Filenames.EXTENSION_SEPARATOR).append(extension).toString()); //create a temp file with the base name as the prefix and the extension (with separator) as the suffix
-				file.deleteOnExit(); //indicate that the temporary file should be deleted when the JVM exits
-				final InputStream inputStream = resourceURL.openConnection().getInputStream(); //get an input stream to the resource
-				try {
-					final OutputStream outputStream = new FileOutputStream(file); //create an output stream to the file
-					try {
-						IOStreams.copy(inputStream, outputStream); //copy the resource input stream to the output stream to the temporary file
-					} finally {
-						outputStream.close(); //always close the output stream
-					}
-				} finally {
-					inputStream.close(); //always close the input stream
-				}
-				resourceFileMap.put(name, file); //cache the temporary file, now that the resource has been copied and the streams closed successfully
-			}
-		}
-		return file; //return the file to the resource contents, or null if there was no such resource
-	}
-
-	/**
-	 * Reads a class resource using the given class' class loader and the given I/O support.
-	 * @param <T> The type of the resource.
-	 * @param objectClass The class relative to which the given resource will be located.
-	 * @param name The name of the resource to read.
-	 * @param io The I/O support for reading the object.
-	 * @return The object read from the resource.
-	 * @throws NullPointerException if the given class, name, and/or I/O support is <code>null</code>.
-	 * @throws IOException if there is an error reading the data.
-	 * @throws FileNotFoundException if the indicated resource does not exist.
-	 */
-	public static <T> T readResource(final Class<?> objectClass, final String name, final IO<T> io) throws IOException {
-		final URL url = objectClass.getResource(name); //get a URL to the resource
-		if(url == null) { //if the resource doesn't exist
-			throw new FileNotFoundException("Could not find resource " + name + " for " + objectClass.getName());
-		}
-		return URLs.read(url, io);
-	}
 }
