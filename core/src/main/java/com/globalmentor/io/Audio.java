@@ -83,7 +83,7 @@ public class Audio {
 	 * @see <a href="http://wiki.whatwg.org/wiki/Video_type_parameters#WAVE">HTML 5 Video canPlay(type) parameters</a>
 	 * @see <a href="http://tools.ietf.org/html/draft-ema-vpim-wav-00">Waveform Audio File Format MIME Sub-type Registration</a>
 	 */
-	public static final String WAV_NAME_EXTENSION = "wav";
+	public static final String WAV_FILENAME_EXTENSION = "wav";
 
 	/**
 	 * Internet media types for known audio filename extensions.
