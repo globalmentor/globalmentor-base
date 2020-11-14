@@ -21,7 +21,7 @@ import java.net.*;
 import java.util.*;
 import java.util.regex.Pattern;
 
-import javax.annotation.Nonnull;
+import javax.annotation.*;
 
 import static java.util.Objects.*;
 
@@ -1175,21 +1175,6 @@ public class URIs {
 	 */
 	public static URI getRootURI(final URI uri) {
 		return createURI(uri.getScheme(), uri.getRawUserInfo(), uri.getHost(), uri.getPort(), (URIPath)null, null, null);
-	}
-
-	/**
-	 * Returns the content type for the specified URI based on its name extension.
-	 * @param uri The URI for which to return a content type.
-	 * @return The default content type for the URI's name extension, or <code>null</code> if no known content type is associated with this URI's extension.
-	 * @see Files#getExtensionContentType(String)
-	 * @see #findRawName(URI)
-	 * @see Filenames#findExtension(String)
-	 * @deprecated to be removed in favor of some other content type discovery mechanism.
-	 */
-	@Deprecated
-	public static ContentType getContentType(final URI uri) {
-		final String rawPath = uri.getRawPath(); //get the raw path
-		return rawPath != null ? Files.getExtensionContentType(findNameExtension(uri).orElse(null)) : null; //return the content type based on the extension of the URI name, if there is one
 	}
 
 	/**
