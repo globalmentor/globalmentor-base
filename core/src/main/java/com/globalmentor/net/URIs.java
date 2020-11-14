@@ -207,6 +207,13 @@ public class URIs {
 	public static final int MICROSOFT_INTERNET_EXPLORER_MAXIMUM_URI_LENGTH = 2083;
 
 	/**
+	 * A <code>text/uri-list</code> content type as defined in <a href="https://tools.ietf.org/html/rfc2483#section-5">RFC 2483 § 5. The text/uri-list Internet
+	 * Media Type</a>.
+	 * @see <a href="https://tools.ietf.org/html/rfc2483">RFC 2483: URI Resolution Services Necessary for URN Resolution</a>
+	 */
+	public static final ContentType URI_LIST_MEDIA_TYPE = ContentType.of(ContentType.TEXT_PRIMARY_TYPE, "uri-list");
+
+	/**
 	 * Creates a string of type <code>text/uri-list</code> as defined in <a href="http://www.ietf.org/rfc/rfc2483.txt">RFC 2483</a>, "URI Resolution Services
 	 * Necessary for URN Resolution".
 	 * @param uris The URIs to include in the list.
