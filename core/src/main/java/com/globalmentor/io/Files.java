@@ -38,7 +38,6 @@ import static com.globalmentor.io.InputStreams.*;
 import static com.globalmentor.io.Paths.*;
 import static com.globalmentor.java.Conditions.*;
 import static com.globalmentor.java.StringBuilders.*;
-import static com.globalmentor.net.ContentTypeConstants.*;
 import static com.globalmentor.net.URIs.*;
 
 /**
@@ -88,7 +87,7 @@ public class Files {
 	/** The extension for Common Gateway Interface (CGI) files. */
 	public static final String CGI_EXTENSION = "cgi";
 	/** The extension for Microsoft Word files. */
-	public static final String DOC_EXTENSION = "doc";
+	//TODO delete	public static final String DOC_EXTENSION = "doc";
 	/** The extension for iCalendar files. */
 	public static final String ICAL_EXTENSION = "ical";
 	/** An extension for Java Server Page (JSP) files. */
@@ -100,59 +99,6 @@ public class Files {
 
 	/** The shared file filter that accepts all files. */
 	public static final FileFilter WILDCARD_FILE_FILTER = new WildcardFileFilter();
-
-	/**
-	 * A singleton read-only map of lowercase file extensions and the corresponding content types they represent.
-	 * @deprecated There are many reasons why this isn't a good idea. These things change, and more may be added. This is something better managed by some larger
-	 *             entity or container.
-	 */
-	@Deprecated
-	public static final Map<String, ContentType> FILE_EXTENSION_CONTENT_TYPE_MAP; //TODO convert to lazy weak referenced map
-
-	static { //TODO move definitions to a resource file
-		final Map<String, ContentType> tempFileExtensionContentTypeMap = new HashMap<String, ContentType>(); //create a new hash map in which to store extensions, and add the default extensions
-		tempFileExtensionContentTypeMap.put("asi", ContentType.of(ContentType.APPLICATION_PRIMARY_TYPE, "x-qti-assessment"));
-		tempFileExtensionContentTypeMap.put(Audio.AU_NAME_EXTENSION, ContentType.of(ContentType.AUDIO_PRIMARY_TYPE, BASIC_SUBTYPE));
-		tempFileExtensionContentTypeMap.put(Images.BMP_NAME_EXTENSION, ContentType.of(ContentType.IMAGE_PRIMARY_TYPE, X_BITMAP_SUBTYPE));
-		tempFileExtensionContentTypeMap.put(Classes.CLASS_NAME_EXTENSION, ContentType.of(ContentType.APPLICATION_PRIMARY_TYPE, JAVA_SUBTYPE));
-		tempFileExtensionContentTypeMap.put("csv", ContentType.of(ContentType.TEXT_PRIMARY_TYPE, "csv"));
-		tempFileExtensionContentTypeMap.put("css", ContentType.of(ContentType.TEXT_PRIMARY_TYPE, "css")); //text/css
-		//		tempFileExtensionContentTypeMap.put(Dicto.DICTO_NAME_EXTENSION, ContentType.getInstance(ContentType.APPLICATION_PRIMARY_TYPE, X_DICTO_RDF_XML_SUBTYPE));
-		tempFileExtensionContentTypeMap.put(DOC_EXTENSION, ContentType.of(ContentType.APPLICATION_PRIMARY_TYPE, MSWORD_SUBTYPE));
-		tempFileExtensionContentTypeMap.put(Images.GIF_NAME_EXTENSION, ContentType.of(ContentType.IMAGE_PRIMARY_TYPE, GIF_SUBTYPE)); //image/gif
-		tempFileExtensionContentTypeMap.put("htm", ContentType.of(ContentType.TEXT_PRIMARY_TYPE, "html")); //TODO make sure changing this to text/html doesn't cause other methods to fail; nevertheless, we can't assume all .html files are XHTML (i.e. valid XML)
-		tempFileExtensionContentTypeMap.put("html", ContentType.of(ContentType.TEXT_PRIMARY_TYPE, "html"));
-		tempFileExtensionContentTypeMap.put("xhtml",
-				ContentType.of(ContentType.APPLICATION_PRIMARY_TYPE, "xhtml" + ContentType.SUBTYPE_SUFFIX_DELIMITER_CHAR + "xml"));
-		tempFileExtensionContentTypeMap.put(ICAL_EXTENSION, ContentType.of(ContentType.TEXT_PRIMARY_TYPE, CALENDAR_SUBTYPE));
-		tempFileExtensionContentTypeMap.put(Java.JAVA_NAME_EXTENSION, ContentType.of(ContentType.TEXT_PRIMARY_TYPE, JAVA_SUBTYPE));
-		tempFileExtensionContentTypeMap.put(Images.JPEG_NAME_EXTENSION, ContentType.of(ContentType.IMAGE_PRIMARY_TYPE, JPEG_SUBTYPE));
-		tempFileExtensionContentTypeMap.put(Images.JPG_NAME_EXTENSION, ContentType.of(ContentType.IMAGE_PRIMARY_TYPE, JPEG_SUBTYPE));
-		tempFileExtensionContentTypeMap.put("js", ContentType.of(ContentType.APPLICATION_PRIMARY_TYPE, "javascript"));
-		tempFileExtensionContentTypeMap.put("marmox", ContentType.of(ContentType.APPLICATION_PRIMARY_TYPE, "x-marmox-page+rdf+xml"));
-		tempFileExtensionContentTypeMap.put("mact", ContentType.of(ContentType.APPLICATION_PRIMARY_TYPE, "x-mentor-activity+turf"));
-		tempFileExtensionContentTypeMap.put(Audio.MP3_NAME_EXTENSION, ContentType.of(ContentType.AUDIO_PRIMARY_TYPE, MPEG_SUBTYPE)); //RFC 3003
-		tempFileExtensionContentTypeMap.put(Video.MPEG_NAME_EXTENSION, ContentType.of(ContentType.VIDEO_PRIMARY_TYPE, MPEG_SUBTYPE));
-		tempFileExtensionContentTypeMap.put(Video.MPG_NAME_EXTENSION, ContentType.of(ContentType.VIDEO_PRIMARY_TYPE, MPEG_SUBTYPE));
-		tempFileExtensionContentTypeMap.put(Audio.OGG_NAME_EXTENSION, Audio.OGG_VORBIS_CONTENT_TYPE); //audio/ogg (RFC 5334)
-		tempFileExtensionContentTypeMap.put("opf", ContentType.of(ContentType.APPLICATION_PRIMARY_TYPE,
-				ContentType.SUBTYPE_EXTENSION_PREFIX + "oeb1-package" + ContentType.SUBTYPE_SUFFIX_DELIMITER_CHAR + "xml")); //opf
-		tempFileExtensionContentTypeMap.put(PDF_EXTENSION, ContentType.of(ContentType.APPLICATION_PRIMARY_TYPE, PDF_SUBTYPE)); //pdf
-		tempFileExtensionContentTypeMap.put(Images.PNG_NAME_EXTENSION, ContentType.of(ContentType.IMAGE_PRIMARY_TYPE, PNG_SUBTYPE));
-		tempFileExtensionContentTypeMap.put("qti", ContentType.of(ContentType.APPLICATION_PRIMARY_TYPE, "x-qti")); //TODO use a constant here
-		tempFileExtensionContentTypeMap.put(Archive.RAR_NAME_EXTENSION, ContentType.of(ContentType.APPLICATION_PRIMARY_TYPE, X_RAR_COMPRESSED_SUBTYPTE));
-		tempFileExtensionContentTypeMap.put(Images.TIF_NAME_EXTENSION, ContentType.of(ContentType.IMAGE_PRIMARY_TYPE, TIFF_SUBTYPE));
-		tempFileExtensionContentTypeMap.put(Images.TIFF_NAME_EXTENSION, ContentType.of(ContentType.IMAGE_PRIMARY_TYPE, TIFF_SUBTYPE));
-		tempFileExtensionContentTypeMap.put("rdf", ContentType.of(ContentType.APPLICATION_PRIMARY_TYPE, "rdf+xml"));
-		tempFileExtensionContentTypeMap.put("turf", ContentType.of(ContentType.TEXT_PRIMARY_TYPE, "urf"));
-		tempFileExtensionContentTypeMap.put(Text.TXT_NAME_EXTENSION, Text.PLAIN_CONTENT_TYPE);
-		tempFileExtensionContentTypeMap.put(VCF_EXTENSION, ContentType.of(ContentType.TEXT_PRIMARY_TYPE, DIRECTORY_SUBTYPE));
-		tempFileExtensionContentTypeMap.put(Audio.WAV_NAME_EXTENSION, ContentType.of(ContentType.AUDIO_PRIMARY_TYPE, X_WAV_SUBTYPE));
-		//		tempFileExtensionContentTypeMap.put(RDFXEB.XEB_NAME_EXTENSION, ContentType.getInstance(ContentType.APPLICATION_PRIMARY_TYPE, X_XEBOOK_RDF_XML_SUBTYPE));
-		tempFileExtensionContentTypeMap.put("xml", ContentType.of(ContentType.TEXT_PRIMARY_TYPE, "xml"));
-		tempFileExtensionContentTypeMap.put(Archive.ZIP_NAME_EXTENSION, ContentType.of(ContentType.APPLICATION_PRIMARY_TYPE, ZIP_SUBTYPE));
-		FILE_EXTENSION_CONTENT_TYPE_MAP = unmodifiableMap(tempFileExtensionContentTypeMap); //store read-only access to the map		
-	}
 
 	/** This class cannot be publicly instantiated. */
 	private Files() {
@@ -475,18 +421,6 @@ public class Files {
 	}
 
 	/**
-	 * Returns the media type for the specified file extension. The file extension is first converted to lowercase before an attempt is made to look up a media
-	 * type.
-	 * @param fileExtension The file extension, without the '.', or <code>null</code> if there is no extension.
-	 * @return The default media type for the file extension, or <code>null</code> if no known media type is associated with this file extension.
-	 * @deprecated to be removed in favor of some other content type discovery mechanism.
-	 */
-	@Deprecated
-	public static ContentType getExtensionContentType(final String fileExtension) {
-		return FILE_EXTENSION_CONTENT_TYPE_MAP.get(fileExtension != null ? fileExtension.toLowerCase() : null); //see if the file extension exists as a key in the file extension map
-	}
-
-	/**
 	 * Changes the name of a file and returns a new file with the new name.
 	 * @param file The file to examine.
 	 * @param name The new name of the file.
@@ -573,31 +507,6 @@ public class Files {
 	 */
 	public static File removeNameExtension(@Nonnull final File file) {
 		return changeNameExtension(file, null); //replace the extension with nothing
-	}
-
-	/**
-	 * Returns the media type for the specified file based on its extension.
-	 * @param file The file for which to return a media type.
-	 * @return The default media type for the file's extension, or <code>null</code> if no known media type is associated with this file's extension.
-	 * @see #getExtensionContentType(String)
-	 * @deprecated to be removed in favor of some other content type discovery mechanism.
-	 */
-	@Deprecated
-	public static ContentType getContentType(final File file) {
-		return findNameExtension(file).map(Files::getExtensionContentType).orElse(null);
-	}
-
-	/**
-	 * Returns the media type for the specified filename based on its extension.
-	 * @param filename The filename to examine.
-	 * @return The default media type for the filename's extension, or <code>null</code> if no known media type is associated with this file's extension or if the
-	 *         filename has no extension.
-	 * @see #getExtensionContentType(String)
-	 * @deprecated to be removed in favor of some other content type discovery mechanism.
-	 */
-	@Deprecated
-	public static ContentType getMediaType(final String filename) {
-		return Filenames.findExtension(filename).map(Files::getExtensionContentType).orElse(null);
 	}
 
 	/**

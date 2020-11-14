@@ -51,17 +51,6 @@ public class URLs {
 	}
 
 	/**
-	 * Returns the media type for the specified URL based on its file extension.
-	 * @param url The URL for which to return a media type.
-	 * @return The default media type for the URL's file extension, or <code>null</code> if no known media type is associated with this URL's extension.
-	 * @deprecated to be removed in favor of some other content type discovery mechanism.
-	 */
-	@Deprecated
-	public static ContentType getMediaType(final URL url) {
-		return Files.findNameExtension(getFile(url)).map(Files::getExtensionContentType).orElse(null); //return the media type based on the extension of the URL filename
-	}
-
-	/**
 	 * Creates a URL from the given filename relative to the given context object. This correctly creates URLs when the filename is a fragment beginning with "#".
 	 * @param contextObject The source context, such as a URL or File, or <code>null</code> if the filename should not be referenced from any object.
 	 * @param filename The name of the file, either relative or absolute, or a URL fragment beginning with "#".

@@ -76,10 +76,10 @@ import com.globalmentor.text.*;
  *           2046 § 4.1.2. Charset Parameter</a> indicates that if non-<code>text</code> types specify a <code>charset</code> value, "the same syntax and values
  *           should be used".
  * @author Garret Wilson
- * @see <a href="https://tools.ietf.org/html/rfc2045">RFC 2045</a>
- * @see <a href="https://tools.ietf.org/html/rfc2046">RFC 2046</a>
- * @see <a href="https://tools.ietf.org/html/rfc6838">RFC 6838</a>
- * @see <a href="https://tools.ietf.org/html/rfc7231">RFC 7231 § 3.1.1.1. Media Type</a>
+ * @see <a href="https://tools.ietf.org/html/rfc2045">RFC 2045: Multipurpose Internet Mail Extensions (MIME) Part One: Format of Internet Message Bodies</a>
+ * @see <a href="https://tools.ietf.org/html/rfc2046">RFC 2046: Multipurpose Internet Mail Extensions (MIME) Part Two: Media Types</a>
+ * @see <a href="https://tools.ietf.org/html/rfc6838">RFC 6838: Media Type Specifications and Registration Procedures</a>
+ * @see <a href="https://tools.ietf.org/html/rfc7231">RFC 7231: Hypertext Transfer Protocol (HTTP/1.1): Semantics and Content § 3.1.1.1. Media Type</a>
  * @see <a href="https://www.iana.org/assignments/media-types/media-types.xhtml">IANA Media Types</a>
  * @see <a href="https://www.w3.org/TR/xhtml-media-types/">XHTML Media Types</a>
  */

@@ -21,7 +21,7 @@ import java.net.*;
 import java.util.*;
 import java.util.regex.Pattern;
 
-import javax.annotation.Nonnull;
+import javax.annotation.*;
 
 import static java.util.Objects.*;
 
@@ -205,6 +205,13 @@ public class URIs {
 	 * @see <a href="http://support.microsoft.com/default.aspx?scid=kb;EN-US;q208427">Maximum URL length is 2,083 characters in Internet Explorer</a>
 	 */
 	public static final int MICROSOFT_INTERNET_EXPLORER_MAXIMUM_URI_LENGTH = 2083;
+
+	/**
+	 * A <code>text/uri-list</code> content type as defined in <a href="https://tools.ietf.org/html/rfc2483#section-5">RFC 2483 § 5. The text/uri-list Internet
+	 * Media Type</a>.
+	 * @see <a href="https://tools.ietf.org/html/rfc2483">RFC 2483: URI Resolution Services Necessary for URN Resolution</a>
+	 */
+	public static final ContentType URI_LIST_MEDIA_TYPE = ContentType.of(ContentType.TEXT_PRIMARY_TYPE, "uri-list");
 
 	/**
 	 * Creates a string of type <code>text/uri-list</code> as defined in <a href="http://www.ietf.org/rfc/rfc2483.txt">RFC 2483</a>, "URI Resolution Services
@@ -1168,21 +1175,6 @@ public class URIs {
 	 */
 	public static URI getRootURI(final URI uri) {
 		return createURI(uri.getScheme(), uri.getRawUserInfo(), uri.getHost(), uri.getPort(), (URIPath)null, null, null);
-	}
-
-	/**
-	 * Returns the content type for the specified URI based on its name extension.
-	 * @param uri The URI for which to return a content type.
-	 * @return The default content type for the URI's name extension, or <code>null</code> if no known content type is associated with this URI's extension.
-	 * @see Files#getExtensionContentType(String)
-	 * @see #findRawName(URI)
-	 * @see Filenames#findExtension(String)
-	 * @deprecated to be removed in favor of some other content type discovery mechanism.
-	 */
-	@Deprecated
-	public static ContentType getContentType(final URI uri) {
-		final String rawPath = uri.getRawPath(); //get the raw path
-		return rawPath != null ? Files.getExtensionContentType(findNameExtension(uri).orElse(null)) : null; //return the content type based on the extension of the URI name, if there is one
 	}
 
 	/**
