@@ -225,7 +225,7 @@ public final class ContentType { //TODO major version: rename to MediaType
 	public static final String X_JAVA_OBJECT = SUBTYPE_EXTENSION_PREFIX + "java-object";
 
 	/** The shared <code>application/octet-stream</code> media type. */
-	public static final ContentType APPLICATION_OCTET_STREAM_CONTENT_TYPE = ContentType.of(APPLICATION_PRIMARY_TYPE, OCTET_STREAM_SUBTYPE);
+	public static final ContentType APPLICATION_OCTET_STREAM_MEDIA_TYPE = ContentType.of(APPLICATION_PRIMARY_TYPE, OCTET_STREAM_SUBTYPE);
 
 	private final String primaryType;
 

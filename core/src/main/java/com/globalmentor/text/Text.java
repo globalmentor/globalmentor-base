@@ -38,8 +38,8 @@ public class Text {
 	/** The MIME subtype of <code>text/plain</code>. */
 	public static final String PLAIN_SUBTYPE = "plain";
 
-	/** The content type for plain text: <code>text/plain</code>. */
-	public static final ContentType PLAIN_CONTENT_TYPE = ContentType.of(ContentType.TEXT_PRIMARY_TYPE, PLAIN_SUBTYPE);
+	/** The media type for plain text: <code>text/plain</code>. */
+	public static final ContentType PLAIN_MEDIA_TYPE = ContentType.of(ContentType.TEXT_PRIMARY_TYPE, PLAIN_SUBTYPE);
 
 	/**
 	 * The name extension for text list files.
