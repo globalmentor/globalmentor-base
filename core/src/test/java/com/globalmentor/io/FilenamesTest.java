@@ -157,19 +157,33 @@ public class FilenamesTest {
 
 	/** Tests whether {@link Filenames#findExtension(String)} is working properly. */
 	@Test
-	public void testFindExtensionString() {
+	public void testFindExtension() {
 		assertThat(Filenames.findExtension("foobar.txt"), isPresentAndIs("txt"));
 		assertThat(Filenames.findExtension("foobar"), isEmpty());
 		assertThat(Filenames.findExtension(""), isEmpty());
 
 		assertThat(Filenames.findExtension(".foobar"), isPresentAndIs("foobar"));
 		assertThat(Filenames.findExtension("."), isPresentAndIs(""));
+
+		assertThrows(NullPointerException.class, () -> Filenames.findExtension(null));
 	}
 
-	/** Tests whether {@link Filenames#findExtension(String)} is throwing an exception when a <code>null</code> name is provided. */
+	/** @see Filenames#hasExtension(String, CharSequence) */
 	@Test
-	public void testFindExtensionNullStringFail() {
-		assertThrows(NullPointerException.class, () -> Filenames.findExtension(null));
+	public void testHasExtension() {
+		//check for literal extension
+		assertThat(Filenames.hasExtension("foo.bar", "bar"), is(true));
+		assertThat(Filenames.hasExtension("foo.bare", "bar"), is(false));
+		assertThat(Filenames.hasExtension("foo.bar", "baz"), is(false));
+		assertThat(Filenames.hasExtension("foobar", "bar"), is(false));
+		assertThat(Filenames.hasExtension("bar", "bar"), is(false));
+		//check for ASCII case variation
+		assertThat(Filenames.hasExtension("foo.BAR", "bar"), is(true));
+		assertThat(Filenames.hasExtension("foo.bar", "BAR"), is(true));
+		assertThat(Filenames.hasExtension("foo.bAr", "BaR"), is(true));
+		//don't support non-ASCII case variation
+		assertThat(Filenames.hasExtension("tou.ché", "ché"), is(true));
+		assertThat(Filenames.hasExtension("tou.CHÉ", "ché"), is(false));
 	}
 
 	/** @see Filenames#changeExtension(String, String) */

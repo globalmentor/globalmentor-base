@@ -29,6 +29,7 @@ import java.util.stream.*;
 import javax.annotation.*;
 
 import com.globalmentor.java.*;
+import com.globalmentor.text.ASCII;
 import com.globalmentor.text.Case;
 
 /**
@@ -464,6 +465,20 @@ public class Filenames {
 	public static Optional<String> findExtension(@Nonnull final String filename) {
 		final int separatorIndex = filename.lastIndexOf(EXTENSION_SEPARATOR); //see if we can find the extension separator, which will be the last such character in the string
 		return separatorIndex >= 0 ? Optional.of(filename.substring(separatorIndex + 1)) : Optional.empty(); //if we found a separator, return everything after it 
+	}
+
+	/**
+	 * Determines whether a given filename has the indicated extension.
+	 * <p>
+	 * This methods compares filenames on an ASCII case-insensitive basis. As such testing for the extension <code>bar</code> will return <code>true</code> both
+	 * for the filename <code>foo.bar</code> and also for the filename <code>foo.BAR</code>.
+	 * </p>
+	 * @param filename The filename to check.
+	 * @param extension The extension to match.
+	 * @return <code>true</code> if the given filename has the indicated extension in any allowed form.
+	 */
+	public static boolean hasExtension(@Nonnull final String filename, @Nonnull final CharSequence extension) {
+		return findExtension(filename).map(foundExtension -> ASCII.equalsIgnoreCase(foundExtension, extension)).orElse(false);
 	}
 
 	/**
