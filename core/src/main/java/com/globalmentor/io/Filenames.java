@@ -29,14 +29,13 @@ import java.util.stream.*;
 import javax.annotation.*;
 
 import com.globalmentor.java.*;
-import com.globalmentor.text.ASCII;
-import com.globalmentor.text.Case;
+import com.globalmentor.text.*;
 
 /**
  * Utilities for working with filenames, whether from files, paths, or URIs for example.
  * @author Garret Wilson
  */
-public class Filenames {
+public final class Filenames {
 
 	/**
 	 * The prefix used by Unix to designate a <dfn>dotfile</dfn>, which is usually hidden.
@@ -473,12 +472,14 @@ public class Filenames {
 	 * This methods compares filenames on an ASCII case-insensitive basis. As such testing for the extension <code>bar</code> will return <code>true</code> both
 	 * for the filename <code>foo.bar</code> and also for the filename <code>foo.BAR</code>.
 	 * </p>
+	 * @implSpec This implementation delegates to {@link Extensions#equals(String, String)}.
 	 * @param filename The filename to check.
 	 * @param extension The extension to match.
 	 * @return <code>true</code> if the given filename has the indicated extension in any allowed form.
 	 */
-	public static boolean hasExtension(@Nonnull final String filename, @Nonnull final CharSequence extension) {
-		return findExtension(filename).map(foundExtension -> ASCII.equalsIgnoreCase(foundExtension, extension)).orElse(false);
+	public static boolean hasExtension(@Nonnull final String filename, @Nonnull final String extension) {
+		requireNonNull(extension);
+		return findExtension(filename).map(foundExtension -> Extensions.equals(foundExtension, extension)).orElse(false);
 	}
 
 	/**
@@ -511,6 +512,42 @@ public class Filenames {
 	 */
 	public static String setExtension(final String filename, final String extension) {
 		return extension != null ? addExtension(filename, extension) : filename; //if an extension was given, add it; otherwise, return the name unmodified
+	}
+
+	/**
+	 * Utilities for working directly with filename extensions themselves, separate from filenames.
+	 * @author Garret Wilson
+	 */
+	public static class Extensions {
+
+		/** This class cannot be publicly instantiated. */
+		private Extensions() {
+		}
+
+		/**
+		 * Normalizes an extension to its ASCII lowercase form. Non-ASCII characters are unchanged. Thus <code>txt</code>, <code>TXT</code>, and <code>tXt</code>
+		 * will all return the normalized form <code>txt</code>.
+		 * @param extension The extension to normalize.
+		 * @return The normalized form of the extension.
+		 */
+		public static String normalize(@Nonnull final String extension) {
+			return ASCII.toLowerCase(extension).toString();
+		}
+
+		/**
+		 * Checks to see if two extensions are equal. Comparison is done on an ASCII case-insensitive basic. Thus <code>txt</code>, <code>TXT</code>, and
+		 * <code>tXt</code> are all considered equal.
+		 * @apiNote This API follows {@link Object#equals(Object)} and {@link String#equalsIgnoreCase(String)} in allowing either or both arguments to be
+		 *          <code>null</code>.
+		 * @implSpec This implementation delegates to {@link ASCII#equalsIgnoreCase(CharSequence, CharSequence)}.
+		 * @param extension1 The first extension to compare.
+		 * @param extension2 The second extension to compare.
+		 * @return <code>true</code>
+		 */
+		public static boolean equals(@Nullable final String extension1, @Nullable final String extension2) {
+			return ASCII.equalsIgnoreCase(extension1, extension2);
+		}
+
 	}
 
 }

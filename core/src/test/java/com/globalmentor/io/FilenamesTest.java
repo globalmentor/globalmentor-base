@@ -32,7 +32,7 @@ import org.junit.jupiter.api.*;
  */
 public class FilenamesTest {
 
-	//# filenames
+	//# Filenames
 
 	//## dotfiles
 
@@ -194,6 +194,37 @@ public class FilenamesTest {
 		assertThat(Filenames.changeExtension("test.foo", "foo"), is("test.foo"));
 		assertThat(Filenames.changeExtension("test.foo", "bar"), is("test.bar"));
 		assertThat(Filenames.changeExtension("test.foo.bar", "other"), is("test.foo.other"));
+	}
+
+	//# Filenames.Extensions
+
+	/** @see Filenames.Extensions#normalize(String) */
+	@Test
+	public void testExtensionsNormalize() {
+		assertThat(Filenames.Extensions.normalize("txt"), is("txt"));
+		assertThat(Filenames.Extensions.normalize("TXT"), is("txt"));
+		assertThat(Filenames.Extensions.normalize("tXt"), is("txt"));
+		assertThat(Filenames.Extensions.normalize("touché"), is("touché"));
+		assertThat(Filenames.Extensions.normalize("TOUCHÉ"), is("touchÉ"));
+	}
+
+	/** @see Filenames.Extensions#equals(String, String) */
+	@Test
+	public void testExtensionsEquals() {
+		assertThat(Filenames.Extensions.equals(null, null), is(true));
+		assertThat(Filenames.Extensions.equals(null, ""), is(false));
+		assertThat(Filenames.Extensions.equals("", null), is(false));
+		assertThat(Filenames.Extensions.equals(null, "x"), is(false));
+		assertThat(Filenames.Extensions.equals("x", null), is(false));
+		assertThat(Filenames.Extensions.equals(null, "foo"), is(false));
+		assertThat(Filenames.Extensions.equals("foo", null), is(false));
+		assertThat(Filenames.Extensions.equals("", ""), is(true));
+		assertThat(Filenames.Extensions.equals("txt", "txt"), is(true));
+		assertThat(Filenames.Extensions.equals("TXT", "txt"), is(true));
+		assertThat(Filenames.Extensions.equals("txt", "TXT"), is(true));
+		assertThat(Filenames.Extensions.equals("Txt", "tXt"), is(true));
+		assertThat(Filenames.Extensions.equals("touché", "touché"), is(true));
+		assertThat(Filenames.Extensions.equals("TOUCHÉ", "touché"), is(false));
 	}
 
 }
