@@ -30,6 +30,13 @@ public class ASCIITest {
 	/** @see ASCII#equalsIgnoreCase(CharSequence, CharSequence) */
 	@Test
 	public void testEqualsIgnoreCaseTwoStrings() {
+		assertThat(ASCII.equalsIgnoreCase(null, null), is(true));
+		assertThat(ASCII.equalsIgnoreCase("", null), is(false));
+		assertThat(ASCII.equalsIgnoreCase(null, ""), is(false));
+		assertThat(ASCII.equalsIgnoreCase("x", null), is(false));
+		assertThat(ASCII.equalsIgnoreCase(null, "x"), is(false));
+		assertThat(ASCII.equalsIgnoreCase("foo", null), is(false));
+		assertThat(ASCII.equalsIgnoreCase(null, "foo"), is(false));
 		assertThat(ASCII.equalsIgnoreCase("", ""), is(true));
 		assertThat(ASCII.equalsIgnoreCase("x", ""), is(false));
 		assertThat(ASCII.equalsIgnoreCase("", "x"), is(false));

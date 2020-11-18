@@ -22,6 +22,7 @@ import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.*;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import javax.annotation.*;
 
@@ -105,6 +106,42 @@ public class Files {
 	}
 
 	//## File
+
+	/**
+	 * Returns all the possible extensions of a filename, from the most specific to the most general.
+	 * <p>
+	 * For example for the file <code>path/to/example.foo.bar</code> the following would be returned in order:
+	 * </p>
+	 * <ol>
+	 * <li><code>foo.bar</code></li>
+	 * <li><code>bar</code></li>
+	 * </ol>
+	 * @implSpec This implementation delegates to {@link Filenames#extensions(CharSequence)}.
+	 * @param file The file for which filename extensions should be returned.
+	 * @return A stream of extensions of the given file's name.
+	 * @see File#getName()
+	 */
+	public static Stream<String> nameExtensions(final File file) {
+		return Filenames.extensions(file.getName());
+	}
+
+	/**
+	 * Returns all the possible extensions of a filename, from the most specific to the most general.
+	 * <p>
+	 * For example for the file <code>path/to/example.foo.bar</code> the following would be returned in order:
+	 * </p>
+	 * <ol>
+	 * <li><code>foo.bar</code></li>
+	 * <li><code>bar</code></li>
+	 * </ol>
+	 * @implSpec This implementation delegates to {@link Filenames#getExtensions(CharSequence)}.
+	 * @param file The file for which filename extensions should be returned.
+	 * @return An iterable to iterate over the extensions of the given file's name.
+	 * @see File#getName()
+	 */
+	public static Iterable<String> getNameExtensions(final File file) {
+		return Filenames.getExtensions(file.getName());
+	}
 
 	/**
 	 * Adds the given extension to a file and returns the new file with the new extension. The filename is not checked to see if it currently has an extension.

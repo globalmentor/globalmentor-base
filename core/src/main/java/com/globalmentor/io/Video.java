@@ -49,7 +49,7 @@ public class Video {
 	public static final String MPG_FILENAME_EXTENSION = "mpg";
 
 	/**
-	 * Internet media types for known video filename extensions.
+	 * Internet media types for known video filename extensions. Filename extensions are in canonical (lowercase) form.
 	 * @apiNote This map may not include all the file extensions defined in this class.
 	 */
 	public static final Map<String, ContentType> MEDIA_TYPES_BY_FILENAME_EXTENSION = Stream.of(

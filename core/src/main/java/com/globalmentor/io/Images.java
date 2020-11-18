@@ -84,7 +84,7 @@ public class Images {
 	public static final String TIF_FILENAME_EXTENSION = "tif";
 
 	/**
-	 * Internet media types for known image filename extensions.
+	 * Internet media types for known image filename extensions. Filename extensions are in canonical (lowercase) form.
 	 * @apiNote This map may not include all the file extensions defined in this class.
 	 */
 	public static final Map<String, ContentType> MEDIA_TYPES_BY_FILENAME_EXTENSION = Stream.of(

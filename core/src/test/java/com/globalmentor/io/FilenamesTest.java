@@ -32,7 +32,7 @@ import org.junit.jupiter.api.*;
  */
 public class FilenamesTest {
 
-	//# filenames
+	//# Filenames
 
 	//## dotfiles
 
@@ -157,19 +157,33 @@ public class FilenamesTest {
 
 	/** Tests whether {@link Filenames#findExtension(String)} is working properly. */
 	@Test
-	public void testFindExtensionString() {
+	public void testFindExtension() {
 		assertThat(Filenames.findExtension("foobar.txt"), isPresentAndIs("txt"));
 		assertThat(Filenames.findExtension("foobar"), isEmpty());
 		assertThat(Filenames.findExtension(""), isEmpty());
 
 		assertThat(Filenames.findExtension(".foobar"), isPresentAndIs("foobar"));
 		assertThat(Filenames.findExtension("."), isPresentAndIs(""));
+
+		assertThrows(NullPointerException.class, () -> Filenames.findExtension(null));
 	}
 
-	/** Tests whether {@link Filenames#findExtension(String)} is throwing an exception when a <code>null</code> name is provided. */
+	/** @see Filenames#hasExtension(String, CharSequence) */
 	@Test
-	public void testFindExtensionNullStringFail() {
-		assertThrows(NullPointerException.class, () -> Filenames.findExtension(null));
+	public void testHasExtension() {
+		//check for literal extension
+		assertThat(Filenames.hasExtension("foo.bar", "bar"), is(true));
+		assertThat(Filenames.hasExtension("foo.bare", "bar"), is(false));
+		assertThat(Filenames.hasExtension("foo.bar", "baz"), is(false));
+		assertThat(Filenames.hasExtension("foobar", "bar"), is(false));
+		assertThat(Filenames.hasExtension("bar", "bar"), is(false));
+		//check for ASCII case variation
+		assertThat(Filenames.hasExtension("foo.BAR", "bar"), is(true));
+		assertThat(Filenames.hasExtension("foo.bar", "BAR"), is(true));
+		assertThat(Filenames.hasExtension("foo.bAr", "BaR"), is(true));
+		//don't support non-ASCII case variation
+		assertThat(Filenames.hasExtension("tou.ché", "ché"), is(true));
+		assertThat(Filenames.hasExtension("tou.CHÉ", "ché"), is(false));
 	}
 
 	/** @see Filenames#changeExtension(String, String) */
@@ -180,6 +194,37 @@ public class FilenamesTest {
 		assertThat(Filenames.changeExtension("test.foo", "foo"), is("test.foo"));
 		assertThat(Filenames.changeExtension("test.foo", "bar"), is("test.bar"));
 		assertThat(Filenames.changeExtension("test.foo.bar", "other"), is("test.foo.other"));
+	}
+
+	//# Filenames.Extensions
+
+	/** @see Filenames.Extensions#normalize(String) */
+	@Test
+	public void testExtensionsNormalize() {
+		assertThat(Filenames.Extensions.normalize("txt"), is("txt"));
+		assertThat(Filenames.Extensions.normalize("TXT"), is("txt"));
+		assertThat(Filenames.Extensions.normalize("tXt"), is("txt"));
+		assertThat(Filenames.Extensions.normalize("touché"), is("touché"));
+		assertThat(Filenames.Extensions.normalize("TOUCHÉ"), is("touchÉ"));
+	}
+
+	/** @see Filenames.Extensions#equals(String, String) */
+	@Test
+	public void testExtensionsEquals() {
+		assertThat(Filenames.Extensions.equals(null, null), is(true));
+		assertThat(Filenames.Extensions.equals(null, ""), is(false));
+		assertThat(Filenames.Extensions.equals("", null), is(false));
+		assertThat(Filenames.Extensions.equals(null, "x"), is(false));
+		assertThat(Filenames.Extensions.equals("x", null), is(false));
+		assertThat(Filenames.Extensions.equals(null, "foo"), is(false));
+		assertThat(Filenames.Extensions.equals("foo", null), is(false));
+		assertThat(Filenames.Extensions.equals("", ""), is(true));
+		assertThat(Filenames.Extensions.equals("txt", "txt"), is(true));
+		assertThat(Filenames.Extensions.equals("TXT", "txt"), is(true));
+		assertThat(Filenames.Extensions.equals("txt", "TXT"), is(true));
+		assertThat(Filenames.Extensions.equals("Txt", "tXt"), is(true));
+		assertThat(Filenames.Extensions.equals("touché", "touché"), is(true));
+		assertThat(Filenames.Extensions.equals("TOUCHÉ", "touché"), is(false));
 	}
 
 }

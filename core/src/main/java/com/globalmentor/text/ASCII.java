@@ -19,6 +19,8 @@ package com.globalmentor.text;
 import static com.globalmentor.java.CharSequences.*;
 import static java.lang.Math.*;
 
+import javax.annotation.*;
+
 import com.globalmentor.java.Characters;
 
 /**
@@ -250,13 +252,18 @@ public class ASCII {
 	/**
 	 * Compares the characters in one character sequence with characters in another character sequence without regard to ASCII case.
 	 * @apiNote This method is typically used for formal language token manipulation, not general human language text processing.
+	 * @apiNote This API follows {@link Object#equals(Object)} and {@link String#equalsIgnoreCase(String)} in allowing either or both arguments to be
+	 *          <code>null</code>.
 	 * @param charSequence1 The character sequence to compare.
 	 * @param charSequence2 The character sequence to compare with.
 	 * @return <code>true</code> if the characters in the first character sequence equal the characters in the second character sequence.
 	 */
-	public static boolean equalsIgnoreCase(final CharSequence charSequence1, final CharSequence charSequence2) {
+	public static boolean equalsIgnoreCase(@Nullable final CharSequence charSequence1, @Nullable final CharSequence charSequence2) {
 		if(charSequence1 == charSequence2) { //identity always implies equality
 			return true;
+		}
+		if(charSequence1 == null || charSequence2 == null) { //if one is null but not the other
+			return false;
 		}
 		return equalsIgnoreCase(charSequence1, charSequence2, 0);
 	}
@@ -271,7 +278,7 @@ public class ASCII {
 	 * @return <code>true</code> if the characters in the first character sequence equal the indicated characters in the second character sequence.
 	 * @throws StringIndexOutOfBoundsException if <code>start</code> is negative or greater than the length of the second character sequence.
 	 */
-	public static boolean equalsIgnoreCase(final CharSequence charSequence1, final CharSequence charSequence2, final int start) {
+	public static boolean equalsIgnoreCase(@Nonnull final CharSequence charSequence1, @Nonnull final CharSequence charSequence2, final int start) {
 		return equalsIgnoreCase(charSequence1, charSequence2, start, charSequence2.length());
 	}
 
@@ -289,7 +296,7 @@ public class ASCII {
 	 *           is greater than <code>end</code>, with the exception that if <code>end</code> is greater than the length of the second character sequence it will
 	 *           be adjusted to equal the end.
 	 */
-	public static boolean equalsIgnoreCase(final CharSequence charSequence1, final CharSequence charSequence2, final int start, final int end) {
+	public static boolean equalsIgnoreCase(@Nonnull final CharSequence charSequence1, @Nonnull final CharSequence charSequence2, final int start, final int end) {
 		return equalsIgnoreCase(charSequence1, 0, charSequence1.length(), charSequence2, start, end);
 	}
 
@@ -309,8 +316,8 @@ public class ASCII {
 	 *           is greater than <code>end</code>, with the exception that if <code>end2</code> is greater than the length of the second character sequence it
 	 *           will be adjusted to equal the end.
 	 */
-	public static boolean equalsIgnoreCase(final CharSequence charSequence1, final int start1, final int end1, final CharSequence charSequence2, final int start2,
-			int end2) {
+	public static boolean equalsIgnoreCase(@Nonnull final CharSequence charSequence1, final int start1, final int end1, @Nonnull final CharSequence charSequence2,
+			final int start2, int end2) {
 		checkBounds(charSequence1, start1, end1);
 		final int length2 = charSequence2.length();
 		if(end2 > length2) { //adjust the second character sequence's end if needed
