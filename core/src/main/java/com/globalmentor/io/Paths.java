@@ -19,16 +19,14 @@ package com.globalmentor.io;
 import static com.globalmentor.io.Filenames.*;
 import static com.globalmentor.java.Conditions.*;
 import static com.globalmentor.java.Strings.*;
+import static java.util.Collections.*;
 import static java.util.Objects.*;
 
-import java.nio.file.FileSystem;
-import java.nio.file.InvalidPathException;
-import java.nio.file.Path;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Optional;
+import java.nio.file.*;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 import javax.annotation.*;
 
@@ -226,6 +224,44 @@ public class Paths {
 	}
 
 	//## extensions
+
+	/**
+	 * Returns all the possible extensions of a path's filename, from the most specific to the most general. If the path has no filename, no extensions are
+	 * returned.
+	 * <p>
+	 * For example for the path <code>path/to/example.foo.bar</code> the following would be returned in order:
+	 * </p>
+	 * <ol>
+	 * <li><code>foo.bar</code></li>
+	 * <li><code>bar</code></li>
+	 * </ol>
+	 * @implSpec This implementation delegates to {@link Filenames#extensions(CharSequence)}.
+	 * @param path The path for which extensions should be returned.
+	 * @return A stream of extensions of the given path's filename.
+	 * @see Path#getFileName()
+	 */
+	public static Stream<String> filenameExtensions(final Path path) {
+		return findFilename(path).map(Filenames::extensions).orElse(Stream.empty());
+	}
+
+	/**
+	 * Returns all the possible extensions of a path's filename, from the most specific to the most general. If the path has no filename, no extensions are
+	 * returned.
+	 * <p>
+	 * For example for the path <code>path/to/example.foo.bar</code> the following would be returned in order:
+	 * </p>
+	 * <ol>
+	 * <li><code>foo.bar</code></li>
+	 * <li><code>bar</code></li>
+	 * </ol>
+	 * @implSpec This implementation delegates to {@link Filenames#getExtensions(CharSequence)}.
+	 * @param path The path for which extensions should be returned.
+	 * @return An iterable to iterate over the extensions of the given path's filename.
+	 * @see Path#getFileName()
+	 */
+	public static Iterable<String> getExtensions(final Path path) {
+		return findFilename(path).map(Filenames::getExtensions).orElse(emptyList());
+	}
 
 	/**
 	 * Adds the given extension to a path and returns the new path with the new extension. The filename is not checked to see if it currently has an extension.
