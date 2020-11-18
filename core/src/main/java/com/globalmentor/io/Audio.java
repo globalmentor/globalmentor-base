@@ -86,7 +86,7 @@ public class Audio {
 	public static final String WAV_FILENAME_EXTENSION = "wav";
 
 	/**
-	 * Internet media types for known audio filename extensions.
+	 * Internet media types for known audio filename extensions. Filename extensions are in canonical (lowercase) form.
 	 * @apiNote This map may not include all the file extensions defined in this class.
 	 */
 	public static final Map<String, ContentType> MEDIA_TYPES_BY_FILENAME_EXTENSION = Stream.of(
