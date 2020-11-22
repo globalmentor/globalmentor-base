@@ -27,6 +27,8 @@ import java.util.*;
 
 import javax.annotation.*;
 
+import com.globalmentor.net.URLs;
+
 import static com.globalmentor.io.Paths.*;
 import static com.globalmentor.java.CharSequences.*;
 import static com.globalmentor.java.Conditions.*;
@@ -302,6 +304,25 @@ public final class ClassResources {
 		try (final InputStream resourceInputStream = resourceUrl.openStream()) {
 			return java.nio.file.Files.copy(resourceInputStream, targetFile, options);
 		}
+	}
+
+	/**
+	 * Reads a class resource using the given class' class loader and the given I/O support.
+	 * @param <T> The type of the resource.
+	 * @param objectClass The class relative to which the given resource will be located.
+	 * @param name The name of the resource to read.
+	 * @param io The I/O support for reading the object.
+	 * @return The object read from the resource.
+	 * @throws NullPointerException if the given class, name, and/or I/O support is <code>null</code>.
+	 * @throws IOException if there is an error reading the data.
+	 * @throws FileNotFoundException if the indicated resource does not exist.
+	 */
+	public static <T> T read(final Class<?> objectClass, final String name, final IO<T> io) throws IOException {
+		final URL url = objectClass.getResource(name); //get a URL to the resource
+		if(url == null) { //if the resource doesn't exist
+			throw new FileNotFoundException("Could not find resource " + name + " for " + objectClass.getName());
+		}
+		return URLs.read(url, io);
 	}
 
 }
