@@ -19,6 +19,7 @@ package com.globalmentor.io;
 import static com.globalmentor.io.Filenames.*;
 import static com.globalmentor.java.Conditions.*;
 import static com.globalmentor.java.Strings.*;
+import static java.util.Arrays.*;
 import static java.util.Collections.*;
 import static java.util.Objects.*;
 
@@ -156,6 +157,20 @@ public class Paths {
 	 */
 	public static boolean isSubPath(@Nonnull final Path basePath, @Nonnull final Path subPath) {
 		return subPath.normalize().startsWith(basePath.normalize()); //normalize files to compare apples to apples
+	}
+
+	/**
+	 * Resolve the given path names against the paths formed by the given names. If no other names are given, the path itself is returned.
+	 * @apiNote This method is equivalent to calling {@link Path#resolve(String)} as many times as needed, or first calling
+	 *          {@link FileSystem#getPath(String, String...)} and resolving the resulting path against the original path.
+	 * @implSpec This implementation delegates to {@link #resolve(Path, Collection)}.
+	 * @param path The path against which the other names will be resolved.
+	 * @param otherNames The path names to be joined sequentially and resolved in order to resolve against the given path; may be empty.
+	 * @return The resulting path.
+	 * @throws InvalidPathException If the path string cannot be converted.
+	 */
+	public static Path resolve(@Nonnull Path path, @Nonnull String... otherNames) {
+		return resolve(path, asList(otherNames));
 	}
 
 	/**
