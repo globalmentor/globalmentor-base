@@ -170,11 +170,8 @@ public class URLs {
 	 * @throws IOException if there is an error reading the data.
 	 */
 	public static <T> T read(final URL url, final IO<T> io) throws IOException {
-		final InputStream bufferedInputStream = new BufferedInputStream(url.openStream()); //create a buffered input stream to the resource
-		try {
+		try (final InputStream bufferedInputStream = new BufferedInputStream(url.openStream())) { //create a buffered input stream to the resource
 			return io.read(bufferedInputStream, toURI(url)); //read the object
-		} finally {
-			bufferedInputStream.close(); //always close the input stream
 		}
 	}
 
@@ -186,11 +183,8 @@ public class URLs {
 	 * @see InputStreams#getBytes(InputStream)
 	 */
 	public static byte[] readBytes(final URL url) throws IOException {
-		final InputStream urlInputStream = url.openConnection().getInputStream(); //create an input stream to the URL
-		try {
+		try (final InputStream urlInputStream = url.openConnection().getInputStream()) { //create an input stream to the URL
 			return InputStreams.getBytes(urlInputStream); //convert the URL to an array of bytes
-		} finally {
-			urlInputStream.close(); //always close the URL input stream
 		}
 	}
 
@@ -234,11 +228,8 @@ public class URLs {
 	 * @throws IOException Thrown if there is an error copying the URL.
 	 */
 	public static void write(final URL url, final OutputStream outputStream) throws IOException {
-		final InputStream bufferedInputStream = new BufferedInputStream(url.openConnection().getInputStream()); //created a buffered input stream to the URL
-		try {
+		try (final InputStream bufferedInputStream = new BufferedInputStream(url.openConnection().getInputStream())) { //created a buffered input stream to the URL
 			IOStreams.copy(bufferedInputStream, outputStream); //copy the contents of the input stream to the output stream
-		} finally {
-			bufferedInputStream.close(); //always close the file input stream
 		}
 	}
 

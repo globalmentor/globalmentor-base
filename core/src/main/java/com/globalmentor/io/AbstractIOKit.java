@@ -67,11 +67,8 @@ public abstract class AbstractIOKit<T> extends DefaultURIAccessible implements I
 	 */
 	public T load(final URI uri) throws IOException {
 		//get an input stream to the resource
-		final InputStream inputStream = getInputStream(uri);
-		try {
+		try (final InputStream inputStream = getInputStream(uri)) {
 			return load(inputStream, uri); //load the object from the input stream
-		} finally {
-			inputStream.close(); //always close the input stream
 		}
 	}
 
@@ -85,11 +82,8 @@ public abstract class AbstractIOKit<T> extends DefaultURIAccessible implements I
 	 * @throws IOException Thrown if there is an error writing the object.
 	 */
 	public void save(final T object, final URI uri) throws IOException {
-		final OutputStream outputStream = getOutputStream(uri); //get an output stream to this URI
-		try {
+		try (final OutputStream outputStream = getOutputStream(uri)) { //get an output stream to this URI
 			save(object, outputStream); //write to the output stream
-		} finally {
-			outputStream.close(); //always close the output stream
 		}
 	}
 

@@ -139,8 +139,7 @@ public class ZipManager implements URIInputStreamable {
 	protected void loadZipEntries() throws IOException {
 		final Map<URI, ZipEntry> zipEntryMap = getZipEntryMap(); //get the map of zip entries
 		zipEntryMap.clear(); //remove all entries from the zip entry map
-		final ZipFile zipFile = new ZipFile(getFile()); //open the zip file for reading
-		try {
+		try (final ZipFile zipFile = new ZipFile(getFile())) { //open the zip file for reading
 			final Enumeration<? extends ZipEntry> zipEntryEnumeration = zipFile.entries(); //get an enumeration of all the entries in the zip file
 			while(zipEntryEnumeration.hasMoreElements()) { //while there is another zip entry left
 				final ZipEntry zipEntry = zipEntryEnumeration.nextElement(); //get a reference to this zip entry
@@ -156,8 +155,6 @@ public class ZipManager implements URIInputStreamable {
 					throw ioException; //throw the I/O exception representing the syntax exceptoin
 				}
 			}
-		} finally {
-			zipFile.close(); //always close the zip file
 		}
 	}
 

@@ -69,11 +69,8 @@ public abstract class AbstractViewIOKit<M> extends DefaultURIAccessible implemen
 	 */
 	public void load(final ModelView<M> view, final URI uri) throws IOException {
 		//get an input stream to the resource
-		final InputStream inputStream = getInputStream(uri);
-		try {
+		try (final InputStream inputStream = getInputStream(uri)) {
 			load(view, inputStream, uri); //load the model from the input stream
-		} finally {
-			inputStream.close(); //always close the input stream
 		}
 	}
 
@@ -96,11 +93,8 @@ public abstract class AbstractViewIOKit<M> extends DefaultURIAccessible implemen
 	 * @see Verifiable#verify()
 	 */
 	public void save(final ModelView<M> view, final URI uri) throws IOException {
-		final OutputStream outputStream = getOutputStream(uri); //get an output stream to this URI
-		try {
+		try (final OutputStream outputStream = getOutputStream(uri)) { //get an output stream to this URI
 			save(view, outputStream); //write to the output stream
-		} finally {
-			outputStream.close(); //always close the output stream
 		}
 	}
 

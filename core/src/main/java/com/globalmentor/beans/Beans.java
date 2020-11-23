@@ -82,11 +82,8 @@ public class Beans {
 			file.renameTo(backupFile); //rename the file to the backup file TODO should we copy instead here?
 		}
 		//create an output stream to the file, make it buffered, and create an XML encoder to write to the stream
-		final XMLEncoder xmlEncoder = createUpgradedXMLEncoder(new BufferedOutputStream(new FileOutputStream(file)));
-		try {
+		try (final XMLEncoder xmlEncoder = createUpgradedXMLEncoder(new BufferedOutputStream(new FileOutputStream(file)))) {
 			xmlEncoder.writeObject(object); //write the object to the file
-		} finally {
-			xmlEncoder.close(); //always close the encoder
 		}
 	}
 
@@ -98,11 +95,8 @@ public class Beans {
 	 */
 	public static Object xmlDecode(final File file) throws FileNotFoundException {
 		//create a buffered input stream for the file, and construct an XML decoder that uses it
-		final XMLDecoder xmlDecoder = new XMLDecoder(new BufferedInputStream(new FileInputStream(file)));
-		try {
+		try (final XMLDecoder xmlDecoder = new XMLDecoder(new BufferedInputStream(new FileInputStream(file)))) {
 			return xmlDecoder.readObject(); //read and return the object
-		} finally {
-			xmlDecoder.close(); //always close the XML decoder
 		}
 	}
 
