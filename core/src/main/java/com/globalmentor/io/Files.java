@@ -758,11 +758,8 @@ public class Files {
 	 * @see #write
 	 */
 	public static byte[] readBytes(final File file) throws IOException {
-		final InputStream fileInputStream = new FileInputStream(file); //create an input stream to the file
-		try {
+		try (final InputStream fileInputStream = new FileInputStream(file)) { //create an input stream to the file
 			return getBytes(fileInputStream); //convert the file to an array of bytes
-		} finally {
-			fileInputStream.close(); //always close the file input stream
 		}
 	}
 
@@ -775,11 +772,8 @@ public class Files {
 	 * @throws IOException if there is an error reading the data.
 	 */
 	public static <T> T read(final File file, final IO<T> io) throws IOException {
-		final InputStream bufferedInputStream = new BufferedInputStream(new FileInputStream(file)); //create a buffered input stream to the file
-		try {
+		try (final InputStream bufferedInputStream = new BufferedInputStream(new FileInputStream(file))) { //create a buffered input stream to the file
 			return io.read(bufferedInputStream, toURI(file)); //read the object, determining the base URI from the file
-		} finally {
-			bufferedInputStream.close(); //always close the input stream
 		}
 	}
 
@@ -791,11 +785,8 @@ public class Files {
 	 * @throws IOException if there is an error loading the contents of the file.
 	 */
 	public static void read(final File file, final InputStreamReadable inputStreamReadable) throws IOException {
-		final InputStream bufferedInputStream = new BufferedInputStream(new FileInputStream(file)); //create a buffered input stream to the file
-		try {
+		try (final InputStream bufferedInputStream = new BufferedInputStream(new FileInputStream(file))) { //create a buffered input stream to the file
 			inputStreamReadable.read(bufferedInputStream, toURI(file)); //read from the stream, determining the base URI from the file
-		} finally {
-			bufferedInputStream.close(); //always close the input stream
 		}
 	}
 
@@ -807,11 +798,8 @@ public class Files {
 	 * @throws IOException if there is an error writing the contents to the file.
 	 */
 	public static void write(final File file, final OutputStreamWritable outputStreamWritable) throws IOException {
-		final OutputStream bufferedOutputStream = new BufferedOutputStream(new FileOutputStream(file)); //create a buffered output stream to the file
-		try {
+		try (final OutputStream bufferedOutputStream = new BufferedOutputStream(new FileOutputStream(file))) { //create a buffered output stream to the file
 			outputStreamWritable.write(bufferedOutputStream, toURI(file)); //write to the stream, determining the base URI from the file
-		} finally {
-			bufferedOutputStream.close(); //always close the input stream
 		}
 	}
 
@@ -929,11 +917,8 @@ public class Files {
 	 * @throws IOException Thrown if there is an error copying the information.
 	 */
 	public static void copy(final InputStream inputStream, final File file, final ProgressListener progressListener) throws IOException {
-		final OutputStream fileOutputStream = new BufferedOutputStream(new FileOutputStream(file)); //created a buffered output stream to the file
-		try {
+		try (final OutputStream fileOutputStream = new BufferedOutputStream(new FileOutputStream(file))) { //created a buffered output stream to the file
 			IOStreams.copy(inputStream, fileOutputStream, progressListener); //copy the contents of the input stream to the output stream
-		} finally {
-			fileOutputStream.close(); //always close the file output stream
 		}
 	}
 
@@ -1052,11 +1037,8 @@ public class Files {
 	 * @throws IOException Thrown if there is an error copying the file.
 	 */
 	public static void copy(final File file, final OutputStream outputStream, final ProgressListener progressListener) throws IOException {
-		final InputStream fileInputStream = new BufferedInputStream(new FileInputStream(file)); //created a buffered input stream to the file
-		try {
+		try (final InputStream fileInputStream = new BufferedInputStream(new FileInputStream(file))) { //created a buffered input stream to the file
 			IOStreams.copy(fileInputStream, outputStream, file.length(), progressListener); //copy the contents of the input stream to the output stream
-		} finally {
-			fileInputStream.close(); //always close the file input stream
 		}
 	}
 
@@ -1166,11 +1148,8 @@ public class Files {
 					throw new IllegalStateException("Copy destination file " + destinationFile + " already exists.");
 				}
 			}
-			final OutputStream outputStream = new FileOutputStream(destinationFile); //create an output stream to the destination file
-			try {
+			try (final OutputStream outputStream = new FileOutputStream(destinationFile)) { //create an output stream to the destination file
 				copy(sourceFile, outputStream, progressListener); //copy the file contents
-			} finally {
-				outputStream.close();
 			}
 		}
 		destinationFile.setLastModified(sourceFile.lastModified()); //update the destination file's last modified time to match that of the source

@@ -44,8 +44,7 @@ package com.globalmentor.java;
  * {
  *   myDisposable.dispose();
  * }
- * </code>
- * </pre>
+ * </code> </pre>
  * 
  * </blockquote>
  * 
@@ -69,8 +68,7 @@ package com.globalmentor.java;
  *     super.finalize();
  *   }
  * }
- * </code>
- * </pre>
+ * </code> </pre>
  * 
  * </blockquote>
  * 
@@ -81,8 +79,10 @@ package com.globalmentor.java;
  * </p>
  * 
  * @author Garret Wilson
- * 
+ * @deprecated to be removed in favor of {@link AutoCloseable} in conjunction Java's try-with-resources facility, which mitigates the problem an exception
+ *             thrown inside <code>close()</code>.
  */
+@Deprecated
 public interface Disposable {
 
 	/**

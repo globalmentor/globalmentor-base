@@ -914,13 +914,10 @@ public class Strings {
 	 * @throws IOException if there is an error writing the data.
 	 */
 	public static <T> String write(final URI baseURI, final T object, final IO<T> io, final Charset charset) throws IOException {
-		final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(); //create a new byte array output stream
-		try {
+		try (final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) { //create a new byte array output stream
 			io.write(byteArrayOutputStream, baseURI, object); //write the object, determining the base URI from the file
-		} finally {
-			byteArrayOutputStream.close(); //always close the output stream
+			return byteArrayOutputStream.toString(charset.name()); //convert the byte array to a string using the given encoding
 		}
-		return byteArrayOutputStream.toString(charset.name()); //convert the byte array to a string using the given encoding
 	}
 
 }

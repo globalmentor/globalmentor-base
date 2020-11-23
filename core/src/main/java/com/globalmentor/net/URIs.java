@@ -1529,13 +1529,8 @@ public class URIs {
 	/*TODO fix
 		public static byte[] readBytes(final URL url) throws IOException
 		{
-			final InputStream urlInputStream=url.openConnection().getInputStream();  //create an input stream to the URL
-			try
-			{
+			try (final InputStream urlInputStream=url.openConnection().getInputStream()) {  //create an input stream to the URL
 				return InputStreamUtilities.getBytes(urlInputStream);  //convert the URL to an array of bytes
-			}
-			finally
-			{
 				urlInputStream.close();  //always close the URL input stream
 			}
 		}

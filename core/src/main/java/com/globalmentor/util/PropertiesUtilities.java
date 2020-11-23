@@ -27,7 +27,9 @@ import com.globalmentor.io.BOMInputStreamReader;
 /**
  * Provides convenience access routines to {@link Properties}.
  * @author Garret Wilson
+ * @deprecated to be removed in favor of Confound library.
  */
+@Deprecated
 public class PropertiesUtilities {
 
 	/** The name extension for properties files, such as Java properties files. */
@@ -192,25 +194,18 @@ public class PropertiesUtilities {
 		//try to load baseName.properties
 		InputStream propertiesStream = objectClass.getResourceAsStream(addExtension(baseName, PROPERTIES_NAME_EXTENSION));
 		if(propertiesStream != null) {
-			propertiesStream = new BufferedInputStream(propertiesStream); //buffer the stream
-			final Reader propertiesReader = new BOMInputStreamReader(propertiesStream, ISO_8859_1); //check for a BOM, falling back to the default properties charset
-			try {
+			try (final Reader propertiesReader = new BOMInputStreamReader(new BufferedInputStream(propertiesStream), ISO_8859_1)) { //check for a BOM, falling back to the default properties charset
 				properties.load(propertiesReader);
-				return properties;
-			} finally {
-				propertiesReader.close();
 			}
+			return properties;
 		}
 		//try to load baseName.xml
 		propertiesStream = objectClass.getResourceAsStream(addExtension(baseName, "xml")); //TODO decide whether to create duplicate XML_NAME_EXTENSION constant inside globalmentor-core 
 		if(propertiesStream != null) {
-			propertiesStream = new BufferedInputStream(propertiesStream); //buffer the stream
-			try {
+			try (final InputStream xmlPropertiesStream = new BufferedInputStream(propertiesStream)) { //buffer the stream
 				properties.loadFromXML(propertiesStream);
-				return properties;
-			} finally {
-				propertiesStream.close();
 			}
+			return properties;
 		}
 		throw new FileNotFoundException("No properties resource " + baseName + " found for class " + objectClass);
 	}
