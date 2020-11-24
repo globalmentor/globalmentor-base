@@ -42,7 +42,7 @@ public class InputStreamsTest {
 		final byte[] buffer = new byte[6]; //initializes to all zeros
 		assertThat(InputStreams.read(inputStream, buffer), is(6)); //correct number of bytes read
 		assertThat(buffer, is(new byte[] {'f', 'o', 'o', 'b', 'a', 'r'})); //correct data read
-		assertThat(getBytes(inputStream), is(NO_BYTES)); //no data remaining
+		assertThat(readBytes(inputStream), is(NO_BYTES)); //no data remaining
 	}
 
 	/** @see InputStreams#read(InputStream, byte[]) */
@@ -52,7 +52,7 @@ public class InputStreamsTest {
 		final byte[] buffer = new byte[6]; //initializes to all zeros
 		assertThat(InputStreams.read(inputStream, buffer), is(0)); //correct number of bytes read
 		assertThat(buffer, is(new byte[] {0, 0, 0, 0, 0, 0})); //correct data read
-		assertThat(getBytes(inputStream), is(NO_BYTES)); //no data remaining
+		assertThat(readBytes(inputStream), is(NO_BYTES)); //no data remaining
 	}
 
 	/** @see InputStreams#read(InputStream, byte[]) */
@@ -62,7 +62,7 @@ public class InputStreamsTest {
 		final byte[] buffer = new byte[0]; //initializes to all zeros
 		assertThat(InputStreams.read(inputStream, buffer), is(0)); //correct number of bytes read
 		assertThat(buffer, is(NO_BYTES)); //no data read
-		assertThat(getBytes(inputStream), is(new byte[] {'f', 'o', 'o', 'b', 'a', 'r'})); //correct data remaining
+		assertThat(readBytes(inputStream), is(new byte[] {'f', 'o', 'o', 'b', 'a', 'r'})); //correct data remaining
 	}
 
 	/** @see InputStreams#read(InputStream, byte[], int) */
@@ -72,7 +72,7 @@ public class InputStreamsTest {
 		final byte[] buffer = new byte[8]; //initializes to all zeros
 		assertThat(InputStreams.read(inputStream, buffer, 3), is(3)); //correct number of bytes read
 		assertThat(buffer, is(new byte[] {'f', 'o', 'o', 0, 0, 0, 0, 0})); //correct data read
-		assertThat(getBytes(inputStream), is("bar".getBytes(US_ASCII))); //correct data still remaining
+		assertThat(readBytes(inputStream), is("bar".getBytes(US_ASCII))); //correct data still remaining
 	}
 
 	/** @see InputStreams#read(InputStream, byte[], int) */
@@ -84,7 +84,7 @@ public class InputStreamsTest {
 		assertThrows(IndexOutOfBoundsException.class, () -> InputStreams.read(inputStream, buffer, -2));
 		assertThrows(IndexOutOfBoundsException.class, () -> InputStreams.read(inputStream, buffer, -123));
 		assertThat(buffer, is(new byte[] {0, 0, 0, 0, 0, 0, 0, 0})); //correct data read
-		assertThat(getBytes(inputStream), is("foobar".getBytes(US_ASCII))); //correct data still remaining
+		assertThat(readBytes(inputStream), is("foobar".getBytes(US_ASCII))); //correct data still remaining
 	}
 
 	/** @see InputStreams#read(InputStream, byte[], int, int) */
@@ -94,7 +94,7 @@ public class InputStreamsTest {
 		final byte[] buffer = new byte[10]; //initializes to all zeros
 		assertThat(InputStreams.read(inputStream, buffer, 2, 5), is(5)); //correct number of bytes read
 		assertThat(buffer, is(new byte[] {0, 0, 'e', 'x', 't', 'r', 'a', 0, 0, 0})); //correct data read
-		assertThat(getBytes(inputStream), is("ordinary".getBytes(US_ASCII))); //correct data still remaining
+		assertThat(readBytes(inputStream), is("ordinary".getBytes(US_ASCII))); //correct data still remaining
 	}
 
 	/** @see InputStreams#read(InputStream, byte[], int, int) */
@@ -104,7 +104,7 @@ public class InputStreamsTest {
 		final byte[] buffer = new byte[8]; //initializes to all zeros
 		assertThat(InputStreams.read(inputStream, buffer, 1, 6), is(6)); //correct number of bytes read
 		assertThat(buffer, is(new byte[] {0, 'f', 'o', 'o', 'b', 'a', 'r', 0})); //correct data read
-		assertThat(getBytes(inputStream), is(NO_BYTES)); //no data remaining
+		assertThat(readBytes(inputStream), is(NO_BYTES)); //no data remaining
 	}
 
 	/** @see InputStreams#read(InputStream, byte[], int, int) */
@@ -114,7 +114,7 @@ public class InputStreamsTest {
 		final byte[] buffer = new byte[8]; //initializes to all zeros
 		assertThat(InputStreams.read(inputStream, buffer, 1, 3), is(3)); //correct number of bytes read
 		assertThat(buffer, is(new byte[] {0, 'f', 'o', 'o', 0, 0, 0, 0})); //correct data read
-		assertThat(getBytes(inputStream), is(NO_BYTES)); //no data remaining
+		assertThat(readBytes(inputStream), is(NO_BYTES)); //no data remaining
 	}
 
 }

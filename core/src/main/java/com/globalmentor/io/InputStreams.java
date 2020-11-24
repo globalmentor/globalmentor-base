@@ -43,7 +43,7 @@ public class InputStreams {
 	 * @return An array of bytes from the input stream.
 	 * @throws IOException Thrown if there is an error loading the bytes.
 	 */
-	public static byte[] getBytes(final InputStream inputStream) throws IOException {
+	public static byte[] readBytes(final InputStream inputStream) throws IOException {
 		final List<byte[]> bufferList = new ArrayList<byte[]>(); //create a list for the buffers
 		final int bufferSize = 64 * 1024; //use a series of 64K buffers
 		int totalBytesRead = 0; //show that we haven't read anything at all yet
@@ -74,8 +74,8 @@ public class InputStreams {
 	 * @throws IllegalArgumentException if the offset or the length is negative.
 	 * @throws IOException if there is an error reading from the input stream.
 	 */
-	public static byte[] getBytes(final InputStream inputStream, final int length) throws IOException {
-		return getBytes(inputStream, 0, length); //get bytes from the stream starting at the beginning
+	public static byte[] readBytes(final InputStream inputStream, final int length) throws IOException {
+		return readBytes(inputStream, 0, length); //get bytes from the stream starting at the beginning
 	}
 
 	/**
@@ -88,7 +88,7 @@ public class InputStreams {
 	 * @throws IllegalArgumentException if the offset or the length is negative.
 	 * @throws IOException if there is an error reading from the input stream.
 	 */
-	public static byte[] getBytes(final InputStream inputStream, final long offset, final int length) throws IOException {
+	public static byte[] readBytes(final InputStream inputStream, final long offset, final int length) throws IOException {
 		if(offset < 0) { //if a negative offset is requested
 			throw new IllegalArgumentException("Offset cannot be negative.");
 		}

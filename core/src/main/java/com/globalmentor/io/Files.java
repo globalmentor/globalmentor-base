@@ -35,7 +35,6 @@ import com.globalmentor.java.*;
 import com.globalmentor.net.*;
 import com.globalmentor.text.*;
 
-import static com.globalmentor.io.InputStreams.*;
 import static com.globalmentor.io.Paths.*;
 import static com.globalmentor.java.Conditions.*;
 import static com.globalmentor.java.StringBuilders.*;
@@ -759,7 +758,7 @@ public class Files {
 	 */
 	public static byte[] readBytes(final File file) throws IOException {
 		try (final InputStream fileInputStream = new FileInputStream(file)) { //create an input stream to the file
-			return getBytes(fileInputStream); //convert the file to an array of bytes
+			return InputStreams.readBytes(fileInputStream); //convert the file to an array of bytes
 		}
 	}
 
