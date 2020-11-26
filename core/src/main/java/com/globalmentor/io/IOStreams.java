@@ -28,9 +28,21 @@ import com.globalmentor.event.ProgressListener;
 public class IOStreams {
 
 	/**
+	 * The recommended default size of I/O buffers.
+	 * @apiNote The general consensus is that many I/O devices use block sizes of 4096 or 8192 so the buffer size is optimal at a multiple of this. But the value
+	 *          needs to be low enough to fit in the CPU cache. Many JDK buffers such as that in {@link BufferedInputStream} and the utilities in
+	 *          {@link java.nio.file.Files} have been tuned to 8192.
+	 * @implNote This value may change in the future if warranted by new technology.
+	 * @see <a href="https://stackoverflow.com/q/236861">How do you determine the ideal buffer size when using FileInputStream?</a>
+	 * @see <a href="https://stackoverflow.com/q/3033771">File I/O with streams - best memory buffer size</a>
+	 */
+	public static final int DEFAULT_BUFFER_SIZE = 1 << 13; //8182
+
+	/**
 	 * Copies all information from an input stream to an output stream. Both streams are used as-is. If buffered reading and writing is desired, the streams
 	 * should be wrapped in a {@link BufferedInputStream} and a {@link BufferedOutputStream} and those should be passed as parameters. After copying is finished,
 	 * both streams are left open.
+	 * @apiNote This method will likely eventually be deprecated in favor of Java 9+ <code>InputStream.transferTo(OutputStream)</code>.
 	 * @param inputStream The source of the data.
 	 * @param outputStream The destination of the data.
 	 * @return The total number of bytes copied.

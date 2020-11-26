@@ -25,6 +25,7 @@ import javax.annotation.*;
 import com.globalmentor.java.Bytes;
 import com.globalmentor.model.Named;
 
+import static com.globalmentor.io.IOStreams.DEFAULT_BUFFER_SIZE;
 import static com.globalmentor.java.Bytes.*;
 import static com.globalmentor.java.Characters.*;
 import static java.nio.charset.StandardCharsets.*;
@@ -233,7 +234,7 @@ public class MessageDigests {
 	 * @throws IOException if there is an I/O exception reading from the input stream.
 	 */
 	public static MessageDigest update(@Nonnull final MessageDigest messageDigest, @Nonnull final InputStream inputStream) throws IOException {
-		final byte[] buffer = new byte[1 << 13]; //compare with BufferedInputStream, which uses a 8192 byte buffer as of Java 11
+		final byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
 		int readCount;
 		while((readCount = inputStream.read(buffer)) != -1) {
 			messageDigest.update(buffer, 0, readCount);

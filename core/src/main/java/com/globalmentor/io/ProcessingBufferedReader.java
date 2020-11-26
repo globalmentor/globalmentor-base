@@ -16,7 +16,8 @@
 
 package com.globalmentor.io;
 
-import static com.globalmentor.java.Conditions.checkArgument;
+import static com.globalmentor.io.IOStreams.DEFAULT_BUFFER_SIZE;
+import static com.globalmentor.java.Conditions.*;
 
 import java.io.*;
 
@@ -55,9 +56,6 @@ public class ProcessingBufferedReader extends Reader {
 	/** The default size of the buffer for unreading data. */
 	public static final int DEFAULT_UNDO_BUFFER_SIZE = 256;
 
-	/** The default size of buffered data. */
-	public static final int DEFAULT_BUFFER_SIZE = 8192;
-
 	/**
 	 * The size of buffered data, including undo buffer space.
 	 * @see #undoBufferSize
@@ -65,6 +63,8 @@ public class ProcessingBufferedReader extends Reader {
 	private int bufferSize = DEFAULT_BUFFER_SIZE;
 
 	/**
+	 * Returns the size allocated to the buffer.
+	 * @implSpec By default this method returns {@value IOStreams#DEFAULT_BUFFER_SIZE}.
 	 * @return The size of buffered data, including undo buffer space.
 	 * @see #getUndoBufferSize()
 	 */
