@@ -39,10 +39,9 @@ public class IOStreams {
 	public static final int DEFAULT_BUFFER_SIZE = 1 << 13; //8182
 
 	/**
-	 * Copies all information from an input stream to an output stream. Both streams are used as-is. If buffered reading and writing is desired, the streams
-	 * should be wrapped in a {@link BufferedInputStream} and a {@link BufferedOutputStream} and those should be passed as parameters. After copying is finished,
-	 * both streams are left open.
+	 * Copies all information from an input stream to an output stream. After copying is finished, both streams are left open.
 	 * @apiNote This method will likely eventually be deprecated in favor of Java 9+ <code>InputStream.transferTo(OutputStream)</code>.
+	 * @implSpec This implementation delegates to {@link #copy(InputStream, OutputStream, ProgressListener)}.
 	 * @param inputStream The source of the data.
 	 * @param outputStream The destination of the data.
 	 * @return The total number of bytes copied.
@@ -53,9 +52,8 @@ public class IOStreams {
 	}
 
 	/**
-	 * Copies all information from an input stream to an output stream. Both streams are used as-is. If buffered reading and writing is desired, the streams
-	 * should be wrapped in a {@link BufferedInputStream} and a {@link BufferedOutputStream} and those should be passed as parameters. After copying is finished,
-	 * both streams are left open.
+	 * Copies all information from an input stream to an output stream. Both streams are used as-is. After copying is finished, both streams are left open.
+	 * @implSpec This implementation delegates to {@link #copy(InputStream, OutputStream, long, ProgressListener)}.
 	 * @param inputStream The source of the data.
 	 * @param outputStream The destination of the data.
 	 * @param progressListener A listener to be notified of progress, or <code>null</code> if no progress notifications is requested.
@@ -68,9 +66,8 @@ public class IOStreams {
 	}
 
 	/**
-	 * Copies all information from an input stream to an output stream. Both streams are used as-is. If buffered reading and writing is desired, the streams
-	 * should be wrapped in a {@link BufferedInputStream} and a {@link BufferedOutputStream} and those should be passed as parameters. After copying is finished,
-	 * both streams are left open.
+	 * Copies all information from an input stream to an output stream. Both streams are used as-is. After copying is finished, both streams are left open.
+	 * @implSpec This implementation delegates to {@link #copy(InputStream, OutputStream, long, ProgressListener)}.
 	 * @param inputStream The source of the data.
 	 * @param outputStream The destination of the data.
 	 * @param expectedContentLength The length of content expected, or -1 if the length is unknown.
@@ -83,9 +80,13 @@ public class IOStreams {
 	}
 
 	/**
-	 * Copies all information from an input stream to an output stream. Both streams are used as-is. If buffered reading and writing is desired, the streams
-	 * should be wrapped in a {@link BufferedInputStream} and a {@link BufferedOutputStream} and those should be passed as parameters. After copying is finished,
-	 * both streams are left open.
+	 * Copies all information from an input stream to an output stream. Both streams are used as-is. After copying is finished, both streams are left open.
+	 * @implSpec This implementation uses a single buffer of size {@value #DEFAULT_BUFFER_SIZE}.
+	 * @implNote An earlier implementation attempted to optimize by using larger buffers for input streams known to contain a lot of data. Until there is
+	 *           empirical or authoritative evidence of any benefit from larger buffer sizes, the current implementation simply uses uses the default buffer size
+	 *           {@value #DEFAULT_BUFFER_SIZE} or the known total number of bytes, whichever is smaller. This approach saves memory and the transfer is usually
+	 *           I/O bound, not CPU bound, anyway. Using a single, fixed-size buffer is also the approach of the Java 9+
+	 *           <code>InputStream.transferTo(OutputStream)</code> method.
 	 * @param inputStream The source of the data.
 	 * @param outputStream The destination of the data.
 	 * @param expectedContentLength The length of content expected, or -1 if the length is unknown.
@@ -93,25 +94,11 @@ public class IOStreams {
 	 * @return The total number of bytes copied.
 	 * @throws IOException Thrown if there is an error reading from or writing to a stream.
 	 * @throws IOException if an expected content length was given and the number of bytes written to the output stream is not what was expected.
+	 * @see #DEFAULT_BUFFER_SIZE
 	 */
 	public static long copy(final InputStream inputStream, final OutputStream outputStream, final long expectedContentLength,
 			final ProgressListener progressListener) throws IOException {
-		final int bufferSize; //determine the optimal buffer size to use
-		/*TODO check the amount of memory before trying to use such large buffers
-		if(expectedContentLength >= 1 * 1024 * 1024 * 1024) {	//if the expected content length is over 1GB
-			bufferSize = 100 * 1024 * 1024; //use a 100MB buffer
-		}
-		else if(expectedContentLength >= 64 * 1024 * 1024) {	//if the expected content length is over 64MB
-			bufferSize = 50 * 1024 * 1024; //use a 50MB buffer
-		}
-		*/
-		if(expectedContentLength >= 16 * 1024 * 1024) { //if the expected content length is over 16MB
-			bufferSize = 10 * 1024 * 1024; //use a 10MB buffer
-		} else if(expectedContentLength >= 1 * 1024 * 1024) { //if the expected content length is over 1MB
-			bufferSize = 1 * 1024 * 1024; //use a 1MB buffer
-		} else { //for smaller (or unknown) sizes
-			bufferSize = 64 * 1024; //use a 16KB buffer for everything else
-		}
+		final int bufferSize = expectedContentLength >= 0 && expectedContentLength < DEFAULT_BUFFER_SIZE ? (int)expectedContentLength : DEFAULT_BUFFER_SIZE; //use the default buffer size unless there is a known, smaller expected content length
 		final byte[] buffer = new byte[bufferSize]; //create a buffer for copying data
 		long totalBytesCopied = 0; //show that we have not copied any data
 		int bytesRead; //this will store the number of bytes read each time
