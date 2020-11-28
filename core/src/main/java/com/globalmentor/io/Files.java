@@ -35,7 +35,6 @@ import com.globalmentor.java.*;
 import com.globalmentor.net.*;
 import com.globalmentor.text.*;
 
-import static com.globalmentor.io.InputStreams.*;
 import static com.globalmentor.io.Paths.*;
 import static com.globalmentor.java.Conditions.*;
 import static com.globalmentor.java.StringBuilders.*;
@@ -553,7 +552,7 @@ public class Files {
 	 * </p>
 	 * @param file The file for which a temporary file should be returned.
 	 * @return The file suitable for temporary access.
-	 * @see TEMP_EXTENSION
+	 * @see #TEMP_EXTENSION
 	 */
 	public static File getTempFile(final File file) {
 		return new File(file.getParent(), Filenames.addExtension(file.getName(), TEMP_EXTENSION)); //return the file with a "temp" extension
@@ -566,7 +565,7 @@ public class Files {
 	 * </p>
 	 * @param file The file for which a backup file should be returned.
 	 * @return The file suitable for backup.
-	 * @see BACKUP_EXTENSION
+	 * @see #BACKUP_EXTENSION
 	 */
 	public static File getBackupFile(final File file) {
 		return new File(file.getParent(), Filenames.addExtension(file.getName(), BACKUP_EXTENSION)); //return the file with a "backup" extension
@@ -609,7 +608,7 @@ public class Files {
 	 * @param file The file to check for existence.
 	 * @return <code>true</code> if the file existed or exists now after moving the backup file, else <code>false</code> if neither file exists.
 	 * @throws IOException Thrown if the backup file cannot be moved.
-	 * @see #getBackupFile
+	 * @see #getBackupFile(File)
 	 */
 	public static boolean ensureExistsFromBackup(final File file) throws IOException {
 		return ensureExistsFromBackup(file, getBackupFile(file)); //check to see if the file exists, using the default filename for the backup file
@@ -754,12 +753,11 @@ public class Files {
 	 * @param file The file from which to read.
 	 * @return An array of bytes from the input stream.
 	 * @throws IOException Thrown if there is an error loading the bytes.
-	 * @see InputStreams#getBytes
-	 * @see #write
+	 * @see InputStreams#readBytes(InputStream)
 	 */
 	public static byte[] readBytes(final File file) throws IOException {
 		try (final InputStream fileInputStream = new FileInputStream(file)) { //create an input stream to the file
-			return getBytes(fileInputStream); //convert the file to an array of bytes
+			return InputStreams.readBytes(fileInputStream); //convert the file to an array of bytes
 		}
 	}
 

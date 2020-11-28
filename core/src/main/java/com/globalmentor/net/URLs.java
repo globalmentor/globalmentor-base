@@ -180,11 +180,11 @@ public class URLs {
 	 * @param url The URL from which to read.
 	 * @return An array of bytes from the URL.
 	 * @throws IOException Thrown if there is an error loading the bytes.
-	 * @see InputStreams#getBytes(InputStream)
+	 * @see InputStreams#readBytes(InputStream)
 	 */
 	public static byte[] readBytes(final URL url) throws IOException {
 		try (final InputStream urlInputStream = url.openConnection().getInputStream()) { //create an input stream to the URL
-			return InputStreams.getBytes(urlInputStream); //convert the URL to an array of bytes
+			return InputStreams.readBytes(urlInputStream); //convert the URL to an array of bytes
 		}
 	}
 

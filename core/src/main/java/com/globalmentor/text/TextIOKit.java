@@ -71,7 +71,7 @@ public class TextIOKit extends AbstractIOKit<StringBuilder> {
 	 */
 	public StringBuilder load(final InputStream inputStream, final URI baseURI) throws IOException {
 		final Charset charset = InputStreams.detectCharset(inputStream, Charset.defaultCharset()); //try to sense from the byte order mark the encoding of the text, defaulting to the JVM default TODO it would be better to define a better default	
-		final byte[] bytes = InputStreams.getBytes(inputStream); //get the bytes from the input stream
+		final byte[] bytes = InputStreams.readBytes(inputStream); //get the bytes from the input stream
 		final String string = new String(bytes, charset); //use the character encoding we sensed to create a string
 		return new StringBuilder(string); //return a text model from the text we read
 	}
