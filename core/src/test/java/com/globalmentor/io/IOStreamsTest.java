@@ -16,12 +16,18 @@
 
 package com.globalmentor.io;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static com.globalmentor.io.IOStreams.DEFAULT_BUFFER_SIZE;
+import static java.lang.String.format;
+import static java.util.Arrays.*;
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
 
 import java.io.*;
 import java.util.*;
 
 import org.junit.jupiter.api.Test;
+
+import com.globalmentor.java.Bytes;
 
 /**
  * Various tests for the {@link IOStreams} utilities.
@@ -29,41 +35,18 @@ import org.junit.jupiter.api.Test;
  */
 public class IOStreamsTest {
 
-	/**
-	 * Generates a buffer of data for testing using sequential bytes.
-	 * @param length The number of bytes to return.
-	 * @return A buffer of data for use in testing.
-	 */
-	public static byte[] generateSequentialTestData(final int length) {
-		final byte[] testData = new byte[length];
-		short b = 0;
-		for(int i = 0; i < testData.length; ++i) {
-			testData[i] = (byte)b++; //store this byte and increment the value
-			if(b > 0xff) { //if we go over the maximum byte size
-				b = 0; //start over for byte values
+	/** @see IOStreams#copy(InputStream, OutputStream) */
+	@Test
+	public void testCopy() throws IOException {
+		final Random random = new Random(20201128);
+		for(final int length : asList(0, 1, 100, DEFAULT_BUFFER_SIZE - 1, DEFAULT_BUFFER_SIZE + 1, DEFAULT_BUFFER_SIZE * 2 - 1, DEFAULT_BUFFER_SIZE * 2,
+				DEFAULT_BUFFER_SIZE * 2 + 1, DEFAULT_BUFFER_SIZE * 3)) {
+			final byte[] bytes = Bytes.generateRandom(length, random);
+			try (final InputStream inputStream = new ByteArrayInputStream(bytes); final ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+				IOStreams.copy(inputStream, outputStream);
+				assertThat(format("Copied %d bytes.", length), outputStream.toByteArray(), is(bytes));
 			}
 		}
-		return testData;
-	}
-
-	/** Tests that a fixed-length input stream reads the correct data. */
-	@Test
-	public void testFixedLengthInputStream() throws IOException {
-		final byte[] testData = generateSequentialTestData(Short.MAX_VALUE);
-		final InputStream testInputStream = new ByteArrayInputStream(testData);
-		final Random random = new Random();
-		int total = 0;
-		do {
-			final int length = Math.min(random.nextInt(Short.MAX_VALUE / 3), testData.length - total); //get the next size to retrieve; require at least three passes
-			final InputStream inputStream = new FixedLengthInputStream(testInputStream, length, false); //don't close the underlying stream on each pass
-			final ByteArrayOutputStream output = new ByteArrayOutputStream();
-			IOStreams.copy(inputStream, output);
-			assertEquals(length, output.toByteArray().length);
-			assertTrue(Arrays.equals(Arrays.copyOfRange(testData, total, total + length), output.toByteArray()),
-					"HTTP chunked output stream did not correctly write data.");
-			total += length;
-		} while(total < testData.length);
-		testInputStream.close();
 	}
 
 }

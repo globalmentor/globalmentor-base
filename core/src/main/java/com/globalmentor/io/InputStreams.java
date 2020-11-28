@@ -19,7 +19,9 @@ package com.globalmentor.io;
 import java.io.*;
 import java.nio.charset.Charset;
 
+import static com.globalmentor.io.IOStreams.DEFAULT_BUFFER_SIZE;
 import static com.globalmentor.java.Conditions.*;
+import static java.lang.String.format;
 import static java.lang.System.*;
 import java.util.*;
 
@@ -34,32 +36,53 @@ public class InputStreams {
 	/** The shared instance of an input stream with no content. */
 	public static final InputStream EMPTY_INPUT_STREAM = new EmptyInputStream();
 
+	/** The initial size of buffers in the sequence when reading bytes. */
+	static final int INITIAL_READ_BUFFER_SIZE = DEFAULT_BUFFER_SIZE;
+
+	/** The maximum size of buffers in the sequence when reading bytes. */
+	static final int MAX_READ_BUFFER_SIZE = INITIAL_READ_BUFFER_SIZE * (1 << 7); //8192 * 128 = 1048576 (~1MB)
+
 	/**
-	 * Loads the contents of an input stream into an array of bytes. This is accomplished by creating a series of smaller buffers and, once the end of the stream
-	 * has been reached, creating a new buffer and copying the contents of each buffer into the new buffer. This is assumed to be faster than using
-	 * {@link ByteArrayOutputStream} because that class copies all bytes that have been read each time the buffer needs to be expanded. The input stream will be
-	 * left open after this operation.
+	 * Loads the contents of an input stream into an array of bytes. The input stream will be left open after this operation.
+	 * @implSpec This implementation creates a series of smaller buffers and, once the end of the stream has been reached, creates a new buffer and copies the
+	 *           contents of each buffer into the new buffer. The buffer size starts at {@value #INITIAL_READ_BUFFER_SIZE} and doubles, up to a maximum of
+	 *           {@value #MAX_READ_BUFFER_SIZE}, each time a new buffer is created.
+	 * @implNote Using multiple small buffers is assumed to be faster (though it temporarily uses more memory) than using {@link ByteArrayOutputStream} because
+	 *           that class copies all bytes that have been read each time the buffer needs to be expanded.
+	 * @implNote There have been <a href="https://stackoverflow.com/a/8381338">claims</a> that some JVMs may not be able to allocate arrays of
+	 *           {@link Integer#MAX_VALUE}; This method may fail reading slightly less than {@link Integer#MAX_VALUE} bytes if there are JVM-dependent limitations
+	 *           on byte array length.
 	 * @param inputStream The input stream from which to read.
 	 * @return An array of bytes from the input stream.
 	 * @throws IOException Thrown if there is an error loading the bytes.
+	 * @throws OutOfMemoryError if an array of the required size cannot be allocated, either because not enough memory is available or the JVM cannot otherwise
+	 *           create an array with the required number of bytes.
 	 */
 	public static byte[] readBytes(final InputStream inputStream) throws IOException {
 		final List<byte[]> bufferList = new ArrayList<byte[]>(); //create a list for the buffers
-		final int bufferSize = 64 * 1024; //use a series of 64K buffers
+		int lastBufferSize = 0; //we haven't used any buffers yet
+		int lastBufferBytesRead; //we'll use this to store the number of bytes read into the most recent buffer
 		int totalBytesRead = 0; //show that we haven't read anything at all yet
-		int bufferBytesRead; //we'll use this to store the number of bytes read into this buffer
 		do {
-			final byte[] buffer = new byte[bufferSize]; //create a new buffer
-			bufferBytesRead = read(inputStream, buffer); //read bytes into the buffer
-			totalBytesRead += bufferBytesRead; //update our total bytes read
+			if(lastBufferSize < MAX_READ_BUFFER_SIZE) { //double the buffer size each time until we reach the max size
+				lastBufferSize = lastBufferSize == 0 ? INITIAL_READ_BUFFER_SIZE : lastBufferSize * 2; //use the initial buffer size for the first buffer
+			}
+			final byte[] buffer = new byte[lastBufferSize]; //create a new buffer (the "last buffer" for the moment is the "current buffer")
+			lastBufferBytesRead = read(inputStream, buffer); //read bytes into the buffer
+			if(Integer.MAX_VALUE - totalBytesRead < lastBufferBytesRead) { //if the additional bytes just read is greater than those remaining before we hit the total aggregate buffer size limit
+				throw new OutOfMemoryError(format("Read %d + %d bytes; total greater than maximum array length %d.", totalBytesRead, lastBufferBytesRead));
+			}
+			totalBytesRead += lastBufferBytesRead; //update our total bytes read
 			bufferList.add(buffer); //add this buffer to our list of buffers
-		} while(bufferBytesRead == bufferSize); //keep adding new buffers until we run out of bytes (leaving one buffer not fully filled)
+		} while(lastBufferBytesRead == lastBufferSize); //keep adding new buffers until we run out of bytes (leaving one buffer not fully filled)
 		final byte[] finalBuffer = new byte[totalBytesRead]; //create a buffer of the correct length of all the bytes we've read
 		int bytesCopied = 0; //show that we haven't copied any bytes yet
-		for(int i = 0; i < bufferList.size(); ++i) { //look at each of our buffers
+		final int bufferCount = bufferList.size();
+		for(int i = 0; i < bufferCount; ++i) { //look at each of our buffers
+			final byte[] buffer = bufferList.get(i);
 			//all the buffers should be full except for the last one, which will only hold the number of bytes last read
-			final int bytesToCopy = (i < bufferList.size() - 1) ? bufferSize : bufferBytesRead;
-			arraycopy(bufferList.get(i), 0, finalBuffer, bytesCopied, bytesToCopy); //copy bytes from this buffer to our final buffer
+			final int bytesToCopy = (i < bufferCount - 1) ? buffer.length : lastBufferBytesRead;
+			arraycopy(buffer, 0, finalBuffer, bytesCopied, bytesToCopy); //copy bytes from this buffer to our final buffer
 			bytesCopied += bytesToCopy; //show that we copied this many bytes
 		}
 		return finalBuffer; //return the final buffer
