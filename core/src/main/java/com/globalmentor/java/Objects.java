@@ -160,7 +160,9 @@ public class Objects {
 	 * @return <code>true</code> if the objects are equal according to the first object's {@link Object#equals(Object)} method or if both objects are
 	 *         <code>null</code>.
 	 * @see Object#equals(Object)
+	 * @deprecated to be removed in favor of {@link java.util.Objects#equals(Object, Object)} from Java 7.
 	 */
+	@Deprecated
 	public static final boolean equals(final Object object1, final Object object2) {
 		//if the first object isn't null, compare it to the second; otherwise, see if the second object is null as well
 		return object1 != null ? object1.equals(object2) : object2 == null;
@@ -246,7 +248,7 @@ public class Objects {
 	 * @param objects The objects to be used in generating a hash code.
 	 * @return A hash code taking into account the given objects.
 	 * @throws NullPointerException if the given array of objects is <code>null</code>.
-	 * @deprecated Use {@link java.util.Objects#hash(Object...)} from Java 7 instead.
+	 * @deprecated to be removed in favor of {@link java.util.Objects#hash(Object...)} from Java 7.
 	 */
 	@Deprecated
 	public static int getHashCode(final Object... objects) {
