@@ -20,6 +20,8 @@ import java.io.UnsupportedEncodingException;
 import java.text.Collator;
 import java.util.regex.Pattern;
 
+import javax.annotation.*;
+
 import static java.util.Objects.*;
 
 import com.globalmentor.collections.comparators.SortOrder;
@@ -53,13 +55,13 @@ public class Text {
 	 * The string representing the CR EOL character sequence.
 	 * @see Characters#CARRIAGE_RETURN_CHAR
 	 */
-	public static final String CARRIAGE_RETURN_STRING = new StringBuilder().append(CARRIAGE_RETURN_CHAR).toString();
+	public static final String CARRIAGE_RETURN_STRING = String.valueOf(CARRIAGE_RETURN_CHAR);
 
 	/**
 	 * The string representing the LF EOL character sequence.
 	 * @see Characters#LINE_FEED_CHAR
 	 */
-	public static final String LINE_FEED_STRING = new StringBuilder().append(LINE_FEED_CHAR).toString();
+	public static final String LINE_FEED_STRING = String.valueOf(LINE_FEED_CHAR);
 
 	/**
 	 * The pattern that can split a line based upon linefeeds.
@@ -77,7 +79,7 @@ public class Text {
 	/**
 	 * Compares two strings for order in ascending order using the specified collator. Returns a negative integer, zero, or a positive integer as the first
 	 * argument is less than, equal to, or greater than the second. Identical strings are always considered equal. This method functions exactly as if the two
-	 * stringss were compared using {@link Collator#compare(String, String)}, except:
+	 * strings were compared using {@link Collator#compare(String, String)}, except:
 	 * <ul>
 	 * <li>Identical strings are recognized as such without delegating to the actual {@link Collator#compare(String, String)} method.</li>
 	 * <li>This method allows <code>null</code> arguments, considering a <code>null</code> string to be lower than a non-<code>null</code> string.</li>
@@ -192,44 +194,77 @@ public class Text {
 	}
 
 	/**
-	 * Normalizes end-of-line sequences in the character sequence to the given . The following sequences are normalized to the provided EOL:
+	 * Normalizes end-of-line sequences in the character sequence to <code>LF</code>. The following sequences are normalized:
 	 * <ul>
 	 * <li><code>CR</code></li>
 	 * <li><code>LF</code></li>
 	 * <li><code>CRLF</code></li>
 	 * </ul>
+	 * @implSpec This implementation delegates to {@link #normalizeEol(CharSequence, CharSequence)}
+	 * @implSpec This implementation recognizes an input sequence that require no change, and simply returns that character sequence unchanged.
 	 * @param charSequence The character sequence to normalize.
-	 * @param eol The end of line characters to which to normalize the ends of lines.
-	 * @return A character sequence with the ends of lines normalized to the given end of line characters.
+	 * @return A character sequence, which may be mutable, with the ends of lines normalized to <code>LF</code>.
+	 * @throws NullPointerException if the given character sequence and/or EOL characters is <code>null</code>.
+	 * @see #LINE_FEED_STRING
+	 */
+	public static CharSequence normalizeEol(@Nonnull final CharSequence charSequence) {
+		return normalizeEol(charSequence, LINE_FEED_STRING);
+	}
+
+	/**
+	 * Normalizes end-of-line sequences in the character sequence to a given sequence. The following sequences are normalized to the provided EOL:
+	 * <ul>
+	 * <li><code>CR</code></li>
+	 * <li><code>LF</code></li>
+	 * <li><code>CRLF</code></li>
+	 * </ul>
+	 * @implSpec This implementation recognizes an input sequence that require no change if the normalization EOL sequence is a single character that is not
+	 *           <code>CR</code>, and simply returns that character sequence unchanged.
+	 * @param charSequence The character sequence to normalize.
+	 * @param normalEol The end of line characters to which to normalize the ends of lines.
+	 * @return A character sequence, which may be mutable, with the ends of lines normalized to the given end-of-line character sequence.
 	 * @throws NullPointerException if the given character sequence and/or EOL characters is <code>null</code>.
 	 */
-	public static CharSequence normalizeEOL(final CharSequence charSequence, final CharSequence eol) {
-		final int length = charSequence.length(); //get the length of the string
+	public static CharSequence normalizeEol(@Nonnull final CharSequence charSequence, @Nonnull final CharSequence normalEol) {
+		final int length = charSequence.length();
+		final int normalEolLength = normalEol.length();
+		final char normalEolChar = normalEolLength == 1 ? normalEol.charAt(0) : 0; //the single normalization EOL character, or -1 if there are more than one
+		final boolean detectNoChange = normalEolLength == 1 && normalEolChar != CARRIAGE_RETURN_CHAR; //CR could be part of CRLF
 		int currentIndex = 0; //start searching from the beginning
 		int resultIndex;
 		StringBuilder stringBuilder = null; //don't create a string builder unless we need to
 		while(currentIndex < length) { //keep searching until we finish the string
 			resultIndex = indexOfLength(charSequence, EOL_CHARACTERS, currentIndex); //perform the next search
-			if(stringBuilder == null) { //if we don't yet have a string builder
-				if(resultIndex == length) { //if there are no characters in the entire character sequence
+			if(stringBuilder == null) { //if we don't yet have a string builder, see if we really need to create one
+				if(resultIndex < length) { //if we found an EOL character
+					if(detectNoChange) { //this implementation can only detect no change for a single normalized EOL character that isn't CR
+						if(charSequence.charAt(resultIndex) == normalEolChar) {
+							currentIndex = resultIndex + 1; //skip the existing character---it's what we expected
+							continue;
+						}
+					}
+				} else { //if there are no EOL characters in the entire character sequence
 					break; //there's no need to modify the character sequence
 				}
-				stringBuilder = new StringBuilder(); //create a new string builder
+				stringBuilder = new StringBuilder(normalEolLength > 1 ? length + 16 : length); //allow for extra room if the EOLs might expand
+				stringBuilder.append(charSequence, 0, resultIndex); //add all the characters that aren't EOL characters, even if this is not our first detection
+			} else {
+				stringBuilder.append(charSequence, currentIndex, resultIndex); //add only the new characters that aren't EOL characters
 			}
-			stringBuilder.append(charSequence, currentIndex, resultIndex); //add the characters that aren't EOL characters
-			stringBuilder.append(eol); //append the EOL sequence
-			int skipEOLCount = 1; //assume we'll just skip one character
+			int skipEolCount = 1; //assume we'll just skip one character
 			if(resultIndex < length) { //if we aren't out of characters, yet
+				stringBuilder.append(normalEol); //append the EOL sequence
 				final char eolChar = charSequence.charAt(resultIndex); //get the EOL character we found
 				if(eolChar == CARRIAGE_RETURN_CHAR) { //if this is a CR, see if it is a CRLF
 					final int nextIndex = resultIndex + 1; //get the index of the next character
 					if(nextIndex < length && charSequence.charAt(nextIndex) == LINE_FEED_CHAR) { //if the next character is an LF
-						++skipEOLCount; //skip the next character
+						++skipEolCount; //skip the next character
 					}
 				}
 			}
-			currentIndex = resultIndex + skipEOLCount; //skip the EOL characters
+			currentIndex = resultIndex + skipEolCount; //skip the EOL characters
 		}
-		return stringBuilder != null ? stringBuilder.toString() : charSequence; //return the string we constructed, or the character sequence if there were no EOL character
+		return stringBuilder != null ? stringBuilder : charSequence; //return the string we constructed, or the character sequence if there were no EOL character
 	}
+
 }
