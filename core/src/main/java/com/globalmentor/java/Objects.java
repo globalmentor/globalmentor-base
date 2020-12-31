@@ -350,23 +350,23 @@ public class Objects {
 		return Arrays.requireNonNulls(objects); //check for null with no description
 	}
 
-	/** An auto-closeable instance that does nothing. */
-	private static final AutoCloseable NO_OP_AUTO_CLOSEABLE = () -> {
-	};
-
 	/**
 	 * Converts an object to an {@link AutoCloseable} instance so that it can be used with try-with-resources.
+	 * @apiNote The {@link Exception} thrown by the {@link AutoCloseable} interface may be too broad; the {@link com.globalmentor.io.IO#toCloseable(Object)}
+	 *          method converts to an interface with more limited exceptions allowed.
 	 * @implSpec If the given object is an instance of {@link AutoCloseable}, the object itself is returned; otherwise, a no-operation {@link AutoCloseable}
 	 *           instance is returned.
 	 * @param object The object to convert to an {@link AutoCloseable}.
 	 * @return An {@link AutoCloseable} instance that will ensure the object is closed if it implements {@link AutoCloseable}.
+	 * @see com.globalmentor.io.IO#toCloseable(Object)
 	 */
 	public static AutoCloseable toAutoCloseable(@Nonnull final Object object) {
 		if(object instanceof AutoCloseable) {
 			return (AutoCloseable)object;
 		}
 		requireNonNull(object); //if the object was auto-closeable above, we didn't need the null check
-		return NO_OP_AUTO_CLOSEABLE;
+		return () -> { //no-op
+		};
 	}
 
 	/**
