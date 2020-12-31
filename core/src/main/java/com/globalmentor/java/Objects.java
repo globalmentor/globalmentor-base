@@ -21,6 +21,8 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
+import javax.annotation.*;
+
 import static java.util.Objects.*;
 
 import static com.globalmentor.java.Classes.*;
@@ -346,6 +348,25 @@ public class Objects {
 	 */
 	public static Object[] requireNonNulls(final Object... objects) {
 		return Arrays.requireNonNulls(objects); //check for null with no description
+	}
+
+	/** An auto-closeable instance that does nothing. */
+	private static final AutoCloseable NO_OP_AUTO_CLOSEABLE = () -> {
+	};
+
+	/**
+	 * Converts an object to an {@link AutoCloseable} instance so that it can be used with try-with-resources.
+	 * @implSpec If the given object is an instance of {@link AutoCloseable}, the object itself is returned; otherwise, a no-operation {@link AutoCloseable}
+	 *           instance is returned.
+	 * @param object The object to convert to an {@link AutoCloseable}.
+	 * @return An {@link AutoCloseable} instance that will ensure the object is closed if it implements {@link AutoCloseable}.
+	 */
+	public static AutoCloseable toAutoCloseable(@Nonnull final Object object) {
+		if(object instanceof AutoCloseable) {
+			return (AutoCloseable)object;
+		}
+		requireNonNull(object); //if the object was auto-closeable above, we didn't need the null check
+		return NO_OP_AUTO_CLOSEABLE;
 	}
 
 	/**
