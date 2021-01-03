@@ -22,7 +22,8 @@ import static com.globalmentor.java.OperatingSystem.*;
 import static java.util.Objects.*;
 
 import java.nio.file.*;
-import java.util.Optional;
+import java.text.Collator;
+import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.*;
 
@@ -132,6 +133,42 @@ public final class Filenames {
 	}
 
 	//# filenames
+
+	private static final Comparator<CharSequence> ROOT_LOCALE_COMPARATOR = createComparator(Locale.ROOT);
+
+	/**
+	 * Creates a filename comparator for the given locale.
+	 * @implSpec This implementation uses a collator ignoring differences in case and accents.
+	 * @param locale The locale to use for comparison.
+	 * @return A filename comparator for the given locale.
+	 */
+	private static Comparator<CharSequence> createComparator(@Nonnull final Locale locale) {
+		final BaseComparator baseComparator = new BaseComparator(locale);
+		return baseComparator.thenComparing(new ExtensionComparator(baseComparator.getCollator())); //use the same collator for both comparators
+	}
+
+	/**
+	 * Returns a general filename comparator with neutral comparison across locales.
+	 * @implSpec This implementation uses a collator ignoring differences in case and accents.
+	 * @return A neutral filename comparator for the given locale.
+	 * @see Locale#ROOT
+	 */
+	public static Comparator<CharSequence> comparator() {
+		return ROOT_LOCALE_COMPARATOR;
+	}
+
+	/**
+	 * Returns a filename comparator for the given locale.
+	 * @implSpec This implementation uses a collator ignoring differences in case and accents.
+	 * @param locale The locale to use for comparison.
+	 * @return A filename comparator for the given locale.
+	 */
+	public static Comparator<CharSequence> comparator(@Nonnull final Locale locale) {
+		if(locale.equals(Locale.ROOT)) {
+			return ROOT_LOCALE_COMPARATOR;
+		}
+		return createComparator(locale);
+	}
 
 	/**
 	 * Checks to ensure that a particular string is a valid filename across operating systems.
@@ -387,6 +424,37 @@ public final class Filenames {
 		return getBase(filename);
 	}
 
+	/**
+	 * Comparator for comparing filenames based upon the base filename.
+	 * @author Garret Wilson
+	 * @see Filenames#getBase(String)
+	 */
+	private static class BaseComparator extends AbstractCollatingComparator {
+
+		/**
+		 * Locale constructor.
+		 * @implSpec This implementation uses a collator ignoring differences in case and accents.
+		 * @param locale The locale to use for comparison.
+		 */
+		protected BaseComparator(@Nonnull final Locale locale) {
+			super(locale);
+		}
+
+		/**
+		 * Collator constructor.
+		 * @param collator The collator to use for comparisons.
+		 */
+		public BaseComparator(@Nonnull final Collator collator) {
+			super(collator);
+		}
+
+		@Override
+		public int compare(@Nonnull final CharSequence charSequence1, @Nonnull final CharSequence charSequence2) {
+			return super.compare(getBase(charSequence1.toString()), getBase(charSequence2.toString()));
+		}
+
+	}
+
 	//## extensions
 
 	/**
@@ -512,6 +580,37 @@ public final class Filenames {
 	 */
 	public static String setExtension(final String filename, final String extension) {
 		return extension != null ? addExtension(filename, extension) : filename; //if an extension was given, add it; otherwise, return the name unmodified
+	}
+
+	/**
+	 * Comparator for comparing filenames based upon the filename extension.
+	 * @author Garret Wilson
+	 * @see Filenames#findExtension(String)
+	 */
+	private static class ExtensionComparator extends AbstractCollatingComparator {
+
+		/**
+		 * Locale constructor.
+		 * @implSpec This implementation uses a collator ignoring differences in case and accents.
+		 * @param locale The locale to use for comparison.
+		 */
+		protected ExtensionComparator(@Nonnull final Locale locale) {
+			super(locale);
+		}
+
+		/**
+		 * Collator constructor.
+		 * @param collator The collator to use for comparisons.
+		 */
+		public ExtensionComparator(@Nonnull final Collator collator) {
+			super(collator);
+		}
+
+		@Override
+		public int compare(@Nonnull final CharSequence charSequence1, @Nonnull final CharSequence charSequence2) {
+			return super.compare(findExtension(charSequence1.toString()).orElse(""), findExtension(charSequence2.toString()).orElse(""));
+		}
+
 	}
 
 	/**

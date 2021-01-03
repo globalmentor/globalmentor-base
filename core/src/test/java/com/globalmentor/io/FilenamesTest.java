@@ -21,6 +21,8 @@ import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.Comparator;
+
 import org.junit.jupiter.api.*;
 
 /**
@@ -34,11 +36,25 @@ public class FilenamesTest {
 
 	//# Filenames
 
+	/** @see Filenames#comparator() */
+	@Test
+	void testFilenameComparator() {
+		final Comparator<CharSequence> comparator = Filenames.comparator();
+		assertThat("Simple filename comparison.", comparator.compare("foo.txt", "bar.text"), is(greaterThan(0)));
+		assertThat("Equal filenames.", comparator.compare("foobar.txt", "foobar.txt"), is(0));
+		assertThat("One filename with no extension compares correctly.", comparator.compare("foo.txt", "foo-bar"), is(lessThan(0)));
+		assertThat("Filenames both with no extension compare correctly.", comparator.compare("foo", "foo-bar"), is(lessThan(0)));
+		assertThat("Filename is considered separately from extension.", comparator.compare("foo.txt", "foo-bar.txt"), is(lessThan(0)));
+		assertThat("Extensions compare correctly.", comparator.compare("foobar.abc", "foobar.abd"), is(lessThan(0)));
+		assertThat("Compares without regard to case.", comparator.compare("foobar.txt", "FooBar.TXT"), is(0));
+		assertThat("Compares without regard to accents.", comparator.compare("forró.touché", "forro.touche"), is(0));
+	}
+
 	//## dotfiles
 
 	/** @see Filenames #isDotfileFilename(String) */
 	@Test
-	public void testIsDotfileFilename() {
+	void testIsDotfileFilename() {
 		assertThrows(NullPointerException.class, () -> Filenames.isDotfileFilename(null));
 		assertThrows(IllegalArgumentException.class, () -> Filenames.isDotfileFilename(""));
 		assertThat(Filenames.isDotfileFilename("."), is(false));
@@ -76,7 +92,7 @@ public class FilenamesTest {
 	 * </p>
 	 */
 	@Test
-	public void testRecoverNotAllowedCharactersWithLatinCharacters() {
+	void testRecoverNotAllowedCharactersWithLatinCharacters() {
 		final String publicationName = Filenames.encodeCrossPlatformFilename("Dream Of The Red Chamber");
 		assertThat(Filenames.decodeFilename(publicationName), equalTo("Dream Of The Red Chamber"));
 	}
@@ -89,7 +105,7 @@ public class FilenamesTest {
 	 * </p>
 	 */
 	@Test
-	public void testRecoverNotAllowedCharactersWithChineseCharacters() {
+	void testRecoverNotAllowedCharactersWithChineseCharacters() {
 		final String publicationName = Filenames.encodeCrossPlatformFilename("紅樓夢红楼梦 (Dream of the Red Chamber)");
 		assertThat(Filenames.decodeFilename(publicationName), equalTo("紅樓夢红楼梦 (Dream of the Red Chamber)"));
 	}
@@ -102,7 +118,7 @@ public class FilenamesTest {
 	 * </p>
 	 */
 	@Test
-	public void testRecoverNotAllowedCharactersWithChineseCharactersAndSlash() {
+	void testRecoverNotAllowedCharactersWithChineseCharactersAndSlash() {
 		final String publicationName = Filenames.encodeCrossPlatformFilename("紅樓夢/红楼梦 (Dream of the Red Chamber)");
 		assertThat(Filenames.decodeFilename(publicationName), equalTo("紅樓夢/红楼梦 (Dream of the Red Chamber)"));
 	}
@@ -112,7 +128,7 @@ public class FilenamesTest {
 	 * the file name correctly
 	 */
 	@Test
-	public void testRecoverNotAllowedCharactersWithSlash() {
+	void testRecoverNotAllowedCharactersWithSlash() {
 		final String publicationName = Filenames.encodeCrossPlatformFilename("/ (Dream of the Red Chamber)");
 		assertThat(Filenames.decodeFilename(publicationName), equalTo("/ (Dream of the Red Chamber)"));
 	}
@@ -121,7 +137,7 @@ public class FilenamesTest {
 
 	/** @see Filenames#changeBase(String, String) */
 	@Test
-	public void testChangeBase() {
+	void testChangeBase() {
 		assertThrows(IllegalArgumentException.class, () -> Filenames.changeBase("", ""));
 		assertThrows(IllegalArgumentException.class, () -> Filenames.changeBase("foo", ""));
 		assertThrows(IllegalArgumentException.class, () -> Filenames.changeBase("", "bar"));
@@ -137,7 +153,7 @@ public class FilenamesTest {
 
 	/** Tests whether {@link Filenames#addExtension(String, String)} is working properly. */
 	@Test
-	public void testAddExtension() {
+	void testAddExtension() {
 		assertThat(Filenames.addExtension("foobar", "txt"), is("foobar.txt"));
 		assertThat(Filenames.addExtension("foobar", ""), is("foobar."));
 
@@ -146,18 +162,18 @@ public class FilenamesTest {
 	}
 
 	/** Tests whether {@link Filenames#addExtension(String, String)} is throwing an exception when a <code>null</code> name is provided. */
-	public void testAddExtensionNullNameFail() {
+	void testAddExtensionNullNameFail() {
 		assertThrows(NullPointerException.class, () -> Filenames.addExtension(null, "txt"));
 	}
 
 	/** Tests whether {@link Filenames#addExtension(String, String)} is throwing an exception when a <code>null</code> extension is provided. */
-	public void testAddExtensionNullExtensionFail() {
+	void testAddExtensionNullExtensionFail() {
 		assertThrows(NullPointerException.class, () -> Filenames.addExtension("foobar", null));
 	}
 
 	/** Tests whether {@link Filenames#findExtension(String)} is working properly. */
 	@Test
-	public void testFindExtension() {
+	void testFindExtension() {
 		assertThat(Filenames.findExtension("foobar.txt"), isPresentAndIs("txt"));
 		assertThat(Filenames.findExtension("foobar"), isEmpty());
 		assertThat(Filenames.findExtension(""), isEmpty());
@@ -170,7 +186,7 @@ public class FilenamesTest {
 
 	/** @see Filenames#hasExtension(String, CharSequence) */
 	@Test
-	public void testHasExtension() {
+	void testHasExtension() {
 		//check for literal extension
 		assertThat(Filenames.hasExtension("foo.bar", "bar"), is(true));
 		assertThat(Filenames.hasExtension("foo.bare", "bar"), is(false));
@@ -188,7 +204,7 @@ public class FilenamesTest {
 
 	/** @see Filenames#changeExtension(String, String) */
 	@Test
-	public void testChangeExtension() {
+	void testChangeExtension() {
 		assertThrows(IllegalArgumentException.class, () -> Filenames.changeExtension("", "foo"));
 		assertThat(Filenames.changeExtension("test", "foo"), is("test.foo"));
 		assertThat(Filenames.changeExtension("test.foo", "foo"), is("test.foo"));
@@ -200,7 +216,7 @@ public class FilenamesTest {
 
 	/** @see Filenames.Extensions#normalize(String) */
 	@Test
-	public void testExtensionsNormalize() {
+	void testExtensionsNormalize() {
 		assertThat(Filenames.Extensions.normalize("txt"), is("txt"));
 		assertThat(Filenames.Extensions.normalize("TXT"), is("txt"));
 		assertThat(Filenames.Extensions.normalize("tXt"), is("txt"));
@@ -210,7 +226,7 @@ public class FilenamesTest {
 
 	/** @see Filenames.Extensions#equals(String, String) */
 	@Test
-	public void testExtensionsEquals() {
+	void testExtensionsEquals() {
 		assertThat(Filenames.Extensions.equals(null, null), is(true));
 		assertThat(Filenames.Extensions.equals(null, ""), is(false));
 		assertThat(Filenames.Extensions.equals("", null), is(false));
