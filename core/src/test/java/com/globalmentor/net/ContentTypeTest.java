@@ -177,6 +177,22 @@ public class ContentTypeTest {
 		assertThat(ContentType.parse("text/plain; foo=bar; charset=us-ascii; test=example").findCharset(), isPresentAndIs(US_ASCII));
 	}
 
+	/** @see ContentType#matches(CharSequence) */
+	@Test
+	public void testMatchesString() {
+		assertThat(ContentType.parse("image/png").matches("image/png"), is(true));
+		assertThat(ContentType.parse("image/png").matches("image/*"), is(true));
+		assertThat(ContentType.parse("image/png").matches("image/gif"), is(false));
+	}
+
+	/** @see ContentType#matches(String, String) */
+	@Test
+	public void testMatchesTypeSubtype() {
+		assertThat(ContentType.parse("image/png").matches("image", "png"), is(true));
+		assertThat(ContentType.parse("image/png").matches("image", "*"), is(true));
+		assertThat(ContentType.parse("image/png").matches("image", "gif"), is(false));
+	}
+
 	/** @see ContentType#withParameter(String, String) */
 	@Test
 	public void testWithParameterAddsNewParameterName() {

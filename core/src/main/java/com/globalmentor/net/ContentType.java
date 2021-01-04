@@ -37,6 +37,7 @@ import static com.globalmentor.java.Conditions.*;
 import static com.globalmentor.java.Characters.QUOTATION_MARK_CHAR;
 import static com.globalmentor.text.ABNF.*;
 import static com.globalmentor.text.RegularExpressions.*;
+import static java.lang.String.format;
 import static java.nio.charset.StandardCharsets.*;
 import static java.util.Collections.*;
 
@@ -115,7 +116,7 @@ public final class ContentType { //TODO major version: rename to MediaType
 	/** The maximum length of a <code>restricted-name</code> according to RFC 6838. */
 	public static final byte RESTRICTED_NAME_MAX_LENGTH = RESTRICTED_NAME_CHARS_MAX_LENGTH + 1;
 	/** The regular expression pattern defining a <code>restricted-name</code> as per RFC 6838. */
-	public static final Pattern RESTRICTED_NAME_PATTERN = Pattern.compile(String.format("%s%s{0,%d}+", characterClassOf(RESTRICTED_NAME_FIRST_CHARACTERS),
+	public static final Pattern RESTRICTED_NAME_PATTERN = Pattern.compile(format("%s%s{0,%d}+", characterClassOf(RESTRICTED_NAME_FIRST_CHARACTERS),
 			characterClassOf(RESTRICTED_NAME_CHARACTERS), RESTRICTED_NAME_CHARS_MAX_LENGTH));
 	/** The <code>tspecials</code> characters of RFC 2045, which require a string to be quoted in a parameter value. */
 	public static final Characters SPECIAL_CHARACTERS = Characters.of('(', ')', '<', '>', '@', ',', ';', ':', '\\', '"', '/', '[', ']', '?', '=');
@@ -155,7 +156,7 @@ public final class ContentType { //TODO major version: rename to MediaType
 	 * @see #PARAMETER_PATTERN_NAME_GROUP
 	 * @see #PARAMETER_PATTERN_VALUE_GROUP
 	 */
-	public static final Pattern PARAMETER_PATTERN = Pattern.compile(String.format("%s\\s*(%s)=(%s+|%s)", PARAMETER_DELIMITER_CHAR, RESTRICTED_NAME_PATTERN,
+	public static final Pattern PARAMETER_PATTERN = Pattern.compile(format("%s\\s*(%s)=(%s+|%s)", PARAMETER_DELIMITER_CHAR, RESTRICTED_NAME_PATTERN,
 			characterClassNotOf(ILLEGAL_TOKEN_CHARACTERS), "\"(?:[^\\\\\"]++|\\\\.)*+\""));
 	/**
 	 * A pattern for checking the basic form of a parameter, <em>including</em> the {@value #PARAMETER_DELIMITER_CHAR} delimiter that precedes and separates each
@@ -180,7 +181,7 @@ public final class ContentType { //TODO major version: rename to MediaType
 	 * characters. The parameters group will be <code>null</code> if there are no parameters at all.
 	 */
 	public static final Pattern PATTERN = Pattern
-			.compile(String.format("(%s)/(%s)((?:%s)+)?", RESTRICTED_NAME_PATTERN, RESTRICTED_NAME_PATTERN, PARAMETER_PATTERN));
+			.compile(format("(%s)%s(%s)((?:%s)+)?", RESTRICTED_NAME_PATTERN, TYPE_DIVIDER, RESTRICTED_NAME_PATTERN, PARAMETER_PATTERN));
 	/**
 	 * The pattern matching group for the primary type.
 	 * @see #PATTERN
@@ -411,16 +412,43 @@ public final class ContentType { //TODO major version: rename to MediaType
 	}
 
 	/**
+	 * Matches a media type against a primary type and subtype string representation. Comparisons are ASCII case-insensitive. This method supports wildcard
+	 * subtypes.
+	 * @param text The primary type and subtype with which to compare the media type, such as <code>text/plain</code> or <code>image/*</code>.
+	 * @return <code>true</code> if the media type has a primary type and a subtype matching those given.
+	 * @throws IllegalArgumentException if the given match type is not in the correct format, such as missing a type separator slash.
+	 * @see #WILDCARD_SUBTYPE
+	 */
+	public boolean matches(@Nonnull final CharSequence text) {
+		final int dividerIndex = indexOf(text, TYPE_DIVIDER);
+		checkArgument(dividerIndex >= 0, "Match type `%s` missing type divider slash.", text);
+		return matches(text.subSequence(0, dividerIndex).toString(), text.subSequence(dividerIndex + 1, text.length()).toString());
+	}
+
+	/**
 	 * Matches a media type against a primary type and subtype. Comparisons are ASCII case-insensitive. This method supports wildcard subtypes.
 	 * @param primaryType The primary type with which to compare the media type.
 	 * @param subType The subtype with which to compare the media type.
-	 * @return <code>true</code> if the media type has the same primary type and subtype as that given.
+	 * @return <code>true</code> if the media type has a primary type and a subtype matching those given.
 	 * @see #WILDCARD_SUBTYPE
 	 */
-	public boolean match(final String primaryType, final String subType) {
+	public boolean matches(@Nonnull final String primaryType, @Nonnull final String subType) {
 		final String contentTypeSubType = getSubType(); //get the media type's subtype
 		return ASCII.equalsIgnoreCase(getPrimaryType(), primaryType)
 				&& (ASCII.equalsIgnoreCase(contentTypeSubType, subType) || WILDCARD_SUBTYPE.equals(contentTypeSubType) || WILDCARD_SUBTYPE.equals(subType)); //check the primary type and subtype and wildcards
+	}
+
+	/**
+	 * Matches a media type against a primary type and subtype. Comparisons are ASCII case-insensitive. This method supports wildcard subtypes.
+	 * @param primaryType The primary type with which to compare the media type.
+	 * @param subType The subtype with which to compare the media type.
+	 * @return <code>true</code> if the media type has a primary type and a subtype matching those given.
+	 * @see #WILDCARD_SUBTYPE
+	 * @deprecated to be replaced with {@link #matches(String, String)}.
+	 */
+	@Deprecated
+	public boolean match(@Nonnull final String primaryType, @Nonnull final String subType) {
+		return matches(primaryType, subType);
 	}
 
 	/**
@@ -431,8 +459,8 @@ public final class ContentType { //TODO major version: rename to MediaType
 	 * @return <code>true</code> if the media type has the same primary type and subtype as that given, along with a class parameter.
 	 * @see #WILDCARD_SUBTYPE
 	 */
-	public boolean match(final String primaryType, final String subType, final Class<?> objectClass) {
-		return match(primaryType, subType) && objectClass.getName().equals(getParameter("string")); //see if the primary type and subtype match, and that "class" parameter indicates this class TODO use a constant
+	public boolean matches(@Nonnull final String primaryType, @Nonnull final String subType, @Nonnull final Class<?> objectClass) {
+		return matches(primaryType, subType) && objectClass.getName().equals(getParameter("string")); //see if the primary type and subtype match, and that "class" parameter indicates this class TODO use a constant
 	}
 
 	/**
@@ -442,8 +470,8 @@ public final class ContentType { //TODO major version: rename to MediaType
 	 * @return <code>true</code> if the media type has the same primary type and subtype as that given, along with a class parameter.
 	 * @see #WILDCARD_SUBTYPE
 	 */
-	public boolean match(final Class<?> objectClass) {
-		return match(APPLICATION_PRIMARY_TYPE, X_JAVA_OBJECT); //check for application/x-java-object and class name
+	public boolean matches(@Nonnull final Class<?> objectClass) {
+		return matches(APPLICATION_PRIMARY_TYPE, X_JAVA_OBJECT); //check for application/x-java-object and class name
 	}
 
 	/**
@@ -767,7 +795,7 @@ public final class ContentType { //TODO major version: rename to MediaType
 		 * @throws NullPointerException if the given name and/or value is <code>null</code>.
 		 * @throws IllegalArgumentException if the name does not conform to the {@link ContentType#RESTRICTED_NAME_PATTERN} pattern.
 		 * @throws IllegalArgumentException if the parameter value includes control characters other than horizontal tab.
-		 * @deprecated in favor of {@link #of(String, String)}; to be made private in next major version.
+		 * @deprecated in favor of {@link #of(String, String)}; to be made non-public in next major version.
 		 */
 		@Deprecated
 		public Parameter(final String name, final String value) {
