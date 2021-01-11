@@ -25,7 +25,9 @@ import java.util.Date;
  * and the like.
  * 
  * @author Garret Wilson
+ * @deprecated to be replaced with new Java time classes such as {@link java.time.Instant}.
  */
+@Deprecated
 public class Time extends Date {
 
 	/** The granularity of time. */

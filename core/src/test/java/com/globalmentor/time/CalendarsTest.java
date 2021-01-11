@@ -16,15 +16,13 @@
 
 package com.globalmentor.time;
 
-import static com.globalmentor.time.TimeZones.*;
 import static org.hamcrest.Matchers.*;
 import static org.hamcrest.MatcherAssert.*;
 
 import org.junit.jupiter.api.Test;
 
+import java.time.*;
 import java.util.*;
-
-import com.globalmentor.iso.datetime.ISODate;
 
 /**
  * Tests of calendar utilities.
@@ -38,10 +36,14 @@ public class CalendarsTest {
 	/** @see Calendars#getDayDifference(Calendar, Calendar) */
 	@Test
 	public void testGetDayDifference() {
-		assertThat(Calendars.getDayDifference(new ISODate(2002, 03, 04).toCalendar(GMT), new ISODate(2002, 03, 04).toCalendar(GMT)), is(0)); //same day
-		assertThat(Calendars.getDayDifference(new ISODate(2002, 03, 04).toCalendar(GMT), new ISODate(2002, 03, 03).toCalendar(GMT)), is(1)); //yesterday
-		assertThat(Calendars.getDayDifference(new ISODate(2002, 03, 04).toCalendar(GMT), new ISODate(2001, 03, 04).toCalendar(GMT)), is(365)); //a year ago
-		assertThat(Calendars.getDayDifference(new ISODate(2001, 02, 03).toCalendar(GMT), new ISODate(2000, 02, 03).toCalendar(GMT)), is(366)); //a leap year ago
+		assertThat(Calendars.getDayDifference(GregorianCalendar.from(ZonedDateTime.of(LocalDate.of(2002, 03, 04).atStartOfDay(), ZoneOffset.UTC)),
+				GregorianCalendar.from(ZonedDateTime.of(LocalDate.of(2002, 03, 04).atStartOfDay(), ZoneOffset.UTC))), is(0)); //same day
+		assertThat(Calendars.getDayDifference(GregorianCalendar.from(ZonedDateTime.of(LocalDate.of(2002, 03, 04).atStartOfDay(), ZoneOffset.UTC)),
+				GregorianCalendar.from(ZonedDateTime.of(LocalDate.of(2002, 03, 03).atStartOfDay(), ZoneOffset.UTC))), is(1)); //yesterday
+		assertThat(Calendars.getDayDifference(GregorianCalendar.from(ZonedDateTime.of(LocalDate.of(2002, 03, 04).atStartOfDay(), ZoneOffset.UTC)),
+				GregorianCalendar.from(ZonedDateTime.of(LocalDate.of(2001, 03, 04).atStartOfDay(), ZoneOffset.UTC))), is(365)); //a year ago
+		assertThat(Calendars.getDayDifference(GregorianCalendar.from(ZonedDateTime.of(LocalDate.of(2001, 02, 03).atStartOfDay(), ZoneOffset.UTC)),
+				GregorianCalendar.from(ZonedDateTime.of(LocalDate.of(2000, 02, 03).atStartOfDay(), ZoneOffset.UTC))), is(366)); //a leap year ago
 	}
 
 }

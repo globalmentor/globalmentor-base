@@ -22,7 +22,9 @@ import static com.globalmentor.time.Time.*;
  * Utility class containing helper methods for working with time in the form of milliseconds.
  * 
  * @author Garret Wilson
+ * @deprecated to be replaced with {@link java.util.concurrent.TimeUnit}.
  */
+@Deprecated
 public class Milliseconds {
 
 	/**
