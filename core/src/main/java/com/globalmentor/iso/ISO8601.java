@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.globalmentor.iso.datetime;
+package com.globalmentor.iso;
 
 import com.globalmentor.java.Characters;
 

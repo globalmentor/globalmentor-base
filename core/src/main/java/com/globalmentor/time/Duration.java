@@ -22,7 +22,9 @@ import com.globalmentor.java.Longs;
  * Indicates a duration of time in milliseconds. Negative durations are allowed.
  * 
  * @author Garret Wilson
+ * @deprecated to be removed in favor of {@link java.time.Duration}.
  */
+@Deprecated
 public class Duration implements Comparable<Duration> {
 
 	/** The shared duration instance indicating a zero duration. */
