@@ -135,6 +135,20 @@ public class FilenamesTest {
 
 	//## base filenames
 
+	/** @see Filenames#appendBase(String, CharSequence) */
+	@Test
+	void testAppendBase() {
+		assertThat(Filenames.appendBase("", ""), is(""));
+		assertThat(Filenames.appendBase("foo", ""), is("foo"));
+		assertThat(Filenames.appendBase("", "bar"), is("bar"));
+		assertThat(Filenames.appendBase("foo", "bar"), is("foobar"));
+		assertThat(Filenames.appendBase("foo.test", "-bar"), is("foo-bar.test"));
+		assertThat(Filenames.appendBase("foo.bar.test", "-more"), is("foo-more.bar.test"));
+		assertThat(Filenames.appendBase("test.tar.xz", "-12.3.456"), is("test-12.3.456.tar.xz"));
+		//TODO decide how to handle and fix with JAVA-80: assertThat(Filenames.appendBase("test-12.3.456.tar.xz", "-rc7"), is("test-12.3.456-rc7.tar.xz"));
+		assertThat(Filenames.appendBase("test-12.3.456-rc7.tar.xz", ""), is("test-12.3.456-rc7.tar.xz"));
+	}
+
 	/** @see Filenames#changeBase(String, String) */
 	@Test
 	void testChangeBase() {

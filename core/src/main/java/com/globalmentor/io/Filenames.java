@@ -344,28 +344,31 @@ public final class Filenames {
 	}
 
 	/**
-	 * Appends a given string to the end of a filename before the extension, if any. This is useful for forming a locale-aware filename, such as
-	 * <code>test_fr.txt</code> from <code>test.txt</code>.
+	 * Appends a given string to the end of a filename before the extension, if any.
+	 * @apiNote This is useful for forming a locale-aware filename, such as <code>test_fr.txt</code> from <code>test.txt</code>.
 	 * @apiNote Here "base filename" refers to the filename with <em>all</em> extensions removed. That is both <code>example.bar</code> and
 	 *          <code>example.foo.bar</code> would result in a base filename of <code>example</code>.
 	 * @param filename The filename that may contain an extension.
 	 * @param charSequence The characters to append to the filename.
-	 * @return A filename with the given string appended before the filename extension, if any.
+	 * @return A filename with the given character sequence appended before the filename extension, if any.
 	 */
 	public static String appendBase(@Nonnull final String filename, @Nonnull final CharSequence charSequence) {
+		if(charSequence.length() == 0) { //if there are no characters to add, short-circuit for efficiency
+			return requireNonNull(filename);
+		}
 		final int separatorIndex = filename.indexOf(EXTENSION_SEPARATOR); //see if we can find the extension separator
 		final int insertionIndex = separatorIndex >= 0 ? separatorIndex : filename.length(); //insert the characters before the extension or, if there is no extension, at the end of the string
 		return StringBuilders.insert(new StringBuilder(filename), insertionIndex, charSequence).toString(); //create a new string builder, insert the characters, and return the new string
 	}
 
 	/**
-	 * Appends a given string to the end of a filename before the extension, if any. This is useful for forming a locale-aware filename, such as
-	 * <code>test_fr.txt</code> from <code>test.txt</code>.
+	 * Appends a given string to the end of a filename before the extension, if any.
+	 * @apiNote This is useful for forming a locale-aware filename, such as <code>test_fr.txt</code> from <code>test.txt</code>.
 	 * @apiNote Here "base filename" refers to the filename with <em>all</em> extensions removed. That is both <code>example.bar</code> and
 	 *          <code>example.foo.bar</code> would result in a base filename of <code>example</code>.
 	 * @param filename The filename that may contain an extension.
 	 * @param charSequence The characters to append to the filename.
-	 * @return A filename with the given string appended before the filename extension, if any.
+	 * @return A filename with the given character sequence appended before the filename extension, if any.
 	 * @deprecated to be removed in favor of {@link #appendBase(String, CharSequence)}.
 	 */
 	@Deprecated

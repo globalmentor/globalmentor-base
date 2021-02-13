@@ -222,6 +222,26 @@ public class Paths {
 	//## base filenames
 
 	/**
+	 * Appends a given string to the end of the path's filename before the extension, if any.
+	 * @apiNote This is useful for forming a locale-aware filename, such as <code>test_fr.txt</code> from <code>test.txt</code>.
+	 * @apiNote Here "base filename" refers to the filename with <em>all</em> extensions removed. That is both <code>example.bar</code> and
+	 *          <code>example.foo.bar</code> would result in a base filename of <code>example</code>.
+	 * @implSpec This implementation delegates to {@link Filenames#appendBase(String, CharSequence)}.
+	 * @param path The path to examine.
+	 * @param charSequence The characters to append to the filename.
+	 * @return A path with the given character sequence appended before the filename extension, if any.
+	 * @throws IllegalArgumentException if the given path has no filename.
+	 */
+	public static Path appendFilenameBase(@Nonnull final Path path, @Nonnull final CharSequence charSequence) {
+		final String filename = findFilename(path)
+				.orElseThrow(() -> new IllegalArgumentException(String.format("Path %s has no filename for appending to its base.", path)));
+		if(charSequence.length() == 0) { //if there are no characters to add, short-circuit for efficiency
+			return requireNonNull(path);
+		}
+		return path.resolveSibling(Filenames.appendBase(filename, charSequence));
+	}
+
+	/**
 	 * Changes the base of the path's filename, preserving the extension(s), if any.
 	 * @apiNote Here "base filename" refers to the filename with <em>all</em> extensions removed. That is both <code>example.bar</code> and
 	 *          <code>example.foo.bar</code> would result in a base filename of <code>example</code>.
