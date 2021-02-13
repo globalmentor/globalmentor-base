@@ -626,6 +626,27 @@ public class URIs {
 	}
 
 	/**
+	 * Appends a given string to the end of the URI's raw name before the extension, if any.
+	 * @apiNote This is useful for forming a locale-aware name, such as <code>test_fr.txt</code> from <code>test.txt</code>.
+	 * @apiNote Here "base name" refers to the name with <em>all</em> extensions removed. That is both <code>example.bar</code> and <code>example.foo.bar</code>
+	 *          would result in a base name of <code>example</code>.
+	 * @implSpec This implementation delegates to {@link Filenames#appendBase(String, CharSequence)}.
+	 * @param uri The URI to examine.
+	 * @param charSequence The characters to append to the raw name.
+	 * @return A URI with the given character sequence appended before the name extension, if any.
+	 * @throws IllegalArgumentException if the given URI has no raw name.
+	 */
+	public static URI appendRawNameBase(@Nonnull final URI uri, @Nonnull final CharSequence charSequence) {
+		final String oldRawName = findRawName(uri)
+				.orElseThrow(() -> new IllegalArgumentException(String.format("Cannot append to the name base of URI <%s>, which has no name.", uri)));
+		if(charSequence.length() == 0) { //if there are no characters to add, short-circuit for efficiency
+			return requireNonNull(uri);
+		}
+		final String newRawName = Filenames.appendBase(oldRawName, charSequence);
+		return changeRawName(uri, newRawName);
+	}
+
+	/**
 	 * Changes the base of a URI name, preserving the extension(s), if any.
 	 * @apiNote Here "base name" refers to the filename with <em>all</em> extensions removed. That is both <code>example.bar</code> and
 	 *          <code>example.foo.bar</code> would result in a base name of <code>example</code>.
