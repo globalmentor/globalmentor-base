@@ -21,6 +21,8 @@ import java.util.*;
 import static com.globalmentor.iso.ISO8601.*;
 import static java.util.Objects.*;
 
+import java.time.ZoneOffset;
+
 import com.globalmentor.java.Integers;
 
 /**
@@ -29,11 +31,23 @@ import com.globalmentor.java.Integers;
  */
 public class TimeZones {
 
-	/** The ID for indicating the GMT zone. */
+	/**
+	 * The ID for indicating the GMT zone.
+	 * @apiNote The GMT designation has been superseded by {@link #UTC}, but its ID is still used by the {@link TimeZone} class.
+	 */
 	public static final String GMT_ID = "GMT";
 
-	/** The shared time zone representing Greenwich Mean Time (GMT). */
+	/**
+	 * The shared time zone representing Greenwich Mean Time (GMT).
+	 * @apiNote Modern time processing should use {@link #UTC} instead.
+	 */
 	public static final TimeZone GMT = TimeZone.getTimeZone(GMT_ID);
+
+	/**
+	 * The shared time zone representing Coordinated Universal Time (UTC).
+	 * @apiNote This time zone is equivalent to {@link ZoneOffset#UTC}.
+	 */
+	public static final TimeZone UTC = TimeZone.getTimeZone(ZoneOffset.UTC);
 
 	/**
 	 * Retrieves a time zone based upon a UTC offset for the given date. This method cannot return with certain a time zone valid for other dates, as sufficient
