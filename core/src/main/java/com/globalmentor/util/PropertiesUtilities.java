@@ -32,7 +32,11 @@ import com.globalmentor.io.BOMInputStreamReader;
 @Deprecated
 public class PropertiesUtilities {
 
-	/** The name extension for properties files, such as Java properties files. */
+	/**
+	 * The name extension for properties files, such as Java properties files.
+	 * @deprecated to be renamed <code>PROPERTIES_FILENAME_EXTENSION</code>.
+	 */
+	@Deprecated
 	public static final String PROPERTIES_NAME_EXTENSION = "properties";
 
 	/** A string representation of boolean <code>true</code>. */
@@ -200,7 +204,7 @@ public class PropertiesUtilities {
 			return properties;
 		}
 		//try to load baseName.xml
-		propertiesStream = objectClass.getResourceAsStream(addExtension(baseName, "xml")); //TODO decide whether to create duplicate XML_NAME_EXTENSION constant inside globalmentor-core 
+		propertiesStream = objectClass.getResourceAsStream(addExtension(baseName, "xml")); //TODO decide whether to create duplicate XML_FILENAME_EXTENSION constant inside globalmentor-core 
 		if(propertiesStream != null) {
 			try (final InputStream xmlPropertiesStream = new BufferedInputStream(propertiesStream)) { //buffer the stream
 				properties.loadFromXML(propertiesStream);

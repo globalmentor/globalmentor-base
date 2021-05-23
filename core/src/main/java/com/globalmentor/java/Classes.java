@@ -46,7 +46,7 @@ public final class Classes {
 			Integer.class, Long.class, Float.class, Double.class);
 
 	/** The name extension for Java class files. */
-	public static final String CLASS_NAME_EXTENSION = "class";
+	public static final String CLASS_FILENAME_EXTENSION = "class";
 
 	/** The getter prefix "get". */
 	public static final String GET_GETTER_PREFIX = "get";

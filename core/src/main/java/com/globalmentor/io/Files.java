@@ -52,18 +52,18 @@ import static com.globalmentor.net.URIs.*;
 public class Files {
 
 	/** The extension for backup files. */
-	private static final String BACKUP_EXTENSION = "bak";
+	private static final String BACKUP_FILENAME_EXTENSION = "bak";
 
 	/** The template for backup files in a rolling policy. */
-	private static final StringTemplate NUMBERED_BACKUP_EXTENSION_TEMPLATE = StringTemplate.of(StringTemplate.STRING_PARAMETER, Filenames.EXTENSION_SEPARATOR,
-			BACKUP_EXTENSION);
+	private static final StringTemplate NUMBERED_BACKUP_FILENAME_EXTENSION_TEMPLATE = StringTemplate.of(StringTemplate.STRING_PARAMETER,
+			Filenames.EXTENSION_SEPARATOR, BACKUP_FILENAME_EXTENSION);
 	/** The extension for the latest backup file in a rolling policy. */
-	private static final String LATEST_NUMBERED_BACKUP_EXTENSION = NUMBERED_BACKUP_EXTENSION_TEMPLATE.apply(1);
+	private static final String LATEST_NUMBERED_BACKUP_FILENAME_EXTENSION = NUMBERED_BACKUP_FILENAME_EXTENSION_TEMPLATE.apply(1);
 
 	/** The default prefix for temporary files. */
-	private static final String TEMP_PREFIX = "temp-";
+	private static final String TEMP_FILENAME_PREFIX = "temp-";
 	/** The extension for temporary files. */
-	private static final String TEMP_EXTENSION = "tmp";
+	private static final String TEMP_FILENAME_EXTENSION = "tmp";
 
 	/**
 	 * The filename of the NTFS recycle bin folder.
@@ -200,29 +200,29 @@ public class Files {
 	}
 
 	/**
-	 * Creates a temporary file in the standard temporary directory with no automatic deletion on JVM exit, using a {@value #TEMP_PREFIX} prefix and a
-	 * {@value #TEMP_EXTENSION} extension.
+	 * Creates a temporary file in the standard temporary directory with no automatic deletion on JVM exit, using a {@value #TEMP_FILENAME_PREFIX} prefix and a
+	 * {@value #TEMP_FILENAME_EXTENSION} extension.
 	 * @return A new temporary file.
 	 * @throws IOException if there is a problem creating the temporary file.
 	 * @see File#createTempFile(String, String)
-	 * @see #TEMP_EXTENSION
+	 * @see #TEMP_FILENAME_EXTENSION
 	 */
 	public static File createTempFile() throws IOException {
-		return createTempFile(TEMP_PREFIX);
+		return createTempFile(TEMP_FILENAME_PREFIX);
 	}
 
 	/**
-	 * Creates a temporary file in the standard temporary directory with no automatic deletion on JVM exit, using a {@value #TEMP_EXTENSION} extension.
+	 * Creates a temporary file in the standard temporary directory with no automatic deletion on JVM exit, using a {@value #TEMP_FILENAME_EXTENSION} extension.
 	 * @param baseName The base filename to be used in generating the filename.
 	 * @return A new temporary file.
 	 * @throws NullPointerException if the given base name is <code>null</code>.
 	 * @throws IllegalArgumentException if the base name is the empty string.
 	 * @throws IOException if there is a problem creating the temporary file.
 	 * @see File#createTempFile(String, String)
-	 * @see #TEMP_EXTENSION
+	 * @see #TEMP_FILENAME_EXTENSION
 	 */
 	public static File createTempFile(final String baseName) throws IOException {
-		return createTempFile(baseName, TEMP_EXTENSION); //create a temporary file with a temp extension
+		return createTempFile(baseName, TEMP_FILENAME_EXTENSION); //create a temporary file with a temp extension
 	}
 
 	/**
@@ -241,7 +241,7 @@ public class Files {
 	}
 
 	/**
-	 * Creates a temporary file in the standard temporary directory with optional automatic deletion, using a {@value #TEMP_EXTENSION} extension.
+	 * Creates a temporary file in the standard temporary directory with optional automatic deletion, using a {@value #TEMP_FILENAME_EXTENSION} extension.
 	 * @apiNote This convenience method provides more intuitive parameters than {@link File#createTempFile(String, String)}.
 	 * @param baseName The base filename to be used in generating the filename.
 	 * @param deleteOnExit Whether the file should be deleted when the JVM exits.
@@ -251,10 +251,10 @@ public class Files {
 	 * @throws IOException if there is a problem creating the temporary file.
 	 * @see File#createTempFile(String, String)
 	 * @see File#deleteOnExit()
-	 * @see #TEMP_EXTENSION
+	 * @see #TEMP_FILENAME_EXTENSION
 	 */
 	public static File createTempFile(final String baseName, final boolean deleteOnExit) throws IOException {
-		return createTempFile(baseName, TEMP_EXTENSION, deleteOnExit);
+		return createTempFile(baseName, TEMP_FILENAME_EXTENSION, deleteOnExit);
 	}
 
 	/**
@@ -278,8 +278,8 @@ public class Files {
 	 * Creates a temporary file for another file, with no automatic deletion on JVM exit.
 	 * <p>
 	 * This method can be used in two different ways, based upon the given file. If the given file is a directory, a temporary file will be created within the
-	 * directory with the prefix {@value #TEMP_PREFIX}. Otherwise, if the given file is a directory and filename, a temporary file will be created in the same
-	 * directory, using the given filename as a prefix.
+	 * directory with the prefix {@value #TEMP_FILENAME_PREFIX}. Otherwise, if the given file is a directory and filename, a temporary file will be created in the
+	 * same directory, using the given filename as a prefix.
 	 * </p>
 	 * @param file The file specifying the directory and optionally a filename to serve as a base name.
 	 * @return A new temporary file.
@@ -288,15 +288,15 @@ public class Files {
 	 *           filename.
 	 * @throws IOException if there is a problem creating the temporary file.
 	 * @see File#createTempFile(String, String, File)
-	 * @see #TEMP_PREFIX
-	 * @see #TEMP_EXTENSION
+	 * @see #TEMP_FILENAME_PREFIX
+	 * @see #TEMP_FILENAME_EXTENSION
 	 */
 	public static File createTempFile(final File file) throws IOException {
 		final File directory;
 		final String baseName;
 		if(file.isDirectory()) { //if a directory is given
 			directory = file; //use the file as the directory
-			baseName = TEMP_PREFIX; //use a generic temp prefix
+			baseName = TEMP_FILENAME_PREFIX; //use a generic temp prefix
 		} else { //if the file is a directory+file 
 			directory = file.getParentFile(); //put the temp file in the same directory
 			checkArgument(directory != null, "Non-directory file %s has no parent directory.", file);
@@ -307,7 +307,7 @@ public class Files {
 	}
 
 	/**
-	 * Creates a temporary file in a given directory, using a {@value #TEMP_EXTENSION} extension.
+	 * Creates a temporary file in a given directory, using a {@value #TEMP_FILENAME_EXTENSION} extension.
 	 * @apiNote This convenience method provides more intuitive parameters than {@link File#createTempFile(String, String, File)}.
 	 * @param baseName The base filename to be used in generating the filename.
 	 * @param directory The directory in which the file is to be created, or <code>null</code> if the default temporary-file directory is to be used.
@@ -316,14 +316,14 @@ public class Files {
 	 * @throws IllegalArgumentException if the base name is the empty string.
 	 * @throws IOException if there is a problem creating the temporary file.
 	 * @see File#createTempFile(String, String, File)
-	 * @see #TEMP_EXTENSION
+	 * @see #TEMP_FILENAME_EXTENSION
 	 */
 	public static File createTempFile(final String baseName, final File directory) throws IOException {
 		return createTempFile(baseName, directory, false);
 	}
 
 	/**
-	 * Creates a temporary file in a given directory with optional automatic deletion, using a {@value #TEMP_EXTENSION} extension.
+	 * Creates a temporary file in a given directory with optional automatic deletion, using a {@value #TEMP_FILENAME_EXTENSION} extension.
 	 * @apiNote This convenience method provides more intuitive parameters than {@link File#createTempFile(String, String, File)}.
 	 * @param baseName The base filename to be used in generating the filename.
 	 * @param directory The directory in which the file is to be created, or <code>null</code> if the default temporary-file directory is to be used.
@@ -334,10 +334,10 @@ public class Files {
 	 * @throws IOException if there is a problem creating the temporary file.
 	 * @see File#createTempFile(String, String, File)
 	 * @see File#deleteOnExit()
-	 * @see #TEMP_EXTENSION
+	 * @see #TEMP_FILENAME_EXTENSION
 	 */
 	public static File createTempFile(final String baseName, final File directory, final boolean deleteOnExit) throws IOException {
-		return createTempFile(baseName, TEMP_EXTENSION, directory, deleteOnExit);
+		return createTempFile(baseName, TEMP_FILENAME_EXTENSION, directory, deleteOnExit);
 	}
 
 	/**
@@ -538,10 +538,10 @@ public class Files {
 	 * </p>
 	 * @param file The file for which a temporary file should be returned.
 	 * @return The file suitable for temporary access.
-	 * @see #TEMP_EXTENSION
+	 * @see #TEMP_FILENAME_EXTENSION
 	 */
 	public static File getTempFile(final File file) {
-		return new File(file.getParent(), Filenames.addExtension(file.getName(), TEMP_EXTENSION)); //return the file with a "temp" extension
+		return new File(file.getParent(), Filenames.addExtension(file.getName(), TEMP_FILENAME_EXTENSION)); //return the file with a "temp" extension
 	}
 
 	/**
@@ -551,10 +551,10 @@ public class Files {
 	 * </p>
 	 * @param file The file for which a backup file should be returned.
 	 * @return The file suitable for backup.
-	 * @see #BACKUP_EXTENSION
+	 * @see #BACKUP_FILENAME_EXTENSION
 	 */
 	public static File getBackupFile(final File file) {
-		return new File(file.getParent(), Filenames.addExtension(file.getName(), BACKUP_EXTENSION)); //return the file with a "backup" extension
+		return new File(file.getParent(), Filenames.addExtension(file.getName(), BACKUP_FILENAME_EXTENSION)); //return the file with a "backup" extension
 	}
 
 	/**
@@ -1347,9 +1347,9 @@ public class Files {
 		Path backupFile = null;
 
 		if(maxBackupCount == 1) {
-			backupFile = addFilenameExtension(path, BACKUP_EXTENSION); //if the backups are not numbered, we return the simple backup path.
+			backupFile = addFilenameExtension(path, BACKUP_FILENAME_EXTENSION); //if the backups are not numbered, we return the simple backup path.
 		} else {
-			backupFile = addFilenameExtension(path, LATEST_NUMBERED_BACKUP_EXTENSION); //if the backup file is numbered, we return the path for the latest one.
+			backupFile = addFilenameExtension(path, LATEST_NUMBERED_BACKUP_FILENAME_EXTENSION); //if the backup file is numbered, we return the path for the latest one.
 		}
 
 		return backupFile;
@@ -1420,10 +1420,10 @@ public class Files {
 		checkArgument(maxBackupCount > 1, "The maximum number of rolling backup files to be used must be greater than one.");
 
 		for(long i = maxBackupCount - 1; i >= 1; i--) {
-			final Path sourceBackupFile = addFilenameExtension(path, NUMBERED_BACKUP_EXTENSION_TEMPLATE.apply(i));
+			final Path sourceBackupFile = addFilenameExtension(path, NUMBERED_BACKUP_FILENAME_EXTENSION_TEMPLATE.apply(i));
 
 			if(java.nio.file.Files.exists(sourceBackupFile)) {
-				final Path destinationBackupFile = addFilenameExtension(path, NUMBERED_BACKUP_EXTENSION_TEMPLATE.apply(i + 1));
+				final Path destinationBackupFile = addFilenameExtension(path, NUMBERED_BACKUP_FILENAME_EXTENSION_TEMPLATE.apply(i + 1));
 
 				java.nio.file.Files.move(sourceBackupFile, destinationBackupFile, StandardCopyOption.REPLACE_EXISTING);
 			}

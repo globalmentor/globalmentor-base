@@ -47,9 +47,9 @@ public class Text {
 	 * The name extension for text list files.
 	 * @see <a href="https://www.file-extensions.org/lst-file-extension">LST file extension - List text</a>
 	 */
-	public static final String LST_NAME_EXTENSION = "lst";
+	public static final String LST_FILENAME_EXTENSION = "lst";
 	/** The name extension for text files. */
-	public static final String TXT_NAME_EXTENSION = "txt";
+	public static final String TXT_FILENAME_EXTENSION = "txt";
 
 	/**
 	 * The string representing the CR EOL character sequence.

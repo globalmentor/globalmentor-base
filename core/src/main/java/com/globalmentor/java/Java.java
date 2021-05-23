@@ -25,7 +25,7 @@ import static com.globalmentor.java.StringBuilders.*;
 public class Java {
 
 	/** The name extension for Java files. */
-	public static final String JAVA_NAME_EXTENSION = "java";
+	public static final String JAVA_FILENAME_EXTENSION = "java";
 
 	/** The string representing the null keyword. */
 	public static final String NULL_KEYWORD = "null";
