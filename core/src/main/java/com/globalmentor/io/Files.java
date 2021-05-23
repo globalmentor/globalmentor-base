@@ -83,20 +83,6 @@ public class Files {
 	 */
 	public static final String WINDOWS_SYSTEM_VOLUME_INFORMATION_DIRECTORY_FILENAME = "System Volume Information";
 
-	//file extensions for certain media types TODO move to respective classes 
-	/** The extension for Common Gateway Interface (CGI) files. */
-	public static final String CGI_EXTENSION = "cgi";
-	/** The extension for Microsoft Word files. */
-	//TODO delete	public static final String DOC_EXTENSION = "doc";
-	/** The extension for iCalendar files. */
-	public static final String ICAL_EXTENSION = "ical";
-	/** An extension for Java Server Page (JSP) files. */
-	public static final String JSP_EXTENSION = "jsp";
-	/** The extension for Adobe PDF files. */
-	public static final String PDF_EXTENSION = "pdf";
-	/** The extension for vCard files. */
-	public static final String VCF_EXTENSION = "vcf";
-
 	/** The shared file filter that accepts all files. */
 	public static final FileFilter WILDCARD_FILE_FILTER = new WildcardFileFilter();
 
