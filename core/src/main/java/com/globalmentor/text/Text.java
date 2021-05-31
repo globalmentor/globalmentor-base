@@ -26,7 +26,7 @@ import static java.util.Objects.*;
 
 import com.globalmentor.collections.comparators.SortOrder;
 import com.globalmentor.java.Characters;
-import com.globalmentor.net.ContentType;
+import com.globalmentor.net.MediaType;
 
 import static com.globalmentor.java.CharSequences.*;
 import static com.globalmentor.java.Characters.*;
@@ -41,7 +41,7 @@ public class Text {
 	public static final String PLAIN_SUBTYPE = "plain";
 
 	/** The media type for plain text: <code>text/plain</code>. */
-	public static final ContentType PLAIN_MEDIA_TYPE = ContentType.of(ContentType.TEXT_PRIMARY_TYPE, PLAIN_SUBTYPE);
+	public static final MediaType PLAIN_MEDIA_TYPE = MediaType.of(MediaType.TEXT_PRIMARY_TYPE, PLAIN_SUBTYPE);
 
 	/**
 	 * The name extension for text list files.
@@ -144,7 +144,7 @@ public class Text {
 	}
 
 	/**
-	 * Determines if the given content type is one representing text in some form.
+	 * Determines if the given media type is one representing text in some form.
 	 * <p>
 	 * Text media types include:
 	 * </p>
@@ -155,23 +155,23 @@ public class Text {
 	 * <li><code>application/xml-external-parsed-entity</code></li>
 	 * <li><code>application/*+xml-external-parsed-entity</code> (not formally defined)</li>
 	 * </ul>
-	 * @param contentType The content type of a resource, or <code>null</code> for no content type.
-	 * @return <code>true</code> if the given content type is one of several text media types.
+	 * @param mediaType The media type of a resource, or <code>null</code> for no media type.
+	 * @return <code>true</code> if the given media type is one of several text media types.
 	 */
-	public static boolean isText(final ContentType contentType) {
-		if(contentType != null) { //if a content type is given
-			if(ContentType.TEXT_PRIMARY_TYPE.equals(contentType.getPrimaryType())) { //if this is "text/*"
+	public static boolean isText(final MediaType mediaType) {
+		if(mediaType != null) { //if a content type is given
+			if(MediaType.TEXT_PRIMARY_TYPE.equals(mediaType.getPrimaryType())) { //if this is "text/*"
 				return true; //text/* is a text content type
 			}
 			//TODO improve; see if removing this causes problems in Guise; application/xml could be considered non-text xml; see www.grauw.nl/blog/entry/489
-			if(ContentType.APPLICATION_PRIMARY_TYPE.equals(contentType.getPrimaryType())) { //if this is "application/*"
-				final String subType = contentType.getSubType(); //get the subtype
+			if(MediaType.APPLICATION_PRIMARY_TYPE.equals(mediaType.getPrimaryType())) { //if this is "application/*"
+				final String subType = mediaType.getSubType(); //get the subtype
 				if("xml".equals(subType) //see if the subtype is "xml"
-						|| contentType.hasSubTypeSuffix("xml")) { //see if the subtype has an XML suffix
+						|| mediaType.hasSubTypeSuffix("xml")) { //see if the subtype has an XML suffix
 					return true; //application/*+xml is considered text
 				}
 				if("xml-external-parsed-entity".equals(subType) //if the subtype is /xml-external-parsed-entity
-						|| contentType.hasSubTypeSuffix("xml-external-parsed-entity")) { //or if the subtype has an XML external parsed entity suffix
+						|| mediaType.hasSubTypeSuffix("xml-external-parsed-entity")) { //or if the subtype has an XML external parsed entity suffix
 					return true; //application/*+xml-external-parsed-entity is considered text
 				}
 			}

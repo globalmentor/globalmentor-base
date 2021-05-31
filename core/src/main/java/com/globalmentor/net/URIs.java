@@ -211,7 +211,7 @@ public class URIs {
 	 * Media Type</a>.
 	 * @see <a href="https://tools.ietf.org/html/rfc2483">RFC 2483: URI Resolution Services Necessary for URN Resolution</a>
 	 */
-	public static final ContentType URI_LIST_MEDIA_TYPE = ContentType.of(ContentType.TEXT_PRIMARY_TYPE, "uri-list");
+	public static final MediaType URI_LIST_MEDIA_TYPE = MediaType.of(MediaType.TEXT_PRIMARY_TYPE, "uri-list");
 
 	/**
 	 * Creates a string of type <code>text/uri-list</code> as defined in <a href="http://www.ietf.org/rfc/rfc2483.txt">RFC 2483</a>, "URI Resolution Services

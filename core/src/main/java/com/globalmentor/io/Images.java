@@ -16,14 +16,14 @@
 
 package com.globalmentor.io;
 
-import static com.globalmentor.net.ContentType.*;
+import static com.globalmentor.net.MediaType.*;
 import static java.util.stream.Collectors.*;
 
 import java.util.*;
 import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.stream.Stream;
 
-import com.globalmentor.net.ContentType;
+import com.globalmentor.net.MediaType;
 
 /**
  * Utilities and constants for working with image content.
@@ -37,31 +37,31 @@ public class Images {
 	 * The media type for bitmap image files: <code>image/bmp</code>.
 	 * @see <a href="https://tools.ietf.org/html/rfc7903">RFC 7903: Windows Image Media Types</a>
 	 */
-	public static final ContentType BMP_MEDIA_TYPE = ContentType.of(IMAGE_PRIMARY_TYPE, "bmp");
+	public static final MediaType BMP_MEDIA_TYPE = MediaType.of(IMAGE_PRIMARY_TYPE, "bmp");
 
 	/**
 	 * The media type for GIF images: <code>image/gif</code>.
 	 * @see <a href="https://tools.ietf.org/html/rfc2046">RFC 2046: Multipurpose Internet Mail Extensions (MIME) Part Two: Media Types</a>
 	 */
-	public static final ContentType GIF_MEDIA_TYPE = ContentType.of(IMAGE_PRIMARY_TYPE, "gif");
+	public static final MediaType GIF_MEDIA_TYPE = MediaType.of(IMAGE_PRIMARY_TYPE, "gif");
 
 	/**
 	 * The media type for JPEG images: <code>image/jpeg</code>.
 	 * @see <a href="https://tools.ietf.org/html/rfc2046">RFC 2046: Multipurpose Internet Mail Extensions (MIME) Part Two: Media Types</a>
 	 */
-	public static final ContentType JPEG_MEDIA_TYPE = ContentType.of(IMAGE_PRIMARY_TYPE, "jpeg");
+	public static final MediaType JPEG_MEDIA_TYPE = MediaType.of(IMAGE_PRIMARY_TYPE, "jpeg");
 
 	/**
 	 * The media type for PNG images: <code>image/png</code>.
 	 * @see <a href="https://www.iana.org/assignments/media-types/image/png">IANA media type assignments: image/png</a>
 	 */
-	public static final ContentType PNG_MEDIA_TYPE = ContentType.of(IMAGE_PRIMARY_TYPE, "png");
+	public static final MediaType PNG_MEDIA_TYPE = MediaType.of(IMAGE_PRIMARY_TYPE, "png");
 
 	/**
 	 * The media type for TIFF images: <code>image/tiff</code>.
 	 * @see <a href="https://tools.ietf.org/html/rfc2302">RFC 2302: Tag Image File Format (TIFF) - image/tiff MIME Sub-type Registration</a>
 	 */
-	public static final ContentType TIFF_MEDIA_TYPE = ContentType.of(IMAGE_PRIMARY_TYPE, "tiff");
+	public static final MediaType TIFF_MEDIA_TYPE = MediaType.of(IMAGE_PRIMARY_TYPE, "tiff");
 
 	//filename extensions
 
@@ -87,7 +87,7 @@ public class Images {
 	 * Internet media types for known image filename extensions. Filename extensions are in canonical (lowercase) form.
 	 * @apiNote This map may not include all the file extensions defined in this class.
 	 */
-	public static final Map<String, ContentType> MEDIA_TYPES_BY_FILENAME_EXTENSION = Stream.of(
+	public static final Map<String, MediaType> MEDIA_TYPES_BY_FILENAME_EXTENSION = Stream.of(
 			//.bmp
 			new SimpleImmutableEntry<>(BMP_FILENAME_EXTENSION, BMP_MEDIA_TYPE),
 			//.gif

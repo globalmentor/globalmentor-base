@@ -16,9 +16,9 @@
 
 package com.globalmentor.io;
 
-import static com.globalmentor.net.ContentType.*;
+import static com.globalmentor.net.MediaType.*;
 
-import com.globalmentor.net.ContentType;
+import com.globalmentor.net.MediaType;
 
 /**
  * Utilities and constants for working with archive content.
@@ -33,21 +33,21 @@ public class Archive {
 	 * @see <a href="https://www.7-zip.org/7z.html">7z Format</a>
 	 * @see <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types">MDN: Common MIME types</a>
 	 */
-	public static final ContentType SEVENZ_MEDIA_TYPE = ContentType.of(APPLICATION_PRIMARY_TYPE, "x-7z-compressed");
+	public static final MediaType SEVENZ_MEDIA_TYPE = MediaType.of(APPLICATION_PRIMARY_TYPE, "x-7z-compressed");
 
 	/**
 	 * The media type for RAR files: <code>application/vnd.rar</code>.
 	 * @see <a href="https://www.rarlab.com/technote.htm">RAR 5.0 archive format</a>
 	 * @see <a href="https://www.iana.org/assignments/media-types/application/vnd.rar">IANA media type assignments: application/vnd.rar</a>
 	 */
-	public static final ContentType RAR_MEDIA_TYPE = ContentType.of(APPLICATION_PRIMARY_TYPE, "vnd.rar");
+	public static final MediaType RAR_MEDIA_TYPE = MediaType.of(APPLICATION_PRIMARY_TYPE, "vnd.rar");
 
 	/**
 	 * The media type for ZIP files: <code>application/zip</code>.
 	 * @see <a href="https://pkware.cachefly.net/webdocs/casestudies/APPNOTE.TXT">.ZIP File Format Specification</a>
 	 * @see <a href="https://www.iana.org/assignments/media-types/application/zip">IANA media type assignments: application/zip</a>
 	 */
-	public static final ContentType ZIP_MEDIA_TYPE = ContentType.of(APPLICATION_PRIMARY_TYPE, "zip");
+	public static final MediaType ZIP_MEDIA_TYPE = MediaType.of(APPLICATION_PRIMARY_TYPE, "zip");
 
 	//filename extensions
 

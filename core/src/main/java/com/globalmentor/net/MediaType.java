@@ -84,7 +84,7 @@ import com.globalmentor.text.*;
  * @see <a href="https://www.iana.org/assignments/media-types/media-types.xhtml">IANA Media Types</a>
  * @see <a href="https://www.w3.org/TR/xhtml-media-types/">XHTML Media Types</a>
  */
-public final class ContentType { //TODO major version: rename to MediaType
+public final class MediaType { //TODO major version: rename to MediaType
 
 	/** The divider character for media type strings. */
 	public static final char TYPE_DIVIDER = '/';
@@ -226,7 +226,7 @@ public final class ContentType { //TODO major version: rename to MediaType
 	public static final String X_JAVA_OBJECT = SUBTYPE_EXTENSION_PREFIX + "java-object";
 
 	/** The shared <code>application/octet-stream</code> media type. */
-	public static final ContentType APPLICATION_OCTET_STREAM_MEDIA_TYPE = ContentType.of(APPLICATION_PRIMARY_TYPE, OCTET_STREAM_SUBTYPE);
+	public static final MediaType APPLICATION_OCTET_STREAM_MEDIA_TYPE = MediaType.of(APPLICATION_PRIMARY_TYPE, OCTET_STREAM_SUBTYPE);
 
 	private final String primaryType;
 
@@ -268,9 +268,9 @@ public final class ContentType { //TODO major version: rename to MediaType
 	 * @param subType The subtype of the media type.
 	 * @param parameters The media type parameters.
 	 * @throws NullPointerException if the given primary type, subtype, and/or parameters is <code>null</code>.
-	 * @throws IllegalArgumentException if the primary type and/or subtype does not conform to the {@link ContentType#RESTRICTED_NAME_PATTERN} pattern.
+	 * @throws IllegalArgumentException if the primary type and/or subtype does not conform to the {@link MediaType#RESTRICTED_NAME_PATTERN} pattern.
 	 */
-	private ContentType(final String primaryType, final String subType, final Set<Parameter> parameters) {
+	private MediaType(final String primaryType, final String subType, final Set<Parameter> parameters) {
 		this.primaryType = ASCII.toLowerCase(checkArgumentRestrictedName(primaryType)).toString();
 		this.subType = ASCII.toLowerCase(checkArgumentRestrictedName(subType)).toString();
 		this.parameters = requireNonNull(parameters);
@@ -278,32 +278,32 @@ public final class ContentType { //TODO major version: rename to MediaType
 
 	/**
 	 * Parses a media type object from a sequence of characters.
-	 * @implSpec The primary type, subtype, and parameter names, if any, are each normalized to lowercase. The value of the {@value ContentType#CHARSET_PARAMETER}
+	 * @implSpec The primary type, subtype, and parameter names, if any, are each normalized to lowercase. The value of the {@value MediaType#CHARSET_PARAMETER}
 	 *           parameter, if present, is normalized to lowercase.
 	 * @param charSequence The character sequence representation of the media type.
 	 * @return A new media type object parsed from the string.
-	 * @throws IllegalArgumentException if the primary type, subtype, and/or a parameter name does not conform to the {@link ContentType#RESTRICTED_NAME_PATTERN}
+	 * @throws IllegalArgumentException if the primary type, subtype, and/or a parameter name does not conform to the {@link MediaType#RESTRICTED_NAME_PATTERN}
 	 *           pattern.
 	 * @deprecated in favor of {@link #parse(CharSequence)}; to be removed in next major version.
 	 */
 	@Deprecated
-	public static ContentType create(final CharSequence charSequence) {
+	public static MediaType create(final CharSequence charSequence) {
 		return parse(charSequence);
 	}
 
 	/**
 	 * Parses a media type object from a sequence of characters.
-	 * @implSpec The primary type, subtype, and parameter names, if any, are each normalized to lowercase. The value of the {@value ContentType#CHARSET_PARAMETER}
+	 * @implSpec The primary type, subtype, and parameter names, if any, are each normalized to lowercase. The value of the {@value MediaType#CHARSET_PARAMETER}
 	 *           parameter, if present, is normalized to lowercase.
 	 * @param charSequence The character sequence representation of the media type.
 	 * @return A new media type object parsed from the string.
-	 * @throws IllegalArgumentException if the name does not conform to the {@link ContentType#RESTRICTED_NAME_PATTERN} pattern.
-	 * @throws IllegalArgumentException if the primary type, subtype, and/or a parameter name does not conform to the {@link ContentType#RESTRICTED_NAME_PATTERN}
+	 * @throws IllegalArgumentException if the name does not conform to the {@link MediaType#RESTRICTED_NAME_PATTERN} pattern.
+	 * @throws IllegalArgumentException if the primary type, subtype, and/or a parameter name does not conform to the {@link MediaType#RESTRICTED_NAME_PATTERN}
 	 *           pattern.
 	 * @deprecated in favor of {@link #parse(CharSequence)}; to be removed in next major version.
 	 */
 	@Deprecated
-	public static ContentType of(final CharSequence charSequence) {
+	public static MediaType of(final CharSequence charSequence) {
 		return parse(charSequence);
 	}
 
@@ -314,11 +314,11 @@ public final class ContentType { //TODO major version: rename to MediaType
 	 * @param subType The subtype.
 	 * @param parameters Optional name-value pairs representing parameters of the media type.
 	 * @return A new media type object constructed from the given information.
-	 * @throws IllegalArgumentException if the primary type and/or subtype does not conform to the {@link ContentType#RESTRICTED_NAME_PATTERN} pattern.
+	 * @throws IllegalArgumentException if the primary type and/or subtype does not conform to the {@link MediaType#RESTRICTED_NAME_PATTERN} pattern.
 	 * @deprecated in favor of {@link #of(String, String, Parameter...)}; to be removed in next major version.
 	 */
 	@Deprecated
-	public static ContentType create(final String primaryType, final String subType, final Parameter... parameters) {
+	public static MediaType create(final String primaryType, final String subType, final Parameter... parameters) {
 		return of(primaryType, subType, parameters);
 	}
 
@@ -329,10 +329,10 @@ public final class ContentType { //TODO major version: rename to MediaType
 	 * @param subType The subtype.
 	 * @param parameters Optional name-value pairs representing parameters of the media type.
 	 * @return A new media type object constructed from the given information.
-	 * @throws IllegalArgumentException if the primary type and/or subtype does not conform to the {@link ContentType#RESTRICTED_NAME_PATTERN} pattern.
+	 * @throws IllegalArgumentException if the primary type and/or subtype does not conform to the {@link MediaType#RESTRICTED_NAME_PATTERN} pattern.
 	 */
-	public static ContentType of(final String primaryType, final String subType, final Parameter... parameters) {
-		return new ContentType(primaryType, subType, immutableSetOf(parameters)); //create a new media type from the given values, creating an immutable copy of the parameters
+	public static MediaType of(final String primaryType, final String subType, final Parameter... parameters) {
+		return new MediaType(primaryType, subType, immutableSetOf(parameters)); //create a new media type from the given values, creating an immutable copy of the parameters
 	}
 
 	/**
@@ -343,38 +343,38 @@ public final class ContentType { //TODO major version: rename to MediaType
 	 * @param parameters Zero or more name-value pairs representing parameters of the media type.
 	 * @return A new media type object constructed from the given information.
 	 * @throws NullPointerException if the given parameters set is <code>null</code>.
-	 * @throws IllegalArgumentException if the primary type and/or subtype does not conform to the {@link ContentType#RESTRICTED_NAME_PATTERN} pattern.
+	 * @throws IllegalArgumentException if the primary type and/or subtype does not conform to the {@link MediaType#RESTRICTED_NAME_PATTERN} pattern.
 	 */
-	public static ContentType of(final String primaryType, final String subType, final Set<Parameter> parameters) {
-		return new ContentType(primaryType, subType, immutableSetOf(parameters)); //create a new media type from the given values, creating an immutable copy of the parameters
+	public static MediaType of(final String primaryType, final String subType, final Set<Parameter> parameters) {
+		return new MediaType(primaryType, subType, immutableSetOf(parameters)); //create a new media type from the given values, creating an immutable copy of the parameters
 	}
 
 	/**
 	 * Parses a media type object from a sequence of characters.
-	 * @implSpec The primary type, subtype, and parameter names, if any, are each normalized to lowercase. The value of the {@value ContentType#CHARSET_PARAMETER}
+	 * @implSpec The primary type, subtype, and parameter names, if any, are each normalized to lowercase. The value of the {@value MediaType#CHARSET_PARAMETER}
 	 *           parameter, if present, is normalized to lowercase.
 	 * @param text The character sequence representation of the media type.
 	 * @return A new media type object parsed from the string.
-	 * @throws IllegalArgumentException if the primary type, subtype, and/or a parameter name does not conform to the {@link ContentType#RESTRICTED_NAME_PATTERN}
+	 * @throws IllegalArgumentException if the primary type, subtype, and/or a parameter name does not conform to the {@link MediaType#RESTRICTED_NAME_PATTERN}
 	 *           pattern.
 	 */
-	public static ContentType parse(final CharSequence text) {
+	public static MediaType parse(final CharSequence text) {
 		final Matcher matcher = checkArgumentMatches(text, PATTERN, "Invalid media type syntax for `%s`.", text);
 		final String primaryType = matcher.group(PATTERN_PRIMARY_TYPE_GROUP);
 		final String subType = matcher.group(PATTERN_SUBTYPE_GROUP);
 		final String parameterString = matcher.group(PATTERN_PARAMETERS_GROUP);
 		final Set<Parameter> parameters = parameterString != null ? parseParameters(parameterString) : emptySet();
-		return new ContentType(primaryType, subType, parameters);
+		return new MediaType(primaryType, subType, parameters);
 	}
 
 	/**
 	 * Parses parameters of a media type from a sequence of characters.
-	 * @implSpec The parameter names are each normalized to lowercase. The value of the {@value ContentType#CHARSET_PARAMETER} parameter, if present, is
+	 * @implSpec The parameter names are each normalized to lowercase. The value of the {@value MediaType#CHARSET_PARAMETER} parameter, if present, is
 	 *           normalized to lowercase.
 	 * @param text The character sequence representing the parameters of the media type, not including the {@value #PARAMETER_DELIMITER_CHAR} delimiter.
 	 * @return Media type parameters parsed from the string.
 	 * @throws IllegalArgumentException if the string is not syntactically correct parameters, or if a parameter name does not conform to the
-	 *           {@link ContentType#RESTRICTED_NAME_PATTERN} pattern.
+	 *           {@link MediaType#RESTRICTED_NAME_PATTERN} pattern.
 	 */
 	public static Set<Parameter> parseParameters(final CharSequence text) {
 		Set<Parameter> parameters = null;
@@ -433,9 +433,9 @@ public final class ContentType { //TODO major version: rename to MediaType
 	 * @see #WILDCARD_SUBTYPE
 	 */
 	public boolean matches(@Nonnull final String primaryType, @Nonnull final String subType) {
-		final String contentTypeSubType = getSubType(); //get the media type's subtype
+		final String mediaTypeSubType = getSubType(); //get the media type's subtype
 		return ASCII.equalsIgnoreCase(getPrimaryType(), primaryType)
-				&& (ASCII.equalsIgnoreCase(contentTypeSubType, subType) || WILDCARD_SUBTYPE.equals(contentTypeSubType) || WILDCARD_SUBTYPE.equals(subType)); //check the primary type and subtype and wildcards
+				&& (ASCII.equalsIgnoreCase(mediaTypeSubType, subType) || WILDCARD_SUBTYPE.equals(mediaTypeSubType) || WILDCARD_SUBTYPE.equals(subType)); //check the primary type and subtype and wildcards
 	}
 
 	/**
@@ -464,7 +464,7 @@ public final class ContentType { //TODO major version: rename to MediaType
 	}
 
 	/**
-	 * Matches a media type against the {@value #APPLICATION_PRIMARY_TYPE} primary type and {@value ContentType#X_JAVA_OBJECT} subtype, with a "class" parameter
+	 * Matches a media type against the {@value #APPLICATION_PRIMARY_TYPE} primary type and {@value MediaType#X_JAVA_OBJECT} subtype, with a "class" parameter
 	 * indicating the given object class. This method supports wildcard subtypes.
 	 * @param objectClass The class for which to check in the parameters under the key "class".
 	 * @return <code>true</code> if the media type has the same primary type and subtype as that given, along with a class parameter.
@@ -490,7 +490,7 @@ public final class ContentType { //TODO major version: rename to MediaType
 	 * @deprecated to be removed in favor of {@link #toBaseType()}.
 	 */
 	@Deprecated
-	public ContentType getBaseContentType() {
+	public MediaType getBaseContentType() {
 		return toBaseType();
 	}
 
@@ -500,23 +500,23 @@ public final class ContentType { //TODO major version: rename to MediaType
 	 * @implSpec If this media type is already a base media type, this media type is returned.
 	 * @return A media type with the same primary and subtype as the media type, but with no parameters.
 	 * @see #toBaseTypeString()
-	 * @see #hasBaseType(ContentType)
+	 * @see #hasBaseType(MediaType)
 	 * @see #hasBaseType(String, String)
 	 */
-	public ContentType toBaseType() {
-		return getParameters().isEmpty() ? this : ContentType.of(getPrimaryType(), getSubType()); //if this media type is already just the base type, return it as-is
+	public MediaType toBaseType() {
+		return getParameters().isEmpty() ? this : MediaType.of(getPrimaryType(), getSubType()); //if this media type is already just the base type, return it as-is
 	}
 
 	/**
 	 * Checks to see if the given media type has the same primary type and subtype as this media type. The parameters of the this media type and the given media
 	 * type are ignored. This method does <em>not</em> support wildcards.
-	 * @param contentType The media type with which to compare this media type.
+	 * @param mediaType The media type with which to compare this media type.
 	 * @return <code>true</code> if the primary types and base types of the two media types are equal.
 	 * @see #toBaseType()
 	 * @see #toBaseTypeString()
 	 */
-	public boolean hasBaseType(final ContentType contentType) {
-		return hasBaseType(contentType.getPrimaryType(), contentType.getSubType());
+	public boolean hasBaseType(final MediaType mediaType) {
+		return hasBaseType(mediaType.getPrimaryType(), mediaType.getSubType());
 	}
 
 	/**
@@ -535,11 +535,11 @@ public final class ContentType { //TODO major version: rename to MediaType
 	/**
 	 * Determines if the subtype of the media type has the given suffix.
 	 * @implSpec Suffixes are compared on an ASCII case-insensitive basis.
-	 * @implNote This implementation restricts each suffix to the {@link ContentType#RESTRICTED_NAME_PATTERN} pattern, the same pattern applicable to a subtype,
+	 * @implNote This implementation restricts each suffix to the {@link MediaType#RESTRICTED_NAME_PATTERN} pattern, the same pattern applicable to a subtype,
 	 *           although this requirement is not explicit in RFC 6838.
 	 * @param suffixes The suffix strings that will be checked, after they are combined into a single suffix, each part prepended with '+'.
 	 * @return <code>true</code> if the media type's subtype has the given suffixes.
-	 * @throws IllegalArgumentException if a suffix does not conform to the {@link ContentType#RESTRICTED_NAME_PATTERN} pattern, including if it already begins
+	 * @throws IllegalArgumentException if a suffix does not conform to the {@link MediaType#RESTRICTED_NAME_PATTERN} pattern, including if it already begins
 	 *           with the {@value #SUBTYPE_SUFFIX_DELIMITER_CHAR} delimiter.
 	 */
 	public boolean hasSubTypeSuffix(final String... suffixes) {
@@ -555,7 +555,7 @@ public final class ContentType { //TODO major version: rename to MediaType
 	 * @param newParameter The new parameter to add or replace.
 	 * @return A media type with the given parameter.
 	 */
-	public ContentType withParameter(final Parameter newParameter) {
+	public MediaType withParameter(final Parameter newParameter) {
 		//As the given parameter names and value has already been normalized to lowercase as needed,
 		//comparisons can be performed normally. However we can't short-circuit with `getParameters().contains(newParameter)`,
 		//because there may be multiple parameters with the same name, and we need to remove the others.
@@ -571,7 +571,7 @@ public final class ContentType { //TODO major version: rename to MediaType
 		if(getParameters().equals(newParameters)) { //if our change didn't actually result in changes
 			return this; //just return this instance, as there would be no difference
 		}
-		return ContentType.of(getPrimaryType(), getSubType(), newParameters); //create a new media type with the updated parameters
+		return MediaType.of(getPrimaryType(), getSubType(), newParameters); //create a new media type with the updated parameters
 	}
 
 	/**
@@ -585,10 +585,10 @@ public final class ContentType { //TODO major version: rename to MediaType
 	 * @param value The parameter value.
 	 * @return A media type with the given parameter.
 	 * @throws NullPointerException if the given name and/or value is <code>null</code>.
-	 * @throws IllegalArgumentException if the parameter name does not conform to the {@link ContentType#RESTRICTED_NAME_PATTERN} pattern.
+	 * @throws IllegalArgumentException if the parameter name does not conform to the {@link MediaType#RESTRICTED_NAME_PATTERN} pattern.
 	 * @see Parameter#of(String, String)
 	 */
-	public ContentType withParameter(final String name, final String value) {
+	public MediaType withParameter(final String name, final String value) {
 		return withParameter(Parameter.of(name, value));
 	}
 
@@ -606,7 +606,7 @@ public final class ContentType { //TODO major version: rename to MediaType
 	 * @see #CHARSET_PARAMETER
 	 * @see Charset#name()
 	 */
-	public ContentType withCharset(@Nonnull final Charset charset) {
+	public MediaType withCharset(@Nonnull final Charset charset) {
 		return withParameter(CHARSET_PARAMETER, charset.name());
 	}
 
@@ -626,7 +626,7 @@ public final class ContentType { //TODO major version: rename to MediaType
 
 	/**
 	 * {@inheritDoc}
-	 * @implSpec This implementation considers an object equal if it is another {@link ContentType} with the same primary types and subtypes, the same number of
+	 * @implSpec This implementation considers an object equal if it is another {@link MediaType} with the same primary types and subtypes, the same number of
 	 *           parameters, and a matching parameter value for every parameter of this media type. Comparisons are ASCII case-insensitive for the primary type,
 	 *           the subtype, the parameter names, and the {@value #CHARSET_PARAMETER} parameter value, as these items have already been normalized by this class.
 	 * @param object The reference object with which to compare.
@@ -640,12 +640,12 @@ public final class ContentType { //TODO major version: rename to MediaType
 		if(this == object) { //if the objects are the same identical object
 			return true; //identical objects are always equal
 		}
-		if(!(object instanceof ContentType)) {
+		if(!(object instanceof MediaType)) {
 			return false;
 		}
-		final ContentType contentType = (ContentType)object;
-		return getPrimaryType().equals(contentType.getPrimaryType()) && getSubType().equals(contentType.getSubType())
-				&& getParameters().equals(contentType.getParameters());
+		final MediaType mediaType = (MediaType)object;
+		return getPrimaryType().equals(mediaType.getPrimaryType()) && getSubType().equals(mediaType.getSubType())
+				&& getParameters().equals(mediaType.getParameters());
 	}
 
 	/**
@@ -671,7 +671,7 @@ public final class ContentType { //TODO major version: rename to MediaType
 	 * @apiNote Compare with <code>javax.activiation.MimeType.getBaseType()</code>.
 	 * @return A string representation of the media type with no parameters.
 	 * @see #toBaseType()
-	 * @see #hasBaseType(ContentType)
+	 * @see #hasBaseType(MediaType)
 	 * @see #hasBaseType(String, String)
 	 */
 	public String toBaseTypeString() {
@@ -735,11 +735,11 @@ public final class ContentType { //TODO major version: rename to MediaType
 	/**
 	 * Creates a media type suffix by prepending '+' to each suffix and concatenating the suffixes.
 	 * @implSpec Each suffix is normalized to lowercase.
-	 * @implNote This implementation restricts each suffix to the {@link ContentType#RESTRICTED_NAME_PATTERN} pattern, the same pattern applicable to a subtype,
+	 * @implNote This implementation restricts each suffix to the {@link MediaType#RESTRICTED_NAME_PATTERN} pattern, the same pattern applicable to a subtype,
 	 *           although this requirement is not explicit in RFC 6838.
 	 * @param suffixes The suffix strings to combine into a suffix.
 	 * @return A suffix composed of the given suffix strings.
-	 * @throws IllegalArgumentException if a suffix does not conform to the {@link ContentType#RESTRICTED_NAME_PATTERN} pattern, including if it already begins
+	 * @throws IllegalArgumentException if a suffix does not conform to the {@link MediaType#RESTRICTED_NAME_PATTERN} pattern, including if it already begins
 	 *           with the {@value #SUBTYPE_SUFFIX_DELIMITER_CHAR} delimiter.
 	 * @see #createSubTypeSuffix(String...)
 	 */
@@ -771,29 +771,29 @@ public final class ContentType { //TODO major version: rename to MediaType
 
 		/**
 		 * The common parameter <code>charset=us-ascii</code>.
-		 * @apiNote For adding a new charset parameter to an existing media type, it is preferred to call {@link ContentType#withCharset(Charset)}.
+		 * @apiNote For adding a new charset parameter to an existing media type, it is preferred to call {@link MediaType#withCharset(Charset)}.
 		 */
 		public static final Parameter CHARSET_US_ASCII = new Parameter(CHARSET_PARAMETER, US_ASCII.name());
 
 		/**
 		 * The common parameter <code>charset=iso-8859-1</code>.
-		 * @apiNote For adding a new charset parameter to an existing media type, it is preferred to call {@link ContentType#withCharset(Charset)}.
+		 * @apiNote For adding a new charset parameter to an existing media type, it is preferred to call {@link MediaType#withCharset(Charset)}.
 		 */
 		public static final Parameter CHARSET_ISO_8859_1 = new Parameter(CHARSET_PARAMETER, ISO_8859_1.name());
 
 		/**
 		 * The common parameter <code>charset=utf-8</code>.
-		 * @apiNote For adding a new charset parameter to an existing media type, it is preferred to call {@link ContentType#withCharset(Charset)}.
+		 * @apiNote For adding a new charset parameter to an existing media type, it is preferred to call {@link MediaType#withCharset(Charset)}.
 		 */
 		public static final Parameter CHARSET_UTF_8 = new Parameter(CHARSET_PARAMETER, UTF_8.name());
 
 		/**
 		 * Constructor specifying the name and value.
-		 * @implSpec The parameter name is normalized to lowercase. The value of the {@value ContentType#CHARSET_PARAMETER} parameter is normalized to lowercase.
+		 * @implSpec The parameter name is normalized to lowercase. The value of the {@value MediaType#CHARSET_PARAMETER} parameter is normalized to lowercase.
 		 * @param name The parameter name.
 		 * @param value The parameter value.
 		 * @throws NullPointerException if the given name and/or value is <code>null</code>.
-		 * @throws IllegalArgumentException if the name does not conform to the {@link ContentType#RESTRICTED_NAME_PATTERN} pattern.
+		 * @throws IllegalArgumentException if the name does not conform to the {@link MediaType#RESTRICTED_NAME_PATTERN} pattern.
 		 * @throws IllegalArgumentException if the parameter value includes control characters other than horizontal tab.
 		 * @deprecated in favor of {@link #of(String, String)}; to be made non-public in next major version.
 		 */
@@ -807,12 +807,12 @@ public final class ContentType { //TODO major version: rename to MediaType
 
 		/**
 		 * Static factory method specifying the name and value.
-		 * @implSpec The parameter name is normalized to lowercase. The value of the {@value ContentType#CHARSET_PARAMETER} parameter is normalized to lowercase.
+		 * @implSpec The parameter name is normalized to lowercase. The value of the {@value MediaType#CHARSET_PARAMETER} parameter is normalized to lowercase.
 		 * @param name The parameter name.
 		 * @param value The parameter value.
 		 * @return A media type for the indicated name and value.
 		 * @throws NullPointerException if the given name and/or value is <code>null</code>.
-		 * @throws IllegalArgumentException if the name does not conform to the {@link ContentType#RESTRICTED_NAME_PATTERN} pattern.
+		 * @throws IllegalArgumentException if the name does not conform to the {@link MediaType#RESTRICTED_NAME_PATTERN} pattern.
 		 * @throws IllegalArgumentException if the parameter value includes control characters.
 		 */
 		public static Parameter of(@Nonnull final String name, @Nonnull final String value) {
@@ -840,7 +840,7 @@ public final class ContentType { //TODO major version: rename to MediaType
 		 * @param text The character sequence representing the parameters of the value.
 		 * @return The parsed value.
 		 * @throws IllegalArgumentException if the string is not syntactically correct parameters, or if a parameter name does not conform to the
-		 *           {@link ContentType#RESTRICTED_NAME_PATTERN} pattern.
+		 *           {@link MediaType#RESTRICTED_NAME_PATTERN} pattern.
 		 */
 		public static String parseValue(CharSequence text) {
 			checkArgument(text.length() > 0, "Unquoted empty parameter value not supported.");

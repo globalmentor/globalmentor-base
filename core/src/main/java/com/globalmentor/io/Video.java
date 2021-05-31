@@ -16,14 +16,14 @@
 
 package com.globalmentor.io;
 
-import static com.globalmentor.net.ContentType.*;
+import static com.globalmentor.net.MediaType.*;
 import static java.util.stream.Collectors.*;
 
 import java.util.*;
 import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.stream.Stream;
 
-import com.globalmentor.net.ContentType;
+import com.globalmentor.net.MediaType;
 
 /**
  * Utilities and constants for working with video content.
@@ -36,12 +36,12 @@ public class Video {
 	/**
 	 * MPEG-1 video content mentioned in <cite>RFC 2046</cite> but removed in later versions such as <cite>RFC 6838</cite> to indicate "video coded according to
 	 * the MPEG standard".
-	 * @apiNote This constant is not defined in {@link ContentType} because this is a legacy type that is no longer part of the specification, and the media type
+	 * @apiNote This constant is not defined in {@link MediaType} because this is a legacy type that is no longer part of the specification, and the media type
 	 *          specification no longer includes any video types.
 	 * @see <a href="https://tools.ietf.org/html/rfc2046#section-4.4">RFC 2046: Multipurpose Internet Mail Extensions (MIME) Part Two: Media Types § 4.4. Video
 	 *      Media Type</a>
 	 */
-	public static final ContentType MPEG_MEDIA_TYPE = ContentType.of(AUDIO_PRIMARY_TYPE, "basic");
+	public static final MediaType MPEG_MEDIA_TYPE = MediaType.of(AUDIO_PRIMARY_TYPE, "basic");
 
 	//filename extensions
 
@@ -52,7 +52,7 @@ public class Video {
 	 * Internet media types for known video filename extensions. Filename extensions are in canonical (lowercase) form.
 	 * @apiNote This map may not include all the file extensions defined in this class.
 	 */
-	public static final Map<String, ContentType> MEDIA_TYPES_BY_FILENAME_EXTENSION = Stream.of(
+	public static final Map<String, MediaType> MEDIA_TYPES_BY_FILENAME_EXTENSION = Stream.of(
 			//.mpg
 			new SimpleImmutableEntry<>(MPG_FILENAME_EXTENSION, MPEG_MEDIA_TYPE),
 			//.mpeg
