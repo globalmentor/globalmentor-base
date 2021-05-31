@@ -16,7 +16,7 @@
 
 package com.globalmentor.jnlp;
 
-import com.globalmentor.net.ContentType;
+import com.globalmentor.net.MediaType;
 
 /**
  * Constant values for accessing the JNLP servlet.
@@ -25,7 +25,7 @@ import com.globalmentor.net.ContentType;
 public class JNLP {
 
 	/** The media type for JNLP: <code>application/x-java-jnlp-file</code>. */
-	public static final ContentType MEDIA_TYPE = ContentType.of(ContentType.APPLICATION_PRIMARY_TYPE, "x-java-jnlp-file");
+	public static final MediaType MEDIA_TYPE = MediaType.of(MediaType.APPLICATION_PRIMARY_TYPE, "x-java-jnlp-file");
 
 	/** The name of the JNLP servlet or JSP file. */
 	public static final String JNLP_SERVLET_NAME = "jnlp";

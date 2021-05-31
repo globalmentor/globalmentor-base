@@ -132,13 +132,13 @@ public final class Classes {
 	}
 
 	/**
-	 * Returns a content type identifying an object of the given class in the form <code>application/x-java-object;class=<var>package.Class</var></code>.
-	 * @param objectClass The class for which a content type should be returned.
-	 * @return A content type identifying an object of the given class in the form <code>application/x-java-object;class=<var>package.Class</var></code>.
+	 * Returns a media type identifying an object of the given class in the form <code>application/x-java-object;class=<var>package.Class</var></code>.
+	 * @param objectClass The class for which a media type should be returned.
+	 * @return A media type identifying an object of the given class in the form <code>application/x-java-object;class=<var>package.Class</var></code>.
 	 * @throws IllegalArgumentException if the given object class is <code>null</code>.
 	 */
-	public static ContentType getObjectContentType(final Class<?> objectClass) {
-		return ContentType.of(ContentType.APPLICATION_PRIMARY_TYPE, ContentType.X_JAVA_OBJECT, ContentType.Parameter.of("class", objectClass.getName())); //create a content type appropriate for this object class TODO use a constant; testing
+	public static MediaType getObjectMediaType(final Class<?> objectClass) {
+		return MediaType.of(MediaType.APPLICATION_PRIMARY_TYPE, MediaType.X_JAVA_OBJECT, MediaType.Parameter.of("class", objectClass.getName())); //create a media type appropriate for this object class TODO use a constant; testing
 	}
 
 	/**

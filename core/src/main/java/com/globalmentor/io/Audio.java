@@ -16,14 +16,14 @@
 
 package com.globalmentor.io;
 
-import static com.globalmentor.net.ContentType.*;
+import static com.globalmentor.net.MediaType.*;
 import static java.util.stream.Collectors.*;
 
 import java.util.*;
 import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.stream.Stream;
 
-import com.globalmentor.net.ContentType;
+import com.globalmentor.net.MediaType;
 
 /**
  * Utilities and constants for working with audio content.
@@ -38,26 +38,26 @@ public class Audio {
 	/**
 	 * Basic audio content defined in <cite>RFC 2046</cite> but removed in later versions such as <cite>RFC 6838</cite> to indicate "an absolutely minimal lowest
 	 * common denominator audio format" of "single channel audio encoded using 8bit ISDN mu-law [PCM] at a sample rate of 8000 Hz".
-	 * @apiNote This constant is not defined in {@link ContentType} because this is a legacy type that is no longer part of the specification, and the media type
+	 * @apiNote This constant is not defined in {@link MediaType} because this is a legacy type that is no longer part of the specification, and the media type
 	 *          specification no longer includes any audio types.
 	 * @see <a href="https://tools.ietf.org/html/rfc2046#section-4.3">RFC 2046: Multipurpose Internet Mail Extensions (MIME) Part Two: Media Types § 4.3. Audio
 	 *      Media Type</a>
 	 * @see <a href="https://www.iana.org/assignments/media-types/audio/basic">IANA media type assignments: audio/basic</a>
 	 */
-	public static final ContentType BASIC_MEDIA_TYPE = ContentType.of(AUDIO_PRIMARY_TYPE, "basic");
+	public static final MediaType BASIC_MEDIA_TYPE = MediaType.of(AUDIO_PRIMARY_TYPE, "basic");
 
 	/**
 	 * The content type for an Ogg Vorbis file: <code>audio/ogg</code>.
 	 * @see <a href="http://www.ietf.org/rfc/rfc5334.txt">RFC 5334: Ogg Media Types</a>
 	 * @see <a href="http://wiki.xiph.org/MIME_Types_and_File_Extensions">MIME Types and File Extensions</a>
 	 */
-	public static final ContentType OGG_VORBIS_MEDIA_TYPE = ContentType.of(AUDIO_PRIMARY_TYPE, "ogg");
+	public static final MediaType OGG_VORBIS_MEDIA_TYPE = MediaType.of(AUDIO_PRIMARY_TYPE, "ogg");
 
 	/**
 	 * The content type for MP3: <code>audio/mpeg</code>.
 	 * @see <a href="https://tools.ietf.org/html/rfc3003">RFC 3003: The audio/mpeg Media Type</a>
 	 */
-	public static final ContentType MPEG_MEDIA_TYPE = ContentType.of(AUDIO_PRIMARY_TYPE, "mpeg");
+	public static final MediaType MPEG_MEDIA_TYPE = MediaType.of(AUDIO_PRIMARY_TYPE, "mpeg");
 
 	//filename extensions
 
@@ -89,7 +89,7 @@ public class Audio {
 	 * Internet media types for known audio filename extensions. Filename extensions are in canonical (lowercase) form.
 	 * @apiNote This map may not include all the file extensions defined in this class.
 	 */
-	public static final Map<String, ContentType> MEDIA_TYPES_BY_FILENAME_EXTENSION = Stream.of(
+	public static final Map<String, MediaType> MEDIA_TYPES_BY_FILENAME_EXTENSION = Stream.of(
 			//.au
 			new SimpleImmutableEntry<>(AU_FILENAME_EXTENSION, BASIC_MEDIA_TYPE),
 			//.mp3
@@ -115,12 +115,12 @@ public class Audio {
 	 * @see <a href="http://www.ietf.org/rfc/rfc3534.txt">RFC 3534</a>
 	 * @see <a href="http://wiki.xiph.org/MIME_Types_and_File_Extensions">MIME Types and File Extensions</a>
 	 */
-	public static boolean isAudio(final ContentType mediaType) {
+	public static boolean isAudio(final MediaType mediaType) {
 		final String topLevelType = mediaType.getPrimaryType(); //get the content type top-level type
-		if(ContentType.AUDIO_PRIMARY_TYPE.equals(topLevelType)) { //if this is a top-level audio content type
+		if(MediaType.AUDIO_PRIMARY_TYPE.equals(topLevelType)) { //if this is a top-level audio content type
 			return true; //this is an audio content type
 		}
-		if(ContentType.APPLICATION_PRIMARY_TYPE.equals(topLevelType)) { //if this is an application type
+		if(MediaType.APPLICATION_PRIMARY_TYPE.equals(topLevelType)) { //if this is an application type
 			if(OGG_VORBIS_MEDIA_TYPE.getSubType().equals(mediaType.getSubType())) { //if this is application/ogg
 				return true; //this is an Ogg Vorbis  audio file
 			}
