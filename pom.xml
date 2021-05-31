@@ -5,11 +5,11 @@
 	<parent>
 		<groupId>com.globalmentor</groupId>
 		<artifactId>globalmentor-opensource-root</artifactId>
-		<version>0.8.9-SNAPSHOT</version>
+		<version>0.8.9</version>
 	</parent>
 
 	<artifactId>globalmentor-base</artifactId>
-	<version>0.6.6-SNAPSHOT</version>
+	<version>0.7.0</version>
 	<packaging>pom</packaging>
 
 	<name>GlobalMentor Base</name>
@@ -40,13 +40,13 @@
 			<dependency>
 				<groupId>com.globalmentor</groupId>
 				<artifactId>globalmentor-core</artifactId>
-				<version>0.6.6-SNAPSHOT</version>
+				<version>0.7.0</version>
 			</dependency>
 
 			<dependency>
 				<groupId>com.globalmentor</groupId>
 				<artifactId>globalmentor-management</artifactId>
-				<version>0.6.6-SNAPSHOT</version>
+				<version>0.7.0</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
