@@ -39,10 +39,12 @@ import java.io.*;
  * @apiNote The standard algorithms enumerated by this class identify known algorithms with standard names. Not all of them are guaranteed to be implemented on
  *          any particular Java platform.
  * @author Garret Wilson
+ * @see MessageDigest
+ * @see Hash
  * @see <a href="https://docs.oracle.com/en/java/javase/11/docs/specs/security/standard-names.html#messagedigest-algorithms"><code>MessageDigest</code>
  *      Algorithms</a>
  */
-public class MessageDigests {
+public final class MessageDigests {
 
 	/** The MD2 message digest algorithm as defined in <a href="https://tools.ietf.org/html/rfc1319">RFC 1319</a>. */
 	public static final Algorithm MD2 = new Algorithm("MD2");
@@ -145,6 +147,16 @@ public class MessageDigests {
 	}
 
 	/**
+	 * Computes a digest for the given hashes.
+	 * @param messageDigest The implementation of a message digest algorithm.
+	 * @param hashes The hashes to digest.
+	 * @return The array of bytes for the resulting hash value.
+	 */
+	public static byte[] digest(@Nonnull final MessageDigest messageDigest, @Nonnull final Hash... hashes) {
+		return update(messageDigest, hashes).digest();
+	}
+
+	/**
 	 * Computes a digest from the contents of the given input stream. All the remaining contents of the input stream are consumed.
 	 * @param messageDigest The implementation of a message digest algorithm.
 	 * @param inputStream The input stream on which to perform a digest.
@@ -164,6 +176,81 @@ public class MessageDigests {
 	 */
 	public static byte[] digest(@Nonnull final MessageDigest messageDigest, @Nonnull final Path file) throws IOException {
 		return update(messageDigest, file).digest();
+	}
+
+	/**
+	 * Computes a hash for the given character sequences using the UTF-8 charset.
+	 * @param messageDigest The implementation of a message digest algorithm.
+	 * @param charSequences The character sequences to digest.
+	 * @return The resulting hash.
+	 */
+	public static Hash hash(@Nonnull final MessageDigest messageDigest, @Nonnull final CharSequence... charSequences) {
+		return Hash.fromDigest(update(messageDigest, charSequences));
+	}
+
+	/**
+	 * Computes a hash for the given character sequences, using the given charset.
+	 * @param messageDigest The implementation of a message digest algorithm.
+	 * @param charset The charset to use when converting characters to bytes.
+	 * @param charSequences The character sequences to digest.
+	 * @return The resulting hash.
+	 */
+	public static Hash hash(@Nonnull final MessageDigest messageDigest, @Nonnull final Charset charset, @Nonnull final CharSequence... charSequences) {
+		return Hash.fromDigest(update(messageDigest, charset, charSequences));
+	}
+
+	/**
+	 * Computes a hash for the given characters using the UTF-8 charset.
+	 * @param messageDigest The implementation of a message digest algorithm.
+	 * @param characters The characters to digest.
+	 * @return The resulting hash.
+	 */
+	public static Hash hash(@Nonnull final MessageDigest messageDigest, @Nonnull final char[] characters) {
+		return Hash.fromDigest(update(messageDigest, characters));
+	}
+
+	/**
+	 * Computes a hash for the given characters, using the given charset.
+	 * @param messageDigest The implementation of a message digest algorithm.
+	 * @param charset The charset to use when converting characters to bytes.
+	 * @param characters The arrays of characters to digest.
+	 * @return The resulting hash.
+	 */
+	public static Hash hash(@Nonnull final MessageDigest messageDigest, @Nonnull final Charset charset, @Nonnull final char[] characters) {
+		return Hash.fromDigest(update(messageDigest, charset, characters));
+	}
+
+	/**
+	 * Computes a hash for the given hashes.
+	 * @param messageDigest The implementation of a message digest algorithm.
+	 * @param hashes The hashes to digest.
+	 * @return The resulting hash.
+	 */
+	public static Hash hash(@Nonnull final MessageDigest messageDigest, @Nonnull final Hash... hashes) {
+		return Hash.fromDigest(update(messageDigest, hashes));
+	}
+
+	/**
+	 * Computes a hash from the contents of the given input stream. All the remaining contents of the input stream are consumed.
+	 * @implSpec This implementation delegates to {@link #digest(MessageDigest, InputStream)}.
+	 * @param messageDigest The implementation of a message digest algorithm.
+	 * @param inputStream The input stream on which to perform a digest.
+	 * @return The resulting hash.
+	 * @throws IOException if there is an I/O exception reading from the input stream.
+	 */
+	public static Hash hash(@Nonnull final MessageDigest messageDigest, @Nonnull final InputStream inputStream) throws IOException {
+		return Hash.fromDigest(update(messageDigest, inputStream));
+	}
+
+	/**
+	 * Computes a hash from the contents of the given file.
+	 * @param messageDigest The implementation of a message digest algorithm.
+	 * @param file The path of the file on which to perform a digest.
+	 * @return The resulting hash.
+	 * @throws IOException if there is an I/O exception reading from the file.
+	 */
+	public static Hash hash(@Nonnull final MessageDigest messageDigest, @Nonnull final Path file) throws IOException {
+		return Hash.fromDigest(update(messageDigest, file));
 	}
 
 	/**
@@ -224,6 +311,19 @@ public class MessageDigests {
 		final byte[] bytes = toByteArray(characters, charset); //convert the characters to bytes
 		messageDigest.update(bytes); //update the digest
 		return messageDigest; //return the message digest
+	}
+
+	/**
+	 * Updates a digest from the given hashes
+	 * @param messageDigest The implementation of a message digest algorithm.
+	 * @param hashes The hashes to digest.
+	 * @return The message digest.
+	 */
+	public static MessageDigest update(@Nonnull final MessageDigest messageDigest, @Nonnull final Hash... hashes) {
+		for(final Hash hash : hashes) {
+			hash.updateMessageDigest(messageDigest);
+		}
+		return messageDigest;
 	}
 
 	/**
@@ -430,6 +530,87 @@ public class MessageDigests {
 		 */
 		public byte[] digest(@Nonnull final Path file) throws IOException {
 			return MessageDigests.digest(getInstance(), file);
+		}
+
+		/**
+		 * Computes a hash using this algorithm for the given character sequences using the UTF-8 charset.
+		 * @implSpec This convenience method delegates to {@link MessageDigests#hash(MessageDigest, CharSequence...)}.
+		 * @param charSequences The character sequences to digest.
+		 * @return The resulting hash.
+		 * @throws RuntimeException if no {@link Provider} supports a {@link MessageDigestSpi} implementation for this algorithm.
+		 */
+		public Hash hash(@Nonnull final CharSequence... charSequences) {
+			return MessageDigests.hash(getInstance(), charSequences);
+		}
+
+		/**
+		 * Computes a hash using this algorithm for the given character sequences, using the given charset.
+		 * @implSpec This convenience method delegates to {@link MessageDigests#hash(MessageDigest, Charset, CharSequence...)}.
+		 * @param charset The charset to use when converting characters to bytes.
+		 * @param charSequences The character sequences to digest.
+		 * @return The resulting hash.
+		 * @throws RuntimeException if no {@link Provider} supports a {@link MessageDigestSpi} implementation for this algorithm.
+		 */
+		public Hash hash(@Nonnull final Charset charset, @Nonnull final CharSequence... charSequences) {
+			return MessageDigests.hash(getInstance(), charSequences);
+		}
+
+		/**
+		 * Computes a hash using this algorithm for the given characters using the UTF-8 charset.
+		 * @implSpec This convenience method delegates to {@link MessageDigests#hash(MessageDigest, char[])}.
+		 * @param characters The characters to digest.
+		 * @return The resulting hash.
+		 * @throws RuntimeException if no {@link Provider} supports a {@link MessageDigestSpi} implementation for this algorithm.
+		 */
+		public Hash hash(@Nonnull final char[] characters) {
+			return MessageDigests.hash(getInstance(), characters);
+		}
+
+		/**
+		 * Computes a hash using this algorithm for the given characters, using the given charset.
+		 * @implSpec This convenience method delegates to {@link MessageDigests#hash(MessageDigest, Charset, char[])}.
+		 * @param charset The charset to use when converting characters to bytes.
+		 * @param characters The arrays of characters to digest.
+		 * @return The resulting hash.
+		 * @throws RuntimeException if no {@link Provider} supports a {@link MessageDigestSpi} implementation for this algorithm.
+		 */
+		public Hash hash(@Nonnull final Charset charset, @Nonnull final char[] characters) {
+			return MessageDigests.hash(getInstance(), charset, characters);
+		}
+
+		/**
+		 * Computes a hash using this algorithm for the given hashes.
+		 * @implSpec This convenience method delegates to {@link MessageDigests#hash(MessageDigest, Hash...)}.
+		 * @param hashes The hashes to digest.
+		 * @return The resulting hash.
+		 * @throws RuntimeException if no {@link Provider} supports a {@link MessageDigestSpi} implementation for this algorithm.
+		 */
+		public Hash hash(@Nonnull final Hash... hashes) {
+			return MessageDigests.hash(getInstance(), hashes);
+		}
+
+		/**
+		 * Computes a hash using this algorithm for the contents of the given input stream. All the remaining contents of the input stream are consumed.
+		 * @implSpec This convenience method delegates to {@link MessageDigests#hash(MessageDigest, InputStream)}.
+		 * @param inputStream The input stream on which to perform a digest.
+		 * @return The resulting hash.
+		 * @throws RuntimeException if no {@link Provider} supports a {@link MessageDigestSpi} implementation for this algorithm.
+		 * @throws IOException if there is an I/O exception reading from the input stream.
+		 */
+		public Hash hash(@Nonnull final InputStream inputStream) throws IOException {
+			return MessageDigests.hash(getInstance(), inputStream);
+		}
+
+		/**
+		 * Computes a hash using this algorithm for the contents of the given file.
+		 * @implSpec This convenience method delegates to {@link MessageDigests#hash(MessageDigest, Path)}.
+		 * @param file The path to the file on which to perform a digest.
+		 * @return The resulting hash.
+		 * @throws RuntimeException if no {@link Provider} supports a {@link MessageDigestSpi} implementation for this algorithm.
+		 * @throws IOException if there is an I/O exception reading from the file.
+		 */
+		public Hash hash(@Nonnull final Path file) throws IOException {
+			return MessageDigests.hash(getInstance(), file);
 		}
 
 		/**
