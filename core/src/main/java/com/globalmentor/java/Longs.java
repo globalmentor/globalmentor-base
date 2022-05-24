@@ -52,6 +52,28 @@ public class Longs {
 	}
 
 	/**
+	 * Converts a long value into its equivalent big-endian sequence of bytes, equivalent to <code>ByteBuffer.allocate(8).putLong(value).array()</code>.
+	 * @implNote Modified from code in an <a href="https://stackoverflow.com/a/27610608">answer on Stack Overflow</a>.
+	 * @param value The value to convert to a sequence of bytes.
+	 * @return The sequence of bytes representing the long value in network byte order.
+	 */
+	public static byte[] toBytes(long value) {
+		return new byte[] {(byte)(value >> 8 * 7), (byte)(value >> 8 * 6), (byte)(value >> 8 * 5), (byte)(value >> 8 * 4), (byte)(value >> 8 * 3),
+				(byte)(value >> 8 * 2), (byte)(value >> 8 * 1), (byte)value};
+	}
+
+	/**
+	 * Converts a big-endian sequence of bytes into the represented long value, equivalent to <code>ByteBuffer.wrap(bytes).getLong()</code>.
+	 * @implNote Modified from code in an <a href="https://stackoverflow.com/a/27610608">answer on Stack Overflow</a>.
+	 * @param bytes The bytes to convert to a long.
+	 * @return The long value represented by the network byte order sequence of bytes.
+	 */
+	public static long toLong(final byte[] bytes) {
+		return (bytes[0] & 0xFFL) << 8 * 7 | (bytes[1] & 0xFFL) << 8 * 6 | (bytes[2] & 0xFFL) << 8 * 5 | (bytes[3] & 0xFFL) << 8 * 4 | (bytes[4] & 0xFFL) << 8 * 3
+				| (bytes[5] & 0xFFL) << 8 * 2 | (bytes[6] & 0xFFL) << 8 * 1 | (bytes[7] & 0xFFL);
+	}
+
+	/**
 	 * Converts a long value to an integer, checking for overflow.
 	 * 
 	 * @param value The value to convert.
