@@ -21,5 +21,8 @@ package com.globalmentor.text;
  * @author Garret Wilson
  */
 public enum Case {
-	LOWERCASE, UPPERCASE;
+	/** Lowercase. */
+	LOWERCASE,
+	/** Uppercase. */
+	UPPERCASE;
 }

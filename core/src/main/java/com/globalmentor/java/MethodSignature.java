@@ -47,6 +47,7 @@ public class MethodSignature extends AbstractHashObject {
 
 	private final List<Class<?>> parameterTypes;
 
+	/** @return The parameter types of the method. */
 	public List<Class<?>> getParameterTypes() {
 		return parameterTypes;
 	}

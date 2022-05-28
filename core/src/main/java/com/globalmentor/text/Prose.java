@@ -53,14 +53,23 @@ public class Prose {
 	/** Indicates no heading. */
 	public static final int NO_HEADING = 0; //TODO convert all these to enums
 	//ordered hierarchical headings, with lower number indicating higher in the hierarchy
+	/** The heading for volume of a work. */
 	public static final int VOLUME_HEADING = 1;
+	/** The heading for book. */
 	public static final int BOOK_HEADING = 2;
+	/** The heading for a part of a work. */
 	public static final int PART_HEADING = 3;
+	/** The heading for a chapter of a work. */
 	public static final int CHAPTER_HEADING = 4;
+	/** The heading for an act of a work. */
 	public static final int ACT_HEADING = 5;
+	/** The heading for a scene a work. */
 	public static final int SCENE_HEADING = 6;
+	/** The heading for an article of a work. */
 	public static final int ARTICLE_HEADING = 7;
+	/** The heading for a sub-heading of a work. */
 	public static final int SUB_HEADING = 8;
+	/** The heading for a title heading of a work. */
 	public static final int TITLE_HEADING = 9;
 	/** The significant ordered heading with the highest value. */
 	public static final int MAX_SIGNIFICANT_HEADING = SCENE_HEADING;
@@ -70,15 +79,25 @@ public class Prose {
 	//  in the hierarchy; they have negative values not only for convenience, but
 	//  also to indicate that they always take precedence over the ordered
 	//  headings
+	/** The heading for a contents heading of a work. */
 	public static final int CONTENTS_HEADING = -1;
+	/** The heading for a preface heading of a work. */
 	public static final int PREFACE_HEADING = -2;
+	/** The heading for a foreword heading of a work. */
 	public static final int FOREWORD_HEADING = -3;
+	/** The heading for an introduction heading of a work. */
 	public static final int INTRODUCTION_HEADING = -4;
+	/** The heading for an afterword heading of a work. */
 	public static final int AFTERWORD_HEADING = -5;
+	/** The heading for a bibliography heading of a work. */
 	public static final int BIBLIOGRAPHY_HEADING = -6;
+	/** The heading for a glossary heading of a work. */
 	public static final int GLOSSARY_HEADING = -7;
+	/** The heading for a an index heading of a work. */
 	public static final int INDEX_HEADING = -8;
+	/** The heading for the heading for a gospel. */
 	public static final int GOSPEL_HEADING = -9;
+	/** The heading for page-break heading . */
 	public static final int PAGE_BREAK_HEADING = -10;
 
 	/**
@@ -167,39 +186,39 @@ public class Prose {
 					//see if this is one of the fixed hierarchical headings
 					if(isTitleHeading(line)) { //if this is a title heading
 						//if this is a table of contents heading TODO use constants
-						if(containsOnlyIgnoreCase(line, new String[] { "contents" }, new String[] { "table", "of" })) { //TODO use constants
+						if(containsOnlyIgnoreCase(line, new String[] {"contents"}, new String[] {"table", "of"})) { //TODO use constants
 							return CONTENTS_HEADING;
 						}
 						//if this is a preface heading
-						else if(containsOnlyIgnoreCase(line, new String[] { "preface" }, new String[] {})) { //TODO use a constant
+						else if(containsOnlyIgnoreCase(line, new String[] {"preface"}, new String[] {})) { //TODO use a constant
 							return PREFACE_HEADING;
 						}
 						//if this is a foreword heading
-						else if(containsOnlyIgnoreCase(line, new String[] { "foreword" }, new String[] {})) { //TODO use a constant
+						else if(containsOnlyIgnoreCase(line, new String[] {"foreword"}, new String[] {})) { //TODO use a constant
 							return FOREWORD_HEADING;
 						}
 						//if this is an introduction heading
-						else if(containsOnlyIgnoreCase(line, new String[] { "index" }, new String[] {})) { //TODO use a constant
+						else if(containsOnlyIgnoreCase(line, new String[] {"index"}, new String[] {})) { //TODO use a constant
 							return INTRODUCTION_HEADING;
 						}
 						//if this is an afterword heading
-						else if(containsOnlyIgnoreCase(line, new String[] { "afterword" }, new String[] {})) { //TODO use a constant
+						else if(containsOnlyIgnoreCase(line, new String[] {"afterword"}, new String[] {})) { //TODO use a constant
 							return AFTERWORD_HEADING;
 						}
 						//if this is a bibliography heading
-						else if(containsOnlyIgnoreCase(line, new String[] { "bibliography" }, new String[] {})) { //TODO use a constant
+						else if(containsOnlyIgnoreCase(line, new String[] {"bibliography"}, new String[] {})) { //TODO use a constant
 							return BIBLIOGRAPHY_HEADING;
 						}
 						//if this is a  glossary heading
-						else if(containsOnlyIgnoreCase(line, new String[] { "glossary" }, new String[] {})) { //TODO use a constant
+						else if(containsOnlyIgnoreCase(line, new String[] {"glossary"}, new String[] {})) { //TODO use a constant
 							return GLOSSARY_HEADING;
 						}
 						//if this is an index heading
-						else if(containsOnlyIgnoreCase(line, new String[] { "index" }, new String[] {})) { //TODO use a constant
+						else if(containsOnlyIgnoreCase(line, new String[] {"index"}, new String[] {})) { //TODO use a constant
 							return INDEX_HEADING;
 						}
 						//if this is a gospel heading
-						if(containsOnlyIgnoreCase(line, new String[] { "Gospel", "According to" }, new String[] {})) { //TODO use constants
+						if(containsOnlyIgnoreCase(line, new String[] {"Gospel", "According to"}, new String[] {})) { //TODO use constants
 							return GOSPEL_HEADING;
 						}
 					}
@@ -252,7 +271,7 @@ public class Prose {
 		if(CharSequences.charIndexOf(text, EOL_CHARACTERS) > 0) //if the text is not on a single line
 			return false; //this isn't a page number
 		/** The strings that count as page indications. */
-		final String[] pageStrings = new String[] { "p", "P", "pg", "Pg", "PG", "page", "Page", "PAGE" };
+		final String[] pageStrings = new String[] {"p", "P", "pg", "Pg", "PG", "page", "Page", "PAGE"};
 		int pageCount = 0; //the number of times we find a representation for "page" on the line
 		int numberCount = 0; //the number of times we find a representation of a number
 		final String pageNumberDelimiters = TRIM_CHARACTERS + "-*.[]<>"; //these characters separate the page numbers
@@ -292,8 +311,9 @@ public class Prose {
 	 * Determines if the given text is a title heading. A title heading appears on a single line and capitalizes each word, except for some exception words (such
 	 * as "the" and "of").
 	 * <p>
-	 * Popular prepositions used from Heather MacFadyen, University of Ottawa, at <a
-	 * href="http://www.uottawa.ca/academic/arts/writcent/hypergrammar/preposit.html"> http://www.uottawa.ca/academic/arts/writcent/hypergrammar/preposit.html</a>
+	 * Popular prepositions used from Heather MacFadyen, University of Ottawa, at
+	 * <a href="http://www.uottawa.ca/academic/arts/writcent/hypergrammar/preposit.html">
+	 * http://www.uottawa.ca/academic/arts/writcent/hypergrammar/preposit.html</a>
 	 * </p>
 	 * @param text The text to check.
 	 * @return <code>true</code> if the text is a title heading.
@@ -334,19 +354,14 @@ public class Prose {
 	 */
 	public static boolean isTitleCapitalizationRequired(final String word) {
 		/** The strings that do not have to be capitalized in a title. */
-		final String[] exceptionWords = new String[] { "and", "but",
-				"or",
-				"nor",
-				"a",
-				"an",
-				"the", //articles
+		final String[] exceptionWords = new String[] {"and", "but", "or", "nor", "a", "an", "the", //articles
 				//prepositions
-				"about", "above", "across", "after", "against", "along", "among", "around", "at", "before", "behind", "below", "beneath", "beside", "between",
-				"beyond", "but", "by", "despite", "down", "during", "except", "for", "from", "in", "inside", "into", "like", "near", "of", "off", "on", "onto", "out",
-				"outside", "over", "past", "since", "through", "throughout", "till", "to", "toward", "under", "underneath", "until", "up", "upon", "with", "within",
-				"without", "de", "du", "des", //foreign prepositions thrown in for good measure (used in names, for instance)
+				"about", "above", "across", "after", "against", "along", "among", "around", "at", "before", "behind", "below", "beneath", "beside", "between", "beyond",
+				"but", "by", "despite", "down", "during", "except", "for", "from", "in", "inside", "into", "like", "near", "of", "off", "on", "onto", "out", "outside",
+				"over", "past", "since", "through", "throughout", "till", "to", "toward", "under", "underneath", "until", "up", "upon", "with", "within", "without",
+				"de", "du", "des", //foreign prepositions thrown in for good measure (used in names, for instance)
 				"la", "le", "las", "les", "l", //foreign articles thrown in for good measure (used in names, for instance)
-				"s" }; //when a title shows possession, the 's' of "'s" will get tokenized as well
+				"s"}; //when a title shows possession, the 's' of "'s" will get tokenized as well
 		return Arrays.indexOf(exceptionWords, word) < 0; //the word should be capitalized if it is not one of the exceptions
 	}
 

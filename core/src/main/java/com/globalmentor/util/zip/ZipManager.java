@@ -158,8 +158,12 @@ public class ZipManager implements URIInputStreamable {
 		}
 	}
 
-	public void close() throws IOException { //TODO fix; comment
-		holdCount = 0; //G**testing; fix for rapid closing
+	/**
+	 * Closes the manager.
+	 * @throws IOException Thrown if there is an error closing the zip file.
+	 */
+	public void close() throws IOException { //TODO fix
+		holdCount = 0; //TODO testing; fix for rapid closing
 		if(zipFile != null) { //if we have a zip file
 			zipFile.close(); //close the zip file
 			zipFile = null; //release our reference to the zip file
