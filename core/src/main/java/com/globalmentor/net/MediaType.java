@@ -199,13 +199,22 @@ public final class MediaType { //TODO major version: rename to MediaType
 	public static final int PATTERN_PARAMETERS_GROUP = 3;
 
 	//discrete top-level media types
+
+	/** The <code>text</code> top-level type. */
 	public static final String TEXT_PRIMARY_TYPE = "text";
+	/** The <code>image</code> top-level type. */
 	public static final String IMAGE_PRIMARY_TYPE = "image";
+	/** The <code>audio</code> top-level type. */
 	public static final String AUDIO_PRIMARY_TYPE = "audio";
+	/** The <code>video</code> top-level type. */
 	public static final String VIDEO_PRIMARY_TYPE = "video";
+	/** The <code>application</code> top-level type. */
 	public static final String APPLICATION_PRIMARY_TYPE = "application";
+
 	//composite top-level media types
+	/** The <code>multipart</code> top-level type. */
 	public static final String MULTIPART_PRIMARY_TYPE = "multipart";
+	/** The <code>message</code> top-level type. */
 	public static final String MESSAGE_PRIMARY_TYPE = "message";
 	/** The pseudo top-level type used by Java {@link URLConnection} to indicate unknown content by <code>content/unknown</code>. */
 	public static final String CONTENT_PRIMARY_TYPE = "content";
@@ -369,8 +378,8 @@ public final class MediaType { //TODO major version: rename to MediaType
 
 	/**
 	 * Parses parameters of a media type from a sequence of characters.
-	 * @implSpec The parameter names are each normalized to lowercase. The value of the {@value MediaType#CHARSET_PARAMETER} parameter, if present, is
-	 *           normalized to lowercase.
+	 * @implSpec The parameter names are each normalized to lowercase. The value of the {@value MediaType#CHARSET_PARAMETER} parameter, if present, is normalized
+	 *           to lowercase.
 	 * @param text The character sequence representing the parameters of the media type, not including the {@value #PARAMETER_DELIMITER_CHAR} delimiter.
 	 * @return Media type parameters parsed from the string.
 	 * @throws IllegalArgumentException if the string is not syntactically correct parameters, or if a parameter name does not conform to the
@@ -539,8 +548,8 @@ public final class MediaType { //TODO major version: rename to MediaType
 	 *           although this requirement is not explicit in RFC 6838.
 	 * @param suffixes The suffix strings that will be checked, after they are combined into a single suffix, each part prepended with '+'.
 	 * @return <code>true</code> if the media type's subtype has the given suffixes.
-	 * @throws IllegalArgumentException if a suffix does not conform to the {@link MediaType#RESTRICTED_NAME_PATTERN} pattern, including if it already begins
-	 *           with the {@value #SUBTYPE_SUFFIX_DELIMITER_CHAR} delimiter.
+	 * @throws IllegalArgumentException if a suffix does not conform to the {@link MediaType#RESTRICTED_NAME_PATTERN} pattern, including if it already begins with
+	 *           the {@value #SUBTYPE_SUFFIX_DELIMITER_CHAR} delimiter.
 	 */
 	public boolean hasSubTypeSuffix(final String... suffixes) {
 		return getSubType().endsWith(createSubTypeSuffix(suffixes));
@@ -739,8 +748,8 @@ public final class MediaType { //TODO major version: rename to MediaType
 	 *           although this requirement is not explicit in RFC 6838.
 	 * @param suffixes The suffix strings to combine into a suffix.
 	 * @return A suffix composed of the given suffix strings.
-	 * @throws IllegalArgumentException if a suffix does not conform to the {@link MediaType#RESTRICTED_NAME_PATTERN} pattern, including if it already begins
-	 *           with the {@value #SUBTYPE_SUFFIX_DELIMITER_CHAR} delimiter.
+	 * @throws IllegalArgumentException if a suffix does not conform to the {@link MediaType#RESTRICTED_NAME_PATTERN} pattern, including if it already begins with
+	 *           the {@value #SUBTYPE_SUFFIX_DELIMITER_CHAR} delimiter.
 	 * @see #createSubTypeSuffix(String...)
 	 */
 	public static String createSubTypeSuffix(final String... suffixes) {

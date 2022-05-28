@@ -30,10 +30,48 @@ import com.globalmentor.model.Named;
  */
 public enum SIPrefix implements Named<String> {
 
-	YOCTO("yocto", "y", -24), ZEPTO("zepto", "z", -21), ATTO("atto", "a", -18), FEMTO("femto", "f", -15), PICO("pico", "p", -12), NANO("nano", "n", -9), MICRO(
-			"micro", String.valueOf((char)0x03bc), -6), MILLI("milli", "m", -3), CENTI("centi", "c", -2), DECI("deci", "d", -1), NONE("", "", 0), DECA("deca", "da",
-			1), HECTO("hecto", "h", 2), KILO("kilo", "k", 3), MEGA("mega", "M", 6), GIGA("giga", "G", 9), TERA("tera", "T", 12), PETA("peta", "P", 15), EXA("exa",
-			"E", 18), ZETTA("zetta", "Z", 21), YOTTA("yotta", "Y", 24);
+	/** Prefix for septillionth. */
+	YOCTO("yocto", "y", -24),
+	/** Prefix for sextillionth. */
+	ZEPTO("zepto", "z", -21),
+	/** Prefix for quintillionth. */
+	ATTO("atto", "a", -18),
+	/** Prefix for quadrillionth. */
+	FEMTO("femto", "f", -15),
+	/** Prefix for trillionth. */
+	PICO("pico", "p", -12),
+	/** Prefix for billionth. */
+	NANO("nano", "n", -9),
+	/** Prefix for millionth. */
+	MICRO("micro", String.valueOf((char)0x03bc), -6),
+	/** Prefix for thousandth. */
+	MILLI("milli", "m", -3),
+	/** Prefix for hundredth. */
+	CENTI("centi", "c", -2),
+	/** Prefix for tenth. */
+	DECI("deci", "d", -1),
+	/** No prefix. */
+	NONE("", "", 0),
+	/** Prefix for ten. */
+	DECA("deca", "da", 1),
+	/** Prefix for hundred. */
+	HECTO("hecto", "h", 2),
+	/** Prefix for thousand. */
+	KILO("kilo", "k", 3),
+	/** Prefix for million. */
+	MEGA("mega", "M", 6),
+	/** Prefix for billion. */
+	GIGA("giga", "G", 9),
+	/** Prefix for trillion. */
+	TERA("tera", "T", 12),
+	/** Prefix for quadrillion. */
+	PETA("peta", "P", 15),
+	/** Prefix for quintillion. */
+	EXA("exa", "E", 18),
+	/** Prefix for sextillion. */
+	ZETTA("zetta", "Z", 21),
+	/** Prefix for septillion. */
+	YOTTA("yotta", "Y", 24);
 
 	/** The prefix name. */
 	private final String name;

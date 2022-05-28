@@ -33,7 +33,18 @@ public class Time extends Date {
 	/** The granularity of time. */
 	public enum Resolution {
 
-		NANOSECONDS(-1000), MILLISECONDS(1), SECONDS(fromSeconds(1)), MINUTES(fromMinutes(1)), HOURS(fromHours(1)), DAYS(fromDays(1));
+		/** Nanosecond resolution. */
+		NANOSECONDS(-1000),
+		/** Millisecond resolution. */
+		MILLISECONDS(1),
+		/** Second resolution. */
+		SECONDS(fromSeconds(1)),
+		/** Minute resolution. */
+		MINUTES(fromMinutes(1)),
+		/** Hour resolution. */
+		HOURS(fromHours(1)),
+		/** Day resolution. */
+		DAYS(fromDays(1));
 
 		private final long milliseconds;
 

@@ -215,31 +215,28 @@ public class ParseReader extends ProcessingBufferedReader //TODO clean up and un
 		super(inReader, prereadCharacters); //allow the super class to do the constructing
 	}
 
-	/*Constructor to create a <code>ParseReader</code> from another
-		reader, along with a source object.
-		<code>prereadCharacters</code> must be less than or equal to the length of
-		the buffer.
-	@param inReader The reader that contains the data.
-	@param sourceObject The source of the data (e.g. a String, File, or URL).
-	@throws IOException Thrown if <code>prereadCharacters</code> is too long for the buffer.
-	@see BufferedPushbackReader
-	*/
+	/**
+	 * Constructor to create a <code>ParseReader</code> from another reader, along with a source object. <code>prereadCharacters</code> must be less than or equal
+	 * to the length of the buffer.
+	 * @param inReader The reader that contains the data.
+	 * @param sourceObject The source of the data (e.g. a String, File, or URL).
+	 * @throws IOException Thrown if <code>prereadCharacters</code> is too long for the buffer.
+	 * @see ProcessingBufferedReader
+	 */
 	public ParseReader(final Reader inReader, final Object sourceObject) throws IOException {
 		super(inReader); //allow the super class to do the constructing
 		setSourceObject(sourceObject); //make a record of the object representing the location of the data
 	}
 
-	/*Constructor to create a <code>ParseReader</code> from another
-		reader, along with several characters that have already been read and a source
-		object.
-		<code>prereadCharacters</code> must be less than or equal to the length of
-		the buffer.
-	@param inReader The reader that contains the data.
-	@param prereadCharacters The characters that have already been read.
-	@param sourceObject The source of the data (e.g. a String, File, or URL).
-	@throws IOException Thrown if <code>prereadCharacters</code> is too long for the buffer.
-	@see BufferedPushbackReader
-	*/
+	/**
+	 * Constructor to create a <code>ParseReader</code> from another reader, along with several characters that have already been read and a source object.
+	 * <code>prereadCharacters</code> must be less than or equal to the length of the buffer.
+	 * @param inReader The reader that contains the data.
+	 * @param prereadCharacters The characters that have already been read.
+	 * @param sourceObject The source of the data (e.g. a String, File, or URL).
+	 * @throws IOException Thrown if <code>prereadCharacters</code> is too long for the buffer.
+	 * @see ProcessingBufferedReader
+	 */
 	public ParseReader(final Reader inReader, final StringBuffer prereadCharacters, final Object sourceObject) throws IOException {
 		super(inReader, prereadCharacters); //allow the super class to do the constructing
 		setSourceObject(sourceObject); //make a record of the object representing the location of the data
@@ -675,7 +672,7 @@ public class ParseReader extends ProcessingBufferedReader //TODO clean up and un
 	public String readExpectedString(final String expectedString) throws IOException, ParseUnexpectedDataException, ParseEOFException {
 		final String foundString = readString(expectedString.length()); //read the string into memory
 		if(!foundString.equals(expectedString)) //if the string we read does not match
-			throw new ParseUnexpectedDataException(new String[] { expectedString }, foundString, getLineIndex(), getCharIndex(), getName()); //show that we didn't get the string we were expecting
+			throw new ParseUnexpectedDataException(new String[] {expectedString}, foundString, getLineIndex(), getCharIndex(), getName()); //show that we didn't get the string we were expecting
 		return foundString; //return the string we read
 	}
 
@@ -690,7 +687,7 @@ public class ParseReader extends ProcessingBufferedReader //TODO clean up and un
 	public String readExpectedStringIgnoreCase(final String expectedString) throws IOException, ParseUnexpectedDataException, ParseEOFException {
 		final String foundString = readString(expectedString.length()); //read the string into memory
 		if(!foundString.equalsIgnoreCase(expectedString)) //if the string we read does not match, even if we ignore case
-			throw new ParseUnexpectedDataException(new String[] { expectedString }, foundString, getLineIndex(), getCharIndex(), getName()); //show that we didn't get the string we were expecting
+			throw new ParseUnexpectedDataException(new String[] {expectedString}, foundString, getLineIndex(), getCharIndex(), getName()); //show that we didn't get the string we were expecting
 		return foundString; //return the string we read
 	}
 
@@ -725,7 +722,8 @@ public class ParseReader extends ProcessingBufferedReader //TODO clean up and un
 	 * @throws ParseEOFException Thrown when the end of the input stream is reached unexpectedly.
 	 * @return The characters between the delimiters.
 	 */
-	public String readDelimitedString(final String startDelimiter, final String endDelimiter) throws IOException, ParseUnexpectedDataException, ParseEOFException {
+	public String readDelimitedString(final String startDelimiter, final String endDelimiter)
+			throws IOException, ParseUnexpectedDataException, ParseEOFException {
 		readExpectedString(startDelimiter); //make sure the characters start with the correct delimiters
 		return readDelimitedString(endDelimiter); //read the content up to the ending delimiter and throw away the end delimiter
 		//TODO somehow fit an error here for EOF (which happens now) which indicates that we were searching for the end delimiters (which we don't do now)
@@ -756,8 +754,8 @@ public class ParseReader extends ProcessingBufferedReader //TODO clean up and un
 	 * @throws ParseEOFException Thrown when the end of the input stream is reached unexpectedly.
 	 * @return The delimiters with the character between them.
 	 */
-	public String readDelimitedStringInclusive(final char startDelimiter, final char endDelimiter) throws IOException, ParseUnexpectedDataException,
-			ParseEOFException {
+	public String readDelimitedStringInclusive(final char startDelimiter, final char endDelimiter)
+			throws IOException, ParseUnexpectedDataException, ParseEOFException {
 		return readExpectedChar(startDelimiter) + readStringUntilChar(endDelimiter) + readExpectedChar(endDelimiter); //read the start and ending delimiters, and everything in-between		
 	}
 
@@ -770,8 +768,8 @@ public class ParseReader extends ProcessingBufferedReader //TODO clean up and un
 	 * @throws ParseEOFException Thrown when the end of the input stream is reached unexpectedly.
 	 * @return The delimiters with the character between them.
 	 */
-	public String readDelimitedStringInclusive(final String startDelimiter, final String endDelimiter) throws IOException, ParseUnexpectedDataException,
-			ParseEOFException {
+	public String readDelimitedStringInclusive(final String startDelimiter, final String endDelimiter)
+			throws IOException, ParseUnexpectedDataException, ParseEOFException {
 		//read the expected delimiters and the character data between them and return it all as one string
 		return readExpectedString(startDelimiter) + readDelimitedString(startDelimiter, endDelimiter) + readExpectedString(endDelimiter);
 	}

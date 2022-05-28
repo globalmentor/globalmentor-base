@@ -62,10 +62,10 @@ public class RandomIntegerIterator implements Iterator<Integer> { //TODO maybe l
 		return filter;
 	}
 
-	/*Sets the filter used to exclude items from the iterator.
-	@param filter The new filter to use, or <code>null</code> if there should
-		be no filtering.
-	*/
+	/**
+	 * Sets the filter used to exclude items from the iterator.
+	 * @param filter The new filter to use, or <code>null</code> if there should be no filtering.
+	 */
 	public void setFilter(final Filter<Integer> filter) {
 		this.filter = filter;
 	}
