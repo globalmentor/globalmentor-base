@@ -159,7 +159,7 @@ public final class Filenames {
 	/**
 	 * Returns a general filename comparator with neutral comparison across locales. A filename comparator sorts the base filename and extension separately.
 	 * @implSpec This implementation uses a collator that takes into account differences in case and accents.
-	 * @return A neutral filename comparator for the given locale.
+	 * @return A neutral filename comparator for the root locale.
 	 * @see Locale#ROOT
 	 */
 	public static Comparator<CharSequence> comparator() {
@@ -453,15 +453,6 @@ public final class Filenames {
 	private static class BaseComparator extends AbstractCollatingComparator {
 
 		/**
-		 * Locale constructor.
-		 * @implSpec This implementation uses a collator that takes into account differences in case and accents.
-		 * @param locale The locale to use for comparison.
-		 */
-		protected BaseComparator(@Nonnull final Locale locale) {
-			super(locale);
-		}
-
-		/**
 		 * Collator constructor.
 		 * @param collator The collator to use for comparisons.
 		 */
@@ -609,15 +600,6 @@ public final class Filenames {
 	 * @see Filenames#findExtension(String)
 	 */
 	private static class ExtensionComparator extends AbstractCollatingComparator {
-
-		/**
-		 * Locale constructor.
-		 * @implSpec This implementation uses a collator that takes into account differences in case and accents.
-		 * @param locale The locale to use for comparison.
-		 */
-		protected ExtensionComparator(@Nonnull final Locale locale) {
-			super(locale);
-		}
 
 		/**
 		 * Collator constructor.

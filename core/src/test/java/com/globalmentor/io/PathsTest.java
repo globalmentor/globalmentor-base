@@ -25,6 +25,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.nio.file.*;
 import java.util.Collection;
+import java.util.Comparator;
 
 import org.junit.jupiter.api.*;
 
@@ -92,6 +93,29 @@ public class PathsTest {
 	}
 
 	//# filenames
+
+	/** @see Paths#filenameComparator() */
+	@Test
+	public void testFilenameComparator() {
+		final Comparator<Path> filenameComparator = Paths.filenameComparator();
+		final Path fooBarPath = java.nio.file.Paths.get("foo", "bar");
+		final Path fooBerryPath = java.nio.file.Paths.get("foo", "berry");
+		final Path fooBarApplePath = java.nio.file.Paths.get("foo", "bar", "apple");
+		final Path fooBarBerryPath = java.nio.file.Paths.get("foo", "bar", "berry");
+		final Path noFilenamePath = java.nio.file.Paths.get("/");
+		assertThat("Expect JDK to indicate no filename for path with no components (e.g. `/`).", noFilenamePath.getFileName(), is(nullValue()));
+		assertThat("First missing filename sorted less.", filenameComparator.compare(noFilenamePath, fooBarPath), is(lessThan(0)));
+		assertThat("Second missing filename sorted greater.", filenameComparator.compare(fooBarPath, noFilenamePath), is(greaterThan(0)));
+		assertThat("Both missing filenames sorted equal.", filenameComparator.compare(noFilenamePath, java.nio.file.Paths.get(noFilenamePath.toString())), is(0));
+		assertThat("Equal filenames sorted correctly.", filenameComparator.compare(fooBarPath, java.nio.file.Paths.get("foo", "bar")), is(0));
+		assertThat("Filenames sorted correctly ascending.", filenameComparator.compare(fooBarApplePath, fooBarBerryPath), is(lessThan(0)));
+		assertThat("Filenames sorted correctly descending.", filenameComparator.compare(fooBarBerryPath, fooBarApplePath), is(greaterThan(0)));
+		assertThat("Equal filenames at different levels sorted correctly.", filenameComparator.compare(fooBerryPath, fooBarBerryPath), is(0));
+		assertThat("Filenames at different levels sorted correctly ascending.", filenameComparator.compare(fooBarPath, fooBarBerryPath), is(lessThan(0)));
+		assertThat("Filenames at different levels sorted correctly descending.", filenameComparator.compare(fooBarBerryPath, fooBarPath), is(greaterThan(0)));
+	}
+
+	//## extensions
 
 	/** Tests whether the extension is being added correctly using {@link Paths#addFilenameExtension(Path, String)}. */
 	@Test
