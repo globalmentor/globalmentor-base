@@ -138,7 +138,7 @@ public final class Filenames {
 
 	/**
 	 * Creates a filename comparator for the given locale.
-	 * @implSpec This implementation uses a collator ignoring differences in case and accents.
+	 * @implSpec This implementation uses a collator that takes into account differences in case and accents.
 	 * @param locale The locale to use for comparison.
 	 * @return A filename comparator for the given locale.
 	 */
@@ -149,7 +149,7 @@ public final class Filenames {
 
 	/**
 	 * Returns a general filename comparator with neutral comparison across locales.
-	 * @implSpec This implementation uses a collator ignoring differences in case and accents.
+	 * @implSpec This implementation uses a collator that takes into account differences in case and accents.
 	 * @return A neutral filename comparator for the given locale.
 	 * @see Locale#ROOT
 	 */
@@ -159,7 +159,7 @@ public final class Filenames {
 
 	/**
 	 * Returns a filename comparator for the given locale.
-	 * @implSpec This implementation uses a collator ignoring differences in case and accents.
+	 * @implSpec This implementation uses a collator that takes into account differences in case and accents.
 	 * @param locale The locale to use for comparison.
 	 * @return A filename comparator for the given locale.
 	 */
@@ -436,7 +436,7 @@ public final class Filenames {
 
 		/**
 		 * Locale constructor.
-		 * @implSpec This implementation uses a collator ignoring differences in case and accents.
+		 * @implSpec This implementation uses a collator that takes into account differences in case and accents.
 		 * @param locale The locale to use for comparison.
 		 */
 		protected BaseComparator(@Nonnull final Locale locale) {
@@ -594,7 +594,7 @@ public final class Filenames {
 
 		/**
 		 * Locale constructor.
-		 * @implSpec This implementation uses a collator ignoring differences in case and accents.
+		 * @implSpec This implementation uses a collator that takes into account differences in case and accents.
 		 * @param locale The locale to use for comparison.
 		 */
 		protected ExtensionComparator(@Nonnull final Locale locale) {
