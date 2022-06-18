@@ -61,12 +61,12 @@ public class AbstractCollatingComparator implements Comparator<CharSequence> {
 	}
 
 	/**
-	 * Collator factor.
+	 * Collator factory.
 	 * @implSpec This implementation returns a collator that takes into account accents and case.
 	 * @param locale The locale to use for comparison.
 	 * @return A collator for the indicated locale.
 	 */
-	private static Collator createCollator(@Nonnull final Locale locale) {
+	public static Collator createCollator(@Nonnull final Locale locale) {
 		final Collator collator = Collator.getInstance(locale);
 		collator.setDecomposition(Collator.CANONICAL_DECOMPOSITION);
 		collator.setStrength(Collator.TERTIARY); //take into account accents and case
