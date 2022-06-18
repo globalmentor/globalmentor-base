@@ -137,20 +137,29 @@ public final class Filenames {
 	private static final Comparator<CharSequence> ROOT_LOCALE_COMPARATOR = createComparator(Locale.ROOT);
 
 	/**
-	 * Creates a filename comparator for the given locale.
-	 * @implSpec This implementation uses a collator ignoring differences in case and accents.
+	 * Creates a filename comparator for the given locale. A filename comparator sorts the base filename and extension separately.
+	 * @implSpec This implementation uses a collator that takes into account differences in case and accents.
 	 * @param locale The locale to use for comparison.
 	 * @return A filename comparator for the given locale.
 	 */
 	private static Comparator<CharSequence> createComparator(@Nonnull final Locale locale) {
-		final BaseComparator baseComparator = new BaseComparator(locale);
+		return createComparator(BaseComparator.createCollator(locale));
+	}
+
+	/**
+	 * Creates a filename comparator using the given collator. A filename comparator sorts the base filename and extension separately.
+	 * @param collator The collator to use for comparisons.
+	 * @return A filename comparator using the given collator.
+	 */
+	private static Comparator<CharSequence> createComparator(@Nonnull final Collator collator) {
+		final BaseComparator baseComparator = new BaseComparator(collator);
 		return baseComparator.thenComparing(new ExtensionComparator(baseComparator.getCollator())); //use the same collator for both comparators
 	}
 
 	/**
-	 * Returns a general filename comparator with neutral comparison across locales.
-	 * @implSpec This implementation uses a collator ignoring differences in case and accents.
-	 * @return A neutral filename comparator for the given locale.
+	 * Returns a general filename comparator with neutral comparison across locales. A filename comparator sorts the base filename and extension separately.
+	 * @implSpec This implementation uses a collator that takes into account differences in case and accents.
+	 * @return A neutral filename comparator for the root locale.
 	 * @see Locale#ROOT
 	 */
 	public static Comparator<CharSequence> comparator() {
@@ -158,8 +167,8 @@ public final class Filenames {
 	}
 
 	/**
-	 * Returns a filename comparator for the given locale.
-	 * @implSpec This implementation uses a collator ignoring differences in case and accents.
+	 * Returns a filename comparator for the given locale. A filename comparator sorts the base filename and extension separately.
+	 * @implSpec This implementation uses a collator that takes into account differences in case and accents.
 	 * @param locale The locale to use for comparison.
 	 * @return A filename comparator for the given locale.
 	 */
@@ -168,6 +177,15 @@ public final class Filenames {
 			return ROOT_LOCALE_COMPARATOR;
 		}
 		return createComparator(locale);
+	}
+
+	/**
+	 * Returns a filename comparator using the given collator. A filename comparator sorts the base filename and extension separately.
+	 * @param collator The collator to use for comparisons.
+	 * @return A filename comparator using the given collator.
+	 */
+	public static Comparator<CharSequence> comparator(@Nonnull final Collator collator) {
+		return createComparator(collator);
 	}
 
 	/**
@@ -435,15 +453,6 @@ public final class Filenames {
 	private static class BaseComparator extends AbstractCollatingComparator {
 
 		/**
-		 * Locale constructor.
-		 * @implSpec This implementation uses a collator ignoring differences in case and accents.
-		 * @param locale The locale to use for comparison.
-		 */
-		protected BaseComparator(@Nonnull final Locale locale) {
-			super(locale);
-		}
-
-		/**
 		 * Collator constructor.
 		 * @param collator The collator to use for comparisons.
 		 */
@@ -591,15 +600,6 @@ public final class Filenames {
 	 * @see Filenames#findExtension(String)
 	 */
 	private static class ExtensionComparator extends AbstractCollatingComparator {
-
-		/**
-		 * Locale constructor.
-		 * @implSpec This implementation uses a collator ignoring differences in case and accents.
-		 * @param locale The locale to use for comparison.
-		 */
-		protected ExtensionComparator(@Nonnull final Locale locale) {
-			super(locale);
-		}
 
 		/**
 		 * Collator constructor.

@@ -24,6 +24,7 @@ import static java.util.Collections.*;
 import static java.util.Objects.*;
 
 import java.nio.file.*;
+import java.text.Collator;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
@@ -200,6 +201,80 @@ public class Paths {
 	 */
 	public static Optional<String> findFilename(@Nonnull final Path path) {
 		return Optional.ofNullable(path.getFileName()).map(Path::toString);
+	}
+
+	private static final Comparator<Path> ROOT_LOCALE_PATH_FILENAME_COMPARATOR = new PathFilenameComparator(Filenames.comparator(Locale.ROOT));
+
+	/**
+	 * Returns a general path filename comparator with neutral comparison across locales. The comparator sorts the base filename and extension separately, and
+	 * ignores the rest of the path.
+	 * @implSpec This implementation uses a collator that takes into account differences in case and accents.
+	 * @return A neutral path filename comparator for the root locale.
+	 * @see Locale#ROOT
+	 * @see Filenames#comparator()
+	 */
+	public static Comparator<Path> filenameComparator() {
+		return ROOT_LOCALE_PATH_FILENAME_COMPARATOR;
+	}
+
+	/**
+	 * Returns a path filename comparator for the given locale. The comparator sorts the base filename and extension separately, and ignores the rest of the path.
+	 * @implSpec This implementation uses a collator that takes into account differences in case and accents.
+	 * @param locale The locale to use for comparison.
+	 * @return A path filename comparator for the given locale.
+	 * @see Filenames#comparator(Locale)
+	 */
+	public static Comparator<Path> filenameComparator(@Nonnull final Locale locale) {
+		if(locale.equals(Locale.ROOT)) {
+			return ROOT_LOCALE_PATH_FILENAME_COMPARATOR;
+		}
+		return new PathFilenameComparator(Filenames.comparator(locale));
+	}
+
+	/**
+	 * Returns a path filename comparator using the given collator. The comparator sorts the base filename and extension separately, and ignores the rest of the
+	 * path.
+	 * @param collator The collator to use for comparisons.
+	 * @return A path filename comparator using the given collator.
+	 * @see Filenames#comparator(Collator)
+	 */
+	public static Comparator<Path> filenameComparator(@Nonnull final Collator collator) {
+		return new PathFilenameComparator(Filenames.comparator(collator));
+	}
+
+	/**
+	 * Comparator for comparing only filenames of a path. Paths without filenames are sorted at a lower order.
+	 * @author Garret Wilson
+	 * @see Path#getFileName()
+	 */
+	private static class PathFilenameComparator implements Comparator<Path> {
+
+		private final Comparator<? super String> filenameComparator;
+
+		/**
+		 * Filename comparator constructor.
+		 * @param filenameComparator The comparator used to compare filenames.
+		 */
+		public PathFilenameComparator(@Nonnull final Comparator<? super String> filenameComparator) {
+			this.filenameComparator = requireNonNull(filenameComparator);
+		}
+
+		@Override
+		public int compare(@Nonnull final Path path1, @Nonnull final Path path2) {
+			final Path path1FileName = path1.getFileName();
+			final Path path2FileName = path2.getFileName();
+			if(path1FileName == path2FileName) { //if paths are identical or both null
+				return 0;
+			}
+			if(path1FileName == null) { //at this point we know the paths are not both null
+				return -1;
+			} else if(path2FileName == null) {
+				return 1;
+			}
+
+			return filenameComparator.compare(path1FileName.toString(), path2FileName.toString());
+		}
+
 	}
 
 	//## dotfiles

@@ -45,9 +45,12 @@ public class FilenamesTest {
 		assertThat("One filename with no extension compares correctly.", comparator.compare("foo.txt", "foo-bar"), is(lessThan(0)));
 		assertThat("Filenames both with no extension compare correctly.", comparator.compare("foo", "foo-bar"), is(lessThan(0)));
 		assertThat("Filename is considered separately from extension.", comparator.compare("foo.txt", "foo-bar.txt"), is(lessThan(0)));
+		assertThat("Accents are sorted greater.", comparator.compare("fóobar.txt", "foobar.txt"), is(greaterThan(0)));
+		assertThat("Lexical order supercedes accents.", comparator.compare("fóobar.txt", "foozar.txt"), is(lessThan(0)));
+		assertThat("Lowercase is sorted before.", comparator.compare("foobar.txt", "fOobar.txt"), is(lessThan(0)));
+		assertThat("Lexical order supercedes case.", comparator.compare("foobar.txt", "fAobar.txt"), is(greaterThan(0)));
+		assertThat("Lexical order supercedes case and accents.", comparator.compare("fÓobar.txt", "foozar.txt"), is(lessThan(0)));
 		assertThat("Extensions compare correctly.", comparator.compare("foobar.abc", "foobar.abd"), is(lessThan(0)));
-		assertThat("Compares without regard to case.", comparator.compare("foobar.txt", "FooBar.TXT"), is(0));
-		assertThat("Compares without regard to accents.", comparator.compare("forró.touché", "forro.touche"), is(0));
 	}
 
 	//## dotfiles
