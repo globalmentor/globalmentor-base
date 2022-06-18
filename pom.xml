@@ -4,8 +4,8 @@
 
 	<parent>
 		<groupId>com.globalmentor</groupId>
-		<artifactId>globalmentor-opensource-root</artifactId>
-		<version>0.8.9</version>
+		<artifactId>globalmentor-root</artifactId>
+		<version>0.8.10-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>globalmentor-base</artifactId>
@@ -18,8 +18,8 @@
 
 	<licenses>
 		<license>
-			<name>Apache License, Version 2.0</name>
-			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<name>Apache-2.0</name>
+			<url>https://www.apache.org/licenses/LICENSE-2.0</url>
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
