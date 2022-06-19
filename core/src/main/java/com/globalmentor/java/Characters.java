@@ -425,6 +425,9 @@ public final class Characters {
 	/** The highest character, or -1 if there are no characters.. */
 	private final int maxChar;
 
+	/** Whether the sequence of contained characters is continuous with no missing characters between the lowest and highest characters. */
+	private final boolean isRangeContinuous;
+
 	/**
 	 * Characters constructor.
 	 * @apiNote This method is only to be used internally with preprocessed data. The given character array is used as-is, and is expected to be sorted, with no
@@ -436,10 +439,31 @@ public final class Characters {
 		if(characters.length > 0) { //if this is not an empty array of characters
 			minChar = characters[0];
 			maxChar = characters[characters.length - 1];
+			isRangeContinuous = isContinuousSequence(characters);
 		} else { //if there are no characters
 			minChar = maxChar = -1;
+			isRangeContinuous = false;
 		}
 		this.chars = characters; //save the processed characters
+	}
+
+	/**
+	 * Determines whether the given characters constitute a <dfn>continuous</dfn> sequence, with no missing characters between the first and last characters. An
+	 * empty array is considered to be continuous.
+	 * @param characters The characters to check.
+	 * @return Whether each character in the sequence is one code point higher than the previous.
+	 */
+	static boolean isContinuousSequence(final char... characters) {
+		final int length = characters.length;
+		if(length > 0) {
+			final char firstChar = characters[0];
+			for(int i = length - 1; i >= 0; i--) {
+				if(characters[i] != firstChar + i) {
+					return false;
+				}
+			}
+		}
+		return true;
 	}
 
 	/**
@@ -741,7 +765,9 @@ public final class Characters {
 		if(character < minChar || character > maxChar) { //do quick bounds checking
 			return false;
 		}
-		//TODO add a flag indicating if the range is complete and uninterrupted, so that individual characters wouldn't have to be checked
+		if(isRangeContinuous) { //if there are no interruptions in the range, no need to do further checking
+			return true;
+		}
 		for(final char c : chars) { //look at each character
 			if(c == character) { //if we found the character
 				return true;
