@@ -22,6 +22,7 @@ import java.util.Random;
 
 import javax.annotation.*;
 
+import com.globalmentor.text.ASCII;
 import com.globalmentor.text.TextFormatter;
 
 /**
@@ -42,8 +43,27 @@ public class Bytes {
 	 * @param bytes The values to convert.
 	 * @return A lowercase string with hexadecimal digits, each pair representing a byte in the byte array.
 	 */
-	public static String toHexString(final byte[] bytes) {
-		return TextFormatter.formatHex(bytes); //format the hex into a string buffer and return the string version
+	public static String toHexString(final byte[] bytes) { //TODO switch to Java 17 `HexFormat`
+		return TextFormatter.formatHex(bytes); //format the hex into a string buffer and return the string version TODO make more efficient; see https://stackoverflow.com/a/21178195
+	}
+
+	/**
+	 * Converts a sequence of hex values to bytes, without regard to case.
+	 * @implNote This implementation modified from an <a href="https://stackoverflow.com/a/140861">answer on Stack Overflow</a>.
+	 * @param hex The two-digit hex values to convert.
+	 * @return The equivalent bytes of the hex characters.
+	 * @throws IllegalArgumentException if a hex value is missing one of its pairs (i.e. the sequence length is odd) or if a hex representation contains an
+	 *           invalid character.
+	 */
+	public static byte[] fromHexString(@Nonnull final CharSequence hex) { //TODO switch to Java 17 `HexFormat`
+		final int length = hex.length();
+		checkArgument((length & 1) == 0, "String must have an even number of characters. (Hex digits come in pairs.)");
+		final int byteCount = length / 2;
+		final byte[] bytes = new byte[byteCount];
+		for(int i = 0; i < length; i += 2) {
+			bytes[i / 2] = (byte)((ASCII.valueOfHexDigit(hex.charAt(i)) << 4) + ASCII.valueOfHexDigit(hex.charAt(i + 1)));
+		}
+		return bytes;
 	}
 
 	/**

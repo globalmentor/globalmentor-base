@@ -17,6 +17,7 @@
 package com.globalmentor.text;
 
 import static com.globalmentor.java.CharSequences.*;
+import static com.globalmentor.java.Conditions.*;
 import static java.lang.Math.*;
 
 import javax.annotation.*;
@@ -29,18 +30,18 @@ import com.globalmentor.java.Characters;
  */
 public class ASCII {
 
-	/** The value of the first uppercase letter. */
-	public static final short UPPERCASE_LETTER_FIRST = 'A';
-	/** The value of the last uppercase letter. */
-	public static final short UPPERCASE_LETTER_LAST = 'Z';
-
 	/** The value of the first lowercase letter. */
-	public static final short LOWERCASE_LETTER_FIRST = 'a';
+	public static final char LOWERCASE_LETTER_FIRST = 'a';
 	/** The value of the last lowercase letter. */
-	public static final short LOWERCASE_LETTER_LAST = 'z';
+	public static final char LOWERCASE_LETTER_LAST = 'z';
+
+	/** The value of the first uppercase letter. */
+	public static final char UPPERCASE_LETTER_FIRST = 'A';
+	/** The value of the last uppercase letter. */
+	public static final char UPPERCASE_LETTER_LAST = 'Z';
 
 	/** The difference in value between lowercase (higher values) and uppercase (lower values) ASCII letters. */
-	public static final short LOWERCASE_UPPERCASE_LETTER_DIFFERENCE = LOWERCASE_LETTER_FIRST - UPPERCASE_LETTER_FIRST;
+	public static final char LOWERCASE_UPPERCASE_LETTER_DIFFERENCE = LOWERCASE_LETTER_FIRST - UPPERCASE_LETTER_FIRST;
 
 	/** The highest ASCII code point value that is a control character. */
 	public static final char MAX_CONTROL_VALUE = 31;
@@ -48,14 +49,30 @@ public class ASCII {
 	/** The highest ASCII code point value. */
 	public static final char MAX_VALUE = 127;
 
+	/** The value of the first digit. */
+	public static final char DIGIT_FIRST = '0';
+	/** The value of the last digit. */
+	public static final char DIGIT_LAST = '9';
+
 	/** The ASCII digit characters <code>'0'</code> – <code>'9'</code>. */
-	public static final Characters DIGIT_CHARACTERS = Characters.ofRange('0', '9');
+	public static final Characters DIGIT_CHARACTERS = Characters.ofRange(DIGIT_FIRST, DIGIT_LAST);
+
+	/** The value of the first lowercase hexadecimal letter digit. */
+	public static final char LOWERCASE_HEX_LETTER_DIGIT_FIRST = 'a';
+	/** The value of the last lowercase hexadecimal letter digit. */
+	public static final char LOWERCASE_HEX_LETTER_DIGIT_LAST = 'f';
+
+	/** The value of the first uppercase hexadecimal letter digit. */
+	public static final char UPPERCASE_HEX_LETTER_DIGIT_FIRST = 'A';
+	/** The value of the last uppercase hexadecimal letter digit. */
+	public static final char UPPERCASE_HEX_LETTER_DIGIT_LAST = 'F';
 
 	/**
 	 * The ASCII hexadecimal digit characters <code>'0'</code> – <code>'9'</code>, <code>'a'</code> – <code>'f'</code>, and <code>'A'</code> – <code>'F'</code>.
 	 * @apiNote Note that this definition includes both lowercase and uppercase letters.
 	 */
-	public static final Characters HEX_CHARACTERS = DIGIT_CHARACTERS.addRange('a', 'f').addRange('A', 'F');
+	public static final Characters HEX_CHARACTERS = DIGIT_CHARACTERS.addRange(LOWERCASE_HEX_LETTER_DIGIT_FIRST, LOWERCASE_HEX_LETTER_DIGIT_LAST)
+			.addRange(UPPERCASE_HEX_LETTER_DIGIT_FIRST, UPPERCASE_HEX_LETTER_DIGIT_LAST);
 
 	/**
 	 * Indicates whether a given character is within the ASCII range.
@@ -454,6 +471,37 @@ public class ASCII {
 			}
 		}
 		return stringBuilder;
+	}
+
+	/**
+	 * Returns the value represented by the given ASCII digit. For example the value of character <code>'5'</code> is the integer <code>5</code>.
+	 * @param c The ASCII digit character.
+	 * @return The value the character represents.
+	 * @throws IllegalArgumentException if the given character is not an ASCII digit character.
+	 * @see #DIGIT_CHARACTERS
+	 */
+	public static int valueOfDigit(final char c) {
+		checkArgument(DIGIT_CHARACTERS.contains(c), "Character `%s` is not an ASCII digit.", c);
+		return c - DIGIT_FIRST;
+	}
+
+	/**
+	 * Find the value of the hexadecimal digit, without regard to case. For example the value of character <code>'5'</code> is the integer <code>5</code>, and the
+	 * value of character <code>'c'</code> is the integer <code>12</code>.
+	 * @param c The hexadecimal digit character.
+	 * @return The value the character represents.
+	 * @throws IllegalArgumentException if the given character is not a hexadecimal digit character.
+	 * @see #valueOfDigit(char)
+	 */
+	public static int valueOfHexDigit(final char c) {
+		if(DIGIT_CHARACTERS.contains(c)) {
+			return valueOfDigit(c);
+		}
+		final char normalizedCharacter = toLowerCase(c); //normalize input, which we expect to be a letter now
+		//because HEX_CHARACTERS contains two ranges, it's more efficient to explicitly check the normalized character
+		checkArgument(normalizedCharacter >= LOWERCASE_HEX_LETTER_DIGIT_FIRST && normalizedCharacter <= LOWERCASE_HEX_LETTER_DIGIT_LAST,
+				"Character `%s` is not an ASCII digit.", c);
+		return normalizedCharacter - LOWERCASE_HEX_LETTER_DIGIT_FIRST + 10;
 	}
 
 }
