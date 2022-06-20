@@ -18,6 +18,8 @@ package com.globalmentor.text;
 
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.junit.jupiter.api.*;
 
 /**
@@ -29,7 +31,7 @@ public class ASCIITest {
 
 	/** @see ASCII#equalsIgnoreCase(CharSequence, CharSequence) */
 	@Test
-	public void testEqualsIgnoreCaseTwoStrings() {
+	void testEqualsIgnoreCaseTwoStrings() {
 		assertThat(ASCII.equalsIgnoreCase(null, null), is(true));
 		assertThat(ASCII.equalsIgnoreCase("", null), is(false));
 		assertThat(ASCII.equalsIgnoreCase(null, ""), is(false));
@@ -68,6 +70,44 @@ public class ASCIITest {
 		assertThat(ASCII.equalsIgnoreCase("fooBar", "FooBar"), is(true));
 		assertThat(ASCII.equalsIgnoreCase("fooBar", "FOOBAR"), is(true));
 		assertThat(ASCII.equalsIgnoreCase("FOOBAR", "foobar"), is(true));
+	}
+
+	/** @see ASCII#valueOfDigit(char) */
+	@Test
+	void testValueOfDigit() {
+		assertThat(ASCII.valueOfDigit('0'), is(0));
+		assertThat(ASCII.valueOfDigit('1'), is(1));
+		assertThat(ASCII.valueOfDigit('5'), is(5));
+		assertThat(ASCII.valueOfDigit('9'), is(9));
+		assertThrows(IllegalArgumentException.class, () -> ASCII.valueOfDigit('c'));
+		assertThrows(IllegalArgumentException.class, () -> ASCII.valueOfDigit('C'));
+		assertThrows(IllegalArgumentException.class, () -> ASCII.valueOfDigit('x'));
+		assertThrows(IllegalArgumentException.class, () -> ASCII.valueOfDigit('!'));
+		assertThrows(IllegalArgumentException.class, () -> ASCII.valueOfDigit((char)(ASCII.DIGIT_FIRST - 1)));
+		assertThrows(IllegalArgumentException.class, () -> ASCII.valueOfDigit((char)(ASCII.DIGIT_LAST + 1)));
+	}
+
+	/** @see ASCII#valueOfhexDigit(char) */
+	@Test
+	void testValueOfHexDigit() {
+		assertThat(ASCII.valueOfHexDigit('0'), is(0));
+		assertThat(ASCII.valueOfHexDigit('1'), is(1));
+		assertThat(ASCII.valueOfDigit('5'), is(5));
+		assertThat(ASCII.valueOfHexDigit('9'), is(9));
+		assertThat(ASCII.valueOfHexDigit('a'), is(10));
+		assertThat(ASCII.valueOfHexDigit('A'), is(10));
+		assertThat(ASCII.valueOfHexDigit('c'), is(12));
+		assertThat(ASCII.valueOfHexDigit('C'), is(12));
+		assertThat(ASCII.valueOfHexDigit('f'), is(15));
+		assertThat(ASCII.valueOfHexDigit('F'), is(15));
+		assertThrows(IllegalArgumentException.class, () -> ASCII.valueOfDigit('x'));
+		assertThrows(IllegalArgumentException.class, () -> ASCII.valueOfDigit('!'));
+		assertThrows(IllegalArgumentException.class, () -> ASCII.valueOfHexDigit((char)(ASCII.DIGIT_FIRST - 1)));
+		assertThrows(IllegalArgumentException.class, () -> ASCII.valueOfHexDigit((char)(ASCII.DIGIT_LAST + 1)));
+		assertThrows(IllegalArgumentException.class, () -> ASCII.valueOfHexDigit((char)('a' - 1)));
+		assertThrows(IllegalArgumentException.class, () -> ASCII.valueOfHexDigit((char)('A' - 1)));
+		assertThrows(IllegalArgumentException.class, () -> ASCII.valueOfHexDigit((char)('f' + 1)));
+		assertThrows(IllegalArgumentException.class, () -> ASCII.valueOfHexDigit((char)('F' + 1)));
 	}
 
 }

@@ -24,6 +24,8 @@ import java.util.Arrays;
 
 import javax.annotation.*;
 
+import com.globalmentor.java.Bytes;
+
 /**
  * The encapsulation of message digest output, providing data immutability and convenience methods for updating other message digests.
  * @apiNote This class provides programming safety mutability but not cryptographic safety again Byzantine attacks. In other words, this class is useful for
@@ -57,6 +59,16 @@ public final class Hash {
 	 */
 	public static Hash of(@Nonnull final byte[] bytes) {
 		return new Hash(bytes.clone());
+	}
+
+	/**
+	 * Constructs a hash from a checksum string.
+	 * @param checksum A hex checksum string for the hash bytes.
+	 * @return The resulting hash.
+	 * @see MessageDigest#digest()
+	 */
+	public static Hash fromChecksum(@Nonnull final CharSequence checksum) {
+		return new Hash(Bytes.fromHexString(checksum));
 	}
 
 	/**
