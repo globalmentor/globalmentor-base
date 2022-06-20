@@ -41,11 +41,11 @@ public class TextFormatter {
 	 * @param bytes The values to convert.
 	 * @return A lowercase string with hexadecimal digits, each pair representing a byte in the byte array.
 	 * @throws IOException if there is an error writing to the appendable.
+	 * @deprecated in favor of merely appending {@link Bytes#toHexString(byte[])}.
 	 */
-	public static <A extends Appendable> A formatHex(final A appendable, final byte[] bytes) throws IOException { //TODO make generic to allow different bases 
-		for(final byte b : bytes) { //for each byte
-			appendable.append(Integers.toHexString(b, 2)); //convert the byte to a two-character hex string and add it to our appendable TODO delegate to future refactored method in Bytes			
-		}
+	@Deprecated
+	public static <A extends Appendable> A formatHex(final A appendable, final byte[] bytes) throws IOException {
+		appendable.append(Bytes.toHexString(bytes));
 		return appendable; //return the appendable we used
 	}
 
@@ -53,13 +53,11 @@ public class TextFormatter {
 	 * Formats an array of bytes into a sequence of hex characters, with each character pair representing the hexadecimal value of the byte.
 	 * @param bytes The values to convert.
 	 * @return A lowercase string with hexadecimal digits, each pair representing a byte in the byte array.
+	 * @deprecated in favor of {@link Bytes#toHexString(byte[])}.
 	 */
-	public static String formatHex(final byte[] bytes) { //TODO make generic to allow different bases 
-		try {
-			return formatHex(new StringBuilder(), bytes).toString();
-		} catch(final IOException ioException) {
-			throw unexpected(ioException);
-		}
+	@Deprecated
+	public static String formatHex(final byte[] bytes) {
+		return Bytes.toHexString(bytes);
 	}
 
 	/**
