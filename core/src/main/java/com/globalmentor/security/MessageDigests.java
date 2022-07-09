@@ -19,6 +19,8 @@ package com.globalmentor.security;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.security.*;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.*;
 
@@ -541,6 +543,33 @@ public final class MessageDigests {
 		 */
 		public byte[] digest(@Nonnull final Path file) throws IOException {
 			return MessageDigests.digest(newMessageDigest(), file);
+		}
+
+		private final Map<String, Hash> emptyHashesByAlgorithmName = new ConcurrentHashMap<>();
+
+		/**
+		 * Returns an "empty" hash using this algorithm. This method is equivalent to creating a message digest and not adding any content, such as calling
+		 * {@link #hash(CharSequence...)} with an empty array of strings.
+		 * @apiNote This method is preferred over calling another hash method and providing no content, not only because this method is more semantically
+		 *          appropriate, but also because this implementation is likely much more efficient.
+		 * @implSpec This method maintains a lazy cache of empty hashes for algorithms. Although these caches are never released, very few message digest algorithms
+		 *           are common (and typically only one or two used in a single application), wasted space is nominal.
+		 * @return A hash for a message digest from this algorithm that has not processed any content..
+		 * @throws RuntimeException if no {@link Provider} supports a {@link MessageDigestSpi} implementation for this algorithm.
+		 */
+		public Hash emptyHash() {
+			return emptyHashesByAlgorithmName.computeIfAbsent(getName(), __ -> Hash.fromDigest(newMessageDigest()));
+		}
+
+		/**
+		 * Determines whether the given hash is "empty", that is, equivalent to hashing no content
+		 * @param hash The hash to check.
+		 * @return Whether the given hash is equal to a hash created from a new message digest which has hashed no content.
+		 * @throws RuntimeException if no {@link Provider} supports a {@link MessageDigestSpi} implementation for this algorithm.
+		 * @see #emptyHash()
+		 */
+		public boolean isEmpty(@Nonnull final Hash hash) {
+			return hash.equals(emptyHash());
 		}
 
 		/**
