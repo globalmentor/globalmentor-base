@@ -448,18 +448,29 @@ public final class MessageDigests {
 		}
 
 		/**
-		 * Convenience method to get an instance of this message digest algorithm.
+		 * Creates a new message digest instance for this algorithm.
 		 * @apiNote This method differs from {@link MessageDigest#getInstance(String)} in that it throws an unchecked exception if the algorithm is not supported.
-		 * @return An instance of this message digest algorithm.
+		 * @implSpec This method delegates to {@link MessageDigest#getInstance(String)}.
+		 * @return An instance of a message digest for this algorithm.
 		 * @throws RuntimeException if no {@link Provider} supports a {@link MessageDigestSpi} implementation for this algorithm.
-		 * @see MessageDigest#getInstance(String)
 		 */
-		public MessageDigest getInstance() {
+		public MessageDigest newMessageDigest() {
 			try {
 				return MessageDigest.getInstance(getName());
 			} catch(final NoSuchAlgorithmException noSuchAlgorithmException) {
 				throw new RuntimeException(noSuchAlgorithmException);
 			}
+		}
+
+		/**
+		 * Creates a new message digest instance for this algorithm.
+		 * @return An instance of a message digest for this algorithm.
+		 * @throws RuntimeException if no {@link Provider} supports a {@link MessageDigestSpi} implementation for this algorithm.
+		 * @deprecated in favor of {@link #newMessageDigest()}, which has a clearer and less misleading name.
+		 */
+		@Deprecated
+		public MessageDigest getInstance() {
+			return newMessageDigest();
 		}
 
 		/**
@@ -470,7 +481,7 @@ public final class MessageDigests {
 		 * @throws RuntimeException if no {@link Provider} supports a {@link MessageDigestSpi} implementation for this algorithm.
 		 */
 		public byte[] digest(@Nonnull final CharSequence... charSequences) {
-			return MessageDigests.digest(getInstance(), charSequences);
+			return MessageDigests.digest(newMessageDigest(), charSequences);
 		}
 
 		/**
@@ -482,7 +493,7 @@ public final class MessageDigests {
 		 * @throws RuntimeException if no {@link Provider} supports a {@link MessageDigestSpi} implementation for this algorithm.
 		 */
 		public byte[] digest(@Nonnull final Charset charset, @Nonnull final CharSequence... charSequences) {
-			return MessageDigests.digest(getInstance(), charSequences);
+			return MessageDigests.digest(newMessageDigest(), charSequences);
 		}
 
 		/**
@@ -493,7 +504,7 @@ public final class MessageDigests {
 		 * @throws RuntimeException if no {@link Provider} supports a {@link MessageDigestSpi} implementation for this algorithm.
 		 */
 		public byte[] digest(@Nonnull final char[] characters) {
-			return MessageDigests.digest(getInstance(), characters);
+			return MessageDigests.digest(newMessageDigest(), characters);
 		}
 
 		/**
@@ -505,7 +516,7 @@ public final class MessageDigests {
 		 * @throws RuntimeException if no {@link Provider} supports a {@link MessageDigestSpi} implementation for this algorithm.
 		 */
 		public byte[] digest(@Nonnull final Charset charset, @Nonnull final char[] characters) {
-			return MessageDigests.digest(getInstance(), charset, characters);
+			return MessageDigests.digest(newMessageDigest(), charset, characters);
 		}
 
 		/**
@@ -517,7 +528,7 @@ public final class MessageDigests {
 		 * @throws IOException if there is an I/O exception reading from the input stream.
 		 */
 		public byte[] digest(@Nonnull final InputStream inputStream) throws IOException {
-			return MessageDigests.digest(getInstance(), inputStream);
+			return MessageDigests.digest(newMessageDigest(), inputStream);
 		}
 
 		/**
@@ -529,7 +540,7 @@ public final class MessageDigests {
 		 * @throws IOException if there is an I/O exception reading from the file.
 		 */
 		public byte[] digest(@Nonnull final Path file) throws IOException {
-			return MessageDigests.digest(getInstance(), file);
+			return MessageDigests.digest(newMessageDigest(), file);
 		}
 
 		/**
@@ -540,7 +551,7 @@ public final class MessageDigests {
 		 * @throws RuntimeException if no {@link Provider} supports a {@link MessageDigestSpi} implementation for this algorithm.
 		 */
 		public Hash hash(@Nonnull final CharSequence... charSequences) {
-			return MessageDigests.hash(getInstance(), charSequences);
+			return MessageDigests.hash(newMessageDigest(), charSequences);
 		}
 
 		/**
@@ -552,7 +563,7 @@ public final class MessageDigests {
 		 * @throws RuntimeException if no {@link Provider} supports a {@link MessageDigestSpi} implementation for this algorithm.
 		 */
 		public Hash hash(@Nonnull final Charset charset, @Nonnull final CharSequence... charSequences) {
-			return MessageDigests.hash(getInstance(), charSequences);
+			return MessageDigests.hash(newMessageDigest(), charSequences);
 		}
 
 		/**
@@ -563,7 +574,7 @@ public final class MessageDigests {
 		 * @throws RuntimeException if no {@link Provider} supports a {@link MessageDigestSpi} implementation for this algorithm.
 		 */
 		public Hash hash(@Nonnull final char[] characters) {
-			return MessageDigests.hash(getInstance(), characters);
+			return MessageDigests.hash(newMessageDigest(), characters);
 		}
 
 		/**
@@ -575,7 +586,7 @@ public final class MessageDigests {
 		 * @throws RuntimeException if no {@link Provider} supports a {@link MessageDigestSpi} implementation for this algorithm.
 		 */
 		public Hash hash(@Nonnull final Charset charset, @Nonnull final char[] characters) {
-			return MessageDigests.hash(getInstance(), charset, characters);
+			return MessageDigests.hash(newMessageDigest(), charset, characters);
 		}
 
 		/**
@@ -586,7 +597,7 @@ public final class MessageDigests {
 		 * @throws RuntimeException if no {@link Provider} supports a {@link MessageDigestSpi} implementation for this algorithm.
 		 */
 		public Hash hash(@Nonnull final Hash... hashes) {
-			return MessageDigests.hash(getInstance(), hashes);
+			return MessageDigests.hash(newMessageDigest(), hashes);
 		}
 
 		/**
@@ -598,7 +609,7 @@ public final class MessageDigests {
 		 * @throws IOException if there is an I/O exception reading from the input stream.
 		 */
 		public Hash hash(@Nonnull final InputStream inputStream) throws IOException {
-			return MessageDigests.hash(getInstance(), inputStream);
+			return MessageDigests.hash(newMessageDigest(), inputStream);
 		}
 
 		/**
@@ -610,7 +621,7 @@ public final class MessageDigests {
 		 * @throws IOException if there is an I/O exception reading from the file.
 		 */
 		public Hash hash(@Nonnull final Path file) throws IOException {
-			return MessageDigests.hash(getInstance(), file);
+			return MessageDigests.hash(newMessageDigest(), file);
 		}
 
 		/**
@@ -624,7 +635,7 @@ public final class MessageDigests {
 		 * @see MessageDigest#digest(byte[])
 		 */
 		public String checksum(@Nonnull final byte[] input) {
-			return MessageDigests.checksum(getInstance(), input);
+			return MessageDigests.checksum(newMessageDigest(), input);
 		}
 
 		/**
@@ -637,7 +648,7 @@ public final class MessageDigests {
 		 * @return The lowercase hex checksum string of the resulting hash value.
 		 */
 		public String checksum(@Nonnull final CharSequence charSequence) {
-			return MessageDigests.checksum(getInstance(), charSequence);
+			return MessageDigests.checksum(newMessageDigest(), charSequence);
 		}
 
 		/**
@@ -651,7 +662,7 @@ public final class MessageDigests {
 		 * @see Bytes#toHexString(byte[])
 		 */
 		public String checksum(@Nonnull final char[] characters) {
-			return MessageDigests.checksum(getInstance(), characters);
+			return MessageDigests.checksum(newMessageDigest(), characters);
 		}
 
 		/**
@@ -666,7 +677,7 @@ public final class MessageDigests {
 		 * @see Bytes#toHexString(byte[])
 		 */
 		public String checksum(@Nonnull final InputStream inputStream) throws IOException {
-			return MessageDigests.checksum(getInstance(), inputStream);
+			return MessageDigests.checksum(newMessageDigest(), inputStream);
 		}
 
 		/**
@@ -681,7 +692,7 @@ public final class MessageDigests {
 		 * @see Bytes#toHexString(byte[])
 		 */
 		public String checksum(@Nonnull final Path file) throws IOException {
-			return MessageDigests.checksum(getInstance(), file);
+			return MessageDigests.checksum(newMessageDigest(), file);
 		}
 
 		/**
