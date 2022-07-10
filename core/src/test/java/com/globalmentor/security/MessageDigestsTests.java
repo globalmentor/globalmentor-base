@@ -17,6 +17,7 @@
 package com.globalmentor.security;
 
 import static com.globalmentor.java.Bytes.*;
+import static com.globalmentor.java.Strings.NO_STRINGS;
 import static com.globalmentor.security.MessageDigests.*;
 import static java.nio.charset.StandardCharsets.*;
 import static org.hamcrest.MatcherAssert.*;
@@ -47,7 +48,7 @@ public class MessageDigestsTests {
 	 * @see MessageDigests#SHA3_256
 	 */
 	@Test
-	public void testChecksumBytes() throws NoSuchAlgorithmException {
+	void testChecksumBytes() throws NoSuchAlgorithmException {
 		assertThat(MessageDigests.checksum(MessageDigest.getInstance(SHA_256.getName()), NO_BYTES), is(SHA_256_EMPTY_STRING_CHECKSUM));
 		assertThat(MessageDigests.checksum(MessageDigest.getInstance(SHA_256.getName()), LATIN1_TEST.getBytes(UTF_8)), is(SHA_256_LATIN1_TEST_CHECKSUM));
 		assertThat(SHA_256.checksum(NO_BYTES), is(SHA_256_EMPTY_STRING_CHECKSUM));
@@ -61,7 +62,7 @@ public class MessageDigestsTests {
 	 * @see MessageDigests#SHA3_256
 	 */
 	@Test
-	public void testChecksumString() throws NoSuchAlgorithmException {
+	void testChecksumString() throws NoSuchAlgorithmException {
 		assertThat(MessageDigests.checksum(MessageDigest.getInstance(SHA_256.getName()), ""), is(SHA_256_EMPTY_STRING_CHECKSUM));
 		assertThat(MessageDigests.checksum(MessageDigest.getInstance(SHA_256.getName()), "".toCharArray()), is(SHA_256_EMPTY_STRING_CHECKSUM));
 		assertThat(MessageDigests.checksum(MessageDigest.getInstance(SHA_256.getName()), LATIN1_TEST), is(SHA_256_LATIN1_TEST_CHECKSUM));
@@ -70,6 +71,29 @@ public class MessageDigestsTests {
 		assertThat(SHA_256.checksum("".toCharArray()), is(SHA_256_EMPTY_STRING_CHECKSUM));
 		assertThat(SHA_256.checksum(LATIN1_TEST), is(SHA_256_LATIN1_TEST_CHECKSUM));
 		assertThat(SHA_256.checksum(LATIN1_TEST.toCharArray()), is(SHA_256_LATIN1_TEST_CHECKSUM));
+	}
+
+	//Algorithm
+
+	/** @see MessageDigests.Algorithm#emptyHash() */
+	@Test
+	void testMessageDigestEmptyHash() {
+		assertThat("Empty MD5 hash equivalent to hash of no strings.", MessageDigests.MD5.emptyHash(), is(MessageDigests.MD5.hash(NO_STRINGS)));
+		assertThat("Empty SHA-256 hash equivalent to hash of no strings.", MessageDigests.SHA_256.emptyHash(), is(MessageDigests.SHA_256.hash(NO_STRINGS)));
+		assertThat("Empty hash caching does not prevent second subsequent call.", MessageDigests.SHA_256.emptyHash(), is(MessageDigests.SHA_256.hash(NO_STRINGS)));
+		assertThat("Empty MD5 hash not equivalent to SHA-256 empty hash.", MessageDigests.MD5.emptyHash(), is(not(MessageDigests.SHA_256.hash(NO_STRINGS))));
+		assertThat("Empty hash caching does not prevent third subsequent call after empty hash for another algorithm.", MessageDigests.SHA_256.emptyHash(),
+				is(MessageDigests.SHA_256.hash(NO_STRINGS)));
+	}
+
+	/**
+	 * @see MessageDigests.Algorithm#isEmpty(Hash)
+	 * @see MessageDigests.Algorithm#emptyHash()
+	 */
+	@Test
+	void testMessageDigestIsEmptyHash() {
+		assertThat("SHA-256 hash of no strings is considered empty.", MessageDigests.SHA_256.isEmpty(MessageDigests.SHA_256.hash(NO_STRINGS)), is(true));
+		assertThat("Explicit empty SHA-256 hash is considered empty.", MessageDigests.SHA_256.isEmpty(MessageDigests.SHA_256.emptyHash()), is(true));
 	}
 
 }

@@ -16,9 +16,12 @@
 
 package com.globalmentor.security;
 
+import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.security.*;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.*;
 
@@ -104,6 +107,40 @@ public final class MessageDigests {
 	public static final Algorithm SHA3_512 = new Algorithm("SHA3-512");
 
 	/**
+	 * Computes a digest for the given byte.
+	 * @param messageDigest The implementation of a message digest algorithm.
+	 * @param b The byte to digest.
+	 * @return The array of bytes for the resulting hash value.
+	 */
+	public static byte[] digest(@Nonnull final MessageDigest messageDigest, @Nonnull final byte b) {
+		return update(messageDigest, b).digest();
+	}
+
+	/**
+	 * Computes a digest for the specified array of bytes, starting at the specified offset.
+	 * @apiNote This class provides no separate method to calculate a digest on an array of bytes with no offset and length given, returning the digest bytes,
+	 *          because the JDK already provides this functionality in {@link MessageDigest#digest(byte[])}.
+	 * @param messageDigest The implementation of a message digest algorithm.
+	 * @param bytes The array of bytes to digest.
+	 * @param offset The offset to start from in the array of bytes.
+	 * @param length The number of bytes to use, starting at the offset.
+	 * @return The array of bytes for the resulting hash value.
+	 */
+	public static byte[] digest(@Nonnull final MessageDigest messageDigest, @Nonnull byte[] bytes, final int offset, final int length) {
+		return update(messageDigest, bytes, offset, length).digest();
+	}
+
+	/**
+	 * Computes a digest for the specified byte buffer.
+	 * @param messageDigest The implementation of a message digest algorithm.
+	 * @param byteBuffer The byte buffer containing the bytes to digest.
+	 * @return The array of bytes for the resulting hash value.
+	 */
+	public static byte[] digest(@Nonnull final MessageDigest messageDigest, @Nonnull ByteBuffer byteBuffer) {
+		return update(messageDigest, byteBuffer).digest();
+	}
+
+	/**
 	 * Computes a digest for the given character sequences using the UTF-8 charset.
 	 * @param messageDigest The implementation of a message digest algorithm.
 	 * @param charSequences The character sequences to digest.
@@ -179,6 +216,48 @@ public final class MessageDigests {
 	}
 
 	/**
+	 * Computes a hash for the given byte.
+	 * @param messageDigest The implementation of a message digest algorithm.
+	 * @param b The byte to digest.
+	 * @return The resulting hash.
+	 */
+	public static Hash hash(@Nonnull final MessageDigest messageDigest, @Nonnull final byte b) {
+		return Hash.fromDigest(update(messageDigest, b));
+	}
+
+	/**
+	 * Computes a hash for the specified array of bytes.
+	 * @param messageDigest The implementation of a message digest algorithm.
+	 * @param bytes The array of bytes to digest.
+	 * @return The array of bytes for the resulting hash value.
+	 */
+	public static Hash hash(@Nonnull final MessageDigest messageDigest, @Nonnull byte[] bytes) {
+		return Hash.fromDigest(update(messageDigest, bytes));
+	}
+
+	/**
+	 * Computes a hash for the specified array of bytes, starting at the specified offset.
+	 * @param messageDigest The implementation of a message digest algorithm.
+	 * @param bytes The array of bytes to digest.
+	 * @param offset The offset to start from in the array of bytes.
+	 * @param length The number of bytes to use, starting at the offset.
+	 * @return The resulting hash.
+	 */
+	public static Hash hash(@Nonnull final MessageDigest messageDigest, @Nonnull byte[] bytes, final int offset, final int length) {
+		return Hash.fromDigest(update(messageDigest, bytes, offset, length));
+	}
+
+	/**
+	 * Computes a hash for the specified byte buffer.
+	 * @param messageDigest The implementation of a message digest algorithm.
+	 * @param byteBuffer The byte buffer containing the bytes to digest.
+	 * @return The resulting hash.
+	 */
+	public static Hash hash(@Nonnull final MessageDigest messageDigest, @Nonnull ByteBuffer byteBuffer) {
+		return Hash.fromDigest(update(messageDigest, byteBuffer));
+	}
+
+	/**
 	 * Computes a hash for the given character sequences using the UTF-8 charset.
 	 * @param messageDigest The implementation of a message digest algorithm.
 	 * @param charSequences The character sequences to digest.
@@ -251,6 +330,56 @@ public final class MessageDigests {
 	 */
 	public static Hash hash(@Nonnull final MessageDigest messageDigest, @Nonnull final Path file) throws IOException {
 		return Hash.fromDigest(update(messageDigest, file));
+	}
+
+	/**
+	 * Updates a digest from the given byte.
+	 * @param messageDigest The implementation of a message digest algorithm.
+	 * @param b The byte to digest.
+	 * @return The message digest.
+	 * @see MessageDigest#update(byte)
+	 */
+	public static MessageDigest update(@Nonnull final MessageDigest messageDigest, final byte b) {
+		messageDigest.update(b);
+		return messageDigest;
+	}
+
+	/**
+	 * Updates a digest for the specified array of bytes.
+	 * @param messageDigest The implementation of a message digest algorithm.
+	 * @param bytes The array of bytes to digest.
+	 * @return The message digest.
+	 * @see MessageDigest#update(byte[])
+	 */
+	public static MessageDigest update(@Nonnull final MessageDigest messageDigest, @Nonnull final byte[] bytes) {
+		messageDigest.update(bytes);
+		return messageDigest;
+	}
+
+	/**
+	 * Updates a digest for the specified array of bytes, starting at the specified offset.
+	 * @param messageDigest The implementation of a message digest algorithm.
+	 * @param bytes The array of bytes to digest.
+	 * @param offset The offset to start from in the array of bytes.
+	 * @param length The number of bytes to use, starting at the offset.
+	 * @return The message digest.
+	 * @see MessageDigest#update(byte[], int, int)
+	 */
+	public static MessageDigest update(@Nonnull final MessageDigest messageDigest, @Nonnull final byte[] bytes, final int offset, final int length) {
+		messageDigest.update(bytes, offset, length);
+		return messageDigest;
+	}
+
+	/**
+	 * Updates a digest for the specified byte buffer.
+	 * @param messageDigest The implementation of a message digest algorithm.
+	 * @param byteBuffer The byte buffer containing the bytes to digest.
+	 * @return The message digest.
+	 * @see MessageDigest#update(ByteBuffer)
+	 */
+	public static MessageDigest update(@Nonnull final MessageDigest messageDigest, @Nonnull final ByteBuffer byteBuffer) {
+		messageDigest.update(byteBuffer);
+		return messageDigest;
 	}
 
 	/**
@@ -356,6 +485,19 @@ public final class MessageDigests {
 	}
 
 	/**
+	 * Computes a lowercase hex checksum string for the given input byte.
+	 * @implSpec This implementation calls {@link #digest(MessageDigest, byte)}.
+	 * @apiNote This method considers a <dfn>checksum</dfn> to be a string version of a message <dfn>digest</dfn>, as the former is often used in the context of
+	 *          file contents verification.
+	 * @param messageDigest The implementation of a message digest algorithm.
+	 * @param input The byte for which a digest and then a checksum string should be created.
+	 * @return The lowercase hex checksum string of the resulting hash value.
+	 */
+	public static String checksum(@Nonnull final MessageDigest messageDigest, final byte input) {
+		return toHexString(digest(messageDigest, input));
+	}
+
+	/**
 	 * Computes a lowercase hex checksum string for the given input bytes.
 	 * @implSpec This implementation calls {@link MessageDigest#digest(byte[])}.
 	 * @apiNote This method considers a <dfn>checksum</dfn> to be a string version of a message <dfn>digest</dfn>, as the former is often used in the context of
@@ -367,6 +509,34 @@ public final class MessageDigests {
 	 */
 	public static String checksum(@Nonnull final MessageDigest messageDigest, @Nonnull final byte[] input) {
 		return toHexString(messageDigest.digest(input));
+	}
+
+	/**
+	 * Computes a lowercase hex checksum string for the given input bytes.
+	 * @implSpec This implementation calls {@link #digest(MessageDigest, byte[], int, int)}.
+	 * @apiNote This method considers a <dfn>checksum</dfn> to be a string version of a message <dfn>digest</dfn>, as the former is often used in the context of
+	 *          file contents verification.
+	 * @param messageDigest The implementation of a message digest algorithm.
+	 * @param input The array of bytes for which a digest and then a checksum string should be created.
+	 * @param offset The offset to start from in the array of bytes.
+	 * @param length The number of bytes to use, starting at the offset.
+	 * @return The lowercase hex checksum string of the resulting hash value.
+	 */
+	public static String checksum(@Nonnull final MessageDigest messageDigest, @Nonnull final byte[] input, final int offset, final int length) {
+		return toHexString(digest(messageDigest, input, offset, length));
+	}
+
+	/**
+	 * Computes a lowercase hex checksum string for the given input byte buffer.
+	 * @implSpec This implementation calls {@link #digest(MessageDigest, ByteBuffer)}.
+	 * @apiNote This method considers a <dfn>checksum</dfn> to be a string version of a message <dfn>digest</dfn>, as the former is often used in the context of
+	 *          file contents verification.
+	 * @param messageDigest The implementation of a message digest algorithm.
+	 * @param byteBuffer The byte buffer containing the bytes for which a digest and then a checksum string should be created.
+	 * @return The lowercase hex checksum string of the resulting hash value.
+	 */
+	public static String checksum(@Nonnull final MessageDigest messageDigest, @Nonnull final ByteBuffer byteBuffer) {
+		return toHexString(digest(messageDigest, byteBuffer));
 	}
 
 	/**
@@ -448,18 +618,68 @@ public final class MessageDigests {
 		}
 
 		/**
-		 * Convenience method to get an instance of this message digest algorithm.
+		 * Creates a new message digest instance for this algorithm.
 		 * @apiNote This method differs from {@link MessageDigest#getInstance(String)} in that it throws an unchecked exception if the algorithm is not supported.
-		 * @return An instance of this message digest algorithm.
+		 * @implSpec This method delegates to {@link MessageDigest#getInstance(String)}.
+		 * @return An instance of a message digest for this algorithm.
 		 * @throws RuntimeException if no {@link Provider} supports a {@link MessageDigestSpi} implementation for this algorithm.
-		 * @see MessageDigest#getInstance(String)
 		 */
-		public MessageDigest getInstance() {
+		public MessageDigest newMessageDigest() {
 			try {
 				return MessageDigest.getInstance(getName());
 			} catch(final NoSuchAlgorithmException noSuchAlgorithmException) {
 				throw new RuntimeException(noSuchAlgorithmException);
 			}
+		}
+
+		/**
+		 * Creates a new message digest instance for this algorithm.
+		 * @return An instance of a message digest for this algorithm.
+		 * @throws RuntimeException if no {@link Provider} supports a {@link MessageDigestSpi} implementation for this algorithm.
+		 * @deprecated in favor of {@link #newMessageDigest()}, which has a clearer and less misleading name.
+		 */
+		@Deprecated
+		public MessageDigest getInstance() {
+			return newMessageDigest();
+		}
+
+		/**
+		 * Computes a digest using this algorithm for the given byte.
+		 * @param b The byte to digest.
+		 * @return The array of bytes for the resulting hash value.
+		 */
+		public byte[] digest(@Nonnull final byte b) {
+			return MessageDigests.digest(newMessageDigest(), b);
+		}
+
+		/**
+		 * Computes a digest using this algorithm for the specified array of bytes, starting at the specified offset.
+		 * @param bytes The array of bytes to digest.
+		 * @param offset The offset to start from in the array of bytes.
+		 * @param length The number of bytes to use, starting at the offset.
+		 * @return The array of bytes for the resulting hash value.
+		 */
+		public byte[] digest(@Nonnull byte[] bytes, final int offset, final int length) {
+			return MessageDigests.digest(newMessageDigest(), bytes, offset, length);
+		}
+
+		/**
+		 * Computes a digest using this algorithm for the specified array of bytes.
+		 * @implSpec This implementation delegates to {@link MessageDigest#digest(byte[])}.
+		 * @param bytes The array of bytes to digest.
+		 * @return The array of bytes for the resulting hash value.
+		 */
+		public byte[] digest(@Nonnull byte[] bytes) {
+			return newMessageDigest().digest(bytes);
+		}
+
+		/**
+		 * Computes a digest for the specified byte buffer.
+		 * @param byteBuffer The byte buffer containing the bytes to digest.
+		 * @return The array of bytes for the resulting hash value.
+		 */
+		public byte[] digest(@Nonnull ByteBuffer byteBuffer) {
+			return MessageDigests.digest(newMessageDigest(), byteBuffer);
 		}
 
 		/**
@@ -470,7 +690,7 @@ public final class MessageDigests {
 		 * @throws RuntimeException if no {@link Provider} supports a {@link MessageDigestSpi} implementation for this algorithm.
 		 */
 		public byte[] digest(@Nonnull final CharSequence... charSequences) {
-			return MessageDigests.digest(getInstance(), charSequences);
+			return MessageDigests.digest(newMessageDigest(), charSequences);
 		}
 
 		/**
@@ -482,7 +702,7 @@ public final class MessageDigests {
 		 * @throws RuntimeException if no {@link Provider} supports a {@link MessageDigestSpi} implementation for this algorithm.
 		 */
 		public byte[] digest(@Nonnull final Charset charset, @Nonnull final CharSequence... charSequences) {
-			return MessageDigests.digest(getInstance(), charSequences);
+			return MessageDigests.digest(newMessageDigest(), charSequences);
 		}
 
 		/**
@@ -493,7 +713,7 @@ public final class MessageDigests {
 		 * @throws RuntimeException if no {@link Provider} supports a {@link MessageDigestSpi} implementation for this algorithm.
 		 */
 		public byte[] digest(@Nonnull final char[] characters) {
-			return MessageDigests.digest(getInstance(), characters);
+			return MessageDigests.digest(newMessageDigest(), characters);
 		}
 
 		/**
@@ -505,7 +725,7 @@ public final class MessageDigests {
 		 * @throws RuntimeException if no {@link Provider} supports a {@link MessageDigestSpi} implementation for this algorithm.
 		 */
 		public byte[] digest(@Nonnull final Charset charset, @Nonnull final char[] characters) {
-			return MessageDigests.digest(getInstance(), charset, characters);
+			return MessageDigests.digest(newMessageDigest(), charset, characters);
 		}
 
 		/**
@@ -517,7 +737,7 @@ public final class MessageDigests {
 		 * @throws IOException if there is an I/O exception reading from the input stream.
 		 */
 		public byte[] digest(@Nonnull final InputStream inputStream) throws IOException {
-			return MessageDigests.digest(getInstance(), inputStream);
+			return MessageDigests.digest(newMessageDigest(), inputStream);
 		}
 
 		/**
@@ -529,7 +749,72 @@ public final class MessageDigests {
 		 * @throws IOException if there is an I/O exception reading from the file.
 		 */
 		public byte[] digest(@Nonnull final Path file) throws IOException {
-			return MessageDigests.digest(getInstance(), file);
+			return MessageDigests.digest(newMessageDigest(), file);
+		}
+
+		private final Map<String, Hash> emptyHashesByAlgorithmName = new ConcurrentHashMap<>();
+
+		/**
+		 * Returns an "empty" hash using this algorithm. This method is equivalent to creating a message digest and not adding any content, such as calling
+		 * {@link #hash(CharSequence...)} with an empty array of strings.
+		 * @apiNote This method is preferred over calling another hash method and providing no content, not only because this method is more semantically
+		 *          appropriate, but also because this implementation is likely much more efficient.
+		 * @implSpec This method maintains a lazy cache of empty hashes for algorithms. Although these caches are never released, very few message digest algorithms
+		 *           are common (and typically only one or two used in a single application), wasted space is nominal.
+		 * @return A hash for a message digest from this algorithm that has not processed any content..
+		 * @throws RuntimeException if no {@link Provider} supports a {@link MessageDigestSpi} implementation for this algorithm.
+		 */
+		public Hash emptyHash() {
+			return emptyHashesByAlgorithmName.computeIfAbsent(getName(), __ -> Hash.fromDigest(newMessageDigest()));
+		}
+
+		/**
+		 * Determines whether the given hash is "empty", that is, equivalent to hashing no content
+		 * @param hash The hash to check.
+		 * @return Whether the given hash is equal to a hash created from a new message digest which has hashed no content.
+		 * @throws RuntimeException if no {@link Provider} supports a {@link MessageDigestSpi} implementation for this algorithm.
+		 * @see #emptyHash()
+		 */
+		public boolean isEmpty(@Nonnull final Hash hash) {
+			return hash.equals(emptyHash());
+		}
+
+		/**
+		 * Computes a hash using this algorithm for the given byte.
+		 * @param b The byte to digest.
+		 * @return The resulting hash.
+		 */
+		public Hash hash(@Nonnull final byte b) {
+			return MessageDigests.hash(newMessageDigest(), b);
+		}
+
+		/**
+		 * Computes a hash using this algorithm for the specified array of bytes.
+		 * @param bytes The array of bytes to digest.
+		 * @return The array of bytes for the resulting hash value.
+		 */
+		public Hash hash(@Nonnull byte[] bytes) {
+			return MessageDigests.hash(newMessageDigest(), bytes);
+		}
+
+		/**
+		 * Computes a hash using this algorithm for the specified array of bytes, starting at the specified offset.
+		 * @param bytes The array of bytes to digest.
+		 * @param offset The offset to start from in the array of bytes.
+		 * @param length The number of bytes to use, starting at the offset.
+		 * @return The resulting hash.
+		 */
+		public Hash hash(@Nonnull byte[] bytes, final int offset, final int length) {
+			return MessageDigests.hash(newMessageDigest(), bytes, offset, length);
+		}
+
+		/**
+		 * Computes a hash using this algorithm for the specified byte buffer.
+		 * @param byteBuffer The byte buffer containing the bytes to digest.
+		 * @return The resulting hash.
+		 */
+		public Hash hash(@Nonnull ByteBuffer byteBuffer) {
+			return MessageDigests.hash(newMessageDigest(), byteBuffer);
 		}
 
 		/**
@@ -540,7 +825,7 @@ public final class MessageDigests {
 		 * @throws RuntimeException if no {@link Provider} supports a {@link MessageDigestSpi} implementation for this algorithm.
 		 */
 		public Hash hash(@Nonnull final CharSequence... charSequences) {
-			return MessageDigests.hash(getInstance(), charSequences);
+			return MessageDigests.hash(newMessageDigest(), charSequences);
 		}
 
 		/**
@@ -552,7 +837,7 @@ public final class MessageDigests {
 		 * @throws RuntimeException if no {@link Provider} supports a {@link MessageDigestSpi} implementation for this algorithm.
 		 */
 		public Hash hash(@Nonnull final Charset charset, @Nonnull final CharSequence... charSequences) {
-			return MessageDigests.hash(getInstance(), charSequences);
+			return MessageDigests.hash(newMessageDigest(), charSequences);
 		}
 
 		/**
@@ -563,7 +848,7 @@ public final class MessageDigests {
 		 * @throws RuntimeException if no {@link Provider} supports a {@link MessageDigestSpi} implementation for this algorithm.
 		 */
 		public Hash hash(@Nonnull final char[] characters) {
-			return MessageDigests.hash(getInstance(), characters);
+			return MessageDigests.hash(newMessageDigest(), characters);
 		}
 
 		/**
@@ -575,7 +860,7 @@ public final class MessageDigests {
 		 * @throws RuntimeException if no {@link Provider} supports a {@link MessageDigestSpi} implementation for this algorithm.
 		 */
 		public Hash hash(@Nonnull final Charset charset, @Nonnull final char[] characters) {
-			return MessageDigests.hash(getInstance(), charset, characters);
+			return MessageDigests.hash(newMessageDigest(), charset, characters);
 		}
 
 		/**
@@ -586,7 +871,7 @@ public final class MessageDigests {
 		 * @throws RuntimeException if no {@link Provider} supports a {@link MessageDigestSpi} implementation for this algorithm.
 		 */
 		public Hash hash(@Nonnull final Hash... hashes) {
-			return MessageDigests.hash(getInstance(), hashes);
+			return MessageDigests.hash(newMessageDigest(), hashes);
 		}
 
 		/**
@@ -598,7 +883,7 @@ public final class MessageDigests {
 		 * @throws IOException if there is an I/O exception reading from the input stream.
 		 */
 		public Hash hash(@Nonnull final InputStream inputStream) throws IOException {
-			return MessageDigests.hash(getInstance(), inputStream);
+			return MessageDigests.hash(newMessageDigest(), inputStream);
 		}
 
 		/**
@@ -610,25 +895,62 @@ public final class MessageDigests {
 		 * @throws IOException if there is an I/O exception reading from the file.
 		 */
 		public Hash hash(@Nonnull final Path file) throws IOException {
-			return MessageDigests.hash(getInstance(), file);
+			return MessageDigests.hash(newMessageDigest(), file);
 		}
 
 		/**
-		 * Computes a lowercase hex checksum string for the given input bytes.
+		 * Computes a lowercase hex checksum string using this algorithm for the given input byte.
+		 * @implSpec This implementation delegates to {@link MessageDigests#checksum(MessageDigest, byte)}.
+		 * @apiNote This method considers a <dfn>checksum</dfn> to be a string version of a message <dfn>digest</dfn>, as the former is often used in the context of
+		 *          file contents verification.
+		 * @param input The byte for which a digest and then a checksum string should be created.
+		 * @return The lowercase hex checksum string of the resulting hash value.
+		 */
+		public String checksum(final byte input) {
+			return MessageDigests.checksum(newMessageDigest(), input);
+		}
+
+		/**
+		 * Computes a lowercase hex checksum string using this algorithm for the given input bytes.
 		 * @implSpec This implementation delegates to {@link MessageDigests#checksum(MessageDigest, byte[])}.
 		 * @apiNote This method considers a <dfn>checksum</dfn> to be a string version of a message <dfn>digest</dfn>, as the former is often used in the context of
 		 *          file contents verification.
 		 * @param input The sequence of bytes for which a digest and then a checksum string should be created.
 		 * @return The lowercase hex checksum string of the resulting hash value.
-		 * @throws RuntimeException if no {@link Provider} supports a {@link MessageDigestSpi} implementation for this algorithm.
 		 * @see MessageDigest#digest(byte[])
 		 */
 		public String checksum(@Nonnull final byte[] input) {
-			return MessageDigests.checksum(getInstance(), input);
+			return MessageDigests.checksum(newMessageDigest(), input);
 		}
 
 		/**
-		 * Computes a lowercase hex checksum string for the given character sequence using the UTF-8 charset.
+		 * Computes a lowercase hex checksum string using this algorithm for the given input bytes.
+		 * @implSpec This implementation delegates to {@link MessageDigests#checksum(MessageDigest, byte[], int, int)}.
+		 * @apiNote This method considers a <dfn>checksum</dfn> to be a string version of a message <dfn>digest</dfn>, as the former is often used in the context of
+		 *          file contents verification.
+		 * @param input The array of bytes for which a digest and then a checksum string should be created.
+		 * @param offset The offset to start from in the array of bytes.
+		 * @param length The number of bytes to use, starting at the offset.
+		 * @return The lowercase hex checksum string of the resulting hash value.
+		 */
+		public String checksum(@Nonnull final byte[] input, final int offset, final int length) {
+			return MessageDigests.checksum(newMessageDigest(), input, offset, length);
+		}
+
+		/**
+		 * Computes a lowercase hex checksum string using this algorithm for the given input byte buffer.
+		 * @implSpec This implementation delegates to {@link MessageDigests#checksum(MessageDigest, ByteBuffer)}.
+		 * @apiNote This method considers a <dfn>checksum</dfn> to be a string version of a message <dfn>digest</dfn>, as the former is often used in the context of
+		 *          file contents verification.
+		 * @param byteBuffer The byte buffer containing the bytes for which a digest and then a checksum string should be created.
+		 * @return The lowercase hex checksum string of the resulting hash value.
+		 */
+		public String checksum(@Nonnull final ByteBuffer byteBuffer) {
+			return MessageDigests.checksum(newMessageDigest(), byteBuffer);
+		}
+
+		/**
+		 * Computes a lowercase hex checksum string using this algorithm for the given character sequence using the UTF-8 charset.
 		 * @implSpec This implementation delegates to {@link MessageDigests#checksum(MessageDigest, CharSequence)}.
 		 * @apiNote This method considers a <dfn>checksum</dfn> to be a string version of a message <dfn>digest</dfn>, as the former is often used in the context of
 		 *          file contents verification.
@@ -637,11 +959,11 @@ public final class MessageDigests {
 		 * @return The lowercase hex checksum string of the resulting hash value.
 		 */
 		public String checksum(@Nonnull final CharSequence charSequence) {
-			return MessageDigests.checksum(getInstance(), charSequence);
+			return MessageDigests.checksum(newMessageDigest(), charSequence);
 		}
 
 		/**
-		 * Computes a lowercase hex checksum string for the given characters using the UTF-8 charset.
+		 * Computes a lowercase hex checksum string using this algorithm for the given characters using the UTF-8 charset.
 		 * @implSpec This implementation delegates to {@link MessageDigests#checksum(MessageDigest, char[])}.
 		 * @apiNote This method considers a <dfn>checksum</dfn> to be a string version of a message <dfn>digest</dfn>, as the former is often used in the context of
 		 *          file contents verification.
@@ -651,11 +973,12 @@ public final class MessageDigests {
 		 * @see Bytes#toHexString(byte[])
 		 */
 		public String checksum(@Nonnull final char[] characters) {
-			return MessageDigests.checksum(getInstance(), characters);
+			return MessageDigests.checksum(newMessageDigest(), characters);
 		}
 
 		/**
-		 * Computes a lowercase hex checksum string for the contents of the given input stream. All the remaining contents of the input stream are consumed.
+		 * Computes a lowercase hex checksum string using this algorithm for the contents of the given input stream. All the remaining contents of the input stream
+		 * are consumed.
 		 * @implSpec This implementation delegates to {@link MessageDigests#checksum(MessageDigest, InputStream)}.
 		 * @apiNote This method considers a <dfn>checksum</dfn> to be a string version of a message <dfn>digest</dfn>, as the former is often used in the context of
 		 *          file contents verification.
@@ -666,11 +989,11 @@ public final class MessageDigests {
 		 * @see Bytes#toHexString(byte[])
 		 */
 		public String checksum(@Nonnull final InputStream inputStream) throws IOException {
-			return MessageDigests.checksum(getInstance(), inputStream);
+			return MessageDigests.checksum(newMessageDigest(), inputStream);
 		}
 
 		/**
-		 * Computes a lowercase hex checksum string for the contents of the given file.
+		 * Computes a lowercase hex checksum string using this algorithm for the contents of the given file.
 		 * @implSpec This implementation delegates to {@link MessageDigests#checksum(MessageDigest, Path)}.
 		 * @apiNote This method considers a <dfn>checksum</dfn> to be a string version of a message <dfn>digest</dfn>, as the former is often used in the context of
 		 *          file contents verification.
@@ -681,7 +1004,7 @@ public final class MessageDigests {
 		 * @see Bytes#toHexString(byte[])
 		 */
 		public String checksum(@Nonnull final Path file) throws IOException {
-			return MessageDigests.checksum(getInstance(), file);
+			return MessageDigests.checksum(newMessageDigest(), file);
 		}
 
 		/**
