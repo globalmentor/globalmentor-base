@@ -14,6 +14,7 @@
 
 	<name>GlobalMentor Base</name>
 	<description>GlobalMentor base aggregate parent POM.</description>
+	<url>https://www.globalmentor.com/software/</url>
 	<inceptionYear>1996</inceptionYear>
 
 	<licenses>
