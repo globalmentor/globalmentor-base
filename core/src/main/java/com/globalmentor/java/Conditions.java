@@ -372,6 +372,7 @@ public class Conditions {
 	 * <p>
 	 * This is normally a precondition check.
 	 * </p>
+	 * @apiNote Java 9 introduced an equivalent method in {@link java.util.Objects}.
 	 * @param index The index to check.
 	 * @param length The exclusive length.
 	 * @return The given index.
@@ -386,6 +387,7 @@ public class Conditions {
 	 * <p>
 	 * This is normally a precondition check.
 	 * </p>
+	 * @apiNote Java 16 introduced an equivalent method in {@link java.util.Objects}.
 	 * @param index The index to check.
 	 * @param length The exclusive length.
 	 * @return The given index.
