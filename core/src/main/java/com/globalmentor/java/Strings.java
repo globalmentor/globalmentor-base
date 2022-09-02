@@ -406,9 +406,23 @@ public class Strings {
 	 * @param len The requested length.
 	 * @param ch The character to be added to the string, if needed.
 	 * @return A string with the correct length.
+	 * @deprecated to be removed in favor of {@link #forceLength(String, int, char)}.
 	 */
-	public static String makeStringLength(final String inString, final int len, final char ch) { //TODO rename to forceLength
-		return makeStringLength(inString, len, ch, -1);
+	@Deprecated
+	public static String makeStringLength(final String inString, final int len, final char ch) {
+		return forceLength(inString, len, ch);
+	}
+
+	/**
+	 * Ensures that the given string is the correct length by adding or deleting characters to or from the end.
+	 * @param inString The string to process.
+	 * @param len The requested length.
+	 * @param ch The character to be added to the string, if needed.
+	 * @return A string with the correct length.
+	 * @see StringBuilders#appendForceLength(StringBuilder, CharSequence, int, char)
+	 */
+	public static String forceLength(final String inString, final int len, final char ch) {
+		return forceLength(inString, len, ch, -1);
 	}
 
 	/**
@@ -418,8 +432,23 @@ public class Strings {
 	 * @param ch The character to be added to the string, if needed.
 	 * @param pos The position at which to insert or delete characters, or -1 if the end should be used.
 	 * @return A string with the correct length.
+	 * @deprecated to be removed in favor of {@link #forceLength(String, int, char, int)}.
 	 */
-	public static String makeStringLength(final String inString, final int len, final char ch, int pos) { //TODO rename to forceLength
+	@Deprecated
+	public static String makeStringLength(final String inString, final int len, final char ch, int pos) {
+		return forceLength(inString, len, ch, pos);
+	}
+
+	/**
+	 * Ensures that the given string is the correct length by adding or deleting characters to or from the requested position.
+	 * @param inString The string to process.
+	 * @param len The requested length.
+	 * @param ch The character to be added to the string, if needed.
+	 * @param pos The position at which to insert or delete characters, or -1 if the end should be used.
+	 * @return A string with the correct length.
+	 * @see StringBuilders#appendForceLength(StringBuilder, CharSequence, int, char, int)
+	 */
+	public static String forceLength(final String inString, final int len, final char ch, int pos) {
 		final int originalLength = inString.length(); //get the length of the original string
 		if(originalLength == len) { //if the string is already the correct length
 			return inString; //return the string untouched

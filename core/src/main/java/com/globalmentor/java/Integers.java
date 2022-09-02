@@ -138,7 +138,7 @@ public class Integers {
 	 */
 	public static String toString(final int value, final int radix, final int length) {
 		//convert the integer to a string, then make the string the correct length by padding the beginning with zeros
-		return Strings.makeStringLength(Integer.toString(value, radix), length, '0', 0);
+		return Strings.forceLength(Integer.toString(value, radix), length, '0', 0);
 	}
 
 	/**
@@ -165,7 +165,7 @@ public class Integers {
 		if(hexCase == Case.UPPERCASE) { //if uppercase is requested
 			hexString = hexString.toUpperCase();
 		}
-		return Strings.makeStringLength(hexString, length, '0', 0); //make the string the correct length by padding the beginning with zeros
+		return Strings.forceLength(hexString, length, '0', 0); //make the string the correct length by padding the beginning with zeros
 	}
 
 	/**
