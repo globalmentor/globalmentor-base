@@ -33,47 +33,47 @@ public class AppendablesTest {
 	/** @see Appendables#appendJoined(Appendable, char, CharSequence...) */
 	@Test
 	void testAppendJoinedCharDelimiterVarargs() throws IOException {
-		assertThat(Appendables.appendJoined(new StringBuilder(), ',').toString(), is(""));
-		assertThat(Appendables.appendJoined(new StringBuilder(), ',', "").toString(), is(""));
-		assertThat(Appendables.appendJoined(new StringBuilder(), ',', "one").toString(), is("one"));
-		assertThat(Appendables.appendJoined(new StringBuilder(), ',', "one", "two").toString(), is("one,two"));
-		assertThat(Appendables.appendJoined(new StringBuilder(), ',', "one", "two", "three").toString(), is("one,two,three"));
-		assertThat(Appendables.appendJoined(new StringBuilder(), ',', "one", null, "three").toString(), is("one,null,three"));
+		assertThat(Appendables.appendJoined(new StringBuilder(), ','), hasToString(""));
+		assertThat(Appendables.appendJoined(new StringBuilder(), ',', ""), hasToString(""));
+		assertThat(Appendables.appendJoined(new StringBuilder(), ',', "one"), hasToString("one"));
+		assertThat(Appendables.appendJoined(new StringBuilder(), ',', "one", "two"), hasToString("one,two"));
+		assertThat(Appendables.appendJoined(new StringBuilder(), ',', "one", "two", "three"), hasToString("one,two,three"));
+		assertThat(Appendables.appendJoined(new StringBuilder(), ',', "one", null, "three"), hasToString("one,null,three"));
 	}
 
 	/** @see Appendables#appendJoined(Appendable, char, Iterable) */
 	@Test
 	void testAppendJoinedCharDelimiterIterable() throws IOException {
-		assertThat(Appendables.appendJoined(new StringBuilder(), ',', asList()).toString(), is(""));
-		assertThat(Appendables.appendJoined(new StringBuilder(), ',', asList("")).toString(), is(""));
-		assertThat(Appendables.appendJoined(new StringBuilder(), ',', asList("one")).toString(), is("one"));
-		assertThat(Appendables.appendJoined(new StringBuilder(), ',', asList("one", "two")).toString(), is("one,two"));
-		assertThat(Appendables.appendJoined(new StringBuilder(), ',', asList("one", "two", "three")).toString(), is("one,two,three"));
-		assertThat(Appendables.appendJoined(new StringBuilder(), ',', asList("one", null, "three")).toString(), is("one,null,three"));
+		assertThat(Appendables.appendJoined(new StringBuilder(), ',', asList()), hasToString(""));
+		assertThat(Appendables.appendJoined(new StringBuilder(), ',', asList("")), hasToString(""));
+		assertThat(Appendables.appendJoined(new StringBuilder(), ',', asList("one")), hasToString("one"));
+		assertThat(Appendables.appendJoined(new StringBuilder(), ',', asList("one", "two")), hasToString("one,two"));
+		assertThat(Appendables.appendJoined(new StringBuilder(), ',', asList("one", "two", "three")), hasToString("one,two,three"));
+		assertThat(Appendables.appendJoined(new StringBuilder(), ',', asList("one", null, "three")), hasToString("one,null,three"));
 	}
 
 	/** @see Appendables#appendJoined(Appendable, CharSequence, CharSequence...) */
 	@Test
 	void testAppendJoinedCharSequenceDelimiterVarargs() throws IOException {
-		assertThat(Appendables.appendJoined(new StringBuilder(), ",").toString(), is(""));
-		assertThat(Appendables.appendJoined(new StringBuilder(), ",", "").toString(), is(""));
-		assertThat(Appendables.appendJoined(new StringBuilder(), ",", "one").toString(), is("one"));
-		assertThat(Appendables.appendJoined(new StringBuilder(), ",", "one", "two").toString(), is("one,two"));
-		assertThat(Appendables.appendJoined(new StringBuilder(), ",", "one", "two", "three").toString(), is("one,two,three"));
-		assertThat(Appendables.appendJoined(new StringBuilder(), ",", "one", null, "three").toString(), is("one,null,three"));
-		assertThat(Appendables.appendJoined(new StringBuilder(), ", ", "one", "two", "three").toString(), is("one, two, three"));
+		assertThat(Appendables.appendJoined(new StringBuilder(), ","), hasToString(""));
+		assertThat(Appendables.appendJoined(new StringBuilder(), ",", ""), hasToString(""));
+		assertThat(Appendables.appendJoined(new StringBuilder(), ",", "one"), hasToString("one"));
+		assertThat(Appendables.appendJoined(new StringBuilder(), ",", "one", "two"), hasToString("one,two"));
+		assertThat(Appendables.appendJoined(new StringBuilder(), ",", "one", "two", "three"), hasToString("one,two,three"));
+		assertThat(Appendables.appendJoined(new StringBuilder(), ",", "one", null, "three"), hasToString("one,null,three"));
+		assertThat(Appendables.appendJoined(new StringBuilder(), ", ", "one", "two", "three"), hasToString("one, two, three"));
 	}
 
 	/** @see Appendables#appendJoined(Appendable, CharSequence, Iterable) */
 	@Test
 	void testAppendJoinedCharSequenceDelimiterIterable() throws IOException {
-		assertThat(Appendables.appendJoined(new StringBuilder(), ",", asList()).toString(), is(""));
-		assertThat(Appendables.appendJoined(new StringBuilder(), ",", asList("")).toString(), is(""));
-		assertThat(Appendables.appendJoined(new StringBuilder(), ",", asList("one")).toString(), is("one"));
-		assertThat(Appendables.appendJoined(new StringBuilder(), ",", asList("one", "two")).toString(), is("one,two"));
-		assertThat(Appendables.appendJoined(new StringBuilder(), ",", asList("one", "two", "three")).toString(), is("one,two,three"));
-		assertThat(Appendables.appendJoined(new StringBuilder(), ",", asList("one", null, "three")).toString(), is("one,null,three"));
-		assertThat(Appendables.appendJoined(new StringBuilder(), ", ", asList("one", "two", "three")).toString(), is("one, two, three"));
+		assertThat(Appendables.appendJoined(new StringBuilder(), ",", asList()), hasToString(""));
+		assertThat(Appendables.appendJoined(new StringBuilder(), ",", asList("")), hasToString(""));
+		assertThat(Appendables.appendJoined(new StringBuilder(), ",", asList("one")), hasToString("one"));
+		assertThat(Appendables.appendJoined(new StringBuilder(), ",", asList("one", "two")), hasToString("one,two"));
+		assertThat(Appendables.appendJoined(new StringBuilder(), ",", asList("one", "two", "three")), hasToString("one,two,three"));
+		assertThat(Appendables.appendJoined(new StringBuilder(), ",", asList("one", null, "three")), hasToString("one,null,three"));
+		assertThat(Appendables.appendJoined(new StringBuilder(), ", ", asList("one", "two", "three")), hasToString("one, two, three"));
 	}
 
 }

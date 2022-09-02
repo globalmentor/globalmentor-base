@@ -268,7 +268,7 @@ public class Prose {
 	 * @return <code>true</code> if the text is a page number.
 	 */
 	public static boolean isPageNumber(final String text) { //TODO put this in some common routine in a common package
-		if(CharSequences.charIndexOf(text, EOL_CHARACTERS) > 0) //if the text is not on a single line
+		if(indexOf(text, EOL_CHARACTERS) > 0) //if the text is not on a single line
 			return false; //this isn't a page number
 		/** The strings that count as page indications. */
 		final String[] pageStrings = new String[] {"p", "P", "pg", "Pg", "PG", "page", "Page", "PAGE"};
@@ -444,7 +444,7 @@ public class Prose {
 	 * @return The value of this section, or -1 if the string does not appear to be of the given section type.
 	 */
 	public static int getSectionNumber(final String text, final String sectionLabel) {
-		final int eolIndex = CharSequences.charIndexOf(text, EOL_CHARACTERS); //find the end of the line
+		final int eolIndex = indexOf(text, EOL_CHARACTERS); //find the end of the line
 		final String line = text.substring(0, eolIndex >= 0 ? eolIndex : text.length()); //get the text up to our delimiter, if there is one
 		if(isQuoted(line)) //if this line is quoted
 			return -1; //quoted strings are not headings
@@ -489,12 +489,12 @@ public class Prose {
 	 */
 	public static boolean isQuoted(final String string) {
 		//get the index of the first non-whitespace character
-		final int firstCharIndex = CharSequences.notCharIndexOf(string, TRIM_CHARACTERS);
+		final int firstCharIndex = indexNotOf(string, TRIM_CHARACTERS);
 		if(firstCharIndex >= 0) { //if there is a first character (which also means there's a last character
 			if(LEFT_QUOTE_CHARS.indexOf(string.charAt(firstCharIndex)) >= 0) //if the line starts with a quote character
 				return true; //show that we found a quote
 			//get the index of the last non-whitespace character (we don't need to make sure it's valid--if there's a first character, there's a last character)
-			final int lastCharIndex = CharSequences.notCharLastIndexOf(string, TRIM_CHARACTERS);
+			final int lastCharIndex = lastIndexNotOf(string, TRIM_CHARACTERS);
 			if(RIGHT_QUOTE_CHARS.indexOf(string.charAt(lastCharIndex)) >= 0) //if the line ends with a quote character
 				return true; //show that we found a quote
 		}

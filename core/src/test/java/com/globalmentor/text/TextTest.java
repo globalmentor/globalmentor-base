@@ -34,37 +34,37 @@ public class TextTest {
 	@Test
 	void testNormalizeEol() {
 		//happy path
-		assertThat(Text.normalizeEol("foo\r\nbar").toString(), is("foo\nbar"));
+		assertThat(Text.normalizeEol("foo\r\nbar"), hasToString("foo\nbar"));
 		//edge cases
-		assertThat(Text.normalizeEol("\r\nfoobar").toString(), is("\nfoobar"));
-		assertThat(Text.normalizeEol("foobar\r\n").toString(), is("foobar\n"));
-		assertThat(Text.normalizeEol("\r\nfoobar\r\n").toString(), is("\nfoobar\n"));
-		assertThat(Text.normalizeEol("fo\r\noba\r\nr").toString(), is("fo\noba\nr"));
+		assertThat(Text.normalizeEol("\r\nfoobar"), hasToString("\nfoobar"));
+		assertThat(Text.normalizeEol("foobar\r\n"), hasToString("foobar\n"));
+		assertThat(Text.normalizeEol("\r\nfoobar\r\n"), hasToString("\nfoobar\n"));
+		assertThat(Text.normalizeEol("fo\r\noba\r\nr"), hasToString("fo\noba\nr"));
 		//runs
-		assertThat(Text.normalizeEol("foo\r\n\r\nbar").toString(), is("foo\n\nbar"));
-		assertThat(Text.normalizeEol("foo\r\n\r\n\r\nbar").toString(), is("foo\n\n\nbar"));
+		assertThat(Text.normalizeEol("foo\r\n\r\nbar"), hasToString("foo\n\nbar"));
+		assertThat(Text.normalizeEol("foo\r\n\r\n\r\nbar"), hasToString("foo\n\n\nbar"));
 		//no change
-		assertThat(Text.normalizeEol("foo\nbar").toString(), is("foo\nbar"));
-		assertThat(Text.normalizeEol("\nfoobar").toString(), is("\nfoobar"));
-		assertThat(Text.normalizeEol("foobar\n").toString(), is("foobar\n"));
-		assertThat(Text.normalizeEol("\nfoobar\n").toString(), is("\nfoobar\n"));
-		assertThat(Text.normalizeEol("fo\noba\nr").toString(), is("fo\noba\nr"));
-		assertThat(Text.normalizeEol("foo\n\nbar").toString(), is("foo\n\nbar"));
-		assertThat(Text.normalizeEol("foo\n\n\nbar").toString(), is("foo\n\n\nbar"));
+		assertThat(Text.normalizeEol("foo\nbar"), hasToString("foo\nbar"));
+		assertThat(Text.normalizeEol("\nfoobar"), hasToString("\nfoobar"));
+		assertThat(Text.normalizeEol("foobar\n"), hasToString("foobar\n"));
+		assertThat(Text.normalizeEol("\nfoobar\n"), hasToString("\nfoobar\n"));
+		assertThat(Text.normalizeEol("fo\noba\nr"), hasToString("fo\noba\nr"));
+		assertThat(Text.normalizeEol("foo\n\nbar"), hasToString("foo\n\nbar"));
+		assertThat(Text.normalizeEol("foo\n\n\nbar"), hasToString("foo\n\n\nbar"));
 		final StringBuilder textNeedingNoChange = new StringBuilder("\nfoo\n\n\nbar\n");
 		assertThat("No modifications made if no change required.", Text.normalizeEol(textNeedingNoChange), is(sameInstance(textNeedingNoChange)));
 		//mixed
-		assertThat(Text.normalizeEol("\rfoobar").toString(), is("\nfoobar"));
-		assertThat(Text.normalizeEol("\r\n\rfoobar").toString(), is("\n\nfoobar"));
-		assertThat(Text.normalizeEol("foobar\r").toString(), is("foobar\n"));
-		assertThat(Text.normalizeEol("foobar\n\r").toString(), is("foobar\n\n"));
-		assertThat(Text.normalizeEol("foo\rbar").toString(), is("foo\nbar"));
-		assertThat(Text.normalizeEol("foo\nbar").toString(), is("foo\nbar"));
-		assertThat(Text.normalizeEol("foo\n\rbar").toString(), is("foo\n\nbar"));
-		assertThat(Text.normalizeEol("foo\n\r\nbar").toString(), is("foo\n\nbar"));
-		assertThat(Text.normalizeEol("foo\n\r\r\nbar").toString(), is("foo\n\n\nbar"));
-		assertThat(Text.normalizeEol("foo\n\r\n\rbar").toString(), is("foo\n\n\nbar"));
-		assertThat(Text.normalizeEol("foo\r\n\r\n\rbar").toString(), is("foo\n\n\nbar"));
+		assertThat(Text.normalizeEol("\rfoobar"), hasToString("\nfoobar"));
+		assertThat(Text.normalizeEol("\r\n\rfoobar"), hasToString("\n\nfoobar"));
+		assertThat(Text.normalizeEol("foobar\r"), hasToString("foobar\n"));
+		assertThat(Text.normalizeEol("foobar\n\r"), hasToString("foobar\n\n"));
+		assertThat(Text.normalizeEol("foo\rbar"), hasToString("foo\nbar"));
+		assertThat(Text.normalizeEol("foo\nbar"), hasToString("foo\nbar"));
+		assertThat(Text.normalizeEol("foo\n\rbar"), hasToString("foo\n\nbar"));
+		assertThat(Text.normalizeEol("foo\n\r\nbar"), hasToString("foo\n\nbar"));
+		assertThat(Text.normalizeEol("foo\n\r\r\nbar"), hasToString("foo\n\n\nbar"));
+		assertThat(Text.normalizeEol("foo\n\r\n\rbar"), hasToString("foo\n\n\nbar"));
+		assertThat(Text.normalizeEol("foo\r\n\r\n\rbar"), hasToString("foo\n\n\nbar"));
 	}
 
 	/**
@@ -74,10 +74,10 @@ public class TextTest {
 	 */
 	@Test
 	void shouldNormalizeCrlfToCrIfNormalizingToCr() {
-		assertThat(Text.normalizeEol("foo\rbar", "\r").toString(), is("foo\rbar"));
-		assertThat(Text.normalizeEol("foo\r\nbar", "\r").toString(), is("foo\rbar"));
-		assertThat(Text.normalizeEol("foo\n\rbar", "\r").toString(), is("foo\r\rbar"));
-		assertThat(Text.normalizeEol("foo\r\rbar", "\r").toString(), is("foo\r\rbar"));
+		assertThat(Text.normalizeEol("foo\rbar", "\r"), hasToString("foo\rbar"));
+		assertThat(Text.normalizeEol("foo\r\nbar", "\r"), hasToString("foo\rbar"));
+		assertThat(Text.normalizeEol("foo\n\rbar", "\r"), hasToString("foo\r\rbar"));
+		assertThat(Text.normalizeEol("foo\r\rbar", "\r"), hasToString("foo\r\rbar"));
 	}
 
 }

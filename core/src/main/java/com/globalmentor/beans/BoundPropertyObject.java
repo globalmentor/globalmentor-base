@@ -17,8 +17,7 @@
 package com.globalmentor.beans;
 
 import java.beans.*;
-
-import com.globalmentor.java.Objects;
+import java.util.Objects;
 
 /**
  * An object that automatically supports bound and constrained properties.
@@ -400,9 +399,9 @@ public class BoundPropertyObject implements PropertyBindable, PropertyConstraina
 	}
 
 	/**
-	 * Reports a vetoable property update to any registered listeners. If any veotable change listeners vetos the change, then a new event will be fired reverting
-	 * all the listeners to the old value, after which the {@link PropertyVetoException} will be rethrown. No event is fired if old and new are equal and non-
-	 * <code>null</code>. This method delegates actual firing of the event to {@link #fireVetoableChange(PropertyChangeEvent)}.
+	 * Reports a vetoable property update to any registered listeners. If any vetoable change listeners vetoes the change, then a new event will be fired
+	 * reverting all the listeners to the old value, after which the {@link PropertyVetoException} will be rethrown. No event is fired if old and new are equal
+	 * and non- <code>null</code>. This method delegates actual firing of the event to {@link #fireVetoableChange(PropertyChangeEvent)}.
 	 * @param <V> The type of the property values.
 	 * @param propertyName The name of the property that is about to change.
 	 * @param oldValue The old value of the property.
@@ -432,7 +431,7 @@ public class BoundPropertyObject implements PropertyBindable, PropertyConstraina
 	 */
 	protected void fireVetoableChange(final String propertyName, final int oldValue, final int newValue) throws PropertyVetoException {
 		if(oldValue != newValue) { //if the values are different
-			fireVetoableChange(propertyName, new Integer(oldValue), new Integer(newValue)); //convert the primitive values to objects and fire the event
+			fireVetoableChange(propertyName, Integer.valueOf(oldValue), Integer.valueOf(newValue)); //convert the primitive values to objects and fire the event
 		}
 	}
 
@@ -447,12 +446,12 @@ public class BoundPropertyObject implements PropertyBindable, PropertyConstraina
 	 */
 	protected void fireVetoableChange(final String propertyName, final boolean oldValue, final boolean newValue) throws PropertyVetoException {
 		if(oldValue != newValue) { //if the values are different
-			fireVetoableChange(propertyName, new Boolean(oldValue), new Boolean(newValue)); //convert the primitive values to objects and fire the event
+			fireVetoableChange(propertyName, Boolean.valueOf(oldValue), Boolean.valueOf(newValue)); //convert the primitive values to objects and fire the event
 		}
 	}
 
 	/**
-	 * Fires a vetoable property update to any registered listeners. If any veotable change listeners vetos the change, then a new event will be fired reverting
+	 * Fires a vetoable property update to any registered listeners. If any vetoable change listeners vetoes the change, then a new event will be fired reverting
 	 * all the listeners to the old value, after which the {@link PropertyVetoException} will be rethrown. No event is fired if old and new are equal and non-
 	 * <code>null</code>. This method does the actual delegation to the vetoable change support.
 	 * @param propertyChangeEvent The event to fire.

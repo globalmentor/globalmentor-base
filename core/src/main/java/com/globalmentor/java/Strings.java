@@ -22,6 +22,7 @@ import java.nio.charset.Charset;
 
 import com.globalmentor.io.IO;
 
+import static com.globalmentor.java.CharSequences.*;
 import static com.globalmentor.java.Characters.*;
 import static java.nio.charset.StandardCharsets.*;
 
@@ -226,14 +227,14 @@ public class Strings {
 	public static int tokenIndex(final String inString, int tokenNumber, final Characters delimiters) {
 		int i = 0; //start at the beginning of the string
 		while(true) {
-			i = CharSequences.notCharIndexOf(inString, delimiters, i); //find the next token
+			i = indexNotOf(inString, delimiters, i); //find the next token
 			if(i == -1) //if there is no other token
 				break; //exit, because there are no more tokens left
 			tokenNumber--; //show that we've found another token
 			if(tokenNumber == 0) //if we've found all the tokens we needed to
 				break; //leave, because i now has the position of that token
 			else { //if there are still more tokens to find
-				i = CharSequences.charIndexOf(inString, delimiters, i); //starting at our current position, find the next delimiter character
+				i = indexOf(inString, delimiters, i); //starting at our current position, find the next delimiter character
 				if(i == -1) //if there is no delimiter after this token (i.e. this is the last token)
 					break; //exit, because there are no more tokens left
 			}
@@ -251,7 +252,7 @@ public class Strings {
 	public static int tokenEndIndex(final String inString, final int tokenNumber, final Characters delimiters) {
 		int i = tokenIndex(inString, tokenNumber, delimiters); //find the beginning of the specified token
 		if(i != -1) { //if we found the beginning of the specified token
-			i = CharSequences.charIndexOf(inString, delimiters, i); //find the character right after the token
+			i = indexOf(inString, delimiters, i); //find the character right after the token
 			if(i == -1) //if there are no more delimiters after this token
 				i = inString.length(); //we know that this token goes to the end of the string
 		}
@@ -340,7 +341,7 @@ public class Strings {
 		String outString = inString; //this is the string we'll process
 		int fromIndex = 0; //we'll start looking for links at the beginning of the string
 		while(fromIndex < outString.length()) { //keep looking until we run out of characters
-			int checkIndex = CharSequences.charIndexOf(outString, Characters.of('.', '@'), fromIndex); //see if we can find any of the hyperlink characters TODO use a constant
+			int checkIndex = indexOf(outString, Characters.of('.', '@'), fromIndex); //see if we can find any of the hyperlink characters TODO use a constant
 			if(checkIndex != -1) { //if we found one of them
 				int wordBegin = getWordBeginning(outString, checkIndex); //find the beginning of this word
 				int originalWordEnd = getWordEnd(outString, checkIndex); //find the end of this word
@@ -406,9 +407,23 @@ public class Strings {
 	 * @param len The requested length.
 	 * @param ch The character to be added to the string, if needed.
 	 * @return A string with the correct length.
+	 * @deprecated to be removed in favor of {@link #forceLength(String, int, char)}.
 	 */
-	public static String makeStringLength(final String inString, final int len, final char ch) { //TODO rename to forceLength
-		return makeStringLength(inString, len, ch, -1);
+	@Deprecated
+	public static String makeStringLength(final String inString, final int len, final char ch) {
+		return forceLength(inString, len, ch);
+	}
+
+	/**
+	 * Ensures that the given string is the correct length by adding or deleting characters to or from the end.
+	 * @param inString The string to process.
+	 * @param len The requested length.
+	 * @param ch The character to be added to the string, if needed.
+	 * @return A string with the correct length.
+	 * @see StringBuilders#appendForceLength(StringBuilder, CharSequence, int, char)
+	 */
+	public static String forceLength(final String inString, final int len, final char ch) {
+		return forceLength(inString, len, ch, -1);
 	}
 
 	/**
@@ -418,8 +433,23 @@ public class Strings {
 	 * @param ch The character to be added to the string, if needed.
 	 * @param pos The position at which to insert or delete characters, or -1 if the end should be used.
 	 * @return A string with the correct length.
+	 * @deprecated to be removed in favor of {@link #forceLength(String, int, char, int)}.
 	 */
-	public static String makeStringLength(final String inString, final int len, final char ch, int pos) { //TODO rename to forceLength
+	@Deprecated
+	public static String makeStringLength(final String inString, final int len, final char ch, int pos) {
+		return forceLength(inString, len, ch, pos);
+	}
+
+	/**
+	 * Ensures that the given string is the correct length by adding or deleting characters to or from the requested position.
+	 * @param inString The string to process.
+	 * @param len The requested length.
+	 * @param ch The character to be added to the string, if needed.
+	 * @param pos The position at which to insert or delete characters, or -1 if the end should be used.
+	 * @return A string with the correct length.
+	 * @see StringBuilders#appendForceLength(StringBuilder, CharSequence, int, char, int)
+	 */
+	public static String forceLength(final String inString, final int len, final char ch, int pos) {
 		final int originalLength = inString.length(); //get the length of the original string
 		if(originalLength == len) { //if the string is already the correct length
 			return inString; //return the string untouched
@@ -705,7 +735,7 @@ public class Strings {
 	 * @return The string with the first occurring character and everything after it removed, or the original string if no changes were made.
 	 */
 	public static String truncateChar(final String string, final Characters delimiters) {
-		final int index = CharSequences.charIndexOf(string, delimiters); //find the first occurrence of one of the characters
+		final int index = CharSequences.indexOf(string, delimiters); //find the first occurrence of one of the characters
 		//if one of the characters is present, remove it and everything following
 		return index >= 0 ? string.substring(0, index) : string;
 	}
@@ -718,7 +748,7 @@ public class Strings {
 	 * @return A new string with the specified information collapsed.
 	 */
 	public static String collapse(final String inString, final Characters collapseChars, final String replaceString) {
-		if(CharSequences.charIndexOf(inString, collapseChars) >= 0) { //first search the string to see if we would replace something; if so
+		if(CharSequences.indexOf(inString, collapseChars) >= 0) { //first search the string to see if we would replace something; if so
 			final StringBuilder stringBuilder = new StringBuilder(inString); //create a new string builder from the string
 			StringBuilders.collapse(stringBuilder, collapseChars, replaceString); //collapse the characters
 			return stringBuilder.toString(); //convert the string buffer back to a string and return it

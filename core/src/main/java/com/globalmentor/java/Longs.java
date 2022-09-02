@@ -48,7 +48,7 @@ public class Longs {
 	 */
 	public static String toHexString(final long value, final int length) {
 		//convert the integer to hex, then make the string the correct length by padding the beginning with zeros
-		return Strings.makeStringLength(Long.toHexString(value), length, '0', 0);
+		return Strings.forceLength(Long.toHexString(value), length, '0', 0);
 	}
 
 	/**
