@@ -72,10 +72,11 @@ public class CharSequences {
 	 * @param charSequence The character sequence to be searched.
 	 * @param characters The string of characters to check.
 	 * @return The index of the first occurrence of one of the supplied characters, or -1 if none were found.
+	 * @deprecated to be removed in favor of {@link #indexOf(CharSequence, Characters)}.
 	 */
 	@Deprecated
 	public static int charIndexOf(final CharSequence charSequence, final Characters characters) {
-		return charIndexOf(charSequence, characters, 0); //look of the characters, starting at the beginning of the string
+		return indexOf(charSequence, characters, 0); //look of the characters, starting at the beginning of the string
 	}
 
 	/**
@@ -84,15 +85,11 @@ public class CharSequences {
 	 * @param characters The string of characters to check.
 	 * @param index The index to search from.
 	 * @return The index of the first occurrence of one of the supplied characters, or -1 if none were found.
+	 * @deprecated to be removed in favor of {@link #indexOf(CharSequence, Characters, int)}.
 	 */
 	@Deprecated
 	public static int charIndexOf(final CharSequence charSequence, final Characters characters, final int index) {
-		for(int i = index; i < charSequence.length(); ++i) { //look at each character in the sequence
-			if(characters.contains(charSequence.charAt(i))) { //if this character is in our characters
-				return i; //return the index we're at
-			}
-		}
-		return -1; //if we make it to here, we didn't find any of the characters
+		return indexOf(charSequence, characters, index);
 	}
 
 	/**
@@ -100,10 +97,11 @@ public class CharSequences {
 	 * @param charSequence The character sequence to be searched.
 	 * @param characters The string of characters to check.
 	 * @return The index of the last occurrence of one of the supplied characters, or -1 if none were found.
+	 * @deprecated to be removed in favor of {@link #lastIndexNotOf(CharSequence, Characters)}.
 	 */
 	@Deprecated
 	public static int charLastIndexOf(final CharSequence charSequence, final Characters characters) {
-		return charLastIndexOf(charSequence, characters, charSequence.length() - 1); //search the sequence, starting at the end
+		return lastIndexOf(charSequence, characters, charSequence.length() - 1); //search the sequence, starting at the end
 	}
 
 	/**
@@ -112,14 +110,11 @@ public class CharSequences {
 	 * @param characters The string of characters to check.
 	 * @param index The index to search from.
 	 * @return The index of the last occurrence of one of the supplied characters, or -1 if none were found.
+	 * @deprecated to be removed in favor of {@link #lastIndexOf(CharSequence, Characters, int)}.
 	 */
 	@Deprecated
 	public static int charLastIndexOf(final CharSequence charSequence, final Characters characters, final int index) {
-		for(int i = index; i >= 0; --i) { //look at each character in the sequence, starting at the end
-			if(characters.contains(charSequence.charAt(i))) //if this character is in our characters
-				return i; //return the index we're at
-		}
-		return -1; //if we make it to here, we didn't find any of the characters
+		return lastIndexOf(charSequence, characters, index);
 	}
 
 	/**
@@ -663,8 +658,8 @@ public class CharSequences {
 	}
 
 	/**
-	 * Determines the first index of the given character. If the character sequence is a {@link String}, this method delegates to {@link String#indexOf(int, int)}
-	 * .
+	 * Determines the first index of the given character. If the character sequence is a {@link String}, this method delegates to
+	 * {@link String#indexOf(int, int)}.
 	 * @param charSequence The character sequence to check.
 	 * @param character The character to search for.
 	 * @param index The first index to examine.
@@ -729,6 +724,7 @@ public class CharSequences {
 	 * @param charSequence The character sequence to check.
 	 * @param character The character to search for.
 	 * @return The index of the last occurrence of the given character, or -1 if the character was not found.
+	 * @see String#lastIndexOf(int)
 	 */
 	public static int lastIndexOf(final CharSequence charSequence, final char character) {
 		return lastIndexOf(charSequence, character, charSequence.length() - 1); //search from the end
@@ -743,6 +739,7 @@ public class CharSequences {
 	 *          one less than the length of this character sequence, and the entire character sequence may be searched; if negative, it has the same effect as if
 	 *          it were -1, and -1 is returned.
 	 * @return The index of the last occurrence of the given character, or -1 if the character was not found.
+	 * @see String#lastIndexOf(int, int)
 	 */
 	public static int lastIndexOf(final CharSequence charSequence, final char character, int index) { //TODO add support for supplementary code points here and throughout
 		if(charSequence instanceof String) { //if the character sequence is a string
@@ -765,6 +762,7 @@ public class CharSequences {
 	 * @param charSequence The character sequence to be searched.
 	 * @param characters The characters to check.
 	 * @return The index of the last occurrence of one of the supplied characters, or -1 if none were found.
+	 * @see String#lastIndexOf(int)
 	 */
 	public static int lastIndexOf(final CharSequence charSequence, final Characters characters) {
 		return lastIndexOf(charSequence, characters, charSequence.length() - 1); //look of the characters, starting at the end of the string
@@ -778,6 +776,7 @@ public class CharSequences {
 	 *          one less than the length of this character sequence, and the entire character sequence may be searched; if negative, it has the same effect as if
 	 *          it were -1, and -1 is returned.
 	 * @return The index of the last occurrence of one of the supplied characters, or -1 if none were found.
+	 * @see String#lastIndexOf(int, int)
 	 */
 	public static int lastIndexOf(final CharSequence charSequence, final Characters characters, int index) {
 		final int length = charSequence.length();
@@ -896,6 +895,7 @@ public class CharSequences {
 	 * @param charSequence The character sequence to check.
 	 * @param character The character to search for.
 	 * @return The index of the last occurrence not of the given character, or -1 if only the character was not found.
+	 * @see String#lastIndexOf(int)
 	 */
 	public static int lastIndexNotOf(final CharSequence charSequence, final char character) {
 		return lastIndexNotOf(charSequence, character, charSequence.length() - 1); //search from the end
@@ -909,6 +909,7 @@ public class CharSequences {
 	 *          one less than the length of this character sequence, and the entire character sequence may be searched; if negative, it has the same effect as if
 	 *          it were -1, and -1 is returned.
 	 * @return The index of the last occurrence not of the given character, or -1 if only the character was not found.
+	 * @see String#lastIndexOf(int, int)
 	 */
 	public static int lastIndexNotOf(final CharSequence charSequence, final char character, int index) { //TODO add support for supplementary code points here and throughout
 		final int length = charSequence.length();
@@ -927,7 +928,8 @@ public class CharSequences {
 	 * Searches a character sequence and returns the last index of any character not of the given characters.
 	 * @param charSequence The character sequence to be searched.
 	 * @param characters The characters to check.
-	 * @return The index of the last occurrence notof one of the supplied characters, or -1 if only the characters were found.
+	 * @return The index of the last occurrence not of one of the supplied characters, or -1 if only the characters were found.
+	 * @see String#lastIndexOf(int)
 	 */
 	public static int lastIndexNotOf(final CharSequence charSequence, final Characters characters) {
 		return lastIndexNotOf(charSequence, characters, charSequence.length() - 1); //look of the characters, starting at the end of the string
@@ -941,6 +943,7 @@ public class CharSequences {
 	 *          one less than the length of this character sequence, and the entire character sequence may be searched; if negative, it has the same effect as if
 	 *          it were -1, and -1 is returned.
 	 * @return The index of the last occurrence not of one of the supplied characters, or -1 if only the characters were found.
+	 * @see String#lastIndexOf(int, int)
 	 */
 	public static int lastIndexNotOf(final CharSequence charSequence, final Characters characters, int index) {
 		final int length = charSequence.length();
@@ -982,32 +985,24 @@ public class CharSequences {
 	 * @param charSequence The character sequence to be searched.
 	 * @param notCharacters The characters to check.
 	 * @return The index of the first occurrence of one of the supplied characters, or -1 if none were found.
+	 * @deprecated to be removed in favor of {@link #indexNotOf(CharSequence, Characters)}.
 	 */
 	@Deprecated
 	public static int notCharIndexOf(final CharSequence charSequence, final Characters notCharacters) {
-		return notCharIndexOf(charSequence, notCharacters, 0); //start looking from the beginning
+		return indexNotOf(charSequence, notCharacters, 0); //start looking from the beginning
 	}
 
 	/**
 	 * Searches a character sequence and returns the first index of any character <em>not</em> in the specified characters, starting at the given index.
 	 * @param charSequence The character sequence to be searched.
 	 * @param notCharacters The characters to check.
-	 * @param index The last index to examine; if greater than or equal to the length of this character sequence, it has the same effect as if it were equal to
-	 *          one less than the length of this character sequence, and the entire character sequence may be searched; if negative, it has the same effect as if
-	 *          it were -1, and -1 is returned.
+	 * @param index The index to search from.
 	 * @return The index of the first occurrence of one of the supplied characters, or -1 if none were found.
+	 * @deprecated to be removed in favor of {@link #indexNotOf(CharSequence, Characters, int)}.
 	 */
 	@Deprecated
 	public static int notCharIndexOf(final CharSequence charSequence, final Characters notCharacters, int index) {
-		final int length = charSequence.length();
-		if(index >= length) { //adjust the length as per the String.lastIndexOf() API
-			index = length - 1;
-		}
-		for(int i = index; i < charSequence.length(); ++i) { //look at each character in the sequence
-			if(!notCharacters.contains(charSequence.charAt(i))) //if this character is not in our character string
-				return i; //return the index we're at
-		}
-		return -1; //if we make it to here, we didn't find any characters which weren't in our character string
+		return indexNotOf(charSequence, notCharacters, index);
 	}
 
 	/**
@@ -1015,10 +1010,11 @@ public class CharSequences {
 	 * @param charSequence The character sequence to be searched.
 	 * @param notCharacters The characters to check.
 	 * @return The index of the last occurrence of one of the supplied characters, or -1 if none were found.
+	 * @deprecated to be removed in favor of {@link #lastIndexNotOf(CharSequence, Characters)}.
 	 */
 	@Deprecated
 	public static int notCharLastIndexOf(final CharSequence charSequence, final Characters notCharacters) {
-		return notCharLastIndexOf(charSequence, notCharacters, charSequence.length() - 1); //start searching from the end
+		return lastIndexNotOf(charSequence, notCharacters, charSequence.length() - 1); //start searching from the end
 	}
 
 	/**
@@ -1029,18 +1025,11 @@ public class CharSequences {
 	 *          one less than the length of this character sequence, and the entire character sequence may be searched; if negative, it has the same effect as if
 	 *          it were -1, and -1 is returned.
 	 * @return The index of the last occurrence of one of the supplied characters, or -1 if none were found.
+	 * @deprecated to be removed in favor of {@link #lastIndexNotOf(CharSequence, Characters, int)}.
 	 */
 	@Deprecated
 	public static int notCharLastIndexOf(final CharSequence charSequence, final Characters notCharacters, int index) {
-		final int length = charSequence.length();
-		if(index >= length) { //adjust the length as per the String.lastIndexOf() API
-			index = length - 1;
-		}
-		for(int i = index; i >= 0; --i) { //look at each character in the sequence , looking from right to left
-			if(!notCharacters.contains(charSequence.charAt(i))) //if this character is not in our character string
-				return i; //return the index we're at
-		}
-		return -1; //if we make it to here, we didn't find any characters which weren't in our character string
+		return lastIndexNotOf(charSequence, notCharacters, index);
 	}
 
 	/**

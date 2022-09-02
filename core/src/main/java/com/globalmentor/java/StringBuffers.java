@@ -118,7 +118,7 @@ public class StringBuffers {
 	 * @return The string buffer after removal.
 	 */
 	public static StringBuffer removeFirstCharLength(final StringBuffer stringBuffer, final Characters delimiters) {
-		final int index = CharSequences.charIndexOf(stringBuffer, delimiters); //find the first occurrence of the delimiters
+		final int index = CharSequences.indexOf(stringBuffer, delimiters); //find the first occurrence of the delimiters
 		if(index >= 0) //if one of the delimiters was found
 			stringBuffer.delete(index, stringBuffer.length()); //remove everything after and including the character
 		return stringBuffer; //return the string buffer

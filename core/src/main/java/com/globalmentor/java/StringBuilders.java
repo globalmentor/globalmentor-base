@@ -626,7 +626,7 @@ public class StringBuilders {
 	 * @return The string buffer after removal.
 	 */
 	public static StringBuilder removeFirstCharLength(final StringBuilder stringBuilder, final Characters delimiters) {
-		final int index = CharSequences.charIndexOf(stringBuilder, delimiters); //find the first occurrence of the delimiters
+		final int index = CharSequences.indexOf(stringBuilder, delimiters); //find the first occurrence of the delimiters
 		if(index >= 0) //if one of the delimiters was found
 			stringBuilder.delete(index, stringBuilder.length()); //remove everything after and including the character
 		return stringBuilder; //return the string buffer
@@ -774,7 +774,7 @@ public class StringBuilders {
 		int beginSearchIndex = 0; //we'll start searching from the beginning of the string
 		int nextReplaceIndex; //this will hold the next location of the replaceString each time we search for it
 		while(beginSearchIndex < stringBuilder.length()) { //while we haven't examined all the characters
-			nextReplaceIndex = charIndexOf(stringBuilder, matchCharacters, beginSearchIndex); //search for another occurrence of the characters
+			nextReplaceIndex = CharSequences.indexOf(stringBuilder, matchCharacters, beginSearchIndex); //search for another occurrence of the characters
 			if(nextReplaceIndex >= 0) { //if there is another occurrence of the character to replace
 				stringBuilder.replace(nextReplaceIndex, nextReplaceIndex + 1, replacementString); //replace this character with the replacement string
 				beginSearchIndex = nextReplaceIndex + replacementString.length(); //skip over the string we replaced in the input string
