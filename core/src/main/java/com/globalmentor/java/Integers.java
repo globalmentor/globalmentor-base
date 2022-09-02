@@ -191,7 +191,7 @@ public class Integers {
 		final int count = ints.length; //find out how many ints there are
 		final Integer[] integers = new Integer[count]; //create an array of integers
 		for(int i = count - 1; i >= 0; --i) { //for each index
-			integers[i] = new Integer(ints[i]); //create an object from this integer and place it in the new array
+			integers[i] = Integer.valueOf(ints[i]); //create an object from this integer and place it in the new array
 		}
 		return integers; //return the array we created and filled
 	}
