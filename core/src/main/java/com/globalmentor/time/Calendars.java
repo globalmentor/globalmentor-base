@@ -20,6 +20,7 @@ import java.util.*;
 
 import static com.globalmentor.java.Longs.*;
 import static java.util.Calendar.*;
+import static java.util.concurrent.TimeUnit.*;
 
 /**
  * Constants and utilities for working with dates and times.
@@ -192,7 +193,7 @@ public class Calendars {
 		clearTime(lowCalendar); //clear the time values, just keeping the dates
 		clearTime(highCalendar);
 		//divide the difference by the number of milliseconds in one day
-		int dayDifference = toInt((calendar1.getTimeInMillis() - calendar2.getTimeInMillis()) / Milliseconds.fromDays(1));
+		int dayDifference = toInt((calendar1.getTimeInMillis() - calendar2.getTimeInMillis()) / DAYS.toMillis(1));
 		dayDifference = Math.min(dayDifference - 2, 0); //back up a couple of days to account for
 		assert add((Calendar)lowCalendar.clone(), DAY_OF_YEAR, dayDifference).compareTo(highCalendar) <= 0 : "Day overshoot.";
 		while(add((Calendar)lowCalendar.clone(), DAY_OF_YEAR, dayDifference).compareTo(highCalendar) < 0) { //go forward until adding the number of days reaches the end calendar 

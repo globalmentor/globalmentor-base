@@ -16,12 +16,12 @@
 
 package com.globalmentor.model;
 
-import java.util.*;
-import java.util.concurrent.*;
-
+import static java.time.temporal.ChronoUnit.*;
 import static java.util.Objects.*;
 
-import com.globalmentor.time.*;
+import java.time.*;
+import java.util.*;
+import java.util.concurrent.*;
 
 /**
  * A class for managing and executing operations.
@@ -101,7 +101,7 @@ public class OperationManager {
 	 * @throws IllegalStateException if the operation cannot be scheduled at this time due to queue capacity restrictions.
 	 */
 	public void schedule(final Operation operation, final boolean repeated) {
-		schedule(operation, Duration.NO_DURATION, repeated);
+		schedule(operation, Duration.ZERO, repeated);
 	}
 
 	/**
@@ -131,10 +131,10 @@ public class OperationManager {
 		}
 
 		/** The time the operation was scheduled. */
-		private Time scheduledTime;
+		private Instant scheduledTime;
 
 		/** @return The time the operation was scheduled. */
-		public Time getScheduledTime() {
+		public Instant getScheduledTime() {
 			return scheduledTime;
 		}
 
@@ -142,8 +142,8 @@ public class OperationManager {
 		 * Resets the scheduled time to the current time.
 		 * @return The new scheduled time.
 		 */
-		public Time resetScheduledTime() {
-			scheduledTime = new Time();
+		public Instant resetScheduledTime() {
+			scheduledTime = Instant.now();
 			return scheduledTime;
 		}
 
@@ -172,7 +172,7 @@ public class OperationManager {
 		 */
 		public ScheduledOperation(final Operation operation, final Duration delayTime, final boolean repeated) {
 			this.operation = requireNonNull(operation);
-			this.scheduledTime = new Time();
+			this.scheduledTime = Instant.now();
 			this.delayDuration = requireNonNull(delayTime);
 			this.repeated = repeated;
 		}
@@ -201,15 +201,15 @@ public class OperationManager {
 			final List<ScheduledOperation> scheduledOperations = new LinkedList<ScheduledOperation>(); //The list of currently known scheduled operations.
 			while(!Thread.interrupted()) { //keep polling until interrupted
 				try {
-					Duration timeoutDuration = Duration.MAX_DURATION; //we'll time out based upon the soonest delayed operation
-					final Time now = new Time(); //get the current time
+					Duration timeoutDuration = FOREVER.getDuration(); //we'll time out based upon the soonest delayed operation
+					final Instant now = Instant.now(); //get the current time
 					final Iterator<ScheduledOperation> scheduledOperationIterator = scheduledOperations.iterator();
 					while(scheduledOperationIterator.hasNext()) { //process the current scheduled operations
 						final ScheduledOperation scheduledOperation = scheduledOperationIterator.next();
-						final Duration duration = now.subtract(scheduledOperation.getScheduledTime()); //see how long it's been since this operation was scheduled
+						final Duration duration = Duration.between(scheduledOperation.getScheduledTime(), now); //see how long it's been since this operation was scheduled
 						final Duration delayDuration = scheduledOperation.getDelayDuration(); //find out how long the operation should be delayed
-						final Duration remainingDuration = delayDuration.subtract(duration); //see how much time is remaining before this operation should be executed
-						if(remainingDuration.getTime() <= 0) { //if the required amount of time has passed
+						final Duration remainingDuration = delayDuration.minus(duration); //see how much time is remaining before this operation should be executed
+						if(remainingDuration.isNegative() || remainingDuration.isZero()) { //if the required amount of time has passed
 							final Operation operation = scheduledOperation.getOperation(); //get the operation
 							if(!operation.isCanceled()) { //if the operation isn't canceled
 								try {
@@ -235,7 +235,7 @@ public class OperationManager {
 						}
 					}
 					//poll for a new scheduled operation, timing out at the minimum duration we found
-					final ScheduledOperation scheduledOperation = blockingQueue.poll(timeoutDuration.getTime(), TimeUnit.MILLISECONDS);
+					final ScheduledOperation scheduledOperation = blockingQueue.poll(timeoutDuration.toMillis(), TimeUnit.MILLISECONDS);
 					if(scheduledOperation != null) { //if we got a new scheduled operation before timeout
 						scheduledOperations.add(scheduledOperation); //add this operation to our list of current scheduled operations; the next time around we'll process all of them, including the new one
 					}
