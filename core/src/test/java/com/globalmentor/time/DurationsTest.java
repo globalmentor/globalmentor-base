@@ -45,18 +45,30 @@ public class DurationsTest {
 		//PT20.345S
 		assertThat(Durations.parseUserInput("PT20.345S"), is(Duration.parse("PT20.345S")));
 		assertThat(Durations.parseUserInput("pt20.345s"), is(Duration.parse("PT20.345S")));
+		assertThat(Durations.parseUserInput("PT20,345S"), is(Duration.parse("PT20.345S")));
+		assertThat(Durations.parseUserInput("pt20,345s"), is(Duration.parse("PT20.345S")));
 		assertThat(Durations.parseUserInput("20.345S"), is(Duration.parse("PT20.345S")));
 		assertThat(Durations.parseUserInput("20.345s"), is(Duration.parse("PT20.345S")));
+		assertThat(Durations.parseUserInput("20,345S"), is(Duration.parse("PT20.345S")));
+		assertThat(Durations.parseUserInput("20,345s"), is(Duration.parse("PT20.345S")));
 		//PT2.0S
 		assertThat(Durations.parseUserInput("PT2.0S"), is(Duration.parse("PT2.0S")));
 		assertThat(Durations.parseUserInput("pt2.0s"), is(Duration.parse("PT2.0S")));
+		assertThat(Durations.parseUserInput("PT2,0S"), is(Duration.parse("PT2.0S")));
+		assertThat(Durations.parseUserInput("pt2,0s"), is(Duration.parse("PT2.0S")));
 		assertThat(Durations.parseUserInput("2.0S"), is(Duration.parse("PT2.0S")));
 		assertThat(Durations.parseUserInput("2.0s"), is(Duration.parse("PT2.0S")));
+		assertThat(Durations.parseUserInput("2,0S"), is(Duration.parse("PT2.0S")));
+		assertThat(Durations.parseUserInput("2,0s"), is(Duration.parse("PT2.0S")));
 		//PT2.S
 		assertThat(Durations.parseUserInput("PT2.S"), is(Duration.parse("PT2.S")));
 		assertThat(Durations.parseUserInput("pt2.s"), is(Duration.parse("PT2.S")));
+		assertThat(Durations.parseUserInput("PT2,S"), is(Duration.parse("PT2.S")));
+		assertThat(Durations.parseUserInput("pt2,s"), is(Duration.parse("PT2.S")));
 		assertThat(Durations.parseUserInput("2.S"), is(Duration.parse("PT2.S")));
 		assertThat(Durations.parseUserInput("2.s"), is(Duration.parse("PT2.S")));
+		assertThat(Durations.parseUserInput("2,S"), is(Duration.parse("PT2.S")));
+		assertThat(Durations.parseUserInput("2,s"), is(Duration.parse("PT2.S")));
 		//seconds missing trailing decimal (allowed for user input)
 		assertThat(Durations.parseUserInput("2S"), is(Duration.parse("PT2.S")));
 		assertThat(Durations.parseUserInput("2s"), is(Duration.parse("PT2.S")));
@@ -66,8 +78,12 @@ public class DurationsTest {
 		//PT0.2S
 		assertThat(Durations.parseUserInput("PT0.2S"), is(Duration.parse("PT0.2S")));
 		assertThat(Durations.parseUserInput("pt0.2s"), is(Duration.parse("PT0.2S")));
+		assertThat(Durations.parseUserInput("PT0,2S"), is(Duration.parse("PT0.2S")));
+		assertThat(Durations.parseUserInput("pt0,2s"), is(Duration.parse("PT0.2S")));
 		assertThat(Durations.parseUserInput("0.2S"), is(Duration.parse("PT0.2S")));
 		assertThat(Durations.parseUserInput("0.2s"), is(Duration.parse("PT0.2S")));
+		assertThat(Durations.parseUserInput("0,2S"), is(Duration.parse("PT0.2S")));
+		assertThat(Durations.parseUserInput("0,2s"), is(Duration.parse("PT0.2S")));
 		//seconds missing initial zero (allowed for user input)
 		assertThat(Durations.parseUserInput(".2S"), is(Duration.parse("PT0.2S")));
 		assertThat(Durations.parseUserInput(".2s"), is(Duration.parse("PT0.2S")));
@@ -77,8 +93,12 @@ public class DurationsTest {
 		//PT0.001S (one millisecond)
 		assertThat(Durations.parseUserInput("PT0.001S"), is(Duration.parse("PT0.001S")));
 		assertThat(Durations.parseUserInput("pt0.001s"), is(Duration.parse("PT0.001S")));
+		assertThat(Durations.parseUserInput("PT0,001S"), is(Duration.parse("PT0.001S")));
+		assertThat(Durations.parseUserInput("pt0,001s"), is(Duration.parse("PT0.001S")));
 		assertThat(Durations.parseUserInput("0.001S"), is(Duration.parse("PT0.001S")));
 		assertThat(Durations.parseUserInput("0.001s"), is(Duration.parse("PT0.001S")));
+		assertThat(Durations.parseUserInput("0,001S"), is(Duration.parse("PT0.001S")));
+		assertThat(Durations.parseUserInput("0,001s"), is(Duration.parse("PT0.001S")));
 		//PT15M
 		assertThat(Durations.parseUserInput("PT15M"), is(Duration.parse("PT15M")));
 		assertThat(Durations.parseUserInput("pt15m"), is(Duration.parse("PT15M")));
