@@ -37,8 +37,8 @@ public class Durations {
 	/**
 	 * Parses a duration as a user might enter it. This might be the full ISO 8601 form as accepted by {@link Duration#parse(CharSequence)} (e.g.
 	 * <code>P7DT6H5M4.321S</code>, or a form without the <code>P</code> and <code>D</code> ISO 8601 delimiters, without regard to case, e.g.
-	 * <code>7d6H5M4.321s</code>. In addition whole seconds are allowed without a trailing decimal sign (e.g. both <code>123.s</code> and <code>123s</code>) and
-	 * fractional seconds are allowed without a whole digits zero placeholder (e.g. both <code>0.123s</code> and <code>.123s</code>)
+	 * <code>7d6H5M4.321s</code>. In addition fractional seconds are allowed without a whole digits zero placeholder (e.g. both <code>0.123s</code> and
+	 * <code>.123s</code>).
 	 * @implSpec A leading minus sign negating the entire time, e.g. <code>-PT6H3M</code> or <code>-PT-6H+3M</code>, is only accepted in the strict
 	 *           {@link Duration#parse(CharSequence)} format, as there is no way to provide such a "global" negation without the <code>P</code> designation.
 	 * @implNote This implementation, following the current implementation of {@link Duration#parse(CharSequence)}, does not accept any designations (e.g. years)
@@ -72,12 +72,9 @@ public class Durations {
 					final int lastSecondNondigitIndex = lastIndexNotOf(textBuilder, ASCII.DIGIT_CHARACTERS, secondDesignatorIndex - 1); //work backwards to find the last non-digit, e.g. `H`/`M`/`.`
 					assert lastSecondNondigitIndex >= timeDesignatorInsertionIndex; //if nothing else we should always encounter the `T` we inserted
 					final char lastSecondNondigit = textBuilder.charAt(lastSecondNondigitIndex);
-					if(DECIMAL_SIGNS.contains(lastSecondNondigit)) { //if seconds portion contains a decimal
-						if(!ASCII.DIGIT_CHARACTERS.contains(textBuilder.charAt(lastSecondNondigitIndex - 1))) { //if the decimal is at the start, e.g. `T.123S`
-							textBuilder.insert(lastSecondNondigitIndex, '0'); //insert a zero, e.g. `T0.123S`
-						}
-					} else { //if the seconds portion has no decimal, e.g. `T123S`
-						textBuilder.insert(secondDesignatorIndex, DECIMAL_SIGN); //insert a decimal, e.g. `T123.S`
+					if(DECIMAL_SIGNS.contains(lastSecondNondigit) //if seconds portion contains a decimal at the start, e.g. `T.123S`
+							&& !ASCII.DIGIT_CHARACTERS.contains(textBuilder.charAt(lastSecondNondigitIndex - 1))) {
+						textBuilder.insert(lastSecondNondigitIndex, '0'); //insert a zero, e.g. `T0.123S`
 					}
 				}
 			}
