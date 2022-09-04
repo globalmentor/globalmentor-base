@@ -29,6 +29,39 @@ import org.junit.jupiter.api.*;
  */
 public class ASCIITest {
 
+	/** @see ASCII#equalsIgnoreCase(char, char) */
+	@Test
+	void testEqualsIgnoreCaseTwoCharacters() {
+		assertThat(ASCII.equalsIgnoreCase('a', 'a'), is(true));
+		assertThat(ASCII.equalsIgnoreCase('A', 'a'), is(true));
+		assertThat(ASCII.equalsIgnoreCase('a', 'A'), is(true));
+		assertThat(ASCII.equalsIgnoreCase('A', 'A'), is(true));
+		assertThat(ASCII.equalsIgnoreCase('x', 'x'), is(true));
+		assertThat(ASCII.equalsIgnoreCase('X', 'x'), is(true));
+		assertThat(ASCII.equalsIgnoreCase('x', 'X'), is(true));
+		assertThat(ASCII.equalsIgnoreCase('X', 'X'), is(true));
+		assertThat(ASCII.equalsIgnoreCase('z', 'z'), is(true));
+		assertThat(ASCII.equalsIgnoreCase('Z', 'z'), is(true));
+		assertThat(ASCII.equalsIgnoreCase('z', 'Z'), is(true));
+		assertThat(ASCII.equalsIgnoreCase('Z', 'Z'), is(true));
+		assertThat(ASCII.equalsIgnoreCase('b', 'x'), is(false));
+		assertThat(ASCII.equalsIgnoreCase('b', 'X'), is(false));
+		assertThat(ASCII.equalsIgnoreCase('b', '5'), is(false));
+		assertThat(ASCII.equalsIgnoreCase('b', '!'), is(false));
+		assertThat(ASCII.equalsIgnoreCase('B', 'x'), is(false));
+		assertThat(ASCII.equalsIgnoreCase('B', 'X'), is(false));
+		assertThat(ASCII.equalsIgnoreCase('B', '5'), is(false));
+		assertThat(ASCII.equalsIgnoreCase('B', '!'), is(false));
+		assertThat(ASCII.equalsIgnoreCase('x', 'b'), is(false));
+		assertThat(ASCII.equalsIgnoreCase('X', 'b'), is(false));
+		assertThat(ASCII.equalsIgnoreCase('5', 'b'), is(false));
+		assertThat(ASCII.equalsIgnoreCase('!', 'b'), is(false));
+		assertThat(ASCII.equalsIgnoreCase('x', 'B'), is(false));
+		assertThat(ASCII.equalsIgnoreCase('X', 'B'), is(false));
+		assertThat(ASCII.equalsIgnoreCase('5', 'B'), is(false));
+		assertThat(ASCII.equalsIgnoreCase('!', 'B'), is(false));
+	}
+
 	/** @see ASCII#equalsIgnoreCase(CharSequence, CharSequence) */
 	@Test
 	void testEqualsIgnoreCaseTwoStrings() {
@@ -70,6 +103,53 @@ public class ASCIITest {
 		assertThat(ASCII.equalsIgnoreCase("fooBar", "FooBar"), is(true));
 		assertThat(ASCII.equalsIgnoreCase("fooBar", "FOOBAR"), is(true));
 		assertThat(ASCII.equalsIgnoreCase("FOOBAR", "foobar"), is(true));
+	}
+
+	/** @see ASCII#indexOfIgnoreCase(CharSequence, char, int) */
+	@Test
+	void testIndexOfIgnoreCase() {
+		assertThat(ASCII.indexOfIgnoreCase("foobar12321raboof!", 'f', 0), is(0));
+		assertThat(ASCII.indexOfIgnoreCase("foobar12321raboof!", 'F', 0), is(0));
+		assertThat(ASCII.indexOfIgnoreCase("foobar12321raboof!", 'f', 1), is(16));
+		assertThat(ASCII.indexOfIgnoreCase("foobar12321raboof!", 'F', 1), is(16));
+		assertThat(ASCII.indexOfIgnoreCase("foobar12321raboof!", 'f', 16), is(16));
+		assertThat(ASCII.indexOfIgnoreCase("foobar12321raboof!", 'F', 16), is(16));
+		assertThat(ASCII.indexOfIgnoreCase("foobar12321raboof!", 'f', 17), is(-1));
+		assertThat(ASCII.indexOfIgnoreCase("foobar12321raboof!", 'F', 17), is(-1));
+		assertThat(ASCII.indexOfIgnoreCase("foobar12321raboof!", 'o', 0), is(1));
+		assertThat(ASCII.indexOfIgnoreCase("foobar12321raboof!", 'O', 0), is(1));
+		assertThat(ASCII.indexOfIgnoreCase("foobar12321raboof!", 'x', 0), is(-1));
+		assertThat(ASCII.indexOfIgnoreCase("foobar12321raboof!", '5', 0), is(-1));
+		assertThat(ASCII.indexOfIgnoreCase("foobar12321raboof!", 'o', 1), is(1));
+		assertThat(ASCII.indexOfIgnoreCase("foobar12321raboof!", 'O', 1), is(1));
+		assertThat(ASCII.indexOfIgnoreCase("foobar12321raboof!", 'x', 1), is(-1));
+		assertThat(ASCII.indexOfIgnoreCase("foobar12321raboof!", '5', 1), is(-1));
+		assertThat(ASCII.indexOfIgnoreCase("foobar12321raboof!", 'o', 2), is(2));
+		assertThat(ASCII.indexOfIgnoreCase("foobar12321raboof!", 'O', 2), is(2));
+		assertThat(ASCII.indexOfIgnoreCase("foobar12321raboof!", 'x', 2), is(-1));
+		assertThat(ASCII.indexOfIgnoreCase("foobar12321raboof!", '5', 2), is(-1));
+		assertThat(ASCII.indexOfIgnoreCase("foobar12321raboof!", 'o', 3), is(14));
+		assertThat(ASCII.indexOfIgnoreCase("foobar12321raboof!", 'O', 3), is(14));
+		assertThat(ASCII.indexOfIgnoreCase("foobar12321raboof!", 'x', 3), is(-1));
+		assertThat(ASCII.indexOfIgnoreCase("foobar12321raboof!", '5', 3), is(-1));
+		assertThat(ASCII.indexOfIgnoreCase("foobar12321raboof!", 'o', 4), is(14));
+		assertThat(ASCII.indexOfIgnoreCase("foobar12321raboof!", 'O', 4), is(14));
+		assertThat(ASCII.indexOfIgnoreCase("foobar12321raboof!", 'x', 4), is(-1));
+		assertThat(ASCII.indexOfIgnoreCase("foobar12321raboof!", '5', 4), is(-1));
+		assertThat(ASCII.indexOfIgnoreCase("foobar12321raboof!", 'o', 16), is(-1));
+		assertThat(ASCII.indexOfIgnoreCase("foobar12321raboof!", 'O', 16), is(-1));
+		assertThat(ASCII.indexOfIgnoreCase("foobar12321raboof!", 'x', 16), is(-1));
+		assertThat(ASCII.indexOfIgnoreCase("foobar12321raboof!", '5', 16), is(-1));
+		assertThat(ASCII.indexOfIgnoreCase("foobar12321raboof!", 'o', 17), is(-1));
+		assertThat(ASCII.indexOfIgnoreCase("foobar12321raboof!", 'O', 17), is(-1));
+		assertThat(ASCII.indexOfIgnoreCase("foobar12321raboof!", 'x', 17), is(-1));
+		assertThat(ASCII.indexOfIgnoreCase("foobar12321raboof!", '5', 17), is(-1));
+		assertThat(ASCII.indexOfIgnoreCase("foobar12321raboof!", '!', 0), is(17));
+		assertThat(ASCII.indexOfIgnoreCase("foobar12321raboof!", '!', 1), is(17));
+		assertThat(ASCII.indexOfIgnoreCase("foobar12321raboof!", '!', 8), is(17));
+		assertThat(ASCII.indexOfIgnoreCase("foobar12321raboof!", '!', 16), is(17));
+		assertThat(ASCII.indexOfIgnoreCase("foobar12321raboof!", '!', 17), is(17));
+		assertThat(ASCII.indexOfIgnoreCase("foobar12321raboof!", '!', 18), is(17));
 	}
 
 	/** @see ASCII#valueOfDigit(char) */
