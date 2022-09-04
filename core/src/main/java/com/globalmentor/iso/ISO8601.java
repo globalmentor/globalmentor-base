@@ -24,6 +24,8 @@ import com.globalmentor.java.Characters;
  */
 public class ISO8601 {
 
+	/** The delimiter (for "period") that introduces a duration. */
+	public static final char PERIOD_BEGIN = 'P';
 	/** The delimiter that introduces a time component in a temporal. */
 	public static final char TIME_BEGIN = 'T';
 	/** The delimiter that separates year components in a temporal. */
@@ -34,7 +36,30 @@ public class ISO8601 {
 	public static final char TIME_SUBSECONDS_DELIMITER = '.';
 	/** The UTC designator for "Zulu Time", 'Z'. */
 	public static final char UTC_DESIGNATOR = 'Z';
-	/** The signs of a number. */
+
+	/** The possible signs of a number. */
 	public static final Characters SIGNS = Characters.of('-', '+');
+	/**
+	 * The most common decimal sign used as an ISO 8601 decimal fraction separator.
+	 * @apiNote Although ISO 8601-200) specifies that "the comma is the preferred sign", the full stop character seems overwhelmingly to be used more in practice.
+	 *          See survey and discussion at <a href="https://stackoverflow.com/q/20699705">Why does the ISO-8601 specification appear to be universally ignored
+	 *          when it comes to decimals?</a>
+	 */
+	public static final char DECIMAL_SIGN = '.';
+	/** The possible decimal representations in a number. */
+	public static final Characters DECIMAL_SIGNS = Characters.of(DECIMAL_SIGN, ',');
+
+	/** The designator for years in a duration expression. */
+	public static final char YEAR_DESIGNATOR = 'Y';
+	/** The designator for months in a duration expression. */
+	public static final char MONTH_DESIGNATOR = 'M';
+	/** The designator for days in a duration expression. */
+	public static final char DAY_DESIGNATOR = 'D';
+	/** The designator for hours in a duration expression. */
+	public static final char HOUR_DESIGNATOR = 'H';
+	/** The designator for minutes in a duration expression. */
+	public static final char MINUTE_DESIGNATOR = 'M';
+	/** The designator for seconds in a duration expression. */
+	public static final char SECOND_DESIGNATOR = 'S';
 
 }

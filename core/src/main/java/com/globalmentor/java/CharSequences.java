@@ -637,8 +637,8 @@ public class CharSequences {
 	}
 
 	/**
-	 * Determines the first index of the given character. If the character sequence is a {@link String}, this method delegates to {@link String#indexOf(int, int)}
-	 * .
+	 * Determines the first index of the given character.
+	 * @implSpec If the character sequence is a {@link String}, this method delegates to {@link String#indexOf(int, int)}.
 	 * @param charSequence The character sequence to check.
 	 * @param character The character to search for.
 	 * @param index The first index to examine.
@@ -658,8 +658,8 @@ public class CharSequences {
 	}
 
 	/**
-	 * Determines the first index of the given character. If the character sequence is a {@link String}, this method delegates to
-	 * {@link String#indexOf(int, int)}.
+	 * Determines the first index of the given character.
+	 * @implSpec If the character sequence is a {@link String}, this method delegates to {@link String#indexOf(int, int)}.
 	 * @param charSequence The character sequence to check.
 	 * @param character The character to search for.
 	 * @param index The first index to examine.
@@ -731,8 +731,8 @@ public class CharSequences {
 	}
 
 	/**
-	 * Determines the last index of the given character. If the character sequence is a {@link String}, this method delegates to
-	 * {@link String#lastIndexOf(int, int)}.
+	 * Determines the last index of the given character.
+	 * @implSpec If the character sequence is a {@link String}, this method delegates to {@link String#lastIndexOf(int, int)}.
 	 * @param charSequence The character sequence to check.
 	 * @param character The character to search for.
 	 * @param index The last index to examine; if greater than or equal to the length of this character sequence, it has the same effect as if it were equal to

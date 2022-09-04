@@ -267,6 +267,28 @@ public class ASCII {
 	}
 
 	/**
+	 * Compares two characters without regard to ASCII case.
+	 * @apiNote This method is typically used for formal language token manipulation, not general human language text processing.
+	 * @param c1 The character to compare.
+	 * @param c2 The character to compare with.
+	 * @return <code>true</code> if the characters are equal without regard to ASCII case.
+	 */
+	public static boolean equalsIgnoreCase(final char c1, final char c2) {
+		if(c1 == c2) { //if the characters match
+			return true;
+		} else if(c1 >= UPPERCASE_LETTER_FIRST && c1 <= UPPERCASE_LETTER_LAST) { //if the first character is uppercase
+			if(c1 + LOWERCASE_UPPERCASE_LETTER_DIFFERENCE == c2) { //if the characters match after converting the first to lowercase
+				return true;
+			}
+		} else if(c1 >= LOWERCASE_LETTER_FIRST && c1 <= LOWERCASE_LETTER_LAST) { //if the first character is lowercase
+			if(c1 - LOWERCASE_UPPERCASE_LETTER_DIFFERENCE == c2) { //if the characters match after converting the first to uppercase
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
 	 * Compares the characters in one character sequence with characters in another character sequence without regard to ASCII case.
 	 * @apiNote This method is typically used for formal language token manipulation, not general human language text processing.
 	 * @apiNote This API follows {@link Object#equals(Object)} and {@link String#equalsIgnoreCase(String)} in allowing either or both arguments to be
@@ -361,6 +383,39 @@ public class ASCII {
 			return false; //these characters don't match
 		}
 		return true; //everything matches		
+	}
+
+	/**
+	 * Determines the first index of the given character, without regard to ASCII case.
+	 * @apiNote This method is typically used for formal language token manipulation, not general human language text processing.
+	 * @param charSequence The character sequence to check.
+	 * @param character The character to search for.
+	 * @return The index of the first occurrence of the given character without regard to ASCII case, or -1 if the character was not found.
+	 */
+	public static int indexOfIgnoreCase(@Nonnull final CharSequence charSequence, final char character) {
+		return indexOfIgnoreCase(charSequence, character, 0); //search from the beginning
+	}
+
+	/**
+	 * Determines the first index of the given character, without regard to ASCII case.
+	 * @param charSequence The character sequence to check.
+	 * @param character The character to search for.
+	 * @param index The first index to examine.
+	 * @return The index of the first occurrence of the given character without regard to ASCII case, or -1 if the character was not found.
+	 */
+	public static int indexOfIgnoreCase(final CharSequence charSequence, final char character, final int index) {
+		final char otherCaseCharacter = isUpperCase(character) ? toLowerCase(character) : toUpperCase(character);
+		if(character == otherCaseCharacter) { //if there is no difference in case to check (e.g. we are not searching for an ASCII letter)
+			return indexOf(charSequence, character); //short-circuit and jut do a normal search
+		}
+		final int length = charSequence.length();
+		for(int i = index; i < length; ++i) {
+			final char current = charSequence.charAt(i);
+			if(current == character || current == otherCaseCharacter) {
+				return i;
+			}
+		}
+		return -1;
 	}
 
 	/**
