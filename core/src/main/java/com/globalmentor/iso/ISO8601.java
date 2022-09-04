@@ -24,6 +24,8 @@ import com.globalmentor.java.Characters;
  */
 public class ISO8601 {
 
+	/** The delimiter (for "period") that introduces a duration. */
+	public static final char PERIOD_BEGIN = 'P';
 	/** The delimiter that introduces a time component in a temporal. */
 	public static final char TIME_BEGIN = 'T';
 	/** The delimiter that separates year components in a temporal. */
@@ -34,7 +36,21 @@ public class ISO8601 {
 	public static final char TIME_SUBSECONDS_DELIMITER = '.';
 	/** The UTC designator for "Zulu Time", 'Z'. */
 	public static final char UTC_DESIGNATOR = 'Z';
+
 	/** The signs of a number. */
 	public static final Characters SIGNS = Characters.of('-', '+');
+
+	/** The designator for years in a duration expression. */
+	public static final char YEAR_DESIGNATOR = 'Y';
+	/** The designator for months in a duration expression. */
+	public static final char MONTH_DESIGNATOR = 'M';
+	/** The designator for days in a duration expression. */
+	public static final char DAY_DESIGNATOR = 'D';
+	/** The designator for hours in a duration expression. */
+	public static final char HOUR_DESIGNATOR = 'H';
+	/** The designator for minutes in a duration expression. */
+	public static final char MINUTE_DESIGNATOR = 'M';
+	/** The designator for seconds in a duration expression. */
+	public static final char SECOND_DESIGNATOR = 'S';
 
 }
