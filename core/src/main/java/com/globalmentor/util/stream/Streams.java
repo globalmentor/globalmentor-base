@@ -16,6 +16,7 @@
 
 package com.globalmentor.util.stream;
 
+import static java.lang.Math.*;
 import static java.util.stream.Collectors.*;
 
 import java.util.*;
@@ -112,6 +113,151 @@ public class Streams {
 			}
 			return list.get(0);
 		});
+	}
+
+	/**
+	 * Returns a stream that "zips" two other streams by applying some function to each subsequent pair of elements retrieved separately from the streams,
+	 * ignoring and discarding remaining elements from the longer stream.
+	 * @apiNote This method is similar to Guava's <a href=
+	 *          "https://guava.dev/releases/snapshot/api/docs/com/google/common/collect/Streams.html#zip(java.util.stream.Stream,java.util.stream.Stream,java.util.function.BiFunction)"><code>Streams.zip()</code></a>
+	 *          method. Compare also Python's <a href="https://docs.python.org/3.3/library/functions.html#zip"><code>zip()</code></a> method.
+	 * @implNote This implementation follows closely that of Guava's <code>com.google.common.collect.Streams.zip()</code> method.
+	 * @param <A> The type of elements in the first stream.
+	 * @param <B> The type of elements in the second stream.
+	 * @param <R> The type of elements in the resulting zipped stream.
+	 * @param streamA The first stream to zip.
+	 * @param streamB The second stream to zip.
+	 * @param zipper The function for combining the elements.
+	 * @return A new stream zipping the contents of the two input streams.
+	 */
+	public static <A, B, R> Stream<R> zip(@Nonnull final Stream<A> streamA, @Nonnull final Stream<B> streamB,
+			@Nonnull final BiFunction<? super A, ? super B, R> zipper) {
+		return zip(streamA, streamB, zipper, false);
+	}
+
+	/**
+	 * Returns a stream that "zips" two other streams by applying some function to each subsequent pair of elements retrieved separately from the streams.
+	 * @apiNote This method is similar to Guava's <a href=
+	 *          "https://guava.dev/releases/snapshot/api/docs/com/google/common/collect/Streams.html#zip(java.util.stream.Stream,java.util.stream.Stream,java.util.function.BiFunction)"><code>Streams.zip()</code></a>
+	 *          method, except that this method has the option not to discard data from the longer stream. Compare also Python's
+	 *          <a href="https://docs.python.org/3.3/library/functions.html#zip"><code>zip()</code></a> method.
+	 * @implNote This implementation follows closely that of Guava's <code>com.google.common.collect.Streams.zip()</code> method.
+	 * @param <A> The type of elements in the first stream.
+	 * @param <B> The type of elements in the second stream.
+	 * @param <R> The type of elements in the resulting zipped stream.
+	 * @param streamA The first stream to zip.
+	 * @param streamB The second stream to zip.
+	 * @param zipper The function for combining the elements.
+	 * @param retainExtraElements <code>true</code> if any additional elements from the longer stream will be kept, paired with <code>null</code> for the other
+	 *          stream; or <code>false</code> if additional element will be ignored and discarded.
+	 * @return A new stream zipping the contents of the two input streams.
+	 */
+	public static <A, B, R> Stream<R> zip(@Nonnull final Stream<A> streamA, @Nonnull final Stream<B> streamB,
+			@Nonnull final BiFunction<? super A, ? super B, R> zipper, final boolean retainExtraElements) {
+		return zip(streamA, streamB, zipper, null, null, retainExtraElements);
+	}
+
+	/**
+	 * Returns a stream that "zips" two other streams containing the same type of element by applying some function to each subsequent pair of elements retrieved
+	 * separately from the streams, providing default values for the shorter stream.
+	 * @apiNote This method is similar to Guava's <a href=
+	 *          "https://guava.dev/releases/snapshot/api/docs/com/google/common/collect/Streams.html#zip(java.util.stream.Stream,java.util.stream.Stream,java.util.function.BiFunction)"><code>Streams.zip()</code></a>
+	 *          method, except that this method does not to discard data from the longer stream, instead specifying default elements. Compare also Python's
+	 *          <a href="https://docs.python.org/3.3/library/functions.html#zip"><code>zip()</code></a> method.
+	 * @implNote This implementation follows closely that of Guava's <code>com.google.common.collect.Streams.zip()</code> method.
+	 * @param <T> The type of elements in the streams.
+	 * @param <R> The type of elements in the resulting zipped stream.
+	 * @param streamA The first stream to zip.
+	 * @param streamB The second stream to zip.
+	 * @param zipper The function for combining the elements.
+	 * @param defaultElement The default element to use for each stream if that stream is depleted of elements while the other stream still has elements.
+	 * @return A new stream zipping the contents of the two input streams.
+	 */
+	public static <T, R> Stream<R> zip(@Nonnull final Stream<T> streamA, @Nonnull final Stream<T> streamB,
+			@Nonnull final BiFunction<? super T, ? super T, R> zipper, @Nullable final T defaultElement) {
+		return zip(streamA, streamB, zipper, defaultElement, defaultElement);
+	}
+
+	/**
+	 * Returns a stream that "zips" two other streams by applying some function to each subsequent pair of elements retrieved separately from the streams,
+	 * providing default values for the shorter stream.
+	 * @apiNote This method is similar to Guava's <a href=
+	 *          "https://guava.dev/releases/snapshot/api/docs/com/google/common/collect/Streams.html#zip(java.util.stream.Stream,java.util.stream.Stream,java.util.function.BiFunction)"><code>Streams.zip()</code></a>
+	 *          method, except that this method does not to discard data from the longer stream, instead specifying default elements. Compare also Python's
+	 *          <a href="https://docs.python.org/3.3/library/functions.html#zip"><code>zip()</code></a> method.
+	 * @implNote This implementation follows closely that of Guava's <code>com.google.common.collect.Streams.zip()</code> method.
+	 * @param <A> The type of elements in the first stream.
+	 * @param <B> The type of elements in the second stream.
+	 * @param <R> The type of elements in the resulting zipped stream.
+	 * @param streamA The first stream to zip.
+	 * @param streamB The second stream to zip.
+	 * @param zipper The function for combining the elements.
+	 * @param defaultElementA The default element to use for the first stream if that stream is depleted of elements while the other stream still has elements.
+	 * @param defaultElementB The default element to use for the second stream if that stream is depleted of elements while the other stream still has elements.
+	 * @return A new stream zipping the contents of the two input streams.
+	 */
+	public static <A, B, R> Stream<R> zip(@Nonnull final Stream<A> streamA, @Nonnull final Stream<B> streamB,
+			@Nonnull final BiFunction<? super A, ? super B, R> zipper, @Nullable final A defaultElementA, @Nullable final B defaultElementB) {
+		return zip(streamA, streamB, zipper, defaultElementA, defaultElementB, true);
+	}
+
+	/**
+	 * Returns a stream that "zips" two other streams by applying some function to each subsequent pair of elements retrieved separately from the streams.
+	 * @apiNote This method is similar to Guava's <a href=
+	 *          "https://guava.dev/releases/snapshot/api/docs/com/google/common/collect/Streams.html#zip(java.util.stream.Stream,java.util.stream.Stream,java.util.function.BiFunction)"><code>Streams.zip()</code></a>
+	 *          method, except that this method has the option not to discard data from the longer stream, along with the ability to specify default elements.
+	 *          Compare also Python's <a href="https://docs.python.org/3.3/library/functions.html#zip"><code>zip()</code></a> method.
+	 * @implNote This implementation follows closely that of Guava's <code>com.google.common.collect.Streams.zip()</code> method.
+	 * @param <A> The type of elements in the first stream.
+	 * @param <B> The type of elements in the second stream.
+	 * @param <R> The type of elements in the resulting zipped stream.
+	 * @param streamA The first stream to zip.
+	 * @param streamB The second stream to zip.
+	 * @param zipper The function for combining the elements.
+	 * @param defaultElementA The default element to use for the first stream if that stream is depleted of elements while the other stream still has elements.
+	 *          Only used if <code><var>retainExtraElements</var></code> is <code>true</code>.
+	 * @param defaultElementB The default element to use for the second stream if that stream is depleted of elements while the other stream still has elements.
+	 *          Only used if <code><var>retainExtraElements</var></code> is <code>true</code>.
+	 * @param retainExtraElements <code>true</code> if any additional elements from the longer stream will be kept, paired with the default value specified for
+	 *          the other stream; or <code>false</code> if additional element will be ignored and discarded.
+	 * @return A new stream zipping the contents of the two input streams.
+	 */
+	static <A, B, R> Stream<R> zip(@Nonnull final Stream<A> streamA, @Nonnull final Stream<B> streamB, @Nonnull final BiFunction<? super A, ? super B, R> zipper,
+			@Nullable final A defaultElementA, @Nullable final B defaultElementB, final boolean retainExtraElements) {
+		final boolean isParallel = streamA.isParallel() || streamB.isParallel();
+		final Spliterator<A> spliteratorA = streamA.spliterator();
+		final Spliterator<B> spliteratorB = streamB.spliterator();
+		//make the resulting stream sized and ordered, but only if the input streams are sized and/or ordered
+		final int characteristics = (Spliterator.SIZED | Spliterator.ORDERED) & spliteratorA.characteristics() & spliteratorB.characteristics();
+		final Iterator<A> iteratorA = Spliterators.iterator(spliteratorA);
+		final Iterator<B> iteratorB = Spliterators.iterator(spliteratorB);
+		final long estimatedSize = retainExtraElements ? max(spliteratorA.estimateSize(), spliteratorB.estimateSize())
+				: min(spliteratorA.estimateSize(), spliteratorB.estimateSize());
+		return StreamSupport.stream(new Spliterators.AbstractSpliterator<R>(estimatedSize, characteristics) {
+			@Override
+			public boolean tryAdvance(final Consumer<? super R> action) {
+				final A nextA;
+				final B nextB;
+				if(iteratorA.hasNext()) {
+					nextA = iteratorA.next();
+					if(iteratorB.hasNext()) {
+						nextB = iteratorB.next();
+					} else {
+						if(!retainExtraElements) {
+							return false;
+						}
+						nextB = defaultElementB;
+					}
+				} else if(iteratorB.hasNext() && retainExtraElements) {
+					nextA = defaultElementA;
+					nextB = iteratorB.next();
+				} else {
+					return false;
+				}
+				action.accept(zipper.apply(nextA, nextB));
+				return true;
+			}
+		}, isParallel).onClose(streamA::close).onClose(streamB::close);
 	}
 
 }
