@@ -55,48 +55,48 @@ public class StreamsTest {
 	/** @see Streams#zip(Stream, Stream, java.util.function.BiFunction, Object, Object, boolean) */
 	@Test
 	void testZip() {
-		assertThat(Streams.zip(Stream.empty(), Stream.empty(), (a, b) -> null, null, null, true).collect(toList()), is(empty()));
-		assertThat(Streams.zip(Stream.empty(), Stream.empty(), (a, b) -> null, null, null, false).collect(toList()), is(empty()));
-		assertThat(Streams.zip(Stream.of("foo"), Stream.of("bar"), (a, b) -> a + b, null, null, true).collect(toList()), contains("foobar"));
-		assertThat(Streams.zip(Stream.of("foo"), Stream.of("bar"), (a, b) -> a + b, null, null, false).collect(toList()), contains("foobar"));
-		assertThat(Streams.zip(Stream.of("foo"), Stream.of(), (a, b) -> a + b, "X", "Y", true).collect(toList()), contains("fooY"));
-		assertThat(Streams.zip(Stream.of("foo"), Stream.of(), (a, b) -> a + b, "X", "Y", false).collect(toList()), is(empty()));
-		assertThat(Streams.zip(Stream.of(), Stream.of("bar"), (a, b) -> a + b, "X", "Y", true).collect(toList()), contains("Xbar"));
-		assertThat(Streams.zip(Stream.of(), Stream.of("bar"), (a, b) -> a + b, "X", "Y", false).collect(toList()), is(empty()));
-		assertThat(Streams.zip(Stream.of("A", "B", "C"), Stream.of(1, 2, 3), (a, b) -> a + b, null, null, true).collect(toList()), contains("A1", "B2", "C3"));
-		assertThat(Streams.zip(Stream.of("A", "B", "C"), Stream.of(1, 2, 3), (a, b) -> a + b, null, null, false).collect(toList()), contains("A1", "B2", "C3"));
-		assertThat(Streams.zip(Stream.of("A", "B", "C"), Stream.of(1, 2, 3), AbstractMap.SimpleEntry::new, "X", 0, true).collect(toList()),
+		assertThat(Streams.zip(Stream.empty(), Stream.empty(), null, null, true, (a, b) -> null).collect(toList()), is(empty()));
+		assertThat(Streams.zip(Stream.empty(), Stream.empty(), null, null, false, (a, b) -> null).collect(toList()), is(empty()));
+		assertThat(Streams.zip(Stream.of("foo"), Stream.of("bar"), null, null, true, (a, b) -> a + b).collect(toList()), contains("foobar"));
+		assertThat(Streams.zip(Stream.of("foo"), Stream.of("bar"), null, null, false, (a, b) -> a + b).collect(toList()), contains("foobar"));
+		assertThat(Streams.zip(Stream.of("foo"), Stream.of(), "X", "Y", true, (a, b) -> a + b).collect(toList()), contains("fooY"));
+		assertThat(Streams.zip(Stream.of("foo"), Stream.of(), "X", "Y", false, (a, b) -> a + b).collect(toList()), is(empty()));
+		assertThat(Streams.zip(Stream.of(), Stream.of("bar"), "X", "Y", true, (a, b) -> a + b).collect(toList()), contains("Xbar"));
+		assertThat(Streams.zip(Stream.of(), Stream.of("bar"), "X", "Y", false, (a, b) -> a + b).collect(toList()), is(empty()));
+		assertThat(Streams.zip(Stream.of("A", "B", "C"), Stream.of(1, 2, 3), null, null, true, (a, b) -> a + b).collect(toList()), contains("A1", "B2", "C3"));
+		assertThat(Streams.zip(Stream.of("A", "B", "C"), Stream.of(1, 2, 3), null, null, false, (a, b) -> a + b).collect(toList()), contains("A1", "B2", "C3"));
+		assertThat(Streams.zip(Stream.of("A", "B", "C"), Stream.of(1, 2, 3), "X", 0, true, AbstractMap.SimpleEntry::new).collect(toList()),
 				contains(new AbstractMap.SimpleEntry<>("A", 1), new AbstractMap.SimpleEntry<>("B", 2), new AbstractMap.SimpleEntry<>("C", 3)));
-		assertThat(Streams.zip(Stream.of("A", "B", "C"), Stream.of(1, 2, 3), AbstractMap.SimpleEntry::new, "X", 0, false).collect(toList()),
+		assertThat(Streams.zip(Stream.of("A", "B", "C"), Stream.of(1, 2, 3), "X", 0, false, AbstractMap.SimpleEntry::new).collect(toList()),
 				contains(new AbstractMap.SimpleEntry<>("A", 1), new AbstractMap.SimpleEntry<>("B", 2), new AbstractMap.SimpleEntry<>("C", 3)));
-		assertThat(Streams.zip(Stream.of("A", "B", "C"), Stream.of(1, 2), AbstractMap.SimpleEntry::new, "X", 0, true).collect(toList()),
+		assertThat(Streams.zip(Stream.of("A", "B", "C"), Stream.of(1, 2), "X", 0, true, AbstractMap.SimpleEntry::new).collect(toList()),
 				contains(new AbstractMap.SimpleEntry<>("A", 1), new AbstractMap.SimpleEntry<>("B", 2), new AbstractMap.SimpleEntry<>("C", 0)));
-		assertThat(Streams.zip(Stream.of("A", "B", "C"), Stream.of(1, 2), AbstractMap.SimpleEntry::new, "X", 0, false).collect(toList()),
+		assertThat(Streams.zip(Stream.of("A", "B", "C"), Stream.of(1, 2), "X", 0, false, AbstractMap.SimpleEntry::new).collect(toList()),
 				contains(new AbstractMap.SimpleEntry<>("A", 1), new AbstractMap.SimpleEntry<>("B", 2)));
-		assertThat(Streams.zip(Stream.of("A", "B", "C"), Stream.of(1), AbstractMap.SimpleEntry::new, "X", 0, true).collect(toList()),
+		assertThat(Streams.zip(Stream.of("A", "B", "C"), Stream.of(1), "X", 0, true, AbstractMap.SimpleEntry::new).collect(toList()),
 				contains(new AbstractMap.SimpleEntry<>("A", 1), new AbstractMap.SimpleEntry<>("B", 0), new AbstractMap.SimpleEntry<>("C", 0)));
-		assertThat(Streams.zip(Stream.of("A", "B", "C"), Stream.of(1), AbstractMap.SimpleEntry::new, "X", 0, false).collect(toList()),
+		assertThat(Streams.zip(Stream.of("A", "B", "C"), Stream.of(1), "X", 0, false, AbstractMap.SimpleEntry::new).collect(toList()),
 				contains(new AbstractMap.SimpleEntry<>("A", 1)));
-		assertThat(Streams.zip(Stream.of("A", "B", "C"), Stream.of(), AbstractMap.SimpleEntry::new, "X", 0, true).collect(toList()),
+		assertThat(Streams.zip(Stream.of("A", "B", "C"), Stream.of(), "X", 0, true, AbstractMap.SimpleEntry::new).collect(toList()),
 				contains(new AbstractMap.SimpleEntry<>("A", 0), new AbstractMap.SimpleEntry<>("B", 0), new AbstractMap.SimpleEntry<>("C", 0)));
-		assertThat(Streams.zip(Stream.of("A", "B", "C"), Stream.of(), AbstractMap.SimpleEntry::new, "X", 0, false).collect(toList()), is(empty()));
-		assertThat(Streams.zip(Stream.of("A", "B", "C"), Stream.of(), AbstractMap.SimpleEntry::new, null, null, true).collect(toList()),
+		assertThat(Streams.zip(Stream.of("A", "B", "C"), Stream.of(), "X", 0, false, AbstractMap.SimpleEntry::new).collect(toList()), is(empty()));
+		assertThat(Streams.zip(Stream.of("A", "B", "C"), Stream.of(), null, null, true, AbstractMap.SimpleEntry::new).collect(toList()),
 				contains(new AbstractMap.SimpleEntry<>("A", null), new AbstractMap.SimpleEntry<>("B", null), new AbstractMap.SimpleEntry<>("C", null)));
-		assertThat(Streams.zip(Stream.of("A", "B", "C"), Stream.of(), AbstractMap.SimpleEntry::new, null, null, false).collect(toList()), is(empty()));
-		assertThat(Streams.zip(Stream.of("A", "B"), Stream.of(1, 2, 3), AbstractMap.SimpleEntry::new, "X", 0, true).collect(toList()),
+		assertThat(Streams.zip(Stream.of("A", "B", "C"), Stream.of(), null, null, false, AbstractMap.SimpleEntry::new).collect(toList()), is(empty()));
+		assertThat(Streams.zip(Stream.of("A", "B"), Stream.of(1, 2, 3), "X", 0, true, AbstractMap.SimpleEntry::new).collect(toList()),
 				contains(new AbstractMap.SimpleEntry<>("A", 1), new AbstractMap.SimpleEntry<>("B", 2), new AbstractMap.SimpleEntry<>("X", 3)));
-		assertThat(Streams.zip(Stream.of("A", "B"), Stream.of(1, 2, 3), AbstractMap.SimpleEntry::new, "X", 0, false).collect(toList()),
+		assertThat(Streams.zip(Stream.of("A", "B"), Stream.of(1, 2, 3), "X", 0, false, AbstractMap.SimpleEntry::new).collect(toList()),
 				contains(new AbstractMap.SimpleEntry<>("A", 1), new AbstractMap.SimpleEntry<>("B", 2)));
-		assertThat(Streams.zip(Stream.of("A"), Stream.of(1, 2, 3), AbstractMap.SimpleEntry::new, "X", 0, true).collect(toList()),
+		assertThat(Streams.zip(Stream.of("A"), Stream.of(1, 2, 3), "X", 0, true, AbstractMap.SimpleEntry::new).collect(toList()),
 				contains(new AbstractMap.SimpleEntry<>("A", 1), new AbstractMap.SimpleEntry<>("X", 2), new AbstractMap.SimpleEntry<>("X", 3)));
-		assertThat(Streams.zip(Stream.of("A"), Stream.of(1, 2, 3), AbstractMap.SimpleEntry::new, "X", 0, false).collect(toList()),
+		assertThat(Streams.zip(Stream.of("A"), Stream.of(1, 2, 3), "X", 0, false, AbstractMap.SimpleEntry::new).collect(toList()),
 				contains(new AbstractMap.SimpleEntry<>("A", 1)));
-		assertThat(Streams.zip(Stream.of(), Stream.of(1, 2, 3), AbstractMap.SimpleEntry::new, "X", 0, true).collect(toList()),
+		assertThat(Streams.zip(Stream.of(), Stream.of(1, 2, 3), "X", 0, true, AbstractMap.SimpleEntry::new).collect(toList()),
 				contains(new AbstractMap.SimpleEntry<>("X", 1), new AbstractMap.SimpleEntry<>("X", 2), new AbstractMap.SimpleEntry<>("X", 3)));
-		assertThat(Streams.zip(Stream.of(), Stream.of(1, 2, 3), AbstractMap.SimpleEntry::new, "X", 0, false).collect(toList()), is(empty()));
-		assertThat(Streams.zip(Stream.of(), Stream.of(1, 2, 3), AbstractMap.SimpleEntry::new, null, null, true).collect(toList()),
+		assertThat(Streams.zip(Stream.of(), Stream.of(1, 2, 3), "X", 0, false, AbstractMap.SimpleEntry::new).collect(toList()), is(empty()));
+		assertThat(Streams.zip(Stream.of(), Stream.of(1, 2, 3), null, null, true, AbstractMap.SimpleEntry::new).collect(toList()),
 				contains(new AbstractMap.SimpleEntry<>(null, 1), new AbstractMap.SimpleEntry<>(null, 2), new AbstractMap.SimpleEntry<>(null, 3)));
-		assertThat(Streams.zip(Stream.of(), Stream.of(1, 2, 3), AbstractMap.SimpleEntry::new, null, null, false).collect(toList()), is(empty()));
+		assertThat(Streams.zip(Stream.of(), Stream.of(1, 2, 3), null, null, false, AbstractMap.SimpleEntry::new).collect(toList()), is(empty()));
 	}
 
 }

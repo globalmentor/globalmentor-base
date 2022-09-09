@@ -132,7 +132,7 @@ public class Streams {
 	 */
 	public static <A, B, R> Stream<R> zip(@Nonnull final Stream<A> streamA, @Nonnull final Stream<B> streamB,
 			@Nonnull final BiFunction<? super A, ? super B, R> zipper) {
-		return zip(streamA, streamB, zipper, false);
+		return zip(streamA, streamB, false, zipper);
 	}
 
 	/**
@@ -147,14 +147,14 @@ public class Streams {
 	 * @param <R> The type of elements in the resulting zipped stream.
 	 * @param streamA The first stream to zip.
 	 * @param streamB The second stream to zip.
-	 * @param zipper The function for combining the elements.
 	 * @param retainExtraElements <code>true</code> if any additional elements from the longer stream will be kept, paired with <code>null</code> for the other
 	 *          stream; or <code>false</code> if additional element will be ignored and discarded.
+	 * @param zipper The function for combining the elements.
 	 * @return A new stream zipping the contents of the two input streams.
 	 */
-	public static <A, B, R> Stream<R> zip(@Nonnull final Stream<A> streamA, @Nonnull final Stream<B> streamB,
-			@Nonnull final BiFunction<? super A, ? super B, R> zipper, final boolean retainExtraElements) {
-		return zip(streamA, streamB, zipper, null, null, retainExtraElements);
+	public static <A, B, R> Stream<R> zip(@Nonnull final Stream<A> streamA, @Nonnull final Stream<B> streamB, final boolean retainExtraElements,
+			@Nonnull final BiFunction<? super A, ? super B, R> zipper) {
+		return zip(streamA, streamB, null, null, retainExtraElements, zipper);
 	}
 
 	/**
@@ -169,13 +169,13 @@ public class Streams {
 	 * @param <R> The type of elements in the resulting zipped stream.
 	 * @param streamA The first stream to zip.
 	 * @param streamB The second stream to zip.
-	 * @param zipper The function for combining the elements.
 	 * @param defaultElement The default element to use for each stream if that stream is depleted of elements while the other stream still has elements.
+	 * @param zipper The function for combining the elements.
 	 * @return A new stream zipping the contents of the two input streams.
 	 */
 	public static <T, R> Stream<R> zip(@Nonnull final Stream<T> streamA, @Nonnull final Stream<T> streamB,
 			@Nonnull final BiFunction<? super T, ? super T, R> zipper, @Nullable final T defaultElement) {
-		return zip(streamA, streamB, zipper, defaultElement, defaultElement);
+		return zip(streamA, streamB, defaultElement, defaultElement, zipper);
 	}
 
 	/**
@@ -191,14 +191,14 @@ public class Streams {
 	 * @param <R> The type of elements in the resulting zipped stream.
 	 * @param streamA The first stream to zip.
 	 * @param streamB The second stream to zip.
-	 * @param zipper The function for combining the elements.
 	 * @param defaultElementA The default element to use for the first stream if that stream is depleted of elements while the other stream still has elements.
 	 * @param defaultElementB The default element to use for the second stream if that stream is depleted of elements while the other stream still has elements.
+	 * @param zipper The function for combining the elements.
 	 * @return A new stream zipping the contents of the two input streams.
 	 */
-	public static <A, B, R> Stream<R> zip(@Nonnull final Stream<A> streamA, @Nonnull final Stream<B> streamB,
-			@Nonnull final BiFunction<? super A, ? super B, R> zipper, @Nullable final A defaultElementA, @Nullable final B defaultElementB) {
-		return zip(streamA, streamB, zipper, defaultElementA, defaultElementB, true);
+	public static <A, B, R> Stream<R> zip(@Nonnull final Stream<A> streamA, @Nonnull final Stream<B> streamB, @Nullable final A defaultElementA,
+			@Nullable final B defaultElementB, @Nonnull final BiFunction<? super A, ? super B, R> zipper) {
+		return zip(streamA, streamB, defaultElementA, defaultElementB, true, zipper);
 	}
 
 	/**
@@ -213,17 +213,17 @@ public class Streams {
 	 * @param <R> The type of elements in the resulting zipped stream.
 	 * @param streamA The first stream to zip.
 	 * @param streamB The second stream to zip.
-	 * @param zipper The function for combining the elements.
 	 * @param defaultElementA The default element to use for the first stream if that stream is depleted of elements while the other stream still has elements.
 	 *          Only used if <code><var>retainExtraElements</var></code> is <code>true</code>.
 	 * @param defaultElementB The default element to use for the second stream if that stream is depleted of elements while the other stream still has elements.
 	 *          Only used if <code><var>retainExtraElements</var></code> is <code>true</code>.
 	 * @param retainExtraElements <code>true</code> if any additional elements from the longer stream will be kept, paired with the default value specified for
 	 *          the other stream; or <code>false</code> if additional element will be ignored and discarded.
+	 * @param zipper The function for combining the elements.
 	 * @return A new stream zipping the contents of the two input streams.
 	 */
-	static <A, B, R> Stream<R> zip(@Nonnull final Stream<A> streamA, @Nonnull final Stream<B> streamB, @Nonnull final BiFunction<? super A, ? super B, R> zipper,
-			@Nullable final A defaultElementA, @Nullable final B defaultElementB, final boolean retainExtraElements) {
+	static <A, B, R> Stream<R> zip(@Nonnull final Stream<A> streamA, @Nonnull final Stream<B> streamB, @Nullable final A defaultElementA,
+			@Nullable final B defaultElementB, final boolean retainExtraElements, @Nonnull final BiFunction<? super A, ? super B, R> zipper) {
 		final boolean isParallel = streamA.isParallel() || streamB.isParallel();
 		final Spliterator<A> spliteratorA = streamA.spliterator();
 		final Spliterator<B> spliteratorB = streamB.spliterator();
