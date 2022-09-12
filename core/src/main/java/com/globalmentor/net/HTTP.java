@@ -25,6 +25,7 @@ import com.globalmentor.java.Characters;
 
 import static com.globalmentor.java.Characters.*;
 import static com.globalmentor.net.URIs.*;
+import static java.lang.String.format;
 import static java.nio.charset.StandardCharsets.*;
 
 /**
@@ -163,25 +164,62 @@ public class HTTP {
 	/** The HTTP header indicating the credentials expected by the server. */
 	public static final String WWW_AUTHENTICATE_HEADER = "WWW-Authenticate";
 
-	/** The HTTP GET method. */
+	/** The HTTP <code>GET</code> method. */
 	public static final String GET_METHOD = "GET";
-	/** The HTTP HEAD method. */
+	/** The HTTP <code>HEAD</code> method. */
 	public static final String HEAD_METHOD = "HEAD";
-	/** The HTTP POST method. */
+	/** The HTTP <code>POST</code> method. */
 	public static final String POST_METHOD = "POST";
-	/** The HTTP PUT method. */
+	/** The HTTP <code>PUT</code> method. */
 	public static final String PUT_METHOD = "PUT";
-	/** The HTTP DELETE method. */
+	/** The HTTP <code>DELETE</code> method. */
 	public static final String DELETE_METHOD = "DELETE";
-	/** The HTTP CONNECT method. */
+	/** The HTTP <code>CONNECT</code> method. */
 	public static final String CONNECT_METHOD = "CONNECT";
-	/** The HTTP OPTIONS method. */
+	/** The HTTP <code>OPTIONS</code> method. */
 	public static final String OPTIONS_METHOD = "OPTIONS";
-	/** The HTTP TRACE method. */
+	/** The HTTP <code>TRACE</code> method. */
 	public static final String TRACE_METHOD = "TRACE";
 
 	/** The "realm" parameter used in headers such as WWW-Authenticate. */
 	public static final String REALM_PARAMETER = "realm";
+
+	/** The status code classes (categories) of response. */
+	public static enum ResponseClass {
+		/** <code>1xx</code> (Informational): The request was received, continuing process. */
+		INFORMATIONAL,
+		/** <code>2xx</code> (Successful): The request was successfully received, understood, and accepted. */
+		SUCCESSFUL,
+		/** <code>3xx</code> (Redirection): Further action needs to be taken in order to complete the request. */
+		REDIRECTION,
+		/** <code>4xx</code> (Client Error): The request contains bad syntax or cannot be fulfilled. */
+		CLIENT_ERROR,
+		/** <code>*5xx</code> (Server Error): The server failed to fulfill an apparently valid request. */
+		SERVER_ERROR;
+
+		/**
+		 * Determines the class of response of the given status code.
+		 * @param statusCode The status code in the response class.
+		 * @return The response class for the status code.
+		 * @throws IllegalArgumentException if the status code is not within the valid range of <code>100</code> to <code>599</code>, inclusive.
+		 */
+		public static ResponseClass forStatusCode(final int statusCode) {
+			switch(statusCode / 100) {
+				case 1:
+					return INFORMATIONAL;
+				case 2:
+					return SUCCESSFUL;
+				case 3:
+					return REDIRECTION;
+				case 4:
+					return CLIENT_ERROR;
+				case 5:
+					return SERVER_ERROR;
+				default:
+					throw new IllegalArgumentException(format("Status code %d not within the valid range of 100 to 599, inclusive.", statusCode));
+			}
+		}
+	}
 
 	/** Status code <code>100 Continue</code>. */
 	public static final int SC_CONTINUE = 100;
