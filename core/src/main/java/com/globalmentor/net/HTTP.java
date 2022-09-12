@@ -28,11 +28,11 @@ import static com.globalmentor.net.URIs.*;
 import static java.nio.charset.StandardCharsets.*;
 
 /**
- * Constants and utilities relating to the HyperText Transfer Protocol (HTTP) as defined by <a href="https://www.rfc-editor.org/rfc/rfc7231">RFC 7231</a>,
- * <cite>Hypertext Transfer Protocol (HTTP/1.1): Semantics and Content</cite> and related specifications.
- * @see <a href="https://www.rfc-editor.org/rfc/rfc7231">RFC 7231: Hypertext Transfer Protocol (HTTP/1.1): Semantics and Content</a>
- * @see <a href="https://www.rfc-editor.org/rfc/rfc7233">RFC 7233: Hypertext Transfer Protocol (HTTP/1.1): Range Requests</a>
+ * Constants and utilities relating to the HyperText Transfer Protocol (HTTP) as defined by
+ * <a href="https://www.rfc-editor.org/rfc/rfc9110.html#name-status-codes">RFC 9110</a>, <cite>HTTP Semantics</cite> and related specifications.
  * @see <a href="https://www.rfc-editor.org/rfc/rfc6585">RFC 6585: Additional HTTP Status Codes</a>
+ * @see <a href="https://www.rfc-editor.org/rfc/rfc9110.html">RFC 9110: HTTP Semantics</a>
+ * @see <a href="https://www.rfc-editor.org/rfc/rfc9112.html">RFC 9112: HTTP/1.1</a>
  * @author Garret Wilson
  */
 public class HTTP {
@@ -198,10 +198,7 @@ public class HTTP {
 	public static final int SC_NO_CONTENT = 204;
 	/** Status code <code>205 Reset Content</code>. */
 	public static final int SC_RESET_CONTENT = 205;
-	/**
-	 * Status code <code>206 Partial Content</code>.
-	 * @see <a href="https://www.rfc-editor.org/rfc/rfc7233">RFC 7233: Hypertext Transfer Protocol (HTTP/1.1): Range Requests</a>
-	 */
+	/** Status code <code>206 Partial Content</code>. */
 	public static final int SC_PARTIAL_CONTENT = 206;
 
 	/** Status code <code>300 Multiple Choices</code>. */
@@ -212,22 +209,18 @@ public class HTTP {
 	public static final int SC_MOVED_TEMPORARILY = 302;
 	/** Status code <code>303 See Other</code>. */
 	public static final int SC_SEE_OTHER = 303;
-	/**
-	 * Status code <code>304 Not Modified</code>.
-	 * @see <a href="https://www.rfc-editor.org/rfc/rfc7233">RFC 7233: Hypertext Transfer Protocol (HTTP/1.1): Range Requests</a>
-	 */
+	/** Status code <code>304 Not Modified</code>. */
 	public static final int SC_NOT_MODIFIED = 304;
 	/** Status code <code>305 Use Proxy</code>. */
 	public static final int SC_USE_PROXY = 305;
 	/** Status code <code>307 Temporary Redirect</code>. */
 	public static final int SC_TEMPORARY_REDIRECT = 307;
+	/** Status code <code>308 Permanent Redirect</code>. */
+	public static final int SC_PERMANENT_REDIRECT = 308;
 
 	/** Status code <code>400 Bad Request</code>. */
 	public static final int SC_BAD_REQUEST = 400;
-	/**
-	 * Status code <code>401 Unauthorized</code>.
-	 * @see <a href="https://www.rfc-editor.org/rfc/rfc7233">RFC 7233: Hypertext Transfer Protocol (HTTP/1.1): Range Requests</a>
-	 */
+	/** Status code <code>401 Unauthorized</code>. */
 	public static final int SC_UNAUTHORIZED = 401;
 	/** Status code <code>402 Payment Required</code>. */
 	public static final int SC_PAYMENT_REQUIRED = 402;
@@ -239,10 +232,7 @@ public class HTTP {
 	public static final int SC_METHOD_NOT_ALLOWED = 405;
 	/** Status code <code>406 Not Acceptable</code>. */
 	public static final int SC_NOT_ACCEPTABLE = 406;
-	/**
-	 * Status code <code>407 Proxy Authentication Required</code>.
-	 * @see <a href="https://www.rfc-editor.org/rfc/rfc7233">RFC 7233: Hypertext Transfer Protocol (HTTP/1.1): Range Requests</a>
-	 */
+	/** Status code <code>407 Proxy Authentication Required</code>. */
 	public static final int SC_PROXY_AUTHENTICATION_REQUIRED = 407;
 	/** Status code <code>408 Request Timeout</code>. */
 	public static final int SC_REQUEST_TIMEOUT = 408;
@@ -252,24 +242,22 @@ public class HTTP {
 	public static final int SC_GONE = 410;
 	/** Status code <code>411 Length Required</code>. */
 	public static final int SC_LENGTH_REQUIRED = 411;
-	/**
-	 * Status code <code>412 Precondition Failed</code>.
-	 * @see <a href="https://www.rfc-editor.org/rfc/rfc7233">RFC 7233: Hypertext Transfer Protocol (HTTP/1.1): Range Requests</a>
-	 */
+	/** Status code <code>412 Precondition Failed</code>. */
 	public static final int SC_PRECONDITION_FAILED = 412;
-	/** Status code <code>413 Payload Too Large</code>. */
-	public static final int SC_PAYLOAD_TOO_LARGE = 413;
+	/** Status code <code>413 Content Too Large</code>. */
+	public static final int SC_CONTENT_TOO_LARGE = 413;
 	/** Status code <code>414 URI Too Long</code>. */
 	public static final int SC_URI_TOO_LONG = 414;
 	/** Status code <code>415 Unsupported Media Type</code>. */
 	public static final int SC_UNSUPPORTED_MEDIA_TYPE = 415;
-	/**
-	 * Status code <code>416 Range Not Satisfiable</code>.
-	 * @see <a href="https://www.rfc-editor.org/rfc/rfc7233">RFC 7233: Hypertext Transfer Protocol (HTTP/1.1): Range Requests</a>
-	 */
+	/** Status code <code>416 Range Not Satisfiable</code>. */
 	public static final int SC_RANGE_NOT_SATISFIABLE = 416;
-	/** Status code <code>417 Expectation Failed </code>. */
+	/** Status code <code>417 Expectation Failed</code>. */
 	public static final int SC_EXPECTATION_FAILED = 417;
+	/** Status code <code>421 Misdirected Request</code>. */
+	public static final int SC_MISDIRECTED_REQUEST = 421;
+	/** Status code <code>422 Unprocessable Content</code>. */
+	public static final int SC_UNPROCESSABLE_CONTENT = 422;
 	/** Status code <code>426 Upgrade Required</code>. */
 	public static final int SC_UPGRADE_REQUIRED = 426;
 	/**
