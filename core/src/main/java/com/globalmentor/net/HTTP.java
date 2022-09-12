@@ -165,16 +165,18 @@ public class HTTP {
 
 	/** The HTTP GET method. */
 	public static final String GET_METHOD = "GET";
-	/** The HTTP POST method. */
-	public static final String POST_METHOD = "POST";
 	/** The HTTP HEAD method. */
 	public static final String HEAD_METHOD = "HEAD";
-	/** The HTTP OPTIONS method. */
-	public static final String OPTIONS_METHOD = "OPTIONS";
+	/** The HTTP POST method. */
+	public static final String POST_METHOD = "POST";
 	/** The HTTP PUT method. */
 	public static final String PUT_METHOD = "PUT";
 	/** The HTTP DELETE method. */
 	public static final String DELETE_METHOD = "DELETE";
+	/** The HTTP CONNECT method. */
+	public static final String CONNECT_METHOD = "CONNECT";
+	/** The HTTP OPTIONS method. */
+	public static final String OPTIONS_METHOD = "OPTIONS";
 	/** The HTTP TRACE method. */
 	public static final String TRACE_METHOD = "TRACE";
 
