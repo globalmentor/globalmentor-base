@@ -51,17 +51,31 @@ public class HTTP {
 	/** The charset used for HTTP. */
 	public static final Charset CHARSET = US_ASCII;
 
-	/** The HTTP header indicating the allowed methods. */
+	// response context header fields
+	/** The HTTP header field indicating the allowed methods. */
 	public static final String ALLOW_HEADER = "Allow";
-	/** The HTTP header indicating the accepted content types. */
+	/** The HTTP header field indicating the destination of a redirection. */
+	public static final String LOCATION_HEADER = "Location";
+	/** The HTTP header field indicating how long the user agent ought to wait before making a follow-up request. */
+	public static final String RETRY_AFTER_HEADER = "Retry-After";
+	/** The HTTP header field containing information about the software used by the origin server to handle the request. */
+	public static final String SERVER_HEADER = "Server";
+
+	//content negotiation header fields
+	/** The HTTP header field indicating the accepted content types. */
 	public static final String ACCEPT_HEADER = "Accept";
-	/** The HTTP header indicating the accepted encodings. */
+	/** The HTTP header field indicating the accepted encodings. */
+	public static final String ACCEPT_CHARSET_HEADER = "Accept-Charset";
+	/** The HTTP header field indicating the accepted encodings. */
 	public static final String ACCEPT_ENCODING_HEADER = "Accept-Encoding";
-	/** The HTTP header indicating the accepted language types. */
+	/** The HTTP header field indicating the accepted language types. */
 	public static final String ACCEPT_LANGUAGE_HEADER = "Accept-Language";
-	/** The HTTP header indicating authorization information. */
+	/** The HTTP header field describing what parts of a request message might have influenced selecting the content of this response. */
+	public static final String VARY_HEADER = "Vary";
+
+	/** The HTTP header field indicating authorization information. */
 	public static final String AUTHORIZATION_HEADER = "Authorization";
-	/** The HTTP header for cache control. */
+	/** The HTTP header field for cache control. */
 	public static final String CACHE_CONTROL_HEADER = "Cache-Control";
 
 	/** The HTTP max-age cache control header. */
@@ -83,17 +97,17 @@ public class HTTP {
 	/** The HTTP s-maxage cache control header. */
 	public static final String S_MAXAGE_CACHE_CONTROL = "s-maxage";
 
-	/** The HTTP header indicating the connection persistency. */
+	/** The HTTP header field indicating the connection persistence. */
 	public static final String CONNECTION_HEADER = "Connection";
 
 	/** The HTTP "close" Connection header value. */
 	public static final String CONNECTION_CLOSE = "close";
 
-	/** The HTTP header indicating the content description. */
+	/** The HTTP header field indicating the content description. */
 	public static final String CONTENT_DESCRIPTION_HEADER = "Content-Description";
-	/** The HTTP header indicating the content disposition. */
+	/** The HTTP header field indicating the content disposition. */
 	public static final String CONTENT_DISPOSITION_HEADER = "Content-Disposition";
-	/** The HTTP header indicating the content encoding. */
+	/** The HTTP header field indicating the content encoding. */
 	public static final String CONTENT_ENCODING_HEADER = "Content-Encoding";
 
 	/** The HTTP compress content coding. */
@@ -105,46 +119,44 @@ public class HTTP {
 	/** The HTTP identity content coding. */
 	public static final String IDENTITY_CONTENT_CODING = "identity";
 
-	/** The HTTP header indicating the natural language(s) of the intended audience for the enclosed entity. */
+	/** The HTTP header field indicating the natural language(s) of the intended audience for the enclosed entity. */
 	public static final String CONTENT_LANGUAGE_HEADER = "Content-Language";
-	/** The HTTP header indicating the size of the entity body. */
+	/** The HTTP header field indicating the size of the entity body. */
 	public static final String CONTENT_LENGTH_HEADER = "Content-Length";
-	/** The HTTP header indicating the canonical location of the resource. */
+	/** The HTTP header field indicating the canonical location of the resource. */
 	public static final String CONTENT_LOCATION_HEADER = "Content-Location";
-	/** The HTTP header indicating the MD5 digest of the body. */
+	/** The HTTP header field indicating the MD5 digest of the body. */
 	public static final String CONTENT_MD5_HEADER = "Content-MD5";
-	/** The HTTP header indicating the content type. */
+	/** The HTTP header field indicating the content type. */
 	public static final String CONTENT_TYPE_HEADER = "Content-Type";
-	/** The HTTP header indicating the date of the message, in RFC 1123 format. */
+	/** The HTTP header field indicating the date of the message, in RFC 1123 format. */
 	public static final String DATE_HEADER = "Date";
-	/** The HTTP header indicating the expiration of the content. */
+	/** The HTTP header field indicating the expiration of the content. */
 	public static final String EXPIRES_HEADER = "Expires";
-	/** The HTTP header indicating Internet host and port number of the resource being requested. */
+	/** The HTTP header field indicating Internet host and port number of the resource being requested. */
 	public static final String HOST_HEADER = "Host";
-	/** The HTTP header indicating content should be retrieved only if it has been modified after a certain date. */
+	/** The HTTP header field indicating content should be retrieved only if it has been modified after a certain date. */
 	public static final String IF_MODIFIED_SINCE_HEADER = "If-Modified-Since";
-	/** The HTTP header indicating content should be retrieved only if it has not been modified after a certain date. */
+	/** The HTTP header field indicating content should be retrieved only if it has not been modified after a certain date. */
 	public static final String IF_UNMODIFIED_SINCE_HEADER = "If-Unmodified-Since";
-	/** The HTTP header indicating the date and time at which the origin server believes the variant was last modified. */
+	/** The HTTP header field indicating the date and time at which the origin server believes the variant was last modified. */
 	public static final String LAST_MODIFIED_HEADER = "Last-Modified";
-	/** The HTTP header indicating the destination of a redirection. */
-	public static final String LOCATION_HEADER = "Location";
 	/** The HTTP pragma header. */
 	public static final String PRAGMA_HEADER = "Pragma";
 
 	/** The HTTP no-cache pragma. */
 	public static final String NO_CACHE_PRAGMA = "no-cache";
 
-	/** The HTTP header indicating the referring location. */
+	/** The HTTP header field indicating the referring location. */
 	public static final String REFERER_HEADER = "Referer";
 	/**
-	 * The HTTP header indicating what extension transfer-codings it is willing to accept in the response and whether or not it is willing to accept trailer
+	 * The HTTP header field indicating what extension transfer-codings it is willing to accept in the response and whether or not it is willing to accept trailer
 	 * fields in a chunked transfer-coding.
 	 */
 	public static final String TE_HEADER = "TE";
 	/**
-	 * The HTTP header indicating the what (if any) type of transformation has been applied to the message body in order to safely transfer it between the sender
-	 * and the recipient.
+	 * The HTTP header field indicating the what (if any) type of transformation has been applied to the message body in order to safely transfer it between the
+	 * sender and the recipient.
 	 */
 	public static final String TRANSFER_ENCODING_HEADER = "Transfer-Encoding";
 
@@ -159,9 +171,9 @@ public class HTTP {
 	/** The HTTP identity transfer coding. */
 	public static final String IDENTITY_TRANSFER_CODING = "identity";
 
-	/** The HTTP header indicating the user agent. */
+	/** The HTTP header field indicating the user agent. */
 	public static final String USER_AGENT_HEADER = "User-Agent";
-	/** The HTTP header indicating the credentials expected by the server. */
+	/** The HTTP header field indicating the credentials expected by the server. */
 	public static final String WWW_AUTHENTICATE_HEADER = "WWW-Authenticate";
 
 	/** The HTTP <code>GET</code> method. */
