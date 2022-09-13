@@ -16,9 +16,9 @@
 
 package com.globalmentor.collections;
 
-import java.util.*;
+import static java.util.Collections.*;
 
-import static com.globalmentor.collections.iterators.Iterators.*;
+import java.util.*;
 
 /**
  * An abstract collection map that decorates an existing map.
@@ -74,10 +74,9 @@ public abstract class AbstractDecoratorCollectionMap<K, V, C extends Collection<
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
 	public Iterable<V> getItems(final K key) {
 		final C collection = get(key); //get the collection of objects for the key
-		return collection != null ? collection : (Iterable<V>)EMPTY_ITERABLE; //return the collection or an empty iterable if there is no collection for this key
+		return collection != null ? collection : emptySet(); //return the collection or an empty iterable if there is no collection for this key
 	}
 
 	@Override

@@ -16,8 +16,9 @@
 
 package com.globalmentor.collections.iterators;
 
-import static com.globalmentor.collections.iterators.Iterators.*;
+import static com.globalmentor.collections.iterators.Iterators.toStream;
 import static java.util.Arrays.*;
+import static java.util.Collections.*;
 import static java.util.stream.Collectors.*;
 import static org.hamcrest.Matchers.*;
 import static org.hamcrest.MatcherAssert.*;

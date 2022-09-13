@@ -20,8 +20,7 @@ import static java.util.Objects.*;
 
 import java.util.*;
 import java.util.function.Supplier;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
+import java.util.stream.*;
 
 import javax.annotation.*;
 
@@ -37,35 +36,29 @@ import static com.globalmentor.java.Arrays.*;
  */
 public class Iterators {
 
-	/** The singleton immutable empty iterator. */
-	public static final Iterator<?> EMPTY_ITERATOR = new EmptyIterator<Object>();
-
 	/**
 	 * @param <T> The type of the iterator.
 	 * @return The immutable empty iterator.
+	 * @deprecated to be removed in favor of {@link java.util.Collections#emptyIterator()}.
 	 */
-	@SuppressWarnings("unchecked")
+	@Deprecated
 	public static final <T> Iterator<T> emptyIterator() {
-		return (Iterator<T>)EMPTY_ITERATOR; //return the singleton empty iterator cast to the correct type
+		return java.util.Collections.emptyIterator();
 	}
-
-	/** The singleton immutable empty iterable. */
-	public static final Iterable<?> EMPTY_ITERABLE = new EmptyIterable<Object>();
 
 	/**
 	 * @param <T> The generic type of empty iterable to return.
 	 * @return The immutable empty iterable.
+	 * @deprecated to be removed in favor of {@link java.util.Collections#emptySet()}.
 	 */
-	@SuppressWarnings("unchecked")
+	@Deprecated
 	public static final <T> Iterable<T> emptyIterable() {
-		return (Iterable<T>)EMPTY_ITERABLE; //return the singleton empty iterable cast to the correct type
+		return java.util.Collections.emptySet();
 	}
 
 	/**
 	 * Returns an iterator concatenating the contents of two iterators.
-	 * <p>
-	 * <strong>Tip:</strong> The returned iterator can be used as an {@link Iterator} or an {@link Enumeration}.
-	 * </p>
+	 * @apiNote The returned iterator can be used as an {@link Iterator} or an {@link Enumeration}.
 	 * @param <E> The type of elements returned by the iterators.
 	 * @param iterator1 The iterator the contents of which will appear first in the iteration.
 	 * @param iterator2 The iterator the contents of which will appear second in the iteration.
@@ -77,9 +70,7 @@ public class Iterators {
 
 	/**
 	 * Returns an iterator concatenating the contents of multiple iterators.
-	 * <p>
-	 * <strong>Tip:</strong> The returned iterator can be used as an {@link Iterator} or an {@link Enumeration}.
-	 * </p>
+	 * @apiNote The returned iterator can be used as an {@link Iterator} or an {@link Enumeration}.
 	 * @param <E> The type of elements returned by the iterators.
 	 * @param iterators The iterators to concatenate.
 	 * @return An iterator that will return the contents of the given iterators in order.
@@ -92,9 +83,7 @@ public class Iterators {
 
 	/**
 	 * Returns an iterator concatenating the contents of an iterator and an enumeration.
-	 * <p>
-	 * <strong>Tip:</strong> The returned iterator can be used as an {@link Iterator} or an {@link Enumeration}.
-	 * </p>
+	 * @apiNote The returned iterator can be used as an {@link Iterator} or an {@link Enumeration}.
 	 * @param <E> The type of elements returned by the iterator and the enumeration.
 	 * @param iterator An iterator the contents of which will appear first in the iteration.
 	 * @param enumeration An enumeration the contents of which will appear after that of the iterator.
@@ -238,9 +227,7 @@ public class Iterators {
 
 	/**
 	 * Returns a single-use iterable that returns the given iterator.
-	 * <p>
-	 * Unlike most iterables, the returned iterable may only be iterated a single time.
-	 * </p>
+	 * @apiNote Unlike most iterables, the returned iterable may only be iterated a single time.
 	 * @param <E> the type of elements returned by the iterator.
 	 * @param iterator The iterator to be converted to an iterable.
 	 * @return A single-user iterable that returns the given iterator.
@@ -268,51 +255,6 @@ public class Iterators {
 	 */
 	public static <E> Stream<E> toStream(@Nonnull final Iterator<E> iterator) {
 		return StreamSupport.stream(toIterable(iterator).spliterator(), false);
-	}
-
-	/**
-	 * An implementation of an iterator that contains no data.
-	 * @author Garret Wilson
-	 */
-	private static class EmptyIterator<E> implements Iterator<E> {
-
-		/** @return <code>false</code>, because the empty iterator never has elements. */
-		public boolean hasNext() {
-			return false;
-		}
-
-		/**
-		 * Returns the next element in the iteration. This implementation always throws an exception because the empty iterator never has next elements.
-		 * @return The next element in the iteration.
-		 * @throws NoSuchElementException Thrown because the empty iteration has no elements.
-		 */
-		public E next() {
-			throw new NoSuchElementException("The empty iterator has no elements.");
-		}
-
-		/**
-		 * Removes from the underlying collection the last element returned by the iterator (optional operation). This implementation does not support remove and
-		 * always throws an exception.
-		 * @throws UnsupportedOperationException Thrown because the <code>remove</code> operation is not supported by the empty iterator.
-		 */
-		public void remove() {
-			throw new UnsupportedOperationException("The empty iterator does not support removal of elements.");
-		}
-	}
-
-	/**
-	 * An implementation of an iterable that returns an iterator that contains no data. Besides being lighter than an empty collection, this class is useful for
-	 * returning an empty iterator for code that must be converted back to JDK 1.4 compliance because the java.util.Collection classes cannot be retrofitted to
-	 * implement a replacement Iterable, while this class can.
-	 * @param <E> The type of object that can be iterated.
-	 * @author Garret Wilson
-	 */
-	private static class EmptyIterable<E> implements Iterable<E> {
-
-		/** @return An iterator to elements. This implementation returns the empty iterator. */
-		public Iterator<E> iterator() {
-			return emptyIterator();
-		}
 	}
 
 }
