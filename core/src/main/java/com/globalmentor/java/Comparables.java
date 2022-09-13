@@ -18,6 +18,8 @@ package com.globalmentor.java;
 
 import java.util.Comparator;
 
+import javax.annotation.*;
+
 import com.globalmentor.collections.comparators.SortOrder;
 
 /**
@@ -36,7 +38,7 @@ public class Comparables {
 	 * <li>This method allows <code>null</code> arguments, considering a <code>null</code> comparable to be lower than a non-<code>null</code> comparable.</li>
 	 * </ul>
 	 * This method matches the semantics of {@link Comparator#compare(Object, Object)}, except that this method allows <code>null</code> arguments.
-	 * @param <T> the type of comparables being compared.
+	 * @param <T> The type of comparables being compared.
 	 * @param comparable1 The first comparable to be compared, or <code>null</code> if the comparable is not available.
 	 * @param comparable2 The second comparable to be compared, or <code>null</code> if the comparable is not available.
 	 * @return A negative integer, zero, or a positive integer as the first argument is less than, equal to, or greater than the second.
@@ -55,7 +57,7 @@ public class Comparables {
 	 * <li>Identical comparables are recognized as such without delegating to the actual {@link Comparable#compareTo(Object)} method.</li>
 	 * <li>This method allows <code>null</code> arguments, considering a <code>null</code> comparable to be lower than a non-<code>null</code> comparable.</li>
 	 * </ul>
-	 * @param <T> the type of comparables being compared.
+	 * @param <T> The type of comparables being compared.
 	 * @param comparable1 The first comparable to be compared, or <code>null</code> if the comparable is not available.
 	 * @param comparable2 The second comparable to be compared, or <code>null</code> if the comparable is not available.
 	 * @param sortOrder The order in which to perform comparisons.
@@ -78,6 +80,32 @@ public class Comparables {
 			assert comparable2 != null : "Both comparables cannot be null, because we already checked for identity.";
 			return sortOrder == SortOrder.ASCENDING ? -1 : 1; //null comparables should be sorted lower
 		}
+	}
+
+	/**
+	 * Returns the smaller of two {@link Comparable} objects. If the values compare as equal, it is undefined which will be returned.
+	 * @param <T> The type of comparables being compared.
+	 * @param a One comparable object.
+	 * @param b Another comparable object.
+	 * @return The comparable object that compares smaller.
+	 * @see java.lang.Math#min(int, int)
+	 * @see java.util.Collections#min(java.util.Collection)
+	 */
+	public static <T extends Comparable<? super T>> T min(@Nonnull final T a, @Nonnull final T b) {
+		return a.compareTo(b) > 0 ? b : a;
+	}
+
+	/**
+	 * Returns the greater of two {@link Comparable} objects. If the values compare as equal, it is undefined which will be returned.
+	 * @param <T> The type of comparables being compared.
+	 * @param a One comparable object.
+	 * @param b Another comparable object.
+	 * @return The comparable object that compares greater.
+	 * @see java.lang.Math#max(int, int)
+	 * @see java.util.Collections#max(java.util.Collection)
+	 */
+	public static <T extends Comparable<? super T>> T max(@Nonnull final T a, @Nonnull final T b) {
+		return a.compareTo(b) < 0 ? b : a;
 	}
 
 }
