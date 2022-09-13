@@ -16,9 +16,9 @@
 
 package com.globalmentor.event;
 
-import java.util.*;
+import static java.util.Collections.*;
 
-import static com.globalmentor.collections.iterators.Iterators.*;
+import java.util.*;
 
 import java.util.concurrent.CopyOnWriteArraySet;
 
@@ -42,8 +42,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
  * Example:
  * </p>
  * 
- * <pre>
- * <code>
+ * <pre><code>
  * 
  * 	if(haslisteners(MyListener.class)
  * 	{
@@ -54,8 +53,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
  * 		}
  * 	}
  * 
- * </code>
- * </pre>
+ * </code></pre>
  * 
  * <p>
  * This class uses little memory if there are no registered event listeners.
@@ -177,7 +175,7 @@ public class EventListenerManager //TODO fix to not use WeakHashSet, which isn't
 		synchronized(this) { //only synchronize long enough to get the set
 			listenerSet = listenerSetMap != null ? (Set<T>)listenerSetMap.get(key) : null; //get the set of listeners associated with this key; we will have only stored subclasses of the class keyed to the given key
 		}
-		return listenerSet != null ? listenerSet : (Iterable<T>)EMPTY_ITERABLE; //if there is a set of listeners associated with this key, return the set (unsynchronized read access to the set is safe); otherwise, return an empty set 
+		return listenerSet != null ? listenerSet : emptySet(); //if there is a set of listeners associated with this key, return the set (unsynchronized read access to the set is safe); otherwise, return an empty set 
 	}
 
 }

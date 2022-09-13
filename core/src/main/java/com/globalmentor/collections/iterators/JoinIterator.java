@@ -16,7 +16,7 @@
 
 package com.globalmentor.collections.iterators;
 
-import static com.globalmentor.collections.iterators.Iterators.*;
+import static java.util.Collections.*;
 import static java.util.stream.Collectors.*;
 
 import java.util.*;
