@@ -399,88 +399,88 @@ public class ConditionsTest {
 		assertThrows(IllegalArgumentException.class, () -> checkArgumentRange(-1, 11, 0, 10));
 	}
 
-	/** Tests the {@link Conditions#checkConfiguration(boolean)} and the {@link Conditions#checkConfiguration(boolean, String, Object...)} methods. */
+	/** Tests the {@link Conditions#checkConfiguredState(boolean)} and the {@link Conditions#checkConfiguredState(boolean, String, Object...)} methods. */
 	@Test
 	public void testCheckConfiguration() {
-		checkConfiguration(true);
-		checkConfiguration(true, "error message");
-		checkConfiguration(true, "error message", 123);
-		checkConfiguration(true, "error message %d", 123);
+		checkConfiguredState(true);
+		checkConfiguredState(true, "error message");
+		checkConfiguredState(true, "error message", 123);
+		checkConfiguredState(true, "error message %d", 123);
 	}
 
-	/** Tests the {@link Conditions#checkConfiguration(boolean)} method with a false statement. */
+	/** Tests the {@link Conditions#checkConfiguredState(boolean)} method with a false statement. */
 	@Test
 	public void testCheckConfigurationWithAFalseStatement() {
-		assertThrows(ConfigurationException.class, () -> checkConfiguration(false));
+		assertThrows(ConfiguredStateException.class, () -> checkConfiguredState(false));
 	}
 
 	/**
-	 * Tests the {@link Conditions#checkConfiguration(boolean)} and {@link Conditions#checkConfiguration(boolean, String, Object...)} methods with a false
+	 * Tests the {@link Conditions#checkConfiguredState(boolean)} and {@link Conditions#checkConfiguredState(boolean, String, Object...)} methods with a false
 	 * statement and how the messages are being formatted.
 	 */
 	@Test
 	public void testCheckConfigurationErrorMessage() {
 
 		try {
-			checkConfiguration(false);
+			checkConfiguredState(false);
 			fail("The statement above should have thrown an ConfigurationException");
-		} catch(final ConfigurationException configurationException) {
+		} catch(final ConfiguredStateException configurationException) {
 			assertThat(configurationException.getMessage(), equalTo(null));
 		}
 
 		try {
-			checkConfiguration(false, "error message");
+			checkConfiguredState(false, "error message");
 			fail("The statement above should have thrown an ConfigurationException");
-		} catch(final ConfigurationException configurationException) {
+		} catch(final ConfiguredStateException configurationException) {
 			assertThat(configurationException.getMessage(), equalTo("error message"));
 		}
 
 		try {
-			checkConfiguration(false, "error message %d", 123);
+			checkConfiguredState(false, "error message %d", 123);
 			fail("The statement above should have thrown an ConfigurationException");
-		} catch(final ConfigurationException configurationException) {
+		} catch(final ConfiguredStateException configurationException) {
 			assertThat(configurationException.getMessage(), equalTo("error message 123"));
 		}
 
 		try {
-			checkConfiguration(false, "error message", 123); // The arguments of the error message should be ignored.
+			checkConfiguredState(false, "error message", 123); // The arguments of the error message should be ignored.
 			fail("The statement above should have thrown an ConfigurationException");
-		} catch(final ConfigurationException configurationException) {
+		} catch(final ConfiguredStateException configurationException) {
 			assertThat(configurationException.getMessage(), equalTo("error message"));
 		}
 	}
 
-	/** Tests the {@link Conditions#checkConfigurationNotNull(Object)} and the {@link Conditions#checkConfigurationNotNull(Object, String)} methods. */
+	/** Tests the {@link Conditions#checkConfiguredStateNotNull(Object)} and the {@link Conditions#checkConfiguredStateNotNull(Object, String)} methods. */
 	@Test
 	public void testCheckConfigurationNotNull() {
-		checkConfigurationNotNull(new Object());
-		checkConfigurationNotNull(new Object(), "error message");
+		checkConfiguredStateNotNull(new Object());
+		checkConfiguredStateNotNull(new Object(), "error message");
 	}
 
-	/** Tests the {@link Conditions#checkConfigurationNotNull(Object)} method with a false statement. */
+	/** Tests the {@link Conditions#checkConfiguredStateNotNull(Object)} method with a false statement. */
 	@Test
 	public void testCheckConfigurationNotNullWithANullObject() {
-		assertThrows(ConfigurationException.class, () -> checkConfigurationNotNull(null));
+		assertThrows(ConfiguredStateException.class, () -> checkConfiguredStateNotNull(null));
 	}
 
 	/**
-	 * Tests the {@link Conditions#checkConfigurationNotNull(Object)} and {@link Conditions#checkConfigurationNotNull(Object, String)} methods with a false
+	 * Tests the {@link Conditions#checkConfiguredStateNotNull(Object)} and {@link Conditions#checkConfiguredStateNotNull(Object, String)} methods with a false
 	 * statement and how the messages are being formatted.
 	 */
 	@Test
 	public void testCheckConfigurationNotNullErrorMessage() {
 
 		try {
-			checkConfigurationNotNull(null);
+			checkConfiguredStateNotNull(null);
 			fail("The statement above should have thrown an ConfigurationException");
-		} catch(final ConfigurationException illegalArgumentException) {
+		} catch(final ConfiguredStateException illegalArgumentException) {
 			assertThat(illegalArgumentException.getMessage(), equalTo(null));
 		}
 
 		try {
-			checkConfigurationNotNull(null, "error message");
+			checkConfiguredStateNotNull(null, "error message");
 			fail("The statement above should have thrown an ConfigurationException");
-		} catch(final ConfigurationException illegalArgumentException) {
+		} catch(final ConfiguredStateException illegalArgumentException) {
 			assertThat(illegalArgumentException.getMessage(), equalTo("error message"));
 		}
 
