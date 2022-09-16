@@ -1,5 +1,5 @@
 /*
- * Copyright © 1996-2008 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * Copyright © 1996-2022 GlobalMentor, Inc. <http://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,37 +16,46 @@
 
 package com.globalmentor.model;
 
+import javax.annotation.*;
+
 /**
  * An unchecked illegal state exception to indicate that the system is not configured correctly for some operation. For example, this exception might be thrown
  * if no appropriate parser is available or a particular character encoding is not supported.
+ * @apiNote This exception is a low-level system/JVM configuration-related exception which does not rely on any higher-level configuration framework, although
+ *          such a framework might use this exception as a base for some higher layer to indicate a missing configuration key for example.
  * @author Garret Wilson
- * @deprecated Moved to Confound.
  */
-@Deprecated
-public class ConfigurationException extends IllegalStateException {
+public class ConfiguredStateException extends IllegalStateException {
 
-	/**
-	 * Message constructor.
-	 * @param message An explanation of why the input could not be parsed, or <code>null</code> if a default message should be used.
-	 */
-	public ConfigurationException(final String message) {
-		this(message, null); //construct the class with no cause
+	private static final long serialVersionUID = 1L;
+
+	/** No-argument constructor. */
+	public ConfiguredStateException() {
+		this((String)null);
 	}
 
 	/**
-	 * Cause constructor.
+	 * Message constructor.
+	 * @param message An explanation of the problem, or <code>null</code> if a default message should be used.
+	 */
+	public ConfiguredStateException(@Nullable final String message) {
+		this(message, null);
+	}
+
+	/**
+	 * Cause constructor. The message of the cause will be used if available.
 	 * @param cause The cause error or <code>null</code> if the cause is nonexistent or unknown.
 	 */
-	public ConfigurationException(final Throwable cause) {
-		this(null, cause); //construct the class with no message
+	public ConfiguredStateException(@Nullable final Throwable cause) {
+		this(cause == null ? null : cause.toString(), cause);
 	}
 
 	/**
 	 * Message and cause constructor.
-	 * @param message An explanation of why the input could not be parsed, or <code>null</code> if a default message should be used.
+	 * @param message An explanation of the problem, or <code>null</code> if a default message should be used.
 	 * @param cause The cause error or <code>null</code> if the cause is nonexistent or unknown.
 	 */
-	public ConfigurationException(final String message, final Throwable cause) {
+	public ConfiguredStateException(@Nullable final String message, @Nullable final Throwable cause) {
 		super(message, cause); //construct the class
 	}
 
