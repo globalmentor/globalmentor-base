@@ -68,7 +68,7 @@ public class MethodSignature extends AbstractHashObject {
 
 	@Override
 	public int hashCode() {
-		return Objects.getHashCode(name, parameterTypes); //don't hash the return type, as some method signature instances won't consider it significant
+		return hash(name, parameterTypes); //don't hash the return type, as some method signature instances won't consider it significant
 	}
 
 	@Override
@@ -81,9 +81,8 @@ public class MethodSignature extends AbstractHashObject {
 		}
 		final MethodSignature methodSignature = (MethodSignature)object;
 		//if one or the other method signature feels return type is significant, compare the return type
-		return getName().equals(methodSignature.getName())
-				&& ((!isReturnTypeSignificant() && !methodSignature.isReturnTypeSignificant()) || Objects.equals(getReturnType(), methodSignature.getReturnType()))
-				&& getParameterTypes().equals(methodSignature.getParameterTypes());
+		return getName().equals(methodSignature.getName()) && ((!isReturnTypeSignificant() && !methodSignature.isReturnTypeSignificant())
+				|| java.util.Objects.equals(getReturnType(), methodSignature.getReturnType())) && getParameterTypes().equals(methodSignature.getParameterTypes());
 	}
 
 	/**

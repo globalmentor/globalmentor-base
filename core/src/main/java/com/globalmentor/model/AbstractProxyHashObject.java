@@ -18,8 +18,6 @@ package com.globalmentor.model;
 
 import static java.util.Objects.*;
 
-import com.globalmentor.java.Objects;
-
 /**
  * An object that delegates generation of a hash code and determination of equality to other objects. This class is useful for creating keys used in hash
  * tables, for example. This class keeps references to the proxy objects for its entire lifespan. Hash codes and equality are determined dynamically with each
@@ -45,7 +43,7 @@ public abstract class AbstractProxyHashObject {
 	 * @return A hash code for this object calculated from the proxied objects.
 	 */
 	public int hashCode() {
-		return Objects.getHashCode(proxiedObjects); //calculate a hash code from the proxied objects
+		return hash(proxiedObjects); //calculate a hash code from the proxied objects
 	}
 
 	/**

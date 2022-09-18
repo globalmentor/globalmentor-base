@@ -269,7 +269,7 @@ public class Objects {
 	@Deprecated
 	public static int getSeededHashCode(int seed, final Object... objects) {
 		for(final Object object : objects) { //for each object
-			final int hashCode = object != null ? (object.getClass().isArray() ? getHashCode((Object[])object) : object.hashCode()) : 0; //get the object's hash code, or zero if the object is null
+			final int hashCode = object != null ? (object.getClass().isArray() ? hash((Object[])object) : object.hashCode()) : 0; //get the object's hash code, or zero if the object is null
 			seed = 37 * seed + hashCode; //multiply by 37 and add the hash code of this object
 		}
 		return seed; //return the entire result

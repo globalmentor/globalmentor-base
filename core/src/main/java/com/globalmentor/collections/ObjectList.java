@@ -23,7 +23,6 @@ import static java.util.Objects.*;
 
 import com.globalmentor.collections.iterators.*;
 import com.globalmentor.java.Arrays;
-import com.globalmentor.java.Objects;
 
 import static com.globalmentor.java.Arrays.*;
 import static com.globalmentor.java.Conditions.unexpected;

@@ -16,7 +16,7 @@
 
 package com.globalmentor.model;
 
-import com.globalmentor.java.Objects;
+import java.util.Objects;
 
 /**
  * A default implementation of a named object.

@@ -20,8 +20,6 @@ import java.util.Arrays;
 
 import static java.util.Objects.*;
 
-import com.globalmentor.java.Objects;
-
 /**
  * An object that produces a hash for {@link Object#hashCode()} and implements equality checking for {@link Object#equals(Object)} based upon given objects.
  * Equality is only supported for exact top-level types.
@@ -46,7 +44,7 @@ public abstract class AbstractHashObject {
 	 * @return The hash code of this object.
 	 */
 	public int hashCode() {
-		return Objects.getHashCode(objects); //return the hash code of the objects
+		return hash(objects); //return the hash code of the objects
 	}
 
 	/**

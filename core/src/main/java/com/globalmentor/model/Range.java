@@ -17,8 +17,10 @@
 package com.globalmentor.model;
 
 import static com.globalmentor.java.Characters.INFINITY_CHAR;
-import com.globalmentor.java.Objects;
 import static com.globalmentor.java.Objects.*;
+import static java.util.Objects.*;
+
+import java.util.Objects;
 
 /**
  * Represents a range of comparable values.
@@ -65,7 +67,7 @@ public class Range<T extends Comparable<? super T>> implements Comparable<Range<
 
 	/** @return A unique hash code for the bounds of this range. */
 	public int hashCode() {
-		return Objects.getHashCode(getLowerBound(), getUpperBound()); //return a hash code composed of the bounds, if any
+		return hash(getLowerBound(), getUpperBound()); //return a hash code composed of the bounds, if any
 	}
 
 	/**

@@ -16,7 +16,7 @@
 
 package com.globalmentor.model;
 
-import com.globalmentor.java.Objects;
+import java.util.Objects;
 
 /**
  * An object that decorates another object, preserving the {@link Object#hashCode()} and {@link Object#equals(Object)} of the decorated object. Equality is only

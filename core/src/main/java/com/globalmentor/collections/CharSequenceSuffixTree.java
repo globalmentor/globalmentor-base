@@ -21,12 +21,13 @@ import static com.globalmentor.java.Characters.*;
 import static com.globalmentor.java.Conditions.*;
 
 import java.util.*;
+import java.util.Arrays;
+import java.util.Objects;
 
 import static java.util.Objects.*;
 
 import com.globalmentor.collections.iterators.*;
 import com.globalmentor.java.*;
-import com.globalmentor.java.Objects;
 import com.globalmentor.model.Filter;
 
 /**
@@ -55,9 +56,9 @@ import com.globalmentor.model.Filter;
  * <li>The algorithm here checks to see when the state start has gone past the end; this signals that the current iteration is finished, and there is no need
  * loop around and check for an edge emanating from the current active node, because the state was explicit in the previous iteration so an edge had to have
  * been created.</li>
- * <li>The traditional algorithm has been modified slightly to construct an explicit suffix tree on the last round without the need of a unique
- * "dummy character" appended to the string. This may result in some edges that are empty, as well as an extra, empty edge emanating from the root node
- * representing the empty string suffix.</li>
+ * <li>The traditional algorithm has been modified slightly to construct an explicit suffix tree on the last round without the need of a unique "dummy
+ * character" appended to the string. This may result in some edges that are empty, as well as an extra, empty edge emanating from the root node representing
+ * the empty string suffix.</li>
  * </ul>
  * 
  * @author Garret Wilson
@@ -285,7 +286,7 @@ public class CharSequenceSuffixTree extends AbstractSuffixTree<CharSequenceSuffi
 		@Override
 		public int hashCode() {
 			final Node parentNode = getParentNode();
-			return Objects.getLongHashCode(parentNode != null ? getParentNode().getIndex() : 0, getFirstChar());
+			return Arrays.hashCode(new long[] {parentNode != null ? getParentNode().getIndex() : 0, getFirstChar()});
 		}
 
 		/**
@@ -661,10 +662,10 @@ public class CharSequenceSuffixTree extends AbstractSuffixTree<CharSequenceSuffi
 		public MapEntryNodeEdgeIterator(final Node parentNode) {
 			super(edgeMap.values().iterator(), new Filter<CharSequenceEdge>() { //we'll filter the edges
 
-						public boolean isPass(final CharSequenceEdge edge) {
-							return edge.getParentNode().getIndex() == parentNode.getIndex(); //TODO add equals() method
-						}
-					});
+				public boolean isPass(final CharSequenceEdge edge) {
+					return edge.getParentNode().getIndex() == parentNode.getIndex(); //TODO add equals() method
+				}
+			});
 		}
 	}
 

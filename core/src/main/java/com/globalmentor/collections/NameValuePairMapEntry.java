@@ -16,9 +16,8 @@
 
 package com.globalmentor.collections;
 
-import java.util.Map;
+import java.util.*;
 
-import com.globalmentor.java.Objects;
 import com.globalmentor.model.NameValuePair;
 
 /**

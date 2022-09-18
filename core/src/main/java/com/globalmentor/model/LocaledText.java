@@ -20,8 +20,6 @@ import java.util.*;
 
 import static java.util.Objects.*;
 
-import com.globalmentor.java.Objects;
-
 /**
  * The encapsulation of text and the locale that indicates the text language.
  * @author Garret Wilson
@@ -130,7 +128,7 @@ public class LocaledText extends DefaultLocaleable implements CharSequence, Comp
 
 	/** @return A hash code value composed from the text and the locale. */
 	public int hashCode() {
-		return Objects.getHashCode(getText(), getLocale()); //create a hash code from the text and locale
+		return hash(getText(), getLocale()); //create a hash code from the text and locale
 	}
 
 	/** @return the number of <code>char</code>s in this sequence. */
@@ -153,7 +151,8 @@ public class LocaledText extends DefaultLocaleable implements CharSequence, Comp
 	 * @param start The start index, inclusive.
 	 * @param end The end index, exclusive.
 	 * @return The specified subsequence.
-	 * @throws IndexOutOfBoundsException <ul>
+	 * @throws IndexOutOfBoundsException
+	 *           <ul>
 	 *           <li>if <var>start</var> or <var>end</var> are negative,</li>
 	 *           <li>if <var>end</var> is greater than {@link #length()},</li>
 	 *           <li>or if <var>start</var> is greater than <var>end</var></li>
