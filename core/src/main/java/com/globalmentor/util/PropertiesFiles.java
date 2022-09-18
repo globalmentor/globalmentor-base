@@ -17,7 +17,7 @@
 package com.globalmentor.util;
 
 /**
- * Definitions and utilities for working with {@link Properties} particularly as stored in Java properties files.
+ * Definitions and utilities for working with {@link java.util.Properties} particularly as stored in Java properties files.
  * @author Garret Wilson
  */
 public class PropertiesFiles {
