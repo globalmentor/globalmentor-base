@@ -19,6 +19,8 @@ package com.globalmentor.collections;
 import java.util.*;
 import java.util.Collections;
 
+import javax.annotation.*;
+
 import com.globalmentor.java.CloneSupported;
 import com.globalmentor.java.Objects;
 import com.globalmentor.model.NameValuePair;
@@ -159,6 +161,22 @@ public class Maps {
 			return new MapEntryMap<K, V>(map.entrySet().iterator().next()); //return an immutable map containing only one map entry
 		}
 		return Collections.unmodifiableMap(new HashMap<K, V>(map)); //copy the map and wrap it in an unmodifiable map
+	}
+
+	/**
+	 * Converts the given map to a properties object. If the map is already a properties object, it is returned. Otherwise, a new properties object is created and
+	 * populated with the entries of the given map.
+	 * @param map The map to convert to a properties object.
+	 * @return A properties object, potentially the same instance, containing entries from the given map.
+	 */
+	public static Properties toProperties(@Nonnull final Map<?, ?> map) {
+		if(map instanceof Properties) { //if the map is already a properties object
+			return (Properties)map; //return the map as a properties object
+		} else { //if the map is not a properties object
+			final Properties properties = new Properties(); //create a new properties object
+			properties.putAll(map); //put all the properties from the map
+			return properties; //return the populated properties object
+		}
 	}
 
 }
