@@ -30,6 +30,7 @@ import com.globalmentor.model.Modifiable;
  * @see Modifiable
  * @deprecated
  */
+@Deprecated
 public class ModifiableCollection extends DefaultModifiable implements Collection {
 
 	/** The collection this class wraps. */

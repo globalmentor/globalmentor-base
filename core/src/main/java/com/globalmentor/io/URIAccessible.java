@@ -21,6 +21,7 @@ package com.globalmentor.io;
  * @author Garret Wilson
  * @deprecated
  */
+@Deprecated
 public interface URIAccessible extends URIInputStreamable, URIOutputStreamable {
 
 }

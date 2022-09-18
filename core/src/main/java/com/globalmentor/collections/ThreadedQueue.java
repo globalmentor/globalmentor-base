@@ -34,6 +34,7 @@ import com.globalmentor.model.ObjectProcessor;
  * @author Garret Wilson
  * @deprecated
  */
+@Deprecated
 public class ThreadedQueue implements Runnable, ObjectProcessor {
 
 	/** The object that will process objects as they are added to the queue. */

@@ -29,6 +29,7 @@ import com.globalmentor.model.Modifiable;
  * @see Modifiable
  * @deprecated
  */
+@Deprecated
 public class ModifiableSet extends ModifiableCollection implements Set {
 
 	/**

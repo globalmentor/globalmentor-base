@@ -25,6 +25,7 @@ import java.net.URI;
  * @see InputStream
  * @deprecated
  */
+@Deprecated
 public interface URIInputStreamable {
 
 	/**
