@@ -34,7 +34,7 @@ public class Sets {
 	 * @throws NullPointerException if the given array of elements is <code>null</code>.
 	 */
 	public static <E> Set<E> immutableSetOf(final E... elements) { //TODO improve to return an ImmutableSet<E>
-		return immutableSetOf(java.util.Collections.<E> emptySet(), elements);
+		return immutableSetOf(java.util.Collections.<E>emptySet(), elements);
 	}
 
 	/**
@@ -52,7 +52,7 @@ public class Sets {
 		@SuppressWarnings("unchecked")
 		final Iterator<E> iterator = (Iterator<E>)iterable.iterator();
 		if(!iterator.hasNext()) { //if the iterable is empty, delegate to the collection version with no elements in the collection
-			return immutableSetOf(java.util.Collections.<E> emptySet(), elements);
+			return immutableSetOf(java.util.Collections.<E>emptySet(), elements);
 		}
 		E object = null; //we'll store an object here if we have one while doing checks
 		if(elements.length == 0) { //if no extra elements are given, take some shortcuts
@@ -61,7 +61,7 @@ public class Sets {
 			}
 			object = iterator.next(); //get the first object
 			if(!iterator.hasNext()) { //if there is only one object
-				return new ObjectSet<E>(object); //return an immutable set containing only one object
+				return singleton(object); //return an immutable set containing only one object
 			}
 		}
 		final Set<E> newSet = new HashSet<E>(); //use a normal set TODO improve for enums
@@ -89,7 +89,7 @@ public class Sets {
 			}
 			final E element = elements[0]; //get the first element
 			if(size == 1) { //if there is only one element
-				return new ObjectSet<E>(element); //return an immutable set containing only one object
+				return singleton(element); //return an immutable set containing only one object
 			}
 			Set<E> set = null;
 			if(collection instanceof EnumSet<?>) { //if the collection is an EnumSet, just clone it
@@ -108,8 +108,8 @@ public class Sets {
 				}
 				if(areAllSameEnums) {
 					final Enum<?>[] enumElements = (Enum<?>[])elements;
-					@SuppressWarnings({ "unchecked", "rawtypes" })
-					final Set<E> enumSet = (Set<E>)EnumSet.<Enum> of(enumElements[0], enumElements);
+					@SuppressWarnings({"unchecked", "rawtypes"})
+					final Set<E> enumSet = (Set<E>)EnumSet.<Enum>of(enumElements[0], enumElements);
 					set = enumSet;
 				}
 			}
@@ -130,7 +130,7 @@ public class Sets {
 				return emptySet(); //return the shared empty set
 			}
 			if(size == 1) { //if the collection only contains one element
-				return new ObjectSet<E>(collection.iterator().next()); //return an immutable set containing only one object
+				return singleton(collection.iterator().next()); //return an immutable set containing only one object
 			}
 		}
 		final Set<E> newSet;

@@ -16,6 +16,8 @@
 
 package com.globalmentor.collections;
 
+import static java.util.Collections.*;
+
 import java.util.*;
 import java.util.Collections;
 
@@ -158,7 +160,8 @@ public class Maps {
 		}
 		final int size = map.size(); //see how big the map is
 		if(size == 1) { //if the map only contains one map entry
-			return new MapEntryMap<K, V>(map.entrySet().iterator().next()); //return an immutable map containing only one map entry
+			final Map.Entry<K, V> entry = map.entrySet().iterator().next();
+			return singletonMap(entry.getKey(), entry.getValue()); //return an immutable map containing the single key and value
 		}
 		return Collections.unmodifiableMap(new HashMap<K, V>(map)); //copy the map and wrap it in an unmodifiable map
 	}
