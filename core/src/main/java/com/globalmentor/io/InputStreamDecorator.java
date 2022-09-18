@@ -180,16 +180,4 @@ public class InputStreamDecorator<I extends InputStream> extends InputStream imp
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 * @implSpec This version calls {@link #dispose()}.
-	 */
-	@Override
-	protected void finalize() throws Throwable {
-		try {
-			dispose();
-		} finally {
-			super.finalize(); //always call the parent version
-		}
-	}
 }
