@@ -101,7 +101,7 @@ public class Lists {
 			if(arrayLength == 0) { //if the list will be empty
 				return emptyList(); //return the shared empty list
 			} else if(arrayLength == 1) { //if there will only be one element
-				return new ObjectList<E>(elements[start]); //return an immutable list containing only one object
+				return singletonList(elements[start]); //return an immutable list containing only one object
 			}
 			return unmodifiableList(asList(copyOfRange(elements, start, end))); //clone the array defensively so that it won't be modified by the caller
 		}
@@ -116,7 +116,7 @@ public class Lists {
 				return emptyList(); //return the shared empty list
 			}
 			if(size == 1) { //if the collection only contains one element
-				return new ObjectList<E>(collection.iterator().next()); //return an immutable list containing only one object
+				return singletonList(collection.iterator().next()); //return an immutable list containing only one object
 			}
 		}
 		final List<E> newList = new ArrayList<E>(collection); //copy the collection
