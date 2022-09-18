@@ -267,18 +267,6 @@ public class AsynchronousWriter extends Writer {
 	}
 
 	/**
-	 * Cleans up the asynchronous writer by ensuring that the writer is closed and thereby the consumer thread is ended.
-	 * @see #close()
-	 */
-	protected void finalize() throws Throwable {
-		try {
-			close(); //flush and close the writer, if it isn't closed already
-		} finally {
-			super.finalize(); //always call the parent version
-		}
-	}
-
-	/**
 	 * The consumer runnable that writes data to the underlying writer. This runnable's interruption policy is to close the underlying writer and end execution.
 	 * @author Garret Wilson
 	 */
