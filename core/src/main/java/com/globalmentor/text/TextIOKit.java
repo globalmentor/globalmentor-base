@@ -30,6 +30,7 @@ import com.globalmentor.io.*;
  * @see com.globalmentor.model.LocaledText
  * @deprecated
  */
+@Deprecated
 public class TextIOKit extends AbstractIOKit<StringBuilder> {
 
 	/** Default constructor. */

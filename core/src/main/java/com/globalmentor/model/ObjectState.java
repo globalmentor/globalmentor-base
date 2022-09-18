@@ -28,6 +28,7 @@ import java.beans.PropertyChangeListener;
  * @author Garret Wilson
  * @deprecated
  */
+@Deprecated
 public interface ObjectState<T> extends Modifiable {
 
 	/** @return The non-<code>null</code> object being described. */

@@ -31,6 +31,7 @@ import static java.util.Objects.*;
  * @see java.beans.PropertyChangeEvent
  * @deprecated
  */
+@Deprecated
 public class DefaultObjectState<T> extends DefaultModifiable implements ObjectState<T> { //TODO maybe just store the modified value in the properties rather than having an explicit modified variable; right now, setting a property of "modified" would result in an identical property change firing
 
 	/** The non-<code>null</code> object being described. */

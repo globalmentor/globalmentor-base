@@ -21,6 +21,7 @@ package com.globalmentor.model;
  * @author Garret Wilson
  * @deprecated
  */
+@Deprecated
 public interface ObjectProcessor {
 
 	/**

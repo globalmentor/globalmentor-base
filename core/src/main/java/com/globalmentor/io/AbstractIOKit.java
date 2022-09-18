@@ -24,6 +24,7 @@ import java.net.URI;
  * @author Garret Wilson
  * @deprecated
  */
+@Deprecated
 public abstract class AbstractIOKit<T> extends DefaultURIAccessible implements IOKit<T> {
 
 	/** Default constructor. */

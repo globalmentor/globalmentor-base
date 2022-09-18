@@ -28,6 +28,7 @@ import static com.globalmentor.net.URIs.*;
  * @author Garret Wilson
  * @deprecated
  */
+@Deprecated
 public class DefaultURIAccessible extends BoundPropertyObject implements URIAccessible {
 
 	/** The username, or <code>null</code> for no user information. */
