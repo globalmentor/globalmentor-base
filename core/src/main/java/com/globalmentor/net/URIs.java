@@ -1021,8 +1021,7 @@ public class URIs {
 	 * @param query The string containing URI query parameters (without the '?' prefix), or <code>null</code>.
 	 * @return An array of parameters represented by the query, or <code>null</code> if the given query is <code>null</code>.
 	 */
-	@SuppressWarnings("unchecked")
-	//we can't check the creation of a generic array
+	@SuppressWarnings("unchecked") //we can't check the creation of a generic array
 	public static NameValuePair<String, String>[] getParameters(final String query) {
 		if(query != null) { //if a query was given
 			if(query.length() == 0) { //if there is no query in the string

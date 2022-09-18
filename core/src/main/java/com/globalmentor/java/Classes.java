@@ -235,7 +235,7 @@ public final class Classes {
 			if(formalParameterTypes.length == parameterCount) { //if this constructor has the correct number of formal parameters
 				boolean isCompatible = true; //start out assuming this is a compatible constructor
 				for(int i = parameterCount - 1; isCompatible && i >= 0; --i) { //for each parameter, as long we we think this is a compatible constructor
-					if(!isCompatible(((Class<?>)formalParameterTypes[i]), parameterTypes[i])) { //if we can't assign the requested parameter type to the formal parameter type
+					if(!isCompatible((formalParameterTypes[i]), parameterTypes[i])) { //if we can't assign the requested parameter type to the formal parameter type
 						isCompatible = false; //this is not a compatible constructor
 					}
 				}

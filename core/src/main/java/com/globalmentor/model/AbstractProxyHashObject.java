@@ -37,7 +37,7 @@ public abstract class AbstractProxyHashObject {
 	 * @throws NullPointerException if the array of proxied objects is <code>null</code>.
 	 */
 	public AbstractProxyHashObject(final Object... proxiedObjects) {
-		this.proxiedObjects = (Object[])requireNonNull(proxiedObjects, "Array of proxied objects may not be null.").clone(); //clone the array so the caller will not modify its contents
+		this.proxiedObjects = requireNonNull(proxiedObjects, "Array of proxied objects may not be null.").clone(); //clone the array so the caller will not modify its contents
 	}
 
 	/**

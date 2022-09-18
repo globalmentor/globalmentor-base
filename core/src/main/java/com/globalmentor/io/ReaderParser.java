@@ -134,7 +134,7 @@ public class ReaderParser {
 	public static char check(@Nonnull final Reader reader, final char character) throws IOException, ParseUnexpectedDataException {
 		final char c = readRequired(reader); //read the next character
 		if(c != character) { //if this character does not match what we expected
-			throw new ParseUnexpectedDataException(reader, character, (char)c);
+			throw new ParseUnexpectedDataException(reader, character, c);
 		}
 		return c; //return the character read
 	}

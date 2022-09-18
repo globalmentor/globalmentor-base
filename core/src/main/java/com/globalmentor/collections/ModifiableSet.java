@@ -22,21 +22,20 @@ import com.globalmentor.model.Modifiable;
 
 /**
  * A set that implements <code>Modifiable</code> so that it can keep track of whether it has been modified.
- * <p>
- * This class is meant as a wrapper to an existing set.
- * </p>
+ * @apiNote This class is meant as a wrapper to an existing set.
+ * @param <E> the type of elements maintained by this set.
  * @author Garret Wilson
  * @see Modifiable
  * @deprecated
  */
 @Deprecated
-public class ModifiableSet extends ModifiableCollection implements Set {
+public class ModifiableSet<E> extends ModifiableCollection<E> implements Set<E> {
 
 	/**
 	 * Set constructor.
 	 * @param set The set this set should wrap.
 	 */
-	public ModifiableSet(final Set set) {
+	public ModifiableSet(final Set<E> set) {
 		super(set); //construct the parent class with the set
 	}
 
