@@ -9,7 +9,7 @@
 	</parent>
 
 	<artifactId>globalmentor-base</artifactId>
-	<version>0.7.2</version>
+	<version>0.7.3-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>GlobalMentor Base</name>
@@ -41,13 +41,13 @@
 			<dependency>
 				<groupId>com.globalmentor</groupId>
 				<artifactId>globalmentor-core</artifactId>
-				<version>0.7.2</version>
+				<version>0.7.3-SNAPSHOT</version>
 			</dependency>
 
 			<dependency>
 				<groupId>com.globalmentor</groupId>
 				<artifactId>globalmentor-management</artifactId>
-				<version>0.7.2</version>
+				<version>0.7.3-SNAPSHOT</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
