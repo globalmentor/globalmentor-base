@@ -23,8 +23,7 @@ import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.util.Iterator;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 import org.junit.jupiter.api.*;
 
@@ -65,6 +64,37 @@ public class IteratorsTest {
 		assertThat(Iterators.getOnly(singletonList("foo").iterator()), is("foo"));
 		assertThrows(IllegalArgumentException.class, () -> Iterators.getOnly(asList("foo", "bar").iterator()));
 		assertThrows(IllegalArgumentException.class, () -> Iterators.getOnly(asList(1, 2, 3).iterator()));
+	}
+
+	/** @see Iterators#reverse(ListIterator) */
+	@Test
+	public void testReverseFromBeginning() {
+		final Iterator<String> reversed = Iterators.reverse(asList("one", "two", "three").listIterator());
+		assertThat(reversed.hasNext(), is(false));
+	}
+
+	/** @see Iterators#reverse(ListIterator) */
+	@Test
+	public void testReverseFromMiddle() {
+		final Iterator<String> reversed = Iterators.reverse(asList("one", "two", "three").listIterator(2));
+		assertThat(reversed.hasNext(), is(true));
+		assertThat(reversed.next(), is("two"));
+		assertThat(reversed.hasNext(), is(true));
+		assertThat(reversed.next(), is("one"));
+		assertThat(reversed.hasNext(), is(false));
+	}
+
+	/** @see Iterators#reverse(ListIterator) */
+	@Test
+	public void testReverseFromEnd() {
+		final Iterator<String> reversed = Iterators.reverse(asList("one", "two", "three").listIterator(3));
+		assertThat(reversed.hasNext(), is(true));
+		assertThat(reversed.next(), is("three"));
+		assertThat(reversed.hasNext(), is(true));
+		assertThat(reversed.next(), is("two"));
+		assertThat(reversed.hasNext(), is(true));
+		assertThat(reversed.next(), is("one"));
+		assertThat(reversed.hasNext(), is(false));
 	}
 
 }

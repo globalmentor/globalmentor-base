@@ -189,6 +189,19 @@ public class Iterators {
 	}
 
 	/**
+	 * Reverses a given list iterator by returning a new iterator that iterates in the opposite direction, <em>starting at the present iteration location</em>.
+	 * @apiNote This method does not initially change the present iteration location. If it is desired to start at the other end of the iterator, the iterator's
+	 *          position must be changed <em>before calling this method</em>—for example by calling:
+	 *          <code>while(listIterator.hasNext()) listIterator.next();</code>.
+	 * @param <E> The type of element in the iterator.
+	 * @param listIterator The list iterator to be iterated in reverse order.
+	 * @return An iterator view that iterates the given list iterator, but in reverse order.
+	 */
+	public static <E> Iterator<E> reverse(@Nonnull final ListIterator<E> listIterator) {
+		return new ReverseIterator<>(listIterator);
+	}
+
+	/**
 	 * Returns a copy of the contents of the iterator in a new array in iterator traversal order.
 	 * @param <E> The type of the iterator.
 	 * @param iterator The iterator the contents of which to return as an array.
