@@ -18,10 +18,11 @@ package com.globalmentor.collections;
 
 import static com.globalmentor.collections.Lists.*;
 import static java.util.Arrays.*;
+import static java.util.Collections.*;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
-import java.util.List;
+import java.util.*;
 
 import org.junit.jupiter.api.*;
 
@@ -33,7 +34,7 @@ public class ListsTest {
 
 	/** @see Lists#longestCommonSuffix(List) */
 	@Test
-	public void testLongestCommonSuffix() {
+	void testLongestCommonSuffix() {
 		//empty lists
 		assertThat(longestCommonSuffix(asList(asList())), is(empty()));
 		assertThat(longestCommonSuffix(asList(asList(), asList())), is(empty()));
@@ -68,6 +69,26 @@ public class ListsTest {
 		assertThat(longestCommonSuffix(asList(asList("test", "", "bar"), asList("example", "", "bar"))), is(asList("", "bar")));
 		assertThat(longestCommonSuffix(asList(asList("test", "foo", ""), asList("example", "foo", ""))), is(asList("foo", "")));
 		assertThat(longestCommonSuffix(asList(asList("test", "foo", ""), asList("example", "bar", ""))), is(asList("")));
+	}
+
+	/** @see Lists#reversing(List) */
+	@Test
+	public void testReversing() {
+		final Iterator<String> reversed = Lists.reversing(asList("one", "two", "three")).iterator();
+		assertThat(reversed.hasNext(), is(true));
+		assertThat(reversed.next(), is("three"));
+		assertThat(reversed.hasNext(), is(true));
+		assertThat(reversed.next(), is("two"));
+		assertThat(reversed.hasNext(), is(true));
+		assertThat(reversed.next(), is("one"));
+		assertThat(reversed.hasNext(), is(false));
+	}
+
+	/** @see Lists#reversing(List) */
+	@Test
+	public void testReversingEmpty() {
+		final Iterator<?> reversed = Lists.reversing(emptyList()).iterator();
+		assertThat(reversed.hasNext(), is(false));
 	}
 
 }

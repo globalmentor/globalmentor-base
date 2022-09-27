@@ -23,8 +23,7 @@ import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.util.Iterator;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 import org.junit.jupiter.api.*;
 
@@ -37,7 +36,7 @@ public class IteratorsTest {
 
 	/** @see Iterators#findNext(Iterator) */
 	@Test
-	public void testFindFirst() {
+	void testFindFirst() {
 		assertThat(Iterators.findNext(emptySet().iterator()), isEmpty());
 		assertThat(Iterators.findNext(emptyList().iterator()), isEmpty());
 		assertThat(Iterators.findNext(singleton("foo").iterator()), isPresentAndIs("foo"));
@@ -47,7 +46,7 @@ public class IteratorsTest {
 
 	/** @see Iterators#findOnly(Iterator) */
 	@Test
-	public void testFindOnly() {
+	void testFindOnly() {
 		assertThat(Iterators.findOnly(emptySet().iterator()), isEmpty());
 		assertThat(Iterators.findOnly(emptyList().iterator()), isEmpty());
 		assertThat(Iterators.findOnly(singleton("foo").iterator()), isPresentAndIs("foo"));
@@ -58,13 +57,44 @@ public class IteratorsTest {
 
 	/** @see Iterators#getOnly(Iterator) */
 	@Test
-	public void testGetOnly() {
+	void testGetOnly() {
 		assertThrows(NoSuchElementException.class, () -> Iterators.getOnly(emptySet().iterator()));
 		assertThrows(NoSuchElementException.class, () -> Iterators.getOnly(emptyList().iterator()));
 		assertThat(Iterators.getOnly(singleton("foo").iterator()), is("foo"));
 		assertThat(Iterators.getOnly(singletonList("foo").iterator()), is("foo"));
 		assertThrows(IllegalArgumentException.class, () -> Iterators.getOnly(asList("foo", "bar").iterator()));
 		assertThrows(IllegalArgumentException.class, () -> Iterators.getOnly(asList(1, 2, 3).iterator()));
+	}
+
+	/** @see Iterators#reverse(ListIterator) */
+	@Test
+	void testReverseFromBeginning() {
+		final Iterator<String> reversed = Iterators.reverse(asList("one", "two", "three").listIterator());
+		assertThat(reversed.hasNext(), is(false));
+	}
+
+	/** @see Iterators#reverse(ListIterator) */
+	@Test
+	void testReverseFromMiddle() {
+		final Iterator<String> reversed = Iterators.reverse(asList("one", "two", "three").listIterator(2));
+		assertThat(reversed.hasNext(), is(true));
+		assertThat(reversed.next(), is("two"));
+		assertThat(reversed.hasNext(), is(true));
+		assertThat(reversed.next(), is("one"));
+		assertThat(reversed.hasNext(), is(false));
+	}
+
+	/** @see Iterators#reverse(ListIterator) */
+	@Test
+	void testReverseFromEnd() {
+		final Iterator<String> reversed = Iterators.reverse(asList("one", "two", "three").listIterator(3));
+		assertThat(reversed.hasNext(), is(true));
+		assertThat(reversed.next(), is("three"));
+		assertThat(reversed.hasNext(), is(true));
+		assertThat(reversed.next(), is("two"));
+		assertThat(reversed.hasNext(), is(true));
+		assertThat(reversed.next(), is("one"));
+		assertThat(reversed.hasNext(), is(false));
 	}
 
 }

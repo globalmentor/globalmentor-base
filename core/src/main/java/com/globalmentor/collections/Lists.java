@@ -16,6 +16,7 @@
 
 package com.globalmentor.collections;
 
+import static com.globalmentor.collections.iterators.Iterators.*;
 import static com.globalmentor.java.Arrays.*;
 import static java.util.Arrays.*;
 import static java.util.Collections.*;
@@ -25,11 +26,30 @@ import java.util.*;
 
 import javax.annotation.*;
 
+import com.globalmentor.collections.iterators.Iterators;
+
 /**
  * Utilities to be used with lists.
  * @author Garret Wilson
  */
 public class Lists {
+
+	/**
+	 * Provides a reversed view of the list by returning an iterable that produces iterators that iterate from the end to the start of the list. The list itself
+	 * is not changed.
+	 * @apiNote The name "reverse" was not chosen because the given list itself is not reversed; nor is a complete {@link List} view returned as with Guava's
+	 *          {@code Lists.reverse(List<T>)}. The name "reversing" implies a continual process; a reversed iterator will be supplied as many times as needed, as
+	 *          is typical with {@link Iterable}.
+	 * @param <E> The type of element contained in the list.
+	 * @param list The list to be iterated in reverse order.
+	 * @return An iterable that supplies a reversed iterator to the list.
+	 * @see Iterators#reverse(ListIterator)
+	 * @see <a href="https://guava.dev/releases/snapshot-jre/api/docs/com/google/common/collect/Lists.html#reverse(java.util.List)">Guava
+	 *      <code>Lists.reverse(List&lt;T&gt;)</code></a>
+	 */
+	public static <E> Iterable<E> reversing(@Nonnull final List<E> list) {
+		return () -> reverse(list.listIterator(list.size()));
+	}
 
 	/**
 	 * Replaces the first occurrence of the given object with a new object. If the object does not appear in the list, no action is taken.
