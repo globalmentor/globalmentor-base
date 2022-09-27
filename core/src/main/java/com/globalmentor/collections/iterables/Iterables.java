@@ -35,7 +35,7 @@ public class Iterables {
 	 * Returns an {@link Optional} describing the first element of this iterable, or an empty {@code Optional} if the iterable is empty.
 	 * @implSpec This implementation efficiently short-circuits and avoids creating an iterator if the iterable is an instance of a {@link Collection}, which has
 	 *           a known size. Otherwise this implementation delegates to {@link Iterators#findNext(Iterator)}.
-	 * @param <T> the type of elements returned by the iterator.
+	 * @param <T> The type of elements returned by the iterator.
 	 * @param iterable The iterable from which the first object should be retrieved.
 	 * @return An {@code Optional} describing the first element of this iterable, or an empty {@code Optional} if the iterable is empty.
 	 * @see <a href="https://stackoverflow.com/q/13692700/421049">Good way to get *any* value from a Java Set?</a>

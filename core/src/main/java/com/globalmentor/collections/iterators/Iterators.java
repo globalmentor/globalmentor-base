@@ -24,6 +24,7 @@ import java.util.stream.*;
 
 import javax.annotation.*;
 
+import com.globalmentor.collections.Lists;
 import com.globalmentor.java.Objects;
 
 import static com.globalmentor.collections.Collections.*;
@@ -192,10 +193,13 @@ public class Iterators {
 	 * Reverses a given list iterator by returning a new iterator that iterates in the opposite direction, <em>starting at the present iteration location</em>.
 	 * @apiNote This method does not initially change the present iteration location. If it is desired to start at the other end of the iterator, the iterator's
 	 *          position must be changed <em>before calling this method</em>—for example by calling:
-	 *          <code>while(listIterator.hasNext()) listIterator.next();</code>.
+	 *          <code>while(listIterator.hasNext()) listIterator.next();</code>. Nevertheless what is normally desired is to provide a reversed order
+	 *          {@link Iterable} of a {@link List}, and for this {@link Lists#reversing(List)} should be used, which can create and place the list iterator at the
+	 *          end of the list in a more efficient manner.
 	 * @param <E> The type of element in the iterator.
 	 * @param listIterator The list iterator to be iterated in reverse order.
 	 * @return An iterator view that iterates the given list iterator, but in reverse order.
+	 * @see Lists#reversing(List)
 	 */
 	public static <E> Iterator<E> reverse(@Nonnull final ListIterator<E> listIterator) {
 		return new ReverseIterator<>(listIterator);

@@ -36,7 +36,7 @@ public class IteratorsTest {
 
 	/** @see Iterators#findNext(Iterator) */
 	@Test
-	public void testFindFirst() {
+	void testFindFirst() {
 		assertThat(Iterators.findNext(emptySet().iterator()), isEmpty());
 		assertThat(Iterators.findNext(emptyList().iterator()), isEmpty());
 		assertThat(Iterators.findNext(singleton("foo").iterator()), isPresentAndIs("foo"));
@@ -46,7 +46,7 @@ public class IteratorsTest {
 
 	/** @see Iterators#findOnly(Iterator) */
 	@Test
-	public void testFindOnly() {
+	void testFindOnly() {
 		assertThat(Iterators.findOnly(emptySet().iterator()), isEmpty());
 		assertThat(Iterators.findOnly(emptyList().iterator()), isEmpty());
 		assertThat(Iterators.findOnly(singleton("foo").iterator()), isPresentAndIs("foo"));
@@ -57,7 +57,7 @@ public class IteratorsTest {
 
 	/** @see Iterators#getOnly(Iterator) */
 	@Test
-	public void testGetOnly() {
+	void testGetOnly() {
 		assertThrows(NoSuchElementException.class, () -> Iterators.getOnly(emptySet().iterator()));
 		assertThrows(NoSuchElementException.class, () -> Iterators.getOnly(emptyList().iterator()));
 		assertThat(Iterators.getOnly(singleton("foo").iterator()), is("foo"));
@@ -68,14 +68,14 @@ public class IteratorsTest {
 
 	/** @see Iterators#reverse(ListIterator) */
 	@Test
-	public void testReverseFromBeginning() {
+	void testReverseFromBeginning() {
 		final Iterator<String> reversed = Iterators.reverse(asList("one", "two", "three").listIterator());
 		assertThat(reversed.hasNext(), is(false));
 	}
 
 	/** @see Iterators#reverse(ListIterator) */
 	@Test
-	public void testReverseFromMiddle() {
+	void testReverseFromMiddle() {
 		final Iterator<String> reversed = Iterators.reverse(asList("one", "two", "three").listIterator(2));
 		assertThat(reversed.hasNext(), is(true));
 		assertThat(reversed.next(), is("two"));
@@ -86,7 +86,7 @@ public class IteratorsTest {
 
 	/** @see Iterators#reverse(ListIterator) */
 	@Test
-	public void testReverseFromEnd() {
+	void testReverseFromEnd() {
 		final Iterator<String> reversed = Iterators.reverse(asList("one", "two", "three").listIterator(3));
 		assertThat(reversed.hasNext(), is(true));
 		assertThat(reversed.next(), is("three"));

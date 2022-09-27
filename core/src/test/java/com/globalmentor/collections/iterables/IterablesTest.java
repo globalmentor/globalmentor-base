@@ -22,7 +22,7 @@ import static java.util.Collections.*;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
-import java.util.NoSuchElementException;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -37,7 +37,7 @@ public class IterablesTest {
 
 	/** @see Iterables#findFirst(Iterable) */
 	@Test
-	public void testFindFirst() {
+	void testFindFirst() {
 		assertThat(Iterables.findFirst(emptySet()), isEmpty());
 		assertThat(Iterables.findFirst(emptyList()), isEmpty());
 		assertThat(Iterables.findFirst(singleton("foo")), isPresentAndIs("foo"));
@@ -48,7 +48,7 @@ public class IterablesTest {
 
 	/** @see Iterables#findOnly(Iterable) */
 	@Test
-	public void testFindOnly() {
+	void testFindOnly() {
 		assertThat(Iterables.findOnly(emptySet()), isEmpty());
 		assertThat(Iterables.findOnly(emptyList()), isEmpty());
 		assertThat(Iterables.findOnly(singleton("foo")), isPresentAndIs("foo"));
@@ -59,7 +59,7 @@ public class IterablesTest {
 
 	/** @see Iterables#getOnly(Iterable) */
 	@Test
-	public void testGetOnly() {
+	void testGetOnly() {
 		assertThrows(NoSuchElementException.class, () -> Iterables.getOnly(emptySet()));
 		assertThrows(NoSuchElementException.class, () -> Iterables.getOnly(emptyList()));
 		assertThat(Iterables.getOnly(singleton("foo")), is("foo"));
