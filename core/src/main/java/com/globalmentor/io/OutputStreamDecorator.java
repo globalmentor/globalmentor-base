@@ -20,8 +20,6 @@ import java.io.*;
 
 import static java.util.Objects.*;
 
-import com.globalmentor.java.Disposable;
-
 /**
  * Wraps an existing output stream.
  * @apiNote The decorated output stream is released when this stream is closed.
@@ -30,10 +28,7 @@ import com.globalmentor.java.Disposable;
  * @param <O> The type of output stream being decorated.
  * @author Garret Wilson
  */
-public class OutputStreamDecorator<O extends OutputStream> extends OutputStream implements Disposable {
-
-	/** Whether the stream should be automatically disposed when closed. */
-	private final boolean autoDispose;
+public class OutputStreamDecorator<O extends OutputStream> extends OutputStream {
 
 	/** The output stream being decorated. */
 	private O outputStream;
@@ -45,10 +40,8 @@ public class OutputStreamDecorator<O extends OutputStream> extends OutputStream 
 
 	/**
 	 * Changes the decorated output stream.
-	 * <p>
-	 * This method can be used by child classes to change the decorated output stream, but cannot be used to remove the output stream---this can be done only by
-	 * calling {@link #close()}.
-	 * </p>
+	 * @apiNote This method can be used by child classes to change the decorated output stream, but cannot be used to remove the output stream—this can be done
+	 *          only by calling {@link #close()}.
 	 * @param outputStream The new output stream to decorate.
 	 * @throws NullPointerException if the given output stream is <code>null</code>.
 	 */
@@ -57,23 +50,12 @@ public class OutputStreamDecorator<O extends OutputStream> extends OutputStream 
 	}
 
 	/**
-	 * Decorates the given output stream, automatically calling {@link #dispose()} when closed.
+	 * Decorates the given output stream.
 	 * @param outputStream The output stream to decorate.
 	 * @throws NullPointerException if the given stream is <code>null</code>.
 	 */
 	public OutputStreamDecorator(final O outputStream) {
-		this(outputStream, true);
-	}
-
-	/**
-	 * Decorates the given output stream.
-	 * @param outputStream The output stream to decorate.
-	 * @param autoDispose Whether the stream should be automatically disposed when closed.
-	 * @throws NullPointerException if the given stream is <code>null</code>.
-	 */
-	public OutputStreamDecorator(final O outputStream, final boolean autoDispose) {
 		this.outputStream = requireNonNull(outputStream, "Output stream cannot be null."); //save the decorated output stream
-		this.autoDispose = true;
 	}
 
 	@Override
@@ -125,14 +107,14 @@ public class OutputStreamDecorator<O extends OutputStream> extends OutputStream 
 
 	/**
 	 * Closes this output stream and releases any system resources associated with the stream. A closed stream cannot perform output operations and cannot be
-	 * reopened. If auto-dispose is enabled, {@link #dispose()} will be called if closing is successful.
+	 * reopened.
+	 * @implNote This method is synchronized so that the closing operation can complete without being bothered by other threads.
 	 * @param closeDecoratedStream Whether the decorated stream should also be closed.
 	 * @throws IOException if an I/O error occurs.
 	 * @see #beforeClose()
 	 * @see #afterClose()
-	 * @see #dispose()
 	 */
-	public synchronized void close(final boolean closeDecoratedStream) throws IOException { //this method is synchronized so that the closing operation can complete without being bothered by other threads
+	public synchronized void close(final boolean closeDecoratedStream) throws IOException {
 		final OutputStream outputStream = getOutputStream(); //get the decorated output stream
 		if(outputStream != null) { //if we still have an output stream to decorate
 			beforeClose(); //perform actions before closing
@@ -141,31 +123,12 @@ public class OutputStreamDecorator<O extends OutputStream> extends OutputStream 
 			}
 			this.outputStream = null; //release the decorated output stream if closing was successful---even if we didn't close it (because we weren't requested to)
 			afterClose(); //perform actions after closing
-			if(autoDispose) {
-				dispose(); //dispose of the object
-			}
 		}
 	}
 
 	@Override
 	public void close() throws IOException {
 		close(true); //close this stream and the underlying stream
-	}
-
-	/**
-	 * {@inheritDoc}
-	 * @implSpec This version closes the output stream and releases it, if still available.
-	 */
-	@Override
-	public synchronized void dispose() {
-		if(outputStream != null) { //if we still have an output stream
-			try {
-				outputStream.close();
-			} catch(final IOException ioException) {
-				//TODO fix log; fix/consolidate Disposable: Log.error(ioException);
-			}
-			outputStream = null; //release the decorated output stream
-		}
 	}
 
 }
