@@ -25,16 +25,12 @@ import java.io.*;
 
 /**
  * An input stream to a file that, when closed, deletes the file.
- * 
- * <p>
- * It is very important to properly close this output stream when finished using it; otherwise, orphaned temporary files may remain.
- * </p>
- * 
+ * @apiNote It is very important to properly close this output stream when finished using it; otherwise, orphaned temporary files may remain.
  * @author Garret Wilson
  */
 public class TempFileInputStream extends InputStreamDecorator<FileInputStream> {
 
-	/** The temporary file in use, or <code>null</code> if the class has been disposed. */
+	/** The temporary file in use, or <code>null</code> if the class has been released. */
 	private File tempFile;
 
 	/**
@@ -59,20 +55,16 @@ public class TempFileInputStream extends InputStreamDecorator<FileInputStream> {
 	}
 
 	/**
-	 * {@inheritDoc} This deletes the temporary file, if any. Because this method is called indirectly from {@link #close()}, this results in the temporary file
-	 * being deleted after the input stream is closed.
+	 * {@inheritDoc}
+	 * @implSpec This version deletes the temporary file.
 	 */
 	@Override
-	public synchronized void dispose() {
+	public void close() throws IOException {
 		try {
-			super.dispose();
+			super.close();
 		} finally {
 			if(tempFile != null) { //if we still have a temporary file
-				try {
-					delete(tempFile); //try to delete the temporary file
-				} catch(final IOException ioException) {
-					//TODO fix log; fix/consolidate Disposable: Log.error(ioException);
-				}
+				delete(tempFile); //try to delete the temporary file
 				tempFile = null;
 			}
 		}

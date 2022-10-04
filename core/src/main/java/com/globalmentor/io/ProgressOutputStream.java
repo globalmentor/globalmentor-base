@@ -21,7 +21,7 @@ import java.io.*;
 import com.globalmentor.event.*;
 
 /**
- * An output stream that provides progres events for bytes written.
+ * An output stream that provides progress events for bytes written.
  * @author Garret Wilson
  */
 public class ProgressOutputStream extends OutputStreamDecorator<OutputStream> {
@@ -42,52 +42,33 @@ public class ProgressOutputStream extends OutputStreamDecorator<OutputStream> {
 	}
 
 	/**
-	 * Writes the specified byte to the decorated output stream. This version delegates to {@link #write(int)} to ensure that no bytes written are noted more than
-	 * once
-	 * @param b The byte to write.
-	 * @throws IOException if an I/O error occurs.
+	 * {@inheritDoc}
+	 * @implSpec This version delegates to {@link #write(int)} to ensure that no bytes written are noted more than once.
 	 */
+	@Override
 	public void write(final int b) throws IOException {
-		write(new byte[] { (byte)b }); //create a new byte array and write the single byte
+		write(new byte[] {(byte)b}); //create a new byte array and write the single byte
 	}
 
 	/**
-	 * Writes all the bytes from the specified byte array to the decorated output stream. This version delegates to {@link #write(byte[], int, int)} to ensure
-	 * that no bytes written are noted more than once
-	 * @param bytes The bytes to write.
-	 * @throws NullPointerException if the given byte array is <code>null</code>.
-	 * @throws IOException if an I/O error occurs.
+	 * {@inheritDoc}
+	 * @implSpec This version delegates to {@link #write(byte[], int, int)} to ensure that no bytes written are noted more than once.
 	 */
+	@Override
 	public void write(final byte bytes[]) throws IOException {
 		write(bytes, 0, bytes.length); //write the entire array
 	}
 
 	/**
-	 * Writes specified number of bytes from the specified byte array to the decorated output stream starting at the given offset.
-	 * @param bytes The bytes to write.
-	 * @param offset The start offset in the data.
-	 * @param length The number of bytes to write.
-	 * @throws NullPointerException if the given byte array is <code>null</code>.
-	 * @throws IndexOutOfBoundsException if the given offset is negative, or the given offset plus the given length is greater than the length of the given array.
-	 * @throws IOException if an I/O error occurs.
+	 * {@inheritDoc}
+	 * @implNote This method is synchronized so that the progress won't be updated and/or events sent out of order.
 	 */
-	public synchronized void write(final byte bytes[], final int offset, final int length) throws IOException { //this method is synchronized so that the progress won't be updated and/or events sent out of order
+	@Override
+	public synchronized void write(final byte bytes[], final int offset, final int length) throws IOException {
 		super.write(bytes, offset, length); //do the default writing
 		progress += length; //increase the total progress
 		fireProgressed(length, progress, -1); //indicate that bytes have been written
 	}
-
-	/**
-	 * Called before the stream is closed. This version fires a final progress event indicating that the maximum value is now known and has been reached (i.e. the
-	 * progress reflects the maximum value), indicating no delta bytes written.
-	 * @throws IOException if an I/O error occurs.
-	 */
-	/*TODO del if not needed or wanted
-	  protected synchronized void beforeClose() throws IOException 
-	  {
-	  	fireProgressed(0, progress, progress);	//indicate that bytes have been written
-	  }
-	*/
 
 	/**
 	 * Adds a progress listener.
@@ -106,7 +87,8 @@ public class ProgressOutputStream extends OutputStreamDecorator<OutputStream> {
 	}
 
 	/**
-	 * Fires a progress event to all registered progress listeners. This method delegates to {@link #fireProgressed(ProgressEvent)}.
+	 * Fires a progress event to all registered progress listeners.
+	 * @implSpec This method delegates to {@link #fireProgressed(ProgressEvent)}.
 	 * @param delta The amount of recent progress, or <code>-1</code> if not known.
 	 * @param value The total progress to this point, or <code>-1</code> if not known.
 	 * @param maximum The goal, or <code>-1</code> if not known.
