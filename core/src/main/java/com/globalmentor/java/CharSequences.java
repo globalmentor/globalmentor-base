@@ -1095,7 +1095,7 @@ public class CharSequences {
 	 * Determines whether a character sequence contains only the digits '0'-'9'.
 	 * @param charSequence The character sequence to examine.
 	 * @return <code>true</code> if all the characters in the sequence are ISO_LATIN_1 digits.
-	 * @deprecated Create separate <code>isCharacters()</code> method and use {@link ASCII#DIGIT_CHARACTERS}.
+	 * @deprecated in favor of {@link #containsOnly(CharSequence, Characters)} used with {@link ASCII#DIGIT_CHARACTERS}.
 	 */
 	@Deprecated
 	public static final boolean isLatinDigits(final CharSequence charSequence) {

@@ -394,6 +394,7 @@ public class MediaTypeTest {
 	 * @implSpec This implementation uses the non-public constructor to bypass the static factory method to confirm it functions correctly.
 	 */
 	@Test
+	@SuppressWarnings("deprecation")
 	public void testParameterOfStandardCharsets() {
 		assertThat(MediaType.Parameter.of("charset", "us-ascii"), is(equalTo(new MediaType.Parameter("charset", "us-ascii"))));
 		assertThat(MediaType.Parameter.of("charset", "iso-8859-1"), is(equalTo(new MediaType.Parameter("charset", "iso-8859-1"))));

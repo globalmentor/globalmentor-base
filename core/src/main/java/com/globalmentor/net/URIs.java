@@ -770,7 +770,7 @@ public class URIs {
 
 	/**
 	 * Constructs a query string for a URI by URI-encoding each name-value pair, separating them with '&amp;', and prepending the entire string (if there is at
-	 * least one parameter) with '?', if there are no parameters, it doesn't do anything.
+	 * least one parameter) with '?'. If there are no parameters, it doesn't do anything.
 	 * @param params The name-value pairs representing the query parameters.
 	 * @return A string representing the constructed query, or the empty string if there were no parameters.
 	 */
@@ -783,7 +783,6 @@ public class URIs {
 	 * @param params The string representing the query parameters.
 	 * @return A string representing the constructed query, or the empty string if there were no parameters.
 	 */
-	@Deprecated
 	public static String constructQuery(final String params) {
 		final StringBuilder query = new StringBuilder();
 		if(params.length() > 0) { //if there is at least one parameter character
