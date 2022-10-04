@@ -212,18 +212,6 @@ public class Arrays {
 	}
 
 	/**
-	 * Returns a new array containing the given elements. The returned array is identical to the implicit array passed into this method.
-	 * @param <T> The type of elements contained in the array.
-	 * @param elements The elements the array should contain.
-	 * @return An array containing the provided elements.
-	 */
-	@SafeVarargs
-	@Deprecated
-	public static <T> T[] createArray(final T... elements) {
-		return elements; //return the varargs as an array
-	}
-
-	/**
 	 * Creates an array of the given type and initializes it with the given elements.
 	 * @param <T> The type of elements contained in the array.
 	 * @param elementType A class instance indicating the type of elements to use in the array.
