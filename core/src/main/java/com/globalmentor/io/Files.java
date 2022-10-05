@@ -754,7 +754,9 @@ public class Files {
 	 * @param io The I/O support for reading the object.
 	 * @return The object read from the file.
 	 * @throws IOException if there is an error reading the data.
+	 * @deprecated to be removed or refactored along with the {@link IO} read and write methods.
 	 */
+	@Deprecated
 	public static <T> T read(final File file, final IO<T> io) throws IOException {
 		try (final InputStream bufferedInputStream = new BufferedInputStream(new FileInputStream(file))) { //create a buffered input stream to the file
 			return io.read(bufferedInputStream, toURI(file)); //read the object, determining the base URI from the file
@@ -888,7 +890,9 @@ public class Files {
 	 * @param inputStream The source of the file contents.
 	 * @param file The destination of the file contents.
 	 * @throws IOException Thrown if there is an error copying the information.
+	 * @deprecated to be removed; may be reimplemented using Java NIO {@link Path}.
 	 */
+	@Deprecated
 	public static void copy(final InputStream inputStream, final File file) throws IOException {
 		copy(inputStream, file, null);
 	}
@@ -899,7 +903,9 @@ public class Files {
 	 * @param file The destination of the file contents.
 	 * @param progressListener A listener to be notified of progress, or <code>null</code> if no progress notifications is requested.
 	 * @throws IOException Thrown if there is an error copying the information.
+	 * @deprecated to be removed; may be reimplemented using Java NIO {@link Path}.
 	 */
+	@Deprecated
 	public static void copy(final InputStream inputStream, final File file, final ProgressListener progressListener) throws IOException {
 		try (final OutputStream fileOutputStream = new BufferedOutputStream(new FileOutputStream(file))) { //created a buffered output stream to the file
 			IOStreams.copy(inputStream, fileOutputStream, progressListener); //copy the contents of the input stream to the output stream
@@ -911,7 +917,9 @@ public class Files {
 	 * @param file The file to copy.
 	 * @param outputStream The destination of the file contents.
 	 * @throws IOException Thrown if there is an error copying the file.
+	 * @deprecated to be removed; may be reimplemented using Java NIO {@link Path}.
 	 */
+	@Deprecated
 	public static void copy(final File file, final OutputStream outputStream) throws IOException {
 		copy(file, outputStream, null);
 	}
@@ -925,7 +933,9 @@ public class Files {
 	 * @throws IllegalArgumentException if the given destination file is a child of the given source file, representing a circular copy.
 	 * @throws FileNotFoundException if the given source file is <code>null</code>.
 	 * @throws IllegalStateException if a directory copy is performed and the destination file's parent directory doesn't exist.
+	 * @deprecated to be removed; may be reimplemented using Java NIO {@link Path}.
 	 */
+	@Deprecated
 	public static void copy(final File sourceFile, final File destinationFile) throws IOException {
 		copy(sourceFile, destinationFile, true);
 	}
@@ -940,7 +950,9 @@ public class Files {
 	 * @throws IllegalArgumentException if the given destination file is a child of the given source file, representing a circular copy.
 	 * @throws FileNotFoundException if the given source file is <code>null</code>.
 	 * @throws IllegalStateException if a directory copy is performed and the destination file's parent directory doesn't exist.
+	 * @deprecated to be removed; may be reimplemented using Java NIO {@link Path}.
 	 */
+	@Deprecated
 	public static void copy(final File sourceFile, final File destinationFile, final ProgressListener progressListener) throws IOException {
 		copy(sourceFile, destinationFile, true, progressListener);
 	}
@@ -955,9 +967,11 @@ public class Files {
 	 * @throws IllegalArgumentException if the given destination file is a child of the given source file, representing a circular copy.
 	 * @throws FileNotFoundException if the given source file is <code>null</code>.
 	 * @throws IllegalStateException if a directory copy is performed and the destination file's parent directory doesn't exist.
+	 * @deprecated to be removed; may be reimplemented using Java NIO {@link Path}.
 	 */
+	@Deprecated
 	public static void copy(final File sourceFile, final File destinationFile, final boolean deep) throws IOException {
-		copy(sourceFile, destinationFile, deep, WILDCARD_FILE_FILTER);
+		copy(sourceFile, destinationFile, deep, WILDCARD_FILE_FILTER, null);
 	}
 
 	/**
@@ -971,7 +985,9 @@ public class Files {
 	 * @throws IllegalArgumentException if the given destination file is a child of the given source file, representing a circular copy.
 	 * @throws FileNotFoundException if the given source file is <code>null</code>.
 	 * @throws IllegalStateException if a directory copy is performed and the destination file's parent directory doesn't exist.
+	 * @deprecated to be removed; may be reimplemented using Java NIO {@link Path}.
 	 */
+	@Deprecated
 	public static void copy(final File sourceFile, final File destinationFile, final boolean deep, final ProgressListener progressListener) throws IOException {
 		copy(sourceFile, destinationFile, deep, WILDCARD_FILE_FILTER, progressListener);
 	}
@@ -988,7 +1004,9 @@ public class Files {
 	 * @throws FileNotFoundException if the given source file is <code>null</code>.
 	 * @throws IllegalStateException if a directory copy is performed and the destination file's parent directory doesn't exist.
 	 * @throws IllegalStateException if overwrite is turned off and a destination file exists.
+	 * @deprecated to be removed; may be reimplemented using Java NIO {@link Path}.
 	 */
+	@Deprecated
 	public static void copy(final File sourceFile, final File destinationFile, final boolean deep, final boolean overwrite) throws IOException {
 		copy(sourceFile, destinationFile, deep, WILDCARD_FILE_FILTER, overwrite);
 	}
@@ -1007,7 +1025,9 @@ public class Files {
 	 * @throws FileNotFoundException if the given source file is <code>null</code>.
 	 * @throws IllegalStateException if a directory copy is performed and the destination file's parent directory doesn't exist.
 	 * @throws IllegalStateException if overwrite is turned off and a destination file exists.
+	 * @deprecated to be removed; may be reimplemented using Java NIO {@link Path}.
 	 */
+	@Deprecated
 	public static void copy(final File sourceFile, final File destinationFile, final boolean deep, final boolean overwrite,
 			final ProgressListener progressListener) throws IOException {
 		copy(sourceFile, destinationFile, deep, WILDCARD_FILE_FILTER, overwrite, progressListener);
@@ -1019,7 +1039,9 @@ public class Files {
 	 * @param outputStream The destination of the file contents.
 	 * @param progressListener A listener to be notified of progress, or <code>null</code> if no progress notifications is requested.
 	 * @throws IOException Thrown if there is an error copying the file.
+	 * @deprecated to be removed; may be reimplemented using Java NIO {@link Path}.
 	 */
+	@Deprecated
 	public static void copy(final File file, final OutputStream outputStream, final ProgressListener progressListener) throws IOException {
 		try (final InputStream fileInputStream = new BufferedInputStream(new FileInputStream(file))) { //created a buffered input stream to the file
 			IOStreams.copy(fileInputStream, outputStream, file.length(), progressListener); //copy the contents of the input stream to the output stream
@@ -1033,30 +1055,15 @@ public class Files {
 	 * @param destinationFile The destination of the copied file or directory.
 	 * @param deep <code>true</code> if child files and directories of source directories should be recursively copied.
 	 * @param fileFilter The file filter for copying children files if applicable.
-	 * @throws NullPointerException if the given source file and/or destination file is <code>null</code>, or if deep copying of a directory is requested and the
-	 *           given file filter is <code>null</code>.
-	 * @throws IllegalArgumentException if the given destination file is a child of the given source file, representing a circular copy.
-	 * @throws FileNotFoundException if the given source file is <code>null</code>.
-	 * @throws IllegalStateException if a directory copy is performed and the destination file's parent directory doesn't exist.
-	 */
-	public static void copy(final File sourceFile, final File destinationFile, final boolean deep, final FileFilter fileFilter) throws IOException {
-		copy(sourceFile, destinationFile, deep, fileFilter, null);
-	}
-
-	/**
-	 * Copies the given source file or directory to the given destination file or directory. Destination files are overwritten. The last modified date of the
-	 * destination file or directory is updated to match that of the source.
-	 * @param sourceFile The source file or directory to copy.
-	 * @param destinationFile The destination of the copied file or directory.
-	 * @param deep <code>true</code> if child files and directories of source directories should be recursively copied.
-	 * @param fileFilter The file filter for copying children files if applicable.
 	 * @param progressListener A listener to be notified of progress, or <code>null</code> if no progress notifications is requested.
 	 * @throws NullPointerException if the given source file and/or destination file is <code>null</code>, or if deep copying of a directory is requested and the
 	 *           given file filter is <code>null</code>.
 	 * @throws IllegalArgumentException if the given destination file is a child of the given source file, representing a circular copy.
 	 * @throws FileNotFoundException if the given source file is <code>null</code>.
 	 * @throws IllegalStateException if a directory copy is performed and the destination file's parent directory doesn't exist.
+	 * @deprecated to be removed; may be reimplemented using Java NIO {@link Path}.
 	 */
+	@Deprecated
 	public static void copy(final File sourceFile, final File destinationFile, final boolean deep, final FileFilter fileFilter,
 			final ProgressListener progressListener) throws IOException {
 		copy(sourceFile, destinationFile, deep, fileFilter, true, progressListener);
@@ -1077,7 +1084,9 @@ public class Files {
 	 * @throws FileNotFoundException if the given source file is <code>null</code>.
 	 * @throws IllegalStateException if a directory copy is performed and the destination file's parent directory doesn't exist.
 	 * @throws IllegalStateException if overwrite is turned off and a destination file exists.
+	 * @deprecated to be removed; may be reimplemented using Java NIO {@link Path}.
 	 */
+	@Deprecated
 	public static void copy(final File sourceFile, final File destinationFile, final boolean deep, final FileFilter fileFilter, final boolean overwrite)
 			throws IOException {
 		copy(sourceFile, destinationFile, deep, fileFilter, overwrite, null);
@@ -1099,7 +1108,9 @@ public class Files {
 	 * @throws FileNotFoundException if the given source file is <code>null</code>.
 	 * @throws IllegalStateException if a directory copy is performed and the destination file's parent directory doesn't exist.
 	 * @throws IllegalStateException if overwrite is turned off and a destination file exists.
+	 * @deprecated to be removed; may be reimplemented using Java NIO {@link Path}.
 	 */
+	@Deprecated
 	public static void copy(final File sourceFile, final File destinationFile, final boolean deep, final FileFilter fileFilter, final boolean overwrite,
 			final ProgressListener progressListener) throws IOException {
 		//TODO add beginning and ending progress events, along with a system of levels

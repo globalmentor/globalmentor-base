@@ -58,6 +58,8 @@ public class CollectionBuilder {
 	 * @param elements The source of the added objects.
 	 * @return The given collection.
 	 */
+	@SafeVarargs
+	@SuppressWarnings("varargs")
 	public static <E, C extends Collection<E>> C addAll(final C collection, final E... elements) {
 		java.util.Collections.addAll(collection, elements); //add all the elements
 		return collection; //return the collection

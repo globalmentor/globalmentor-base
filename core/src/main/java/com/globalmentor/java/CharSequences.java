@@ -1252,9 +1252,10 @@ public class CharSequences {
 	 * @param charSequence The character sequence to split.
 	 * @param delimiter The delimiter to use for splitting.
 	 * @return An array of character subsequences between the delimiters.
-	 * @deprecated
+	 * @deprecated to be removed in favor of {@link java.util.regex.Pattern#split(CharSequence)}.
 	 */
-	public static CharSequence[] split(final CharSequence charSequence, final char delimiter) { //TODO convert to using regular expressions
+	@Deprecated
+	public static CharSequence[] split(final CharSequence charSequence, final char delimiter) {
 		final int length = charSequence.length(); //get the length of the character sequence
 		if(length > 0) { //if there are any characters
 			final int delimiterCount = count(charSequence, delimiter); //count the number of delimiters
@@ -1275,7 +1276,7 @@ public class CharSequences {
 				return subSequences; //return the array of subsequences
 			}
 		}
-		return new CharSequence[] {charSequence}; //return an array cotaining the character sequence itself if there are no characters or no delimiters
+		return new CharSequence[] {charSequence}; //return an array containing the character sequence itself if there are no characters or no delimiters
 	}
 
 	/**

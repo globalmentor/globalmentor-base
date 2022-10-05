@@ -22,8 +22,9 @@ import java.io.*;
 /**
  * Utilities to manipulate and process JavaBeans.
  * @author Garret Wilson
- * @deprecated
+ * @deprecated to be removed in favor of Ploop. This class seems to be more about persistence than beans in general.
  */
+@Deprecated
 public class Beans {
 
 	/** Default constructor. */
@@ -39,7 +40,7 @@ public class Beans {
 	 */
 	public static void upgradeEncoder(final Encoder encoder) {
 		//File
-		encoder.setPersistenceDelegate(File.class, new DefaultPersistenceDelegate(new String[] { "absolutePath" }));
+		encoder.setPersistenceDelegate(File.class, new DefaultPersistenceDelegate(new String[] {"absolutePath"}));
 	}
 
 	/**

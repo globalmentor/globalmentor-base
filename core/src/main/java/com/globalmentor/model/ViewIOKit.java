@@ -26,6 +26,7 @@ import com.globalmentor.io.URIAccessible;
  * @author Garret Wilson
  * @see Modifiable
  */
+@Deprecated
 public interface ViewIOKit<M> extends URIAccessible {
 
 	/**

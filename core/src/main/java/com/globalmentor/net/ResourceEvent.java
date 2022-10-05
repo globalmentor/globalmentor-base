@@ -25,6 +25,8 @@ import java.util.EventObject;
  */
 public class ResourceEvent extends EventObject {
 
+	private static final long serialVersionUID = 3102064057287609018L;
+
 	/** The old parent resource reference URI, or <code>null</code> if not applicable. */
 	private final URI oldParentResourceURI;
 
@@ -146,7 +148,8 @@ public class ResourceEvent extends EventObject {
 	 * @param parentResource A description of the parent resource, or <code>null</code> if there is no parent resource.
 	 * @param resource A description of the resource, or <code>null</code> if there is no description.
 	 */
-	public ResourceEvent(final Object source, final Resource oldParentResource, final URI oldResourceURI, final Resource parentResource, final Resource resource) {
+	public ResourceEvent(final Object source, final Resource oldParentResource, final URI oldResourceURI, final Resource parentResource,
+			final Resource resource) {
 		this(source, oldParentResource != null ? oldParentResource.getURI() : null, oldParentResource, oldResourceURI, null,
 				parentResource != null ? parentResource.getURI() : null, parentResource, resource.getURI(), resource); //construct the class with a resource and a reference URI, along with the old parent and the old reference URI
 	}

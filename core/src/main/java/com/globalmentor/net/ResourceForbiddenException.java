@@ -25,6 +25,8 @@ import java.net.URI;
  */
 public class ResourceForbiddenException extends ResourceIOException {
 
+	private static final long serialVersionUID = 1L;
+
 	/**
 	 * Constructs a new exception for the specified resource URI.
 	 * @param resourceURI The URI of the resource to which the exception is related.

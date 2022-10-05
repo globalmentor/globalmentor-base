@@ -30,6 +30,8 @@ import static java.util.Objects.*;
  */
 public class CacheFetchEvent<Q, V> extends EventObject {
 
+	private static final long serialVersionUID = 1L;
+
 	/**
 	 * The cache which fetched the value.
 	 * @return The object on which the Event initially occurred.

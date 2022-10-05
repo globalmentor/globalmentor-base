@@ -32,8 +32,10 @@ public class CopyOnWriteArrayListConcurrentHashMap<K, V> extends AbstractDecorat
 	}
 
 	/**
-	 * Creates a collection in which to store values. This version returns an {@link ArrayList}.
+	 * {@inheritDoc}
+	 * @implSpec This version returns an {@link ArrayList}.
 	 */
+	@Override
 	public List<V> createCollection() {
 		return new ArrayList<V>();
 	}

@@ -61,6 +61,7 @@ public class SynchronizedCollectionMapDecorator<K, V, C extends Collection<V>> e
 	 * @return The collection associated with the given key
 	 * @see #createCollection()
 	 */
+	@Override
 	public C getCollection(final K key) {
 		synchronized(mutex) {
 			return collectionMap.getCollection(key);
@@ -71,6 +72,7 @@ public class SynchronizedCollectionMapDecorator<K, V, C extends Collection<V>> e
 	 * {@inheritDoc}
 	 * @implNote This implementation is not synchronized.
 	 */
+	@Override
 	public C createCollection() {
 		return collectionMap.createCollection();
 	}

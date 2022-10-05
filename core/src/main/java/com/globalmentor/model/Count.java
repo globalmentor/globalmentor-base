@@ -33,6 +33,8 @@ import com.globalmentor.java.Longs;
  */
 public class Count extends AbstractLong<Count> implements CloneSupported {
 
+	private static final long serialVersionUID = -3770492220445845399L;
+
 	/** The current count. */
 	private long count;
 

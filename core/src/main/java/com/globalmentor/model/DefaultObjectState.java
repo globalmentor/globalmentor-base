@@ -52,7 +52,7 @@ public class DefaultObjectState<T> extends DefaultModifiable implements ObjectSt
 	}
 
 	/** The map of properties. */
-	private final Map propertyMap = new HashMap();
+	private final Map<Object, Object> propertyMap = new HashMap<>();
 
 	/**
 	 * Gets a property of the object state.
@@ -100,14 +100,13 @@ public class DefaultObjectState<T> extends DefaultModifiable implements ObjectSt
 	/**
 	 * Compares object states by comparing their respective objects.
 	 * @param object The object with which to compare this RDF resource; should be another object state.
-	 * @return <code>true</code> if this object state refers to the same object as
-		specified in the object state <code>object</code>.
+	 * @return <code>true</code> if this object state refers to the same object as specified in the object state <code>object</code>.
 	 * @see ObjectState
 	 * @see #getObject
 	 */
 	public boolean equals(final Object object) {
 		if(object instanceof ObjectState) { //if the other object implements the object state methods
-			return getObject().equals(((ObjectState)object).getObject()); //compare our object with that of the object state
+			return getObject().equals(((ObjectState<?>)object).getObject()); //compare our object with that of the object state
 		}
 		return super.equals(object); //try to compare the objects normally if the object isn't an object state
 	}

@@ -21,7 +21,6 @@ import java.net.*;
 import java.util.*;
 import java.util.regex.*;
 
-import static java.util.Collections.*;
 import static java.util.Objects.*;
 
 import javax.annotation.*;
@@ -187,7 +186,9 @@ public final class Classes {
 	 * @return A compatible constructors, or <code>null</code> if no compatible constructor could be found.
 	 * @throws SecurityException If a security manager is present that denies access to the constructor or the caller's class loader is different and denies
 	 *           access to the package of this class.
+	 * @deprecated to be moved to Ploop.
 	 */
+	@Deprecated
 	public static <T> Constructor<T> getCompatibleDeclaredConstructor(final Class<T> objectClass, final Class<?>... parameterTypes) throws SecurityException {
 		Constructor<T> constructor = getDeclaredConstructor(objectClass, parameterTypes); //see if we can find an exact constructor
 		if(constructor == null) { //if there is no exact constructor
@@ -208,7 +209,9 @@ public final class Classes {
 	 * @return An array of compatible constructors.
 	 * @throws SecurityException If a security manager is present that denies access to the constructor or the caller's class loader is different and denies
 	 *           access to the package of this class.
+	 * @deprecated to be moved to Ploop.
 	 */
+	@Deprecated
 	public static <T> Constructor<T>[] getCompatibleDeclaredConstructors(final Class<T> objectClass, final Class<?>... parameterTypes) throws SecurityException {
 		return getCompatibleConstructors(objectClass, false, parameterTypes);
 	}
@@ -223,7 +226,9 @@ public final class Classes {
 	 * @return An array of compatible constructors.
 	 * @throws SecurityException If a security manager is present that denies access to the constructor or the caller's class loader is different and denies
 	 *           access to the package of this class.
+	 * @deprecated to be moved to Ploop.
 	 */
+	@Deprecated
 	@SuppressWarnings("unchecked")
 	protected static <T> Constructor<T>[] getCompatibleConstructors(final Class<T> objectClass, final boolean requirePublic, final Class<?>... parameterTypes)
 			throws SecurityException { //casts are used because arrays are not generic-aware
@@ -244,7 +249,7 @@ public final class Classes {
 				}
 			}
 		}
-		return compatibleConstructors.toArray((Constructor<T>[])new Constructor[compatibleConstructors.size()]); //return an array of compatible constructors
+		return compatibleConstructors.toArray((Constructor<T>[])Array.newInstance(Constructor.class, 0)); //return an array of compatible constructors
 	}
 
 	/**
@@ -733,7 +738,7 @@ public final class Classes {
 	 * A comparator that sorts ancestor classes primarily in terms of height (distance from a descendant class), secondarily in terms of concreteness (concrete
 	 * class, abstract class, and then interface), and tertiarily by class name.
 	 */
-	public static final Comparator<NameValuePair<Class<?>, Integer>> CONCRETE_CLASS_HEIGHT_COMPARATOR = new Comparator<NameValuePair<Class<?>, Integer>>() {
+	public static final Comparator<NameValuePair<? extends Class<?>, Integer>> CONCRETE_CLASS_HEIGHT_COMPARATOR = new Comparator<NameValuePair<? extends Class<?>, Integer>>() {
 
 		/**
 		 * Compares two classes based upon the classes and their height or distance from a particular class. Comparison is performed primarily in terms of maximum
@@ -743,7 +748,7 @@ public final class Classes {
 		 * @param classHeight2 The second class paired with its distance from a descendant class.
 		 * @return The result of comparing the two classes.
 		 */
-		public int compare(final NameValuePair<Class<?>, Integer> classHeight1, final NameValuePair<Class<?>, Integer> classHeight2) {
+		public int compare(final NameValuePair<? extends Class<?>, Integer> classHeight1, final NameValuePair<? extends Class<?>, Integer> classHeight2) {
 			int result = classHeight1.getValue().intValue() - classHeight2.getValue().intValue(); //get the differences in heights
 			if(result == 0) { //if both classes are at the same height
 				final Class<?> class1 = classHeight1.getClass(); //get the classes
@@ -805,8 +810,7 @@ public final class Classes {
 	 * @see #CONCRETE_CLASS_HEIGHT_COMPARATOR
 	 */
 	public static <R> List<Class<? extends R>> getAncestorClasses(final Class<? extends R> objectClass, final Class<R> rootClass) {
-		return getAncestorClasses(objectClass, rootClass, true, true, true, true,
-				(Comparator<NameValuePair<Class<? extends R>, Integer>>)(Object)CONCRETE_CLASS_HEIGHT_COMPARATOR); //get ancestor classes, including super classes, abstract classes, and interfaces TODO check cast
+		return getAncestorClasses(objectClass, rootClass, true, true, true, true, CONCRETE_CLASS_HEIGHT_COMPARATOR); //get ancestor classes, including super classes, abstract classes, and interfaces
 	}
 
 	/**
@@ -821,8 +825,7 @@ public final class Classes {
 	 * @see #CONCRETE_CLASS_HEIGHT_COMPARATOR
 	 */
 	public static <R> List<Class<? extends R>> getProperAncestorClasses(final Class<? extends R> objectClass, final Class<R> rootClass) {
-		return getAncestorClasses(objectClass, rootClass, false, true, true, true,
-				(Comparator<NameValuePair<Class<? extends R>, Integer>>)(Object)CONCRETE_CLASS_HEIGHT_COMPARATOR); //get ancestor classes, including super classes, abstract classes, and interfaces TODO check cast
+		return getAncestorClasses(objectClass, rootClass, false, true, true, true, CONCRETE_CLASS_HEIGHT_COMPARATOR); //get ancestor classes, including super classes, abstract classes, and interfaces
 	}
 
 	/**
@@ -840,14 +843,12 @@ public final class Classes {
 	 * @throws NullPointerException if the given object class and/or root class is <code>null</code>.
 	 * @return The set of all super classes and implemented interfaces.
 	 */
-	@SuppressWarnings("unchecked")
-	//casts, along with not-type-specific addClass() method, required for compiling with Sun JDK 1.6.0_03-b05; not required for Eclipse 3.4M3
 	public static <R> List<Class<? extends R>> getAncestorClasses(final Class<? extends R> objectClass, final Class<R> rootClass, final boolean includeThisClass,
 			final boolean includeSuperClasses, final boolean includeAbstract, final boolean includeInterfaces,
-			final Comparator<NameValuePair<Class<? extends R>, Integer>> comparator) {
+			final Comparator<NameValuePair<? extends Class<?>, Integer>> comparator) {
 		final Map<Class<? extends R>, NameValuePair<Class<? extends R>, Integer>> classHeightMap = new HashMap<Class<? extends R>, NameValuePair<Class<? extends R>, Integer>>(); //create a new map of class/height pairs
 		if(includeThisClass && rootClass.isAssignableFrom(objectClass)) { //if we should include this class
-			addClass(objectClass.asSubclass(rootClass), 0, (Map<Class<?>, NameValuePair<Class<?>, Integer>>)(Object)classHeightMap); //add this class to the map at height 0
+			addClass(objectClass.asSubclass(rootClass), 0, classHeightMap); //add this class to the map at height 0 TODO check cast
 		}
 		getAncestorClasses(objectClass, 1, rootClass, includeSuperClasses, includeAbstract, includeInterfaces, classHeightMap); //get all the classes, starting one level above the class
 		final List<Class<? extends R>> classList; //we'll create a list to hold the classes
@@ -856,7 +857,7 @@ public final class Classes {
 			final List<NameValuePair<Class<? extends R>, Integer>> classHeightList = new ArrayList<NameValuePair<Class<? extends R>, Integer>>(
 					classHeightMap.values()); //get all the class/height pairs
 			if(comparator != null) { //if a comparator was given
-				sort(classHeightList, comparator); //sort the list using the comparator
+				classHeightList.sort(comparator); //sort the list using the comparator
 			}
 			for(final NameValuePair<Class<? extends R>, Integer> classHeight : classHeightList) { //for each class height in the list
 				classList.add(classHeight.getName()); //add this class to the list
@@ -878,8 +879,6 @@ public final class Classes {
 	 * @param includeInterfaces Whether implemented interfaces should be returned.
 	 * @param classHeightMap The map of class/height pairs keyed to the class.
 	 */
-	@SuppressWarnings("unchecked")
-	//casts, along with not-type-specific addClass() method, required for compiling with Sun JDK 1.6.0_03-b05; not required for Eclipse 3.4M3
 	protected static <R> void getAncestorClasses(final Class<? extends R> objectClass, final int height, final Class<R> rootClass,
 			final boolean includeSuperClasses, final boolean includeAbstract, final boolean includeInterfaces,
 			final Map<Class<? extends R>, NameValuePair<Class<? extends R>, Integer>> classHeightMap) {
@@ -889,7 +888,7 @@ public final class Classes {
 				if(rootClass.isAssignableFrom(superClass)) { //if the super class extends or implements the root class
 					final Class<? extends R> superExtendsRootClass = superClass.asSubclass(rootClass); //get the version of the super class that extends the root class
 					if(includeAbstract || !Modifier.isAbstract(superClass.getModifiers())) { // make sure we should include abstract classes if this is an abstract class
-						addClass(superExtendsRootClass, height, (Map<Class<?>, NameValuePair<Class<?>, Integer>>)(Object)classHeightMap); //add the super class to the map
+						addClass(superExtendsRootClass, height, classHeightMap); //add the super class to the map
 					}
 					getAncestorClasses(superExtendsRootClass, height + 1, rootClass, includeSuperClasses, includeAbstract, includeInterfaces, classHeightMap); //get all the classes of the super class
 				}
@@ -899,7 +898,7 @@ public final class Classes {
 			for(final Class<?> classInterface : objectClass.getInterfaces()) { //look at each implemented interface
 				if(rootClass.isAssignableFrom(classInterface)) { //if this interface extends the root class
 					final Class<? extends R> interfaceExtendsRootClass = classInterface.asSubclass(rootClass); //get the version of the interface that extends the root class
-					addClass(interfaceExtendsRootClass, height, (Map<Class<?>, NameValuePair<Class<?>, Integer>>)(Object)classHeightMap); //add the interface to the map
+					addClass(interfaceExtendsRootClass, height, classHeightMap); //add the interface to the map
 					getAncestorClasses(interfaceExtendsRootClass, height + 1, rootClass, includeSuperClasses, includeAbstract, includeInterfaces, classHeightMap); //get all the classes of the interface
 				}
 			}
@@ -915,10 +914,10 @@ public final class Classes {
 	 * @throws NullPointerException if the given object class is <code>null</code>.
 	 */
 	private static <R> void addClass(final Class<? extends R> objectClass, final int height,
-			final Map<Class<?>, NameValuePair<Class<?>, Integer>> classHeightMap) { //preferred signature, which works on Eclipse 3.4M3 but not on Sun JDK 1.6.0_03-b05:	private static <R> void addClass(final Class<? extends R> objectClass, final int height, final Map<Class<? extends R>, NameValuePair<Class<? extends R>, Integer>> classHeightMap)
-		final NameValuePair<Class<?>, Integer> oldClassHeight = classHeightMap.get(objectClass); //get the old height
+			final Map<Class<? extends R>, NameValuePair<Class<? extends R>, Integer>> classHeightMap) {
+		final NameValuePair<Class<? extends R>, Integer> oldClassHeight = classHeightMap.get(objectClass); //get the old height
 		if(oldClassHeight == null || oldClassHeight.getValue().intValue() < height) { //if there was no old height, or the old height is not as large as the new height
-			classHeightMap.put(objectClass, new NameValuePair<Class<?>, Integer>(objectClass, height)); //update the height for the class
+			classHeightMap.put(objectClass, new NameValuePair<Class<? extends R>, Integer>(objectClass, height)); //update the height for the class
 		}
 	}
 

@@ -55,8 +55,10 @@ public class TreeSetMap<K, V> extends AbstractDecoratorCollectionMap<K, V, Set<V
 	}
 
 	/**
-	 * Creates a collection in which to store values. This version returns a {@link TreeSet}.
+	 * {@inheritDoc}
+	 * @implSpec This version returns a {@link TreeSet}.
 	 */
+	@Override
 	public Set<V> createCollection() {
 		return new TreeSet<V>(getComparator()); //create and return a new set using the specified ordering
 	}

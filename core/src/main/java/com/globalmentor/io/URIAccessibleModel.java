@@ -25,6 +25,7 @@ import com.globalmentor.model.Model;
  * A model that keeps track of a base URI and knows how to access input streams based upon URIs.
  * @author Garret Wilson
  */
+@Deprecated
 public abstract class URIAccessibleModel extends DefaultURIAccessible implements Model {
 
 	/** Whether the object has been modified; the default is not modified. */

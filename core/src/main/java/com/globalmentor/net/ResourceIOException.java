@@ -16,7 +16,6 @@
 
 package com.globalmentor.net;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
 
@@ -27,6 +26,8 @@ import static java.util.Objects.*;
  * @author Garret Wilson
  */
 public class ResourceIOException extends IOException {
+
+	private static final long serialVersionUID = 1L;
 
 	/** The URI of the resource to which the exception is related. */
 	private final URI resourceURI;

@@ -33,6 +33,8 @@ public class Sets {
 	 * @return The immutable version of the set.
 	 * @throws NullPointerException if the given array of elements is <code>null</code>.
 	 */
+	@SafeVarargs
+	@SuppressWarnings("varargs")
 	public static <E> Set<E> immutableSetOf(final E... elements) { //TODO improve to return an ImmutableSet<E>
 		return immutableSetOf(java.util.Collections.<E>emptySet(), elements);
 	}
@@ -45,6 +47,8 @@ public class Sets {
 	 * @return The immutable version of the set.
 	 * @throws NullPointerException if the given iterable and/or array of elements is <code>null</code>.
 	 */
+	@SafeVarargs
+	@SuppressWarnings("varargs")
 	public static <E> Set<E> immutableSetOf(final Iterable<? extends E> iterable, final E... elements) { //TODO improve to return an ImmutableSet<E>
 		if(iterable instanceof Collection<?>) { //if a collection was given
 			return immutableSetOf((Collection<? extends E>)iterable, elements); //delegate to the collection version
@@ -81,6 +85,8 @@ public class Sets {
 	 * @return The immutable version of the set.
 	 * @throws NullPointerException if the given collection and/or array of elements is <code>null</code>.
 	 */
+	@SafeVarargs
+	@SuppressWarnings("varargs")
 	public static <E> Set<E> immutableSetOf(final Collection<? extends E> collection, final E... elements) { //TODO improve to return an ImmutableSet<E>
 		if(collection.isEmpty()) { //if the collection is empty, take some shortcuts
 			final int size = elements.length; //find out the size of the set we will create for the elements

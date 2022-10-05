@@ -21,19 +21,12 @@ import java.util.*;
 
 import static java.util.Objects.*;
 
-import com.globalmentor.java.OperatingSystem;
-
-import static com.globalmentor.java.OperatingSystem.*;
-
 /**
  * A print stream that writes to a given writer. This print stream writer assumes that all bytes written to it are characters encoded in the platform default
  * character encoding.
  * @author Garret Wilson
  */
 public class WriterPrintStream extends PrintStream {
-
-	/** The system line separator characters in use when the class is created. */
-	private static final String LINE_SEPARATOR = getLineSeparator();
 
 	/** The writer to which print stream information will be written. */
 	private final Writer writer;
@@ -178,17 +171,18 @@ public class WriterPrintStream extends PrintStream {
 	}
 
 	/**
-	 * Writes a newline character to the underlying writer. If automatic flushing is enabled then the {@link #flush()} method will be invoked.
+	 * Writes a system-dependent newline character to the underlying writer. If automatic flushing is enabled then the {@link #flush()} method will be invoked.
+	 * @see System#lineSeparator()
 	 */
 	private void newLine() {
-		write(LINE_SEPARATOR, autoflush); //write the line separator string, flushing if autoflushing is turned on
+		write(System.lineSeparator(), autoflush); //write the line separator string, flushing if auto-flushing is turned on
 	}
 
 	/* Methods that do not terminate lines */
 
 	/**
 	 * Print a boolean value.
-	 * @param b The bolean value to be printed
+	 * @param b The Boolean value to be printed
 	 */
 	public void print(final boolean b) {
 		write(Boolean.valueOf(b).toString()); //use the TRUE/FALSE Boolean object string values
@@ -267,9 +261,10 @@ public class WriterPrintStream extends PrintStream {
 	/* Methods that do terminate lines */
 
 	/**
-	 * Terminate the current line by writing the line separator string. The line separator string is defined by the system property
-	 * {@value OperatingSystem#LINE_SEPARATOR_PROPERTY}, and is not necessarily a single newline character (<code>'\n'</code>). This implementation delegates to
-	 * {@link #newLine()}.
+	 * Terminate the current line by writing the line separator string.
+	 * @implSpec This implementation delegates to {@link #newLine()}.
+	 * @implNote The line separator string is platform-specific and defined by {@link System#lineSeparator()}; it is not necessarily a single newline character
+	 *           (<code>'\n'</code>).
 	 */
 	public void println() {
 		newLine();

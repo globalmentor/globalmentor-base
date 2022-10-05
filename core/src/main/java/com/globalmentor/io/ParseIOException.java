@@ -335,6 +335,7 @@ public class ParseIOException extends IOException {
 	 * @see LineNumberReader
 	 * @see ParseReader
 	 */
+	@SuppressWarnings("deprecation")
 	protected static long getLineIndex(final Reader reader) {
 		if(reader instanceof LineNumberReader) { //if this is a line number reader
 			return ((LineNumberReader)reader).getLineNumber(); //the line number is really the line index
@@ -352,6 +353,7 @@ public class ParseIOException extends IOException {
 	 * @throws NullPointerException if the given reader is <code>null</code>.
 	 * @see ParseReader
 	 */
+	@SuppressWarnings("deprecation")
 	protected static long getCharacterIndex(final Reader reader) {
 		if(reader instanceof ParseReader) { //if this is a parse reader
 			return ((ParseReader)reader).getCharIndex(); //it knows the character index

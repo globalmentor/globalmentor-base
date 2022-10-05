@@ -356,7 +356,9 @@ public final class ClassResources {
 	 * @throws NullPointerException if the given class, name, and/or I/O support is <code>null</code>.
 	 * @throws IOException if there is an error reading the data.
 	 * @throws FileNotFoundException if the indicated resource does not exist.
+	 * @deprecated to be removed or refactored along with the {@link IO} read and write methods.
 	 */
+	@Deprecated
 	public static <T> T read(final Class<?> objectClass, final String name, final IO<T> io) throws IOException {
 		final URL url = objectClass.getResource(name); //get a URL to the resource
 		if(url == null) { //if the resource doesn't exist

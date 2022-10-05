@@ -78,6 +78,7 @@ public class Iterators {
 	 * @throws NullPointerException if any of the given iterators is <code>null</code>.
 	 */
 	@SafeVarargs
+	@SuppressWarnings("varargs")
 	public static <E> JoinIterator<E> concat(@Nonnull final Iterator<E>... iterators) {
 		return new JoinIterator<>(iterators);
 	}

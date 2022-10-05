@@ -25,7 +25,9 @@ import com.globalmentor.util.prefs.Preferencesable;
  * An interface to an object that allows resources to be selected for input or output.
  * @param <R> The type of resource being selected.
  * @author Garret Wilson
+ * @deprecated for removal; it's not clear what this class was originally used for.
  */
+@Deprecated
 public interface ResourceSelector<R extends Resource> extends URIAccessible, Preferencesable {
 
 	/**

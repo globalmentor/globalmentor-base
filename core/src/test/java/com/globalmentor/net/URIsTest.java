@@ -763,63 +763,63 @@ public class URIsTest {
 		assertThrows(NullPointerException.class, () -> URIs.appendQueryParameter(null, "type", "foo"));
 	}
 
-	/** Tests whether {@link URIs#getParameterMap(URI)} is working properly. */
+	/** Tests whether {@link URIs#getQueryParameterMap(URI)} is working properly. */
 	@Test
-	public void testGetParameterMap() {
-		assertThat(URIs.getParameterMap(URI.create("http://example.com")).isEmpty(), is(true));
-		assertThat(URIs.getParameterMap(URI.create("http://example.com/")).isEmpty(), is(true));
+	public void testGetQueryParameterMap() {
+		assertThat(URIs.getQueryParameterMap(URI.create("http://example.com")).isEmpty(), is(true));
+		assertThat(URIs.getQueryParameterMap(URI.create("http://example.com/")).isEmpty(), is(true));
 
 		CollectionMap<String, String, List<String>> queryCollectionMap;
 
-		queryCollectionMap = URIs.getParameterMap(URI.create("http://example.com/?type=foo"));
+		queryCollectionMap = URIs.getQueryParameterMap(URI.create("http://example.com/?type=foo"));
 		assertThat(queryCollectionMap.size(), is(1));
 		assertThat(queryCollectionMap.get("type"), is(Arrays.asList("foo")));
 
-		queryCollectionMap = URIs.getParameterMap(URI.create("http://example.com/?type=foo&place=bar"));
+		queryCollectionMap = URIs.getQueryParameterMap(URI.create("http://example.com/?type=foo&place=bar"));
 		assertThat(queryCollectionMap.size(), is(2));
 		assertThat(queryCollectionMap.get("type"), is(Arrays.asList("foo")));
 		assertThat(queryCollectionMap.get("place"), is(Arrays.asList("bar")));
 
-		queryCollectionMap = URIs.getParameterMap(URI.create("http://example.com/?type=foo&place=bar&type=foobar"));
+		queryCollectionMap = URIs.getQueryParameterMap(URI.create("http://example.com/?type=foo&place=bar&type=foobar"));
 		assertThat(queryCollectionMap.size(), is(2));
 		assertThat(queryCollectionMap.get("type"), is(Arrays.asList("foo", "foobar")));
 		assertThat(queryCollectionMap.get("place"), is(Arrays.asList("bar")));
 	}
 
-	/** Tests whether {@link URIs#getParameterMap(URI)} is throwing an exception when a null {@link URI} is provided. */
+	/** Tests whether {@link URIs#getQueryParameterMap(URI)} is throwing an exception when a null {@link URI} is provided. */
 	@Test
-	public void testGetParameterMapNullFail() {
-		assertThrows(NullPointerException.class, () -> URIs.getParameterMap(null));
+	public void testGetQueryParameterMapNullFail() {
+		assertThrows(NullPointerException.class, () -> URIs.getQueryParameterMap(null));
 	}
 
-	/** Tests whether {@link URIs#getParameters(URI)} is working properly. */
+	/** Tests whether {@link URIs#getQueryParameters(URI)} is working properly. */
 	@Test
-	public void testGetParameters() {
-		assertThat(URIs.getParameters(URI.create("http://example.com")), is(nullValue()));
-		assertThat(URIs.getParameters(URI.create("http://example.com/")), is(nullValue()));
+	public void testGetQueryParameters() {
+		assertThat(URIs.getQueryParameters(URI.create("http://example.com")), isEmpty());
+		assertThat(URIs.getQueryParameters(URI.create("http://example.com/")), isEmpty());
 
-		NameValuePair<String, String>[] parametersNameValuePairs;
+		List<NameValuePair<String, String>> parametersNameValuePairs;
 
-		parametersNameValuePairs = URIs.getParameters(URI.create("http://example.com/?type=foo"));
-		assertThat(parametersNameValuePairs.length, is(1));
-		assertThat(parametersNameValuePairs[0].getName(), is("type"));
-		assertThat(parametersNameValuePairs[0].getValue(), is("foo"));
+		parametersNameValuePairs = URIs.getQueryParameters(URI.create("http://example.com/?type=foo")).orElseThrow(AssertionError::new);
+		assertThat(parametersNameValuePairs.size(), is(1));
+		assertThat(parametersNameValuePairs.get(0).getName(), is("type"));
+		assertThat(parametersNameValuePairs.get(0).getValue(), is("foo"));
 
-		parametersNameValuePairs = URIs.getParameters(URI.create("http://example.com/?type=foo&place=bar"));
-		assertThat(parametersNameValuePairs.length, is(2));
-		assertThat(parametersNameValuePairs[0].getName(), is("type"));
-		assertThat(parametersNameValuePairs[0].getValue(), is("foo"));
-		assertThat(parametersNameValuePairs[1].getName(), is("place"));
-		assertThat(parametersNameValuePairs[1].getValue(), is("bar"));
+		parametersNameValuePairs = URIs.getQueryParameters(URI.create("http://example.com/?type=foo&place=bar")).orElseThrow(AssertionError::new);
+		assertThat(parametersNameValuePairs.size(), is(2));
+		assertThat(parametersNameValuePairs.get(0).getName(), is("type"));
+		assertThat(parametersNameValuePairs.get(0).getValue(), is("foo"));
+		assertThat(parametersNameValuePairs.get(1).getName(), is("place"));
+		assertThat(parametersNameValuePairs.get(1).getValue(), is("bar"));
 
-		parametersNameValuePairs = URIs.getParameters(URI.create("http://example.com/?type=foo&place=bar&type=foobar"));
-		assertThat(parametersNameValuePairs.length, is(3));
-		assertThat(parametersNameValuePairs[0].getName(), is("type"));
-		assertThat(parametersNameValuePairs[0].getValue(), is("foo"));
-		assertThat(parametersNameValuePairs[1].getName(), is("place"));
-		assertThat(parametersNameValuePairs[1].getValue(), is("bar"));
-		assertThat(parametersNameValuePairs[2].getName(), is("type"));
-		assertThat(parametersNameValuePairs[2].getValue(), is("foobar"));
+		parametersNameValuePairs = URIs.getQueryParameters(URI.create("http://example.com/?type=foo&place=bar&type=foobar")).orElseThrow(AssertionError::new);
+		assertThat(parametersNameValuePairs.size(), is(3));
+		assertThat(parametersNameValuePairs.get(0).getName(), is("type"));
+		assertThat(parametersNameValuePairs.get(0).getValue(), is("foo"));
+		assertThat(parametersNameValuePairs.get(1).getName(), is("place"));
+		assertThat(parametersNameValuePairs.get(1).getValue(), is("bar"));
+		assertThat(parametersNameValuePairs.get(2).getName(), is("type"));
+		assertThat(parametersNameValuePairs.get(2).getValue(), is("foobar"));
 	}
 
 	/** Tests whether {@link URIs#createPathURI(String)} is working properly. */

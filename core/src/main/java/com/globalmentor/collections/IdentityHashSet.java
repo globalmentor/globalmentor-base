@@ -31,7 +31,9 @@ import java.util.*;
  * @author Garret Wilson
  * @see java.util.HashSet
  * @see java.util.IdentityHashMap
+ * @deprecated to be removed in favor of {@link java.util.Collections#newSetFromMap(Map)}.
  */
+@Deprecated
 public class IdentityHashSet<E> extends AbstractSet<E> implements Set<E>, Cloneable {
 
 	private transient IdentityHashMap<E, Object> map;
@@ -47,8 +49,8 @@ public class IdentityHashSet<E> extends AbstractSet<E> implements Set<E>, Clonea
 	}
 
 	/**
-	 * Constructs a new set containing the elements in the specified collection. The <code>HashMap</code> is created with default load factor (0.75) and an initial
-	 * capacity sufficient to contain the elements in the specified collection.
+	 * Constructs a new set containing the elements in the specified collection. The <code>HashMap</code> is created with default load factor (0.75) and an
+	 * initial capacity sufficient to contain the elements in the specified collection.
 	 *
 	 * @param c the collection whose elements are to be placed into this set.
 	 * @throws NullPointerException if the specified collection is null.
@@ -59,7 +61,8 @@ public class IdentityHashSet<E> extends AbstractSet<E> implements Set<E>, Clonea
 	}
 
 	/**
-	 * Constructs a new, empty set; the backing <code>HashMap</code> instance has the specified initial capacity and default load factor, which is <code>0.75</code>.
+	 * Constructs a new, empty set; the backing <code>HashMap</code> instance has the specified initial capacity and default load factor, which is
+	 * <code>0.75</code>.
 	 *
 	 * @param initialCapacity the initial capacity of the hash table.
 	 * @throws IllegalArgumentException if the initial capacity is less than zero.
@@ -138,6 +141,7 @@ public class IdentityHashSet<E> extends AbstractSet<E> implements Set<E>, Clonea
 	 *
 	 * @return a shallow copy of this set.
 	 */
+	@SuppressWarnings("unchecked")
 	public Object clone() {
 		try {
 			IdentityHashSet<E> newSet = (IdentityHashSet<E>)super.clone();

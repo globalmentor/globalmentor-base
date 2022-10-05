@@ -22,6 +22,8 @@ package com.globalmentor.text;
  */
 public class ArgumentSyntaxException extends IllegalArgumentException {
 
+	private static final long serialVersionUID = 1L;
+
 	/** The input, or <code>null</code> if the input is not known. */
 	private final CharSequence input;
 

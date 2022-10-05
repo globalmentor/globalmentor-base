@@ -16,13 +16,16 @@
 
 package com.globalmentor.collections;
 
+import static java.util.Collections.*;
+
 import java.util.*;
 
 /**
- * An decorator map that stores an {@link IdentityHashSet} of values for each key, with special methods for retrieving single values.
+ * An decorator map that stores an identity-based hash set of values for each key, with special methods for retrieving single values.
  * @param <K> The type of map key.
  * @param <V> The type of map value.
  * @author Garret Wilson
+ * @see IdentityHashMap
  */
 public class IdentityHashSetMap<K, V> extends AbstractDecoratorCollectionMap<K, V, Set<V>> {
 
@@ -36,9 +39,11 @@ public class IdentityHashSetMap<K, V> extends AbstractDecoratorCollectionMap<K, 
 	}
 
 	/**
-	 * Creates a collection in which to store values. This version returns an {@link IdentityHashSet}.
+	 * {@inheritDoc}
+	 * @implSpec This version returns an identity hash set based on {@link IdentityHashMap}.
 	 */
+	@Override
 	public Set<V> createCollection() {
-		return new IdentityHashSet<V>();
+		return newSetFromMap(new IdentityHashMap<>());
 	}
 }

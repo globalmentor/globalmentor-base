@@ -16,7 +16,10 @@
 
 package com.globalmentor.collections.comparators;
 
+import static com.globalmentor.collections.Lists.*;
+
 import java.util.Comparator;
+import java.util.List;
 
 /**
  * A comparator that can perform comparisons based upon a sequence of other comparators. The last comparator in the sequence should unambiguously distinguish
@@ -35,7 +38,7 @@ import java.util.Comparator;
 public class SerialDelegateComparator<T> extends AbstractSortOrderComparator<T> {
 
 	/** The delegate comparators to use for comparison. */
-	private final Comparator<? super T>[] comparators;
+	private final List<Comparator<? super T>> comparators;
 
 	/**
 	 * Comparators constructor for ascending order sorting. The last comparator in the sequence should unambiguously distinguish non-equal objects.
@@ -43,6 +46,7 @@ public class SerialDelegateComparator<T> extends AbstractSortOrderComparator<T> 
 	 * @throws NullPointerException if the given sort order and/or comparators is <code>null</code>.
 	 * @throws IllegalArgumentException if no comparators are given.
 	 */
+	@SafeVarargs
 	public SerialDelegateComparator(final Comparator<? super T>... comparators) {
 		this(SortOrder.ASCENDING, comparators); //construct the class for ascending order
 	}
@@ -54,12 +58,15 @@ public class SerialDelegateComparator<T> extends AbstractSortOrderComparator<T> 
 	 * @throws NullPointerException if the given sort order and/or comparators is <code>null</code>.
 	 * @throws IllegalArgumentException if no comparators are given.
 	 */
+	@SafeVarargs
 	public SerialDelegateComparator(final SortOrder sortOrder, final Comparator<? super T>... comparators) {
 		super(sortOrder); //construct the parent class
 		if(comparators.length == 0) { //if no comparators are given
 			throw new IllegalArgumentException("At least one delegate comparator must be given.");
 		}
-		this.comparators = comparators.clone(); //clone the comparators so no one can modify them external to this class
+		@SuppressWarnings("varargs")
+		final List<Comparator<? super T>> comparatorList = immutableListOf(comparators); //copy the comparators so no one can modify them externally to this class
+		this.comparators = comparatorList;
 	}
 
 	/** {@inheritDoc} */

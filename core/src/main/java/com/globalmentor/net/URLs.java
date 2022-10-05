@@ -58,8 +58,9 @@ public class URLs {
 	 * @throws MalformedURLException Thrown if the filename is not a valid filename or URL name.
 	 * @see File
 	 * @see URL
-	 * @deprecated
+	 * @deprecated to be removed.
 	 */
+	@Deprecated
 	public static URL createURL(Object contextObject, final String filename) throws MalformedURLException {
 		URL url = null; //we'll use this variable to store the new URL we create
 		try {
@@ -98,8 +99,9 @@ public class URLs {
 	 * @param url The URL of a file.
 	 * @return A URL of the file's directory, ending with '/'.
 	 * @throws MalformedURLException Thrown if a directory URL cannot be created.
-	 * @deprecated
+	 * @deprecated to be removed in favor of working with {@link URI} for path resolution.
 	 */
+	@Deprecated
 	public static URL getDirectoryURL(final URL url) throws MalformedURLException {
 		return new URL(url, "."); //create a new URL from the directory of the URL TODO use a constant here
 	}
@@ -145,8 +147,9 @@ public class URLs {
 	 * @param url The URL for which a relative path should be returned, in relation to the context URL.
 	 * @return A relative path to the URL in relation to the context URL.
 	 * @throws MalformedURLException Thrown if a relative URL cannot be determined from the context URL.
-	 * @deprecated
+	 * @deprecated to be removed in favor of working with {@link URI} for path resolution.
 	 */
+	@Deprecated
 	public static String getRelativePath(final URL contextURL, final URL url) throws MalformedURLException {
 		//TODO fix this to work with the new URI relativize
 		final URL directoryURL = getDirectoryURL(contextURL); //get the directory URL of the context URL
@@ -168,7 +171,9 @@ public class URLs {
 	 * @throws NullPointerException if the given URL and/or I/O support is <code>null</code>.
 	 * @throws IllegalArgumentException if the given URL not formatted strictly according to to RFC 2396 and cannot be converted to a URI.
 	 * @throws IOException if there is an error reading the data.
+	 * @deprecated to be removed or refactored along with the {@link IO} read and write methods.
 	 */
+	@Deprecated
 	public static <T> T read(final URL url, final IO<T> io) throws IOException {
 		try (final InputStream bufferedInputStream = new BufferedInputStream(url.openStream())) { //create a buffered input stream to the resource
 			return io.read(bufferedInputStream, toURI(url)); //read the object

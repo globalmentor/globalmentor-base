@@ -121,7 +121,7 @@ public class Locales {
 		}
 		final List<String> sortedDisplayCountryList = new ArrayList<String>(displayCountrySet); //create a list from the display country set
 		sort(sortedDisplayCountryList); //sort the list of countries
-		return (String[])sortedDisplayCountryList.toArray(new String[sortedDisplayCountryList.size()]); //return a string array from the sorted list
+		return sortedDisplayCountryList.toArray(new String[sortedDisplayCountryList.size()]); //return a string array from the sorted list
 	}
 
 	/**

@@ -120,7 +120,11 @@ public class Collections {
 	 * @param <E> The type of elements the hash set will contain.
 	 * @param elements The elements with which to initialize the hash set.
 	 * @return A new hash set containing the given elements.
+	 * @deprecated to be removed in favor of safer approaches such as <code>Set.of(…)</code> in Java 9+.
 	 */
+	@Deprecated
+	@SafeVarargs
+	@SuppressWarnings("varargs")
 	public static <E> HashSet<E> createHashSet(final E... elements) {
 		final HashSet<E> hashSet = new HashSet<E>(elements.length); //create a new hash set large enough to store the given elements
 		java.util.Collections.addAll(hashSet, elements); //add all of the given elements to the hash set
@@ -184,7 +188,11 @@ public class Collections {
 	 * @param collection The collection to set.
 	 * @param newElements The elements to set in the collection.
 	 * @return <code>true</code> if the collection changed as a result of the call.
+	 * @deprecated to be removed as of little value, to reduce generics varargs usage.
 	 */
+	@Deprecated
+	@SafeVarargs
+	@SuppressWarnings("varargs")
 	public static <T> boolean set(final Collection<T> collection, final T... newElements) {
 		boolean changed = false;
 		if(!collection.isEmpty()) {

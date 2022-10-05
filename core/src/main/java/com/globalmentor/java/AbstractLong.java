@@ -18,16 +18,15 @@ package com.globalmentor.java;
 
 /**
  * Abstract base class for number that represent long values.
- * 
  * <p>
  * This class provides an {@link #equals(Object)} implementation that requires the compared object be an instance of the concrete subclass of this class.
  * </p>
- * 
  * @param <L> The type of long represented.
- * 
  * @author Garret Wilson
  */
 public abstract class AbstractLong<L extends Number> extends Number implements Comparable<L> {
+
+	private static final long serialVersionUID = -2681685252069816876L;
 
 	/** {@inheritDoc} This version delegates to {@link #longValue()}. */
 	@Override

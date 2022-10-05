@@ -71,6 +71,7 @@ public class JoinIterator<E> extends AbstractIteratorDecorator<E> {
 	 * @throws NullPointerException if any of the given iterators is <code>null</code>.
 	 */
 	@SafeVarargs
+	@SuppressWarnings("varargs")
 	JoinIterator(@Nonnull final Iterator<E>... iterators) {
 		this(Stream.of(iterators));
 	}

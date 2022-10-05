@@ -26,6 +26,8 @@ import com.globalmentor.util.DataException;
  */
 public class SyntaxException extends DataException {
 
+	private static final long serialVersionUID = 1L;
+
 	/** The input, or <code>null</code> if the input is not known. */
 	private final String input;
 

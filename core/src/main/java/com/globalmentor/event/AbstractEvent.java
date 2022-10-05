@@ -26,6 +26,8 @@ import static java.util.Objects.*;
  */
 public abstract class AbstractEvent extends EventObject implements Event {
 
+	private static final long serialVersionUID = -6018177999395658568L;
+
 	/**
 	 * Source constructor.
 	 * @param source The object on which the event initially occurred.

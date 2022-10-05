@@ -25,6 +25,8 @@ import java.io.Reader;
  */
 public class ParseEOFException extends ParseIOException { //TODO rename to ParseEndException
 
+	private static final long serialVersionUID = 1L;
+
 	/**
 	 * Reader constructor with a default message and no cause. This constructor will attempt to determine the location from the reader.
 	 * @param reader The reader from which the error occurred.

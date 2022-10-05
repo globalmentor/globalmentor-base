@@ -19,8 +19,6 @@ package com.globalmentor.io;
 import java.io.*;
 import java.net.URI;
 
-import com.globalmentor.io.URIAccessible;
-
 /**
  * Provides reading and writing functionality for an object.
  * @author Garret Wilson

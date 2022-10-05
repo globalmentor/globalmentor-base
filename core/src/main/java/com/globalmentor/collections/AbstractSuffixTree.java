@@ -18,6 +18,7 @@ package com.globalmentor.collections;
 
 import java.util.*;
 
+import static com.globalmentor.java.Objects.*;
 import static java.util.Objects.*;
 
 /**
@@ -100,8 +101,8 @@ public abstract class AbstractSuffixTree<E extends SuffixTree.Edge> implements S
 	protected final E addEdge(final Node parentNode, final Node childNode, final int start, final int end) {
 		final E edge = createEdge(parentNode, childNode, start, end); //create a new edge
 		addEdge(edge); //add the edge
-		((AbstractNode)parentNode).setLeaf(false); //TODO improve generics to prevent casting, or turn off warning
-		((AbstractNode)childNode).setParentNode(parentNode); //TODO improve generics to prevent casting, or turn off warning
+		asInstance(parentNode, AbstractNode.class).orElseThrow(IllegalStateException::new).setLeaf(false); //TODO improve generics
+		asInstance(childNode, AbstractNode.class).orElseThrow(IllegalStateException::new).setParentNode(parentNode); //TODO improve generics
 		return edge; //return the edge
 	}
 

@@ -67,11 +67,14 @@ public class Lists {
 
 	/**
 	 * Creates a read-only list containing the given elements.
+	 * @apiNote To be deprecated when moved to Java 9+.
 	 * @param <E> The type of element contained in the list.
 	 * @param elements The elements to be contained in the list.
 	 * @return The immutable version of the list.
 	 * @throws NullPointerException if the given array of elements is <code>null</code>.
 	 */
+	@SafeVarargs
+	@SuppressWarnings("varargs")
 	public static <E> List<E> immutableListOf(final E... elements) { //TODO improve to return an ImmutableList<E>
 		return immutableListOf(elements, 0, elements.length);
 	}
@@ -99,6 +102,8 @@ public class Lists {
 	 * @return The immutable version of the list.
 	 * @throws NullPointerException if the given collection and/or array of elements is <code>null</code>.
 	 */
+	@SafeVarargs
+	@SuppressWarnings("varargs")
 	public static <E> List<E> immutableListOf(final Collection<? extends E> collection, final E... elements) { //TODO improve to return an ImmutableList<E>
 		return immutableListOf(collection, elements, 0, elements.length);
 	}
@@ -151,6 +156,8 @@ public class Lists {
 	 * @param elements The additional elements, if any, to add to the list.
 	 * @return A mutable list containing the indicated elements.
 	 */
+	@SafeVarargs
+	@SuppressWarnings("varargs")
 	public static <E> List<E> listOf(final Iterator<E> iterator, final E... elements) {
 		final List<E> list = new ArrayList<E>();
 		Collections.addAll(list, iterator);
@@ -165,6 +172,8 @@ public class Lists {
 	 * @param elements The additional elements, if any, to add to the list.
 	 * @return A mutable list containing the indicated elements.
 	 */
+	@SafeVarargs
+	@SuppressWarnings("varargs")
 	public static <E> List<E> listOf(final Iterable<E> iterable, final E... elements) {
 		final List<E> list = new ArrayList<E>();
 		Collections.addAll(list, iterable);

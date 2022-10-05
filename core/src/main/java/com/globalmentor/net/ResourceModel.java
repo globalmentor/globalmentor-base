@@ -34,6 +34,7 @@ import static com.globalmentor.java.Classes.*;
  * @author Garret Wilson
  * @see #RESOURCE_PROPERTY
  */
+@Deprecated
 public class ResourceModel<R extends Resource> extends URIAccessibleModel {
 
 	/** The resource property. */

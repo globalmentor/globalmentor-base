@@ -27,6 +27,8 @@ import java.util.EventObject;
  */
 public class ProgressEvent extends EventObject {
 
+	private static final long serialVersionUID = 1L;
+
 	/** The amount of recent progress, or <code>-1</code> if not known. */
 	private final long delta;
 

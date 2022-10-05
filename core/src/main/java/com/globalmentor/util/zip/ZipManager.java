@@ -202,7 +202,7 @@ public class ZipManager implements URIInputStreamable {
 	public InputStream getInputStream(final URI uri) throws FileNotFoundException, IOException {
 		final ZipFile zipFile = grabZipFile(); //grab the zip file, which may include opening the zip file
 		try {
-			final ZipEntry zipEntry = (ZipEntry)getZipEntryMap().get(uri); //get the zip entry represented by this URI
+			final ZipEntry zipEntry = getZipEntryMap().get(uri); //get the zip entry represented by this URI
 			if(zipEntry != null) { //if the file is in the zip file
 				//TODO check to make sure the file is really in the zip file, and throw a FileNotFoundException if not
 				return zipFile.getInputStream(zipEntry); //get an input stream to the zip entry represented by this URI

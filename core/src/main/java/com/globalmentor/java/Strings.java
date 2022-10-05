@@ -928,7 +928,9 @@ public class Strings {
 	 * @param io The I/O support for writing the object.
 	 * @return The given object converted to a string.
 	 * @throws IOException if there is an error writing the data.
+	 * @deprecated to be removed.
 	 */
+	@Deprecated
 	public static <T> String write(final URI baseURI, final T object, final IO<T> io) throws IOException {
 		return write(baseURI, object, io, UTF_8); //write and convert to a string using UTF_8
 	}
@@ -942,7 +944,9 @@ public class Strings {
 	 * @param charset The encoding with which to interpret the written bytes.
 	 * @return The given object converted to a string.
 	 * @throws IOException if there is an error writing the data.
+	 * @deprecated to be removed.
 	 */
+	@Deprecated
 	public static <T> String write(final URI baseURI, final T object, final IO<T> io, final Charset charset) throws IOException {
 		try (final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) { //create a new byte array output stream
 			io.write(byteArrayOutputStream, baseURI, object); //write the object, determining the base URI from the file

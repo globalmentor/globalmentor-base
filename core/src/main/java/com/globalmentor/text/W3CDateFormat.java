@@ -23,8 +23,8 @@ import java.util.Locale;
 import static com.globalmentor.java.CharSequences.*;
 
 /**
- * Class for formatting dates and times according to the W3C Note, "Date and Time Formats", <a
- * href="http://www.w3.org/TR/NOTE-datetime">http://www.w3.org/TR/NOTE-datetime</a>, a profile of ISO 8601.
+ * Class for formatting dates and times according to the W3C Note, "Date and Time Formats",
+ * <a href="http://www.w3.org/TR/NOTE-datetime">http://www.w3.org/TR/NOTE-datetime</a>, a profile of ISO 8601.
  * <p>
  * Warning: The W3C patterns currently format the time zone according to RFC 822 (+/-HHmm) rather than as specified by W3C NOTE-datetime (+/-HH:mm). The decimal
  * portions of seconds may also not be correct.
@@ -33,6 +33,8 @@ import static com.globalmentor.java.CharSequences.*;
  * @see <a href="http://www.w3.org/TR/NOTE-datetime">Date and Time Formats</a>
  */
 public class W3CDateFormat extends SimpleDateFormat {
+
+	private static final long serialVersionUID = -7091094325071560820L;
 
 	/** The specific style of W3C date format. */
 	public enum Style {
@@ -99,8 +101,8 @@ public class W3CDateFormat extends SimpleDateFormat {
 	}
 
 	/** The formatting patterns used, in order. */
-	private static final String[] patterns = { YEAR_PATTERN, YEAR_MONTH_PATTERN, DATE_PATTERN, DATE_HOURS_MINUTES_PATTERN, DATE_HOURS_MINUTES_SECONDS_PATTERN,
-			DATE_TIME_PATTERN };
+	private static final String[] patterns = {YEAR_PATTERN, YEAR_MONTH_PATTERN, DATE_PATTERN, DATE_HOURS_MINUTES_PATTERN, DATE_HOURS_MINUTES_SECONDS_PATTERN,
+			DATE_TIME_PATTERN};
 
 	/**
 	 * Determines a pattern to use for the given style. This pattern may be incomplete and the output may require more processing.
@@ -120,9 +122,9 @@ public class W3CDateFormat extends SimpleDateFormat {
 	 * @param fieldPosition keeps track of the position of the field within the returned string. On input: an alignment field, if desired. On output: the offsets
 	 *          of the alignment field. For example, given a time text "1996.07.10 AD at 15:08:56 PDT", if the given fieldPosition is DateFormat.YEAR_FIELD, the
 	 *          begin index and end index of fieldPosition will be set to 0 and 4, respectively. Notice that if the same time field appears more than once in a
-	 *          pattern, the fieldPosition will be set for the first occurrence of that time field. For instance, formatting a Date to the time string
-	 *          "1 PM PDT (Pacific Daylight Time)" using the pattern "h a z (zzzz)" and the alignment field DateFormat.TIMEZONE_FIELD, the begin index and end
-	 *          index of fieldPosition will be set to 5 and 8, respectively, for the first occurrence of the timezone pattern character 'z'.
+	 *          pattern, the fieldPosition will be set for the first occurrence of that time field. For instance, formatting a Date to the time string "1 PM PDT
+	 *          (Pacific Daylight Time)" using the pattern "h a z (zzzz)" and the alignment field DateFormat.TIMEZONE_FIELD, the begin index and end index of
+	 *          fieldPosition will be set to 5 and 8, respectively, for the first occurrence of the timezone pattern character 'z'.
 	 * @return the formatted date/time string.
 	 */
 	public StringBuffer format(Date date, StringBuffer toAppendTo, FieldPosition fieldPosition) { //TODO comment; use contants

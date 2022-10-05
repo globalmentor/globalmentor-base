@@ -30,6 +30,8 @@ import com.globalmentor.event.TargetedEvent;
  */
 public class GenericPropertyChangeEvent<V> extends PropertyChangeEvent implements TargetedEvent {
 
+	private static final long serialVersionUID = -5536234428687771677L;
+
 	/** The target of the event, or <code>null</code> if the event target is not known. */
 	private final Object target;
 
@@ -85,8 +87,8 @@ public class GenericPropertyChangeEvent<V> extends PropertyChangeEvent implement
 	@SuppressWarnings("unchecked")
 	//we can only assume that the given event's old and new values are of the correct type
 	public GenericPropertyChangeEvent(final Object source, final PropertyChangeEvent propertyChangeEvent) {
-		this(source, propertyChangeEvent instanceof TargetedEvent ? ((TargetedEvent)propertyChangeEvent).getTarget() : source, propertyChangeEvent
-				.getPropertyName(), (V)propertyChangeEvent.getOldValue(), (V)propertyChangeEvent.getNewValue()); //construct the parent class with identical values except for source
+		this(source, propertyChangeEvent instanceof TargetedEvent ? ((TargetedEvent)propertyChangeEvent).getTarget() : source,
+				propertyChangeEvent.getPropertyName(), (V)propertyChangeEvent.getOldValue(), (V)propertyChangeEvent.getNewValue()); //construct the parent class with identical values except for source
 		setPropagationId(propertyChangeEvent.getPropagationId()); //update our propagation ID to match
 	}
 
