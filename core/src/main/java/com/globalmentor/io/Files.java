@@ -1195,7 +1195,7 @@ public class Files {
 	}
 
 	/**
-	 * Recursively deletes an entire file tree. Symbolic links are deleted, not followed.
+	 * Recursively deletes an entire file tree. Symbolic links are deleted, not followed. If the tree does not exist, no action occurs.
 	 * @implSpec This implementation uses {@link java.nio.file.Files#walkFileTree(Path, FileVisitor)}.
 	 * @implNote This implementation was inspired by <a href="https://fahdshariff.blogspot.com/2011/08/java-7-deleting-directory-by-walking.html">Java 7: Deleting
 	 *           a Directory by Walking the File Tree</a>.
@@ -1205,25 +1205,36 @@ public class Files {
 	 * @throws IOException if an I/O error is thrown while deleting the tree.
 	 */
 	public static Path deleteFileTree(@Nonnull final Path fileTreeRoot) throws IOException {
-		return walkFileTree(fileTreeRoot, new SimpleFileVisitor<Path>() {
+		if(!exists(fileTreeRoot)) {
+			return fileTreeRoot; //nothing to do
+		}
+		try {
+			return walkFileTree(fileTreeRoot, new SimpleFileVisitor<Path>() {
 
-			/** @implSpec Deletes each file. */
-			@Override
-			public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
-				final FileVisitResult result = super.visitFile(file, attrs);
-				deleteIfExists(file); //if another thread already deleted the file, that's fine, too
-				return result;
-			}
+				/** @implSpec Deletes each file. */
+				@Override
+				public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
+					final FileVisitResult result = super.visitFile(file, attrs);
+					if(result == FileVisitResult.CONTINUE) {
+						deleteIfExists(file); //if another thread already deleted the file, that's fine, too
+					}
+					return result;
+				}
 
-			/** @implSpec Deletes each directory after all files in it have been deleted. */
-			@Override
-			public FileVisitResult postVisitDirectory(final Path dir, final IOException exc) throws IOException {
-				final FileVisitResult result = super.postVisitDirectory(dir, exc);
-				deleteIfExists(dir); //if another thread already deleted the directory, that's fine, too
-				return result;
-			}
+				/** @implSpec Deletes each directory after all files in it have been deleted. */
+				@Override
+				public FileVisitResult postVisitDirectory(final Path dir, final IOException exc) throws IOException {
+					final FileVisitResult result = super.postVisitDirectory(dir, exc);
+					if(result == FileVisitResult.CONTINUE) {
+						deleteIfExists(dir); //if another thread already deleted the directory, that's fine, too
+					}
+					return result;
+				}
 
-		});
+			});
+		} catch(final NoSuchFileException noSuchFileException) {
+			return fileTreeRoot; //if the tree is suddenly gone (an unlikely but possible race condition), this is not an error, but simply nothing to do
+		}
 	}
 
 	/**

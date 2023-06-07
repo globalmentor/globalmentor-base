@@ -33,7 +33,6 @@ import org.junit.jupiter.api.io.*;
 
 /**
  * Tests the {@link Files} utility class.
- * 
  * @author Garret Wilson
  */
 public class FilesTest {
