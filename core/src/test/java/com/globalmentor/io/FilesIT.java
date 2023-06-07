@@ -17,7 +17,8 @@
 package com.globalmentor.io;
 
 import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
+import static java.nio.file.Files.*;
 import static org.hamcrest.MatcherAssert.*;
 
 import java.io.*;
@@ -34,15 +35,29 @@ public class FilesIT {
 
 	//## Path
 
+	/** @see {@link Files#deleteIfExists(Path, boolean)} */
+	@Test
+	void testDeleteIfExistsRecursiveForFile(@TempDir final Path tempDir) throws IOException {
+		final Path file = createFile(tempDir.resolve("foo.bar"));
+		assertThat(Files.deleteIfExists(file, true), is(true));
+	}
+
+	/** @see {@link Files#deleteIfExists(Path, boolean)} */
+	@Test
+	void testDeleteIfExistsRecursiveForEmptyDirectory(@TempDir final Path tempDir) throws IOException {
+		final Path directory = createDirectory(tempDir.resolve("dir"));
+		assertThat(Files.deleteIfExists(directory, true), is(true));
+	}
+
 	/**
-	 * Verifies that {@link Files#deleteFileTree(Path)} does not fail if the directory does not exist.
-	 * @see {@link Files#deleteFileTree(Path)}
+	 * Verifies that {@link Files#deleteIfExists(Path, boolean)} in recursive mode does not fail if the directory does not exist.
+	 * @see {@link Files#deleteIfExists(Path, boolean)}
 	 */
 	@Test
-	void verifyDeleteFileTreeThrowsNoExceptionIfPathDoesNotExist(@TempDir final Path tempDir) throws IOException {
+	void verifyDeleteIfExistsRecursiveThrowsNoExceptionIfPathDoesNotExist(@TempDir final Path tempDir) throws IOException {
 		try {
-			final Path missingDir = tempDir.resolve("missing");
-			assertThat(Files.deleteFileTree(missingDir), is(missingDir));
+			final Path missingDirectory = tempDir.resolve("missing");
+			assertThat(Files.deleteIfExists(missingDirectory, true), is(false));
 		} catch(final NoSuchFileException noSuchFileException) {
 			fail("Should not throw exception if path is already missing.", noSuchFileException);
 		}
