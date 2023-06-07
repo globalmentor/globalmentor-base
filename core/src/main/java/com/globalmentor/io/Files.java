@@ -406,9 +406,8 @@ public class Files {
 	 *          <code>recursive</code> is <code>true</code>. If a file is passed, it will be deleted normally.
 	 * @param recursive <code>true</code> if all child directories and files of a directory should recursively be deleted.
 	 * @throws IOException Thrown if there is an problem deleting any directory or file.
-	 * @deprecated in favor of of {@link #deleteFileTree(Path)}.
+	 * @see #deleteIfExists(Path, boolean)
 	 */
-	@Deprecated
 	public static void delete(final File file, final boolean recursive) throws IOException {
 		if(recursive && file.isDirectory()) { //if this is a directory and we should recursively delete files
 			final File[] files = file.listFiles(); //get all the files in the directory
@@ -1195,35 +1194,68 @@ public class Files {
 	}
 
 	/**
-	 * Recursively deletes an entire file tree. Symbolic links are deleted, not followed.
-	 * @implSpec This implementation uses {@link java.nio.file.Files#walkFileTree(Path, FileVisitor)}.
-	 * @implNote This implementation was inspired by <a href="https://fahdshariff.blogspot.com/2011/08/java-7-deleting-directory-by-walking.html">Java 7: Deleting
-	 *           a Directory by Walking the File Tree</a>.
+	 * Recursively deletes an entire file tree. Symbolic links are deleted, not followed. If the tree does not exist, no action occurs.
+	 * @implSpec This implementation delegates to {@link #deleteIfExists(Path, boolean)}
 	 * @param fileTreeRoot The root of the file tree to delete.
 	 * @return The given file tree root, which will have been deleted.
 	 * @throws SecurityException if the security manager denies access to the starting file.
 	 * @throws IOException if an I/O error is thrown while deleting the tree.
+	 * @deprecated to be removed in favor of {@link #deleteIfExists(Path, boolean)}.
 	 */
+	@Deprecated
 	public static Path deleteFileTree(@Nonnull final Path fileTreeRoot) throws IOException {
-		return walkFileTree(fileTreeRoot, new SimpleFileVisitor<Path>() {
+		deleteIfExists(fileTreeRoot, true);
+		return fileTreeRoot;
+	}
 
-			/** @implSpec Deletes each file. */
-			@Override
-			public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
-				final FileVisitResult result = super.visitFile(file, attrs);
-				deleteIfExists(file); //if another thread already deleted the file, that's fine, too
-				return result;
+	/**
+	 * Deletes a file or a directory if it exists. If set to recursive, recursively deletes an entire file tree. Symbolic links are deleted, not followed. If the
+	 * path does not exist, no action occurs.
+	 * @apiNote This method functions similarly to {@link java.nio.file.Files#deleteIfExists(Path)} with an option to recursively delete a file tree.
+	 * @implSpec For directories this implementation uses {@link java.nio.file.Files#walkFileTree(Path, FileVisitor)}. Otherwise this implementation delegates to
+	 *           {@link java.nio.file.Files#deleteIfExists(Path)}.
+	 * @implNote This implementation was inspired by <a href="https://fahdshariff.blogspot.com/2011/08/java-7-deleting-directory-by-walking.html">Java 7: Deleting
+	 *           a Directory by Walking the File Tree</a>.
+	 * @param path The path of the file or directory to delete.
+	 * @param recursive <code>true</code> if all child directories and files of a directory should recursively be deleted.
+	 * @return <code>true</code> if the file was deleted by this method, or <code>false</code> if the file could not be deleted because it did not exist.
+	 * @throws SecurityException if the security manager denies access to the starting file.
+	 * @throws IOException if an I/O error is thrown while deleting the tree.
+	 * @see java.nio.file.Files#deleteIfExists(Path)
+	 */
+	public static boolean deleteIfExists(@Nonnull final Path path, final boolean recursive) throws IOException {
+		try {
+			if(readAttributes(path, BasicFileAttributes.class, LinkOption.NOFOLLOW_LINKS).isDirectory()) { //directory; throws exception if doesn't exist
+				walkFileTree(path, new SimpleFileVisitor<Path>() {
+
+					/** @implSpec Deletes each file. */
+					@Override
+					public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
+						final FileVisitResult result = super.visitFile(file, attrs);
+						if(result == FileVisitResult.CONTINUE) {
+							java.nio.file.Files.deleteIfExists(file); //if another thread already deleted the file, that's fine, too
+						}
+						return result;
+					}
+
+					/** @implSpec Deletes each directory after all files in it have been deleted. */
+					@Override
+					public FileVisitResult postVisitDirectory(final Path dir, final IOException exc) throws IOException {
+						final FileVisitResult result = super.postVisitDirectory(dir, exc);
+						if(result == FileVisitResult.CONTINUE) {
+							java.nio.file.Files.deleteIfExists(dir); //if another thread already deleted the directory, that's fine, too
+						}
+						return result;
+					}
+
+				});
+				return true;
+			} else { //non-directory
+				return java.nio.file.Files.deleteIfExists(path); //delegate to JDK version for everything else
 			}
-
-			/** @implSpec Deletes each directory after all files in it have been deleted. */
-			@Override
-			public FileVisitResult postVisitDirectory(final Path dir, final IOException exc) throws IOException {
-				final FileVisitResult result = super.postVisitDirectory(dir, exc);
-				deleteIfExists(dir); //if another thread already deleted the directory, that's fine, too
-				return result;
-			}
-
-		});
+		} catch(final NoSuchFileException noSuchFileException) { //this can happen checking for a directory, or rarely if something deleted the file concurrently (a race condition)
+			return false; //a missing path is not an error; there is simply nothing to do
+		}
 	}
 
 	/**
