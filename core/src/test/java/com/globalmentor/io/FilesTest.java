@@ -37,9 +37,6 @@ import org.junit.jupiter.api.io.*;
  */
 public class FilesTest {
 
-	public static String FOO_TXT_RESOURCE_NAME = "foo.txt";
-	public static String SUBDIR_EXAMPLE_TXT_RESOURCE_NAME = "subdir/example.txt";
-
 	//## File
 
 	/**
