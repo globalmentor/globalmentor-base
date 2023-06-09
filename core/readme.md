@@ -1,4 +1,4 @@
-# GlobalMentor Base Java Library
+# GlobalMentor Core Java Library
 
 ## Issues
 
