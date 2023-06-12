@@ -18,6 +18,8 @@ package com.globalmentor.io;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assumptions.*;
+import static com.globalmentor.io.Files.*;
 import static com.globalmentor.io.Paths.*;
 import static java.nio.file.Files.*;
 import static org.hamcrest.MatcherAssert.*;
@@ -25,8 +27,10 @@ import static org.hamcrest.MatcherAssert.*;
 import java.io.*;
 import java.nio.file.*;
 import java.nio.file.Paths;
+import java.nio.file.attribute.*;
 
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.condition.*;
 import org.junit.jupiter.api.io.*;
 
 /**
@@ -39,27 +43,145 @@ public class FilesIT {
 
 	/** @see {@link Files#deleteIfExists(Path, boolean)} */
 	@Test
-	void testDeleteIfExistsRecursiveForFile(@TempDir final Path tempDir) throws IOException {
+	@EnabledOnOs(value = OS.WINDOWS, disabledReason = "Working with DOS read-only files should only be done on Windows.")
+	void verifyDeleteIfExistsNotForceFailsOnReadOnlyFile(@TempDir final Path tempDir) throws IOException {
+		assumeTrue(readAttributes(tempDir, BasicFileAttributes.class) instanceof DosFileAttributes,
+				"We assume that on Windows the file system uses DOS attributes; otherwise this test will not work.");
 		final Path file = createFile(tempDir.resolve("foo.bar"));
-		assertThat(Files.deleteIfExists(file, true), is(true));
+		setAttribute(file, ATTRIBUTE_DOS_READONLY, true);
+		assertThat(exists(file), is(true));
+		assertThrows(AccessDeniedException.class, () -> Files.deleteIfExists(file, false));
 	}
 
 	/** @see {@link Files#deleteIfExists(Path, boolean)} */
 	@Test
-	void testDeleteIfExistsRecursiveForEmptyDirectory(@TempDir final Path tempDir) throws IOException {
+	@EnabledOnOs(value = OS.WINDOWS, disabledReason = "Working with DOS read-only files should only be done on Windows.")
+	void verifyDeleteIfExistsForceDeletesReadOnlyFile(@TempDir final Path tempDir) throws IOException {
+		assumeTrue(readAttributes(tempDir, BasicFileAttributes.class) instanceof DosFileAttributes,
+				"We assume that on Windows the file system uses DOS attributes; otherwise this test will not work.");
+		final Path file = createFile(tempDir.resolve("foo.bar"));
+		setAttribute(file, ATTRIBUTE_DOS_READONLY, true);
+		assertThat(exists(file), is(true));
+		assertThat(Files.deleteIfExists(file, true), is(true));
+		assertThat(exists(file), is(false));
+	}
+
+	/** @see {@link Files#deleteIfExists(Path, boolean)} */
+	@Test
+	@EnabledOnOs(value = OS.WINDOWS, disabledReason = "Working with DOS read-only files should only be done on Windows.")
+	void verifyDeleteIfExistsNotForceFailsOnReadOnlyDirectory(@TempDir final Path tempDir) throws IOException {
+		assumeTrue(readAttributes(tempDir, BasicFileAttributes.class) instanceof DosFileAttributes,
+				"We assume that on Windows the file system uses DOS attributes; otherwise this test will not work.");
 		final Path directory = createDirectory(tempDir.resolve("dir"));
+		setAttribute(directory, ATTRIBUTE_DOS_READONLY, true);
+		try {
+			assertThat(exists(directory), is(true));
+			assertThrows(AccessDeniedException.class, () -> Files.deleteIfExists(directory, false));
+		} finally {
+			setAttribute(directory, ATTRIBUTE_DOS_READONLY, false); //always remove the read-only attribute to allow JUnit to clean up; see [JUnit Issue #3352](https://github.com/junit-team/junit5/issues/3352)
+		}
+	}
+
+	/** @see {@link Files#deleteIfExists(Path, boolean)} */
+	@Test
+	@EnabledOnOs(value = OS.WINDOWS, disabledReason = "Working with DOS read-only files should only be done on Windows.")
+	void verifyDeleteIfExistsForceDeletesReadOnlyDirectory(@TempDir final Path tempDir) throws IOException {
+		assumeTrue(readAttributes(tempDir, BasicFileAttributes.class) instanceof DosFileAttributes,
+				"We assume that on Windows the file system uses DOS attributes; otherwise this test will not work.");
+		final Path directory = createDirectory(tempDir.resolve("dir"));
+		setAttribute(directory, ATTRIBUTE_DOS_READONLY, true);
+		assertThat(exists(directory), is(true));
 		assertThat(Files.deleteIfExists(directory, true), is(true));
+		assertThat(exists(directory), is(false));
+	}
+
+	/** @see {@link Files#deleteFileTree(Path)} */
+	@Test
+	void testDeleteFileTreeForFile(@TempDir final Path tempDir) throws IOException {
+		final Path file = createFile(tempDir.resolve("foo.bar"));
+		assertThat(exists(file), is(true));
+		assertThat(Files.deleteFileTree(file), is(true));
+		assertThat(exists(file), is(false));
+	}
+
+	/** @see {@link Files#deleteFileTree(Path)} */
+	@Test
+	void testDeleteFileTreeForEmptyDirectory(@TempDir final Path tempDir) throws IOException {
+		final Path directory = createDirectory(tempDir.resolve("dir"));
+		assertThat(exists(directory), is(true));
+		assertThat(Files.deleteFileTree(directory), is(true));
+		assertThat(exists(directory), is(false));
+	}
+
+	/** @see {@link Files#deleteFileTree(Path)} */
+	@Test
+	void testDeleteFileTreeForNonEmptyDirectory(@TempDir final Path tempDir) throws IOException {
+		final Path directory = createDirectory(tempDir.resolve("dir"));
+		createFile(directory.resolve("foo.bar"));
+		assertThat(exists(directory), is(true));
+		assertThat(Files.deleteFileTree(directory), is(true));
+		assertThat(exists(directory), is(false));
+	}
+
+	/** @see {@link Files#deleteFileTree(Path)} */
+	@Test
+	void testDeleteFileTreeForTree(@TempDir final Path tempDir) throws IOException {
+		final Path fooDirectory = createDirectory(tempDir.resolve("foo"));
+		createFile(fooDirectory.resolve("level1.bin"));
+		final Path fooBarDirectory = createDirectory(fooDirectory.resolve("bar"));
+		createFile(fooBarDirectory.resolve("level2.bin"));
+		createDirectory(fooBarDirectory.resolve("bottom"));
+		assertThat(exists(fooDirectory), is(true));
+		assertThat(Files.deleteFileTree(fooDirectory), is(true));
+		assertThat(exists(fooDirectory), is(false));
+	}
+
+	/** @see {@link Files#deleteFileTree(Path, boolean)} */
+	@Test
+	@EnabledOnOs(value = OS.WINDOWS, disabledReason = "Working with DOS read-only files should only be done on Windows.")
+	void verifyDeleteFileTreeNotForceFailsOnReadOnlyFile(@TempDir final Path tempDir) throws IOException {
+		assumeTrue(readAttributes(tempDir, BasicFileAttributes.class) instanceof DosFileAttributes,
+				"We assume that on Windows the file system uses DOS attributes; otherwise this test will not work.");
+		final Path fooDirectory = createDirectory(tempDir.resolve("foo"));
+		final Path level1File = createFile(fooDirectory.resolve("level1.bin"));
+		setAttribute(level1File, ATTRIBUTE_DOS_READONLY, true);
+		final Path fooBarDirectory = createDirectory(fooDirectory.resolve("bar"));
+		final Path level2File = createFile(fooBarDirectory.resolve("level2.bin"));
+		setAttribute(level2File, ATTRIBUTE_DOS_READONLY, true);
+		createDirectory(fooBarDirectory.resolve("bottom"));
+		assertThat(exists(fooDirectory), is(true));
+		assertThrows(AccessDeniedException.class, () -> Files.deleteFileTree(fooDirectory, false));
+	}
+
+	/** @see {@link Files#deleteFileTree(Path, boolean)} */
+	@Test
+	@EnabledOnOs(value = OS.WINDOWS, disabledReason = "Working with DOS read-only files should only be done on Windows.")
+	void verifyDeleteFileTreeForceDeletesReadOnlyFile(@TempDir final Path tempDir) throws IOException {
+		assumeTrue(readAttributes(tempDir, BasicFileAttributes.class) instanceof DosFileAttributes,
+				"We assume that on Windows the file system uses DOS attributes; otherwise this test will not work.");
+		final Path fooDirectory = createDirectory(tempDir.resolve("foo"));
+		final Path level1File = createFile(fooDirectory.resolve("level1.bin"));
+		setAttribute(level1File, ATTRIBUTE_DOS_READONLY, true);
+		final Path fooBarDirectory = createDirectory(fooDirectory.resolve("bar"));
+		final Path level2File = createFile(fooBarDirectory.resolve("level2.bin"));
+		setAttribute(level2File, ATTRIBUTE_DOS_READONLY, true);
+		createDirectory(fooBarDirectory.resolve("bottom"));
+		assertThat(exists(fooDirectory), is(true));
+		assertThat(Files.deleteFileTree(fooDirectory, true), is(true));
+		assertThat(exists(fooDirectory), is(false));
 	}
 
 	/**
-	 * Verifies that {@link Files#deleteIfExists(Path, boolean)} in recursive mode does not fail if the directory does not exist.
-	 * @see {@link Files#deleteIfExists(Path, boolean)}
+	 * Verifies that {@link Files#deleteFileTree(Path)} does not fail if the directory does not exist.
+	 * @see {@link Files#deleteFileTree(Path)}
 	 */
 	@Test
-	void verifyDeleteIfExistsRecursiveThrowsNoExceptionIfPathDoesNotExist(@TempDir final Path tempDir) throws IOException {
+	void verifyDeleteFileTreeThrowsNoExceptionIfPathDoesNotExist(@TempDir final Path tempDir) throws IOException {
 		try {
 			final Path missingDirectory = tempDir.resolve("missing");
-			assertThat(Files.deleteIfExists(missingDirectory, true), is(false));
+			assertThat(exists(missingDirectory), is(false));
+			assertThat(Files.deleteFileTree(missingDirectory), is(false));
+			assertThat(exists(missingDirectory), is(false));
 		} catch(final NoSuchFileException noSuchFileException) {
 			fail("Should not throw exception if path is already missing.", noSuchFileException);
 		}
