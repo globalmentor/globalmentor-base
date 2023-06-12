@@ -19,7 +19,7 @@ package com.globalmentor.io;
 import java.io.*;
 import java.net.*;
 import java.nio.file.*;
-import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.file.attribute.*;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
@@ -85,6 +85,25 @@ public class Files {
 
 	/** The shared file filter that accepts all files. */
 	public static final FileFilter WILDCARD_FILE_FILTER = new WildcardFileFilter();
+
+	/**
+	 * The attribute delimiter separating the view name and the delimiter name.
+	 * @see java.nio.file.Files#setAttribute(Path, String, Object, LinkOption...)
+	 */
+	public static final char ATTRIBUTE_VIEW_NAME_DELIMITER = ':';
+	/**
+	 * The name for the DOS file attribute view and the prefix for DOS attributes.
+	 * @see DosFileAttributeView
+	 */
+	public static final String ATTRIBUTE_VIEW_NAME_DOS = "dos";
+	/** The DOS archive attribute; suitable for use with e.g. {@link java.nio.file.Files#setAttribute(Path, String, Object, LinkOption...)}. */
+	public static final String ATTRIBUTE_DOS_ARCHIVE = ATTRIBUTE_VIEW_NAME_DOS + ATTRIBUTE_VIEW_NAME_DELIMITER + "archive";
+	/** The DOS hidden attribute; suitable for use with e.g. {@link java.nio.file.Files#setAttribute(Path, String, Object, LinkOption...)}. */
+	public static final String ATTRIBUTE_DOS_HIDDEN = ATTRIBUTE_VIEW_NAME_DOS + ATTRIBUTE_VIEW_NAME_DELIMITER + "hidden";
+	/** The DOS read-only attribute; suitable for use with e.g. {@link java.nio.file.Files#setAttribute(Path, String, Object, LinkOption...)}. */
+	public static final String ATTRIBUTE_DOS_READONLY = ATTRIBUTE_VIEW_NAME_DOS + ATTRIBUTE_VIEW_NAME_DELIMITER + "readonly";
+	/** The DOS system attribute; suitable for use with e.g. {@link java.nio.file.Files#setAttribute(Path, String, Object, LinkOption...)}. */
+	public static final String ATTRIBUTE_DOS_SYSTEM = ATTRIBUTE_VIEW_NAME_DOS + ATTRIBUTE_VIEW_NAME_DELIMITER + "system";
 
 	/** This class cannot be publicly instantiated. */
 	private Files() {
@@ -1194,36 +1213,71 @@ public class Files {
 	}
 
 	/**
-	 * Recursively deletes an entire file tree. Symbolic links are deleted, not followed. If the tree does not exist, no action occurs.
-	 * @implSpec This implementation delegates to {@link #deleteIfExists(Path, boolean)}
-	 * @param fileTreeRoot The root of the file tree to delete.
-	 * @return The given file tree root, which will have been deleted.
+	 * Deletes a file or a directory if it exists, with an option to forcing the deletion if the file is set to read-only. If the path does not exist, no action
+	 * occurs.
+	 * @implSpec This method delegates to {@link java.nio.file.Files#deleteIfExists(Path)}.
+	 * @implSpec This implementation supports forced deletion of DOS read-only files and directories. Forced deletion of *nix files and directories without write
+	 *           permission is not supported, as it would involve checking and changing the POSIX write permission of an ancestor directory.
+	 * @param path The path of the file or directory to delete.
+	 * @param force <code>true</code> if even read-only files should be deleted
+	 * @return <code>true</code> if the file was deleted by this method, or <code>false</code> if the file could not be deleted because it did not exist.
 	 * @throws SecurityException if the security manager denies access to the starting file.
-	 * @throws IOException if an I/O error is thrown while deleting the tree.
-	 * @deprecated to be removed in favor of {@link #deleteIfExists(Path, boolean)}.
+	 * @throws IOException if an I/O error is thrown while deleting the path.
+	 * @see java.nio.file.Files#deleteIfExists(Path)
 	 */
-	@Deprecated
-	public static Path deleteFileTree(@Nonnull final Path fileTreeRoot) throws IOException {
-		deleteIfExists(fileTreeRoot, true);
-		return fileTreeRoot;
+	public static boolean deleteIfExists(@Nonnull final Path path, final boolean force) throws IOException {
+		try {
+			return java.nio.file.Files.deleteIfExists(path);
+		} catch(final AccessDeniedException accessDeniedException) {
+			if(force) {
+				final DosFileAttributeView dosFileAttributeView = getFileAttributeView(path, DosFileAttributeView.class);
+				if(dosFileAttributeView != null) {
+					final DosFileAttributes dosFileAttributes = dosFileAttributeView.readAttributes();
+					if(dosFileAttributes.isReadOnly()) {
+						dosFileAttributeView.setReadOnly(false); //remove the read-only attribute and try again
+						return java.nio.file.Files.deleteIfExists(path);
+					}
+				}
+			}
+			throw accessDeniedException;
+		}
 	}
 
 	/**
-	 * Deletes a file or a directory if it exists. If set to recursive, recursively deletes an entire file tree. Symbolic links are deleted, not followed. If the
-	 * path does not exist, no action occurs.
-	 * @apiNote This method functions similarly to {@link java.nio.file.Files#deleteIfExists(Path)} with an option to recursively delete a file tree.
-	 * @implSpec For directories this implementation uses {@link java.nio.file.Files#walkFileTree(Path, FileVisitor)}. Otherwise this implementation delegates to
-	 *           {@link java.nio.file.Files#deleteIfExists(Path)}.
+	 * Recursively deletes a file or a directory tree if it exists, with an option to force deletion. Symbolic links are deleted, not followed. If the path does
+	 * not exist, no action occurs.
+	 * @apiNote This method functions similarly to {@link java.nio.file.Files#deleteIfExists(Path)} except recursively.
+	 * @implSpec This method delegates to {@link #deleteFileTree(Path, boolean)} with <code><var>force</var></code> set to <code>false</code>.
 	 * @implNote This implementation was inspired by <a href="https://fahdshariff.blogspot.com/2011/08/java-7-deleting-directory-by-walking.html">Java 7: Deleting
 	 *           a Directory by Walking the File Tree</a>.
 	 * @param path The path of the file or directory to delete.
-	 * @param recursive <code>true</code> if all child directories and files of a directory should recursively be deleted.
 	 * @return <code>true</code> if the file was deleted by this method, or <code>false</code> if the file could not be deleted because it did not exist.
 	 * @throws SecurityException if the security manager denies access to the starting file.
 	 * @throws IOException if an I/O error is thrown while deleting the tree.
 	 * @see java.nio.file.Files#deleteIfExists(Path)
 	 */
-	public static boolean deleteIfExists(@Nonnull final Path path, final boolean recursive) throws IOException {
+	public static boolean deleteFileTree(@Nonnull final Path path) throws IOException {
+		return deleteFileTree(path, false);
+	}
+
+	/**
+	 * Recursively deletes a file or a directory tree if it exists, with an option to force deletion. Symbolic links are deleted, not followed. If the path does
+	 * not exist, no action occurs.
+	 * @apiNote This method functions similarly to {@link java.nio.file.Files#deleteIfExists(Path)} except recursively.
+	 * @implSpec This implementation supports forced deletion of DOS read-only files and directories. Forced deletion of *nix files and directories without write
+	 *           permission is not yet implemented; it would involve checking and changing the POSIX write permission of an ancestor directory.
+	 * @implSpec For directories this implementation uses {@link java.nio.file.Files#walkFileTree(Path, FileVisitor)}. Otherwise this implementation delegates to
+	 *           {@link #deleteIfExists(Path, boolean)}.
+	 * @implNote This implementation was inspired by <a href="https://fahdshariff.blogspot.com/2011/08/java-7-deleting-directory-by-walking.html">Java 7: Deleting
+	 *           a Directory by Walking the File Tree</a>.
+	 * @param path The path of the file or directory to delete.
+	 * @param force <code>true</code> if even read-only files should be deleted
+	 * @return <code>true</code> if the file was deleted by this method, or <code>false</code> if the file could not be deleted because it did not exist.
+	 * @throws SecurityException if the security manager denies access to the starting file.
+	 * @throws IOException if an I/O error is thrown while deleting the tree.
+	 * @see java.nio.file.Files#deleteIfExists(Path)
+	 */
+	public static boolean deleteFileTree(@Nonnull final Path path, final boolean force) throws IOException {
 		try {
 			if(readAttributes(path, BasicFileAttributes.class, LinkOption.NOFOLLOW_LINKS).isDirectory()) { //directory; throws exception if doesn't exist
 				walkFileTree(path, new SimpleFileVisitor<Path>() {
@@ -1233,7 +1287,7 @@ public class Files {
 					public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
 						final FileVisitResult result = super.visitFile(file, attrs);
 						if(result == FileVisitResult.CONTINUE) {
-							java.nio.file.Files.deleteIfExists(file); //if another thread already deleted the file, that's fine, too
+							deleteIfExists(file, force); //if another thread already deleted the file, that's fine, too
 						}
 						return result;
 					}
@@ -1243,7 +1297,7 @@ public class Files {
 					public FileVisitResult postVisitDirectory(final Path dir, final IOException exc) throws IOException {
 						final FileVisitResult result = super.postVisitDirectory(dir, exc);
 						if(result == FileVisitResult.CONTINUE) {
-							java.nio.file.Files.deleteIfExists(dir); //if another thread already deleted the directory, that's fine, too
+							deleteIfExists(dir, force); //if another thread already deleted the directory, that's fine, too
 						}
 						return result;
 					}
@@ -1251,7 +1305,7 @@ public class Files {
 				});
 				return true;
 			} else { //non-directory
-				return java.nio.file.Files.deleteIfExists(path); //delegate to JDK version for everything else
+				return deleteIfExists(path, force); //delegate to JDK version for e.g. normal files (with added logic to force if necessary)
 			}
 		} catch(final NoSuchFileException noSuchFileException) { //this can happen checking for a directory, or rarely if something deleted the file concurrently (a race condition)
 			return false; //a missing path is not an error; there is simply nothing to do
