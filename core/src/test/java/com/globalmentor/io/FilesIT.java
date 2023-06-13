@@ -29,6 +29,8 @@ import java.nio.file.*;
 import java.nio.file.Paths;
 import java.nio.file.attribute.*;
 
+import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.errors.GitAPIException;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.condition.*;
 import org.junit.jupiter.api.io.*;
@@ -185,6 +187,31 @@ public class FilesIT {
 		} catch(final NoSuchFileException noSuchFileException) {
 			fail("Should not throw exception if path is already missing.", noSuchFileException);
 		}
+	}
+
+	/**
+	 * Verifies that force-deleting a file tree successfully deletes a JGit repository, including its <code>.git/objects</code> subtree, which contains read-only
+	 * files as an append-only object database.
+	 * @implNote This implementation is specifically not restricted to any particular platform. This is a broader use-case smoke test; the other more focused test
+	 *           address the underlying techniques used to make Git repository objects read-only on individual platforms. Currently only Windows systems need
+	 *           forcing to remove Git repository directories; on POSIX file systems files in <code>.git/objects</code> are read-only directories are not,
+	 *           allowing the to be deleted normally.
+	 * @see <a href="https://bugs.eclipse.org/bugs/show_bug.cgi?id=582051">JGit Bug 582051 - access denied trying to delete .git directory .idx file on Windows
+	 *      10</a>
+	 * @see {@link Files#deleteFileTree(Path, boolean)}
+	 */
+	@Test
+	@Disabled("Test disabled until a way is found to a way to disable/move JGit `~/.config/jgit` directory.") //see https://bugs.eclipse.org/bugs/show_bug.cgi?id=582064
+	void verifyDeleteFileTreeForceDeletesGitRepository(@TempDir final Path tempDir) throws IOException, GitAPIException {
+		final Path repoDirectory = createDirectory(tempDir.resolve("repo"));
+		try (final Git git = Git.init().setDirectory(repoDirectory.toFile()).call()) {
+			final Path newFile = createFile(repoDirectory.resolve("new.dat"));
+			git.add().addFilepattern(newFile.getFileName().toString()).call();
+			git.commit().setMessage("Added new file.").call();
+		}
+		assertThat(exists(repoDirectory), is(true));
+		assertThat(Files.deleteFileTree(repoDirectory, true), is(true));
+		assertThat(exists(repoDirectory), is(false));
 	}
 
 	//### Backup
