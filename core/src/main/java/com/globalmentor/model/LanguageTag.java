@@ -51,7 +51,7 @@ public final class LanguageTag {
 
 	@Override
 	public int hashCode() {
-		return ASCII.toLowerCase(tag).toString().hashCode();
+		return ASCII.hashCodeIgnoreCase(tag);
 	}
 
 	@Override
