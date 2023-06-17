@@ -40,7 +40,10 @@ public class ASCII {
 	/** The value of the last uppercase letter. */
 	public static final char UPPERCASE_LETTER_LAST = 'Z';
 
-	/** The difference in value between lowercase (higher values) and uppercase (lower values) ASCII letters. */
+	/**
+	 * The difference in value between lowercase (higher values) and uppercase (lower values) ASCII letters. An uppercase ASCII letter can be converted to a
+	 * lowercase letter by <em>adding</em> this value.
+	 */
 	public static final char LOWERCASE_UPPERCASE_LETTER_DIFFERENCE = LOWERCASE_LETTER_FIRST - UPPERCASE_LETTER_FIRST;
 
 	/** The highest ASCII code point value that is a control character. */
@@ -383,6 +386,30 @@ public class ASCII {
 			return false; //these characters don't match
 		}
 		return true; //everything matches		
+	}
+
+	/**
+	 * Produces a hash code of the characters in the given sequence, without regard to ASCII case. The returned value meets the semantics of
+	 * {@link Object#hashCode()} for string equality without regard to ASCII case.
+	 * @apiNote This method is intended to be a semantically appropriate and more efficient way to produce a hash code than converting two strings to lowercase
+	 *          for comparison. Moreover various {@link CharSequence} implementations may produce different hash codes, making it impossible to compare the hash
+	 *          code of a {@link String} or a {@link StringBuilder}, for example (the latter of which may be produced by {@link #toLowerCase(CharSequence)}).
+	 * @implSpec This implementation uses the same algorithm used by the OpenJDK 17 for strings known to contain only ISO-8859-1 characters, except that it
+	 *           normalizes ASCII characters to lowercase.
+	 * @implNote This method is intended for sequences of ASCII characters. If any non-ASCII characters are present, this method will not fail, but the resulting
+	 *           hash code may not be as robust as retrieving a hash code on a {@link String} containing the same characters.
+	 * @param charSequence The sequence of characters for which an ASCII case-insensitive hash should be produce.
+	 * @return The ASCII case-insensitive hash of the characters in the sequence.
+	 */
+	public static int hashCodeIgnoreCase(@Nonnull final CharSequence charSequence) {
+		int hash = 0;
+		final int length = charSequence.length();
+		for(int index = 0; index < length; index++) {
+			final char c = charSequence.charAt(index);
+			final char cIgnoreCase = c >= UPPERCASE_LETTER_FIRST && c <= UPPERCASE_LETTER_LAST ? (char)(c + LOWERCASE_UPPERCASE_LETTER_DIFFERENCE) : c;
+			hash = 31 * hash + (cIgnoreCase & 0xff);
+		}
+		return hash;
 	}
 
 	/**
