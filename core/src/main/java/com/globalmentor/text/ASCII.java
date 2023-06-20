@@ -501,6 +501,18 @@ public class ASCII {
 	}
 
 	/**
+	 * Converts a character sequence to a lowercase string, converting only ASCII letters.
+	 * @apiNote This is a convenience method for returning the result in string form. If you do not need a string, you should use
+	 *          {@link #toLowerCase(CharSequence)}.
+	 * @implSpec This method delegates to {@link #toLowerCase(CharSequence)} followed by {@link CharSequence#toString()}.
+	 * @param charSequence The character sequence containing the text to convert.
+	 * @return A string containing the converted text.
+	 */
+	public static String toLowerCaseString(final CharSequence charSequence) {
+		return toLowerCase(charSequence).toString();
+	}
+
+	/**
 	 * Converts a character to uppercase if it is an ASCII lowercase letter.
 	 * @apiNote This method is typically used for formal language token manipulation, not general human language text processing.
 	 * @param c The character to convert.
@@ -553,6 +565,18 @@ public class ASCII {
 			}
 		}
 		return stringBuilder;
+	}
+
+	/**
+	 * Converts a character sequence to an uppercase string, converting only ASCII letters.
+	 * @apiNote This is a convenience method for returning the result in string form. If you do not need a string, you should use
+	 *          {@link #toUpperCase(CharSequence)}.
+	 * @implSpec This method delegates to {@link #toUpperCase(CharSequence)} followed by {@link CharSequence#toString()}.
+	 * @param charSequence The character sequence containing the text to convert.
+	 * @return A string containing the converted text.
+	 */
+	public static String toUpperCaseString(final CharSequence charSequence) {
+		return toUpperCase(charSequence).toString();
 	}
 
 	/**
