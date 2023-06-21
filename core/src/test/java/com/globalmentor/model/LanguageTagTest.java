@@ -262,6 +262,49 @@ public class LanguageTagTest {
 		assertThat(group, matcher.group(group), is(value));
 	}
 
+	//## normalize
+
+	/** @see LanguageTag#normalize(CharSequence) */
+	@Test
+	void testNormalize() {
+		assertThat(normalize("en"), hasToString("en"));
+		assertThat(normalize("En"), hasToString("en"));
+		assertThat(normalize("eN"), hasToString("en"));
+		assertThat(normalize("EN"), hasToString("en"));
+		assertThat(normalize("mn"), hasToString("mn"));
+		assertThat(normalize("Mn"), hasToString("mn"));
+		assertThat(normalize("mN"), hasToString("mn"));
+		assertThat(normalize("MN"), hasToString("mn"));
+		assertThat(normalize("mn-Cyrl"), hasToString("mn-Cyrl"));
+		assertThat(normalize("mn-cyrl"), hasToString("mn-Cyrl"));
+		assertThat(normalize("mn-cYrL"), hasToString("mn-Cyrl"));
+		assertThat(normalize("MN-CYRL"), hasToString("mn-Cyrl"));
+		assertThat(normalize("mn-MN"), hasToString("mn-MN"));
+		assertThat(normalize("mn-mn"), hasToString("mn-MN"));
+		assertThat(normalize("MN-MN"), hasToString("mn-MN"));
+		assertThat(normalize("mn-Cyrl-MN"), hasToString("mn-Cyrl-MN"));
+		assertThat(normalize("mn-cyrl-mn"), hasToString("mn-Cyrl-MN"));
+		assertThat(normalize("MN-CYRL-MN"), hasToString("mn-Cyrl-MN"));
+		assertThat(normalize("en-CA-x-ca"), hasToString("en-CA-x-ca"));
+		assertThat(normalize("en-ca-x-ca"), hasToString("en-CA-x-ca"));
+		assertThat(normalize("EN-CA-X-CA"), hasToString("en-CA-x-ca"));
+		assertThat(normalize("az-Latn-x-latn"), hasToString("az-Latn-x-latn"));
+		assertThat(normalize("az-latn-x-latn"), hasToString("az-Latn-x-latn"));
+		assertThat(normalize("AZ-LATN-X-LATN"), hasToString("az-Latn-x-latn"));
+		//irregular grandfathered tags
+		assertThat(normalize("ART-LOJBAN"), hasToString("art-lojban"));
+		assertThat(normalize("en-gb-oed"), hasToString("en-GB-oed"));
+		assertThat(normalize("en-gb-oed"), hasToString("en-GB-oed"));
+		//regular grandfathered tags
+		assertThat(normalize("en-gb-OED"), hasToString("en-GB-oed"));
+		assertThat(normalize("NO-NYN"), hasToString("no-nyn"));
+		assertThat(normalize("zh-hAKKa"), hasToString("zh-hakka"));
+		assertThat(normalize("sgn-be-fr"), hasToString("sgn-BE-FR"));
+		//private use tags
+		assertThat(normalize("x-whatever"), hasToString("x-whatever"));
+		assertThat(normalize("X-WHATEVER"), hasToString("x-whatever"));
+	}
+
 	//## type
 
 	@Test
@@ -285,21 +328,62 @@ public class LanguageTagTest {
 	/** @see LanguageTag#hashCode() */
 	@Test
 	void testHashCode() {
-		assertThat("Language tags with identical case.", LanguageTag.of("en-US").hashCode(), is(LanguageTag.of("en-US").hashCode()));
-		assertThat("Language tags with different case.", LanguageTag.of("en-UK").hashCode(), is(LanguageTag.of("EN-uk").hashCode()));
+		assertThat("Language tags with identical case.", new LanguageTag("en-US").hashCode(), is(new LanguageTag("en-US").hashCode()));
+		assertThat("Language tags with different case.", new LanguageTag("en-UK").hashCode(), is(new LanguageTag("EN-uk").hashCode()));
 	}
 
 	/** @see LanguageTag#equals(Object)() */
 	@Test
 	void testEquals() {
-		assertThat("Language tags with identical case.", LanguageTag.of("en-US"), is(equalTo(LanguageTag.of("en-US"))));
-		assertThat("Language tags with different case.", LanguageTag.of("en-UK"), is(equalTo(LanguageTag.of("EN-uk"))));
+		assertThat("Language tags with identical case.", new LanguageTag("en-US"), is(equalTo(new LanguageTag("en-US"))));
+		assertThat("Language tags with different case.", new LanguageTag("en-UK"), is(equalTo(new LanguageTag("EN-uk"))));
 	}
 
-	/** @see LanguageTag#toString() */
+	/**
+	 * Tests that the string form of the language tag is correct and normalized
+	 * @see LanguageTag#toString()
+	 */
 	@Test
 	void testToString() {
-		assertThat(LanguageTag.of("en-US").toString(), is("en-US"));
+		assertThat(new LanguageTag("en"), hasToString("en"));
+		assertThat(new LanguageTag("En"), hasToString("en"));
+		assertThat(new LanguageTag("eN"), hasToString("en"));
+		assertThat(new LanguageTag("EN"), hasToString("en"));
+		assertThat(new LanguageTag("en-US"), hasToString("en-US"));
+		assertThat(new LanguageTag("en-us"), hasToString("en-US"));
+		assertThat(new LanguageTag("EN-US"), hasToString("en-US"));
+		assertThat(new LanguageTag("mn"), hasToString("mn"));
+		assertThat(new LanguageTag("Mn"), hasToString("mn"));
+		assertThat(new LanguageTag("mN"), hasToString("mn"));
+		assertThat(new LanguageTag("MN"), hasToString("mn"));
+		assertThat(new LanguageTag("mn-Cyrl"), hasToString("mn-Cyrl"));
+		assertThat(new LanguageTag("mn-cyrl"), hasToString("mn-Cyrl"));
+		assertThat(new LanguageTag("mn-cYrL"), hasToString("mn-Cyrl"));
+		assertThat(new LanguageTag("MN-CYRL"), hasToString("mn-Cyrl"));
+		assertThat(new LanguageTag("mn-MN"), hasToString("mn-MN"));
+		assertThat(new LanguageTag("mn-mn"), hasToString("mn-MN"));
+		assertThat(new LanguageTag("MN-MN"), hasToString("mn-MN"));
+		assertThat(new LanguageTag("mn-Cyrl-MN"), hasToString("mn-Cyrl-MN"));
+		assertThat(new LanguageTag("mn-cyrl-mn"), hasToString("mn-Cyrl-MN"));
+		assertThat(new LanguageTag("MN-CYRL-MN"), hasToString("mn-Cyrl-MN"));
+		assertThat(new LanguageTag("en-CA-x-ca"), hasToString("en-CA-x-ca"));
+		assertThat(new LanguageTag("en-ca-x-ca"), hasToString("en-CA-x-ca"));
+		assertThat(new LanguageTag("EN-CA-X-CA"), hasToString("en-CA-x-ca"));
+		assertThat(new LanguageTag("az-Latn-x-latn"), hasToString("az-Latn-x-latn"));
+		assertThat(new LanguageTag("az-latn-x-latn"), hasToString("az-Latn-x-latn"));
+		assertThat(new LanguageTag("AZ-LATN-X-LATN"), hasToString("az-Latn-x-latn"));
+		//irregular grandfathered tags
+		assertThat(new LanguageTag("ART-LOJBAN"), hasToString("art-lojban"));
+		assertThat(new LanguageTag("en-gb-oed"), hasToString("en-GB-oed"));
+		assertThat(new LanguageTag("en-gb-oed"), hasToString("en-GB-oed"));
+		//regular grandfathered tags
+		assertThat(new LanguageTag("en-gb-OED"), hasToString("en-GB-oed"));
+		assertThat(new LanguageTag("NO-NYN"), hasToString("no-nyn"));
+		assertThat(new LanguageTag("zh-hAKKa"), hasToString("zh-hakka"));
+		assertThat(new LanguageTag("sgn-be-fr"), hasToString("sgn-BE-FR"));
+		//private use tags
+		assertThat(new LanguageTag("x-whatever"), hasToString("x-whatever"));
+		assertThat(new LanguageTag("X-WHATEVER"), hasToString("x-whatever"));
 	}
 
 }
