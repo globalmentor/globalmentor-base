@@ -66,8 +66,10 @@ public final class LanguageTag {
 
 	static final String LANGTAG_PATTERN_GROUP_EXTLANG = "extlang";
 	private static final String EXTLANG = format("(?<%s>\\p{Alpha}{3}(?:-\\p{Alpha}{3}){0,2})", LANGTAG_PATTERN_GROUP_EXTLANG);
+	static final String LANGTAG_PATTERN_GROUP_LANGUAGE_CODE = "languagecode";
 	static final String LANGTAG_PATTERN_GROUP_LANGUAGE = "language";
-	private static final String LANGUAGE = format("(?<%s>\\p{Alpha}{2,3}%s?|\\p{Alpha}{4}|\\p{Alpha}{5,8})", LANGTAG_PATTERN_GROUP_LANGUAGE, EXTLANG);
+	private static final String LANGUAGE = format("(?<%s>(?<%s>\\p{Alpha}{2,3})(?:-%s)?|\\p{Alpha}{4}|\\p{Alpha}{5,8})", LANGTAG_PATTERN_GROUP_LANGUAGE,
+			LANGTAG_PATTERN_GROUP_LANGUAGE_CODE, EXTLANG);
 	static final String LANGTAG_PATTERN_GROUP_SCRIPT = "script";
 	private static final String SCRIPT = format("(?<%s>\\p{Alpha}{4})", LANGTAG_PATTERN_GROUP_SCRIPT);
 	static final String LANGTAG_PATTERN_GROUP_REGION = "region";
@@ -98,11 +100,31 @@ public final class LanguageTag {
 		return type;
 	}
 
+	private final String primaryLanguage;
+
+	/**
+	 * Returns the primary language, which is the first subtag of a language, in conventional form. Normal tags will have a primary language, but private use and
+	 * grandfathered tags may not.
+	 * @apiNote The primary language is usually a two or three-letter ISO 639 code, and it never contains the following extended language subtag(s). For example
+	 *          for the language tag <code>zh-cmn-Hans-CN</code>, {@link #findLanguage()} would return <code>zh-cmn</code>, while {@link #findPrimaryLanguage()}
+	 *          would return <code>zh</code>. Thus {@link #findPrimaryLanguage()} is usually more useful in comparing two language tags for a common base
+	 *          language.
+	 * @return The primary language if any.
+	 * @see #findLanguage()
+	 */
+	public Optional<String> findPrimaryLanguage() {
+		return Optional.ofNullable(primaryLanguage);
+	}
+
 	private final String language;
 
 	/**
-	 * Returns the indicated language in conventional form. Normal tags will have a language, but private use and grandfathered tags may not.
+	 * Returns the full indicated language in conventional form. Normal tags will have a language, but private use and grandfathered tags may not.
+	 * @apiNote Most often {@link #findPrimaryLanguage()} is more appropriate for comparing two language tags for a common base language in some cases. The full
+	 *          language may include one or more extended language subtags. For example for the language tag <code>zh-cmn-Hans-CN</code>, {@link #findLanguage()}
+	 *          would return <code>zh-cmn</code>, while {@link #findPrimaryLanguage()} would return <code>zh</code>.
 	 * @return The language if any.
+	 * @see #findPrimaryLanguage()
 	 */
 	public Optional<String> findLanguage() {
 		return Optional.ofNullable(language);
@@ -140,6 +162,7 @@ public final class LanguageTag {
 			type = Type.GRANDFATHERED;
 			//even the regular grandfathered forms, which match the `langtag` production, may have different component semantics for some of the matching groups 
 			language = null;
+			primaryLanguage = null;
 			script = null;
 			region = null;
 			return;
@@ -148,11 +171,15 @@ public final class LanguageTag {
 		if(matcher.matches()) {
 			type = Type.NORMAL;
 			language = matcher.group(LANGTAG_PATTERN_GROUP_LANGUAGE);
+			final String extlang = matcher.group(LANGTAG_PATTERN_GROUP_EXTLANG);
+			//if the language has extended subtags, remove them and use the language code for the primary language
+			primaryLanguage = extlang != null ? matcher.group(LANGTAG_PATTERN_GROUP_LANGUAGE_CODE) : language;
 			script = matcher.group(LANGTAG_PATTERN_GROUP_SCRIPT);
 			region = matcher.group(LANGTAG_PATTERN_GROUP_REGION);
 		} else if(PRIVATEUSE_PATTERN.matcher(text).matches()) {
 			type = Type.PRIVATE_USE;
 			language = null;
+			primaryLanguage = null;
 			script = null;
 			region = null;
 		} else {

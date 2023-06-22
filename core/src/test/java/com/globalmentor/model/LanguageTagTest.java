@@ -16,6 +16,7 @@
 
 package com.globalmentor.model;
 
+import static com.github.npathai.hamcrestopt.OptionalMatchers.*;
 import static com.globalmentor.model.LanguageTag.*;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
@@ -46,6 +47,8 @@ public class LanguageTagTest {
 		final Matcher matcher = LANGTAG_PATTERN.matcher("en");
 		assertThat(matcher.matches(), is(true));
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_LANGUAGE, "en");
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_LANGUAGE_CODE, "en");
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_EXTLANG, null);
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_SCRIPT, null);
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_REGION, null);
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANT, null);
@@ -58,6 +61,8 @@ public class LanguageTagTest {
 		final Matcher matcher = LANGTAG_PATTERN.matcher("en-US");
 		assertThat(matcher.matches(), is(true));
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_LANGUAGE, "en");
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_LANGUAGE_CODE, "en");
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_EXTLANG, null);
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_SCRIPT, null);
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_REGION, "US");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANT, null);
@@ -70,6 +75,8 @@ public class LanguageTagTest {
 		final Matcher matcher = LANGTAG_PATTERN.matcher("mn-Cyrl");
 		assertThat(matcher.matches(), is(true));
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_LANGUAGE, "mn");
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_LANGUAGE_CODE, "mn");
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_EXTLANG, null);
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_SCRIPT, "Cyrl");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_REGION, null);
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANT, null);
@@ -82,6 +89,8 @@ public class LanguageTagTest {
 		final Matcher matcher = LANGTAG_PATTERN.matcher("mn-Cyrl-MN");
 		assertThat(matcher.matches(), is(true));
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_LANGUAGE, "mn");
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_LANGUAGE_CODE, "mn");
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_EXTLANG, null);
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_SCRIPT, "Cyrl");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_REGION, "MN");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANT, null);
@@ -94,6 +103,8 @@ public class LanguageTagTest {
 		final Matcher matcher = LANGTAG_PATTERN.matcher("en-CA-x-ca");
 		assertThat(matcher.matches(), is(true));
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_LANGUAGE, "en");
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_LANGUAGE_CODE, "en");
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_EXTLANG, null);
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_SCRIPT, null);
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_REGION, "CA");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANT, null);
@@ -106,8 +117,24 @@ public class LanguageTagTest {
 		final Matcher matcher = LANGTAG_PATTERN.matcher("zh");
 		assertThat(matcher.matches(), is(true));
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_LANGUAGE, "zh");
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_LANGUAGE_CODE, "zh");
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_EXTLANG, null);
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_SCRIPT, null);
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_REGION, null);
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANT, null);
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_EXTENSION, null);
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_PRIVATEUSE, null);
+	}
+
+	@Test
+	void testLangtagPatternZH_CMN_HANS_CN() {
+		final Matcher matcher = LANGTAG_PATTERN.matcher("zh-cmn-Hans-CN");
+		assertThat(matcher.matches(), is(true));
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_LANGUAGE, "zh-cmn");
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_LANGUAGE_CODE, "zh");
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_EXTLANG, "cmn");
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_SCRIPT, "Hans");
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_REGION, "CN");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANT, null);
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_EXTENSION, null);
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_PRIVATEUSE, null);
@@ -118,6 +145,8 @@ public class LanguageTagTest {
 		final Matcher matcher = LANGTAG_PATTERN.matcher("zh-CN");
 		assertThat(matcher.matches(), is(true));
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_LANGUAGE, "zh");
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_LANGUAGE_CODE, "zh");
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_EXTLANG, null);
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_SCRIPT, null);
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_REGION, "CN");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANT, null);
@@ -130,6 +159,8 @@ public class LanguageTagTest {
 		final Matcher matcher = LANGTAG_PATTERN.matcher("zh-Latn");
 		assertThat(matcher.matches(), is(true));
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_LANGUAGE, "zh");
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_LANGUAGE_CODE, "zh");
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_EXTLANG, null);
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_SCRIPT, "Latn");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_REGION, null);
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANT, null);
@@ -142,6 +173,8 @@ public class LanguageTagTest {
 		final Matcher matcher = LANGTAG_PATTERN.matcher("zh-Latn-CN");
 		assertThat(matcher.matches(), is(true));
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_LANGUAGE, "zh");
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_LANGUAGE_CODE, "zh");
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_EXTLANG, null);
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_SCRIPT, "Latn");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_REGION, "CN");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANT, null);
@@ -154,6 +187,8 @@ public class LanguageTagTest {
 		final Matcher matcher = LANGTAG_PATTERN.matcher("zh-Latn-CN-x-wadegile");
 		assertThat(matcher.matches(), is(true));
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_LANGUAGE, "zh");
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_LANGUAGE_CODE, "zh");
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_EXTLANG, null);
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_SCRIPT, "Latn");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_REGION, "CN");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANT, null);
@@ -166,6 +201,8 @@ public class LanguageTagTest {
 		final Matcher matcher = LANGTAG_PATTERN.matcher("zh-Latn-CN-x-wadegile-private1");
 		assertThat(matcher.matches(), is(true));
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_LANGUAGE, "zh");
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_LANGUAGE_CODE, "zh");
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_EXTLANG, null);
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_SCRIPT, "Latn");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_REGION, "CN");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANT, null);
@@ -178,6 +215,8 @@ public class LanguageTagTest {
 		final Matcher matcher = LANGTAG_PATTERN.matcher("zh-Latn-CN-a-extend1");
 		assertThat(matcher.matches(), is(true));
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_LANGUAGE, "zh");
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_LANGUAGE_CODE, "zh");
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_EXTLANG, null);
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_SCRIPT, "Latn");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_REGION, "CN");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANT, null);
@@ -190,6 +229,8 @@ public class LanguageTagTest {
 		final Matcher matcher = LANGTAG_PATTERN.matcher("zh-Latn-CN-a-extend1-x-wadegile");
 		assertThat(matcher.matches(), is(true));
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_LANGUAGE, "zh");
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_LANGUAGE_CODE, "zh");
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_EXTLANG, null);
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_SCRIPT, "Latn");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_REGION, "CN");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANT, null);
@@ -202,6 +243,8 @@ public class LanguageTagTest {
 		final Matcher matcher = LANGTAG_PATTERN.matcher("zh-Latn-CN-a-extend1-x-wadegile-private1");
 		assertThat(matcher.matches(), is(true));
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_LANGUAGE, "zh");
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_LANGUAGE_CODE, "zh");
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_EXTLANG, null);
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_SCRIPT, "Latn");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_REGION, "CN");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANT, null);
@@ -214,6 +257,8 @@ public class LanguageTagTest {
 		final Matcher matcher = LANGTAG_PATTERN.matcher("zh-Latn-CN-variant1-x-wadegile-private1");
 		assertThat(matcher.matches(), is(true));
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_LANGUAGE, "zh");
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_LANGUAGE_CODE, "zh");
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_EXTLANG, null);
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_SCRIPT, "Latn");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_REGION, "CN");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANT, "variant1");
@@ -226,6 +271,8 @@ public class LanguageTagTest {
 		final Matcher matcher = LANGTAG_PATTERN.matcher("zh-Latn-CN-variant1-a-extend1");
 		assertThat(matcher.matches(), is(true));
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_LANGUAGE, "zh");
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_LANGUAGE_CODE, "zh");
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_EXTLANG, null);
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_SCRIPT, "Latn");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_REGION, "CN");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANT, "variant1");
@@ -238,6 +285,8 @@ public class LanguageTagTest {
 		final Matcher matcher = LANGTAG_PATTERN.matcher("zh-Latn-CN-variant1-a-extend1-x-wadegile");
 		assertThat(matcher.matches(), is(true));
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_LANGUAGE, "zh");
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_LANGUAGE_CODE, "zh");
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_EXTLANG, null);
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_SCRIPT, "Latn");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_REGION, "CN");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANT, "variant1");
@@ -250,6 +299,8 @@ public class LanguageTagTest {
 		final Matcher matcher = LANGTAG_PATTERN.matcher("zh-Latn-CN-variant1-a-extend1-x-wadegile-private1");
 		assertThat(matcher.matches(), is(true));
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_LANGUAGE, "zh");
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_LANGUAGE_CODE, "zh");
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_EXTLANG, null);
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_SCRIPT, "Latn");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_REGION, "CN");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANT, "variant1");
@@ -323,7 +374,68 @@ public class LanguageTagTest {
 		assertThat(new LanguageTag("zh-xiang").getType(), is(Type.GRANDFATHERED));
 	}
 
-	//## field extraction
+	//## examples
+
+	/** @see <a href="https://datatracker.ietf.org/doc/html/rfc5646#appendix-A">RFC 5646 § Appendix A. Examples of Language Tags (Informative)</a> */
+	@Test
+	void testExamples() {
+		//### Simple language subtag
+		//German
+		assertThat(new LanguageTag("de").getType(), is(Type.NORMAL));
+		assertThat(new LanguageTag("de").findPrimaryLanguage(), isPresentAndIs("de"));
+		assertThat(new LanguageTag("de").findLanguage(), isPresentAndIs("de"));
+		assertThat(new LanguageTag("de").findScript(), isEmpty());
+		assertThat(new LanguageTag("de").findRegion(), isEmpty());
+		assertThat(new LanguageTag("de").findScript(), isEmpty());
+		//French
+		assertThat(new LanguageTag("fr").findLanguage(), isPresentAndIs("fr"));
+		//Japanese
+		assertThat(new LanguageTag("ja").findLanguage(), isPresentAndIs("ja"));
+		assertThat(new LanguageTag("i-enochian").getType(), is(Type.GRANDFATHERED)); //example of a grandfathered tag
+		//### Language subtag plus Script subtag
+		//Chinese written using the Traditional Chinese script
+		assertThat(new LanguageTag("zh-Hant").getType(), is(Type.NORMAL));
+		assertThat(new LanguageTag("zh-Hant").findPrimaryLanguage(), isPresentAndIs("zh"));
+		assertThat(new LanguageTag("zh-Hant").findLanguage(), isPresentAndIs("zh"));
+		assertThat(new LanguageTag("zh-Hant").findScript(), isPresentAndIs("Hant"));
+		//Chinese written using the Simplified Chinese script
+		assertThat(new LanguageTag("zh-Hans").findPrimaryLanguage(), isPresentAndIs("zh"));
+		assertThat(new LanguageTag("zh-Hans").findLanguage(), isPresentAndIs("zh"));
+		assertThat(new LanguageTag("zh-Hans").findScript(), isPresentAndIs("Hans"));
+		//Serbian written using the Cyrillic script
+		assertThat(new LanguageTag("sr-Cyrl").findPrimaryLanguage(), isPresentAndIs("sr"));
+		assertThat(new LanguageTag("sr-Cyrl").findLanguage(), isPresentAndIs("sr"));
+		assertThat(new LanguageTag("sr-Cyrl").findScript(), isPresentAndIs("Cyrl"));
+		//Serbian written using the Latin script
+		assertThat(new LanguageTag("sr-Latn").findPrimaryLanguage(), isPresentAndIs("sr"));
+		assertThat(new LanguageTag("sr-Latn").findLanguage(), isPresentAndIs("sr"));
+		assertThat(new LanguageTag("sr-Latn").findScript(), isPresentAndIs("Latn"));
+		//### Extended language subtags and their primary language subtag counterparts
+		//Chinese, Mandarin, Simplified script, as used in China
+		assertThat(new LanguageTag("zh-cmn-Hans-CN").getType(), is(Type.NORMAL));
+		assertThat(new LanguageTag("zh-cmn-Hans-CN").findPrimaryLanguage(), isPresentAndIs("zh"));
+		assertThat(new LanguageTag("zh-cmn-Hans-CN").findLanguage(), isPresentAndIs("zh-cmn"));
+		assertThat(new LanguageTag("zh-cmn-Hans-CN").findScript(), isPresentAndIs("Hans"));
+		assertThat(new LanguageTag("zh-cmn-Hans-CN").findRegion(), isPresentAndIs("CN"));
+		//Mandarin Chinese, Simplified script, as used in China
+		assertThat(new LanguageTag("cmn-Hans-CN").getType(), is(Type.NORMAL));
+		assertThat(new LanguageTag("cmn-Hans-CN").findPrimaryLanguage(), isPresentAndIs("cmn"));
+		assertThat(new LanguageTag("cmn-Hans-CN").findLanguage(), isPresentAndIs("cmn"));
+		assertThat(new LanguageTag("cmn-Hans-CN").findScript(), isPresentAndIs("Hans"));
+		assertThat(new LanguageTag("cmn-Hans-CN").findRegion(), isPresentAndIs("CN"));
+		//Chinese, Cantonese, as used in Hong Kong SAR
+		assertThat(new LanguageTag("zh-yue-HK").getType(), is(Type.NORMAL));
+		assertThat(new LanguageTag("zh-yue-HK").findPrimaryLanguage(), isPresentAndIs("zh"));
+		assertThat(new LanguageTag("zh-yue-HK").findLanguage(), isPresentAndIs("zh-yue"));
+		assertThat(new LanguageTag("zh-yue-HK").findRegion(), isPresentAndIs("HK"));
+		//Cantonese Chinese, as used in Hong Kong SAR
+		assertThat(new LanguageTag("yue-HK").getType(), is(Type.NORMAL));
+		assertThat(new LanguageTag("yue-HK").findPrimaryLanguage(), isPresentAndIs("yue"));
+		assertThat(new LanguageTag("yue-HK").findLanguage(), isPresentAndIs("yue"));
+		assertThat(new LanguageTag("yue-HK").findRegion(), isPresentAndIs("HK"));
+	}
+
+	//## hash code
 
 	/** @see LanguageTag#hashCode() */
 	@Test
@@ -338,6 +450,8 @@ public class LanguageTagTest {
 		assertThat("Language tags with identical case.", new LanguageTag("en-US"), is(equalTo(new LanguageTag("en-US"))));
 		assertThat("Language tags with different case.", new LanguageTag("en-UK"), is(equalTo(new LanguageTag("EN-uk"))));
 	}
+
+	//## string form
 
 	/**
 	 * Tests that the string form of the language tag is correct and normalized
