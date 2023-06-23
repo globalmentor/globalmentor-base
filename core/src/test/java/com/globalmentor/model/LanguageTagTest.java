@@ -52,6 +52,7 @@ public class LanguageTagTest {
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_SCRIPT, null);
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_REGION, null);
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANT, null);
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANTS, "");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_EXTENSION, null);
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_PRIVATEUSE, null);
 	}
@@ -66,6 +67,7 @@ public class LanguageTagTest {
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_SCRIPT, null);
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_REGION, "US");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANT, null);
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANTS, "");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_EXTENSION, null);
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_PRIVATEUSE, null);
 	}
@@ -80,6 +82,7 @@ public class LanguageTagTest {
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_SCRIPT, "Cyrl");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_REGION, null);
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANT, null);
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANTS, "");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_EXTENSION, null);
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_PRIVATEUSE, null);
 	}
@@ -94,6 +97,7 @@ public class LanguageTagTest {
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_SCRIPT, "Cyrl");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_REGION, "MN");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANT, null);
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANTS, "");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_EXTENSION, null);
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_PRIVATEUSE, null);
 	}
@@ -108,6 +112,7 @@ public class LanguageTagTest {
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_SCRIPT, null);
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_REGION, "CA");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANT, null);
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANTS, "");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_EXTENSION, null);
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_PRIVATEUSE, "x-ca");
 	}
@@ -122,6 +127,7 @@ public class LanguageTagTest {
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_SCRIPT, null);
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_REGION, null);
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANT, null);
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANTS, "");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_EXTENSION, null);
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_PRIVATEUSE, null);
 	}
@@ -136,6 +142,7 @@ public class LanguageTagTest {
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_SCRIPT, "Hans");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_REGION, "CN");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANT, null);
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANTS, "");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_EXTENSION, null);
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_PRIVATEUSE, null);
 	}
@@ -150,6 +157,7 @@ public class LanguageTagTest {
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_SCRIPT, null);
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_REGION, "CN");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANT, null);
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANTS, "");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_EXTENSION, null);
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_PRIVATEUSE, null);
 	}
@@ -164,6 +172,7 @@ public class LanguageTagTest {
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_SCRIPT, "Latn");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_REGION, null);
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANT, null);
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANTS, "");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_EXTENSION, null);
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_PRIVATEUSE, null);
 	}
@@ -178,6 +187,7 @@ public class LanguageTagTest {
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_SCRIPT, "Latn");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_REGION, "CN");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANT, null);
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANTS, "");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_EXTENSION, null);
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_PRIVATEUSE, null);
 	}
@@ -192,6 +202,7 @@ public class LanguageTagTest {
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_SCRIPT, "Latn");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_REGION, "CN");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANT, null);
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANTS, "");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_EXTENSION, null);
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_PRIVATEUSE, "x-wadegile");
 	}
@@ -206,6 +217,7 @@ public class LanguageTagTest {
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_SCRIPT, "Latn");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_REGION, "CN");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANT, null);
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANTS, "");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_EXTENSION, null);
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_PRIVATEUSE, "x-wadegile-private1");
 	}
@@ -220,6 +232,7 @@ public class LanguageTagTest {
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_SCRIPT, "Latn");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_REGION, "CN");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANT, null);
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANTS, "");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_EXTENSION, "a-extend1");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_PRIVATEUSE, null);
 	}
@@ -234,6 +247,7 @@ public class LanguageTagTest {
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_SCRIPT, "Latn");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_REGION, "CN");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANT, null);
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANTS, "");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_EXTENSION, "a-extend1");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_PRIVATEUSE, "x-wadegile");
 	}
@@ -248,6 +262,7 @@ public class LanguageTagTest {
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_SCRIPT, "Latn");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_REGION, "CN");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANT, null);
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANTS, "");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_EXTENSION, "a-extend1");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_PRIVATEUSE, "x-wadegile-private1");
 	}
@@ -262,6 +277,7 @@ public class LanguageTagTest {
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_SCRIPT, "Latn");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_REGION, "CN");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANT, "variant1");
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANTS, "-variant1");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_EXTENSION, null);
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_PRIVATEUSE, "x-wadegile-private1");
 	}
@@ -276,6 +292,7 @@ public class LanguageTagTest {
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_SCRIPT, "Latn");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_REGION, "CN");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANT, "variant1");
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANTS, "-variant1");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_EXTENSION, "a-extend1");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_PRIVATEUSE, null);
 	}
@@ -290,6 +307,7 @@ public class LanguageTagTest {
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_SCRIPT, "Latn");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_REGION, "CN");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANT, "variant1");
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANTS, "-variant1");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_EXTENSION, "a-extend1");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_PRIVATEUSE, "x-wadegile");
 	}
@@ -304,6 +322,22 @@ public class LanguageTagTest {
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_SCRIPT, "Latn");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_REGION, "CN");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANT, "variant1");
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANTS, "-variant1");
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_EXTENSION, "a-extend1");
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_PRIVATEUSE, "x-wadegile-private1");
+	}
+
+	@Test
+	void testLangtagPatternZH_LATN_CN_VARIANT1_VARIANT2_A_EXTEND1_X_WADEGILE_PRIVATE1() {
+		final Matcher matcher = LANGTAG_PATTERN.matcher("zh-Latn-CN-variant1-variant2-a-extend1-x-wadegile-private1");
+		assertThat(matcher.matches(), is(true));
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_LANGUAGE, "zh");
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_LANGUAGE_CODE, "zh");
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_EXTLANG, null);
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_SCRIPT, "Latn");
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_REGION, "CN");
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANT, "variant2");
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANTS, "-variant1-variant2");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_EXTENSION, "a-extend1");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_PRIVATEUSE, "x-wadegile-private1");
 	}
@@ -386,7 +420,7 @@ public class LanguageTagTest {
 		assertThat(new LanguageTag("de").findLanguage(), isPresentAndIs("de"));
 		assertThat(new LanguageTag("de").findScript(), isEmpty());
 		assertThat(new LanguageTag("de").findRegion(), isEmpty());
-		assertThat(new LanguageTag("de").findScript(), isEmpty());
+		assertThat(new LanguageTag("de").getVariants(), is(empty()));
 		//French
 		assertThat(new LanguageTag("fr").findLanguage(), isPresentAndIs("fr"));
 		//Japanese
@@ -433,6 +467,41 @@ public class LanguageTagTest {
 		assertThat(new LanguageTag("yue-HK").findPrimaryLanguage(), isPresentAndIs("yue"));
 		assertThat(new LanguageTag("yue-HK").findLanguage(), isPresentAndIs("yue"));
 		assertThat(new LanguageTag("yue-HK").findRegion(), isPresentAndIs("HK"));
+		//### Language-Script-Region
+		//Chinese written using the Simplified script as used in mainland China
+		assertThat(new LanguageTag("zh-Hans-CN").getType(), is(Type.NORMAL));
+		assertThat(new LanguageTag("zh-Hans-CN").findPrimaryLanguage(), isPresentAndIs("zh"));
+		assertThat(new LanguageTag("zh-Hans-CN").findLanguage(), isPresentAndIs("zh"));
+		assertThat(new LanguageTag("zh-Hans-CN").findScript(), isPresentAndIs("Hans"));
+		assertThat(new LanguageTag("zh-Hans-CN").findRegion(), isPresentAndIs("CN"));
+		//Serbian written using the Latin script as used in Serbia
+		assertThat(new LanguageTag("sr-Latn-RS").getType(), is(Type.NORMAL));
+		assertThat(new LanguageTag("sr-Latn-RS").findPrimaryLanguage(), isPresentAndIs("sr"));
+		assertThat(new LanguageTag("sr-Latn-RS").findLanguage(), isPresentAndIs("sr"));
+		assertThat(new LanguageTag("sr-Latn-RS").findScript(), isPresentAndIs("Latn"));
+		assertThat(new LanguageTag("sr-Latn-RS").findRegion(), isPresentAndIs("RS"));
+		//### Language-Variant
+		//Resian dialect of Slovenian
+		assertThat(new LanguageTag("sl-rozaj").getType(), is(Type.NORMAL));
+		assertThat(new LanguageTag("sl-rozaj").findPrimaryLanguage(), isPresentAndIs("sl"));
+		assertThat(new LanguageTag("sl-rozaj").findLanguage(), isPresentAndIs("sl"));
+		assertThat(new LanguageTag("sl-rozaj").findScript(), isEmpty());
+		assertThat(new LanguageTag("sl-rozaj").findRegion(), isEmpty());
+		assertThat(new LanguageTag("sl-rozaj").getVariants(), containsInAnyOrder("rozaj"));
+		//San Giorgio dialect of Resian dialect of Slovenian
+		assertThat(new LanguageTag("sl-rozaj-biske").getType(), is(Type.NORMAL));
+		assertThat(new LanguageTag("sl-rozaj-biske").findPrimaryLanguage(), isPresentAndIs("sl"));
+		assertThat(new LanguageTag("sl-rozaj-biske").findLanguage(), isPresentAndIs("sl"));
+		assertThat(new LanguageTag("sl-rozaj-biske").findScript(), isEmpty());
+		assertThat(new LanguageTag("sl-rozaj-biske").findRegion(), isEmpty());
+		assertThat(new LanguageTag("sl-rozaj-biske").getVariants(), containsInAnyOrder("rozaj", "biske"));
+		//Nadiza dialect of Slovenian
+		assertThat(new LanguageTag("sl-nedis").getType(), is(Type.NORMAL));
+		assertThat(new LanguageTag("sl-nedis").findPrimaryLanguage(), isPresentAndIs("sl"));
+		assertThat(new LanguageTag("sl-nedis").findLanguage(), isPresentAndIs("sl"));
+		assertThat(new LanguageTag("sl-nedis").findScript(), isEmpty());
+		assertThat(new LanguageTag("sl-nedis").findRegion(), isEmpty());
+		assertThat(new LanguageTag("sl-nedis").getVariants(), containsInAnyOrder("nedis"));
 	}
 
 	//## hash code

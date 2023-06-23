@@ -16,9 +16,11 @@
 
 package com.globalmentor.model;
 
+import static com.globalmentor.collections.Sets.*;
 import static com.globalmentor.java.Conditions.*;
 import static java.lang.String.format;
 import static java.nio.charset.StandardCharsets.*;
+import static java.util.Collections.*;
 import static java.util.stream.Collectors.*;
 
 import java.util.*;
@@ -27,6 +29,7 @@ import java.util.stream.*;
 
 import javax.annotation.*;
 
+import com.globalmentor.java.Characters;
 import com.globalmentor.text.ASCII;
 
 /**
@@ -62,30 +65,37 @@ public final class LanguageTag {
 	}
 
 	/** The character used to separate subtags. */
-	private static final char SUBTAG_SEPARATOR = '-';
+	public static final char SUBTAG_SEPARATOR = '-';
+
+	/** The characters version of the subtag delimiter for efficiently splitting subtags. */
+	private static final Characters SUBTAG_SEPARATOR_CHARACTERS = Characters.of(SUBTAG_SEPARATOR);
 
 	static final String LANGTAG_PATTERN_GROUP_EXTLANG = "extlang";
-	private static final String EXTLANG = format("(?<%s>\\p{Alpha}{3}(?:-\\p{Alpha}{3}){0,2})", LANGTAG_PATTERN_GROUP_EXTLANG);
+	private static final String EXTLANG = format("(?<%s>\\p{Alpha}{3}(?:%s\\p{Alpha}{3}){0,2})", LANGTAG_PATTERN_GROUP_EXTLANG, SUBTAG_SEPARATOR);
 	static final String LANGTAG_PATTERN_GROUP_LANGUAGE_CODE = "languagecode";
 	static final String LANGTAG_PATTERN_GROUP_LANGUAGE = "language";
-	private static final String LANGUAGE = format("(?<%s>(?<%s>\\p{Alpha}{2,3})(?:-%s)?|\\p{Alpha}{4}|\\p{Alpha}{5,8})", LANGTAG_PATTERN_GROUP_LANGUAGE,
-			LANGTAG_PATTERN_GROUP_LANGUAGE_CODE, EXTLANG);
+	private static final String LANGUAGE = format("(?<%s>(?<%s>\\p{Alpha}{2,3})(?:%s%s)?|\\p{Alpha}{4}|\\p{Alpha}{5,8})", LANGTAG_PATTERN_GROUP_LANGUAGE,
+			LANGTAG_PATTERN_GROUP_LANGUAGE_CODE, SUBTAG_SEPARATOR, EXTLANG);
 	static final String LANGTAG_PATTERN_GROUP_SCRIPT = "script";
 	private static final String SCRIPT = format("(?<%s>\\p{Alpha}{4})", LANGTAG_PATTERN_GROUP_SCRIPT);
 	static final String LANGTAG_PATTERN_GROUP_REGION = "region";
 	private static final String REGION = format("(?<%s>\\p{Alpha}{2}|\\p{Digit}{3})", LANGTAG_PATTERN_GROUP_REGION);
-	static final String LANGTAG_PATTERN_GROUP_VARIANT = "variant";
+	static final String LANGTAG_PATTERN_GROUP_VARIANT = "variant"; //this group will only report the last matched variant after a match of the langtag
 	private static final String VARIANT = format("(?<%s>\\p{Alnum}{5,8}|(?:\\p{Digit}\\p{Alnum}{3}))", LANGTAG_PATTERN_GROUP_VARIANT);
 	static final String LANGTAG_PATTERN_GROUP_SINGLETON = "singleton";
 	private static final String SINGLETON = format("(?<%s>\\p{Digit}|[A-W]|[Y-Z]|[a-w]|[y-z])", LANGTAG_PATTERN_GROUP_SINGLETON);
-	static final String LANGTAG_PATTERN_GROUP_EXTENSION = "extension";
-	private static final String EXTENSION = format("(?<%s>%s(?:-\\p{Alnum}{2,8}){1,})", LANGTAG_PATTERN_GROUP_EXTENSION, SINGLETON);
+	static final String LANGTAG_PATTERN_GROUP_EXTENSION = "extension"; //this group will only report the last matched extension after a match of the langtag
+	private static final String EXTENSION = format("(?<%s>%s(?:%s\\p{Alnum}{2,8}){1,})", LANGTAG_PATTERN_GROUP_EXTENSION, SINGLETON, SUBTAG_SEPARATOR);
 	static final String LANGTAG_PATTERN_GROUP_PRIVATEUSE = "privateuse";
-	private static final String PRIVATEUSE = format("(?<%s>[xX](?:-\\p{Alnum}{1,8}){1,})", LANGTAG_PATTERN_GROUP_PRIVATEUSE);
+	private static final String PRIVATEUSE = format("(?<%s>[xX](?:%s\\p{Alnum}{1,8}){1,})", LANGTAG_PATTERN_GROUP_PRIVATEUSE, SUBTAG_SEPARATOR);
+
+	static final String LANGTAG_PATTERN_GROUP_VARIANTS = "variants"; //may be empty; never null
+	static final String LANGTAG_PATTERN_GROUP_EXTENSIONS = "extensions"; //may be empty; never null
 
 	/** A pattern for a language tag matching the <code>langtag</code> production. */
-	public static final Pattern LANGTAG_PATTERN = Pattern.compile(format("%s(?:%s%s)?(?:%s%s)?(?:%s%s)*(?:%s%s)*(?:%s%s)?", LANGUAGE, SUBTAG_SEPARATOR, SCRIPT,
-			SUBTAG_SEPARATOR, REGION, SUBTAG_SEPARATOR, VARIANT, SUBTAG_SEPARATOR, EXTENSION, SUBTAG_SEPARATOR, PRIVATEUSE));
+	public static final Pattern LANGTAG_PATTERN = Pattern.compile(format("%s(?:%s%s)?(?:%s%s)?(?<%s>(?:%s%s)*)(?<%s>(?:%s%s)*)(?:%s%s)?", LANGUAGE,
+			SUBTAG_SEPARATOR, SCRIPT, SUBTAG_SEPARATOR, REGION, LANGTAG_PATTERN_GROUP_VARIANTS, SUBTAG_SEPARATOR, VARIANT, LANGTAG_PATTERN_GROUP_EXTENSIONS,
+			SUBTAG_SEPARATOR, EXTENSION, SUBTAG_SEPARATOR, PRIVATEUSE));
 
 	/** A pattern for a language tag that is solely a private use tag. */
 	public static final Pattern PRIVATEUSE_PATTERN = Pattern.compile(PRIVATEUSE);
@@ -150,6 +160,16 @@ public final class LanguageTag {
 		return Optional.ofNullable(region);
 	}
 
+	private final Set<String> variants;
+
+	/**
+	 * Returns the variants. Most language tags do not have variants.
+	 * @return The set of variants, which will be empty if there are no variants
+	 */
+	protected Set<String> getVariants() {
+		return variants;
+	}
+
 	/**
 	 * Constructor.
 	 * @param text The text form of the entire language tag; will be normalized.
@@ -165,6 +185,7 @@ public final class LanguageTag {
 			primaryLanguage = null;
 			script = null;
 			region = null;
+			variants = emptySet();
 			return;
 		}
 		final Matcher matcher = LANGTAG_PATTERN.matcher(text);
@@ -176,12 +197,16 @@ public final class LanguageTag {
 			primaryLanguage = extlang != null ? matcher.group(LANGTAG_PATTERN_GROUP_LANGUAGE_CODE) : language;
 			script = matcher.group(LANGTAG_PATTERN_GROUP_SCRIPT);
 			region = matcher.group(LANGTAG_PATTERN_GROUP_REGION);
+			variants = matcher.group(LANGTAG_PATTERN_GROUP_VARIANT) != null //if a variant matched (the last one)
+					? immutableSetOf(SUBTAG_SEPARATOR_CHARACTERS.split(matcher.group(LANGTAG_PATTERN_GROUP_VARIANTS))) //split out the variants in the entire variants section
+					: emptySet();
 		} else if(PRIVATEUSE_PATTERN.matcher(text).matches()) {
 			type = Type.PRIVATE_USE;
 			language = null;
 			primaryLanguage = null;
 			script = null;
 			region = null;
+			variants = emptySet();
 		} else {
 			throw new IllegalArgumentException("Invalid language tag: " + text);
 		}
