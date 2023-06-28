@@ -16,11 +16,12 @@
 
 package com.globalmentor.model;
 
-import static com.github.npathai.hamcrestopt.OptionalMatchers.*;
+import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresentAndIs;
 import static com.globalmentor.model.LanguageTag.*;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
+import java.util.Optional;
 import java.util.regex.*;
 
 import org.junit.jupiter.api.Test;
@@ -54,6 +55,7 @@ public class LanguageTagTest {
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANT, null);
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANTS, "");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_EXTENSION, null);
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_EXTENSIONS, "");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_PRIVATEUSE, null);
 	}
 
@@ -69,6 +71,7 @@ public class LanguageTagTest {
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANT, null);
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANTS, "");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_EXTENSION, null);
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_EXTENSIONS, "");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_PRIVATEUSE, null);
 	}
 
@@ -84,6 +87,7 @@ public class LanguageTagTest {
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANT, null);
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANTS, "");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_EXTENSION, null);
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_EXTENSIONS, "");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_PRIVATEUSE, null);
 	}
 
@@ -99,6 +103,7 @@ public class LanguageTagTest {
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANT, null);
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANTS, "");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_EXTENSION, null);
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_EXTENSIONS, "");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_PRIVATEUSE, null);
 	}
 
@@ -114,6 +119,7 @@ public class LanguageTagTest {
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANT, null);
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANTS, "");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_EXTENSION, null);
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_EXTENSIONS, "");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_PRIVATEUSE, "x-ca");
 	}
 
@@ -129,6 +135,7 @@ public class LanguageTagTest {
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANT, null);
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANTS, "");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_EXTENSION, null);
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_EXTENSIONS, "");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_PRIVATEUSE, null);
 	}
 
@@ -144,6 +151,7 @@ public class LanguageTagTest {
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANT, null);
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANTS, "");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_EXTENSION, null);
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_EXTENSIONS, "");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_PRIVATEUSE, null);
 	}
 
@@ -159,6 +167,7 @@ public class LanguageTagTest {
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANT, null);
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANTS, "");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_EXTENSION, null);
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_EXTENSIONS, "");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_PRIVATEUSE, null);
 	}
 
@@ -174,6 +183,7 @@ public class LanguageTagTest {
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANT, null);
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANTS, "");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_EXTENSION, null);
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_EXTENSIONS, "");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_PRIVATEUSE, null);
 	}
 
@@ -189,6 +199,7 @@ public class LanguageTagTest {
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANT, null);
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANTS, "");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_EXTENSION, null);
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_EXTENSIONS, "");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_PRIVATEUSE, null);
 	}
 
@@ -204,6 +215,7 @@ public class LanguageTagTest {
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANT, null);
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANTS, "");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_EXTENSION, null);
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_EXTENSIONS, "");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_PRIVATEUSE, "x-wadegile");
 	}
 
@@ -219,6 +231,7 @@ public class LanguageTagTest {
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANT, null);
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANTS, "");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_EXTENSION, null);
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_EXTENSIONS, "");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_PRIVATEUSE, "x-wadegile-private1");
 	}
 
@@ -234,6 +247,7 @@ public class LanguageTagTest {
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANT, null);
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANTS, "");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_EXTENSION, "a-extend1");
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_EXTENSIONS, "-a-extend1");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_PRIVATEUSE, null);
 	}
 
@@ -249,6 +263,7 @@ public class LanguageTagTest {
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANT, null);
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANTS, "");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_EXTENSION, "a-extend1");
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_EXTENSIONS, "-a-extend1");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_PRIVATEUSE, "x-wadegile");
 	}
 
@@ -264,6 +279,7 @@ public class LanguageTagTest {
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANT, null);
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANTS, "");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_EXTENSION, "a-extend1");
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_EXTENSIONS, "-a-extend1");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_PRIVATEUSE, "x-wadegile-private1");
 	}
 
@@ -279,6 +295,7 @@ public class LanguageTagTest {
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANT, "variant1");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANTS, "-variant1");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_EXTENSION, null);
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_EXTENSIONS, "");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_PRIVATEUSE, "x-wadegile-private1");
 	}
 
@@ -294,6 +311,7 @@ public class LanguageTagTest {
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANT, "variant1");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANTS, "-variant1");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_EXTENSION, "a-extend1");
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_EXTENSIONS, "-a-extend1");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_PRIVATEUSE, null);
 	}
 
@@ -309,6 +327,7 @@ public class LanguageTagTest {
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANT, "variant1");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANTS, "-variant1");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_EXTENSION, "a-extend1");
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_EXTENSIONS, "-a-extend1");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_PRIVATEUSE, "x-wadegile");
 	}
 
@@ -324,6 +343,7 @@ public class LanguageTagTest {
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANT, "variant1");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANTS, "-variant1");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_EXTENSION, "a-extend1");
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_EXTENSIONS, "-a-extend1");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_PRIVATEUSE, "x-wadegile-private1");
 	}
 
@@ -339,12 +359,27 @@ public class LanguageTagTest {
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANT, "variant2");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_VARIANTS, "-variant1-variant2");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_EXTENSION, "a-extend1");
+		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_EXTENSIONS, "-a-extend1");
 		assertMatcherGroupIs(matcher, LANGTAG_PATTERN_GROUP_PRIVATEUSE, "x-wadegile-private1");
 	}
 
 	/** Utility matching method to include the group name in the description. */
 	private static void assertMatcherGroupIs(final Matcher matcher, final String group, final String value) {
 		assertThat(group, matcher.group(group), is(value));
+	}
+
+	//## extensions
+
+	/** @see LanguageTag#parseExtensions(String) */
+	@Test
+	void testParseExtension() {
+		assertThat(LanguageTag.parseExtensions("-a-bc"), contains("a-bc"));
+		assertThat(LanguageTag.parseExtensions("-a-myext"), contains("a-myext"));
+		assertThat(LanguageTag.parseExtensions("-a-myext-b-another-one"), contains("a-myext", "b-another-one"));
+		assertThat(LanguageTag.parseExtensions("-a-myext-b-another-one-c-eightlen"), contains("a-myext", "b-another-one", "c-eightlen"));
+		assertThat(LanguageTag.parseExtensions("-a-myext-b-another-one-c-eightlen-x-yz"), contains("a-myext", "b-another-one", "c-eightlen", "x-yz"));
+		assertThat(LanguageTag.parseExtensions("-a-really-long-extension-ij"), contains("a-really-long-extension-ij"));
+		assertThat(LanguageTag.parseExtensions("-a-myext-a-really-long-extension-x-yz"), contains("a-myext", "a-really-long-extension", "x-yz"));
 	}
 
 	//## normalize
@@ -414,95 +449,239 @@ public class LanguageTagTest {
 	@Test
 	void testExamples() {
 		//### Simple language subtag
-		//German
-		assertThat(new LanguageTag("de").getType(), is(Type.NORMAL));
-		assertThat(new LanguageTag("de").findPrimaryLanguage(), isPresentAndIs("de"));
-		assertThat(new LanguageTag("de").findLanguage(), isPresentAndIs("de"));
-		assertThat(new LanguageTag("de").findScript(), isEmpty());
-		assertThat(new LanguageTag("de").findRegion(), isEmpty());
-		assertThat(new LanguageTag("de").getVariants(), is(empty()));
-		//French
-		assertThat(new LanguageTag("fr").findLanguage(), isPresentAndIs("fr"));
-		//Japanese
-		assertThat(new LanguageTag("ja").findLanguage(), isPresentAndIs("ja"));
-		assertThat(new LanguageTag("i-enochian").getType(), is(Type.GRANDFATHERED)); //example of a grandfathered tag
+		{ //German
+			final LanguageTag languageTag = new LanguageTag("de");
+			assertThat(languageTag.getType(), is(Type.NORMAL));
+			assertThat(languageTag.findPrimaryLanguage(), isPresentAndIs("de"));
+			assertThat(languageTag.findLanguage(), isPresentAndIs("de"));
+			assertThat(languageTag.findScript(), is(Optional.empty()));
+			assertThat(languageTag.findRegion(), is(Optional.empty()));
+			assertThat(languageTag.getVariants(), is(empty()));
+			assertThat(languageTag.getExtensions(), is(empty()));
+		}
+		{ //French
+			final LanguageTag languageTag = new LanguageTag("fr");
+			assertThat(languageTag.findLanguage(), isPresentAndIs("fr"));
+		}
+		{ //Japanese
+			final LanguageTag languageTag = new LanguageTag("ja");
+			assertThat(languageTag.findLanguage(), isPresentAndIs("ja"));
+		}
+		{ //example of a grandfathered tag
+			final LanguageTag languageTag = new LanguageTag("i-enochian");
+			assertThat(languageTag.getType(), is(Type.GRANDFATHERED));
+		}
 		//### Language subtag plus Script subtag
-		//Chinese written using the Traditional Chinese script
-		assertThat(new LanguageTag("zh-Hant").getType(), is(Type.NORMAL));
-		assertThat(new LanguageTag("zh-Hant").findPrimaryLanguage(), isPresentAndIs("zh"));
-		assertThat(new LanguageTag("zh-Hant").findLanguage(), isPresentAndIs("zh"));
-		assertThat(new LanguageTag("zh-Hant").findScript(), isPresentAndIs("Hant"));
-		//Chinese written using the Simplified Chinese script
-		assertThat(new LanguageTag("zh-Hans").findPrimaryLanguage(), isPresentAndIs("zh"));
-		assertThat(new LanguageTag("zh-Hans").findLanguage(), isPresentAndIs("zh"));
-		assertThat(new LanguageTag("zh-Hans").findScript(), isPresentAndIs("Hans"));
-		//Serbian written using the Cyrillic script
-		assertThat(new LanguageTag("sr-Cyrl").findPrimaryLanguage(), isPresentAndIs("sr"));
-		assertThat(new LanguageTag("sr-Cyrl").findLanguage(), isPresentAndIs("sr"));
-		assertThat(new LanguageTag("sr-Cyrl").findScript(), isPresentAndIs("Cyrl"));
-		//Serbian written using the Latin script
-		assertThat(new LanguageTag("sr-Latn").findPrimaryLanguage(), isPresentAndIs("sr"));
-		assertThat(new LanguageTag("sr-Latn").findLanguage(), isPresentAndIs("sr"));
-		assertThat(new LanguageTag("sr-Latn").findScript(), isPresentAndIs("Latn"));
+		{ //Chinese written using the Traditional Chinese script
+			final LanguageTag languageTag = new LanguageTag("zh-Hant");
+			assertThat(languageTag.getType(), is(Type.NORMAL));
+			assertThat(languageTag.findPrimaryLanguage(), isPresentAndIs("zh"));
+			assertThat(languageTag.findLanguage(), isPresentAndIs("zh"));
+			assertThat(languageTag.findScript(), isPresentAndIs("Hant"));
+			assertThat(languageTag.findRegion(), is(Optional.empty()));
+			assertThat(languageTag.getVariants(), is(empty()));
+			assertThat(languageTag.getExtensions(), is(empty()));
+		}
+		{ //Chinese written using the Simplified Chinese script
+			final LanguageTag languageTag = new LanguageTag("zh-Hans");
+			assertThat(languageTag.findPrimaryLanguage(), isPresentAndIs("zh"));
+			assertThat(languageTag.findLanguage(), isPresentAndIs("zh"));
+			assertThat(languageTag.findScript(), isPresentAndIs("Hans"));
+			assertThat(languageTag.findRegion(), is(Optional.empty()));
+			assertThat(languageTag.getVariants(), is(empty()));
+			assertThat(languageTag.getExtensions(), is(empty()));
+		}
+		{ //Serbian written using the Cyrillic script
+			final LanguageTag languageTag = new LanguageTag("sr-Cyrl");
+			assertThat(languageTag.findPrimaryLanguage(), isPresentAndIs("sr"));
+			assertThat(languageTag.findLanguage(), isPresentAndIs("sr"));
+			assertThat(languageTag.findScript(), isPresentAndIs("Cyrl"));
+			assertThat(languageTag.findRegion(), is(Optional.empty()));
+			assertThat(languageTag.getVariants(), is(empty()));
+			assertThat(languageTag.getExtensions(), is(empty()));
+		}
+		{ //Serbian written using the Latin script
+			final LanguageTag languageTag = new LanguageTag("sr-Latn");
+			assertThat(languageTag.findPrimaryLanguage(), isPresentAndIs("sr"));
+			assertThat(languageTag.findLanguage(), isPresentAndIs("sr"));
+			assertThat(languageTag.findScript(), isPresentAndIs("Latn"));
+			assertThat(languageTag.findRegion(), is(Optional.empty()));
+			assertThat(languageTag.getVariants(), is(empty()));
+			assertThat(languageTag.getExtensions(), is(empty()));
+		}
 		//### Extended language subtags and their primary language subtag counterparts
-		//Chinese, Mandarin, Simplified script, as used in China
-		assertThat(new LanguageTag("zh-cmn-Hans-CN").getType(), is(Type.NORMAL));
-		assertThat(new LanguageTag("zh-cmn-Hans-CN").findPrimaryLanguage(), isPresentAndIs("zh"));
-		assertThat(new LanguageTag("zh-cmn-Hans-CN").findLanguage(), isPresentAndIs("zh-cmn"));
-		assertThat(new LanguageTag("zh-cmn-Hans-CN").findScript(), isPresentAndIs("Hans"));
-		assertThat(new LanguageTag("zh-cmn-Hans-CN").findRegion(), isPresentAndIs("CN"));
-		//Mandarin Chinese, Simplified script, as used in China
-		assertThat(new LanguageTag("cmn-Hans-CN").getType(), is(Type.NORMAL));
-		assertThat(new LanguageTag("cmn-Hans-CN").findPrimaryLanguage(), isPresentAndIs("cmn"));
-		assertThat(new LanguageTag("cmn-Hans-CN").findLanguage(), isPresentAndIs("cmn"));
-		assertThat(new LanguageTag("cmn-Hans-CN").findScript(), isPresentAndIs("Hans"));
-		assertThat(new LanguageTag("cmn-Hans-CN").findRegion(), isPresentAndIs("CN"));
-		//Chinese, Cantonese, as used in Hong Kong SAR
-		assertThat(new LanguageTag("zh-yue-HK").getType(), is(Type.NORMAL));
-		assertThat(new LanguageTag("zh-yue-HK").findPrimaryLanguage(), isPresentAndIs("zh"));
-		assertThat(new LanguageTag("zh-yue-HK").findLanguage(), isPresentAndIs("zh-yue"));
-		assertThat(new LanguageTag("zh-yue-HK").findRegion(), isPresentAndIs("HK"));
-		//Cantonese Chinese, as used in Hong Kong SAR
-		assertThat(new LanguageTag("yue-HK").getType(), is(Type.NORMAL));
-		assertThat(new LanguageTag("yue-HK").findPrimaryLanguage(), isPresentAndIs("yue"));
-		assertThat(new LanguageTag("yue-HK").findLanguage(), isPresentAndIs("yue"));
-		assertThat(new LanguageTag("yue-HK").findRegion(), isPresentAndIs("HK"));
+		{ //Chinese, Mandarin, Simplified script, as used in China
+			final LanguageTag languageTag = new LanguageTag("zh-cmn-Hans-CN");
+			assertThat(languageTag.getType(), is(Type.NORMAL));
+			assertThat(languageTag.findPrimaryLanguage(), isPresentAndIs("zh"));
+			assertThat(languageTag.findLanguage(), isPresentAndIs("zh-cmn"));
+			assertThat(languageTag.findScript(), isPresentAndIs("Hans"));
+			assertThat(languageTag.findRegion(), isPresentAndIs("CN"));
+			assertThat(languageTag.getVariants(), is(empty()));
+			assertThat(languageTag.getExtensions(), is(empty()));
+		}
+		{ //Mandarin Chinese, Simplified script, as used in China
+			final LanguageTag languageTag = new LanguageTag("cmn-Hans-CN");
+			assertThat(languageTag.getType(), is(Type.NORMAL));
+			assertThat(languageTag.findPrimaryLanguage(), isPresentAndIs("cmn"));
+			assertThat(languageTag.findLanguage(), isPresentAndIs("cmn"));
+			assertThat(languageTag.findScript(), isPresentAndIs("Hans"));
+			assertThat(languageTag.findRegion(), isPresentAndIs("CN"));
+			assertThat(languageTag.getVariants(), is(empty()));
+			assertThat(languageTag.getExtensions(), is(empty()));
+		}
+		{ //Chinese, Cantonese, as used in Hong Kong SAR
+			final LanguageTag languageTag = new LanguageTag("zh-yue-HK");
+			assertThat(languageTag.getType(), is(Type.NORMAL));
+			assertThat(languageTag.findPrimaryLanguage(), isPresentAndIs("zh"));
+			assertThat(languageTag.findLanguage(), isPresentAndIs("zh-yue"));
+			assertThat(languageTag.findScript(), is(Optional.empty()));
+			assertThat(languageTag.findRegion(), isPresentAndIs("HK"));
+			assertThat(languageTag.getVariants(), is(empty()));
+			assertThat(languageTag.getExtensions(), is(empty()));
+		}
+		{ //Cantonese Chinese, as used in Hong Kong SAR
+			final LanguageTag languageTag = new LanguageTag("yue-HK");
+			assertThat(languageTag.getType(), is(Type.NORMAL));
+			assertThat(languageTag.findPrimaryLanguage(), isPresentAndIs("yue"));
+			assertThat(languageTag.findLanguage(), isPresentAndIs("yue"));
+			assertThat(languageTag.findScript(), is(Optional.empty()));
+			assertThat(languageTag.findRegion(), isPresentAndIs("HK"));
+			assertThat(languageTag.getVariants(), is(empty()));
+			assertThat(languageTag.getExtensions(), is(empty()));
+		}
 		//### Language-Script-Region
-		//Chinese written using the Simplified script as used in mainland China
-		assertThat(new LanguageTag("zh-Hans-CN").getType(), is(Type.NORMAL));
-		assertThat(new LanguageTag("zh-Hans-CN").findPrimaryLanguage(), isPresentAndIs("zh"));
-		assertThat(new LanguageTag("zh-Hans-CN").findLanguage(), isPresentAndIs("zh"));
-		assertThat(new LanguageTag("zh-Hans-CN").findScript(), isPresentAndIs("Hans"));
-		assertThat(new LanguageTag("zh-Hans-CN").findRegion(), isPresentAndIs("CN"));
-		//Serbian written using the Latin script as used in Serbia
-		assertThat(new LanguageTag("sr-Latn-RS").getType(), is(Type.NORMAL));
-		assertThat(new LanguageTag("sr-Latn-RS").findPrimaryLanguage(), isPresentAndIs("sr"));
-		assertThat(new LanguageTag("sr-Latn-RS").findLanguage(), isPresentAndIs("sr"));
-		assertThat(new LanguageTag("sr-Latn-RS").findScript(), isPresentAndIs("Latn"));
-		assertThat(new LanguageTag("sr-Latn-RS").findRegion(), isPresentAndIs("RS"));
+		{ //Chinese written using the Simplified script as used in mainland China
+			final LanguageTag languageTag = new LanguageTag("zh-Hans-CN");
+			assertThat(languageTag.getType(), is(Type.NORMAL));
+			assertThat(languageTag.findPrimaryLanguage(), isPresentAndIs("zh"));
+			assertThat(languageTag.findLanguage(), isPresentAndIs("zh"));
+			assertThat(languageTag.findScript(), isPresentAndIs("Hans"));
+			assertThat(languageTag.findRegion(), isPresentAndIs("CN"));
+			assertThat(languageTag.getVariants(), is(empty()));
+			assertThat(languageTag.getExtensions(), is(empty()));
+		}
+		{ //Serbian written using the Latin script as used in Serbia
+			final LanguageTag languageTag = new LanguageTag("sr-Latn-RS");
+			assertThat(languageTag.getType(), is(Type.NORMAL));
+			assertThat(languageTag.findPrimaryLanguage(), isPresentAndIs("sr"));
+			assertThat(languageTag.findLanguage(), isPresentAndIs("sr"));
+			assertThat(languageTag.findScript(), isPresentAndIs("Latn"));
+			assertThat(languageTag.findRegion(), isPresentAndIs("RS"));
+			assertThat(languageTag.getVariants(), is(empty()));
+			assertThat(languageTag.getExtensions(), is(empty()));
+		}
 		//### Language-Variant
-		//Resian dialect of Slovenian
-		assertThat(new LanguageTag("sl-rozaj").getType(), is(Type.NORMAL));
-		assertThat(new LanguageTag("sl-rozaj").findPrimaryLanguage(), isPresentAndIs("sl"));
-		assertThat(new LanguageTag("sl-rozaj").findLanguage(), isPresentAndIs("sl"));
-		assertThat(new LanguageTag("sl-rozaj").findScript(), isEmpty());
-		assertThat(new LanguageTag("sl-rozaj").findRegion(), isEmpty());
-		assertThat(new LanguageTag("sl-rozaj").getVariants(), containsInAnyOrder("rozaj"));
-		//San Giorgio dialect of Resian dialect of Slovenian
-		assertThat(new LanguageTag("sl-rozaj-biske").getType(), is(Type.NORMAL));
-		assertThat(new LanguageTag("sl-rozaj-biske").findPrimaryLanguage(), isPresentAndIs("sl"));
-		assertThat(new LanguageTag("sl-rozaj-biske").findLanguage(), isPresentAndIs("sl"));
-		assertThat(new LanguageTag("sl-rozaj-biske").findScript(), isEmpty());
-		assertThat(new LanguageTag("sl-rozaj-biske").findRegion(), isEmpty());
-		assertThat(new LanguageTag("sl-rozaj-biske").getVariants(), containsInAnyOrder("rozaj", "biske"));
-		//Nadiza dialect of Slovenian
-		assertThat(new LanguageTag("sl-nedis").getType(), is(Type.NORMAL));
-		assertThat(new LanguageTag("sl-nedis").findPrimaryLanguage(), isPresentAndIs("sl"));
-		assertThat(new LanguageTag("sl-nedis").findLanguage(), isPresentAndIs("sl"));
-		assertThat(new LanguageTag("sl-nedis").findScript(), isEmpty());
-		assertThat(new LanguageTag("sl-nedis").findRegion(), isEmpty());
-		assertThat(new LanguageTag("sl-nedis").getVariants(), containsInAnyOrder("nedis"));
+		{ //Resian dialect of Slovenian
+			final LanguageTag languageTag = new LanguageTag("sl-rozaj");
+			assertThat(languageTag.getType(), is(Type.NORMAL));
+			assertThat(languageTag.findPrimaryLanguage(), isPresentAndIs("sl"));
+			assertThat(languageTag.findLanguage(), isPresentAndIs("sl"));
+			assertThat(languageTag.findScript(), is(Optional.empty()));
+			assertThat(languageTag.findRegion(), is(Optional.empty()));
+			assertThat(languageTag.getVariants(), containsInAnyOrder("rozaj"));
+			assertThat(languageTag.getExtensions(), is(empty()));
+		}
+		{ //San Giorgio dialect of Resian dialect of Slovenian
+			final LanguageTag languageTag = new LanguageTag("sl-rozaj-biske");
+			assertThat(languageTag.getType(), is(Type.NORMAL));
+			assertThat(languageTag.findPrimaryLanguage(), isPresentAndIs("sl"));
+			assertThat(languageTag.findLanguage(), isPresentAndIs("sl"));
+			assertThat(languageTag.findScript(), is(Optional.empty()));
+			assertThat(languageTag.findRegion(), is(Optional.empty()));
+			assertThat(languageTag.getVariants(), containsInAnyOrder("rozaj", "biske"));
+			assertThat(languageTag.getExtensions(), is(empty()));
+		}
+		{ //Nadiza dialect of Slovenian
+			final LanguageTag languageTag = new LanguageTag("sl-nedis");
+			assertThat(languageTag.getType(), is(Type.NORMAL));
+			assertThat(languageTag.findPrimaryLanguage(), isPresentAndIs("sl"));
+			assertThat(languageTag.findLanguage(), isPresentAndIs("sl"));
+			assertThat(languageTag.findScript(), is(Optional.empty()));
+			assertThat(languageTag.findRegion(), is(Optional.empty()));
+			assertThat(languageTag.getVariants(), containsInAnyOrder("nedis"));
+			assertThat(languageTag.getExtensions(), is(empty()));
+		}
+		//### Language-Region-Variant
+		{ //German as used in Switzerland using the 1901 variant [orthography]
+			final LanguageTag languageTag = new LanguageTag("de-CH-1901");
+			assertThat(languageTag.getType(), is(Type.NORMAL));
+			assertThat(languageTag.findPrimaryLanguage(), isPresentAndIs("de"));
+			assertThat(languageTag.findLanguage(), isPresentAndIs("de"));
+			assertThat(languageTag.findScript(), is(Optional.empty()));
+			assertThat(languageTag.findRegion(), isPresentAndIs("CH"));
+			assertThat(languageTag.getVariants(), containsInAnyOrder("1901"));
+			assertThat(languageTag.getExtensions(), is(empty()));
+		}
+		{ //Slovenian as used in Italy, Nadiza dialect
+			final LanguageTag languageTag = new LanguageTag("sl-IT-nedis");
+			assertThat(languageTag.getType(), is(Type.NORMAL));
+			assertThat(languageTag.findPrimaryLanguage(), isPresentAndIs("sl"));
+			assertThat(languageTag.findLanguage(), isPresentAndIs("sl"));
+			assertThat(languageTag.findScript(), is(Optional.empty()));
+			assertThat(languageTag.findRegion(), isPresentAndIs("IT"));
+			assertThat(languageTag.getVariants(), containsInAnyOrder("nedis"));
+			assertThat(languageTag.getExtensions(), is(empty()));
+		}
+		//### Language-Script-Region-Variant
+		{ //Eastern Armenian written in Latin script, as used in Italy
+			final LanguageTag languageTag = new LanguageTag("hy-Latn-IT-arevela");
+			assertThat(languageTag.getType(), is(Type.NORMAL));
+			assertThat(languageTag.findPrimaryLanguage(), isPresentAndIs("hy"));
+			assertThat(languageTag.findLanguage(), isPresentAndIs("hy"));
+			assertThat(languageTag.findScript(), isPresentAndIs("Latn"));
+			assertThat(languageTag.findRegion(), isPresentAndIs("IT"));
+			assertThat(languageTag.getVariants(), containsInAnyOrder("arevela"));
+			assertThat(languageTag.getExtensions(), is(empty()));
+		}
+		//### Language-Region
+		{ //German for Germany
+			final LanguageTag languageTag = new LanguageTag("de-DE");
+			assertThat(languageTag.getType(), is(Type.NORMAL));
+			assertThat(languageTag.findPrimaryLanguage(), isPresentAndIs("de"));
+			assertThat(languageTag.findLanguage(), isPresentAndIs("de"));
+			assertThat(languageTag.findScript(), is(Optional.empty()));
+			assertThat(languageTag.findRegion(), isPresentAndIs("DE"));
+			assertThat(languageTag.getVariants(), is(empty()));
+			assertThat(languageTag.getExtensions(), is(empty()));
+		}
+		{ //English as used in the United States
+			final LanguageTag languageTag = new LanguageTag("en-US");
+			assertThat(languageTag.getType(), is(Type.NORMAL));
+			assertThat(languageTag.findPrimaryLanguage(), isPresentAndIs("en"));
+			assertThat(languageTag.findLanguage(), isPresentAndIs("en"));
+			assertThat(languageTag.findScript(), is(Optional.empty()));
+			assertThat(languageTag.findRegion(), isPresentAndIs("US"));
+			assertThat(languageTag.getVariants(), is(empty()));
+			assertThat(languageTag.getExtensions(), is(empty()));
+		}
+		{ //Spanish appropriate for the Latin America and Caribbean region using the UN region code
+			final LanguageTag languageTag = new LanguageTag("es-419");
+			assertThat(languageTag.getType(), is(Type.NORMAL));
+			assertThat(languageTag.findPrimaryLanguage(), isPresentAndIs("es"));
+			assertThat(languageTag.findLanguage(), isPresentAndIs("es"));
+			assertThat(languageTag.findScript(), is(Optional.empty()));
+			assertThat(languageTag.findRegion(), isPresentAndIs("419"));
+			assertThat(languageTag.getVariants(), is(empty()));
+			assertThat(languageTag.getExtensions(), is(empty()));
+		}
+		//### Private use subtags
+		//TODO de-CH-x-phonebk
+		//TODO az-Arab-x-AZE-derbend
+		//### Private use registry values
+		{ //private use using the singleton 'x'
+			final LanguageTag languageTag = new LanguageTag("x-whatever");
+			assertThat(languageTag.getType(), is(Type.PRIVATE_USE));
+			assertThat(languageTag.findPrimaryLanguage(), is(Optional.empty()));
+			assertThat(languageTag.findLanguage(), is(Optional.empty()));
+			assertThat(languageTag.findScript(), is(Optional.empty()));
+			assertThat(languageTag.findRegion(), is(Optional.empty()));
+			assertThat(languageTag.getVariants(), is(empty()));
+			assertThat(languageTag.getExtensions(), is(empty()));
+		}
 	}
+
+	//TODO implement Locale conversion
 
 	//## hash code
 

@@ -89,8 +89,8 @@ public final class LanguageTag {
 	static final String LANGTAG_PATTERN_GROUP_PRIVATEUSE = "privateuse";
 	private static final String PRIVATEUSE = format("(?<%s>[xX](?:%s\\p{Alnum}{1,8}){1,})", LANGTAG_PATTERN_GROUP_PRIVATEUSE, SUBTAG_SEPARATOR);
 
-	static final String LANGTAG_PATTERN_GROUP_VARIANTS = "variants"; //may be empty; never null
-	static final String LANGTAG_PATTERN_GROUP_EXTENSIONS = "extensions"; //may be empty; never null
+	static final String LANGTAG_PATTERN_GROUP_VARIANTS = "variants"; //group may be empty; never null
+	static final String LANGTAG_PATTERN_GROUP_EXTENSIONS = "extensions"; //group may be empty; never null
 
 	/** A pattern for a language tag matching the <code>langtag</code> production. */
 	public static final Pattern LANGTAG_PATTERN = Pattern.compile(format("%s(?:%s%s)?(?:%s%s)?(?<%s>(?:%s%s)*)(?<%s>(?:%s%s)*)(?:%s%s)?", LANGUAGE,
@@ -170,6 +170,16 @@ public final class LanguageTag {
 		return variants;
 	}
 
+	private final Set<String> extensions;
+
+	/**
+	 * Returns the extensions. Most language tags do not have extensions.
+	 * @return The set of extensions, which will be empty if there are no extensions
+	 */
+	protected Set<String> getExtensions() {
+		return extensions;
+	}
+
 	/**
 	 * Constructor.
 	 * @param text The text form of the entire language tag; will be normalized.
@@ -186,6 +196,7 @@ public final class LanguageTag {
 			script = null;
 			region = null;
 			variants = emptySet();
+			extensions = emptySet();
 			return;
 		}
 		final Matcher matcher = LANGTAG_PATTERN.matcher(text);
@@ -197,7 +208,10 @@ public final class LanguageTag {
 			primaryLanguage = extlang != null ? matcher.group(LANGTAG_PATTERN_GROUP_LANGUAGE_CODE) : language;
 			script = matcher.group(LANGTAG_PATTERN_GROUP_SCRIPT);
 			region = matcher.group(LANGTAG_PATTERN_GROUP_REGION);
-			variants = matcher.group(LANGTAG_PATTERN_GROUP_VARIANT) != null //if a variant matched (the last one)
+			variants = matcher.group(LANGTAG_PATTERN_GROUP_VARIANT) != null //if a variant matched (which will be the last one)
+					? immutableSetOf(SUBTAG_SEPARATOR_CHARACTERS.split(matcher.group(LANGTAG_PATTERN_GROUP_VARIANTS))) //split out the variants in the entire variants section
+					: emptySet();
+			extensions = matcher.group(LANGTAG_PATTERN_GROUP_EXTENSION) != null //if an extension matched (which will be the last one)
 					? immutableSetOf(SUBTAG_SEPARATOR_CHARACTERS.split(matcher.group(LANGTAG_PATTERN_GROUP_VARIANTS))) //split out the variants in the entire variants section
 					: emptySet();
 		} else if(PRIVATEUSE_PATTERN.matcher(text).matches()) {
@@ -207,9 +221,40 @@ public final class LanguageTag {
 			script = null;
 			region = null;
 			variants = emptySet();
+			extensions = emptySet();
 		} else {
 			throw new IllegalArgumentException("Invalid language tag: " + text);
 		}
+	}
+
+	/**
+	 * Extracts all extensions from the extension group.
+	 * @implNote This implementation does virtually no validation of the group string. It is assumed that the group has already been validated by virtue of
+	 *           matching the regular expression.
+	 * @param group The entire matched extension group, in the form <code>-a-myext-b-another-one-c-last</code>.
+	 * @return A list of extensions, such as <code>a-myext</code>, <code>b-another-one</code>, <code>c-last</code>.
+	 */
+	static List<String> parseExtensions(@Nonnull final String group) {
+		final List<String> extensions = new ArrayList<>();
+		final int groupLength = group.length();
+		final int maxLastExtensionDividerIndex = groupLength - 5; //(inclusive) the smallest remaining extension possible at the end is `x-xx`, so ignore delimiters after that
+		int beginIndex = 1; //skip the initial delimiter introducing all the extensions, separating them from the langtag
+		while(beginIndex < groupLength) { //do the check up-front just to prevent an exception if a short string was passed
+			int endIndex = beginIndex;
+			do {
+				endIndex = group.indexOf(SUBTAG_SEPARATOR, endIndex + 1);
+				if(endIndex == -1 || endIndex > maxLastExtensionDividerIndex) { //if we find no more separators, or there could be no more distinct extensions
+					endIndex = groupLength; //consume the rest of the group for this extension
+					break;
+				}
+			} while(group.charAt(endIndex + 2) != SUBTAG_SEPARATOR); //we've found the end of this extension if a singleton (e.g. `x-…`) follows
+			final String extension = group.substring(beginIndex, endIndex);
+			assert extension.charAt(0) != SUBTAG_SEPARATOR;
+			assert extension.charAt(1) == SUBTAG_SEPARATOR;
+			extensions.add(extension);
+			beginIndex = endIndex + 1;
+		}
+		return extensions;
 	}
 
 	/**
