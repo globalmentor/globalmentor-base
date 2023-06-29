@@ -92,7 +92,11 @@ public final class LanguageTag {
 	static final String LANGTAG_PATTERN_GROUP_VARIANTS = "variants"; //group may be empty; never null
 	static final String LANGTAG_PATTERN_GROUP_EXTENSIONS = "extensions"; //group may be empty; never null
 
-	/** A pattern for a language tag matching the <code>langtag</code> production. */
+	/**
+	 * A pattern for a language tag matching the <code>langtag</code> production.
+	 * @implNote This pattern and the patterns which comprise it match without regard to ASCII case, even though in this class it is used against a string that
+	 *           has already been normalized.
+	 */
 	public static final Pattern LANGTAG_PATTERN = Pattern.compile(format("%s(?:%s%s)?(?:%s%s)?(?<%s>(?:%s%s)*)(?<%s>(?:%s%s)*)(?:%s%s)?", LANGUAGE,
 			SUBTAG_SEPARATOR, SCRIPT, SUBTAG_SEPARATOR, REGION, LANGTAG_PATTERN_GROUP_VARIANTS, SUBTAG_SEPARATOR, VARIANT, LANGTAG_PATTERN_GROUP_EXTENSIONS,
 			SUBTAG_SEPARATOR, EXTENSION, SUBTAG_SEPARATOR, PRIVATEUSE));
@@ -163,21 +167,33 @@ public final class LanguageTag {
 	private final Set<String> variants;
 
 	/**
-	 * Returns the variants. Most language tags do not have variants.
-	 * @return The set of variants, which will be empty if there are no variants
+	 * Returns the variants in conventional, lowercase form. Most language tags do not have variants.
+	 * @return The set of variants, which will be empty if there are no variants.
 	 */
-	protected Set<String> getVariants() {
+	public Set<String> getVariants() {
 		return variants;
 	}
 
 	private final Set<String> extensions;
 
 	/**
-	 * Returns the extensions. Most language tags do not have extensions.
-	 * @return The set of extensions, which will be empty if there are no extensions
+	 * Returns the extensions in conventional, lowercase form. Most language tags do not have extensions.
+	 * @return The set of extensions, which will be empty if there are no extensions.
 	 */
-	protected Set<String> getExtensions() {
+	public Set<String> getExtensions() {
 		return extensions;
+	}
+
+	private final String privateUse;
+
+	/**
+	 * Returns the private use in conventional, lowercase form. Most language tags do not have a private-use section.
+	 * @apiNote The values returned is from the private-use section of {@link Type#NORMAL} language tag; these are distinct from a language tag that is itself a
+	 *          {@link Type#PRIVATE_USE} language tag.
+	 * @return The private use if any.
+	 */
+	public Optional<String> findPrivateUse() {
+		return Optional.ofNullable(privateUse);
 	}
 
 	/**
@@ -197,9 +213,10 @@ public final class LanguageTag {
 			region = null;
 			variants = emptySet();
 			extensions = emptySet();
+			privateUse = null;
 			return;
 		}
-		final Matcher matcher = LANGTAG_PATTERN.matcher(text);
+		final Matcher matcher = LANGTAG_PATTERN.matcher(tagString); //match on the normalized tag string so we won't have to normalize the individual components
 		if(matcher.matches()) {
 			type = Type.NORMAL;
 			language = matcher.group(LANGTAG_PATTERN_GROUP_LANGUAGE);
@@ -212,8 +229,9 @@ public final class LanguageTag {
 					? immutableSetOf(SUBTAG_SEPARATOR_CHARACTERS.split(matcher.group(LANGTAG_PATTERN_GROUP_VARIANTS))) //split out the variants in the entire variants section
 					: emptySet();
 			extensions = matcher.group(LANGTAG_PATTERN_GROUP_EXTENSION) != null //if an extension matched (which will be the last one)
-					? immutableSetOf(SUBTAG_SEPARATOR_CHARACTERS.split(matcher.group(LANGTAG_PATTERN_GROUP_VARIANTS))) //split out the variants in the entire variants section
+					? immutableSetOf(parseExtensions(matcher.group(LANGTAG_PATTERN_GROUP_EXTENSIONS))) //parse out the extensions in the entire extensions section
 					: emptySet();
+			privateUse = matcher.group(LANGTAG_PATTERN_GROUP_PRIVATEUSE);
 		} else if(PRIVATEUSE_PATTERN.matcher(text).matches()) {
 			type = Type.PRIVATE_USE;
 			language = null;
@@ -222,6 +240,7 @@ public final class LanguageTag {
 			region = null;
 			variants = emptySet();
 			extensions = emptySet();
+			privateUse = null;
 		} else {
 			throw new IllegalArgumentException("Invalid language tag: " + text);
 		}
@@ -231,6 +250,7 @@ public final class LanguageTag {
 	 * Extracts all extensions from the extension group.
 	 * @implNote This implementation does virtually no validation of the group string. It is assumed that the group has already been validated by virtue of
 	 *           matching the regular expression.
+	 * @implNote This implementation does no normalization of the group string. It is assumed that the group has already been normalized.
 	 * @param group The entire matched extension group, in the form <code>-a-myext-b-another-one-c-last</code>.
 	 * @return A list of extensions, such as <code>a-myext</code>, <code>b-another-one</code>, <code>c-last</code>.
 	 */
@@ -247,7 +267,7 @@ public final class LanguageTag {
 					endIndex = groupLength; //consume the rest of the group for this extension
 					break;
 				}
-			} while(group.charAt(endIndex + 2) != SUBTAG_SEPARATOR); //we've found the end of this extension if a singleton (e.g. `x-…`) follows
+			} while(group.charAt(endIndex + 2) != SUBTAG_SEPARATOR); //we've found the end of this extension if a singleton (e.g. `a-…`) follows
 			final String extension = group.substring(beginIndex, endIndex);
 			assert extension.charAt(0) != SUBTAG_SEPARATOR;
 			assert extension.charAt(1) == SUBTAG_SEPARATOR;
@@ -282,7 +302,7 @@ public final class LanguageTag {
 	 * @throws IllegalArgumentException if one of the given input characters is outside the range of the US-ASCII charset.
 	 * @see <a href="https://datatracker.ietf.org/doc/html/rfc5646#section-2.1.1">RFC 5646 § 2.1.1. Formatting of Language Tags</a>
 	 */
-	public static CharSequence normalize(@Nonnull final CharSequence languageTagText) {
+	static CharSequence normalize(@Nonnull final CharSequence languageTagText) {
 		final int length = languageTagText.length();
 		byte[] normalizedLanguageTagTextIfNeeded = null; //lazily created only if needed; bytes support US-ASCII charset
 		boolean isAfterSingleton = false;
