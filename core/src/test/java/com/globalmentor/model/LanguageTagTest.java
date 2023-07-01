@@ -18,11 +18,13 @@ package com.globalmentor.model;
 
 import static com.github.npathai.hamcrestopt.OptionalMatchers.*;
 import static com.globalmentor.model.LanguageTag.*;
+import static java.util.Arrays.*;
+import static java.util.stream.Collectors.*;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.util.Optional;
+import java.util.*;
 import java.util.regex.*;
 
 import org.junit.jupiter.api.Test;
@@ -934,6 +936,24 @@ public class LanguageTagTest {
 		assertThrows(IllegalArgumentException.class, () -> new LanguageTag("a-DE"), "use of a single-character subtag in primary position");
 		//two extensions with same single-letter prefix
 		assertThrows(IllegalArgumentException.class, () -> new LanguageTag("ar-a-aaa-b-bbb-a-ccc"), "two extensions with same single-letter prefix");
+	}
+
+	//## static factory method
+
+	/** @see LanguageTag#parse(CharSequence) */
+	@Test
+	void testCache() {
+		//list of test language tags based on Locale constants 
+		final List<String> languageTagStrings = asList("en", "fr", "de", "it", "ja", "ko", "zh", "zh-CN", "zh-TW", "fr-FR", "de-DE", "it-IT", "ja-JP", "ko-KR",
+				"en-GB", "en-US", "en-CA", "fr-CA");
+		final List<LanguageTag> languageTags = languageTagStrings.stream().map(LanguageTag::parse).collect(toList());
+		for(int i = 0, len = languageTags.size(); i < len; i++) {
+			final LanguageTag languageTag1 = languageTags.get(i);
+			final String languageTagString = languageTagStrings.get(i);
+			assertThat("Cache stores correct tag.", languageTag1.toString(), is(languageTagString));
+			final LanguageTag languageTag2 = LanguageTag.parse(languageTagString);
+			assertThat("Cache retrieved existing language tag.", languageTag2, is(sameInstance(languageTag1)));
+		}
 	}
 
 	//TODO implement Locale conversion

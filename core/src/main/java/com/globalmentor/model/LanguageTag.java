@@ -18,12 +18,14 @@ package com.globalmentor.model;
 
 import static com.globalmentor.collections.Sets.*;
 import static com.globalmentor.java.Conditions.*;
+import static java.lang.Math.*;
 import static java.lang.String.format;
 import static java.nio.charset.StandardCharsets.*;
 import static java.util.Collections.*;
 import static java.util.stream.Collectors.*;
 
 import java.util.*;
+import java.util.concurrent.*;
 import java.util.regex.*;
 import java.util.stream.*;
 
@@ -287,13 +289,71 @@ public final class LanguageTag {
 	}
 
 	/**
+	 * The cache of commonly-used language tags, retrieved by ASCII case-insensitive hash code modulus.
+	 * @implSpec Each position in the primary cache represents the modulus of the language tag hash code. Other language tags with the same effective hash codes
+	 *           will be placed in the secondary cache, searched linearly, until the secondary cache is full, at which point the value will overwrite the value in
+	 *           the main cache to provide caching of the most recently used instance.
+	 * @implNote This algorithm has benign race conditions. When storing in the main cache one thread may lose a value; however the next time it is checked it
+	 *           will simply be created and placed in the secondary cache if space is available, or overwrite the first value in the primary cache. Moreover the
+	 *           array elements are not volatile, which increases the chances of race conditions on the first caching for a particular bucket. This algorithm is
+	 *           assumed to have a smaller memory overhead than a {@link ConcurrentHashMap} (even when sparsely filled); perform more efficiently for a small
+	 *           number of cached items; and provide most-recently-used lookup for hash collisions, which would not occur in a plain hash map. The only downside
+	 *           would be when two language tags with equivalent hashes are used multiple times alternating. Even in this case, a limited-size cache that is full
+	 *           would perform at least as bad.
+	 */
+	private static final LanguageTag[] PRIMARY_CACHE = new LanguageTag[16];
+
+	/** The secondary cache of commonly-used language tags, stored with hashes, and retrieved by linear traversal. */
+	private static final List<Map.Entry<Integer, LanguageTag>> SECONDARY_CACHE = new CopyOnWriteArrayList<>();
+
+	/**
 	 * Returns a language tag from the text of the tag.
 	 * @param text The textual representation of a language tag.
 	 * @return A new or existing language tag representing the given text.
 	 * @throws IllegalArgumentException if the given text is not a valid representation of a language tag.
 	 */
 	public static LanguageTag parse(@Nonnull final CharSequence text) {
-		return new LanguageTag(text);
+		final int cacheSize = PRIMARY_CACHE.length;
+		final int hash = ASCII.hashCodeIgnoreCase(text);
+		final int cacheIndex = abs(hash) % cacheSize;
+		//check the primary cache
+		final LanguageTag primaryCachedLanguageTag = PRIMARY_CACHE[cacheIndex];
+		if(primaryCachedLanguageTag == null) {
+			final LanguageTag languageTag = new LanguageTag(text); //cache miss in primary cache; create new language tag
+			PRIMARY_CACHE[cacheIndex] = languageTag; //cache the language tag; a race condition might lose a value that suddenly appeared, but it would be cached the next time if space were available
+			return languageTag;
+		}
+		if(ASCII.equalsIgnoreCase(primaryCachedLanguageTag.toString(), text)) { //this doesn't consider non-canonical forms equivalent
+			return primaryCachedLanguageTag;
+		}
+		//check the secondary cache
+		for(final Map.Entry<Integer, LanguageTag> secondaryCacheEntry : SECONDARY_CACHE) {
+			if(secondaryCacheEntry.getKey() == hash) {
+				final LanguageTag secondaryCachedLanguageTag = secondaryCacheEntry.getValue();
+				if(ASCII.equalsIgnoreCase(secondaryCachedLanguageTag.toString(), text)) { //this doesn't consider non-canonical forms equivalent
+					return secondaryCachedLanguageTag;
+				}
+			}
+		}
+		//cache miss in both caches; create new language tag and attempt to cache it 
+		final LanguageTag languageTag = new LanguageTag(text);
+		final boolean secondaryCacheWasFull;
+		if(SECONDARY_CACHE.size() < cacheSize) { //assume the secondary cache should not be larger than the primary cache
+			synchronized(SECONDARY_CACHE) { //even though the secondary cache is write-safe, synchronize to prevent a race condition that would allow unbounded growing, however unlikely
+				if(SECONDARY_CACHE.size() < cacheSize) { //double-check under synchronization
+					secondaryCacheWasFull = false;
+					SECONDARY_CACHE.add(new AbstractMap.SimpleImmutableEntry<Integer, LanguageTag>(hash, languageTag));
+				} else {
+					secondaryCacheWasFull = true;
+				}
+			}
+		} else {
+			secondaryCacheWasFull = true;
+		}
+		if(secondaryCacheWasFull) { //if both caches are full
+			PRIMARY_CACHE[cacheIndex] = languageTag; //replace the value in the primary cache to provide most-recently-used lookup			
+		}
+		return languageTag;
 	}
 
 	private static enum NormalizeMode {
