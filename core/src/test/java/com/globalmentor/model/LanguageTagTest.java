@@ -16,10 +16,11 @@
 
 package com.globalmentor.model;
 
-import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresentAndIs;
+import static com.github.npathai.hamcrestopt.OptionalMatchers.*;
 import static com.globalmentor.model.LanguageTag.*;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Optional;
 import java.util.regex.*;
@@ -528,8 +529,8 @@ public class LanguageTagTest {
 				containsInAnyOrder("a-myext", "b-another-one", "c-eightlen", "z-yx"));
 		assertThat(new LanguageTag("en-a-really-long-subgroup-ij").getExtensions(), containsInAnyOrder("a-really-Long-subgroup-IJ"));
 		assertThat(new LanguageTag("en-a-really-long-subgroup-7z").getExtensions(), containsInAnyOrder("a-really-Long-subgroup-7Z"));
-		assertThat(new LanguageTag("en-a-myext-a-really-long-subgroup-z-yx").getExtensions(), containsInAnyOrder("a-myext", "a-really-Long-subgroup", "z-yx"));
-		assertThat(new LanguageTag("EN-A-MYEXT-A-REALLY-LONG-SUBGROUP-Z-YX").getExtensions(), containsInAnyOrder("a-myext", "a-really-Long-subgroup", "z-yx"));
+		assertThat(new LanguageTag("en-a-myext-b-really-long-subgroup-z-yx").getExtensions(), containsInAnyOrder("a-myext", "b-really-Long-subgroup", "z-yx"));
+		assertThat(new LanguageTag("EN-A-MYEXT-B-REALLY-LONG-SUBGROUP-Z-YX").getExtensions(), containsInAnyOrder("a-myext", "b-really-Long-subgroup", "z-yx"));
 	}
 
 	/** @see LanguageTag#findPrivateUse() */
@@ -551,11 +552,30 @@ public class LanguageTagTest {
 		assertThat(new LanguageTag("EN-X-WHATEVER-X-AND-X-ANOTHER-THING").findPrivateUse(), isPresentAndIs("x-whatever-x-and-x-another-thing"));
 	}
 
+	/**
+	 * @see LanguageTag#getExtensions()
+	 * @see LanguageTag#findPrivateUse()
+	 * @see <a href="https://datatracker.ietf.org/doc/html/rfc5646#section-2.2.6">RFC 5646 § 2.2.6. Extension Subtags</a>
+	 */
+	@Test
+	void verifyPrivateUseCanContainExtensionSingleton() {
+
+		final LanguageTag languageTag = new LanguageTag("en-a-bbb-x-a-ccc");
+		assertThat(languageTag.getType(), is(Type.NORMAL));
+		assertThat(languageTag.findPrimaryLanguage(), isPresentAndIs("en"));
+		assertThat(languageTag.findLanguage(), isPresentAndIs("en"));
+		assertThat(languageTag.findScript(), is(Optional.empty()));
+		assertThat(languageTag.findRegion(), is(Optional.empty()));
+		assertThat(languageTag.getVariants(), is(empty()));
+		assertThat(languageTag.getExtensions(), containsInAnyOrder("a-bbb"));
+		assertThat(languageTag.findPrivateUse(), isPresentAndIs("x-a-ccc"));
+	}
+
 	//## examples
 
-	/** @see <a href="https://datatracker.ietf.org/doc/html/rfc5646#appendix-A">RFC 5646 § Appendix A. Examples of Language Tags (Informative)</a> */
+	/** @see <a href="https://datatracker.ietf.org/doc/html/rfc5646#appendix-A">RFC 5646 Appendix A. Examples of Language Tags (Informative)</a> */
 	@Test
-	void testExamples() {
+	void testAppendixAExamples() {
 		//### Simple language subtag
 		{ //German
 			final LanguageTag languageTag = new LanguageTag("de");
@@ -873,6 +893,47 @@ public class LanguageTagTest {
 			assertThat(languageTag.getExtensions(), is(empty()));
 			assertThat(languageTag.findPrivateUse(), is(Optional.empty()));
 		}
+		//### Tags that use extensions (examples ONLY -- extensions MUST be defined by revision or update …, or by RFC)
+		{
+			final LanguageTag languageTag = new LanguageTag("en-US-u-islamcal");
+			assertThat(languageTag.getType(), is(Type.NORMAL));
+			assertThat(languageTag.findPrimaryLanguage(), isPresentAndIs("en"));
+			assertThat(languageTag.findLanguage(), isPresentAndIs("en"));
+			assertThat(languageTag.findScript(), is(Optional.empty()));
+			assertThat(languageTag.findRegion(), isPresentAndIs("US"));
+			assertThat(languageTag.getVariants(), is(empty()));
+			assertThat(languageTag.getExtensions(), containsInAnyOrder("u-islamcal"));
+			assertThat(languageTag.findPrivateUse(), is(Optional.empty()));
+		}
+		{
+			final LanguageTag languageTag = new LanguageTag("zh-CN-a-myext-x-private");
+			assertThat(languageTag.getType(), is(Type.NORMAL));
+			assertThat(languageTag.findPrimaryLanguage(), isPresentAndIs("zh"));
+			assertThat(languageTag.findLanguage(), isPresentAndIs("zh"));
+			assertThat(languageTag.findScript(), is(Optional.empty()));
+			assertThat(languageTag.findRegion(), isPresentAndIs("CN"));
+			assertThat(languageTag.getVariants(), is(empty()));
+			assertThat(languageTag.getExtensions(), containsInAnyOrder("a-myext"));
+			assertThat(languageTag.findPrivateUse(), isPresentAndIs("x-private"));
+		}
+		{
+			final LanguageTag languageTag = new LanguageTag("en-a-myext-b-another");
+			assertThat(languageTag.getType(), is(Type.NORMAL));
+			assertThat(languageTag.findPrimaryLanguage(), isPresentAndIs("en"));
+			assertThat(languageTag.findLanguage(), isPresentAndIs("en"));
+			assertThat(languageTag.findScript(), is(Optional.empty()));
+			assertThat(languageTag.findRegion(), is(Optional.empty()));
+			assertThat(languageTag.getVariants(), is(empty()));
+			assertThat(languageTag.getExtensions(), containsInAnyOrder("a-myext", "b-another"));
+			assertThat(languageTag.findPrivateUse(), is(Optional.empty()));
+		}
+		//### Some Invalid Tags
+		//two region tags
+		assertThrows(IllegalArgumentException.class, () -> new LanguageTag("de-419-DE"), "two region tags");
+		//use of a single-character subtag in primary position; note that there are a few grandfathered tags that start with "i-" that are valid
+		assertThrows(IllegalArgumentException.class, () -> new LanguageTag("a-DE"), "use of a single-character subtag in primary position");
+		//two extensions with same single-letter prefix
+		assertThrows(IllegalArgumentException.class, () -> new LanguageTag("ar-a-aaa-b-bbb-a-ccc"), "two extensions with same single-letter prefix");
 	}
 
 	//TODO implement Locale conversion

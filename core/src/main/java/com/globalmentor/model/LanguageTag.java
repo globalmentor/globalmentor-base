@@ -231,6 +231,15 @@ public final class LanguageTag {
 			extensions = matcher.group(LANGTAG_PATTERN_GROUP_EXTENSION) != null //if an extension matched (which will be the last one)
 					? immutableSetOf(parseExtensions(matcher.group(LANGTAG_PATTERN_GROUP_EXTENSIONS))) //parse out the extensions in the entire extensions section
 					: emptySet();
+			//check for duplicate extensions
+			final BitSet extensionDuplicateDetector = new BitSet('z' - '0'); //an extension singleton only allows the effective range '0'-'z' 
+			for(final String extension : extensions) {
+				assert !extension.isEmpty();
+				final char singleton = extension.charAt(0);
+				final int singletonBitIndex = singleton - '0';
+				checkArgument(!extensionDuplicateDetector.get(singletonBitIndex), "Duplicate extension for `%s`.", singleton);
+				extensionDuplicateDetector.set(singletonBitIndex);
+			}
 			privateUse = matcher.group(LANGTAG_PATTERN_GROUP_PRIVATEUSE);
 		} else if(PRIVATEUSE_PATTERN.matcher(text).matches()) {
 			type = Type.PRIVATE_USE;
