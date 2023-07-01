@@ -84,7 +84,7 @@ import com.globalmentor.text.*;
  * @see <a href="https://www.iana.org/assignments/media-types/media-types.xhtml">IANA Media Types</a>
  * @see <a href="https://www.w3.org/TR/xhtml-media-types/">XHTML Media Types</a>
  */
-public final class MediaType { //TODO major version: rename to MediaType
+public final class MediaType {
 
 	/** The divider character for media type strings. */
 	public static final char TYPE_DIVIDER = '/';
