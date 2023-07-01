@@ -288,11 +288,11 @@ public final class LanguageTag {
 
 	/**
 	 * Returns a language tag from the text of the tag.
-	 * @param text The text of a language tag.
+	 * @param text The textual representation of a language tag.
 	 * @return A new or existing language tag representing the given text.
 	 * @throws IllegalArgumentException if the given text is not a valid representation of a language tag.
 	 */
-	public static LanguageTag of(@Nonnull final CharSequence text) {
+	public static LanguageTag parse(@Nonnull final CharSequence text) {
 		return new LanguageTag(text);
 	}
 
