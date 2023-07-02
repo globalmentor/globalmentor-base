@@ -36,8 +36,13 @@ import com.globalmentor.text.ASCII;
 
 /**
  * Representation of a language tag as per <cite>RFC 5646</cite>.
+ * @apiNote The constant language tags provided here parallel those provided in {@link Locale}.
+ * @implNote Beyond simple normalization such as converting to conventional case, this implementation does not implement any sort of
+ *           <a href="https://datatracker.ietf.org/doc/html/rfc5646#section-2.1.1">canonicalization</a>, such as replacing grandfathered tags with their
+ *           preferred forms or providing a canonical order for extension sequences.
  * @author Garret Wilson
  * @see <a href="https://datatracker.ietf.org/doc/html/rfc5646">RFC 5646: Tags for Identifying Languages</a>
+ * @see Locale
  */
 public final class LanguageTag {
 
@@ -105,6 +110,49 @@ public final class LanguageTag {
 
 	/** A pattern for a language tag that is solely a private use tag. */
 	public static final Pattern PRIVATEUSE_PATTERN = Pattern.compile(PRIVATEUSE);
+
+	/** The cache of often-used language tags, retrieved by ASCII case-insensitive hash code modulus. */
+	private static final LanguageTag[] PRIMARY_CACHE = new LanguageTag[16];
+
+	/** The secondary cache of often-used language tags, stored with hashes, and retrieved by linear traversal. */
+	private static final List<Map.Entry<Integer, LanguageTag>> SECONDARY_CACHE = new CopyOnWriteArrayList<>();
+
+	/** English: <code>en</code> */
+	public static final LanguageTag EN = LanguageTag.parse("en");
+	/** English - Great Britain: <code>en-GB</code> */
+	public static final LanguageTag EN_GB = LanguageTag.parse("en-GB");
+	/** English - USA: <code>en-US</code> */
+	public static final LanguageTag EN_US = LanguageTag.parse("en-US");
+	/** English - Canada: <code>en-CA</code> */
+	public static final LanguageTag EN_CA = LanguageTag.parse("en-CA");
+	/** French: <code>fr</code> */
+	public static final LanguageTag FR = LanguageTag.parse("fr");
+	/** French - France: <code>fr-FR</code> */
+	public static final LanguageTag FR_FR = LanguageTag.parse("fr-FR");
+	/** French - Canada: <code>fr-CA</code> */
+	public static final LanguageTag FR_CA = LanguageTag.parse("fr-CA");
+	/** German: <code>de</code> */
+	public static final LanguageTag DE = LanguageTag.parse("de");
+	/** German - Germany: <code>de-DE</code> */
+	public static final LanguageTag DE_DE = LanguageTag.parse("de-DE");
+	/** Italian: <code>it</code> */
+	public static final LanguageTag IT = LanguageTag.parse("it");
+	/** Italian - Italy: <code>it-IT</code> */
+	public static final LanguageTag IT_IT = LanguageTag.parse("it-IT");
+	/** Japanese: <code>ja</code> */
+	public static final LanguageTag JA = LanguageTag.parse("ja");
+	/** Japanese - Japan: <code>ja-JP</code> */
+	public static final LanguageTag JA_JP = LanguageTag.parse("ja-JP");
+	/** Korean: <code>ko</code> */
+	public static final LanguageTag KO = LanguageTag.parse("ko");
+	/** Korean - Korea: <code>ko-KR</code> */
+	public static final LanguageTag KO_KR = LanguageTag.parse("ko-KR");
+	/** Chinese: <code>zh</code> */
+	public static final LanguageTag ZH = LanguageTag.parse("zh");
+	/** Simplified Chinese: <code>zh-CN</code> */
+	public static final LanguageTag ZH_CN = LanguageTag.parse("zh-CN");
+	/** Traditional Chinese: <code>zh-TW</code> */
+	public static final LanguageTag ZH_TW = LanguageTag.parse("zh-TW");
 
 	/** The conventional string form of the entire language tag. */
 	private final String tagString;
@@ -289,10 +337,10 @@ public final class LanguageTag {
 	}
 
 	/**
-	 * The cache of commonly-used language tags, retrieved by ASCII case-insensitive hash code modulus.
-	 * @implSpec Each position in the primary cache represents the modulus of the language tag hash code. Other language tags with the same effective hash codes
-	 *           will be placed in the secondary cache, searched linearly, until the secondary cache is full, at which point the value will overwrite the value in
-	 *           the main cache to provide caching of the most recently used instance.
+	 * Returns a language tag from the text of the tag.
+	 * @implSpec This method uses both a primary and a secondary cache. Each position in the primary cache represents the modulus of the language tag hash code.
+	 *           Other language tags with the same effective hash codes will be placed in the secondary cache, searched linearly, until the secondary cache is
+	 *           full, at which point the value will overwrite the value in the main cache to provide caching of the most recently used instance.
 	 * @implNote This algorithm has benign race conditions. When storing in the main cache one thread may lose a value; however the next time it is checked it
 	 *           will simply be created and placed in the secondary cache if space is available, or overwrite the first value in the primary cache. Moreover the
 	 *           array elements are not volatile, which increases the chances of race conditions on the first caching for a particular bucket. This algorithm is
@@ -300,14 +348,6 @@ public final class LanguageTag {
 	 *           number of cached items; and provide most-recently-used lookup for hash collisions, which would not occur in a plain hash map. The only downside
 	 *           would be when two language tags with equivalent hashes are used multiple times alternating. Even in this case, a limited-size cache that is full
 	 *           would perform at least as bad.
-	 */
-	private static final LanguageTag[] PRIMARY_CACHE = new LanguageTag[16];
-
-	/** The secondary cache of commonly-used language tags, stored with hashes, and retrieved by linear traversal. */
-	private static final List<Map.Entry<Integer, LanguageTag>> SECONDARY_CACHE = new CopyOnWriteArrayList<>();
-
-	/**
-	 * Returns a language tag from the text of the tag.
 	 * @param text The textual representation of a language tag.
 	 * @return A new or existing language tag representing the given text.
 	 * @throws IllegalArgumentException if the given text is not a valid representation of a language tag.
