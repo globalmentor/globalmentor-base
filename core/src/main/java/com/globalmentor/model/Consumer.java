@@ -20,7 +20,9 @@ package com.globalmentor.model;
  * An object that consumes other objects.
  * @param <T> The type of objects being consumed.
  * @author Garret Wilson
+ * @deprecated to be removed in favor of {@link java.util.function.Consumer}.
  */
+@Deprecated
 public interface Consumer<T> {
 
 	/**

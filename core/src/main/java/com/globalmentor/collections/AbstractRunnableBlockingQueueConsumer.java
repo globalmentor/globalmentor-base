@@ -17,14 +17,13 @@
 package com.globalmentor.collections;
 
 import java.util.concurrent.BlockingQueue;
+import java.util.function.Consumer;
 
 import static java.util.Objects.*;
 
-import com.globalmentor.model.Consumer;
-
 /**
  * A runnable consumer that takes elements from a blocking queue and consume them. Normally this consumer is run in a separate thread so that consuming can
- * occur asynchronously. Each element is taken using {@link BlockingQueue#take()} and processed using {@link #consume(Object)}. This runnable's interruption
+ * occur asynchronously. Each element is taken using {@link BlockingQueue#take()} and processed using {@link #accept(Object)}. This runnable's interruption
  * policy is to end execution.
  * @param <E> The type of elements held in the queue.
  * @see BlockingQueue#take()
@@ -49,13 +48,13 @@ public abstract class AbstractRunnableBlockingQueueConsumer<E> implements Consum
 		this.blockingQueue = requireNonNull(blockingQueue, "Blocking queue cannot be null.");
 	}
 
-	/** The main functionality of the consumer, which consumes data from the blocking queue and calls {@link #consume(Object)}. */
+	/** The main functionality of the consumer, which consumes data from the blocking queue and calls {@link #accept(Object)}. */
 	public void run() {
 		started(); //indicate that consumption has started
 		while(!Thread.interrupted()) { //keep consuming until interrupted
 			try {
 				final E element = getBlockingQueue().take(); //take the next element from the queue
-				consume(element); //consume this element
+				accept(element); //consume this element
 			} catch(final InterruptedException interruptedException) { //if we're interrupted while waiting
 				break; //break out of the loop
 			} catch(final Throwable throwable) { //if any other exception occurs
@@ -73,7 +72,8 @@ public abstract class AbstractRunnableBlockingQueueConsumer<E> implements Consum
 	 * Consumes an element from the queue.
 	 * @param element The element to consume.
 	 */
-	public abstract void consume(final E element);
+	@Override
+	public abstract void accept(final E element);
 
 	/** Called when the consumer is stopped after processing ends. */
 	protected void stopped() {
