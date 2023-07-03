@@ -27,19 +27,22 @@ import static com.globalmentor.text.RegularExpressions.*;
 
 /**
  * Utilities for manipulating Java {@link Locale}.
+ * @apiNote Further utilities for working with <cite>RFC 5646</cite> language tags themselves are available in {@link LanguageTags}.
  * @author Garret Wilson
- * @see <a href="https://datatracker.ietf.org/doc/html/rfc5646">RFC 5646: Tags for Identifying Languages</a>
+ * @see LanguageTags
  */
-public class Locales {
+public final class Locales {
 
 	/** The character used to separate components in a locale: '_'. */
 	public static final char LOCALE_SEPARATOR = '_';
 
 	/**
-	 * The character '-' used to separate components in language tags as defined in <a href="http://www.ietf.org/rfc/rfc14646.txt">RFC 4646</a>, "Tags for the
+	 * The character '-' used to separate components in language tags as defined in <a href="http://www.ietf.org/rfc/rfc4646.txt">RFC 4646</a>, "Tags for the
 	 * Identifying".
 	 * @see <a href="http://www.ietf.org/rfc/rfc4646.txt">RFC 4646</a>
+	 * @deprecated to be removed in favor of {@link LanguageTags#SUBTAG_SEPARATOR}.
 	 */
+	@Deprecated
 	public static final char LANGUAGE_TAG_SEPARATOR = '-';
 
 	/**
