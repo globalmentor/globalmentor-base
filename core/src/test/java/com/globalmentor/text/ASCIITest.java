@@ -105,6 +105,18 @@ public class ASCIITest {
 		assertThat(ASCII.equalsIgnoreCase("FOOBAR", "foobar"), is(true));
 	}
 
+	/** @see ASCII#hashCodeIgnoreCase(CharSequence) */
+	@Test
+	void testHashCodeIgnoreCase() {
+		assertThat(ASCII.hashCodeIgnoreCase(""), is(ASCII.hashCodeIgnoreCase("")));
+		assertThat(ASCII.hashCodeIgnoreCase("foo"), is(ASCII.hashCodeIgnoreCase("foo")));
+		assertThat(ASCII.hashCodeIgnoreCase("foo"), is(ASCII.hashCodeIgnoreCase("FOO")));
+		assertThat(ASCII.hashCodeIgnoreCase("fooBAR"), is(ASCII.hashCodeIgnoreCase("fooBAR")));
+		assertThat(ASCII.hashCodeIgnoreCase("fooBAR"), is(ASCII.hashCodeIgnoreCase("FOObar")));
+		assertThat(ASCII.hashCodeIgnoreCase("foo123BAR"), is(ASCII.hashCodeIgnoreCase("foo123BAR")));
+		assertThat(ASCII.hashCodeIgnoreCase("foo123BAR"), is(ASCII.hashCodeIgnoreCase("FOO123bar")));
+	}
+
 	/** @see ASCII#indexOfIgnoreCase(CharSequence, char, int) */
 	@Test
 	void testIndexOfIgnoreCase() {
