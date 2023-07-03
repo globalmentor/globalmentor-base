@@ -26,9 +26,9 @@ import static java.util.Objects.*;
 import static com.globalmentor.text.RegularExpressions.*;
 
 /**
- * Utilities for manipulating Java locales.
+ * Utilities for manipulating Java {@link Locale}.
  * @author Garret Wilson
- * @see <a href="http://www.ietf.org/rfc/rfc4646.txt">RFC 4646</a>
+ * @see <a href="https://datatracker.ietf.org/doc/html/rfc5646">RFC 5646: Tags for Identifying Languages</a>
  */
 public class Locales {
 
@@ -49,7 +49,9 @@ public class Locales {
 	 * <li>The hyphen characters ('-') as defined in <a href="http://www.ietf.org/rfc/rfc4646.txt">RFC 4646</a>, "Tags for the Identifying Languages".</li>
 	 * </ul>
 	 * @see <a href="http://www.ietf.org/rfc/rfc4646.txt">RFC 4646</a>
+	 * @deprecated to be removed with {@link #createLocale(String)}.
 	 */
+	@Deprecated
 	private static final Pattern LANGUAGE_TAG_DELIMITER_PATTERN = Pattern.compile(characterClassOf(LOCALE_SEPARATOR, LANGUAGE_TAG_SEPARATOR));
 
 	/**
@@ -60,7 +62,9 @@ public class Locales {
 	 * @return A local corresponding to the given local string.
 	 * @throws IllegalArgumentException if the given locale string has more than three components.
 	 * @see <a href="http://www.ietf.org/rfc/rfc4646.txt">RFC 4646</a>
+	 * @deprecated to be removed in favor of {@link Locale#forLanguageTag(String)} when the input string is a language tag.
 	 */
+	@Deprecated
 	public static Locale createLocale(final String localeString) {
 		String language = ""; //the language which we may find
 		String country = ""; //the country which we may find
@@ -93,7 +97,7 @@ public class Locales {
 		for(int i = availableLocales.length - 1; i >= 0; --i) { //look at each of the locales
 			final Locale locale = availableLocales[i]; //get a reference to this locale
 			if(locale.getDisplayLanguage().equalsIgnoreCase(displayLanguage)) { //if the display language of this locale matches the language given
-				return createLocale(locale.getLanguage()); //create a locale for just that language
+				return new Locale.Builder().setLanguage(locale.getLanguage()).build(); //create a locale for just that language
 			}
 		}
 		return null; //show that we couldn't find a matching language
@@ -131,7 +135,9 @@ public class Locales {
 	 * @return The string representation of the language identifier.
 	 * @throws NullPointerException if the given locale is <code>null</code>.
 	 * @see <a href="http://www.ietf.org/rfc/rfc4646.txt">RFC 4646</a>
+	 * @deprecated to be removed in favor of {@link Locale#toLanguageTag()}.
 	 */
+	@Deprecated
 	public static String getLanguageTag(final Locale locale) {
 		return locale.toString().replace(Locales.LOCALE_SEPARATOR, Locales.LANGUAGE_TAG_SEPARATOR); //replace the locale separator with the RFC 4646 separator
 	}

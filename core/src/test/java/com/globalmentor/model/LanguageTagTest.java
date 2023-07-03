@@ -956,8 +956,6 @@ public class LanguageTagTest {
 		}
 	}
 
-	//TODO implement Locale conversion
-
 	//## hash code
 
 	/** @see LanguageTag#hashCode() */
