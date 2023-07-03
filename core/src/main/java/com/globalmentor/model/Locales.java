@@ -17,8 +17,11 @@
 package com.globalmentor.model;
 
 import java.util.*;
+
 import static java.util.Collections.*;
 import java.util.regex.Pattern;
+
+import javax.annotation.*;
 
 import com.globalmentor.io.Filenames;
 
@@ -87,6 +90,211 @@ public final class Locales {
 			}
 		}
 		return new Locale(language, country, variant); //create a locale with the parts we found
+	}
+
+	/**
+	 * Finds the language code of a locale.
+	 * @apiNote This is a utility method that calls {@link Locale#getLanguage()}, returning {@link Optional#empty()} rather than the empty string to indicate no
+	 *          defined value.
+	 * @implNote This method returns the new forms for the obsolete ISO 639 codes.
+	 * @param locale The locale from which to find the value.
+	 * @return The language code, which will not be present if none is defined.
+	 * @throws NullPointerException if the given locale is <code>null</code>.
+	 */
+	public static Optional<String> findLanguage(@Nonnull final Locale locale) {
+		return Optional.of(locale.getLanguage()).filter(__ -> !__.isEmpty()); //TODO switch to `filter(not(String::isEmpty))` in Java 11
+	}
+
+	/**
+	 * Finds the script for a locale, which is an ISO 15924 4-letter script code. The first letter is uppercase and the rest are lowercase; for example
+	 * <code>Latn</code> and <code>Cyrl</code>.
+	 * @apiNote This is a utility method that calls {@link Locale#getScript()}, returning {@link Optional#empty()} rather than the empty string to indicate no
+	 *          defined value.
+	 * @param locale The locale from which to find the value.
+	 * @return The script code, which will not be present if none is defined.
+	 * @throws NullPointerException if the given locale is <code>null</code>.
+	 */
+	public static Optional<String> findScript(@Nonnull final Locale locale) {
+		return Optional.of(locale.getScript()).filter(__ -> !__.isEmpty()); //TODO switch to `filter(not(String::isEmpty))` in Java 11
+	}
+
+	/**
+	 * Finds the country/region code for a locale, which is either an uppercase ISO 3166 2-letter code or a UN M.49 3-digit code.
+	 * @apiNote This is a utility method that calls {@link Locale#getCountry()}, returning {@link Optional#empty()} rather than the empty string to indicate no
+	 *          defined value.
+	 * @param locale The locale from which to find the value.
+	 * @return The country/region code, which will not be present if none is defined.
+	 * @throws NullPointerException if the given locale is <code>null</code>.
+	 */
+	public static Optional<String> findCountry(@Nonnull final Locale locale) {
+		return Optional.of(locale.getCountry()).filter(__ -> !__.isEmpty()); //TODO switch to `filter(not(String::isEmpty))` in Java 11
+	}
+
+	/**
+	 * Finds the variant code for a locale.
+	 * @apiNote This is a utility method that calls {@link Locale#getVariant()}, returning {@link Optional#empty()} rather than the empty string to indicate no
+	 *          defined value.
+	 * @param locale The locale from which to find the value.
+	 * @return The variant code, which will not be present if none is defined.
+	 * @throws NullPointerException if the given locale is <code>null</code>.
+	 */
+	public static Optional<String> findVariant(@Nonnull final Locale locale) {
+		return Optional.of(locale.getVariant()).filter(__ -> !__.isEmpty()); //TODO switch to `filter(not(String::isEmpty))` in Java 11
+	}
+
+	/**
+	 * Finds the three-letter abbreviation of a locale's language. If the language matches an ISO 639-1 two-letter code, the corresponding ISO 639-2/T
+	 * three-letter lowercase code is returned.
+	 * @apiNote This is a utility method that calls {@link Locale#getISO3Language()}, returning {@link Optional#empty()} rather than the empty string to indicate
+	 *          no defined value.
+	 * @param locale The locale from which to find the value.
+	 * @return A three-letter abbreviation of a locale's language.
+	 * @throws NullPointerException if the given locale is <code>null</code>.
+	 * @throws MissingResourceException if a three-letter language abbreviation is not available for the locale.
+	 */
+	public static Optional<String> findISO3Language(@Nonnull final Locale locale) throws MissingResourceException {
+		return Optional.of(locale.getISO3Language()).filter(__ -> !__.isEmpty()); //TODO switch to `filter(not(String::isEmpty))` in Java 11
+	}
+
+	/**
+	 * Finds a name for the locale's language that is appropriate for display to the user.
+	 * @apiNote This is a utility method that calls {@link Locale#getDisplayLanguage()}, returning {@link Optional#empty()} rather than the empty string to
+	 *          indicate no defined value.
+	 * @param locale The locale from which to find the value.
+	 * @return The name of the display language.
+	 * @throws NullPointerException if the given locale is <code>null</code>.
+	 */
+	public final static Optional<String> findDisplayLanguage(@Nonnull final Locale locale) {
+		return Optional.of(locale.getDisplayLanguage()).filter(__ -> !__.isEmpty()); //TODO switch to `filter(not(String::isEmpty))` in Java 11
+	}
+
+	/**
+	 * Finds a name for the locale's language that is appropriate for display to the user.
+	 * @apiNote This is a utility method that calls {@link Locale#getDisplayLanguage(Locale)}, returning {@link Optional#empty()} rather than the empty string to
+	 *          indicate no defined value.
+	 * @param locale The locale from which to find the value.
+	 * @param inLocale The locale for which to retrieve the display language.
+	 * @return The name of the display language appropriate to the given locale.
+	 * @throws NullPointerException either of the given locales is <code>null</code>.
+	 */
+	public static Optional<String> findDisplayLanguage(@Nonnull final Locale locale, @Nonnull final Locale inLocale) {
+		return Optional.of(locale.getDisplayLanguage(inLocale)).filter(__ -> !__.isEmpty()); //TODO switch to `filter(not(String::isEmpty))` in Java 11
+	}
+
+	/**
+	 * Finds a name for the locale's script that is appropriate for display to the user.
+	 * @apiNote This is a utility method that calls {@link Locale#getDisplayScript()}, returning {@link Optional#empty()} rather than the empty string to indicate
+	 *          no defined value.
+	 * @param locale The locale from which to find the value.
+	 * @return The display name of the script code for the current default {@link Locale.Category#DISPLAY DISPLAY} locale.
+	 * @throws NullPointerException if the given locale is <code>null</code>.
+	 */
+	public static Optional<String> findDisplayScript(@Nonnull final Locale locale) {
+		return Optional.of(locale.getDisplayScript()).filter(__ -> !__.isEmpty()); //TODO switch to `filter(not(String::isEmpty))` in Java 11
+	}
+
+	/**
+	 * Finds a name for the locale's script that is appropriate for display to the user.
+	 * @apiNote This is a utility method that calls {@link Locale#getDisplayScript(Locale)}, returning {@link Optional#empty()} rather than the empty string to
+	 *          indicate no defined value.
+	 * @param locale The locale from which to find the value.
+	 * @param inLocale The locale for which to retrieve the display script.
+	 * @return The display name of the script code for the current default {@link Locale.Category#DISPLAY DISPLAY} locale.
+	 * @throws NullPointerException if either of the given locales is <code>null</code>.
+	 */
+	public static Optional<String> findDisplayScript(@Nonnull final Locale locale, @Nonnull final Locale inLocale) {
+		return Optional.of(locale.getDisplayScript(inLocale)).filter(__ -> !__.isEmpty()); //TODO switch to `filter(not(String::isEmpty))` in Java 11
+	}
+
+	/**
+	 * Finds a name for the locale's country that is appropriate for display to the user.
+	 * @apiNote This is a utility method that calls {@link Locale#getDisplayCountry()}, returning {@link Optional#empty()} rather than the empty string to
+	 *          indicate no defined value.
+	 * @param locale The locale from which to find the value.
+	 * @return The name of the country appropriate to the locale.
+	 * @throws NullPointerException if the given locale is <code>null</code>.
+	 */
+	public static Optional<String> findDisplayCountry(@Nonnull final Locale locale) {
+		return Optional.of(locale.getDisplayCountry()).filter(__ -> !__.isEmpty()); //TODO switch to `filter(not(String::isEmpty))` in Java 11
+	}
+
+	/**
+	 * Finds a name for the locale's country that is appropriate for display to the user.
+	 * @apiNote This is a utility method that calls {@link Locale#getDisplayCountry(Locale)}, returning {@link Optional#empty()} rather than the empty string to
+	 *          indicate no defined value.
+	 * @param locale The locale from which to find the value.
+	 * @param inLocale The locale for which to retrieve the display country.
+	 * @return The name of the country appropriate to the given locale.
+	 * @throws NullPointerException if either of the given locales is <code>null</code>.
+	 */
+	public static Optional<String> findDisplayCountry(@Nonnull final Locale locale, @Nonnull final Locale inLocale) {
+		return Optional.of(locale.getDisplayCountry(inLocale)).filter(__ -> !__.isEmpty()); //TODO switch to `filter(not(String::isEmpty))` in Java 11
+	}
+
+	/**
+	 * Finds a name for the locale's variant code that is appropriate for display to the user.
+	 * @apiNote This is a utility method that calls {@link Locale#getDisplayVariant()}, returning {@link Optional#empty()} rather than the empty string to
+	 *          indicate no defined value.
+	 * @param locale The locale from which to find the value.
+	 * @return The name of the display variant code appropriate to the locale.
+	 * @throws NullPointerException if the given locale is <code>null</code>.
+	 */
+	public static Optional<String> findDisplayVariant(@Nonnull final Locale locale) {
+		return Optional.of(locale.getDisplayVariant()).filter(__ -> !__.isEmpty()); //TODO switch to `filter(not(String::isEmpty))` in Java 11
+	}
+
+	/**
+	 * Finds a name for the locale's variant code that is appropriate for display to the user.
+	 * @apiNote This is a utility method that calls {@link Locale#getDisplayVariant(Locale)}, returning {@link Optional#empty()} rather than the empty string to
+	 *          indicate no defined value.
+	 * @param locale The locale from which to find the value.
+	 * @param inLocale The locale for which to retrieve the display variant code.
+	 * @return The name of the display variant code appropriate to the given locale.
+	 * @throws NullPointerException if either of the given locales is <code>null</code>.
+	 */
+	public static Optional<String> findDisplayVariant(@Nonnull final Locale locale, @Nonnull final Locale inLocale) {
+		return Optional.of(locale.getDisplayVariant(inLocale)).filter(__ -> !__.isEmpty()); //TODO switch to `filter(not(String::isEmpty))` in Java 11
+	}
+
+	/**
+	 * Finds a name for the locale that is appropriate for display to the user.
+	 * @apiNote This is a utility method that calls {@link Locale#getDisplayName()}, returning {@link Optional#empty()} rather than the empty string to indicate
+	 *          no defined value.
+	 * @param locale The locale from which to find the value.
+	 * @return The name of the locale appropriate to display.
+	 * @throws NullPointerException if the given locale is <code>null</code>.
+	 */
+	public static Optional<String> findDisplayName(@Nonnull final Locale locale) {
+		return Optional.of(locale.getDisplayName()).filter(__ -> !__.isEmpty()); //TODO switch to `filter(not(String::isEmpty))` in Java 11
+	}
+
+	/**
+	 * Finds a name for the locale that is appropriate for display to the user.
+	 * @apiNote This is a utility method that calls {@link Locale#getDisplayName(Locale)}, returning {@link Optional#empty()} rather than the empty string to
+	 *          indicate no defined value.
+	 * @param locale The locale from which to find the value.
+	 * @param inLocale The locale for which to retrieve the display name.
+	 * @return The name of the locale appropriate to display.
+	 * @throws NullPointerException if either of the given locales is <code>null</code>.
+	 */
+	public static Optional<String> findDisplayName(@Nonnull final Locale locale, @Nonnull final Locale inLocale) {
+		return Optional.of(locale.getDisplayName(inLocale)).filter(__ -> !__.isEmpty()); //TODO switch to `filter(not(String::isEmpty))` in Java 11
+	}
+
+	/**
+	 * Finds the Unicode locale type associated with the specified Unicode locale key for a locale. Returns the empty string for keys that are defined with no
+	 * type. Returns null if the key is not defined. Keys are case-insensitive. The key must be two alphanumeric characters ([0-9a-zA-Z]).
+	 * @apiNote This is a utility method that calls {@link Locale#getUnicodeLocaleType(String)}, returning {@link Optional#empty()} rather than the empty string
+	 *          to indicate no defined value.
+	 * @param locale The locale from which to find the value.
+	 * @param key The Unicode locale key.
+	 * @return The Unicode locale type associated with the key, which may be the empty string for keys that are defined with no type; or empty if the locale does
+	 *         not define the key.
+	 * @throws NullPointerException if the given locale and/or key is <code>null</code>.
+	 * @throws IllegalArgumentException if the key is not well-formed.
+	 */
+	public static Optional<String> findUnicodeLocaleType(@Nonnull final Locale locale, @Nonnull final String key) {
+		return Optional.ofNullable(locale.getUnicodeLocaleType(key));
 	}
 
 	/**
