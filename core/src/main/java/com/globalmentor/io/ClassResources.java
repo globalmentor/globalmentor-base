@@ -202,6 +202,102 @@ public final class ClassResources {
 		return Optional.of(resourcePath.substring(lastPathSeparatorIndex + 1)); //return everything after the last path separator
 	}
 
+	//## resources
+
+	/**
+	 * Finds a resource with a given name.
+	 * @apiNote This method is equivalent to {@link Class#getResource(String)} except that it returns an {@link Optional} value instead of a nullable value.
+	 * @param contextClass The class in relation to which to find the resource.
+	 * @param resourceName The name of the desired resource.
+	 * @return A URL to the resource, which will not be present if no resource with this name is found, the resource cannot be located by a URL, the resource is
+	 *         in a package that is not open to at least the caller module, or access to the resource is denied by the security manager.
+	 * @see Class#getResource(String)
+	 */
+	public static Optional<URL> findResource(@Nonnull final Class<?> contextClass, @Nonnull final String resourceName) {
+		return Optional.ofNullable(contextClass.getResource(resourceName));
+	}
+
+	/**
+	 * Finds the resource with the given name using a class loader.
+	 * @apiNote This method is equivalent to {@link ClassLoader#getResource(String)} except that it returns an {@link Optional} value instead of a nullable value.
+	 * @param classLoader The class loader to use to find the resource.
+	 * @param resourceName The name of the desired resource.
+	 * @return A URL to the resource, which will not be present if the resource could not be found, a URL could not be constructed to locate the resource, the
+	 *         resource is in a package that is not opened unconditionally, or access to the resource is denied by the security manager.
+	 * @see ClassLoader#getResource(String)
+	 */
+	public static Optional<URL> findResource(@Nonnull final ClassLoader classLoader, @Nonnull final String resourceName) {
+		return Optional.ofNullable(classLoader.getResource(resourceName));
+	}
+
+	/**
+	 * Finds a resource of the specified name from the search path used to load classes.
+	 * @apiNote This method is equivalent to {@link ClassLoader#getSystemResource(String)} except that it returns an {@link Optional} value instead of a nullable
+	 *          value.
+	 * @param resourceName The name of the desired resource.
+	 * @return A URL to the resource, which will not be present if the resource could not be found, a URL could not be constructed to locate the resource, the
+	 *         resource is in a package that is not opened unconditionally or access to the resource is denied by the security manager.
+	 * @see ClassLoader#getSystemResource(String)
+	 */
+	public static Optional<URL> findSystemResource(@Nonnull final String resourceName) {
+		return Optional.ofNullable(ClassLoader.getSystemResource(resourceName));
+	}
+
+	/**
+	 * Finds a resource with a given name.
+	 * @apiNote This method is equivalent to calling {@link Class#getResource(String)} and then opening a stream to the URL, except that it returns an
+	 *          {@link Optional} value instead of a nullable value. This method is similar to {@link Class#getResourceAsStream(String)} except that any
+	 *          {@link IOException} when opening the stream is throw instead of being discarded.
+	 * @param contextClass The class in relation to which to find the resource.
+	 * @param resourceName The name of the desired resource.
+	 * @return An input stream to the resource, which will not be present if no resource with this name is found, the resource is in a package that is not open to
+	 *         at least the caller module, or access to the resource is denied by the security manager.
+	 * @throws IOException if there is an error opening the stream.
+	 * @see Class#getResource(String)
+	 * @see Class#getResourceAsStream(String)
+	 */
+	public static Optional<InputStream> findResourceAsStream(@Nonnull final Class<?> contextClass, @Nonnull final String resourceName) throws IOException {
+		final URL resourceUrl = contextClass.getResource(resourceName);
+		return Optional.ofNullable(resourceUrl != null ? resourceUrl.openStream() : null);
+	}
+
+	/**
+	 * Returns an input stream for reading the specified resource using a class loader.
+	 * @apiNote This method is equivalent to calling {@link ClassLoader#getResource(String)} and then opening a stream to the URL, except that it returns an
+	 *          {@link Optional} value instead of a nullable value.
+	 * @apiNote This method is similar to {@link ClassLoader#getResourceAsStream(String)} except that any {@link IOException} when opening the stream is throw
+	 *          instead of being discarded.
+	 * @param classLoader The class loader to use to find the resource.
+	 * @param resourceName The name of the desired resource.
+	 * @return An input stream for reading the resource, which will not be present if the resource could not be found, the resource is in a package that is not
+	 *         opened unconditionally, or access to the resource is denied by the security manager.
+	 * @throws IOException if there is an error opening the stream.
+	 * @see ClassLoader#getResource(String)
+	 * @see ClassLoader#getResourceAsStream(String)
+	 */
+	public static Optional<InputStream> findResourceAsStream(@Nonnull final ClassLoader classLoader, @Nonnull final String resourceName) throws IOException {
+		final URL resourceUrl = classLoader.getResource(resourceName);
+		return Optional.ofNullable(resourceUrl != null ? resourceUrl.openStream() : null);
+	}
+
+	/**
+	 * Open for reading a resource of the specified name from the search path used to load classes.
+	 * @apiNote This method is equivalent to calling {@link ClassLoader#getSystemResource(String)} and then opening a stream to the URL, except that it returns an
+	 *          {@link Optional} value instead of a nullable value.
+	 * @apiNote This method is similar to {@link ClassLoader#getSystemResourceAsStream(String)} except that any {@link IOException} when opening the stream is
+	 *          throw instead of being discarded.
+	 * @param resourceName The name of the desired resource.
+	 * @return An input stream for reading the resource, which will not be present if the resource could not be found, the resource is in a package that is not
+	 *         opened unconditionally, or access to the resource is denied by the security manager.
+	 * @throws IOException if there is an error opening the stream.
+	 * @see ClassLoader#getSystemResource(String)
+	 * @see ClassLoader#getSystemResourceAsStream(String)
+	 */
+	public static Optional<InputStream> findSystemResourceAsStream(@Nonnull final String resourceName) throws IOException {
+		final URL resourceUrl = ClassLoader.getSystemResource(resourceName);
+		return Optional.ofNullable(resourceUrl != null ? resourceUrl.openStream() : null);
+	}
+
 	//## resource contents
 
 	/**
@@ -296,10 +392,8 @@ public final class ClassResources {
 	 */
 	public static long copy(@Nonnull final ClassLoader classLoader, @Nonnull final String resourcePath, @Nonnull final Path targetFile,
 			final CopyOption... options) throws IOException {
-		final URL resourceUrl = classLoader.getResource(resourcePath); //getResourceAsStream() does this same thing, and this allows us not to throw away an IOException
-		if(resourceUrl == null) {
-			throw new FileNotFoundException("Resource not found: " + resourcePath);
-		}
+		//getResourceAsStream() does this same thing, but opening the stream manually prevents discarding any IOException during opening
+		final URL resourceUrl = findResource(classLoader, resourcePath).orElseThrow(() -> new FileNotFoundException("Resource not found: " + resourcePath));
 		final Path targetParent = targetFile.getParent();
 		if(targetParent != null) {
 			createDirectories(targetParent);
@@ -337,10 +431,8 @@ public final class ClassResources {
 	 * @see InputStreams#readBytes(InputStream)
 	 */
 	public static byte[] readBytes(@Nonnull final ClassLoader classLoader, @Nonnull final String resourcePath) throws IOException {
-		final URL resourceUrl = classLoader.getResource(resourcePath); //getResourceAsStream() does this same thing, and this allows us not to throw away an IOException
-		if(resourceUrl == null) {
-			throw new FileNotFoundException("Resource not found: " + resourcePath);
-		}
+		//getResourceAsStream() does this same thing, but opening the stream manually prevents discarding any IOException during opening
+		final URL resourceUrl = findResource(classLoader, resourcePath).orElseThrow(() -> new FileNotFoundException("Resource not found: " + resourcePath));
 		try (final InputStream inputStream = resourceUrl.openConnection().getInputStream()) {
 			return InputStreams.readBytes(inputStream);
 		}
