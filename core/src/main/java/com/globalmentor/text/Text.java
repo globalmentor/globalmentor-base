@@ -43,6 +43,8 @@ public class Text {
 	/** The media type for plain text: <code>text/plain</code>. */
 	public static final MediaType PLAIN_MEDIA_TYPE = MediaType.of(MediaType.TEXT_PRIMARY_TYPE, PLAIN_SUBTYPE);
 
+	/** The name extension for log files. */
+	public static final String LOG_FILENAME_EXTENSION = "log";
 	/**
 	 * The name extension for text list files.
 	 * @see <a href="https://www.file-extensions.org/lst-file-extension">LST file extension - List text</a>
