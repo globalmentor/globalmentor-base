@@ -79,24 +79,4 @@ public abstract class AbstractDelimiterCompoundTokenization implements CompoundT
 		return stringBuilder.toString();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 * @implSpec This implementation does a simple delimiter replacement, which is more efficient than splitting and joining.
-	 */
-	@Override
-	public String toKebabCase(final CharSequence token) {
-		checkArgument(token.length() > 0, "Token cannot be empty.");
-		return token.toString().replace(getDelimiter(), KEBAB_CASE_DELIMITER);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 * @implSpec This implementation does a simple delimiter replacement, which is more efficient than splitting and joining.
-	 */
-	@Override
-	public String toSnakeCase(CharSequence token) {
-		checkArgument(token.length() > 0, "Token cannot be empty.");
-		return token.toString().replace(getDelimiter(), SNAKE_CASE_DELIMITER);
-	}
-
 }

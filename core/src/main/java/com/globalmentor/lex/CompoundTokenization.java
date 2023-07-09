@@ -34,12 +34,12 @@ public interface CompoundTokenization extends Named<String> {
 
 	/**
 	 * The delimiter for <code>kebab-case</code>.
-	 * @see <a href="https://stackoverflow.com/q/11273282/421049">What's the name for hyphen-separated case?</a>
+	 * @see <a href="https://stackoverflow.com/q/11273282">What's the name for hyphen-separated case?</a>
 	 */
 	public static final char KEBAB_CASE_DELIMITER = '-';
 
 	/**
-	 * The delimiter for <code>kebab_case</code>.
+	 * The delimiter for <code>snake_case</code>.
 	 * @see <a href="https://en.wikipedia.org/wiki/Snake_case">Snake case</a>
 	 */
 	public static final char SNAKE_CASE_DELIMITER = '_';
@@ -64,40 +64,59 @@ public interface CompoundTokenization extends Named<String> {
 	public String join(@Nonnull final Iterable<? extends CharSequence> components);
 
 	/**
+	 * Converts a string from this compound tokenization to another compound tokenization. If both compound tokenizations are the same instance, the token is not
+	 * modified.
+	 * @apiNote This transformation can only be used for round-trip conversion if neither this compound tokenization performs additional component transformations
+	 *          when splitting, nor the other compound tokenization performs additional transformations when joining.
+	 * @implSpec The default implementation splits the compound token using the other compound tokenization's {@link #split(CharSequence)}, and then joins the
+	 *           components using this compound tokenization's {@link #join(Iterable)}.
+	 * @param otherCompoundTokenization The other compound tokenization to convert to.
+	 * @param token The compound token.
+	 * @return The same compound token using the other tokenization.
+	 * @throws IllegalArgumentException if the token is empty.
+	 */
+	public default String to(@Nonnull final CompoundTokenization otherCompoundTokenization, @Nonnull final CharSequence token) {
+		if(otherCompoundTokenization == this) { //if the other compound tokenization is the same, assume the token will not change
+			checkArgument(token.length() > 0, "Token cannot be empty.");
+			return token.toString();
+		}
+		return otherCompoundTokenization.join(split(token));
+	}
+
+	/**
 	 * Converts a token from one tokenization to <code>camelCase</code>, leaving the case of the first component unchanged.
-	 * @apiNote This conversion is agnostic to the case of the first component, and can thus be used for round-trip conversions.
-	 * @implSpec The default implementation splits the compound token and then joins the components using {@link #CAMEL_CASE}.
+	 * @apiNote This is a convenience method which is equivalent to calling {@link #to(CompoundTokenization, CharSequence)} using {@link #CAMEL_CASE}.
 	 * @param token The compound token.
 	 * @return The same compound token using the <code>camelCase</code> tokenization.
 	 * @throws IllegalArgumentException if the token is empty.
 	 * @see <a href="https://en.wikipedia.org/wiki/Camel_case">Camel case</a>
 	 */
 	public default String toCamelCase(@Nonnull final CharSequence token) {
-		return CAMEL_CASE.join(split(token));
+		return to(CAMEL_CASE, token);
 	}
 
 	/**
 	 * Converts a token from one tokenization to <code>kebab-case</code>.
-	 * @implSpec The default implementation splits the compound token and then joins the components using {@link #KEBAB_CASE}.
+	 * @apiNote This is a convenience method which is equivalent to calling {@link #to(CompoundTokenization, CharSequence)} using {@link #KEBAB_CASE}.
 	 * @param token The compound token.
 	 * @return The same compound token using the <code>kebab-case</code> tokenization.
 	 * @throws IllegalArgumentException if the token is empty.
 	 * @see <a href="https://stackoverflow.com/q/11273282/421049">What's the name for hyphen-separated case?</a>
 	 */
 	public default String toKebabCase(@Nonnull final CharSequence token) {
-		return KEBAB_CASE.join(split(token));
+		return to(KEBAB_CASE, token);
 	}
 
 	/**
 	 * Converts a token from one tokenization to <code>snake_case</code>.
-	 * @implSpec The default implementation splits the compound token and then joins the components using {@link #SNAKE_CASE}.
+	 * @apiNote This is a convenience method which is equivalent to calling {@link #to(CompoundTokenization, CharSequence)} using {@link #SNAKE_CASE}.
 	 * @param token The compound token.
 	 * @return The same compound token using the <code>snake_case</code> tokenization.
 	 * @throws IllegalArgumentException if the token is empty.
 	 * @see <a href="https://en.wikipedia.org/wiki/Snake_case">Snake case</a>
 	 */
 	public default String toSnakeCase(@Nonnull final CharSequence token) {
-		return SNAKE_CASE.join(split(token));
+		return to(SNAKE_CASE, token);
 	}
 
 	/**
@@ -116,12 +135,6 @@ public interface CompoundTokenization extends Named<String> {
 		public String getName() {
 			return "kebab-case";
 		}
-
-		@Override
-		public String toKebabCase(final CharSequence token) {
-			checkArgument(token.length() > 0, "Token cannot be empty.");
-			return token.toString();
-		}
 	};
 
 	/**
@@ -133,12 +146,6 @@ public interface CompoundTokenization extends Named<String> {
 		@Override
 		public String getName() {
 			return "snake_case";
-		}
-
-		@Override
-		public String toSnakeCase(final CharSequence token) {
-			checkArgument(token.length() > 0, "Token cannot be empty.");
-			return token.toString();
 		}
 	};
 
