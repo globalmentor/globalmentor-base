@@ -126,6 +126,12 @@ public interface CompoundTokenization extends Named<String> {
 	public CamelCase CAMEL_CASE = new CamelCase();
 
 	/**
+	 * A delimiter-based compound tokenization using <code>.</code> as a delimiter.
+	 * @see <a href="https://stackoverflow.com/q/49263762">Is there a name for dot-separated case?</a>
+	 */
+	public CompoundTokenization DOT_CASE = new DotCase();
+
+	/**
 	 * A delimiter-based compound tokenization using {@value #KEBAB_CASE_DELIMITER}.
 	 * @see #KEBAB_CASE_DELIMITER
 	 * @see <a href="https://stackoverflow.com/q/11273282/421049">What's the name for hyphen-separated case?</a>
@@ -148,5 +154,18 @@ public interface CompoundTokenization extends Named<String> {
 			return "snake_case";
 		}
 	};
+
+	/** The implementation for <code>dot.case</code>. */
+	public static final class DotCase extends AbstractDelimiterCompoundTokenization {
+
+		private DotCase() {
+			super('.');
+		}
+
+		@Override
+		public String getName() {
+			return "dot.case";
+		}
+	}
 
 }
