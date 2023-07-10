@@ -21,21 +21,23 @@ import static com.globalmentor.java.Conditions.*;
 
 import java.util.*;
 
+import javax.annotation.*;
+
 import com.globalmentor.java.Characters;
 
 /**
- * A base compound tokenization strategy that relies on a delimiter between components.
+ * A base compound tokenization implementation that relies on a delimiter between components.
  * @author Garret Wilson
  */
-public abstract class AbstractDelimiterCompoundTokenization implements CompoundTokenization {
+public abstract class AbstractDelimiterCompoundTokenization extends AbstractCompoundTokenization {
 
 	private final Characters delimiterCharacters;
 
-	private final String delimiterString;
+	private final char delimiter;
 
 	/** @return The delimiter used by this tokenization. */
 	public char getDelimiter() {
-		return delimiterString.charAt(0);
+		return delimiter;
 	}
 
 	/**
@@ -44,7 +46,7 @@ public abstract class AbstractDelimiterCompoundTokenization implements CompoundT
 	 */
 	public AbstractDelimiterCompoundTokenization(final char delimiter) {
 		delimiterCharacters = Characters.of(delimiter);
-		delimiterString = String.valueOf(delimiter);
+		this.delimiter = delimiter;
 	}
 
 	@Override
@@ -55,28 +57,24 @@ public abstract class AbstractDelimiterCompoundTokenization implements CompoundT
 
 	/**
 	 * {@inheritDoc}
-	 * @implNote This implementation performs joining manually rather than calling {@link String#join(CharSequence, Iterable)} for efficiency and to check each
-	 *           component.
+	 * @implSpec This version merely validates that the component does not contain the delimiter returns the same component with no transformation.
 	 * @throws IllegalArgumentException if one of the components already contains the tokenization delimiter.
+	 * @see #getDelimiter()
+	 */
+	protected CharSequence transformJoinComponent(final int componentIndex, @Nonnull CharSequence component) {
+		component = super.transformJoinComponent(componentIndex, component); //do the default transformation (which actually only does validation)
+		checkArgument(!contains(component, delimiter), "Component %s cannot contain the delimiter %s.", component, getDelimiter());
+		return component;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @implSpec This implementation appends the delimiter returned by {@link #getDelimiter()}.
+	 * @see #getDelimiter()
 	 */
 	@Override
-	public String join(final Iterable<? extends CharSequence> components) {
-		final Iterator<? extends CharSequence> componentIterator = components.iterator();
-		boolean hasNext = componentIterator.hasNext();
-		checkArgument(hasNext, "Cannot create compound tokenization with no components to join.");
-		final char delimiter = getDelimiter();
-		final StringBuilder stringBuilder = new StringBuilder();
-		do { //we know there is at least one component
-			final CharSequence component = componentIterator.next();
-			checkArgument(component.length() != 0, "Compound token component cannot be empty.");
-			checkArgument(!contains(component, delimiter), "Component %s cannot contain the delimiter %s.", component, delimiterString);
-			stringBuilder.append(component);
-			hasNext = componentIterator.hasNext();
-			if(hasNext) {
-				stringBuilder.append(delimiter);
-			}
-		} while(hasNext);
-		return stringBuilder.toString();
+	protected StringBuilder appendJoinDelimiter(@Nonnull StringBuilder stringBuilder, final int delimiterIndex) {
+		return super.appendJoinDelimiter(stringBuilder, delimiterIndex).append(getDelimiter()); //the call to super is just for completeness; it does nothing
 	}
 
 }

@@ -25,7 +25,7 @@ import java.util.*;
 import javax.annotation.*;
 
 /**
- * A compound tokenization strategy that relies a change from non-uppercase to uppercase to delimit tokens.
+ * A compound tokenization implementation that relies on variation from non-uppercase to uppercase to delimit tokens.
  * @apiNote This tokenization supports both <code>dromedaryCase</code> and <code>PascalCase</code> variations. That is, this tokenization is agnostic to whether
  *          the first component is capitalized, and thus supports round-trip split+join.
  * @apiNote This class normally need not be instantiated. Instead use the constant singleton instance {@link CompoundTokenization#CAMEL_CASE}.
@@ -33,7 +33,7 @@ import javax.annotation.*;
  * @see <a href="https://en.wikipedia.org/wiki/Camel_case">Camel case</a>
  * @author Garret Wilson
  */
-public class CamelCase implements CompoundTokenization {
+public class CamelCase extends AbstractCompoundTokenization {
 
 	/** This class cannot be publicly instantiated, but may be subclassed and instantiated from other classes in the package. */
 	protected CamelCase() {
@@ -76,25 +76,6 @@ public class CamelCase implements CompoundTokenization {
 	}
 
 	/**
-	 * {@inheritDoc}
-	 * @implSpec This implementation calls {@link #transformJoinComponent(int, CharSequence)} to transform each component as needed.
-	 */
-	@Override
-	public String join(final Iterable<? extends CharSequence> components) {
-		final Iterator<? extends CharSequence> componentIterator = components.iterator();
-		boolean hasNext = componentIterator.hasNext();
-		checkArgument(hasNext, "Cannot create compound tokenization with no components to join.");
-		int componentIndex = 0;
-		final StringBuilder stringBuilder = new StringBuilder();
-		do { //we know there is at least one component
-			stringBuilder.append(transformJoinComponent(componentIndex, componentIterator.next()));
-			hasNext = componentIterator.hasNext();
-			componentIndex++;
-		} while(hasNext);
-		return stringBuilder.toString();
-	}
-
-	/**
 	 * Determines the component to use after splitting. The first component is unchanged, as the capitalization of the first component is irrelevant to the
 	 * compound tokenization.
 	 * @implSpec The default implementation changes the first character to lowercase if the first character is uppercase but not followed by another uppercase
@@ -121,17 +102,13 @@ public class CamelCase implements CompoundTokenization {
 	}
 
 	/**
-	 * Determines the component to use before joining. The first component is unchanged, as the capitalization of the first component is irrelevant to the
-	 * compound tokenization.
-	 * @implSpec The default implementation changes the first character to uppercase.
-	 * @param componentIndex The index of the component being joined.
-	 * @param component The non-empty component being joined.
-	 * @return The component to use for joining.
-	 * @throws NullPointerException if the component is <code>null</code>.
-	 * @throws IllegalArgumentException if the component is the empty string.
+	 * {@inheritDoc}
+	 * @implSpec The default implementation changes the first character to uppercase, except that the first component is unchanged, as the capitalization of the
+	 *           first component is irrelevant to the compound tokenization.
 	 */
-	protected CharSequence transformJoinComponent(final int componentIndex, @Nonnull final CharSequence component) {
-		checkArgument(component.length() != 0, "Compound token component cannot be empty.");
+	@Override
+	protected CharSequence transformJoinComponent(final int componentIndex, @Nonnull CharSequence component) {
+		component = super.transformJoinComponent(componentIndex, component); //do the default transformation (which actually only does validation)
 		if(componentIndex == 0) {
 			return component;
 		}

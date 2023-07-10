@@ -25,7 +25,7 @@ import javax.annotation.*;
 import com.globalmentor.model.Named;
 
 /**
- * A strategy for dealing with compound tokens, such as <code>fooBar</code> or <code>foo-bar</code>.
+ * A generalization for dealing with compound tokens, such as <code>fooBar</code> or <code>foo-bar</code>.
  * @implNote The default implementations work best if acronyms are formatted the same as non-acronyms. For example in {@link #CAMEL_CASE}, use
  *           <code>oldUrlMapper</code> instead of <code>oldURLMapper</code>.
  * @author Garret Wilson
