@@ -34,13 +34,13 @@ import org.junit.jupiter.api.*;
 public class CompoundTokenizationTest {
 
 	/** The implementations tested by this class that support round-trip split+join. */
-	private static final List<CompoundTokenization> IMPLEMENTATIONS = unmodifiableList(asList(CAMEL_CASE, KEBAB_CASE, SNAKE_CASE));
+	private static final List<CompoundTokenization> IMPLEMENTATIONS = unmodifiableList(asList(CAMEL_CASE, DOT_CASE, KEBAB_CASE, SNAKE_CASE));
 
 	/** A list of tokens to use for testing. */
-	private static final List<String> TEST_TOKENS = unmodifiableList(
-			asList("foobar", "fooBar", "FooBar", "foo-bar", "foo-Bar", "foo_bar", "foo_Bar", "x", "X", "CDlibrary", "CdLibrary", "CD-library", "CD_library",
-					"userCDlibrary", "userCdLibrary", "user-CD-library", "user_CD_library", "URL", "URLconverter", "UrlConverter", "URL-converter", "URL_converter",
-					"oldURLconverter", "oldUrlConverter", "old-URL-converter", "old_URL_converter", "oldURL", "old-URL", "old_URL"));
+	private static final List<String> TEST_TOKENS = unmodifiableList(asList("foobar", "fooBar", "FooBar", "foo.bar", "foo.Bar", "foo-bar", "foo-Bar", "foo_bar",
+			"foo_Bar", "x", "X", "CDlibrary", "CdLibrary", "CD.library", "CD-library", "CD_library", "userCDlibrary", "userCdLibrary", "user.CD.library",
+			"user-CD-library", "user_CD_library", "URL", "URLconverter", "UrlConverter", "URL.converter", "URL-converter", "URL_converter", "oldURLconverter",
+			"oldUrlConverter", "old.URL.converter", "old-URL-converter", "old_URL_converter", "oldURL", "old.URL", "old-URL", "old_URL"));
 
 	/**
 	 * @see CompoundTokenization#split(CharSequence)
