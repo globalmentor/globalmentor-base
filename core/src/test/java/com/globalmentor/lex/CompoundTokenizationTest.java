@@ -615,10 +615,11 @@ public class CompoundTokenizationTest {
 
 	//## transformations
 
+	/** TODO document */
 	@Test
 	void testComposedTransformation() {
-		final CompoundTokenization UPPER_SNAKE_CASE = SNAKE_CASE.withJoinComponentTransformation("UPPER_SNAKE_CASE",
-				(i, component) -> component.toString().toUpperCase());
+		final CompoundTokenization UPPER_SNAKE_CASE = SNAKE_CASE.namedWithAddedJoinComponentTransformation("UPPER_SNAKE_CASE",
+				(i, component) -> component.toString().toUpperCase()); //TODO create version using function
 		assertThat(SNAKE_CASE.to(UPPER_SNAKE_CASE, "foobar"), is("FOOBAR"));
 		assertThat(CAMEL_CASE.to(UPPER_SNAKE_CASE, "fooBar"), is("FOO_BAR"));
 		assertThat(CAMEL_CASE.to(UPPER_SNAKE_CASE, "FooBar"), is("FOO_BAR"));

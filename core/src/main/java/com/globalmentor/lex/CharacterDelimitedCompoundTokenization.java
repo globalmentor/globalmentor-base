@@ -27,10 +27,10 @@ import javax.annotation.*;
 import com.globalmentor.java.Characters;
 
 /**
- * A base compound tokenization implementation that relies on a delimiter character between components.
+ * A compound tokenization implementation that relies on a delimiter character between components.
  * @author Garret Wilson
  */
-public abstract class AbstractDelimiterCompoundTokenization extends AbstractCompoundTokenization {
+public class CharacterDelimitedCompoundTokenization extends AbstractCompoundTokenization {
 
 	private final Characters delimiterCharacters;
 
@@ -42,22 +42,13 @@ public abstract class AbstractDelimiterCompoundTokenization extends AbstractComp
 	}
 
 	/**
-	 * Delimiter constructor.
-	 * @param name The name to use for the compound tokenization.
-	 * @param delimiter The delimiter for splitting and joining a component token.
-	 */
-	public AbstractDelimiterCompoundTokenization(@Nonnull final String name, final char delimiter) {
-		this(name, delimiter, noJoinComponentTransformation());
-	}
-
-	/**
 	 * Delimiter and join component transformation constructor.
 	 * @param name The name to use for the compound tokenization.
 	 * @param delimiter The delimiter for splitting and joining a component token.
 	 * @param joinComponentTransformation The function to be applied to each component before joining with {@link #join(Iterable)}. The first function parameter
 	 *          is the index of the component being joined. The second function parameter is the non-empty component being joined.
 	 */
-	protected AbstractDelimiterCompoundTokenization(@Nonnull final String name, final char delimiter,
+	protected CharacterDelimitedCompoundTokenization(@Nonnull final String name, final char delimiter,
 			final BiFunction<? super Integer, ? super CharSequence, ? extends CharSequence> joinComponentTransformation) {
 		super(name, joinComponentTransformation);
 		delimiterCharacters = Characters.of(delimiter);
@@ -75,9 +66,9 @@ public abstract class AbstractDelimiterCompoundTokenization extends AbstractComp
 	 * @see #getName()
 	 * @see #join(Iterable)
 	 */
-	public CompoundTokenization withJoinComponentTransformation(@Nonnull final String name,
+	public CompoundTokenization namedWithAddedJoinComponentTransformation(@Nonnull final String name,
 			@Nonnull final BiFunction<? super Integer, ? super CharSequence, ? extends CharSequence> after) {
-		return new AbstractDelimiterCompoundTokenization(name, getDelimiter(), addSubsequentJoinComponentTransformation(after)) {}; //TODO promote anonymous class
+		return new CharacterDelimitedCompoundTokenization(name, getDelimiter(), addSubsequentJoinComponentTransformation(after));
 	}
 
 	@Override

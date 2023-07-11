@@ -16,9 +16,11 @@
 
 package com.globalmentor.lex;
 
+import static com.globalmentor.io.function.Functions.*;
 import static com.globalmentor.java.Conditions.*;
 
 import java.util.List;
+import java.util.function.*;
 
 import javax.annotation.*;
 
@@ -34,14 +36,16 @@ public interface CompoundTokenization extends Named<String> {
 
 	/**
 	 * The delimiter for <code>kebab-case</code>.
-	 * @see <a href="https://stackoverflow.com/q/11273282">What's the name for hyphen-separated case?</a>
+	 * @deprecated to be removed in favor of calling {@link CharacterDelimitedCompoundTokenization#getDelimiter()} on {@link #KEBAB_CASE}.
 	 */
+	@Deprecated
 	public static final char KEBAB_CASE_DELIMITER = '-';
 
 	/**
 	 * The delimiter for <code>snake_case</code>.
-	 * @see <a href="https://en.wikipedia.org/wiki/Snake_case">Snake case</a>
+	 * @deprecated to be removed in favor of calling {@link CharacterDelimitedCompoundTokenization#getDelimiter()} on {@link #SNAKE_CASE}.
 	 */
+	@Deprecated
 	public static final char SNAKE_CASE_DELIMITER = '_';
 
 	/**
@@ -62,6 +66,46 @@ public interface CompoundTokenization extends Named<String> {
 	 * @throws IllegalArgumentException if one of the components is not valid for this tokenization.
 	 */
 	public String join(@Nonnull final Iterable<? extends CharSequence> components);
+
+	/**
+	 * Factory method to create a character-delimited compound tokenization with no component transformation.
+	 * @implSpec This implementation delegates to {@link #namedDelimitedByWithJoinComponentTransformation(String, char, BiFunction)}.
+	 * @param name The name to use for the compound tokenization.
+	 * @param delimiter The delimiter for splitting and joining a component token.
+	 * @return A new compound tokenization with the given name and using the given delimiter to {@link #split(CharSequence)} and {@link #join(Iterable)}.
+	 */
+	public static CharacterDelimitedCompoundTokenization namedDelimitedBy(@Nonnull final String name, final char delimiter) {
+		return namedDelimitedByWithJoinComponentTransformation(name, delimiter, CharacterDelimitedCompoundTokenization.noJoinComponentTransformation()); //TODO improve; consider Function.identity() or `null`
+	}
+
+	/**
+	 * Factory method to create a character-delimited compound tokenization with a component transformation.
+	 * @implSpec This implementation delegates to {@link #namedDelimitedByWithJoinComponentTransformation(String, char, BiFunction)}.
+	 * @param name The name to use for the compound tokenization.
+	 * @param delimiter The delimiter for splitting and joining a component token.
+	 * @param joinComponentTransformation The function to be applied to each component before joining with {@link #join(Iterable)}. The function parameter is the
+	 *          non-empty component being joined.
+	 * @return A new compound tokenization with the given name, using the given delimiter to {@link #split(CharSequence)} and {@link #join(Iterable)}, using the
+	 *         given function for transforming components.
+	 */
+	public static CharacterDelimitedCompoundTokenization namedDelimitedByWithJoinComponentTransformation(@Nonnull final String name, final char delimiter,
+			final Function<? super CharSequence, ? extends CharSequence> joinComponentTransformation) {
+		return namedDelimitedByWithJoinComponentTransformation(name, delimiter, toBiFunctionU(joinComponentTransformation));
+	}
+
+	/**
+	 * Factory method to create a character-delimited compound tokenization with a component transformation.
+	 * @param name The name to use for the compound tokenization.
+	 * @param delimiter The delimiter for splitting and joining a component token.
+	 * @param joinComponentTransformation The function to be applied to each component before joining with {@link #join(Iterable)}. The first function parameter
+	 *          is the index of the component being joined. The second function parameter is the non-empty component being joined.
+	 * @return A new compound tokenization with the given name, using the given delimiter to {@link #split(CharSequence)} and {@link #join(Iterable)}, using the
+	 *         given function for transforming components.
+	 */
+	public static CharacterDelimitedCompoundTokenization namedDelimitedByWithJoinComponentTransformation(@Nonnull final String name, final char delimiter,
+			final BiFunction<? super Integer, ? super CharSequence, ? extends CharSequence> joinComponentTransformation) {
+		return new CharacterDelimitedCompoundTokenization(name, delimiter, joinComponentTransformation);
+	}
 
 	/**
 	 * Converts a string from this compound tokenization to another compound tokenization. If both compound tokenizations are the same instance, the token is not
@@ -129,28 +173,18 @@ public interface CompoundTokenization extends Named<String> {
 	 * A delimiter-based compound tokenization using <code>.</code> as a delimiter.
 	 * @see <a href="https://stackoverflow.com/q/49263762">Is there a name for dot-separated case?</a>
 	 */
-	public CompoundTokenization DOT_CASE = new DotCase();
+	public CharacterDelimitedCompoundTokenization DOT_CASE = namedDelimitedBy("dot.case", '.');
 
 	/**
-	 * A delimiter-based compound tokenization using {@value #KEBAB_CASE_DELIMITER}.
-	 * @see #KEBAB_CASE_DELIMITER
+	 * A delimiter-based compound tokenization using <code>-</code> as a delimiter.
 	 * @see <a href="https://stackoverflow.com/q/11273282/421049">What's the name for hyphen-separated case?</a>
 	 */
-	public CompoundTokenization KEBAB_CASE = new AbstractDelimiterCompoundTokenization("kebab-case", KEBAB_CASE_DELIMITER) {}; //TODO promote anonymous class
+	public CharacterDelimitedCompoundTokenization KEBAB_CASE = namedDelimitedBy("kebab-case", '-');
 
 	/**
-	 * A delimiter-based compound tokenization using {@value #SNAKE_CASE_DELIMITER}.
-	 * @see #SNAKE_CASE_DELIMITER
+	 * A delimiter-based compound tokenization using <code>_</code> as a delimiter.
 	 * @see <a href="https://en.wikipedia.org/wiki/Snake_case">Snake case</a>
 	 */
-	public AbstractDelimiterCompoundTokenization SNAKE_CASE = new AbstractDelimiterCompoundTokenization("snake_case", SNAKE_CASE_DELIMITER) {}; //TODO promote anonymous class
-
-	/** The implementation for <code>dot.case</code>. */
-	public static final class DotCase extends AbstractDelimiterCompoundTokenization {
-
-		private DotCase() {
-			super("dot.case", '.');
-		}
-	}
+	public CharacterDelimitedCompoundTokenization SNAKE_CASE = namedDelimitedBy("snake_case", '_');
 
 }
