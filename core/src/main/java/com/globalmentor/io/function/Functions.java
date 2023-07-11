@@ -16,6 +16,8 @@
 
 package com.globalmentor.io.function;
 
+import static java.util.Objects.*;
+
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.*;
 
@@ -70,6 +72,32 @@ public class Functions {
 			}
 
 		};
+	}
+
+	/**
+	 * Converts a function to a bifunction by passing the <em>first</em> bifunction argument <code><var>t</var></code> to the function and ignoring the second.
+	 * @param <T> The type of the first argument to the bifunction.
+	 * @param <U> The type of the second argument to the bifunction.
+	 * @param <R> The type of the result of the function.
+	 * @param function The function to convert to a bifunction.
+	 * @return A bifunction that delegates to the given function, passing its first argument.
+	 */
+	public static <T, U, R> BiFunction<T, U, R> toBiFunctionT(@Nonnull final Function<? super T, ? extends R> function) {
+		requireNonNull(function);
+		return (final T t, final U u) -> function.apply(t);
+	}
+
+	/**
+	 * Converts a function to a bifunction by passing the <em>second</em> bifunction argument <code><var>u</var></code> to the function and ignoring the first.
+	 * @param <T> The type of the first argument to the bifunction.
+	 * @param <U> The type of the second argument to the bifunction.
+	 * @param <R> The type of the result of the function.
+	 * @param function The function to convert to a bifunction.
+	 * @return A bifunction that delegates to the given function, passing its second argument.
+	 */
+	public static <T, U, R> BiFunction<T, U, R> toBiFunctionU(@Nonnull final Function<? super U, ? extends R> function) {
+		requireNonNull(function);
+		return (final T t, final U u) -> function.apply(u);
 	}
 
 }
