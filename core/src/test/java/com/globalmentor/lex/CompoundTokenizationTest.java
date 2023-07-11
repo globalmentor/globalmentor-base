@@ -33,6 +33,8 @@ import org.junit.jupiter.api.*;
  */
 public class CompoundTokenizationTest {
 
+	//## split and join
+
 	/** The implementations tested by this class that support round-trip split+join. */
 	private static final List<CompoundTokenization> IMPLEMENTATIONS = unmodifiableList(asList(CAMEL_CASE, DOT_CASE, KEBAB_CASE, SNAKE_CASE));
 
@@ -494,7 +496,7 @@ public class CompoundTokenizationTest {
 		assertThat(KEBAB_CASE.to(SNAKE_CASE, "old-URL"), is("old_URL"));
 	}
 
-	//## snake-case
+	//## snake_case
 
 	/**
 	 * @see CompoundTokenization#SNAKE_CASE
@@ -609,6 +611,23 @@ public class CompoundTokenizationTest {
 		assertThat(SNAKE_CASE.to(SNAKE_CASE, "URL_converter"), is("URL_converter"));
 		assertThat(SNAKE_CASE.to(SNAKE_CASE, "old_URL_converter"), is("old_URL_converter"));
 		assertThat(SNAKE_CASE.to(SNAKE_CASE, "old_URL"), is("old_URL"));
+	}
+
+	//## transformations
+
+	@Test
+	void testComposedTransformation() {
+		final CompoundTokenization UPPER_SNAKE_CASE = SNAKE_CASE.withJoinComponentTransformation("UPPER_SNAKE_CASE",
+				(i, component) -> component.toString().toUpperCase());
+		assertThat(SNAKE_CASE.to(UPPER_SNAKE_CASE, "foobar"), is("FOOBAR"));
+		assertThat(CAMEL_CASE.to(UPPER_SNAKE_CASE, "fooBar"), is("FOO_BAR"));
+		assertThat(CAMEL_CASE.to(UPPER_SNAKE_CASE, "FooBar"), is("FOO_BAR"));
+		assertThat(DOT_CASE.to(UPPER_SNAKE_CASE, "foo.bar"), is("FOO_BAR"));
+		assertThat(DOT_CASE.to(UPPER_SNAKE_CASE, "foo.Bar"), is("FOO_BAR"));
+		assertThat(KEBAB_CASE.to(UPPER_SNAKE_CASE, "foo-bar"), is("FOO_BAR"));
+		assertThat(KEBAB_CASE.to(UPPER_SNAKE_CASE, "foo-Bar"), is("FOO_BAR"));
+		assertThat(SNAKE_CASE.to(UPPER_SNAKE_CASE, "foo_bar"), is("FOO_BAR"));
+		assertThat(SNAKE_CASE.to(UPPER_SNAKE_CASE, "foo_Bar"), is("FOO_BAR"));
 	}
 
 }

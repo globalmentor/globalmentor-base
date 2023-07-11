@@ -20,6 +20,7 @@ import static com.globalmentor.java.CharSequences.*;
 import static com.globalmentor.java.Conditions.*;
 
 import java.util.*;
+import java.util.function.BiFunction;
 
 import javax.annotation.*;
 
@@ -41,12 +42,45 @@ public abstract class AbstractDelimiterCompoundTokenization extends AbstractComp
 	}
 
 	/**
-	 * Delimiters constructor.
+	 * Delimiter constructor.
 	 * @param delimiter The delimiter for splitting and joining a component token.
 	 */
 	public AbstractDelimiterCompoundTokenization(final char delimiter) {
+		this(delimiter, noJoinComponentTransformation());
+	}
+
+	/**
+	 * Delimiter and join component transformation constructor.
+	 * @param delimiter The delimiter for splitting and joining a component token.
+	 * @param joinComponentTransformation The function to be applied to each component before joining with {@link #join(Iterable)}. The first function parameter
+	 *          is the index of the component being joined. The second function parameter is the non-empty component being joined.
+	 */
+	protected AbstractDelimiterCompoundTokenization(final char delimiter,
+			final BiFunction<? super Integer, ? super CharSequence, ? extends CharSequence> joinComponentTransformation) {
+		super(joinComponentTransformation);
 		delimiterCharacters = Characters.of(delimiter);
 		this.delimiter = delimiter;
+	}
+
+	/**
+	 * Produces a new compound tokenization that the same functionality as this one, with the given <em>additional</em> transformation to be applied to each
+	 * component before joining.
+	 * @param name The name to use for the new compound tokenization.
+	 * @param after The function to apply during joining after the join transformation function of this compound tokenization is applied. The first function
+	 *          parameter is the index of the component being joined. The second function parameter is the non-empty component being joined.
+	 * @return a composed function that first applies this function and then applies the {@code after} function
+	 * @throws NullPointerException if the given function is <code>null</code>.
+	 * @see #getName()
+	 * @see #join(Iterable)
+	 */
+	public CompoundTokenization withJoinComponentTransformation(@Nonnull final String name,
+			@Nonnull final BiFunction<? super Integer, ? super CharSequence, ? extends CharSequence> after) {
+		return new AbstractDelimiterCompoundTokenization(getDelimiter(), addSubsequentJoinComponentTransformation(after)) {
+			@Override
+			public String getName() {
+				return name;
+			}
+		};
 	}
 
 	@Override
@@ -57,14 +91,14 @@ public abstract class AbstractDelimiterCompoundTokenization extends AbstractComp
 
 	/**
 	 * {@inheritDoc}
-	 * @implSpec This version merely validates that the component does not contain the delimiter returns the same component with no transformation.
+	 * @implSpec This version validates that the component does not contain the delimiter.
 	 * @throws IllegalArgumentException if one of the components already contains the tokenization delimiter.
 	 * @see #getDelimiter()
 	 */
-	protected CharSequence transformJoinComponent(final int componentIndex, @Nonnull CharSequence component) {
-		component = super.transformJoinComponent(componentIndex, component); //do the default transformation (which actually only does validation)
+	@Override
+	protected void validateJoinComponent(final int componentIndex, final CharSequence component) {
+		super.validateJoinComponent(componentIndex, component);
 		checkArgument(!contains(component, delimiter), "Component %s cannot contain the delimiter %s.", component, getDelimiter());
-		return component;
 	}
 
 	/**

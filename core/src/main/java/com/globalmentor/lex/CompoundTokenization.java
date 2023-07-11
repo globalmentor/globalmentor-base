@@ -148,7 +148,7 @@ public interface CompoundTokenization extends Named<String> {
 	 * @see #SNAKE_CASE_DELIMITER
 	 * @see <a href="https://en.wikipedia.org/wiki/Snake_case">Snake case</a>
 	 */
-	public CompoundTokenization SNAKE_CASE = new AbstractDelimiterCompoundTokenization(SNAKE_CASE_DELIMITER) {
+	public AbstractDelimiterCompoundTokenization SNAKE_CASE = new AbstractDelimiterCompoundTokenization(SNAKE_CASE_DELIMITER) { //TODO revert type
 		@Override
 		public String getName() {
 			return "snake_case";

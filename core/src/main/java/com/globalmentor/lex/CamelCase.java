@@ -37,6 +37,7 @@ public class CamelCase extends AbstractCompoundTokenization {
 
 	/** This class cannot be publicly instantiated, but may be subclassed and instantiated from other classes in the package. */
 	protected CamelCase() {
+		super(CamelCase::transformJoinComponentToCamelCase);
 	}
 
 	@Override
@@ -102,13 +103,16 @@ public class CamelCase extends AbstractCompoundTokenization {
 	}
 
 	/**
-	 * {@inheritDoc}
-	 * @implSpec The default implementation changes the first character to uppercase, except that the first component is unchanged, as the capitalization of the
-	 *           first component is irrelevant to the compound tokenization.
+	 * Converts a component being joined to CamelCase.
+	 * @implSpec Changes the first character to uppercase, except that the first component is unchanged, as the capitalization of the first component is
+	 *           irrelevant to the compound tokenization.
+	 * @param componentIndex The index of the component being joined.
+	 * @param component The non-empty component being joined.
+	 * @return The component to be joined.
+	 * @throws NullPointerException if the component is <code>null</code>.
+	 * @throws IllegalArgumentException if the component is the empty string.
 	 */
-	@Override
-	protected CharSequence transformJoinComponent(final int componentIndex, @Nonnull CharSequence component) {
-		component = super.transformJoinComponent(componentIndex, component); //do the default transformation (which actually only does validation)
+	private static CharSequence transformJoinComponentToCamelCase(final int componentIndex, @Nonnull final CharSequence component) {
 		if(componentIndex == 0) {
 			return component;
 		}
