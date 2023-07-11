@@ -33,19 +33,29 @@ import javax.annotation.*;
  */
 public abstract class AbstractCompoundTokenization implements CompoundTokenization {
 
-	private final BiFunction<? super Integer, ? super CharSequence, ? extends CharSequence> joinComponentTransformation;
-
 	/** @return a component transformation function that performs no changes on a component before joining. */
 	protected static BiFunction<? super Integer, ? super CharSequence, ? extends CharSequence> noJoinComponentTransformation() {
 		return (i, component) -> component;
 	}
 
+	private final String name;
+
+	@Override
+	public String getName() {
+		return name;
+	}
+
+	private final BiFunction<? super Integer, ? super CharSequence, ? extends CharSequence> joinComponentTransformation;
+
 	/**
 	 * Join component transformation constructor.
+	 * @param name The name to use for the compound tokenization.
 	 * @param joinComponentTransformation The function to be applied to each component before joining with {@link #join(Iterable)}. The first function parameter
 	 *          is the index of the component being joined. The second function parameter is the non-empty component being joined.
 	 */
-	protected AbstractCompoundTokenization(final BiFunction<? super Integer, ? super CharSequence, ? extends CharSequence> joinComponentTransformation) {
+	protected AbstractCompoundTokenization(@Nonnull final String name,
+			final BiFunction<? super Integer, ? super CharSequence, ? extends CharSequence> joinComponentTransformation) {
+		this.name = requireNonNull(name);
 		this.joinComponentTransformation = requireNonNull(joinComponentTransformation);
 	}
 

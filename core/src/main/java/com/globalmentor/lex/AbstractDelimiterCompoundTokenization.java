@@ -27,7 +27,7 @@ import javax.annotation.*;
 import com.globalmentor.java.Characters;
 
 /**
- * A base compound tokenization implementation that relies on a delimiter between components.
+ * A base compound tokenization implementation that relies on a delimiter character between components.
  * @author Garret Wilson
  */
 public abstract class AbstractDelimiterCompoundTokenization extends AbstractCompoundTokenization {
@@ -43,21 +43,23 @@ public abstract class AbstractDelimiterCompoundTokenization extends AbstractComp
 
 	/**
 	 * Delimiter constructor.
+	 * @param name The name to use for the compound tokenization.
 	 * @param delimiter The delimiter for splitting and joining a component token.
 	 */
-	public AbstractDelimiterCompoundTokenization(final char delimiter) {
-		this(delimiter, noJoinComponentTransformation());
+	public AbstractDelimiterCompoundTokenization(@Nonnull final String name, final char delimiter) {
+		this(name, delimiter, noJoinComponentTransformation());
 	}
 
 	/**
 	 * Delimiter and join component transformation constructor.
+	 * @param name The name to use for the compound tokenization.
 	 * @param delimiter The delimiter for splitting and joining a component token.
 	 * @param joinComponentTransformation The function to be applied to each component before joining with {@link #join(Iterable)}. The first function parameter
 	 *          is the index of the component being joined. The second function parameter is the non-empty component being joined.
 	 */
-	protected AbstractDelimiterCompoundTokenization(final char delimiter,
+	protected AbstractDelimiterCompoundTokenization(@Nonnull final String name, final char delimiter,
 			final BiFunction<? super Integer, ? super CharSequence, ? extends CharSequence> joinComponentTransformation) {
-		super(joinComponentTransformation);
+		super(name, joinComponentTransformation);
 		delimiterCharacters = Characters.of(delimiter);
 		this.delimiter = delimiter;
 	}
@@ -69,18 +71,13 @@ public abstract class AbstractDelimiterCompoundTokenization extends AbstractComp
 	 * @param after The function to apply during joining after the join transformation function of this compound tokenization is applied. The first function
 	 *          parameter is the index of the component being joined. The second function parameter is the non-empty component being joined.
 	 * @return a composed function that first applies this function and then applies the {@code after} function
-	 * @throws NullPointerException if the given function is <code>null</code>.
+	 * @throws NullPointerException if the given name and/or function is <code>null</code>.
 	 * @see #getName()
 	 * @see #join(Iterable)
 	 */
 	public CompoundTokenization withJoinComponentTransformation(@Nonnull final String name,
 			@Nonnull final BiFunction<? super Integer, ? super CharSequence, ? extends CharSequence> after) {
-		return new AbstractDelimiterCompoundTokenization(getDelimiter(), addSubsequentJoinComponentTransformation(after)) {
-			@Override
-			public String getName() {
-				return name;
-			}
-		};
+		return new AbstractDelimiterCompoundTokenization(name, getDelimiter(), addSubsequentJoinComponentTransformation(after)) {}; //TODO promote anonymous class
 	}
 
 	@Override

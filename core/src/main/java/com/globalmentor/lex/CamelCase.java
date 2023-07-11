@@ -37,12 +37,7 @@ public class CamelCase extends AbstractCompoundTokenization {
 
 	/** This class cannot be publicly instantiated, but may be subclassed and instantiated from other classes in the package. */
 	protected CamelCase() {
-		super(CamelCase::transformJoinComponentToCamelCase);
-	}
-
-	@Override
-	public String getName() {
-		return "camelCase";
+		super("camelCase", CamelCase::transformJoinComponentToCamelCase);
 	}
 
 	@Override

@@ -136,35 +136,20 @@ public interface CompoundTokenization extends Named<String> {
 	 * @see #KEBAB_CASE_DELIMITER
 	 * @see <a href="https://stackoverflow.com/q/11273282/421049">What's the name for hyphen-separated case?</a>
 	 */
-	public CompoundTokenization KEBAB_CASE = new AbstractDelimiterCompoundTokenization(KEBAB_CASE_DELIMITER) {
-		@Override
-		public String getName() {
-			return "kebab-case";
-		}
-	};
+	public CompoundTokenization KEBAB_CASE = new AbstractDelimiterCompoundTokenization("kebab-case", KEBAB_CASE_DELIMITER) {}; //TODO promote anonymous class
 
 	/**
 	 * A delimiter-based compound tokenization using {@value #SNAKE_CASE_DELIMITER}.
 	 * @see #SNAKE_CASE_DELIMITER
 	 * @see <a href="https://en.wikipedia.org/wiki/Snake_case">Snake case</a>
 	 */
-	public AbstractDelimiterCompoundTokenization SNAKE_CASE = new AbstractDelimiterCompoundTokenization(SNAKE_CASE_DELIMITER) { //TODO revert type
-		@Override
-		public String getName() {
-			return "snake_case";
-		}
-	};
+	public AbstractDelimiterCompoundTokenization SNAKE_CASE = new AbstractDelimiterCompoundTokenization("snake_case", SNAKE_CASE_DELIMITER) {}; //TODO promote anonymous class
 
 	/** The implementation for <code>dot.case</code>. */
 	public static final class DotCase extends AbstractDelimiterCompoundTokenization {
 
 		private DotCase() {
-			super('.');
-		}
-
-		@Override
-		public String getName() {
-			return "dot.case";
+			super("dot.case", '.');
 		}
 	}
 
