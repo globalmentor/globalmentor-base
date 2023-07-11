@@ -615,11 +615,13 @@ public class CompoundTokenizationTest {
 
 	//## transformations
 
-	/** TODO document */
+	/**
+	 * Tests the transformation added to an existing compound tokenization.
+	 * @see CompoundTokenization#namedWithAddedSegmentStringTransformation(String, java.util.function.Function)
+	 */
 	@Test
 	void testComposedTransformation() {
-		final CompoundTokenization UPPER_SNAKE_CASE = SNAKE_CASE.namedWithAddedSegmentTransformation("UPPER_SNAKE_CASE",
-				(i, segment) -> segment.toString().toUpperCase()); //TODO create version using function
+		final CompoundTokenization UPPER_SNAKE_CASE = SNAKE_CASE.namedWithAddedSegmentStringTransformation("UPPER_SNAKE_CASE", String::toUpperCase);
 		assertThat(SNAKE_CASE.to(UPPER_SNAKE_CASE, "foobar"), is("FOOBAR"));
 		assertThat(CAMEL_CASE.to(UPPER_SNAKE_CASE, "fooBar"), is("FOO_BAR"));
 		assertThat(CAMEL_CASE.to(UPPER_SNAKE_CASE, "FooBar"), is("FOO_BAR"));

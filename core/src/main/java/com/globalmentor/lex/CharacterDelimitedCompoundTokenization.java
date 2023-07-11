@@ -42,7 +42,7 @@ public class CharacterDelimitedCompoundTokenization extends AbstractCompoundToke
 	}
 
 	/**
-	 * Delimiter and segment transformation constructor.
+	 * Name, delimiter, segment transformation constructor.
 	 * @param name The name to use for the compound tokenization.
 	 * @param delimiter The delimiter for splitting and joining a segment token.
 	 * @param segmentTransformation The function to be applied to each segment before joining with {@link #join(Iterable)}. The first function parameter is the
@@ -55,20 +55,10 @@ public class CharacterDelimitedCompoundTokenization extends AbstractCompoundToke
 		this.delimiter = delimiter;
 	}
 
-	/**
-	 * Produces a new compound tokenization that the same functionality as this one, with the given <em>additional</em> transformation to be applied to each
-	 * segment before joining.
-	 * @param name The name to use for the new compound tokenization.
-	 * @param after The function to apply during joining after the join transformation function of this compound tokenization is applied. The first function
-	 *          parameter is the index of the segment being joined. The second function parameter is the non-empty segment being joined.
-	 * @return a composed function that first applies this function and then applies the {@code after} function
-	 * @throws NullPointerException if the given name and/or function is <code>null</code>.
-	 * @see #getName()
-	 * @see #join(Iterable)
-	 */
+	@Override
 	public CompoundTokenization namedWithAddedSegmentTransformation(@Nonnull final String name,
-			@Nonnull final BiFunction<? super Integer, ? super CharSequence, ? extends CharSequence> after) {
-		return new CharacterDelimitedCompoundTokenization(name, getDelimiter(), addSubsequentSegmentTransformation(after));
+			@Nonnull final BiFunction<? super Integer, ? super CharSequence, ? extends CharSequence> segmentTransformation) {
+		return new CharacterDelimitedCompoundTokenization(name, getDelimiter(), addSegmentTransformation(segmentTransformation));
 	}
 
 	@Override

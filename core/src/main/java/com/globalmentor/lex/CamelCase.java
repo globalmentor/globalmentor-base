@@ -21,6 +21,7 @@ import static java.util.Collections.*;
 
 import java.beans.Introspector;
 import java.util.*;
+import java.util.function.BiFunction;
 
 import javax.annotation.*;
 
@@ -35,9 +36,19 @@ import javax.annotation.*;
  */
 public class CamelCase extends AbstractCompoundTokenization {
 
-	/** This class cannot be publicly instantiated, but may be subclassed and instantiated from other classes in the package. */
-	protected CamelCase() {
+	/** Default configuration using the name <code>camelCase</code> and {@link #transformSegmentToCamelCase(int, CharSequence)} as the transformation. */
+	CamelCase() {
 		super("camelCase", CamelCase::transformSegmentToCamelCase);
+	}
+
+	/**
+	 * Name and segment transformation constructor.
+	 * @param name The name to use for the compound tokenization.
+	 * @param segmentTransformation The function to be applied to each segment before joining with {@link #join(Iterable)}. The first function parameter is the
+	 *          index of the segment being joined. The second function parameter is the non-empty segment being joined.
+	 */
+	protected CamelCase(@Nonnull final String name, final BiFunction<? super Integer, ? super CharSequence, ? extends CharSequence> segmentTransformation) {
+		super(name, segmentTransformation);
 	}
 
 	@Override
@@ -118,6 +129,12 @@ public class CamelCase extends AbstractCompoundTokenization {
 		final StringBuilder stringBuilder = new StringBuilder(segment);
 		stringBuilder.setCharAt(0, Character.toUpperCase(firstChar));
 		return stringBuilder;
+	}
+
+	@Override
+	public CompoundTokenization namedWithAddedSegmentTransformation(@Nonnull final String name,
+			@Nonnull final BiFunction<? super Integer, ? super CharSequence, ? extends CharSequence> segmentTransformation) {
+		return new CamelCase(name, addSegmentTransformation(segmentTransformation));
 	}
 
 	@Override

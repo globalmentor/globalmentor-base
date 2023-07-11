@@ -63,18 +63,18 @@ public abstract class AbstractCompoundTokenization implements CompoundTokenizati
 	/**
 	 * Returns a composed segment transformation function that will first perform the existing segment transformation of this compound tokenization, and then
 	 * apply the given function to that result.
-	 * @apiNote This method is meant to facilitate the implementation of TODO
-	 * @param after The function to apply during joining after the join transformation function of this compound tokenization is applied. The first function
-	 *          parameter is the index of the segment being joined. The second function parameter is the non-empty segment being joined.
+	 * @apiNote This method is meant to facilitate the implementation of {@link #namedWithAddedSegmentTransformation(String, BiFunction)}.
+	 * @param segmentTransformation The function to apply during joining after the transformation function of this compound tokenization is applied. The first
+	 *          function parameter is the index of the segment being joined. The second function parameter is the non-empty segment being joined.
 	 * @return A composed function to be applied to segments before they are joined, that first applies this compound tokenization's transformation and then
 	 *         applies the given function with the result.
 	 * @throws NullPointerException if the given function is <code>null</code>.
 	 * @see #join(Iterable)
 	 */
-	protected BiFunction<? super Integer, ? super CharSequence, ? extends CharSequence> addSubsequentSegmentTransformation(
-			@Nonnull final BiFunction<? super Integer, ? super CharSequence, ? extends CharSequence> after) {
-		requireNonNull(after);
-		return (segmentIndex, segment) -> after.apply(segmentIndex, this.segmentTransformation.apply(segmentIndex, segment));
+	protected BiFunction<? super Integer, ? super CharSequence, ? extends CharSequence> addSegmentTransformation(
+			@Nonnull final BiFunction<? super Integer, ? super CharSequence, ? extends CharSequence> segmentTransformation) {
+		requireNonNull(segmentTransformation);
+		return (segmentIndex, segment) -> segmentTransformation.apply(segmentIndex, this.segmentTransformation.apply(segmentIndex, segment));
 	}
 
 	/**
