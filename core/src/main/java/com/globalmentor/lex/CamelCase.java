@@ -27,7 +27,7 @@ import javax.annotation.*;
 /**
  * A compound tokenization implementation that relies on variation from non-uppercase to uppercase to delimit tokens.
  * @apiNote This tokenization supports both <code>dromedaryCase</code> and <code>PascalCase</code> variations. That is, this tokenization is agnostic to whether
- *          the first component is capitalized, and thus supports round-trip split+join.
+ *          the first segment is capitalized, and thus supports round-trip split+join.
  * @apiNote This class normally need not be instantiated. Instead use the constant singleton instance {@link CompoundTokenization#CAMEL_CASE}.
  * @implSpec This implementation does not recognize delimiters whose code points lie outside the BMP (i.e. that depend on surrogate pairs).
  * @see <a href="https://en.wikipedia.org/wiki/Camel_case">Camel case</a>
@@ -37,13 +37,13 @@ public class CamelCase extends AbstractCompoundTokenization {
 
 	/** This class cannot be publicly instantiated, but may be subclassed and instantiated from other classes in the package. */
 	protected CamelCase() {
-		super("camelCase", CamelCase::transformJoinComponentToCamelCase);
+		super("camelCase", CamelCase::transformSegmentToCamelCase);
 	}
 
 	@Override
 	public List<String> split(final CharSequence token) {
-		ArrayList<String> components = null; //we'll only create this if we have to
-		int componentIndex = 0;
+		ArrayList<String> segments = null; //we'll only create this if we have to
+		int segmentIndex = 0;
 		final int length = token.length();
 		checkArgument(length > 0, "Token cannot be empty.");
 		int start = 0;
@@ -53,69 +53,69 @@ public class CamelCase extends AbstractCompoundTokenization {
 				final boolean isEnd = end == length;
 				final boolean isUppercase = !isEnd && Character.isUpperCase(token.charAt(end));
 				if((isUppercase && !wasUppercase) || isEnd) { //if we switched from non-uppercase to uppercase (or reached the end)
-					final String component = transformSplitComponent(componentIndex, token.subSequence(start, end)).toString();
-					if(components == null) { //if there are no components yet
-						if(isEnd) { //only one component
-							return singletonList(component);
+					final String segment = transformSplitSegment(segmentIndex, token.subSequence(start, end)).toString();
+					if(segments == null) { //if there are no segments yet
+						if(isEnd) { //only one segment
+							return singletonList(segment);
 						}
-						components = new ArrayList<>();
+						segments = new ArrayList<>();
 					}
-					components.add(component);
-					componentIndex++;
+					segments.add(segment);
+					segmentIndex++;
 					start = end;
 					break;
 				}
 				wasUppercase = isUppercase;
 			}
 		}
-		return components != null ? components : emptyList();
+		return segments != null ? segments : emptyList();
 	}
 
 	/**
-	 * Determines the component to use after splitting. The first component is unchanged, as the capitalization of the first component is irrelevant to the
-	 * compound tokenization.
+	 * Determines the segment to use after splitting. The first segment is unchanged, as the capitalization of the first segment is irrelevant to the compound
+	 * tokenization.
 	 * @implSpec The default implementation changes the first character to lowercase if the first character is uppercase but not followed by another uppercase
 	 *           character.
-	 * @param componentIndex The index of the component being split.
-	 * @param component The non-empty component being split.
-	 * @return The component after splitting.
-	 * @throws NullPointerException if the component is <code>null</code>.
-	 * @throws IllegalArgumentException if the component is the empty string.
+	 * @param segmentIndex The index of the segment being split.
+	 * @param segment The non-empty segment being split.
+	 * @return The segment after splitting.
+	 * @throws NullPointerException if the segment is <code>null</code>.
+	 * @throws IllegalArgumentException if the segment is the empty string.
 	 * @see Introspector#decapitalize(String)
 	 */
-	protected CharSequence transformSplitComponent(final int componentIndex, @Nonnull final CharSequence component) {
-		checkArgument(component.length() != 0, "Compound token component cannot be empty.");
-		if(componentIndex != 0) {
-			final char firstChar = component.charAt(0);
+	protected CharSequence transformSplitSegment(final int segmentIndex, @Nonnull final CharSequence segment) {
+		checkArgument(segment.length() != 0, "Compound token segment cannot be empty.");
+		if(segmentIndex != 0) {
+			final char firstChar = segment.charAt(0);
 			//if the first character is uppercase, only decapitalize if it is not followed by another capital letter
-			if(Character.isUpperCase(firstChar) && (component.length() == 1 || !Character.isUpperCase(component.charAt(1)))) {
-				final StringBuilder stringBuilder = new StringBuilder(component);
+			if(Character.isUpperCase(firstChar) && (segment.length() == 1 || !Character.isUpperCase(segment.charAt(1)))) {
+				final StringBuilder stringBuilder = new StringBuilder(segment);
 				stringBuilder.setCharAt(0, Character.toLowerCase(firstChar));
 				return stringBuilder;
 			}
 		}
-		return component;
+		return segment;
 	}
 
 	/**
-	 * Converts a component being joined to CamelCase.
-	 * @implSpec Changes the first character to uppercase, except that the first component is unchanged, as the capitalization of the first component is
-	 *           irrelevant to the compound tokenization.
-	 * @param componentIndex The index of the component being joined.
-	 * @param component The non-empty component being joined.
-	 * @return The component to be joined.
-	 * @throws NullPointerException if the component is <code>null</code>.
-	 * @throws IllegalArgumentException if the component is the empty string.
+	 * Converts a segment being joined to CamelCase.
+	 * @implSpec Changes the first character to uppercase, except that the first segment is unchanged, as the capitalization of the first segment is irrelevant to
+	 *           the compound tokenization.
+	 * @param segmentIndex The index of the segment being joined.
+	 * @param segment The non-empty segment being joined.
+	 * @return The segment to be joined.
+	 * @throws NullPointerException if the segment is <code>null</code>.
+	 * @throws IllegalArgumentException if the segment is the empty string.
 	 */
-	private static CharSequence transformJoinComponentToCamelCase(final int componentIndex, @Nonnull final CharSequence component) {
-		if(componentIndex == 0) {
-			return component;
+	private static CharSequence transformSegmentToCamelCase(final int segmentIndex, @Nonnull final CharSequence segment) {
+		if(segmentIndex == 0) {
+			return segment;
 		}
-		final char firstChar = component.charAt(0);
+		final char firstChar = segment.charAt(0);
 		if(Character.isUpperCase(firstChar)) { //if the first character is already in uppercase
-			return component; //no changes need to be made
+			return segment; //no changes need to be made
 		}
-		final StringBuilder stringBuilder = new StringBuilder(component);
+		final StringBuilder stringBuilder = new StringBuilder(segment);
 		stringBuilder.setCharAt(0, Character.toUpperCase(firstChar));
 		return stringBuilder;
 	}

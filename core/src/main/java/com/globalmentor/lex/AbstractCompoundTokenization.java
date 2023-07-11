@@ -26,16 +26,16 @@ import javax.annotation.*;
 
 /**
  * A base compound tokenization implementation.
- * @implNote This implementation provides a generalized algorithm in {@link #join(Iterable)} for joining components, which can be customized by subclasses by
- *           overriding {@link #appendJoinDelimiter(StringBuilder, int)} and passing a transformation function to the constructor to transform each component
+ * @implNote This implementation provides a generalized algorithm in {@link #join(Iterable)} for joining segments, which can be customized by subclasses by
+ *           overriding {@link #appendJoinDelimiter(StringBuilder, int)} and passing a transformation function to the constructor to transform each segment
  *           before being joined.
  * @author Garret Wilson
  */
 public abstract class AbstractCompoundTokenization implements CompoundTokenization {
 
-	/** @return a component transformation function that performs no changes on a component before joining. */
-	protected static BiFunction<? super Integer, ? super CharSequence, ? extends CharSequence> noJoinComponentTransformation() {
-		return (i, component) -> component;
+	/** @return a segment transformation function that performs no changes on a segment before joining. */
+	protected static BiFunction<? super Integer, ? super CharSequence, ? extends CharSequence> noSegmentTransformation() {
+		return (i, segment) -> segment;
 	}
 
 	private final String name;
@@ -45,84 +45,85 @@ public abstract class AbstractCompoundTokenization implements CompoundTokenizati
 		return name;
 	}
 
-	private final BiFunction<? super Integer, ? super CharSequence, ? extends CharSequence> joinComponentTransformation;
+	/** The function applied to each segment when joining via {@link #join(Iterable)}. */
+	private final BiFunction<? super Integer, ? super CharSequence, ? extends CharSequence> segmentTransformation;
 
 	/**
-	 * Join component transformation constructor.
+	 * Segment transformation constructor.
 	 * @param name The name to use for the compound tokenization.
-	 * @param joinComponentTransformation The function to be applied to each component before joining with {@link #join(Iterable)}. The first function parameter
-	 *          is the index of the component being joined. The second function parameter is the non-empty component being joined.
+	 * @param segmentTransformation The function to be applied to each segment before joining with {@link #join(Iterable)}. The first function parameter is the
+	 *          index of the segment being joined. The second function parameter is the non-empty segment being joined.
 	 */
 	protected AbstractCompoundTokenization(@Nonnull final String name,
-			final BiFunction<? super Integer, ? super CharSequence, ? extends CharSequence> joinComponentTransformation) {
+			final BiFunction<? super Integer, ? super CharSequence, ? extends CharSequence> segmentTransformation) {
 		this.name = requireNonNull(name);
-		this.joinComponentTransformation = requireNonNull(joinComponentTransformation);
+		this.segmentTransformation = requireNonNull(segmentTransformation);
 	}
 
 	/**
-	 * Returns a composed join component transformation function that will first perform the existing join component transformation of this compound tokenization,
-	 * and then apply the given function to that result.
+	 * Returns a composed segment transformation function that will first perform the existing segment transformation of this compound tokenization, and then
+	 * apply the given function to that result.
 	 * @apiNote This method is meant to facilitate the implementation of TODO
 	 * @param after The function to apply during joining after the join transformation function of this compound tokenization is applied. The first function
-	 *          parameter is the index of the component being joined. The second function parameter is the non-empty component being joined.
-	 * @return A composed function to be applied to components before they are joined, that first applies this compound tokenization's transformation and then
+	 *          parameter is the index of the segment being joined. The second function parameter is the non-empty segment being joined.
+	 * @return A composed function to be applied to segments before they are joined, that first applies this compound tokenization's transformation and then
 	 *         applies the given function with the result.
 	 * @throws NullPointerException if the given function is <code>null</code>.
 	 * @see #join(Iterable)
 	 */
-	protected BiFunction<? super Integer, ? super CharSequence, ? extends CharSequence> addSubsequentJoinComponentTransformation(
+	protected BiFunction<? super Integer, ? super CharSequence, ? extends CharSequence> addSubsequentSegmentTransformation(
 			@Nonnull final BiFunction<? super Integer, ? super CharSequence, ? extends CharSequence> after) {
 		requireNonNull(after);
-		return (componentIndex, component) -> after.apply(componentIndex, this.joinComponentTransformation.apply(componentIndex, component));
+		return (segmentIndex, segment) -> after.apply(segmentIndex, this.segmentTransformation.apply(segmentIndex, segment));
 	}
 
 	/**
 	 * {@inheritDoc}
-	 * @implSpec This implementation invokes the internal join component transformation to transform each component as needed, and calls
-	 *           {@link #appendJoinDelimiter(StringBuilder, int)} between components to add any delimiter if needed.
+	 * @implSpec This implementation invokes the internal segment transformation to transform each segment as needed, and calls
+	 *           {@link #appendJoinDelimiter(StringBuilder, int)} between segments to add any delimiter if needed.
 	 * @implNote This implementation performs joining manually rather than calling {@link String#join(CharSequence, Iterable)} for efficiency and to check each
-	 *           component.
-	 * @throws IllegalArgumentException if one of the components is empty.
+	 *           segment.
+	 * @throws IllegalArgumentException if one of the segments is empty.
 	 */
 	@Override
-	public String join(final Iterable<? extends CharSequence> components) {
-		final Iterator<? extends CharSequence> componentIterator = components.iterator();
-		boolean hasNext = componentIterator.hasNext();
-		checkArgument(hasNext, "Cannot create compound tokenization with no components to join.");
-		int componentIndex = -1;
+	public String join(final Iterable<? extends CharSequence> segments) {
+		final Iterator<? extends CharSequence> segmentIterator = segments.iterator();
+		boolean hasNext = segmentIterator.hasNext();
+		checkArgument(hasNext, "Cannot create compound tokenization with no segments to join.");
+		int segmentIndex = -1;
 		final StringBuilder stringBuilder = new StringBuilder();
-		do { //we know there is at least one component
-			componentIndex++;
-			final CharSequence component = componentIterator.next();
-			validateJoinComponent(componentIndex, component);
-			stringBuilder.append(joinComponentTransformation.apply(componentIndex, component));
-			hasNext = componentIterator.hasNext();
+		do { //we know there is at least one segment
+			segmentIndex++;
+			final CharSequence segment = segmentIterator.next();
+			validateSegment(segmentIndex, segment);
+			stringBuilder.append(segmentTransformation.apply(segmentIndex, segment));
+			hasNext = segmentIterator.hasNext();
 			if(hasNext) {
-				appendJoinDelimiter(stringBuilder, componentIndex);
+				appendJoinDelimiter(stringBuilder, segmentIndex);
 			}
 		} while(hasNext);
 		return stringBuilder.toString();
 	}
 
 	/**
-	 * Validates the component to use before joining.
+	 * Validates the segment to use before joining.
 	 * @apiNote Subclasses should always first call the super class version.
-	 * @implSpec The default implementation validates that the component is not empty.
-	 * @param componentIndex The index of the component being joined.
-	 * @param component The non-empty component being joined.
-	 * @throws NullPointerException if the component is <code>null</code>.
-	 * @throws IllegalArgumentException if the component is the empty string.
+	 * @implSpec The default implementation validates that the segment is not empty.
+	 * @param segmentIndex The index of the segment being joined.
+	 * @param segment The non-empty segment being joined.
+	 * @throws NullPointerException if the segment is <code>null</code>.
+	 * @throws IllegalArgumentException if the segment is the empty string.
 	 */
-	protected void validateJoinComponent(final int componentIndex, @Nonnull final CharSequence component) {
-		checkArgument(component.length() != 0, "Compound token component cannot be empty.");
+	protected void validateSegment(final int segmentIndex, @Nonnull final CharSequence segment) {
+		checkArgument(segment.length() != 0, "Compound token segment cannot be empty.");
 	}
 
 	/**
 	 * Appends any necessary delimiter to the given string builder when joining.
 	 * @apiNote Subclasses should first call the super class version.
 	 * @implSpec The default implementation does nothing.
-	 * @param stringBuilder The string builder representing the components being joined.
-	 * @param delimiterIndex The index of the delimiter, which will be equal to the index of the component just added.
+	 * @param stringBuilder The string builder representing the segments being joined.
+	 * @param delimiterIndex The index of the delimiter, which will be equal to the index of the segment just added.
 	 * @return The given string builder.
 	 */
 	protected StringBuilder appendJoinDelimiter(@Nonnull StringBuilder stringBuilder, final int delimiterIndex) {

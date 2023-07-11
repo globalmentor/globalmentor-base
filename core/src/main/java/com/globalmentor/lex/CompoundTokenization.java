@@ -27,7 +27,9 @@ import javax.annotation.*;
 import com.globalmentor.model.Named;
 
 /**
- * A generalization for dealing with compound tokens, such as <code>fooBar</code> or <code>foo-bar</code>.
+ * A generalization for dealing with compound tokens, such as <code>fooBar</code> or <code>foo-bar</code>. Each individual component of a compound token is
+ * referred to as a <dfn>segment</dfn>. By default "transformation" refers to transformation of segments before joining via {@link #join(Iterable)} unless
+ * indicated otherwise.
  * @implNote The default implementations work best if acronyms are formatted the same as non-acronyms. For example in {@link #CAMEL_CASE}, use
  *           <code>oldUrlMapper</code> instead of <code>oldURLMapper</code>.
  * @author Garret Wilson
@@ -49,71 +51,71 @@ public interface CompoundTokenization extends Named<String> {
 	public static final char SNAKE_CASE_DELIMITER = '_';
 
 	/**
-	 * Splits a compound token into its component parts.
+	 * Splits a compound token into its component segments.
 	 * @param token The compound token to split.
-	 * @return The components of the compound token.
+	 * @return The segments of the compound token.
 	 * @throws IllegalArgumentException if the token is empty.
 	 */
 	public List<String> split(@Nonnull final CharSequence token);
 
 	/**
-	 * Joins components into a compound token.
-	 * @param components The components to join.
-	 * @return The compound token resulting from joining the given components.
-	 * @throws NullPointerException if one of the components is <code>null</code>.
-	 * @throws IllegalArgumentException if there are no components.
-	 * @throws IllegalArgumentException if one of the components is the empty string.
-	 * @throws IllegalArgumentException if one of the components is not valid for this tokenization.
+	 * Joins segments into a compound token.
+	 * @param segments The segments to join.
+	 * @return The compound token resulting from joining the given segments.
+	 * @throws NullPointerException if one of the segments is <code>null</code>.
+	 * @throws IllegalArgumentException if there are no segments.
+	 * @throws IllegalArgumentException if one of the segments is the empty string.
+	 * @throws IllegalArgumentException if one of the segments is not valid for this tokenization.
 	 */
-	public String join(@Nonnull final Iterable<? extends CharSequence> components);
+	public String join(@Nonnull final Iterable<? extends CharSequence> segments);
 
 	/**
-	 * Factory method to create a character-delimited compound tokenization with no component transformation.
-	 * @implSpec This implementation delegates to {@link #namedDelimitedByWithJoinComponentTransformation(String, char, BiFunction)}.
+	 * Factory method to create a character-delimited compound tokenization with no segment transformation.
+	 * @implSpec This implementation delegates to {@link #namedDelimitedByWithSegmentTransformation(String, char, BiFunction)}.
 	 * @param name The name to use for the compound tokenization.
-	 * @param delimiter The delimiter for splitting and joining a component token.
+	 * @param delimiter The delimiter for splitting and joining a segment token.
 	 * @return A new compound tokenization with the given name and using the given delimiter to {@link #split(CharSequence)} and {@link #join(Iterable)}.
 	 */
 	public static CharacterDelimitedCompoundTokenization namedDelimitedBy(@Nonnull final String name, final char delimiter) {
-		return namedDelimitedByWithJoinComponentTransformation(name, delimiter, CharacterDelimitedCompoundTokenization.noJoinComponentTransformation()); //TODO improve; consider Function.identity() or `null`
+		return namedDelimitedByWithSegmentTransformation(name, delimiter, CharacterDelimitedCompoundTokenization.noSegmentTransformation()); //TODO improve; consider Function.identity() or `null`
 	}
 
 	/**
-	 * Factory method to create a character-delimited compound tokenization with a component transformation.
-	 * @implSpec This implementation delegates to {@link #namedDelimitedByWithJoinComponentTransformation(String, char, BiFunction)}.
+	 * Factory method to create a character-delimited compound tokenization with a segment transformation.
+	 * @implSpec This implementation delegates to {@link #namedDelimitedByWithSegmentTransformation(String, char, BiFunction)}.
 	 * @param name The name to use for the compound tokenization.
-	 * @param delimiter The delimiter for splitting and joining a component token.
-	 * @param joinComponentTransformation The function to be applied to each component before joining with {@link #join(Iterable)}. The function parameter is the
-	 *          non-empty component being joined.
+	 * @param delimiter The delimiter for splitting and joining a segment token.
+	 * @param segmentTransformation The function to be applied to each segment before joining with {@link #join(Iterable)}. The function parameter is the
+	 *          non-empty segment being joined.
 	 * @return A new compound tokenization with the given name, using the given delimiter to {@link #split(CharSequence)} and {@link #join(Iterable)}, using the
-	 *         given function for transforming components.
+	 *         given function for transforming segments.
 	 */
-	public static CharacterDelimitedCompoundTokenization namedDelimitedByWithJoinComponentTransformation(@Nonnull final String name, final char delimiter,
-			final Function<? super CharSequence, ? extends CharSequence> joinComponentTransformation) {
-		return namedDelimitedByWithJoinComponentTransformation(name, delimiter, toBiFunctionU(joinComponentTransformation));
+	public static CharacterDelimitedCompoundTokenization namedDelimitedByWithSegmentTransformation(@Nonnull final String name, final char delimiter,
+			final Function<? super CharSequence, ? extends CharSequence> segmentTransformation) {
+		return namedDelimitedByWithSegmentTransformation(name, delimiter, toBiFunctionU(segmentTransformation));
 	}
 
 	/**
-	 * Factory method to create a character-delimited compound tokenization with a component transformation.
+	 * Factory method to create a character-delimited compound tokenization with a segment transformation.
 	 * @param name The name to use for the compound tokenization.
-	 * @param delimiter The delimiter for splitting and joining a component token.
-	 * @param joinComponentTransformation The function to be applied to each component before joining with {@link #join(Iterable)}. The first function parameter
-	 *          is the index of the component being joined. The second function parameter is the non-empty component being joined.
+	 * @param delimiter The delimiter for splitting and joining a segment token.
+	 * @param segmentTransformation The function to be applied to each segment before joining with {@link #join(Iterable)}. The first function parameter is the
+	 *          index of the segment being joined. The second function parameter is the non-empty segment being joined.
 	 * @return A new compound tokenization with the given name, using the given delimiter to {@link #split(CharSequence)} and {@link #join(Iterable)}, using the
-	 *         given function for transforming components.
+	 *         given function for transforming segments.
 	 */
-	public static CharacterDelimitedCompoundTokenization namedDelimitedByWithJoinComponentTransformation(@Nonnull final String name, final char delimiter,
-			final BiFunction<? super Integer, ? super CharSequence, ? extends CharSequence> joinComponentTransformation) {
-		return new CharacterDelimitedCompoundTokenization(name, delimiter, joinComponentTransformation);
+	public static CharacterDelimitedCompoundTokenization namedDelimitedByWithSegmentTransformation(@Nonnull final String name, final char delimiter,
+			final BiFunction<? super Integer, ? super CharSequence, ? extends CharSequence> segmentTransformation) {
+		return new CharacterDelimitedCompoundTokenization(name, delimiter, segmentTransformation);
 	}
 
 	/**
 	 * Converts a string from this compound tokenization to another compound tokenization. If both compound tokenizations are the same instance, the token is not
 	 * modified.
-	 * @apiNote This transformation can only be used for round-trip conversion if neither this compound tokenization performs additional component transformations
+	 * @apiNote This transformation can only be used for round-trip conversion if neither this compound tokenization performs additional segment transformations
 	 *          when splitting, nor the other compound tokenization performs additional transformations when joining.
 	 * @implSpec The default implementation splits the compound token using the other compound tokenization's {@link #split(CharSequence)}, and then joins the
-	 *           components using this compound tokenization's {@link #join(Iterable)}.
+	 *           segments using this compound tokenization's {@link #join(Iterable)}.
 	 * @param otherCompoundTokenization The other compound tokenization to convert to.
 	 * @param token The compound token.
 	 * @return The same compound token using the other tokenization.
@@ -128,7 +130,7 @@ public interface CompoundTokenization extends Named<String> {
 	}
 
 	/**
-	 * Converts a token from one tokenization to <code>camelCase</code>, leaving the case of the first component unchanged.
+	 * Converts a token from one tokenization to <code>camelCase</code>, leaving the case of the first segment unchanged.
 	 * @apiNote This is a convenience method which is equivalent to calling {@link #to(CompoundTokenization, CharSequence)} using {@link #CAMEL_CASE}.
 	 * @param token The compound token.
 	 * @return The same compound token using the <code>camelCase</code> tokenization.

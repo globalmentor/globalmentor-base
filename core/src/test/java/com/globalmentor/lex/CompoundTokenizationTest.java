@@ -207,9 +207,9 @@ public class CompoundTokenizationTest {
 		assertThat(CAMEL_CASE.to(KEBAB_CASE, "fooBar"), is("foo-bar"));
 		assertThat(CAMEL_CASE.to(KEBAB_CASE, "FooBar"), is("Foo-bar"));
 		assertThrows(IllegalArgumentException.class, () -> CAMEL_CASE.to(KEBAB_CASE, "foo-bar"),
-				"Kebab case components, split from camel case, must not already use kebab case delimiter.");
+				"Kebab case segments, split from camel case, must not already use kebab case delimiter.");
 		assertThrows(IllegalArgumentException.class, () -> CAMEL_CASE.to(KEBAB_CASE, "foo-Bar"),
-				"Kebab case components, split from camel case, must not already use kebab case delimiter.");
+				"Kebab case segments, split from camel case, must not already use kebab case delimiter.");
 		assertThat(CAMEL_CASE.to(KEBAB_CASE, "foo_bar"), is("foo_bar"));
 		assertThat(CAMEL_CASE.to(KEBAB_CASE, "foo_Bar"), is("foo_-bar"));
 		assertThat(CAMEL_CASE.to(KEBAB_CASE, "x"), is("x"));
@@ -241,9 +241,9 @@ public class CompoundTokenizationTest {
 		assertThat(CAMEL_CASE.to(SNAKE_CASE, "foo-bar"), is("foo-bar"));
 		assertThat(CAMEL_CASE.to(SNAKE_CASE, "foo-Bar"), is("foo-_bar"));
 		assertThrows(IllegalArgumentException.class, () -> CAMEL_CASE.to(SNAKE_CASE, "foo_bar"),
-				"Snake case components, split from camel case, must not already use snake case delimiter.");
+				"Snake case segments, split from camel case, must not already use snake case delimiter.");
 		assertThrows(IllegalArgumentException.class, () -> CAMEL_CASE.to(SNAKE_CASE, "foo_Bar"),
-				"Snake case components, split from camel case, must not already use snake case delimiter.");
+				"Snake case segments, split from camel case, must not already use snake case delimiter.");
 		assertThat(CAMEL_CASE.to(SNAKE_CASE, "x"), is("x"));
 		assertThat(CAMEL_CASE.to(SNAKE_CASE, "X"), is("X"));
 		assertThat(CAMEL_CASE.to(SNAKE_CASE, "CDlibrary"), is("CDlibrary"));
@@ -364,9 +364,9 @@ public class CompoundTokenizationTest {
 		assertThat(DOT_CASE.to(SNAKE_CASE, "foo-bar"), is("foo-bar"));
 		assertThat(DOT_CASE.to(SNAKE_CASE, "foo-Bar"), is("foo-Bar"));
 		assertThrows(IllegalArgumentException.class, () -> DOT_CASE.to(SNAKE_CASE, "foo_bar"),
-				"Snake case components, split from dot case, must not already use snake case delimiter.");
+				"Snake case segments, split from dot case, must not already use snake case delimiter.");
 		assertThrows(IllegalArgumentException.class, () -> DOT_CASE.to(SNAKE_CASE, "foo_Bar"),
-				"Snake case components, split from dot case, must not already use snake case delimiter.");
+				"Snake case segments, split from dot case, must not already use snake case delimiter.");
 		assertThat(DOT_CASE.to(SNAKE_CASE, "x"), is("x"));
 		assertThat(DOT_CASE.to(SNAKE_CASE, "X"), is("X"));
 		assertThat(DOT_CASE.to(SNAKE_CASE, "CD.library"), is("CD_library"));
@@ -483,9 +483,9 @@ public class CompoundTokenizationTest {
 		assertThat(KEBAB_CASE.to(SNAKE_CASE, "foo-bar"), is("foo_bar"));
 		assertThat(KEBAB_CASE.to(SNAKE_CASE, "foo-Bar"), is("foo_Bar"));
 		assertThrows(IllegalArgumentException.class, () -> KEBAB_CASE.to(SNAKE_CASE, "foo_bar"),
-				"Snake case components, split from kebab case, must not already use snake case delimiter.");
+				"Snake case segments, split from kebab case, must not already use snake case delimiter.");
 		assertThrows(IllegalArgumentException.class, () -> KEBAB_CASE.to(SNAKE_CASE, "foo_Bar"),
-				"Snake case components, split from kebab case, must not already use snake case delimiter.");
+				"Snake case segments, split from kebab case, must not already use snake case delimiter.");
 		assertThat(KEBAB_CASE.to(SNAKE_CASE, "x"), is("x"));
 		assertThat(KEBAB_CASE.to(SNAKE_CASE, "X"), is("X"));
 		assertThat(KEBAB_CASE.to(SNAKE_CASE, "CD-library"), is("CD_library"));
@@ -575,9 +575,9 @@ public class CompoundTokenizationTest {
 		assertThat(SNAKE_CASE.to(KEBAB_CASE, "fooBar"), is("fooBar"));
 		assertThat(SNAKE_CASE.to(KEBAB_CASE, "FooBar"), is("FooBar"));
 		assertThrows(IllegalArgumentException.class, () -> SNAKE_CASE.to(KEBAB_CASE, "foo-bar"),
-				"Kebab case components, split from snake case, must not already use kebab case delimiter.");
+				"Kebab case segments, split from snake case, must not already use kebab case delimiter.");
 		assertThrows(IllegalArgumentException.class, () -> SNAKE_CASE.to(KEBAB_CASE, "foo-Bar"),
-				"Kebab case components, split from snake case, must not already use kebab case delimiter.");
+				"Kebab case segments, split from snake case, must not already use kebab case delimiter.");
 		assertThat(SNAKE_CASE.to(KEBAB_CASE, "foo_bar"), is("foo-bar"));
 		assertThat(SNAKE_CASE.to(KEBAB_CASE, "foo_Bar"), is("foo-Bar"));
 		assertThat(SNAKE_CASE.to(KEBAB_CASE, "x"), is("x"));
@@ -618,8 +618,8 @@ public class CompoundTokenizationTest {
 	/** TODO document */
 	@Test
 	void testComposedTransformation() {
-		final CompoundTokenization UPPER_SNAKE_CASE = SNAKE_CASE.namedWithAddedJoinComponentTransformation("UPPER_SNAKE_CASE",
-				(i, component) -> component.toString().toUpperCase()); //TODO create version using function
+		final CompoundTokenization UPPER_SNAKE_CASE = SNAKE_CASE.namedWithAddedSegmentTransformation("UPPER_SNAKE_CASE",
+				(i, segment) -> segment.toString().toUpperCase()); //TODO create version using function
 		assertThat(SNAKE_CASE.to(UPPER_SNAKE_CASE, "foobar"), is("FOOBAR"));
 		assertThat(CAMEL_CASE.to(UPPER_SNAKE_CASE, "fooBar"), is("FOO_BAR"));
 		assertThat(CAMEL_CASE.to(UPPER_SNAKE_CASE, "FooBar"), is("FOO_BAR"));

@@ -27,7 +27,7 @@ import javax.annotation.*;
 import com.globalmentor.java.Characters;
 
 /**
- * A compound tokenization implementation that relies on a delimiter character between components.
+ * A compound tokenization implementation that relies on a delimiter character between segments.
  * @author Garret Wilson
  */
 public class CharacterDelimitedCompoundTokenization extends AbstractCompoundTokenization {
@@ -42,33 +42,33 @@ public class CharacterDelimitedCompoundTokenization extends AbstractCompoundToke
 	}
 
 	/**
-	 * Delimiter and join component transformation constructor.
+	 * Delimiter and segment transformation constructor.
 	 * @param name The name to use for the compound tokenization.
-	 * @param delimiter The delimiter for splitting and joining a component token.
-	 * @param joinComponentTransformation The function to be applied to each component before joining with {@link #join(Iterable)}. The first function parameter
-	 *          is the index of the component being joined. The second function parameter is the non-empty component being joined.
+	 * @param delimiter The delimiter for splitting and joining a segment token.
+	 * @param segmentTransformation The function to be applied to each segment before joining with {@link #join(Iterable)}. The first function parameter is the
+	 *          index of the segment being joined. The second function parameter is the non-empty segment being joined.
 	 */
 	protected CharacterDelimitedCompoundTokenization(@Nonnull final String name, final char delimiter,
-			final BiFunction<? super Integer, ? super CharSequence, ? extends CharSequence> joinComponentTransformation) {
-		super(name, joinComponentTransformation);
+			final BiFunction<? super Integer, ? super CharSequence, ? extends CharSequence> segmentTransformation) {
+		super(name, segmentTransformation);
 		delimiterCharacters = Characters.of(delimiter);
 		this.delimiter = delimiter;
 	}
 
 	/**
 	 * Produces a new compound tokenization that the same functionality as this one, with the given <em>additional</em> transformation to be applied to each
-	 * component before joining.
+	 * segment before joining.
 	 * @param name The name to use for the new compound tokenization.
 	 * @param after The function to apply during joining after the join transformation function of this compound tokenization is applied. The first function
-	 *          parameter is the index of the component being joined. The second function parameter is the non-empty component being joined.
+	 *          parameter is the index of the segment being joined. The second function parameter is the non-empty segment being joined.
 	 * @return a composed function that first applies this function and then applies the {@code after} function
 	 * @throws NullPointerException if the given name and/or function is <code>null</code>.
 	 * @see #getName()
 	 * @see #join(Iterable)
 	 */
-	public CompoundTokenization namedWithAddedJoinComponentTransformation(@Nonnull final String name,
+	public CompoundTokenization namedWithAddedSegmentTransformation(@Nonnull final String name,
 			@Nonnull final BiFunction<? super Integer, ? super CharSequence, ? extends CharSequence> after) {
-		return new CharacterDelimitedCompoundTokenization(name, getDelimiter(), addSubsequentJoinComponentTransformation(after));
+		return new CharacterDelimitedCompoundTokenization(name, getDelimiter(), addSubsequentSegmentTransformation(after));
 	}
 
 	@Override
@@ -79,14 +79,14 @@ public class CharacterDelimitedCompoundTokenization extends AbstractCompoundToke
 
 	/**
 	 * {@inheritDoc}
-	 * @implSpec This version validates that the component does not contain the delimiter.
-	 * @throws IllegalArgumentException if one of the components already contains the tokenization delimiter.
+	 * @implSpec This version validates that the segment does not contain the delimiter.
+	 * @throws IllegalArgumentException if one of the segments already contains the tokenization delimiter.
 	 * @see #getDelimiter()
 	 */
 	@Override
-	protected void validateJoinComponent(final int componentIndex, final CharSequence component) {
-		super.validateJoinComponent(componentIndex, component);
-		checkArgument(!contains(component, delimiter), "Component %s cannot contain the delimiter %s.", component, getDelimiter());
+	protected void validateSegment(final int segmentIndex, final CharSequence segment) {
+		super.validateSegment(segmentIndex, segment);
+		checkArgument(!contains(segment, delimiter), "Segment `%s` cannot contain the delimiter `%s`.", segment, getDelimiter());
 	}
 
 	/**
