@@ -78,7 +78,7 @@ public interface CompoundTokenization extends Named<String> {
 	 * @see #getName()
 	 */
 	public static CharacterDelimitedCompoundTokenization namedDelimitedBy(@Nonnull final String name, final char delimiter) {
-		return namedDelimitedByWithSegmentTransformation(name, delimiter, CharacterDelimitedCompoundTokenization.noSegmentTransformation()); //TODO improve; consider Function.identity() or `null`
+		return namedDelimitedByWithSegmentTransformation(name, delimiter, CharacterDelimitedCompoundTokenization.noSegmentTransformation());
 	}
 
 	/**
