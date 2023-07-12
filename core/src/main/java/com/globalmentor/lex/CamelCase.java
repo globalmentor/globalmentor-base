@@ -21,33 +21,48 @@ import static java.util.Collections.*;
 
 import java.beans.Introspector;
 import java.util.*;
+import java.util.function.*;
 
 import javax.annotation.*;
 
 /**
- * A compound tokenization strategy that relies a change from non-uppercase to uppercase to delimit tokens.
+ * A compound tokenization implementation that relies on variation from non-uppercase to uppercase to delimit tokens.
  * @apiNote This tokenization supports both <code>dromedaryCase</code> and <code>PascalCase</code> variations. That is, this tokenization is agnostic to whether
- *          the first component is capitalized, and thus supports round-trip split+join.
+ *          the first segment is capitalized, and thus supports round-trip split+join.
  * @apiNote This class normally need not be instantiated. Instead use the constant singleton instance {@link CompoundTokenization#CAMEL_CASE}.
+ * @apiNote This method provides transformation methods {@link #transformSegmentToCamelCase(int, CharSequence)},
+ *          {@link #transformCamelCaseSegmentToDromedaryCase(int, CharSequence)}, and {@link #transformCamelCaseSegmentToPascalCase(int, CharSequence)} as
+ *          utility functions for deriving new compound tokenizations if needed. However normally they should not be used directly; instead
+ *          {@link CompoundTokenization#CAMEL_CASE}, {@link CompoundTokenization#DROMEDARY_CASE}, and {@link CompoundTokenization#PASCAL_CASE}, respectively
+ *          should be used.
  * @implSpec This implementation does not recognize delimiters whose code points lie outside the BMP (i.e. that depend on surrogate pairs).
  * @see <a href="https://en.wikipedia.org/wiki/Camel_case">Camel case</a>
  * @author Garret Wilson
  */
-public class CamelCase implements CompoundTokenization {
+public class CamelCase extends AbstractCompoundTokenization {
 
-	/** This class cannot be publicly instantiated, but may be subclassed and instantiated from other classes in the package. */
-	protected CamelCase() {
+	/**
+	 * Name constructor using {@link #transformSegmentToCamelCase(int, CharSequence)} as the transformation.
+	 * @param name The name to use for the compound tokenization.
+	 */
+	CamelCase(@Nonnull final String name) {
+		this(name, CamelCase::transformSegmentToCamelCase);
 	}
 
-	@Override
-	public String getName() {
-		return "camelCase";
+	/**
+	 * Name and segment transformation constructor.
+	 * @param name The name to use for the compound tokenization.
+	 * @param segmentTransformation The function to be applied to each segment before joining with {@link #join(Iterable)}. The first function parameter is the
+	 *          index of the segment being joined. The second function parameter is the non-empty segment being joined.
+	 */
+	protected CamelCase(@Nonnull final String name, final BiFunction<? super Integer, ? super CharSequence, ? extends CharSequence> segmentTransformation) {
+		super(name, segmentTransformation);
 	}
 
 	@Override
 	public List<String> split(final CharSequence token) {
-		ArrayList<String> components = null; //we'll only create this if we have to
-		int componentIndex = 0;
+		ArrayList<String> segments = null; //we'll only create this if we have to
+		int segmentIndex = 0;
 		final int length = token.length();
 		checkArgument(length > 0, "Token cannot be empty.");
 		int start = 0;
@@ -57,96 +72,140 @@ public class CamelCase implements CompoundTokenization {
 				final boolean isEnd = end == length;
 				final boolean isUppercase = !isEnd && Character.isUpperCase(token.charAt(end));
 				if((isUppercase && !wasUppercase) || isEnd) { //if we switched from non-uppercase to uppercase (or reached the end)
-					final String component = transformSplitComponent(componentIndex, token.subSequence(start, end)).toString();
-					if(components == null) { //if there are no components yet
-						if(isEnd) { //only one component
-							return singletonList(component);
+					final String segment = transformSplitSegment(segmentIndex, token.subSequence(start, end)).toString();
+					if(segments == null) { //if there are no segments yet
+						if(isEnd) { //only one segment
+							return singletonList(segment);
 						}
-						components = new ArrayList<>();
+						segments = new ArrayList<>();
 					}
-					components.add(component);
-					componentIndex++;
+					segments.add(segment);
+					segmentIndex++;
 					start = end;
 					break;
 				}
 				wasUppercase = isUppercase;
 			}
 		}
-		return components != null ? components : emptyList();
+		return segments != null ? segments : emptyList();
 	}
 
 	/**
-	 * {@inheritDoc}
-	 * @implSpec This implementation calls {@link #transformJoinComponent(int, CharSequence)} to transform each component as needed.
-	 */
-	@Override
-	public String join(final Iterable<? extends CharSequence> components) {
-		final Iterator<? extends CharSequence> componentIterator = components.iterator();
-		boolean hasNext = componentIterator.hasNext();
-		checkArgument(hasNext, "Cannot create compound tokenization with no components to join.");
-		int componentIndex = 0;
-		final StringBuilder stringBuilder = new StringBuilder();
-		do { //we know there is at least one component
-			stringBuilder.append(transformJoinComponent(componentIndex, componentIterator.next()));
-			hasNext = componentIterator.hasNext();
-			componentIndex++;
-		} while(hasNext);
-		return stringBuilder.toString();
-	}
-
-	/**
-	 * Determines the component to use after splitting. The first component is unchanged, as the capitalization of the first component is irrelevant to the
-	 * compound tokenization.
+	 * Determines the segment to use after splitting. The first segment is unchanged, as the capitalization of the first segment is irrelevant to the compound
+	 * tokenization.
 	 * @implSpec The default implementation changes the first character to lowercase if the first character is uppercase but not followed by another uppercase
 	 *           character.
-	 * @param componentIndex The index of the component being split.
-	 * @param component The non-empty component being split.
-	 * @return The component after splitting.
-	 * @throws NullPointerException if the component is <code>null</code>.
-	 * @throws IllegalArgumentException if the component is the empty string.
+	 * @param segmentIndex The index of the segment being split.
+	 * @param segment The non-empty segment being split.
+	 * @return The segment after splitting.
+	 * @throws NullPointerException if the segment is <code>null</code>.
+	 * @throws IllegalArgumentException if the segment is the empty string.
 	 * @see Introspector#decapitalize(String)
 	 */
-	protected CharSequence transformSplitComponent(final int componentIndex, @Nonnull final CharSequence component) {
-		checkArgument(component.length() != 0, "Compound token component cannot be empty.");
-		if(componentIndex != 0) {
-			final char firstChar = component.charAt(0);
+	protected CharSequence transformSplitSegment(final int segmentIndex, @Nonnull final CharSequence segment) {
+		checkArgument(segment.length() != 0, "Compound token segment cannot be empty.");
+		if(segmentIndex != 0) {
+			final char firstChar = segment.charAt(0);
 			//if the first character is uppercase, only decapitalize if it is not followed by another capital letter
-			if(Character.isUpperCase(firstChar) && (component.length() == 1 || !Character.isUpperCase(component.charAt(1)))) {
-				final StringBuilder stringBuilder = new StringBuilder(component);
+			if(Character.isUpperCase(firstChar) && (segment.length() == 1 || !Character.isUpperCase(segment.charAt(1)))) {
+				final StringBuilder stringBuilder = new StringBuilder(segment);
 				stringBuilder.setCharAt(0, Character.toLowerCase(firstChar));
 				return stringBuilder;
 			}
 		}
-		return component;
+		return segment;
 	}
 
 	/**
-	 * Determines the component to use before joining. The first component is unchanged, as the capitalization of the first component is irrelevant to the
-	 * compound tokenization.
-	 * @implSpec The default implementation changes the first character to uppercase.
-	 * @param componentIndex The index of the component being joined.
-	 * @param component The non-empty component being joined.
-	 * @return The component to use for joining.
-	 * @throws NullPointerException if the component is <code>null</code>.
-	 * @throws IllegalArgumentException if the component is the empty string.
+	 * Converts a segment being joined to <code>camelCase</code>.
+	 * @implSpec Changes the first character to uppercase, except that the first segment is unchanged, as the capitalization of the first segment is irrelevant to
+	 *           the compound tokenization.
+	 * @param segmentIndex The index of the segment being joined.
+	 * @param segment The non-empty segment being joined.
+	 * @return The segment to be joined.
+	 * @throws NullPointerException if the segment is <code>null</code>.
+	 * @throws IllegalArgumentException if the segment is the empty string.
 	 */
-	protected CharSequence transformJoinComponent(final int componentIndex, @Nonnull final CharSequence component) {
-		checkArgument(component.length() != 0, "Compound token component cannot be empty.");
-		if(componentIndex == 0) {
-			return component;
+	public static CharSequence transformSegmentToCamelCase(final int segmentIndex, @Nonnull final CharSequence segment) {
+		if(segmentIndex == 0) {
+			return segment;
 		}
-		final char firstChar = component.charAt(0);
+		checkArgument(segment.length() != 0, "Compound token segment cannot be empty.");
+		final char firstChar = segment.charAt(0);
 		if(Character.isUpperCase(firstChar)) { //if the first character is already in uppercase
-			return component; //no changes need to be made
+			return segment; //no changes need to be made
 		}
-		final StringBuilder stringBuilder = new StringBuilder(component);
+		final StringBuilder stringBuilder = new StringBuilder(segment);
 		stringBuilder.setCharAt(0, Character.toUpperCase(firstChar));
 		return stringBuilder;
 	}
 
+	/**
+	 * Converts a segment from <code>camelCase</code> to <code>dromedaryCase</code> (lower <code>camelCase</code>) by decapitalizing the initial letter.
+	 * @apiNote The resulting token will not necessarily be in <code>dromedaryCase</code> (that is, {@link #isDromedaryCase(CharSequence)} may not return
+	 *          <code>true</code> for the resulting token), e.g. if the first character is a symbol.
+	 * @apiNote This is a one-way conversion; it will not be possible to return to the previous tokenization unless the previous capitalization was known.
+	 * @param segmentIndex The index of the segment being joined.
+	 * @param segment The non-empty segment being joined, already in <code>camelCase</code>.
+	 * @return The segment to be joined, using the <code>dromedaryCase</code> tokenization.
+	 * @throws NullPointerException if the segment is <code>null</code>.
+	 * @throws IllegalArgumentException if the segment is the empty string.
+	 */
+	public static CharSequence transformCamelCaseSegmentToDromedaryCase(final int segmentIndex, @Nonnull final CharSequence segment) {
+		if(segmentIndex > 0) { //`camelCase` to `dromedaryCase` only affects the first segment
+			return segment;
+		}
+		checkArgument(segment.length() != 0, "Compound token segment cannot be empty.");
+		final char firstChar = segment.charAt(0);
+		if(Character.isLowerCase(firstChar)) { //if the first character is already in lowercase
+			return segment; //no changes need to be made
+		}
+		final StringBuilder stringBuilder = new StringBuilder(segment);
+		stringBuilder.setCharAt(0, Character.toLowerCase(firstChar));
+		return stringBuilder;
+	}
+
+	/**
+	 * Converts a token from <code>camelCase</code> to <code>PascalCase</code> (upper <code>camelCase</code>) by capitalizing the initial letter.
+	 * @apiNote The resulting token will not necessarily be in <code>PascalCase</code> (that is, {@link #isPascalCase(CharSequence)} may not return
+	 *          <code>true</code> for the resulting token), e.g. if the first character is a symbol.
+	 * @apiNote This is a one-way conversion; it will not be possible to return to the previous tokenization unless the previous capitalization was known.
+	 * @param segmentIndex The index of the segment being joined.
+	 * @param segment The non-empty segment being joined, already in <code>camelCase</code>.
+	 * @return The segment to be joined, using the <code>PascalCase</code> tokenization.
+	 * @throws NullPointerException if the segment is <code>null</code>.
+	 * @throws IllegalArgumentException if the segment is the empty string.
+	 */
+	public static CharSequence transformCamelCaseSegmentToPascalCase(final int segmentIndex, @Nonnull final CharSequence segment) {
+		if(segmentIndex > 0) { //`camelCase` to `PascalCase` only affects the first segment
+			return segment;
+		}
+		checkArgument(segment.length() != 0, "Compound token segment cannot be empty.");
+		final char firstChar = segment.charAt(0);
+		if(Character.isUpperCase(firstChar)) {
+			return segment;
+		}
+		final StringBuilder stringBuilder = new StringBuilder(segment);
+		stringBuilder.setCharAt(0, Character.toUpperCase(firstChar));
+		return stringBuilder.toString();
+	}
+
 	@Override
-	public String toCamelCase(final CharSequence token) {
-		return token.toString();
+	public CamelCase namedWithAddedSegmentStringTransformation(@Nonnull final String name,
+			@Nonnull final Function<? super String, ? extends CharSequence> segmentTransformation) {
+		return (CamelCase)super.namedWithAddedSegmentStringTransformation(name, segmentTransformation);
+	}
+
+	@Override
+	public CamelCase namedWithAddedSegmentTransformation(@Nonnull final String name,
+			@Nonnull final Function<? super CharSequence, ? extends CharSequence> segmentTransformation) {
+		return (CamelCase)super.namedWithAddedSegmentTransformation(name, segmentTransformation);
+	}
+
+	@Override
+	public CamelCase namedWithAddedSegmentTransformation(@Nonnull final String name,
+			@Nonnull final BiFunction<? super Integer, ? super CharSequence, ? extends CharSequence> segmentTransformation) {
+		return new CamelCase(name, addSegmentTransformation(segmentTransformation));
 	}
 
 	/**
@@ -163,26 +222,6 @@ public class CamelCase implements CompoundTokenization {
 	}
 
 	/**
-	 * Converts a token from <code>camelCase</code> to <code>dromedaryCase</code> (lower <code>camelCase</code>) by decapitalizing the initial letter.
-	 * @apiNote The resulting token will not necessarily be in <code>dromedaryCase</code> (that is, {@link #isDromedaryCase(CharSequence)} may not return
-	 *          <code>true</code> for the resulting token), e.g. if the first character is a symbol.
-	 * @apiNote This is a one-way conversion; it will not be possible to return to the previous tokenization unless the previous capitalization was known.
-	 * @param token The compound token in <code>camelCase</code>.
-	 * @return The same compound token using the <code>PascalCase</code> tokenization.
-	 * @throws IllegalArgumentException if the token is empty.
-	 */
-	public String toDromedaryCase(@Nonnull final CharSequence token) {
-		checkArgument(token.length() > 0, "Token cannot be empty.");
-		final char firstChar = token.charAt(0);
-		if(!Character.isUpperCase(firstChar)) {
-			return token.toString();
-		}
-		final StringBuilder stringBuilder = new StringBuilder(token);
-		stringBuilder.setCharAt(0, Character.toLowerCase(firstChar));
-		return stringBuilder.toString();
-	}
-
-	/**
 	 * Indicates whether a token is in <code>PascalCase</code> (upper <code>camelCase</code>); this, whether its first letter is in uppercase.
 	 * @apiNote It is possible for a token in <code>camelCase</code> to be neither in <code>dromedaryCase</code> nor in <code>PascalCase</code>, e.g. if the first
 	 *          character is a symbol.
@@ -193,26 +232,6 @@ public class CamelCase implements CompoundTokenization {
 	public boolean isPascalCase(@Nonnull final CharSequence token) {
 		checkArgument(token.length() > 0, "Token cannot be empty.");
 		return Character.isUpperCase(token.charAt(0));
-	}
-
-	/**
-	 * Converts a token from <code>camelCase</code> to <code>PascalCase</code> (upper <code>camelCase</code>) by capitalizing the initial letter.
-	 * @apiNote The resulting token will not necessarily be in <code>PascalCase</code> (that is, {@link #isPascalCase(CharSequence)} may not return
-	 *          <code>true</code> for the resulting token), e.g. if the first character is a symbol.
-	 * @apiNote This is a one-way conversion; it will not be possible to return to the previous tokenization unless the previous capitalization was known.
-	 * @param token The compound token in <code>camelCase</code>.
-	 * @return The same compound token using the <code>PascalCase</code> tokenization.
-	 * @throws IllegalArgumentException if the token is empty.
-	 */
-	public String toPascalCase(@Nonnull final CharSequence token) {
-		checkArgument(token.length() > 0, "Token cannot be empty.");
-		final char firstChar = token.charAt(0);
-		if(Character.isUpperCase(firstChar)) {
-			return token.toString();
-		}
-		final StringBuilder stringBuilder = new StringBuilder(token);
-		stringBuilder.setCharAt(0, Character.toUpperCase(firstChar));
-		return stringBuilder.toString();
 	}
 
 }
