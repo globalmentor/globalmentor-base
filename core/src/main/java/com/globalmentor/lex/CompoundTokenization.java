@@ -243,10 +243,29 @@ public interface CompoundTokenization extends Named<String> {
 	}
 
 	/**
-	 * A general case-based compound tokenization, supporting both <code>dromedaryCase</code> and <code>PascalCase</code> variations.
+	 * A general case-based compound tokenization, supporting both <code>dromedaryCase</code> and <code>PascalCase</code> variations. Its conversion is agnostic
+	 * to whether the result is <code>dromedaryCase</code> or <code>PascalCase</code> (i.e. it depends on the existing case of the segments being joined).
+	 * @see <a href="https://en.wikipedia.org/wiki/Camel_case">Camel case</a>
+	 * @see #DROMEDARY_CASE
+	 * @see #PASCAL_CASE
+	 */
+	public CamelCase CAMEL_CASE = new CamelCase("camelCase");
+
+	/**
+	 * The <code>dromedaryCase</code> variation of <code>camelCase</code>.
+	 * @apiNote This tokenization uses a one-way conversion; it will not be possible to return to the previous tokenization unless the previous capitalization was
+	 *          known.
 	 * @see <a href="https://en.wikipedia.org/wiki/Camel_case">Camel case</a>
 	 */
-	public CamelCase CAMEL_CASE = new CamelCase();
+	public CamelCase DROMEDARY_CASE = CAMEL_CASE.namedWithAddedSegmentTransformation("dromedaryCase", CamelCase::transformCamelCaseSegmentToDromedaryCase);
+
+	/**
+	 * The <code>PascalCase</code> variation of <code>camelCase</code>.
+	 * @apiNote This tokenization uses a one-way conversion; it will not be possible to return to the previous tokenization unless the previous capitalization was
+	 *          known.
+	 * @see <a href="https://en.wikipedia.org/wiki/Camel_case">Camel case</a>
+	 */
+	public CamelCase PASCAL_CASE = CAMEL_CASE.namedWithAddedSegmentTransformation("PascalCase", CamelCase::transformCamelCaseSegmentToPascalCase);
 
 	/**
 	 * A delimiter-based compound tokenization using <code>.</code> as a delimiter.

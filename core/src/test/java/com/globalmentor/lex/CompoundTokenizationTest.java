@@ -74,17 +74,20 @@ public class CompoundTokenizationTest {
 		assertThat(CAMEL_CASE.isDromedaryCase("FooBar"), is(false));
 	}
 
-	/**
-	 * @see CompoundTokenization#CAMEL_CASE
-	 * @see CamelCase#toDromedaryCase(CharSequence)
-	 */
+	/** @see CompoundTokenization#CAMEL_CASE */
 	@Test
-	void testCamelCaseToDromedaryCase() {
-		assertThrows(IllegalArgumentException.class, () -> CAMEL_CASE.toDromedaryCase(""));
-		assertThat(CAMEL_CASE.toDromedaryCase("fooBar"), is("fooBar"));
-		assertThat(CAMEL_CASE.toDromedaryCase("$fooBar"), is("$fooBar"));
-		assertThat(CAMEL_CASE.toDromedaryCase("$FooBar"), is("$FooBar"));
-		assertThat(CAMEL_CASE.toDromedaryCase("FooBar"), is("fooBar"));
+	void testDromedaryCase() {
+		assertThrows(IllegalArgumentException.class, () -> CAMEL_CASE.to(DROMEDARY_CASE, ""));
+		assertThat(CAMEL_CASE.to(DROMEDARY_CASE, "fooBar"), is("fooBar"));
+		assertThat(CAMEL_CASE.to(DROMEDARY_CASE, "$fooBar"), is("$fooBar"));
+		assertThat(CAMEL_CASE.to(DROMEDARY_CASE, "$FooBar"), is("$FooBar"));
+		assertThat(CAMEL_CASE.to(DROMEDARY_CASE, "FooBar"), is("fooBar"));
+		assertThat(DOT_CASE.to(DROMEDARY_CASE, "foo.bar"), is("fooBar"));
+		assertThat(DOT_CASE.to(DROMEDARY_CASE, "foo.Bar"), is("fooBar"));
+		assertThat(KEBAB_CASE.to(DROMEDARY_CASE, "foo-bar"), is("fooBar"));
+		assertThat(KEBAB_CASE.to(DROMEDARY_CASE, "foo-Bar"), is("fooBar"));
+		assertThat(SNAKE_CASE.to(DROMEDARY_CASE, "foo_bar"), is("fooBar"));
+		assertThat(SNAKE_CASE.to(DROMEDARY_CASE, "foo_Bar"), is("fooBar"));
 	}
 
 	/**
@@ -100,17 +103,20 @@ public class CompoundTokenizationTest {
 		assertThat(CAMEL_CASE.isPascalCase("FooBar"), is(true));
 	}
 
-	/**
-	 * @see CompoundTokenization#CAMEL_CASE
-	 * @see CamelCase#toDromedaryCase(CharSequence)
-	 */
+	/** @see CompoundTokenization#PASCAL_CASE */
 	@Test
-	void testCamelCaseToPascalCase() {
-		assertThrows(IllegalArgumentException.class, () -> CAMEL_CASE.toPascalCase(""));
-		assertThat(CAMEL_CASE.toPascalCase("fooBar"), is("FooBar"));
-		assertThat(CAMEL_CASE.toPascalCase("$fooBar"), is("$fooBar"));
-		assertThat(CAMEL_CASE.toPascalCase("$FooBar"), is("$FooBar"));
-		assertThat(CAMEL_CASE.toPascalCase("FooBar"), is("FooBar"));
+	void testPascalCase() {
+		assertThrows(IllegalArgumentException.class, () -> CAMEL_CASE.to(PASCAL_CASE, ""));
+		assertThat(CAMEL_CASE.to(PASCAL_CASE, "fooBar"), is("FooBar"));
+		assertThat(CAMEL_CASE.to(PASCAL_CASE, "$fooBar"), is("$fooBar"));
+		assertThat(CAMEL_CASE.to(PASCAL_CASE, "$FooBar"), is("$FooBar"));
+		assertThat(CAMEL_CASE.to(PASCAL_CASE, "FooBar"), is("FooBar"));
+		assertThat(DOT_CASE.to(PASCAL_CASE, "foo.bar"), is("FooBar"));
+		assertThat(DOT_CASE.to(PASCAL_CASE, "foo.Bar"), is("FooBar"));
+		assertThat(KEBAB_CASE.to(PASCAL_CASE, "foo-bar"), is("FooBar"));
+		assertThat(KEBAB_CASE.to(PASCAL_CASE, "foo-Bar"), is("FooBar"));
+		assertThat(SNAKE_CASE.to(PASCAL_CASE, "foo_bar"), is("FooBar"));
+		assertThat(SNAKE_CASE.to(PASCAL_CASE, "foo_Bar"), is("FooBar"));
 	}
 
 	/**

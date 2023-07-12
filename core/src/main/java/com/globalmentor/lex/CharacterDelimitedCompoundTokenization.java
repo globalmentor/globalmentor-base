@@ -20,7 +20,7 @@ import static com.globalmentor.java.CharSequences.*;
 import static com.globalmentor.java.Conditions.*;
 
 import java.util.*;
-import java.util.function.BiFunction;
+import java.util.function.*;
 
 import javax.annotation.*;
 
@@ -56,7 +56,19 @@ public class CharacterDelimitedCompoundTokenization extends AbstractCompoundToke
 	}
 
 	@Override
-	public CompoundTokenization namedWithAddedSegmentTransformation(@Nonnull final String name,
+	public CharacterDelimitedCompoundTokenization namedWithAddedSegmentStringTransformation(@Nonnull final String name,
+			@Nonnull final Function<? super String, ? extends CharSequence> segmentTransformation) {
+		return (CharacterDelimitedCompoundTokenization)super.namedWithAddedSegmentStringTransformation(name, segmentTransformation);
+	}
+
+	@Override
+	public CharacterDelimitedCompoundTokenization namedWithAddedSegmentTransformation(@Nonnull final String name,
+			@Nonnull final Function<? super CharSequence, ? extends CharSequence> segmentTransformation) {
+		return (CharacterDelimitedCompoundTokenization)super.namedWithAddedSegmentTransformation(name, segmentTransformation);
+	}
+
+	@Override
+	public CharacterDelimitedCompoundTokenization namedWithAddedSegmentTransformation(@Nonnull final String name,
 			@Nonnull final BiFunction<? super Integer, ? super CharSequence, ? extends CharSequence> segmentTransformation) {
 		return new CharacterDelimitedCompoundTokenization(name, getDelimiter(), addSegmentTransformation(segmentTransformation));
 	}
