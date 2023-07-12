@@ -76,9 +76,10 @@ public class EnumsTest {
 	@Test
 	void testGetSerializedEnum() {
 		assertThat(Enums.getSerializedEnum(TestIdentifier.class, "foo"), is(TestIdentifier.FOO));
-		assertThrows(IllegalArgumentException.class, () -> Enums.getSerializedEnum(TestIdentifier.class, "bar"), "No such serialized enum.");
+		assertThrows(IllegalArgumentException.class, () -> Enums.getSerializedEnum(TestIdentifier.class, "bar"), "No such serialized identifier enum.");
 		assertThat(Enums.getSerializedEnum(TestIdentifier.class, "foo-bar"), is(TestIdentifier.FOO_BAR));
 		assertThat(Enums.getSerializedEnum(StandardOpenOption.class, "READ"), is(StandardOpenOption.READ)); //not marked as identifier
+		assertThrows(IllegalArgumentException.class, () -> Enums.getSerializedEnum(StandardOpenOption.class, "read"), "No such serialized non-identifier enum.");
 		assertThat(Enums.getSerializedEnum(StandardOpenOption.class, "CREATE_NEW"), is(StandardOpenOption.CREATE_NEW)); //not marked as identifier
 	}
 
