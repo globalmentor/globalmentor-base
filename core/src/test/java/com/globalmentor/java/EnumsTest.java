@@ -18,10 +18,16 @@ package com.globalmentor.java;
 
 import static com.github.npathai.hamcrestopt.OptionalMatchers.*;
 import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.*;
 
+import java.nio.file.StandardOpenOption;
 import java.time.Month;
+import java.util.Optional;
 
 import org.junit.jupiter.api.*;
+
+import com.globalmentor.lex.Identifier;
 
 /**
  * Tests of {@link Enums}.
@@ -30,15 +36,50 @@ import org.junit.jupiter.api.*;
 public class EnumsTest {
 
 	@Test
-	public void testAsEnum() {
-		assertThat(Enums.asEnum(Month.class, ""), isEmpty());
+	void testAsEnum() {
+		assertThat(Enums.asEnum(Month.class, ""), is(Optional.empty()));
 		assertThat(Enums.asEnum(Month.class, "JANUARY"), isPresentAndIs(Month.JANUARY));
-		assertThat(Enums.asEnum(Month.class, "january"), isEmpty());
-		assertThat(Enums.asEnum(Month.class, "January"), isEmpty());
+		assertThat(Enums.asEnum(Month.class, "january"), is(Optional.empty()));
+		assertThat(Enums.asEnum(Month.class, "January"), is(Optional.empty()));
 		assertThat(Enums.asEnum(Month.class, "FEBRUARY"), isPresentAndIs(Month.FEBRUARY));
 		assertThat(Enums.asEnum(Month.class, "JULY"), isPresentAndIs(Month.JULY));
 		assertThat(Enums.asEnum(Month.class, "DECEMBER"), isPresentAndIs(Month.DECEMBER));
-		assertThat(Enums.asEnum(Month.class, "FOOBAR"), isEmpty());
-		assertThat(Enums.asEnum(Month.class, "foobar"), isEmpty());
+		assertThat(Enums.asEnum(Month.class, "FOOBAR"), is(Optional.empty()));
+		assertThat(Enums.asEnum(Month.class, "foobar"), is(Optional.empty()));
 	}
+
+	/**
+	 * Identifier enum for testing serialization/deserialization.
+	 * @see Enums#getSerializationName(Enum)
+	 * @see Enums#getSerializedEnum(Class, String)
+	 */
+	private enum TestIdentifier implements Identifier {
+		FOO, FOO_BAR
+	}
+
+	/**
+	 * @see Enums#getSerializationName(Enum)
+	 * @see TestIdentifier
+	 */
+	@Test
+	void testGetSerializationName() {
+		assertThat(Enums.getSerializationName(TestIdentifier.FOO), is("foo"));
+		assertThat(Enums.getSerializationName(TestIdentifier.FOO_BAR), is("foo-bar"));
+		assertThat(Enums.getSerializationName(StandardOpenOption.READ), is("READ")); //not marked as identifier
+		assertThat(Enums.getSerializationName(StandardOpenOption.CREATE_NEW), is("CREATE_NEW")); //not marked as identifier
+	}
+
+	/**
+	 * @see Enums#getSerializedEnum(Class, String)
+	 * @see TestIdentifier
+	 */
+	@Test
+	void testGetSerializedEnum() {
+		assertThat(Enums.getSerializedEnum(TestIdentifier.class, "foo"), is(TestIdentifier.FOO));
+		assertThrows(IllegalArgumentException.class, () -> Enums.getSerializedEnum(TestIdentifier.class, "bar"), "No such serialized enum.");
+		assertThat(Enums.getSerializedEnum(TestIdentifier.class, "foo-bar"), is(TestIdentifier.FOO_BAR));
+		assertThat(Enums.getSerializedEnum(StandardOpenOption.class, "READ"), is(StandardOpenOption.READ)); //not marked as identifier
+		assertThat(Enums.getSerializedEnum(StandardOpenOption.class, "CREATE_NEW"), is(StandardOpenOption.CREATE_NEW)); //not marked as identifier
+	}
+
 }
