@@ -64,6 +64,7 @@ public final class ElapsingTime {
 	 * @implSpec This method uses {@link System#nanoTime()} as the source of nanosecond time.
 	 * @param startNanoTime The start time in nanoseconds, in terms of {@link System#nanoTime()}.
 	 * @return A new elapsing time measurer.
+	 * @see #sinceNow()
 	 */
 	public static ElapsingTime sinceNanoTime(final long startNanoTime) {
 		return since(startNanoTime, System::nanoTime, NANOSECONDS);
@@ -75,6 +76,7 @@ public final class ElapsingTime {
 	 * @param timeSupplier The time source for measuring elapsed time since the start time.
 	 * @param timeUnit The unit in which time is measured.
 	 * @return A new elapsing time measurer.
+	 * @see #sinceNow(LongSupplier, TimeUnit)
 	 */
 	public static ElapsingTime since(final long startTime, @Nonnull final LongSupplier timeSupplier, @Nonnull final TimeUnit timeUnit) {
 		return new ElapsingTime(startTime, timeSupplier, timeUnit);
@@ -82,21 +84,46 @@ public final class ElapsingTime {
 
 	/**
 	 * Creates a means of measuring elapsed time from the current time.
+	 * @return A new elapsing time measurer.
+	 * @deprecated to be removed in favor of {@link #fromNow()}.
+	 */
+	@Deprecated
+	public static ElapsingTime sinceNow() {
+		return fromNow();
+	}
+
+	/**
+	 * Creates a means of measuring elapsed time from the current time.
+	 * @apiNote This method is analogous to {@link #sinceNanoTime(long)}, and is named "from" because "since" typically designates a starting time in the past.
 	 * @implSpec This method uses {@link System#nanoTime()} as the source of nanosecond time.
 	 * @return A new elapsing time measurer.
 	 */
-	public static ElapsingTime sinceNow() {
-		return sinceNow(System::nanoTime, NANOSECONDS);
+	public static ElapsingTime fromNow() {
+		return fromNow(System::nanoTime, NANOSECONDS);
 	}
 
 	/**
 	 * Creates a means of measuring elapsed time from the current time, using the given time supplier.
+	 * @param timeSupplier The time source for measuring elapsed time since the start time.
+	 * @param timeUnit The unit in which time is measured.
+	 * @return A new elapsing time measurer.
+	 * @deprecated to be removed in favor of {@link #fromNow(LongSupplier, TimeUnit)}.
+	 */
+	@Deprecated
+	public static ElapsingTime sinceNow(@Nonnull final LongSupplier timeSupplier, @Nonnull final TimeUnit timeUnit) {
+		return fromNow(timeSupplier, timeUnit);
+	}
+
+	/**
+	 * Creates a means of measuring elapsed time from the current time, using the given time supplier.
+	 * @apiNote This method is analogous to {@link #since(long, LongSupplier, TimeUnit)}, and is named "from" because "since" typically designates a starting time
+	 *          in the past.
 	 * @implSpec This implementation will use the value retrieved from the time supplier as the start time.
 	 * @param timeSupplier The time source for measuring elapsed time since the start time.
 	 * @param timeUnit The unit in which time is measured.
 	 * @return A new elapsing time measurer.
 	 */
-	public static ElapsingTime sinceNow(@Nonnull final LongSupplier timeSupplier, @Nonnull final TimeUnit timeUnit) {
+	public static ElapsingTime fromNow(@Nonnull final LongSupplier timeSupplier, @Nonnull final TimeUnit timeUnit) {
 		return new ElapsingTime(timeSupplier.getAsLong(), timeSupplier, timeUnit);
 	}
 

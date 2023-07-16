@@ -33,7 +33,7 @@ public class ElapsingTimeTest {
 	@Test
 	void testNanoseconds() {
 		final AtomicLong fakeTime = new AtomicLong(12345678910L);
-		final ElapsingTime elapsingTime = ElapsingTime.sinceNow(fakeTime::get, NANOSECONDS);
+		final ElapsingTime elapsingTime = ElapsingTime.fromNow(fakeTime::get, NANOSECONDS);
 		assertThat(elapsingTime.get(NANOSECONDS), is(0L));
 		assertThat(elapsingTime.get(MILLISECONDS), is(0L));
 		fakeTime.addAndGet(1234567L);
@@ -44,7 +44,7 @@ public class ElapsingTimeTest {
 	@Test
 	void testMilliseconds() {
 		final AtomicLong fakeTime = new AtomicLong(12345678910L);
-		final ElapsingTime elapsingTime = ElapsingTime.sinceNow(fakeTime::get, MILLISECONDS);
+		final ElapsingTime elapsingTime = ElapsingTime.fromNow(fakeTime::get, MILLISECONDS);
 		assertThat(elapsingTime.get(MILLISECONDS), is(0L));
 		assertThat(elapsingTime.get(SECONDS), is(0L));
 		fakeTime.addAndGet(1234L);
