@@ -16,6 +16,7 @@
 
 package com.globalmentor.time;
 
+import static java.lang.String.format;
 import static java.util.Objects.*;
 import static java.util.concurrent.TimeUnit.*;
 
@@ -48,6 +49,11 @@ public final class ElapsingTime {
 
 	private final LongSupplier timeSupplier;
 
+	/** @return The time source for measuring elapsed time since the start time, in terms of {@link #getTimeUnit()}. */
+	LongSupplier getTimeSupplier() {
+		return timeSupplier;
+	}
+
 	private final TimeUnit timeUnit;
 
 	/** @return The time unit this instant is using to track time. */
@@ -58,7 +64,7 @@ public final class ElapsingTime {
 	/**
 	 * Start time, supplier, and unit constructor.
 	 * @param startTime The start time in the given unit and in terms of the given time supplier.
-	 * @param timeSupplier The time source for measuring elapsed time since the start time.
+	 * @param timeSupplier The time source for measuring elapsed time since the start time, in the indicated unit.
 	 * @param timeUnit The unit in which time is measured.
 	 */
 	private ElapsingTime(final long startTime, @Nonnull final LongSupplier timeSupplier, @Nonnull final TimeUnit timeUnit) {
@@ -128,11 +134,22 @@ public final class ElapsingTime {
 	 *          <em>has already started elapsing in the past</em>, at a time equal to now <em>minus</em> the given positive duration. A negative duration produces
 	 *          an elapsing time that has not yet started elapsing, and which will produce negative elapsing time durations until the given duration has passed.
 	 * @implSpec This implementation delegates to {@link #since(long, LongSupplier, TimeUnit)}.
+	 * @implNote This method will also throw an {@link IllegalArgumentException} if an intermediate conversion causes an overflow, which will be mitigated in Java
+	 *           11.
 	 * @param duration The duration of time the resulting elapsing time will conceptually have already have been elapsing when returned.
 	 * @return A new elapsing time measurer that conceptually has already been elapsing since the given duration.
+	 * @throws IllegalArgumentException if the duration would overflow when converting to the unit of this elapsing time.
 	 */
-	public ElapsingTime withElapsed(@Nonnull final Duration duration) { //TODO write unit tests
-		return since(timeSupplier.getAsLong() - duration.get(toChronoUnit(getTimeUnit())), timeSupplier, getTimeUnit());
+	public ElapsingTime withElapsed(@Nonnull final Duration duration) {
+		//TODO switch to `getTimeUnit().convert(duration)` in Java 11+, detecting overflow and throwing an exception accordingly
+		final long durationInNs; //use nanoseconds to prevent truncation when converting to coarser grained units
+		try {
+			durationInNs = duration.toNanos(); //use nanoseconds to prevent truncation when converting to coarser grained units
+		} catch(final ArithmeticException arithmeticException) {
+			throw new IllegalArgumentException(format("Duration %s will cause an overflow.", duration), arithmeticException);
+		}
+		final long durationInTimeUnit = getTimeUnit().convert(durationInNs, NANOSECONDS);
+		return since(timeSupplier.getAsLong() - durationInTimeUnit, timeSupplier, getTimeUnit());
 	}
 
 	/**
@@ -174,7 +191,10 @@ public final class ElapsingTime {
 		return asTimeUnit.convert(getElapsedTime(), getTimeUnit());
 	}
 
-	/** @return The time elapsed until the current time. */
+	/**
+	 * @return The time elapsed until the current time.
+	 * @throws ArithmeticException if a numeric overflow occurs.
+	 */
 	public Duration get() {
 		return Duration.of(getElapsedTime(), toChronoUnit(getTimeUnit()));
 	}
@@ -208,7 +228,7 @@ public final class ElapsingTime {
 	 * @param timeUnit Some time unit.
 	 * @return The converted {@link ChronoUnit} equivalent to the given {@link TimeUnit}.
 	 */
-	static ChronoUnit toChronoUnit(@Nonnull final TimeUnit timeUnit) { //TODO switch to `timeUnit.toChronoUnit())` in Java 9+
+	static ChronoUnit toChronoUnit(@Nonnull final TimeUnit timeUnit) { //TODO switch to `timeUnit.toChronoUnit()` in Java 9+
 		switch(timeUnit) {
 			case NANOSECONDS:
 				return ChronoUnit.NANOS;
