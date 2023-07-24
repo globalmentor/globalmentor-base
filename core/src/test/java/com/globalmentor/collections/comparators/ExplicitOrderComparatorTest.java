@@ -80,8 +80,6 @@ public class ExplicitOrderComparatorTest {
 		assertThat(asList("bar", "foo").stream().sorted(FOO_BAR_LAST_COMPARATOR).collect(toList()), contains("foo", "bar"));
 		assertThat(asList("bar").stream().sorted(FOO_BAR_LAST_COMPARATOR).collect(toList()), contains("bar"));
 
-		System.out.println(asList("foo", "banana", "apple", "cherry").stream().sorted(FOO_BAR_LAST_COMPARATOR).collect(toList())); //TODO delete
-
 		assertThat(asList("foo", "banana", "apple", "cherry").stream().sorted(FOO_BAR_LAST_COMPARATOR).collect(toList()),
 				contains("apple", "banana", "cherry", "foo"));
 		assertThat(asList("banana", "apple", "foo", "cherry").stream().sorted(FOO_BAR_LAST_COMPARATOR).collect(toList()),

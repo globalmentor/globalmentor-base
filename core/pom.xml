@@ -15,14 +15,20 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>org.zalando</groupId>
-			<artifactId>faux-pas</artifactId>
+			<groupId>org.eclipse.jgit</groupId>
+			<artifactId>org.eclipse.jgit</artifactId>
 			<scope>test</scope>
 		</dependency>
 
 		<dependency>
-			<groupId>org.eclipse.jgit</groupId>
-			<artifactId>org.eclipse.jgit</artifactId>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.zalando</groupId>
+			<artifactId>faux-pas</artifactId>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
