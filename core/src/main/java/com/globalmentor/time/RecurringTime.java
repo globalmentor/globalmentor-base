@@ -159,7 +159,7 @@ public final class RecurringTime {
 	 *          not sensitive to the time between polling; if polling is delayed beyond the end of period, the next recurrence duration will be shortened so that
 	 *          the next recurrence registered (assuming it is polled in time) exactly one period from the time the last recurrence <em>should</em> have been
 	 *          registered.
-	 * @implSpec This is a convenience method that delegates to {@link #fromElapsingByInterval(ElapsingTime, Duration)}.
+	 * @implSpec This is a convenience method that delegates to {@link #fromElapsingByPeriod(ElapsingTime, Duration)}.
 	 * @param elapsingTime The already elapsing time that should recur.
 	 * @param period The evenly-spaced periods between recurrences, using the time unit of the elapsing time.
 	 * @return A new period-based recur recurring time.
@@ -168,7 +168,7 @@ public final class RecurringTime {
 	 * @see ElapsingTime#getTimeUnit()
 	 */
 	public static RecurringTime fromElapsingByPeriod(@Nonnull final ElapsingTime elapsingTime, final long period) {
-		return fromElapsingByInterval(elapsingTime, Duration.of(period, ElapsingTime.toChronoUnit(elapsingTime.getTimeUnit())));
+		return fromElapsingByPeriod(elapsingTime, Duration.of(period, ElapsingTime.toChronoUnit(elapsingTime.getTimeUnit())));
 	}
 
 	/**
