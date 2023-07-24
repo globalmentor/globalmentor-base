@@ -57,7 +57,7 @@ public final class ElapsingTime {
 	private final TimeUnit timeUnit;
 
 	/** @return The time unit this instant is using to track time. */
-	public TimeUnit getTimeUnit() {
+	TimeUnit getTimeUnit() {
 		return timeUnit;
 	}
 
@@ -128,15 +128,34 @@ public final class ElapsingTime {
 	}
 
 	/**
+	 * Copy static factory "wither" method that creates a new elapsing time from the current time plus or minus the given elapsing time, using the same time
+	 * supplier and time unit as this elapsing time instance.
+	 * @apiNote The provided elapsed time can be positive, negative, or even zero. A positive elapsed time indicates that a the resulting elapsed time <em>has
+	 *          already started elapsing in the past</em>, at a time equal to now <em>minus</em> the given positive elapsed time. A negative elapsed time produces
+	 *          an elapsing time that has not yet started elapsing, and which will produce negative elapsing time durations until the given elapsed time has
+	 *          passed.
+	 * @implSpec This implementation delegates to {@link #since(long, LongSupplier, TimeUnit)}.
+	 * @implNote This method will also throw an {@link IllegalArgumentException} if an intermediate conversion causes an overflow, which will be mitigated in Java
+	 *           11.
+	 * @param elapsed The elapsed of time the resulting elapsing time will conceptually have already elapsing when returned, using the time unit of this elapsing
+	 *          time.
+	 * @return A new elapsing time measurer that conceptually has already been elapsing since the given elapsed time.
+	 * @see #getTimeUnit()
+	 */
+	ElapsingTime withElapsed(@Nonnull final long elapsed) {
+		return since(timeSupplier.getAsLong() - elapsed, timeSupplier, getTimeUnit());
+	}
+
+	/**
 	 * Copy static factory "wither" method that creates a new elapsing time from the current time plus or minus the given duration, using the same time supplier
 	 * and time unit as this elapsing time instance.
 	 * @apiNote The provided duration can be positive, negative, or even {@link Duration#ZERO}. A positive duration indicates that a the resulting elapsed time
 	 *          <em>has already started elapsing in the past</em>, at a time equal to now <em>minus</em> the given positive duration. A negative duration produces
 	 *          an elapsing time that has not yet started elapsing, and which will produce negative elapsing time durations until the given duration has passed.
-	 * @implSpec This implementation delegates to {@link #since(long, LongSupplier, TimeUnit)}.
+	 * @implSpec This implementation delegates to {@link #withElapsed(long)}.
 	 * @implNote This method will also throw an {@link IllegalArgumentException} if an intermediate conversion causes an overflow, which will be mitigated in Java
 	 *           11.
-	 * @param duration The duration of time the resulting elapsing time will conceptually have already have been elapsing when returned.
+	 * @param duration The duration of time the resulting elapsing time will conceptually have already elapsing when returned.
 	 * @return A new elapsing time measurer that conceptually has already been elapsing since the given duration.
 	 * @throws IllegalArgumentException if the duration would overflow when converting to the unit of this elapsing time.
 	 */
@@ -149,7 +168,7 @@ public final class ElapsingTime {
 			throw new IllegalArgumentException(format("Duration %s will cause an overflow.", duration), arithmeticException);
 		}
 		final long durationInTimeUnit = getTimeUnit().convert(durationInNs, NANOSECONDS);
-		return since(timeSupplier.getAsLong() - durationInTimeUnit, timeSupplier, getTimeUnit());
+		return withElapsed(durationInTimeUnit);
 	}
 
 	/**
@@ -178,7 +197,7 @@ public final class ElapsingTime {
 	}
 
 	/** @return The amount of time elapsed until now in the time unit of record. */
-	private long getElapsedTime() {
+	long getElapsedTime() {
 		return timeSupplier.getAsLong() - startTime;
 	}
 
@@ -197,6 +216,16 @@ public final class ElapsingTime {
 	 */
 	public Duration get() {
 		return Duration.of(getElapsedTime(), toChronoUnit(getTimeUnit()));
+	}
+
+	/**
+	 * Converts a duration to the time units of this elapsing time.
+	 * @param duration The duration to convert.
+	 * @return The duration in terms of this elapsing time unit.
+	 * @see #getTimeUnit()
+	 */
+	long convertToTimeUnit(@Nonnull final Duration duration) {
+		return duration.get(toChronoUnit(getTimeUnit()));
 	}
 
 	@Override
