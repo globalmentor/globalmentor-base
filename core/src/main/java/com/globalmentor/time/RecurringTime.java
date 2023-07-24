@@ -117,7 +117,7 @@ public final class RecurringTime {
 	 * @throws ArithmeticException if a numeric overflow occurs
 	 * @see ElapsingTime#getTimeUnit()
 	 */
-	private static RecurringTime fromElapsingByInterval(@Nonnull final ElapsingTime elapsingTime, final long interval) {
+	static RecurringTime fromElapsingByInterval(@Nonnull final ElapsingTime elapsingTime, final long interval) {
 		return new RecurringTime(elapsingTime, AbstractElapsedTimeRecurStrategy.byInterval(interval));
 	}
 
@@ -181,7 +181,7 @@ public final class RecurringTime {
 	 * @throws ArithmeticException if a numeric overflow occurs
 	 * @see ElapsingTime#getTimeUnit()
 	 */
-	private static RecurringTime fromElapsingByPeriod(@Nonnull final ElapsingTime elapsingTime, final long period) {
+	static RecurringTime fromElapsingByPeriod(@Nonnull final ElapsingTime elapsingTime, final long period) {
 		return new RecurringTime(elapsingTime, AbstractElapsedTimeRecurStrategy.byPeriod(period));
 	}
 
