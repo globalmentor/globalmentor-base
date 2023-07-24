@@ -57,7 +57,7 @@ public final class ElapsingTime {
 	private final TimeUnit timeUnit;
 
 	/** @return The time unit this instant is using to track time. */
-	TimeUnit getTimeUnit() {
+	public TimeUnit getTimeUnit() {
 		return timeUnit;
 	}
 

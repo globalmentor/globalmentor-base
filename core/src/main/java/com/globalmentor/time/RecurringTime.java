@@ -18,7 +18,7 @@ package com.globalmentor.time;
 
 import static java.util.Objects.*;
 
-import java.time.Duration;
+import java.time.*;
 import java.time.temporal.TemporalUnit;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
@@ -36,7 +36,13 @@ import javax.annotation.*;
  * calling {@link #pollRecurred()} will not see that a recurrence has passed because it was "claimed" by the first thread calling {@link #getElapsingTime()}.
  * </p>
  * @apiNote A typical use case is to detect, in the middle of some processing, whether some time repeating interval has passed so that some other action may
- *          take place—logging a status update every second, for example. TODO example
+ *          take place—logging a status update every second, for example. <pre><code>RecurringTime logStatusTime = RecurringTime.fromNowByInterval(1, SECONDS);
+ * for(Bar bar:foo.bars()) { //there are a lot of bars; this may take a while
+ *   process(bar);
+ *   if(logStatusTime.pollRecurred()) {
+ *     getLogger().atInfo().log("... still processing ...");
+ *   }
+ * }</code></pre>
  * @implSpec By default this class uses {@link System#nanoTime()} as its time supplier, but any time supplier can be used with any {@link TimeUnit}.
  * @implNote This class is a think wrapper around {@link ElapsingTime}. An instance uses no CPU resources when its methods are not called, and only performs
  *           calculations when queried, without blocking using <code>synchronize</code>..
@@ -52,6 +58,8 @@ public final class RecurringTime {
 
 	/**
 	 * Elapsing time and recur strategy constructor.
+	 * @apiNote This constructor is provided for highly customized use cases. More common use cases are covered by static factory methods such as
+	 *          {@link #fromNowByInterval(Duration)} and {@link #fromNowByPeriod(Duration)}.
 	 * @param elapsingTime The already elapsing time that should recur.
 	 * @param recurStrategy The strategy for determining when and how to recur.
 	 */
@@ -63,12 +71,43 @@ public final class RecurringTime {
 	/**
 	 * Produces a recurring time that registers each next recurrence exactly one interval later than each current registration.
 	 * @apiNote The produced recurring time is sensitive to the time between polling, and may not result in equally-spaced intervals.
-	 * @implSpec This implementation delegates to {@link #elapsingByInterval(ElapsingTime, Duration)}.
+	 * @implSpec This is a convenience method that delegates to {@link #fromNowByInterval(Duration)}.
+	 * @param interval At each recurrence, the amount of the interval to add to determine the time of the next recurrence.
+	 * @param timeUnit The unit the interval is measured in.
+	 * @return A new interval-based recurring time.
+	 * @throws DateTimeException if the period unit has an estimated duration
+	 * @throws ArithmeticException if a numeric overflow occurs
+	 * 
+	 */
+	public static RecurringTime fromNowByInterval(final long interval, @Nonnull final TimeUnit timeUnit) {
+		return fromNowByInterval(Duration.of(interval, ElapsingTime.toChronoUnit(timeUnit)));
+	}
+
+	/**
+	 * Produces a recurring time that registers each next recurrence exactly one interval later than each current registration.
+	 * @apiNote The produced recurring time is sensitive to the time between polling, and may not result in equally-spaced intervals.
+	 * @implSpec This implementation delegates to {@link #fromElapsingByInterval(ElapsingTime, Duration)}.
 	 * @param interval At each recurrence, the interval to add to determine the time of the next recurrence.
 	 * @return A new interval-based recurring time.
 	 */
 	public static RecurringTime fromNowByInterval(@Nonnull final Duration interval) {
-		return elapsingByInterval(ElapsingTime.fromNow(), interval);
+		return fromElapsingByInterval(ElapsingTime.fromNow(), interval);
+	}
+
+	/**
+	 * Produces a recurring time that registers each next recurrence exactly one interval later than each current registration.
+	 * @apiNote The produced recurring time is sensitive to the time between polling, and may not result in equally-spaced intervals.
+	 * @implSpec This is a convenience method that delegates to {@link #fromElapsingByInterval(ElapsingTime, Duration)}.
+	 * @param elapsingTime The already elapsing time that should recur.
+	 * @param interval At each recurrence, the amount of the interval to add to determine the time of the next recurrence, using the time unit of the elapsing
+	 *          time.
+	 * @return A new interval-based recurring time.
+	 * @throws DateTimeException if the period unit has an estimated duration
+	 * @throws ArithmeticException if a numeric overflow occurs
+	 * @see ElapsingTime#getTimeUnit()
+	 */
+	public static RecurringTime fromElapsingByInterval(@Nonnull final ElapsingTime elapsingTime, final long interval) {
+		return fromElapsingByInterval(elapsingTime, Duration.of(interval, ElapsingTime.toChronoUnit(elapsingTime.getTimeUnit())));
 	}
 
 	/**
@@ -79,34 +118,71 @@ public final class RecurringTime {
 	 * @param interval At each recurrence, the interval to add to determine the time of the next recurrence.
 	 * @return A new interval-based recurring time.
 	 */
-	public static RecurringTime elapsingByInterval(@Nonnull final ElapsingTime elapsingTime, @Nonnull final Duration interval) {
+	public static RecurringTime fromElapsingByInterval(@Nonnull final ElapsingTime elapsingTime, @Nonnull final Duration interval) {
 		return new RecurringTime(elapsingTime, RecurStrategy.byInterval(interval));
 	}
 
 	/**
 	 * Produces a recurring time that registers all recurrences at equal time durations, like a periodic function.
-	 * @apiNote The produced recurring time is not sensitive to the time between polling; if polling is delayed beyond the end of period, the next recurrence
-	 *          duration will be shortened so that the next recurrence registered (assuming it is polled in time) exactly one period from the time the last
-	 *          recurrence <em>should</em> have been registered.
-	 * @implSpec This implementation delegates to {@link #elapsingByPeriod(ElapsingTime, Duration)}.
+	 * @apiNote Here the use of term "period" refers to evenly spaced time points, not the calendar-based class of the same name. The produced recurring time is
+	 *          not sensitive to the time between polling; if polling is delayed beyond the end of period, the next recurrence duration will be shortened so that
+	 *          the next recurrence registered (assuming it is polled in time) exactly one period from the time the last recurrence <em>should</em> have been
+	 *          registered.
+	 * @implSpec This is a convenience method that delegates to {@link #fromNowByPeriod(Duration)}.
 	 * @param period The evenly-spaced periods between recurrences.
+	 * @param timeUnit The unit the period is measured in.
 	 * @return A new period-based recur recurring time.
+	 * @throws DateTimeException if the period unit has an estimated duration
+	 * @throws ArithmeticException if a numeric overflow occurs
 	 */
-	public static RecurringTime fromNowByPeriod(@Nonnull final Duration period) {
-		return elapsingByPeriod(ElapsingTime.fromNow(), period);
+	public static RecurringTime fromNowByPeriod(final long period, @Nonnull final TimeUnit timeUnit) {
+		return fromNowByPeriod(Duration.of(period, ElapsingTime.toChronoUnit(timeUnit)));
 	}
 
 	/**
 	 * Produces a recurring time that registers all recurrences at equal time durations, like a periodic function.
-	 * @apiNote The produced recurring time is not sensitive to the time between polling; if polling is delayed beyond the end of period, the next recurrence
-	 *          duration will be shortened so that the next recurrence registered (assuming it is polled in time) exactly one period from the time the last
-	 *          recurrence <em>should</em> have been registered.
+	 * @apiNote Here the use of term "period" refers to evenly spaced time points, not the calendar-based class of the same name. The produced recurring time is
+	 *          not sensitive to the time between polling; if polling is delayed beyond the end of period, the next recurrence duration will be shortened so that
+	 *          the next recurrence registered (assuming it is polled in time) exactly one period from the time the last recurrence <em>should</em> have been
+	 *          registered.
+	 * @implSpec This implementation delegates to {@link #fromElapsingByPeriod(ElapsingTime, Duration)}.
+	 * @param period The evenly-spaced periods between recurrences.
+	 * @return A new period-based recur recurring time.
+	 */
+	public static RecurringTime fromNowByPeriod(@Nonnull final Duration period) {
+		return fromElapsingByPeriod(ElapsingTime.fromNow(), period);
+	}
+
+	/**
+	 * Produces a recurring time that registers all recurrences at equal time durations, like a periodic function.
+	 * @apiNote Here the use of term "period" refers to evenly spaced time points, not the calendar-based class of the same name. The produced recurring time is
+	 *          not sensitive to the time between polling; if polling is delayed beyond the end of period, the next recurrence duration will be shortened so that
+	 *          the next recurrence registered (assuming it is polled in time) exactly one period from the time the last recurrence <em>should</em> have been
+	 *          registered.
+	 * @implSpec This is a convenience method that delegates to {@link #fromElapsingByInterval(ElapsingTime, Duration)}.
+	 * @param elapsingTime The already elapsing time that should recur.
+	 * @param period The evenly-spaced periods between recurrences, using the time unit of the elapsing time.
+	 * @return A new period-based recur recurring time.
+	 * @throws DateTimeException if the period unit has an estimated duration
+	 * @throws ArithmeticException if a numeric overflow occurs
+	 * @see ElapsingTime#getTimeUnit()
+	 */
+	public static RecurringTime fromElapsingByPeriod(@Nonnull final ElapsingTime elapsingTime, final long period) {
+		return fromElapsingByInterval(elapsingTime, Duration.of(period, ElapsingTime.toChronoUnit(elapsingTime.getTimeUnit())));
+	}
+
+	/**
+	 * Produces a recurring time that registers all recurrences at equal time durations, like a periodic function.
+	 * @apiNote Here the use of term "period" refers to evenly spaced time points, not the calendar-based class of the same name. The produced recurring time is
+	 *          not sensitive to the time between polling; if polling is delayed beyond the end of period, the next recurrence duration will be shortened so that
+	 *          the next recurrence registered (assuming it is polled in time) exactly one period from the time the last recurrence <em>should</em> have been
+	 *          registered.
 	 * @implSpec This implementation uses the strategy produced by {@link RecurStrategy#byPeriod(Duration)}.
 	 * @param elapsingTime The already elapsing time that should recur.
 	 * @param period The evenly-spaced periods between recurrences.
 	 * @return A new period-based recur recurring time.
 	 */
-	public static RecurringTime elapsingByPeriod(@Nonnull final ElapsingTime elapsingTime, @Nonnull final Duration period) {
+	public static RecurringTime fromElapsingByPeriod(@Nonnull final ElapsingTime elapsingTime, @Nonnull final Duration period) {
 		return new RecurringTime(elapsingTime, RecurStrategy.byPeriod(period));
 	}
 
