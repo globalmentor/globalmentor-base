@@ -24,7 +24,9 @@ import javax.annotation.*;
 /**
  * A convenience tuple for a name and a value. The class allows identification (though not necessarily unique) through its name object.
  * @author Garret Wilson
+ * @deprecated to be removed in favor of {@link Map.Entry}.
  */
+@Deprecated
 public class NameValuePair<N, V> extends DefaultNamed<N> implements IDed<N>, Valued<V> {
 
 	/** The value of the object. */
