@@ -27,7 +27,6 @@ import java.util.*;
 import org.junit.jupiter.api.*;
 
 import com.globalmentor.collections.CollectionMap;
-import com.globalmentor.model.NameValuePair;
 
 /**
  * Various tests for URI utilities.
@@ -798,7 +797,7 @@ public class URIsTest {
 		assertThat(URIs.getQueryParameters(URI.create("http://example.com")), isEmpty());
 		assertThat(URIs.getQueryParameters(URI.create("http://example.com/")), isEmpty());
 
-		List<NameValuePair<String, String>> parametersNameValuePairs;
+		List<URIQueryParameter> parametersNameValuePairs;
 
 		parametersNameValuePairs = URIs.getQueryParameters(URI.create("http://example.com/?type=foo")).orElseThrow(AssertionError::new);
 		assertThat(parametersNameValuePairs.size(), is(1));

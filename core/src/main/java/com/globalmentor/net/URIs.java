@@ -31,7 +31,6 @@ import com.globalmentor.collections.*;
 import com.globalmentor.io.*;
 
 import com.globalmentor.java.Characters;
-import com.globalmentor.model.NameValuePair;
 import static com.globalmentor.java.CharSequences.*;
 import static com.globalmentor.java.Conditions.*;
 import static com.globalmentor.java.StringBuilders.*;
@@ -855,7 +854,7 @@ public class URIs {
 	public static String constructQueryParameters(final URIQueryParameter... params) {
 		final StringBuilder paramStringBuilder = new StringBuilder();
 		if(params.length > 0) { //if there is at least one parameter
-			for(NameValuePair<String, String> param : params) { //look at each parameter
+			for(URIQueryParameter param : params) { //look at each parameter
 				paramStringBuilder.append(encode(param.getName())); //append the parameter name
 				final String value = param.getValue();
 				if(value != null) { //if there is a value
@@ -1009,10 +1008,10 @@ public class URIs {
 	 * @return An array of parameters.
 	 */
 	public static CollectionMap<String, String, List<String>> getQueryParameterMap(final URI uri) {
-		final List<NameValuePair<String, String>> parameters = getQueryParameters(uri).orElse(null); //get the parameters from the URI TODO map and collect
+		final List<URIQueryParameter> parameters = getQueryParameters(uri).orElse(null); //get the parameters from the URI TODO map and collect
 		final CollectionMap<String, String, List<String>> parameterListMap = new ArrayListHashMap<String, String>(); //create a new list map in which to store the parameters
 		if(parameters != null) { //if this URI specified a query
-			for(final NameValuePair<String, String> parameter : parameters) { //for each parameter
+			for(final URIQueryParameter parameter : parameters) { //for each parameter
 				parameterListMap.addItem(parameter.getName(), parameter.getValue()); //add this name and value, each of which may have been encoded
 			}
 		}
@@ -1024,7 +1023,7 @@ public class URIs {
 	 * @param uri The URI which may contain a query.
 	 * @return A list of parameters represented by the URI query, which will not be present if the given URI does not contain a query.
 	 */
-	public static Optional<List<NameValuePair<String, String>>> getQueryParameters(final URI uri) {
+	public static Optional<List<URIQueryParameter>> getQueryParameters(final URI uri) {
 		return Optional.ofNullable(uri.getRawQuery()).map(URIs::getQueryParameters);
 	}
 
@@ -1033,12 +1032,12 @@ public class URIs {
 	 * @param query The string containing URI query parameters (without the '?' prefix), or <code>null</code>.
 	 * @return A list of parameters represented by the query.
 	 */
-	public static List<NameValuePair<String, String>> getQueryParameters(@Nonnull final String query) {
+	public static List<URIQueryParameter> getQueryParameters(@Nonnull final String query) {
 		if(query.isEmpty()) { //if there is no query in the string
 			return emptyList();
 		}
 		final String[] parameterStrings = query.split(String.valueOf(QUERY_NAME_VALUE_PAIR_DELIMITER)); //split the query into parameters
-		final List<NameValuePair<String, String>> parameters = new ArrayList<>(parameterStrings.length); //create an array list to hold parameters
+		final List<URIQueryParameter> parameters = new ArrayList<>(parameterStrings.length); //create an array list to hold parameters
 		for(final String parameterString : parameterStrings) { //for each parameters TODO convert to stream mapping
 			final String[] nameValue = parameterString.split(String.valueOf(QUERY_NAME_VALUE_ASSIGNMENT)); //split the parameter into its name and value
 			final String name; //we'll get the parameter name
@@ -1049,7 +1048,7 @@ public class URIs {
 			} else { //if there wasn't at least one token
 				name = value = ""; //there is no name or value
 			}
-			parameters.add(new NameValuePair<String, String>(name, value));
+			parameters.add(new URIQueryParameter(name, value));
 		}
 		return parameters; //return the parameters
 	}
@@ -1061,7 +1060,7 @@ public class URIs {
 	 * @deprecated to be removed in favor of {@link #getQueryParameters(URI)}.
 	 */
 	@Deprecated
-	public static NameValuePair<String, String>[] getParameters(final URI uri) {
+	public static com.globalmentor.model.NameValuePair<String, String>[] getParameters(final URI uri) {
 		return getParameters(uri.getRawQuery()); //return the parameters for this URI query, if there is a query
 	}
 
@@ -1073,11 +1072,12 @@ public class URIs {
 	 */
 	@Deprecated
 	@SuppressWarnings("unchecked")
-	public static NameValuePair<String, String>[] getParameters(final String query) {
+	public static com.globalmentor.model.NameValuePair<String, String>[] getParameters(final String query) {
 		if(query == null) {
 			return null;
 		}
-		return getQueryParameters(query).toArray((NameValuePair<String, String>[])Array.newInstance(NameValuePair.class, 0));
+		return getQueryParameters(query)
+				.toArray((com.globalmentor.model.NameValuePair<String, String>[])Array.newInstance(com.globalmentor.model.NameValuePair.class, 0));
 	}
 
 	/**

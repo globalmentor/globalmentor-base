@@ -18,14 +18,16 @@ package com.globalmentor.net;
 
 import static java.util.Objects.*;
 
-import com.globalmentor.model.NameValuePair;
+import java.util.AbstractMap;
+
+import com.globalmentor.model.Named;
 
 /**
  * A URI query parameter name/value pair. The name cannot be <code>null</code>, but the value is allowed to be <code>null</code> indicating that no value should
  * be provided for this parameter in the URI query.
  * @author Garret Wilson
  */
-public class URIQueryParameter extends NameValuePair<String, String> {
+public class URIQueryParameter extends AbstractMap.SimpleImmutableEntry<String, String> implements Named<String> {
 
 	/**
 	 * Constructor specifying the name and value.
@@ -35,6 +37,15 @@ public class URIQueryParameter extends NameValuePair<String, String> {
 	 */
 	public URIQueryParameter(final String name, final String value) {
 		super(requireNonNull(name, "URI query parameter name cannot be null."), value); //construct the parent class
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @apiNote This method is a convenience method that delegates to {@link #getKey()}.
+	 */
+	@Override
+	public final String getName() {
+		return getKey();
 	}
 
 }
