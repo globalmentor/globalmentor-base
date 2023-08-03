@@ -23,10 +23,6 @@ import java.util.Collections;
 
 import javax.annotation.*;
 
-import com.globalmentor.java.CloneSupported;
-import com.globalmentor.java.Objects;
-import com.globalmentor.model.NameValuePair;
-
 /**
  * Various utilities to be used with objects implementing the {@link Map} interface.
  * @author Garret Wilson
@@ -34,32 +30,33 @@ import com.globalmentor.model.NameValuePair;
 public class Maps {
 
 	/**
-	 * Adds values from an array of name-value pairs to a map. If more than one pair with the same name is given, the last one will override the others.
+	 * Adds values from an array of map entries to a map. If more than one pair with the same name is given, the last one will override the others.
 	 * @param <N> The type of the name used as key of the map.
 	 * @param <V> The type of the value of the map.
 	 * @param map The map to receive the name-value pair names and values.
-	 * @param nameValuePairs An array of name-value pairs.
+	 * @param entries An array of map entries.
 	 * @return The given map.
+	 * @deprecated to be removed.
 	 */
-	public static <N, V> Map<N, V> addAll(final Map<N, V> map, final NameValuePair<N, V>[] nameValuePairs) {
-		for(final NameValuePair<N, V> nameValuePair : nameValuePairs) { //look at each name-value pair
-			map.put(nameValuePair.getName(), nameValuePair.getValue()); //add the name-value pair name and value to the map
+	@Deprecated
+	public static <N, V> Map<N, V> addAll(final Map<N, V> map, final Map.Entry<N, V>[] entries) {
+		for(final Map.Entry<N, V> entry : entries) { //look at each name-value pair
+			map.put(entry.getKey(), entry.getValue()); //add the name-value pair name and value to the map
 		}
 		return map; //return the map with the new values added
 	}
 
 	/**
-	 * Adds all given values from name-value pairs to a map, keyed to the names of those name-value pairs. If more than one pair with the same name is given, the
-	 * last one will override the others.
-	 * @param <K> The name-value pair name type.
-	 * @param <V> The name-value pair value type.
+	 * Puts all given associations from map entries pairs to a map. If more than one entry with the same key is given, the last one will override the others.
+	 * @param <K> The map entry key type.
+	 * @param <V> The map entry value type.
 	 * @param map The map which will receive the name-value mappings.
-	 * @param iterable The source of name-value pairs.
+	 * @param entries The source of map entries.
 	 * @return The given map.
 	 */
-	public static <K, V> Map<K, V> addAll(final Map<K, V> map, final Iterable<NameValuePair<K, V>> iterable) {
-		for(final NameValuePair<K, V> nameValuePair : iterable) { //for all elements already in the iterable
-			map.put(nameValuePair.getName(), nameValuePair.getValue()); //store the value in the map, keyed to the name
+	public static <K, V> Map<K, V> putAll(final Map<K, V> map, final Iterable<Map.Entry<K, V>> entries) {
+		for(final Map.Entry<K, V> entriy : entries) { //for all elements already in the iterable
+			map.put(entriy.getKey(), entriy.getValue()); //store the value in the map, keyed to the name
 		}
 		return map; //return the map with the new values added
 	}
@@ -109,9 +106,11 @@ public class Maps {
 	 * @param <V> The type of value.
 	 * @param map The map from which to the retrieve the key values.
 	 * @return A set of the key value pairs added.
+	 * @deprecated to be removed in favor of {@link Map#entrySet()} and collecting a stream.
 	 */
-	public static <K, V> Set<NameValuePair<K, V>> getKeyValues(final Map<K, V> map) {
-		return getKeyValues(map, new HashSet<NameValuePair<K, V>>());
+	@Deprecated
+	public static <K, V> Set<Map.Entry<K, V>> getKeyValues(final Map<K, V> map) {
+		return getKeyValues(map, new HashSet<Map.Entry<K, V>>());
 	}
 
 	/**
@@ -122,26 +121,12 @@ public class Maps {
 	 * @param map The map from which to the retrieve the key values.
 	 * @param collection The collection to which the key value pairs should be added.
 	 * @return The given collection, with the key value pairs added.
+	 * @deprecated to be removed in favor of collecting and sorting a stream.
 	 */
-	public static <K, V, C extends Collection<NameValuePair<K, V>>> C getKeyValues(final Map<K, V> map, final C collection) {
-		for(final Map.Entry<K, V> entry : map.entrySet()) { //convert all the map entries to NameValues and add them to the collection
-			collection.add(NameValuePair.fromMapEntry(entry));
-		}
-		return collection;
-	}
-
-	/**
-	 * Retrieves all map entries from the given map and returns them as name value pairs in the given collection; the values are cloned.
-	 * @param <K> The type of key.
-	 * @param <V> The type of value.
-	 * @param <C> The type of collection.
-	 * @param map The map from which to the retrieve the key values.
-	 * @param collection The collection to which the key value pairs should be added.
-	 * @return The given collection, with the key value pairs added.
-	 */
-	public static <K, V extends CloneSupported, C extends Collection<NameValuePair<K, V>>> C getKeyValuesCloned(final Map<K, V> map, final C collection) {
-		for(final Map.Entry<K, V> entry : map.entrySet()) { //convert all the map entries to NameValues and add them to the collection
-			collection.add(new NameValuePair<K, V>(entry.getKey(), Objects.clone(entry.getValue()))); //clone the values
+	@Deprecated
+	public static <K, V, C extends Collection<Map.Entry<K, V>>> C getKeyValues(final Map<K, V> map, final C collection) {
+		for(final Map.Entry<K, V> entry : map.entrySet()) { //defensively copy all the map entries and add them to the collection
+			collection.add(new AbstractMap.SimpleImmutableEntry<>(entry));
 		}
 		return collection;
 	}
