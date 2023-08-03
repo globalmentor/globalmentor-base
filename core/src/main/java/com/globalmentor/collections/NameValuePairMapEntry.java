@@ -27,7 +27,9 @@ import com.globalmentor.model.NameValuePair;
  * 
  * @param <K> The type of key contained in the map.
  * @param <V> The type of value contained in the map.
+ * @deprecated to be removed.
  */
+@Deprecated
 public class NameValuePairMapEntry<K, V> extends NameValuePair<K, V> implements Map.Entry<K, V> {
 
 	/**
