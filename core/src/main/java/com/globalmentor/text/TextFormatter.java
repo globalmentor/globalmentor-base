@@ -26,7 +26,6 @@ import static com.globalmentor.java.Conditions.*;
 
 import com.globalmentor.java.*;
 import com.globalmentor.java.Objects;
-import com.globalmentor.model.NameValuePair;
 
 /**
  * Utilities for formatting text.
@@ -401,8 +400,10 @@ public class TextFormatter {
 	 * @param attribute The attribute to format.
 	 * @return The appendable used for formatting.
 	 * @throws IOException if there is an error writing to the appendable.
+	 * @deprecated to be removed.
 	 */
-	public static <A extends Appendable> A formatAttribute(final A appendable, final NameValuePair<?, ?> attribute) throws IOException {
+	@Deprecated
+	public static <A extends Appendable> A formatAttribute(final A appendable, final com.globalmentor.model.NameValuePair<?, ?> attribute) throws IOException {
 		return formatAttribute(appendable, attribute, QUOTATION_MARK_CHAR);
 	}
 
@@ -414,8 +415,11 @@ public class TextFormatter {
 	 * @param quote The quote character to use for the value, or {@link Characters#UNDEFINED_CHAR} if the value should not be quoted.
 	 * @return The appendable used for formatting.
 	 * @throws IOException if there is an error writing to the appendable.
+	 * @deprecated to be removed.
 	 */
-	public static <A extends Appendable> A formatAttribute(final A appendable, final NameValuePair<?, ?> attribute, final char quote) throws IOException {
+	@Deprecated
+	public static <A extends Appendable> A formatAttribute(final A appendable, final com.globalmentor.model.NameValuePair<?, ?> attribute, final char quote)
+			throws IOException {
 		return formatAttribute(appendable, attribute, EQUALS_SIGN_CHAR, quote);
 	}
 
@@ -428,9 +432,11 @@ public class TextFormatter {
 	 * @param quote The quote character to use for the value, or {@link Characters#UNDEFINED_CHAR} if the value should not be quoted.
 	 * @return The appendable used for formatting.
 	 * @throws IOException if there is an error writing to the appendable.
+	 * @deprecated to be removed.
 	 */
-	public static <A extends Appendable> A formatAttribute(final A appendable, final NameValuePair<?, ?> attribute, final char assignment, final char quote)
-			throws IOException {
+	@Deprecated
+	public static <A extends Appendable> A formatAttribute(final A appendable, final com.globalmentor.model.NameValuePair<?, ?> attribute, final char assignment,
+			final char quote) throws IOException {
 		return formatAttribute(appendable, attribute.getName(), attribute.getValue(), assignment, quote);
 	}
 
@@ -494,8 +500,11 @@ public class TextFormatter {
 	 * @param attributes The attributes to format.
 	 * @return The appendable used for formatting.
 	 * @throws IOException if there is an error writing to the appendable.
+	 * @deprecated to be converted to use {@link Map.Entry}.
 	 */
-	public static <A extends Appendable> A formatAttributes(final A appendable, final NameValuePair<?, ?>... attributes) throws IOException {
+	@Deprecated
+	public static <A extends Appendable> A formatAttributes(final A appendable, final com.globalmentor.model.NameValuePair<?, ?>... attributes)
+			throws IOException {
 		return formatAttributes(appendable, COMMA_CHAR, EQUALS_SIGN_CHAR, QUOTATION_MARK_CHAR, emptySet(), attributes); //format the attributes using the standard formatting characters
 	}
 
@@ -510,11 +519,13 @@ public class TextFormatter {
 	 * @param attributes The attributes to format.
 	 * @return The appendable used for formatting.
 	 * @throws IOException if there is an error writing to the appendable.
+	 * @deprecated to be converted to use {@link Map.Entry}.
 	 */
+	@Deprecated
 	public static <A extends Appendable> A formatAttributes(final A appendable, final char separator, final char assignment, final char quote,
-			final Set<?> unquotedNames, final NameValuePair<?, ?>... attributes) throws IOException {
+			final Set<?> unquotedNames, final com.globalmentor.model.NameValuePair<?, ?>... attributes) throws IOException {
 		int appendedItemCount = 0;
-		for(final NameValuePair<?, ?> attribute : attributes) { //for each attribute
+		for(final com.globalmentor.model.NameValuePair<?, ?> attribute : attributes) { //for each attribute
 			if(appendedItemCount > 0 && separator != UNDEFINED_CHAR) { //if we have already appended items and we have a separator
 				appendable.append(separator); //append a separator
 			}
