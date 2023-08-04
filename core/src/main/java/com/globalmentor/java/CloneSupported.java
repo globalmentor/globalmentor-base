@@ -18,20 +18,19 @@ package com.globalmentor.java;
 
 /**
  * Indicates that a class implements cloning.
- * 
- * <p>
- * This interface is needed because of the deficiencies of the standard Java <code>Object.clone()</code> framework. This interface makes {@link #clone()} public
- * and guarantees that {@link CloneNotSupportedException} will not be thrown, method signature notwithstanding.
- * </p>
- * 
+ * @apiNote This interface is needed because of the deficiencies of the standard Java <code>Object.clone()</code> framework. This interface makes
+ *          {@link #clone()} public and guarantees via the API contract that {@link CloneNotSupportedException} will not be thrown, method signature
+ *          notwithstanding.
  * @author Garret Wilson
- * 
- * @see <a href="http://www.artima.com/intv/issues3.html">The clone Dilemma</a>
+ * @see <a href="https://www.artima.com/articles/java-design-issues#part3">Java Design Issues: A Conversation with Ken Arnold, Part VI: The clone Dilemma</a>
  */
 public interface CloneSupported extends Cloneable {
 
 	/**
-	 * {@inheritDoc} This version is guaranteed not to throw {@link CloneNotSupportedException}.
+	 * {@inheritDoc}
+	 * <p>
+	 * This version is guaranteed not to throw {@link CloneNotSupportedException}.
+	 * </p>
 	 */
 	public Object clone() throws CloneNotSupportedException;
 

@@ -42,7 +42,7 @@ import static java.nio.charset.StandardCharsets.*;
 import static java.util.Collections.*;
 
 import com.globalmentor.java.*;
-import com.globalmentor.model.NameValuePair;
+import com.globalmentor.model.Named;
 import com.globalmentor.text.*;
 
 /**
@@ -776,7 +776,7 @@ public final class MediaType {
 	 * @implNote This class considers value quoting a syntax issue of serialization, and thus interprets all values as logical, non-quoted values.
 	 * @author Garret Wilson
 	 */
-	public static final class Parameter extends NameValuePair<String, String> {
+	public static final class Parameter extends AbstractMap.SimpleImmutableEntry<String, String> implements Named<String> {
 
 		/**
 		 * The common parameter <code>charset=us-ascii</code>.
@@ -795,6 +795,15 @@ public final class MediaType {
 		 * @apiNote For adding a new charset parameter to an existing media type, it is preferred to call {@link MediaType#withCharset(Charset)}.
 		 */
 		public static final Parameter CHARSET_UTF_8 = new Parameter(CHARSET_PARAMETER, UTF_8.name());
+
+		/**
+		 * {@inheritDoc}
+		 * @apiNote This method is a convenience method that delegates to {@link #getKey()}.
+		 */
+		@Override
+		public final String getName() {
+			return getKey();
+		}
 
 		/**
 		 * Constructor specifying the name and value.

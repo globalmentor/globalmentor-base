@@ -22,15 +22,16 @@ import static com.globalmentor.java.Packages.*;
 import static com.globalmentor.model.Count.*;
 import static com.globalmentor.text.TextFormatter.*;
 
-import static java.util.Collections.*;
 import static java.util.Objects.*;
+import static java.util.stream.Collectors.*;
 
 import java.io.IOException;
 import java.lang.management.*;
 import java.util.*;
+import java.util.Collections;
 
 import com.globalmentor.collections.*;
-import com.globalmentor.collections.comparators.SortOrder;
+import com.globalmentor.java.Objects;
 import com.globalmentor.java.StackTrace;
 import com.globalmentor.model.*;
 
@@ -152,15 +153,20 @@ public class StackProbeOperation extends AbstractReadWriteLockOperation {
 	}
 
 	/** @return A list of collected class+method names and their associated counts, in the order of highest to lowest occurrence. */
-	public synchronized List<NameValuePair<String, Count>> getSortedStackProbeCounts() {
-		final List<NameValuePair<String, Count>> stackProbeCounts;
+	public synchronized List<Map.Entry<String, Count>> getSortedStackProbeCounts() {
+		final List<Map.Entry<String, Count>> stackProbeCounts;
 		readLock().lock();
 		try {
-			stackProbeCounts = Maps.getKeyValuesCloned(classMethodCounts, new ArrayList<NameValuePair<String, Count>>()); //get the stack probe counts
+			stackProbeCounts = classMethodCounts.entrySet().stream()
+					//TODO switch to Map.entry() in Java 9+
+					.map(entry -> new AbstractMap.SimpleImmutableEntry<>(entry.getKey(), Objects.clone(entry.getValue())))
+					//TODO testing
+					.sorted(Map.Entry.<String, Count>comparingByValue().reversed())
+					//TODO switch to Collectors.toUnmodifiableList() in Java 10+
+					.collect(collectingAndThen(toList(), Collections::unmodifiableList)); //clone and get the stack probe counts
 		} finally {
 			readLock().unlock();
 		}
-		sort(stackProbeCounts, new ValuedComparator<Count>(SortOrder.DESCENDING)); //sort the stack probe counts in order of highest to lowest count
 		return stackProbeCounts;
 	}
 
@@ -175,9 +181,9 @@ public class StackProbeOperation extends AbstractReadWriteLockOperation {
 	public <A extends Appendable> A printStackProbeCounts(final A appendable) throws IOException {
 		readLock().lock();
 		try {
-			for(final NameValuePair<String, Count> classMethodCountEntry : getSortedStackProbeCounts()) {
+			for(final Map.Entry<String, Count> classMethodCountEntry : getSortedStackProbeCounts()) {
 				formatAttribute(appendable, classMethodCountEntry, UNDEFINED_CHAR); //name=value
-				final String classMethodName = classMethodCountEntry.getName();
+				final String classMethodName = classMethodCountEntry.getKey();
 				final Set<Integer> lineNumbers = classMethodLineNumbers.get(classMethodName);
 				if(lineNumbers != null) { //if we have any line numbers
 					appendable.append(' ').append('(');
