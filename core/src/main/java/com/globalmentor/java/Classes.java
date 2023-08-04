@@ -31,7 +31,6 @@ import static com.globalmentor.net.URIs.*;
 
 import com.globalmentor.collections.Sets;
 import com.globalmentor.io.*;
-import com.globalmentor.model.NameValuePair;
 import com.globalmentor.net.*;
 
 /**
@@ -738,7 +737,7 @@ public final class Classes {
 	 * A comparator that sorts ancestor classes primarily in terms of height (distance from a descendant class), secondarily in terms of concreteness (concrete
 	 * class, abstract class, and then interface), and tertiarily by class name.
 	 */
-	public static final Comparator<NameValuePair<? extends Class<?>, Integer>> CONCRETE_CLASS_HEIGHT_COMPARATOR = new Comparator<NameValuePair<? extends Class<?>, Integer>>() {
+	public static final Comparator<Map.Entry<? extends Class<?>, Integer>> CONCRETE_CLASS_HEIGHT_COMPARATOR = new Comparator<Map.Entry<? extends Class<?>, Integer>>() {
 
 		/**
 		 * Compares two classes based upon the classes and their height or distance from a particular class. Comparison is performed primarily in terms of maximum
@@ -748,7 +747,7 @@ public final class Classes {
 		 * @param classHeight2 The second class paired with its distance from a descendant class.
 		 * @return The result of comparing the two classes.
 		 */
-		public int compare(final NameValuePair<? extends Class<?>, Integer> classHeight1, final NameValuePair<? extends Class<?>, Integer> classHeight2) {
+		public int compare(final Map.Entry<? extends Class<?>, Integer> classHeight1, final Map.Entry<? extends Class<?>, Integer> classHeight2) {
 			int result = classHeight1.getValue().intValue() - classHeight2.getValue().intValue(); //get the differences in heights
 			if(result == 0) { //if both classes are at the same height
 				final Class<?> class1 = classHeight1.getClass(); //get the classes
@@ -845,8 +844,8 @@ public final class Classes {
 	 */
 	public static <R> List<Class<? extends R>> getAncestorClasses(final Class<? extends R> objectClass, final Class<R> rootClass, final boolean includeThisClass,
 			final boolean includeSuperClasses, final boolean includeAbstract, final boolean includeInterfaces,
-			final Comparator<NameValuePair<? extends Class<?>, Integer>> comparator) {
-		final Map<Class<? extends R>, NameValuePair<Class<? extends R>, Integer>> classHeightMap = new HashMap<Class<? extends R>, NameValuePair<Class<? extends R>, Integer>>(); //create a new map of class/height pairs
+			final Comparator<Map.Entry<? extends Class<?>, Integer>> comparator) {
+		final Map<Class<? extends R>, Map.Entry<Class<? extends R>, Integer>> classHeightMap = new HashMap<Class<? extends R>, Map.Entry<Class<? extends R>, Integer>>(); //create a new map of class/height pairs
 		if(includeThisClass && rootClass.isAssignableFrom(objectClass)) { //if we should include this class
 			addClass(objectClass.asSubclass(rootClass), 0, classHeightMap); //add this class to the map at height 0 TODO check cast
 		}
@@ -854,13 +853,12 @@ public final class Classes {
 		final List<Class<? extends R>> classList; //we'll create a list to hold the classes
 		if(comparator != null) { //if a comparator was given
 			classList = new ArrayList<Class<? extends R>>(classHeightMap.size()); //create a list to hold the classes
-			final List<NameValuePair<Class<? extends R>, Integer>> classHeightList = new ArrayList<NameValuePair<Class<? extends R>, Integer>>(
-					classHeightMap.values()); //get all the class/height pairs
+			final List<Map.Entry<Class<? extends R>, Integer>> classHeightList = new ArrayList<Map.Entry<Class<? extends R>, Integer>>(classHeightMap.values()); //get all the class/height pairs
 			if(comparator != null) { //if a comparator was given
 				classHeightList.sort(comparator); //sort the list using the comparator
 			}
-			for(final NameValuePair<Class<? extends R>, Integer> classHeight : classHeightList) { //for each class height in the list
-				classList.add(classHeight.getName()); //add this class to the list
+			for(final Map.Entry<Class<? extends R>, Integer> classHeight : classHeightList) { //for each class height in the list
+				classList.add(classHeight.getKey()); //add this class to the list
 			}
 		} else { //if no comparator was given
 			classList = new ArrayList<Class<? extends R>>(classHeightMap.keySet()); //create a list from the set of keys			
@@ -881,7 +879,7 @@ public final class Classes {
 	 */
 	protected static <R> void getAncestorClasses(final Class<? extends R> objectClass, final int height, final Class<R> rootClass,
 			final boolean includeSuperClasses, final boolean includeAbstract, final boolean includeInterfaces,
-			final Map<Class<? extends R>, NameValuePair<Class<? extends R>, Integer>> classHeightMap) {
+			final Map<Class<? extends R>, Map.Entry<Class<? extends R>, Integer>> classHeightMap) {
 		if(includeSuperClasses) { //if super classes should be included
 			final Class<?> superClass = objectClass.getSuperclass(); //get the super class
 			if(superClass != null) { //if there is a super class
@@ -914,10 +912,10 @@ public final class Classes {
 	 * @throws NullPointerException if the given object class is <code>null</code>.
 	 */
 	private static <R> void addClass(final Class<? extends R> objectClass, final int height,
-			final Map<Class<? extends R>, NameValuePair<Class<? extends R>, Integer>> classHeightMap) {
-		final NameValuePair<Class<? extends R>, Integer> oldClassHeight = classHeightMap.get(objectClass); //get the old height
+			final Map<Class<? extends R>, Map.Entry<Class<? extends R>, Integer>> classHeightMap) {
+		final Map.Entry<Class<? extends R>, Integer> oldClassHeight = classHeightMap.get(objectClass); //get the old height
 		if(oldClassHeight == null || oldClassHeight.getValue().intValue() < height) { //if there was no old height, or the old height is not as large as the new height
-			classHeightMap.put(objectClass, new NameValuePair<Class<? extends R>, Integer>(objectClass, height)); //update the height for the class
+			classHeightMap.put(objectClass, new AbstractMap.SimpleImmutableEntry<Class<? extends R>, Integer>(objectClass, height)); //update the height for the class
 		}
 	}
 
