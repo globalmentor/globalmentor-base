@@ -17,6 +17,8 @@
 package com.globalmentor.collections.iterators;
 
 import static java.util.Objects.*;
+import static java.util.Spliterators.*;
+import static java.util.stream.StreamSupport.*;
 
 import java.util.*;
 import java.util.function.Supplier;
@@ -266,13 +268,19 @@ public class Iterators {
 	}
 
 	/**
-	 * Returns a stream providing access to the contents of the given iterator.
+	 * Returns a stream providing access to the contents of the given iterator. The input iterator must not be used further after calling this method.
+	 * @apiNote If the characteristics of the iterator are known, it would be better to call {@link Spliterators#spliteratorUnknownSize(Iterator, int)},
+	 *          indicating those characteristics.
+	 * @implSpec The stream returned by this implementation is not parallel.
 	 * @param <E> The type of elements returned by the iterator.
 	 * @param iterator The iterator to be converted to a stream.
 	 * @return A stream that returns the contents of the given iterator.
+	 * @see com.globalmentor.collections.iterables.Iterables#toStream(Iterable)
+	 * @see <a href=
+	 *      "https://guava.dev/releases/snapshot-jre/api/docs/com/google/common/collect/Streams.html#stream(java.util.Iterator)"><code>com.google.common.collect.Streams.stream(Iterator)</code></a>
 	 */
 	public static <E> Stream<E> toStream(@Nonnull final Iterator<E> iterator) {
-		return StreamSupport.stream(toIterable(iterator).spliterator(), false);
+		return stream(spliteratorUnknownSize(iterator, 0), false);
 	}
 
 }
