@@ -16,6 +16,8 @@
 
 package com.globalmentor.collections.iterables;
 
+import static java.util.stream.StreamSupport.*;
+
 import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.*;
@@ -122,6 +124,21 @@ public class Iterables {
 	 */
 	public static <E, X extends RuntimeException> E getOnly(@Nonnull final Iterable<E> iterable, @Nonnull final Supplier<X> manyElementsExceptionSupplier) {
 		return Iterators.getOnly(iterable.iterator(), manyElementsExceptionSupplier);
+	}
+
+	/**
+	 * Returns a new stream from the given iterable.
+	 * @implSpec The stream returned by this implementation is not parallel.
+	 * @param <T> The type of elements returned by the iterable's iterator.
+	 * @param iterable The iterable to be converted to a stream.
+	 * @return A stream that iterates over the contents of the given iterable.
+	 * @see <a href="https://stackoverflow.com/q/23932061">Convert Iterable to Stream using Java 8 JDK</a>
+	 * @see <a href="https://stackoverflow.com/q/23114015">Why does Iterable&lt;T&gt; not provide stream() and parallelStream() methods?</a>
+	 * @see <a href=
+	 *      "https://guava.dev/releases/snapshot-jre/api/docs/com/google/common/collect/Streams.html#stream(java.lang.Iterable)"><code>com.google.common.collect.Streams.stream(Iterable)</code></a>
+	 */
+	public static <T> Stream<T> toStream(@Nonnull final Iterable<T> iterable) {
+		return iterable instanceof Collection ? ((Collection<T>)iterable).stream() : stream(iterable.spliterator(), false);
 	}
 
 }
