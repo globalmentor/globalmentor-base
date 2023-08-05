@@ -6,6 +6,7 @@
 		<groupId>com.globalmentor</groupId>
 		<artifactId>globalmentor-root</artifactId>
 		<version>0.8.16-SNAPSHOT</version>
+		<relativePath />
 	</parent>
 
 	<artifactId>globalmentor-base</artifactId>
