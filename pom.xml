@@ -14,7 +14,7 @@
 	<packaging>pom</packaging>
 
 	<name>GlobalMentor Base</name>
-	<description>GlobalMentor base aggregate parent POM and bill of materials.</description>
+	<description>GlobalMentor base aggregate POM and bill of materials.</description>
 	<url>https://www.globalmentor.com/software/</url>
 	<inceptionYear>1996</inceptionYear>
 
@@ -33,6 +33,7 @@
 	</scm>
 
 	<modules>
+		<module>parent-pom.xml</module>
 		<module>core</module>
 		<module>management</module>
 	</modules>
@@ -49,12 +50,6 @@
 				<groupId>com.globalmentor</groupId>
 				<artifactId>globalmentor-management</artifactId>
 				<version>0.7.4-SNAPSHOT</version>
-			</dependency>
-
-			<dependency>
-				<groupId>org.eclipse.jgit</groupId>
-				<artifactId>org.eclipse.jgit</artifactId>
-				<version>6.5.0.202303070854-r</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
