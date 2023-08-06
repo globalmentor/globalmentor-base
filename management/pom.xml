@@ -4,8 +4,9 @@
 
 	<parent>
 		<groupId>com.globalmentor</groupId>
-		<artifactId>globalmentor-base</artifactId>
+		<artifactId>globalmentor-base-parent</artifactId>
 		<version>0.7.4-SNAPSHOT</version>
+		<relativePath>../parent-pom.xml</relativePath>
 	</parent>
 
 	<artifactId>globalmentor-management</artifactId>
