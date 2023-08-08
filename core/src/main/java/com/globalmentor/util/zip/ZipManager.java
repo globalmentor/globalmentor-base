@@ -20,7 +20,6 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 import java.util.zip.*;
-import com.globalmentor.io.*;
 import com.globalmentor.net.*;
 import static com.globalmentor.net.URIs.*;
 
@@ -33,7 +32,7 @@ import static com.globalmentor.net.URIs.*;
  * @author Garret Wilson
  * @see ZipFile
  */
-public class ZipManager implements URIInputStreamable {
+public class ZipManager {
 
 	/** The file containing the zipped information. */
 	private final File file;
