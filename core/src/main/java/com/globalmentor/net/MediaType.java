@@ -778,6 +778,8 @@ public final class MediaType {
 	 */
 	public static final class Parameter extends AbstractMap.SimpleImmutableEntry<String, String> implements Named<String> {
 
+		private static final long serialVersionUID = 1L;
+
 		/**
 		 * The common parameter <code>charset=us-ascii</code>.
 		 * @apiNote For adding a new charset parameter to an existing media type, it is preferred to call {@link MediaType#withCharset(Charset)}.
