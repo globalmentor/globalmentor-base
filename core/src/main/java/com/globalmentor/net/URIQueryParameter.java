@@ -29,6 +29,8 @@ import com.globalmentor.model.Named;
  */
 public class URIQueryParameter extends AbstractMap.SimpleImmutableEntry<String, String> implements Named<String> {
 
+	private static final long serialVersionUID = 1L;
+
 	/**
 	 * Constructor specifying the name and value.
 	 * @param name The parameter name.
