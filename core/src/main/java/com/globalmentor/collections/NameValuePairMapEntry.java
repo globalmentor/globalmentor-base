@@ -18,8 +18,6 @@ package com.globalmentor.collections;
 
 import java.util.*;
 
-import com.globalmentor.model.NameValuePair;
-
 /**
  * A read-only map entry that is also a name/value pair.
  * 
@@ -30,7 +28,7 @@ import com.globalmentor.model.NameValuePair;
  * @deprecated to be removed.
  */
 @Deprecated
-public class NameValuePairMapEntry<K, V> extends NameValuePair<K, V> implements Map.Entry<K, V> {
+public class NameValuePairMapEntry<K, V> extends com.globalmentor.model.NameValuePair<K, V> implements Map.Entry<K, V> {
 
 	/**
 	 * Constructor specifying the name and value.
@@ -46,7 +44,7 @@ public class NameValuePairMapEntry<K, V> extends NameValuePair<K, V> implements 
 	 * @param nameValuePair The name/value pair the values of which to hold in the map entry.
 	 * @throws NullPointerException if the given name/value pair is <code>null</code>.
 	 */
-	public NameValuePairMapEntry(final NameValuePair<K, V> nameValuePair) {
+	public NameValuePairMapEntry(final com.globalmentor.model.NameValuePair<K, V> nameValuePair) {
 		this(nameValuePair.getName(), nameValuePair.getValue());
 	}
 
