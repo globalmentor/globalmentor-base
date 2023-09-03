@@ -37,20 +37,6 @@ import com.globalmentor.model.Named;
 public interface CompoundTokenization extends Named<String> {
 
 	/**
-	 * The delimiter for <code>kebab-case</code>.
-	 * @deprecated to be removed in favor of calling {@link CharacterDelimitedCompoundTokenization#getDelimiter()} on {@link #KEBAB_CASE}.
-	 */
-	@Deprecated
-	public static final char KEBAB_CASE_DELIMITER = '-';
-
-	/**
-	 * The delimiter for <code>snake_case</code>.
-	 * @deprecated to be removed in favor of calling {@link CharacterDelimitedCompoundTokenization#getDelimiter()} on {@link #SNAKE_CASE}.
-	 */
-	@Deprecated
-	public static final char SNAKE_CASE_DELIMITER = '_';
-
-	/**
 	 * Splits a compound token into its component segments.
 	 * @param token The compound token to split.
 	 * @return The segments of the compound token.

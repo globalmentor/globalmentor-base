@@ -34,7 +34,6 @@ import java.util.function.ToIntBiFunction;
 import javax.annotation.*;
 
 import com.globalmentor.io.UTF8;
-import com.globalmentor.text.ASCII;
 import com.globalmentor.text.Case;
 
 /**
@@ -65,56 +64,6 @@ public class CharSequences {
 			throw new StringIndexOutOfBoundsException(end - start);
 		}
 		return charSequence;
-	}
-
-	/**
-	 * Searches a character sequence and returns the first index of any specified characters, starting at the beginning.
-	 * @param charSequence The character sequence to be searched.
-	 * @param characters The string of characters to check.
-	 * @return The index of the first occurrence of one of the supplied characters, or -1 if none were found.
-	 * @deprecated to be removed in favor of {@link #indexOf(CharSequence, Characters)}.
-	 */
-	@Deprecated
-	public static int charIndexOf(final CharSequence charSequence, final Characters characters) {
-		return indexOf(charSequence, characters, 0); //look of the characters, starting at the beginning of the string
-	}
-
-	/**
-	 * Searches a character sequence and returns the first index of any specified characters, starting at the given index.
-	 * @param charSequence The character sequence to be searched.
-	 * @param characters The string of characters to check.
-	 * @param index The index to search from.
-	 * @return The index of the first occurrence of one of the supplied characters, or -1 if none were found.
-	 * @deprecated to be removed in favor of {@link #indexOf(CharSequence, Characters, int)}.
-	 */
-	@Deprecated
-	public static int charIndexOf(final CharSequence charSequence, final Characters characters, final int index) {
-		return indexOf(charSequence, characters, index);
-	}
-
-	/**
-	 * Searches a character sequence in reverse and returns the last index of any specified characters.
-	 * @param charSequence The character sequence to be searched.
-	 * @param characters The string of characters to check.
-	 * @return The index of the last occurrence of one of the supplied characters, or -1 if none were found.
-	 * @deprecated to be removed in favor of {@link #lastIndexNotOf(CharSequence, Characters)}.
-	 */
-	@Deprecated
-	public static int charLastIndexOf(final CharSequence charSequence, final Characters characters) {
-		return lastIndexOf(charSequence, characters, charSequence.length() - 1); //search the sequence, starting at the end
-	}
-
-	/**
-	 * Searches a character sequence in reverse and returns the last index of any specified characters, starting from the given index.
-	 * @param charSequence The character sequence to be searched.
-	 * @param characters The string of characters to check.
-	 * @param index The index to search from.
-	 * @return The index of the last occurrence of one of the supplied characters, or -1 if none were found.
-	 * @deprecated to be removed in favor of {@link #lastIndexOf(CharSequence, Characters, int)}.
-	 */
-	@Deprecated
-	public static int charLastIndexOf(final CharSequence charSequence, final Characters characters, final int index) {
-		return lastIndexOf(charSequence, characters, index);
 	}
 
 	/**
@@ -981,58 +930,6 @@ public class CharSequences {
 	}
 
 	/**
-	 * Searches a character sequence and returns the first index of any character <em>not</em> in the specified characters, starting from the beginning.
-	 * @param charSequence The character sequence to be searched.
-	 * @param notCharacters The characters to check.
-	 * @return The index of the first occurrence of one of the supplied characters, or -1 if none were found.
-	 * @deprecated to be removed in favor of {@link #indexNotOf(CharSequence, Characters)}.
-	 */
-	@Deprecated
-	public static int notCharIndexOf(final CharSequence charSequence, final Characters notCharacters) {
-		return indexNotOf(charSequence, notCharacters, 0); //start looking from the beginning
-	}
-
-	/**
-	 * Searches a character sequence and returns the first index of any character <em>not</em> in the specified characters, starting at the given index.
-	 * @param charSequence The character sequence to be searched.
-	 * @param notCharacters The characters to check.
-	 * @param index The index to search from.
-	 * @return The index of the first occurrence of one of the supplied characters, or -1 if none were found.
-	 * @deprecated to be removed in favor of {@link #indexNotOf(CharSequence, Characters, int)}.
-	 */
-	@Deprecated
-	public static int notCharIndexOf(final CharSequence charSequence, final Characters notCharacters, int index) {
-		return indexNotOf(charSequence, notCharacters, index);
-	}
-
-	/**
-	 * Searches a character sequence and returns the last index of any character <em>not</em> in the specified characters, starting at the last index.
-	 * @param charSequence The character sequence to be searched.
-	 * @param notCharacters The characters to check.
-	 * @return The index of the last occurrence of one of the supplied characters, or -1 if none were found.
-	 * @deprecated to be removed in favor of {@link #lastIndexNotOf(CharSequence, Characters)}.
-	 */
-	@Deprecated
-	public static int notCharLastIndexOf(final CharSequence charSequence, final Characters notCharacters) {
-		return lastIndexNotOf(charSequence, notCharacters, charSequence.length() - 1); //start searching from the end
-	}
-
-	/**
-	 * Searches a character sequence and returns the last index of any character <em>not</em> in the specified characters, starting at the given index.
-	 * @param charSequence The character sequence to be searched.
-	 * @param notCharacters The characters to check.
-	 * @param index The last index to examine; if greater than or equal to the length of this character sequence, it has the same effect as if it were equal to
-	 *          one less than the length of this character sequence, and the entire character sequence may be searched; if negative, it has the same effect as if
-	 *          it were -1, and -1 is returned.
-	 * @return The index of the last occurrence of one of the supplied characters, or -1 if none were found.
-	 * @deprecated to be removed in favor of {@link #lastIndexNotOf(CharSequence, Characters, int)}.
-	 */
-	@Deprecated
-	public static int notCharLastIndexOf(final CharSequence charSequence, final Characters notCharacters, int index) {
-		return lastIndexNotOf(charSequence, notCharacters, index);
-	}
-
-	/**
 	 * Determines if the character sequence consists of nothing but the following character.
 	 * @param charSequence The character sequence to examine.
 	 * @param c The character that could make up the entire sequence.
@@ -1089,23 +986,6 @@ public class CharSequences {
 				return false; //show that the string doesn't contain only digits
 		}
 		return true; //if we make it to here, there weren't any non-digits in the string
-	}
-
-	/**
-	 * Determines whether a character sequence contains only the digits '0'-'9'.
-	 * @param charSequence The character sequence to examine.
-	 * @return <code>true</code> if all the characters in the sequence are ISO_LATIN_1 digits.
-	 * @deprecated in favor of {@link #containsOnly(CharSequence, Characters)} used with {@link ASCII#DIGIT_CHARACTERS}.
-	 */
-	@Deprecated
-	public static final boolean isLatinDigits(final CharSequence charSequence) {
-		if(charSequence.length() == 0) //if this is an empty string
-			return false; //there are no characters to check
-		for(int i = charSequence.length() - 1; i >= 0; --i) { //look at each letter in the string
-			if(!isLatinDigit(charSequence.charAt(i))) //if this isn't a Latin digit
-				return false; //show that the string doesn't contain only latin digits
-		}
-		return true; //if we make it to here, there weren't any non-latin-digits in the string
 	}
 
 	/**
@@ -1243,40 +1123,6 @@ public class CharSequences {
 		} else { //if there are no character sequences
 			return ""; //return the empty string
 		}
-	}
-
-	/**
-	 * Splits a characters sequence into subsequences based upon the given delimiter. Subsequences will be returned between delimiters even if they are empty, and
-	 * a subsequence will be returned after the last delimiter, even if there are no remaining characters. In other words, the number of character subsequences
-	 * returned is <var>delimiterCount</var>+1.
-	 * @param charSequence The character sequence to split.
-	 * @param delimiter The delimiter to use for splitting.
-	 * @return An array of character subsequences between the delimiters.
-	 * @deprecated to be removed in favor of {@link java.util.regex.Pattern#split(CharSequence)}.
-	 */
-	@Deprecated
-	public static CharSequence[] split(final CharSequence charSequence, final char delimiter) {
-		final int length = charSequence.length(); //get the length of the character sequence
-		if(length > 0) { //if there are any characters
-			final int delimiterCount = count(charSequence, delimiter); //count the number of delimiters
-			if(delimiterCount > 0) { //if there is at least one delimiter
-				//count the delimiters; this should be faster than creating a list and dynamically adding subsequences
-				final CharSequence[] subSequences = new CharSequence[delimiterCount + 1]; //there will always be one more character sequence than delimiter
-				int start = 0; //start searching at the beginning
-				int delimiterIndex; //we'll keep track of where we find the delimiter each time
-				int i = 0; //keep track of the subsequence index
-				do {
-					assert start < charSequence.length() : "Delmiter counting and splitting logic out of synchronization.";
-					delimiterIndex = indexOf(charSequence, delimiter, start); //find the index of the next delimiter
-					final int end = delimiterIndex >= 0 ? delimiterIndex : length; //if we didn't find a delimiter, just use the rest of the character sequence
-					subSequences[i] = charSequence.subSequence(start, end); //create a subsequence between delimiters
-					start = end + 1; //start looking at the position after the delimiter
-					++i; //go to the next position for storing subsequences
-				} while(i < subSequences.length); //keep looking until we've found the correct number of delimiters
-				return subSequences; //return the array of subsequences
-			}
-		}
-		return new CharSequence[] {charSequence}; //return an array containing the character sequence itself if there are no characters or no delimiters
 	}
 
 	/**

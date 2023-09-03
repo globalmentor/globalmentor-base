@@ -30,14 +30,12 @@ import static java.nio.file.Files.*;
 import static java.util.Collections.*;
 import static java.util.Objects.*;
 
-import com.globalmentor.event.ProgressListener;
 import com.globalmentor.java.*;
 import com.globalmentor.net.*;
 import com.globalmentor.text.*;
 
 import static com.globalmentor.io.Paths.*;
 import static com.globalmentor.java.Conditions.*;
-import static com.globalmentor.java.StringBuilders.*;
 import static com.globalmentor.net.URIs.*;
 
 /**
@@ -148,18 +146,6 @@ public class Files {
 	}
 
 	/**
-	 * Adds the given extension to a file and returns the new file with the new extension. The filename is not checked to see if it currently has an extension.
-	 * @param file The file to which to add an extension.
-	 * @param extension The extension to add.
-	 * @return The file with the new extension.
-	 * @deprecated to be removed in favor of {@link #addNameExtension(File, String)}.
-	 */
-	@Deprecated
-	public static File addExtension(final File file, final String extension) {
-		return addNameExtension(file, extension);
-	}
-
-	/**
 	 * Adds the given extension to a file name and returns the new file with the new extension. The filename is not checked to see if it currently has an
 	 * extension.
 	 * @implNote This implementation requires the given file to have a parent.
@@ -170,52 +156,6 @@ public class Files {
 	 */
 	public static File addNameExtension(@Nonnull final File file, @Nonnull final String extension) {
 		return new File(file.getParent(), Filenames.addExtension(file.getName(), extension)); //return the file with a "temp" extension
-	}
-
-	/** The characters recognized as wildcards in filenames. */
-	@Deprecated
-	public static final Characters FILENAME_WILDCARD_CHARACTERS = Characters.of(RegularExpressions.ZERO_OR_ONE_CHAR, RegularExpressions.ZERO_OR_MORE_CHAR);
-
-	/** The characters to encode for patterns in a wildcard filename. */
-	@Deprecated
-	private static final Characters FILENAME_NON_WILDCARD_PATTERN_RESTRICTED_CHARACTERS = RegularExpressions.RESTRICTED.remove(FILENAME_WILDCARD_CHARACTERS);
-
-	/**
-	 * Lists files in the given file, the filename of which which may contain wildcards.
-	 * <p>
-	 * This implementation only recognizes the wildcard characters '*' and '?'. If these characters appear outside the filename, they will not be considered
-	 * wildcards.
-	 * </p>
-	 * @param wildcardFile The file, the filename of which may contain wildcards.
-	 * @return A list of files in the given path matching the given wildcard filename.
-	 * @see #FILENAME_WILDCARD_CHARACTERS
-	 */
-	@Deprecated
-	public static File[] listWildcards(final File wildcardFile) { //TODO improve to only return directories
-		return listWildcards(wildcardFile.getParentFile(), wildcardFile.getName());
-	}
-
-	/**
-	 * Lists files in the given directory with the given filename, which may contain wildcards.
-	 * <p>
-	 * This implementation only recognizes the wildcard characters '*' and '?'.
-	 * </p>
-	 * @param directory The directory in which to list the files.
-	 * @param wildcardFilename The filename, which can contain wildcard characters.
-	 * @return A list of files in the given directory with names matching the given wildcard filename.
-	 * @see #FILENAME_WILDCARD_CHARACTERS
-	 */
-	@Deprecated
-	public static File[] listWildcards(final File directory, final String wildcardFilename) {
-		final StringBuilder filenamePatternStringBuilder = new StringBuilder(wildcardFilename);
-		//1. Escape all pattern characters (including '.') except for '*' and '?' with '\'.
-		escape(filenamePatternStringBuilder, FILENAME_NON_WILDCARD_PATTERN_RESTRICTED_CHARACTERS, RegularExpressions.ESCAPE);
-		//2. Prefix every occurrence of '*' with '.'; ignore existing '.' characters, as we've already escaped them.
-		escape(filenamePatternStringBuilder, Characters.of(RegularExpressions.ZERO_OR_MORE_CHAR), RegularExpressions.WILDCARD_CHAR, false);
-		//3. Replace every occurrence of '?' with '.'.
-		replace(filenamePatternStringBuilder, RegularExpressions.ZERO_OR_ONE_CHAR, RegularExpressions.WILDCARD_CHAR);
-		final FileFilter fileFilter = new FilenamePatternFilter(filenamePatternStringBuilder.toString()); //create a file filter for this pattern
-		return directory.listFiles(fileFilter);
 	}
 
 	/**
@@ -450,17 +390,6 @@ public class Files {
 	}
 
 	/**
-	 * Extracts the extension from a file. Anything after the last path character ('/' or '\\') is ignored.
-	 * @param file The file to examine.
-	 * @return The extension of the file (not including '.'), or <code>null</code> if no extension is present.
-	 * @deprecated to be removed in favor of {@link #findNameExtension(File)}.
-	 */
-	@Deprecated
-	public static String getExtension(@Nonnull final File file) {
-		return findNameExtension(file).orElse(null);
-	}
-
-	/**
 	 * Changes the name of a file and returns a new file with the new name.
 	 * @param file The file to examine.
 	 * @param name The new name of the file.
@@ -474,18 +403,6 @@ public class Files {
 		final int filenameLength = filename.length(); //get the length of the filename
 		assert path.substring(pathLength - filenameLength).equals(filename) : "Expected last part of path to be filename."; //the filename should always be the last part of the path, even if the file was originally created with an ending slash for a directory
 		return new File(path.substring(0, pathLength - filenameLength) + requireNonNull(name, "Name cannot be null."));
-	}
-
-	/**
-	 * Changes the extension of a file and returns a new file with the new extension. If the file does not currently have an extension, one will be added.
-	 * @param file The file to examine.
-	 * @param extension The extension to set, or <code>null</code> if the extension should be removed.
-	 * @return The file with the new extension.
-	 * @deprecated to be removed in favor of {@link #changeNameExtension(File, String)}.
-	 */
-	@Deprecated
-	public static File changeExtension(final File file, final String extension) {
-		return changeNameExtension(file, extension);
 	}
 
 	/**
@@ -526,17 +443,6 @@ public class Files {
 			throw new FileNotFoundException("File does not exist: " + file);
 		}
 		return file;
-	}
-
-	/**
-	 * Removes the extension of a filename, if any, and returns a new file with no extension.
-	 * @param file The file to examine.
-	 * @return The file with no extension.
-	 * @deprecated to be removed in favor of {@link #removeNameExtension(File)}.
-	 */
-	@Deprecated
-	public static File removeExtension(final File file) {
-		return removeNameExtension(file);
 	}
 
 	/**
@@ -766,22 +672,6 @@ public class Files {
 	}
 
 	/**
-	 * Reads an object from a file using the given I/O support.
-	 * @param <T> //TODO write this
-	 * @param file The file from which to read.
-	 * @param io The I/O support for reading the object.
-	 * @return The object read from the file.
-	 * @throws IOException if there is an error reading the data.
-	 * @deprecated to be removed or refactored along with the {@link IO} read and write methods.
-	 */
-	@Deprecated
-	public static <T> T read(final File file, final IO<T> io) throws IOException {
-		try (final InputStream bufferedInputStream = new BufferedInputStream(new FileInputStream(file))) { //create a buffered input stream to the file
-			return io.read(bufferedInputStream, toURI(file)); //read the object, determining the base URI from the file
-		}
-	}
-
-	/**
 	 * Reads the contents of the given file.
 	 * @apiNote This is a convenience that obviates the need for boilerplate for getting an {@link InputStream} from a {@link File}.
 	 * @param file The file from which the information will be read.
@@ -901,271 +791,6 @@ public class Files {
 				}
 			}
 		});
-	}
-
-	/**
-	 * Stores the contents of an input stream in a file.
-	 * @param inputStream The source of the file contents.
-	 * @param file The destination of the file contents.
-	 * @throws IOException Thrown if there is an error copying the information.
-	 * @deprecated to be removed; may be reimplemented using Java NIO {@link Path}.
-	 */
-	@Deprecated
-	public static void copy(final InputStream inputStream, final File file) throws IOException {
-		copy(inputStream, file, null);
-	}
-
-	/**
-	 * Stores the contents of an input stream in a file.
-	 * @param inputStream The source of the file contents.
-	 * @param file The destination of the file contents.
-	 * @param progressListener A listener to be notified of progress, or <code>null</code> if no progress notifications is requested.
-	 * @throws IOException Thrown if there is an error copying the information.
-	 * @deprecated to be removed; may be reimplemented using Java NIO {@link Path}.
-	 */
-	@Deprecated
-	public static void copy(final InputStream inputStream, final File file, final ProgressListener progressListener) throws IOException {
-		try (final OutputStream fileOutputStream = new BufferedOutputStream(new FileOutputStream(file))) { //created a buffered output stream to the file
-			IOStreams.copy(inputStream, fileOutputStream, progressListener); //copy the contents of the input stream to the output stream
-		}
-	}
-
-	/**
-	 * Stores the contents of a file in an output stream.
-	 * @param file The file to copy.
-	 * @param outputStream The destination of the file contents.
-	 * @throws IOException Thrown if there is an error copying the file.
-	 * @deprecated to be removed; may be reimplemented using Java NIO {@link Path}.
-	 */
-	@Deprecated
-	public static void copy(final File file, final OutputStream outputStream) throws IOException {
-		copy(file, outputStream, null);
-	}
-
-	/**
-	 * Copies the given source file or directory to the given destination file or directory. Destination files are overwritten. The last modified date of the
-	 * destination file or directory is updated to match that of the source.
-	 * @param sourceFile The source file or directory to copy.
-	 * @param destinationFile The destination of the copied file or directory.
-	 * @throws NullPointerException if the given source file and/or destination file is <code>null</code>.
-	 * @throws IllegalArgumentException if the given destination file is a child of the given source file, representing a circular copy.
-	 * @throws FileNotFoundException if the given source file is <code>null</code>.
-	 * @throws IllegalStateException if a directory copy is performed and the destination file's parent directory doesn't exist.
-	 * @deprecated to be removed; may be reimplemented using Java NIO {@link Path}.
-	 */
-	@Deprecated
-	public static void copy(final File sourceFile, final File destinationFile) throws IOException {
-		copy(sourceFile, destinationFile, true);
-	}
-
-	/**
-	 * Copies the given source file or directory to the given destination file or directory. Destination files are overwritten. The last modified date of the
-	 * destination file or directory is updated to match that of the source.
-	 * @param sourceFile The source file or directory to copy.
-	 * @param destinationFile The destination of the copied file or directory.
-	 * @param progressListener A listener to be notified of progress, or <code>null</code> if no progress notifications is requested.
-	 * @throws NullPointerException if the given source file and/or destination file is <code>null</code>.
-	 * @throws IllegalArgumentException if the given destination file is a child of the given source file, representing a circular copy.
-	 * @throws FileNotFoundException if the given source file is <code>null</code>.
-	 * @throws IllegalStateException if a directory copy is performed and the destination file's parent directory doesn't exist.
-	 * @deprecated to be removed; may be reimplemented using Java NIO {@link Path}.
-	 */
-	@Deprecated
-	public static void copy(final File sourceFile, final File destinationFile, final ProgressListener progressListener) throws IOException {
-		copy(sourceFile, destinationFile, true, progressListener);
-	}
-
-	/**
-	 * Copies the given source file or directory to the given destination file or directory. Destination files are overwritten. The last modified date of the
-	 * destination file or directory is updated to match that of the source.
-	 * @param sourceFile The source file or directory to copy.
-	 * @param destinationFile The destination of the copied file or directory.
-	 * @param deep <code>true</code> if child files and directories of source directories should be recursively copied.
-	 * @throws NullPointerException if the given source file and/or destination file is <code>null</code>.
-	 * @throws IllegalArgumentException if the given destination file is a child of the given source file, representing a circular copy.
-	 * @throws FileNotFoundException if the given source file is <code>null</code>.
-	 * @throws IllegalStateException if a directory copy is performed and the destination file's parent directory doesn't exist.
-	 * @deprecated to be removed; may be reimplemented using Java NIO {@link Path}.
-	 */
-	@Deprecated
-	public static void copy(final File sourceFile, final File destinationFile, final boolean deep) throws IOException {
-		copy(sourceFile, destinationFile, deep, WILDCARD_FILE_FILTER, null);
-	}
-
-	/**
-	 * Copies the given source file or directory to the given destination file or directory. Destination files are overwritten. The last modified date of the
-	 * destination file or directory is updated to match that of the source.
-	 * @param sourceFile The source file or directory to copy.
-	 * @param destinationFile The destination of the copied file or directory.
-	 * @param deep <code>true</code> if child files and directories of source directories should be recursively copied.
-	 * @param progressListener A listener to be notified of progress, or <code>null</code> if no progress notifications is requested.
-	 * @throws NullPointerException if the given source file and/or destination file is <code>null</code>.
-	 * @throws IllegalArgumentException if the given destination file is a child of the given source file, representing a circular copy.
-	 * @throws FileNotFoundException if the given source file is <code>null</code>.
-	 * @throws IllegalStateException if a directory copy is performed and the destination file's parent directory doesn't exist.
-	 * @deprecated to be removed; may be reimplemented using Java NIO {@link Path}.
-	 */
-	@Deprecated
-	public static void copy(final File sourceFile, final File destinationFile, final boolean deep, final ProgressListener progressListener) throws IOException {
-		copy(sourceFile, destinationFile, deep, WILDCARD_FILE_FILTER, progressListener);
-	}
-
-	/**
-	 * Copies the given source file or directory to the given destination file or directory. The last modified date of the destination file or directory is
-	 * updated to match that of the source.
-	 * @param sourceFile The source file or directory to copy.
-	 * @param destinationFile The destination of the copied file or directory.
-	 * @param deep <code>true</code> if child files and directories of source directories should be recursively copied.
-	 * @param overwrite <code>true</code> if any existing file or directory at the destination should be overwritten.
-	 * @throws NullPointerException if the given source file and/or destination file is <code>null</code>.
-	 * @throws IllegalArgumentException if the given destination file is a child of the given source file, representing a circular copy.
-	 * @throws FileNotFoundException if the given source file is <code>null</code>.
-	 * @throws IllegalStateException if a directory copy is performed and the destination file's parent directory doesn't exist.
-	 * @throws IllegalStateException if overwrite is turned off and a destination file exists.
-	 * @deprecated to be removed; may be reimplemented using Java NIO {@link Path}.
-	 */
-	@Deprecated
-	public static void copy(final File sourceFile, final File destinationFile, final boolean deep, final boolean overwrite) throws IOException {
-		copy(sourceFile, destinationFile, deep, WILDCARD_FILE_FILTER, overwrite);
-	}
-
-	/**
-	 * Copies the given source file or directory to the given destination file or directory. The last modified date of the destination file or directory is
-	 * updated to match that of the source.
-	 * @param sourceFile The source file or directory to copy.
-	 * @param destinationFile The destination of the copied file or directory.
-	 * @param deep <code>true</code> if child files and directories of source directories should be recursively copied.
-	 * @param overwrite <code>true</code> if any existing file or directory at the destination should be overwritten, or <code>false</code> if an existing file or
-	 *          directory at the destination should cause an exception to be thrown.
-	 * @param progressListener A listener to be notified of progress, or <code>null</code> if no progress notifications is requested.
-	 * @throws NullPointerException if the given source file and/or destination file is <code>null</code>.
-	 * @throws IllegalArgumentException if the given destination file is a child of the given source file, representing a circular copy.
-	 * @throws FileNotFoundException if the given source file is <code>null</code>.
-	 * @throws IllegalStateException if a directory copy is performed and the destination file's parent directory doesn't exist.
-	 * @throws IllegalStateException if overwrite is turned off and a destination file exists.
-	 * @deprecated to be removed; may be reimplemented using Java NIO {@link Path}.
-	 */
-	@Deprecated
-	public static void copy(final File sourceFile, final File destinationFile, final boolean deep, final boolean overwrite,
-			final ProgressListener progressListener) throws IOException {
-		copy(sourceFile, destinationFile, deep, WILDCARD_FILE_FILTER, overwrite, progressListener);
-	}
-
-	/**
-	 * Stores the contents of a file in an output stream.
-	 * @param file The file to copy.
-	 * @param outputStream The destination of the file contents.
-	 * @param progressListener A listener to be notified of progress, or <code>null</code> if no progress notifications is requested.
-	 * @throws IOException Thrown if there is an error copying the file.
-	 * @deprecated to be removed; may be reimplemented using Java NIO {@link Path}.
-	 */
-	@Deprecated
-	public static void copy(final File file, final OutputStream outputStream, final ProgressListener progressListener) throws IOException {
-		try (final InputStream fileInputStream = new BufferedInputStream(new FileInputStream(file))) { //created a buffered input stream to the file
-			IOStreams.copy(fileInputStream, outputStream, file.length(), progressListener); //copy the contents of the input stream to the output stream
-		}
-	}
-
-	/**
-	 * Copies the given source file or directory to the given destination file or directory. Destination files are overwritten. The last modified date of the
-	 * destination file or directory is updated to match that of the source.
-	 * @param sourceFile The source file or directory to copy.
-	 * @param destinationFile The destination of the copied file or directory.
-	 * @param deep <code>true</code> if child files and directories of source directories should be recursively copied.
-	 * @param fileFilter The file filter for copying children files if applicable.
-	 * @param progressListener A listener to be notified of progress, or <code>null</code> if no progress notifications is requested.
-	 * @throws NullPointerException if the given source file and/or destination file is <code>null</code>, or if deep copying of a directory is requested and the
-	 *           given file filter is <code>null</code>.
-	 * @throws IllegalArgumentException if the given destination file is a child of the given source file, representing a circular copy.
-	 * @throws FileNotFoundException if the given source file is <code>null</code>.
-	 * @throws IllegalStateException if a directory copy is performed and the destination file's parent directory doesn't exist.
-	 * @deprecated to be removed; may be reimplemented using Java NIO {@link Path}.
-	 */
-	@Deprecated
-	public static void copy(final File sourceFile, final File destinationFile, final boolean deep, final FileFilter fileFilter,
-			final ProgressListener progressListener) throws IOException {
-		copy(sourceFile, destinationFile, deep, fileFilter, true, progressListener);
-	}
-
-	/**
-	 * Copies the given source file or directory to the given destination file or directory. The last modified date of the destination file or directory is
-	 * updated to match that of the source.
-	 * @param sourceFile The source file or directory to copy.
-	 * @param destinationFile The destination of the copied file or directory.
-	 * @param deep <code>true</code> if child files and directories of source directories should be recursively copied.
-	 * @param fileFilter The file filter for copying children files if applicable.
-	 * @param overwrite <code>true</code> if any existing file or directory at the destination should be overwritten, or <code>false</code> if an existing file or
-	 *          directory at the destination should cause an exception to be thrown.
-	 * @throws NullPointerException if the given source file and/or destination file is <code>null</code>, or if deep copying of a directory is requested and the
-	 *           given file filter is <code>null</code>.
-	 * @throws IllegalArgumentException if the given destination file is a child of the given source file, representing a circular copy.
-	 * @throws FileNotFoundException if the given source file is <code>null</code>.
-	 * @throws IllegalStateException if a directory copy is performed and the destination file's parent directory doesn't exist.
-	 * @throws IllegalStateException if overwrite is turned off and a destination file exists.
-	 * @deprecated to be removed; may be reimplemented using Java NIO {@link Path}.
-	 */
-	@Deprecated
-	public static void copy(final File sourceFile, final File destinationFile, final boolean deep, final FileFilter fileFilter, final boolean overwrite)
-			throws IOException {
-		copy(sourceFile, destinationFile, deep, fileFilter, overwrite, null);
-	}
-
-	/**
-	 * Copies the given source file or directory to the given destination file or directory. The last modified date of the destination file or directory is
-	 * updated to match that of the source.
-	 * @param sourceFile The source file or directory to copy.
-	 * @param destinationFile The destination of the copied file or directory.
-	 * @param deep <code>true</code> if child files and directories of source directories should be recursively copied.
-	 * @param fileFilter The file filter for copying children files if applicable.
-	 * @param overwrite <code>true</code> if any existing file or directory at the destination should be overwritten, or <code>false</code> if an existing file or
-	 *          directory at the destination should cause an exception to be thrown.
-	 * @param progressListener A listener to be notified of progress, or <code>null</code> if no progress notifications is requested.
-	 * @throws NullPointerException if the given source file and/or destination file is <code>null</code>, or if deep copying of a directory is requested and the
-	 *           given file filter is <code>null</code>.
-	 * @throws IllegalArgumentException if the given destination file is a child of the given source file, representing a circular copy.
-	 * @throws FileNotFoundException if the given source file is <code>null</code>.
-	 * @throws IllegalStateException if a directory copy is performed and the destination file's parent directory doesn't exist.
-	 * @throws IllegalStateException if overwrite is turned off and a destination file exists.
-	 * @deprecated to be removed; may be reimplemented using Java NIO {@link Path}.
-	 */
-	@Deprecated
-	public static void copy(final File sourceFile, final File destinationFile, final boolean deep, final FileFilter fileFilter, final boolean overwrite,
-			final ProgressListener progressListener) throws IOException {
-		//TODO add beginning and ending progress events, along with a system of levels
-		if(isChild(sourceFile, destinationFile)) {
-			throw new IllegalArgumentException("Cannot perform circular copy from " + sourceFile + " to " + destinationFile);
-		}
-		if(sourceFile.isDirectory()) { //directory
-			if(!overwrite) {
-				if(destinationFile.isDirectory()) {
-					throw new IllegalStateException("Copy destination directory " + destinationFile + " already exists.");
-				}
-			}
-			final File destinationParentFile = destinationFile.getParentFile(); //make sure the destination parent file exists
-			if(destinationParentFile != null) {
-				if(!destinationParentFile.isDirectory()) {
-					throw new IllegalStateException("Copy destination parent directory " + destinationParentFile + " does not exist.");
-				}
-			}
-			mkdir(destinationFile); //create the destination file
-			if(deep) { //if we are copying deeply
-				for(final File childSourceFile : sourceFile.listFiles(fileFilter)) { //list all the files in the directory
-					final String filename = childSourceFile.getName();
-					copy(childSourceFile, new File(destinationFile, filename), deep, fileFilter, overwrite, progressListener); //recursively copy the child file or directory
-				}
-			}
-		} else { //file
-			checkFileExists(sourceFile);
-			if(!overwrite) {
-				if(destinationFile.exists()) {
-					throw new IllegalStateException("Copy destination file " + destinationFile + " already exists.");
-				}
-			}
-			try (final OutputStream outputStream = new FileOutputStream(destinationFile)) { //create an output stream to the destination file
-				copy(sourceFile, outputStream, progressListener); //copy the file contents
-			}
-		}
-		destinationFile.setLastModified(sourceFile.lastModified()); //update the destination file's last modified time to match that of the source
 	}
 
 	//## Path

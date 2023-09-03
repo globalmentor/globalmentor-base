@@ -28,7 +28,6 @@ import static java.util.Objects.*;
 import static com.globalmentor.java.Classes.*;
 import static com.globalmentor.java.Conditions.*;
 import static com.globalmentor.java.Java.*;
-import static com.globalmentor.util.Optionals.*;
 
 /**
  * Various utilities to manipulate Java objects.
@@ -150,24 +149,7 @@ public class Objects {
 	 * @see #asInstance(Object, Class)
 	 */
 	public static <T, I extends T> Function<T, Stream<I>> asInstances(final Class<I> instanceClass) {
-		return object -> stream(asInstance(object, instanceClass));
-	}
-
-	/**
-	 * Compares two objects to make sure that the objects are equal, or the objects are both set to <code>null</code>. If the first object is not
-	 * <code>null</code>, it is compared to the second using the first object's {@link Object#equals(Object)} method. This is a convenience method to compare two
-	 * objects using the {@link Object#equals(Object)} method when it's not known if one of the objects is <code>null</code>.
-	 * @param object1 The first object to compare.
-	 * @param object2 The second object to compare.
-	 * @return <code>true</code> if the objects are equal according to the first object's {@link Object#equals(Object)} method or if both objects are
-	 *         <code>null</code>.
-	 * @see Object#equals(Object)
-	 * @deprecated to be removed in favor of {@link java.util.Objects#equals(Object, Object)} from Java 7.
-	 */
-	@Deprecated
-	public static final boolean equals(final Object object1, final Object object2) {
-		//if the first object isn't null, compare it to the second; otherwise, see if the second object is null as well
-		return object1 != null ? object1.equals(object2) : object2 == null;
+		return object -> asInstance(object, instanceClass).stream();
 	}
 
 	/**
@@ -241,77 +223,6 @@ public class Objects {
 		} else { //if there is no getter method
 			throw new NoSuchMethodException("Object with class " + object.getClass() + " has no getter method for property " + propertyName);
 		}
-	}
-
-	/**
-	 * Generates a hash code based upon a series of objects. This method is based upon the algorithm explained in <cite>Effective Java</cite> (2001) by Joshua
-	 * Bloch (pp. 38-39) as well as the hash code generation of the Java runtime library. Any or all objects can be <code>null</code>. Arrays are deeply
-	 * traversed. This methods delegates to {@link #getSeededHashCode(int, Object...)} with a seed value of 17.
-	 * @param objects The objects to be used in generating a hash code.
-	 * @return A hash code taking into account the given objects.
-	 * @throws NullPointerException if the given array of objects is <code>null</code>.
-	 * @deprecated to be removed in favor of {@link java.util.Objects#hash(Object...)} from Java 7.
-	 */
-	@Deprecated
-	public static int getHashCode(final Object... objects) {
-		return getSeededHashCode(17, objects); //generate a hash code with a particular seed
-	}
-
-	/**
-	 * Generates a hash code based upon a seed and a series of objects. This method is based upon the algorithm explained in <cite>Effective Java</cite> (2001) by
-	 * Joshua Bloch (pp. 38-39) as well as the hash code generation of the Java runtime library. Any or all objects can be <code>null</code>. Arrays are deeply
-	 * traversed.
-	 * @param seed The seed with which to start.
-	 * @param objects The objects to be used in generating a hash code.
-	 * @return A hash code starting with the given seed and taking into account the given objects.
-	 * @throws NullPointerException if the given array of objects is <code>null</code>.
-	 */
-	@Deprecated
-	public static int getSeededHashCode(int seed, final Object... objects) {
-		for(final Object object : objects) { //for each object
-			final int hashCode = object != null ? (object.getClass().isArray() ? hash((Object[])object) : object.hashCode()) : 0; //get the object's hash code, or zero if the object is null
-			seed = 37 * seed + hashCode; //multiply by 37 and add the hash code of this object
-		}
-		return seed; //return the entire result
-	}
-
-	/**
-	 * Generates a hash code based upon a series of integer values. This is a convenience varargs method that delegates to the
-	 * {@link java.util.Arrays#hashCode(int[])} version.
-	 * @param values The values to be used in generating a hash code.
-	 * @return A hash code taking into account the given values.
-	 * @throws NullPointerException if the given array of values is <code>null</code>.
-	 * @see java.util.Arrays#hashCode(int[])
-	 */
-	@Deprecated
-	public static int getIntHashCode(final int... values) {
-		return java.util.Arrays.hashCode(values);
-	}
-
-	/**
-	 * Generates a hash code based upon a series of long values. This is a convenience varargs method that delegates to the
-	 * {@link java.util.Arrays#hashCode(long[])} version.
-	 * @param values The values to be used in generating a hash code.
-	 * @return A hash code taking into account the given values.
-	 * @throws NullPointerException if the given array of values is <code>null</code>.
-	 * @see java.util.Arrays#hashCode(long[])
-	 */
-	@Deprecated
-	public static int getLongHashCode(final long... values) {
-		return java.util.Arrays.hashCode(values);
-	}
-
-	/**
-	 * Generates a hash code based upon a series of integer values. This is a convenience varargs method that delegates to the
-	 * {@link java.util.Arrays#hashCode(double[])} version.
-	 * @param values The values to be used in generating a hash code.
-	 * @return A hash code taking into account the given values.
-	 * @throws NullPointerException if the given array of values is <code>null</code>.
-	 * @see java.util.Arrays#hashCode(double[])
-	 */
-	@Deprecated
-	public static int getDoubleHashCode(final double... values) {
-		return java.util.Arrays.hashCode(values);
 	}
 
 	/**

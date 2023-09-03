@@ -20,16 +20,15 @@ import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.security.*;
+import java.util.HexFormat;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.*;
 
-import com.globalmentor.java.Bytes;
 import com.globalmentor.model.Named;
 
 import static com.globalmentor.io.IOStreams.DEFAULT_BUFFER_SIZE;
-import static com.globalmentor.java.Bytes.*;
 import static com.globalmentor.java.Characters.*;
 import static java.nio.charset.StandardCharsets.*;
 import static java.nio.file.Files.*;
@@ -494,7 +493,7 @@ public final class MessageDigests {
 	 * @return The lowercase hex checksum string of the resulting hash value.
 	 */
 	public static String checksum(@Nonnull final MessageDigest messageDigest, final byte input) {
-		return toHexString(digest(messageDigest, input));
+		return HexFormat.of().formatHex(digest(messageDigest, input));
 	}
 
 	/**
@@ -508,7 +507,7 @@ public final class MessageDigests {
 	 * @see MessageDigest#digest(byte[])
 	 */
 	public static String checksum(@Nonnull final MessageDigest messageDigest, @Nonnull final byte[] input) {
-		return toHexString(messageDigest.digest(input));
+		return HexFormat.of().formatHex(messageDigest.digest(input));
 	}
 
 	/**
@@ -523,7 +522,7 @@ public final class MessageDigests {
 	 * @return The lowercase hex checksum string of the resulting hash value.
 	 */
 	public static String checksum(@Nonnull final MessageDigest messageDigest, @Nonnull final byte[] input, final int offset, final int length) {
-		return toHexString(digest(messageDigest, input, offset, length));
+		return HexFormat.of().formatHex(digest(messageDigest, input, offset, length));
 	}
 
 	/**
@@ -536,7 +535,7 @@ public final class MessageDigests {
 	 * @return The lowercase hex checksum string of the resulting hash value.
 	 */
 	public static String checksum(@Nonnull final MessageDigest messageDigest, @Nonnull final ByteBuffer byteBuffer) {
-		return toHexString(digest(messageDigest, byteBuffer));
+		return HexFormat.of().formatHex(digest(messageDigest, byteBuffer));
 	}
 
 	/**
@@ -549,7 +548,7 @@ public final class MessageDigests {
 	 * @return The lowercase hex checksum string of the resulting hash value.
 	 */
 	public static String checksum(@Nonnull final MessageDigest messageDigest, @Nonnull final CharSequence charSequence) {
-		return toHexString(digest(messageDigest, charSequence));
+		return HexFormat.of().formatHex(digest(messageDigest, charSequence));
 	}
 
 	/**
@@ -560,10 +559,9 @@ public final class MessageDigests {
 	 * @param messageDigest The implementation of a message digest algorithm.
 	 * @param characters The characters for which a checksum should be created.
 	 * @return The lowercase hex checksum string of the resulting hash value.
-	 * @see Bytes#toHexString(byte[])
 	 */
 	public static String checksum(@Nonnull final MessageDigest messageDigest, @Nonnull final char[] characters) {
-		return toHexString(digest(messageDigest, characters));
+		return HexFormat.of().formatHex(digest(messageDigest, characters));
 	}
 
 	/**
@@ -577,7 +575,7 @@ public final class MessageDigests {
 	 * @throws IOException if there is an I/O exception reading from the input stream.
 	 */
 	public static String checksum(@Nonnull final MessageDigest messageDigest, @Nonnull final InputStream inputStream) throws IOException {
-		return toHexString(digest(messageDigest, inputStream));
+		return HexFormat.of().formatHex(digest(messageDigest, inputStream));
 	}
 
 	/**
@@ -591,7 +589,7 @@ public final class MessageDigests {
 	 * @throws IOException if there is an I/O exception reading from the file.
 	 */
 	public static String checksum(@Nonnull final MessageDigest messageDigest, @Nonnull final Path file) throws IOException {
-		return toHexString(digest(messageDigest, file));
+		return HexFormat.of().formatHex(digest(messageDigest, file));
 	}
 
 	/**
@@ -630,17 +628,6 @@ public final class MessageDigests {
 			} catch(final NoSuchAlgorithmException noSuchAlgorithmException) {
 				throw new RuntimeException(noSuchAlgorithmException);
 			}
-		}
-
-		/**
-		 * Creates a new message digest instance for this algorithm.
-		 * @return An instance of a message digest for this algorithm.
-		 * @throws RuntimeException if no {@link Provider} supports a {@link MessageDigestSpi} implementation for this algorithm.
-		 * @deprecated in favor of {@link #newMessageDigest()}, which has a clearer and less misleading name.
-		 */
-		@Deprecated
-		public MessageDigest getInstance() {
-			return newMessageDigest();
 		}
 
 		/**
@@ -970,7 +957,6 @@ public final class MessageDigests {
 		 * @param characters The characters for which a checksum should be created.
 		 * @return The lowercase hex checksum string of the resulting hash value.
 		 * @throws RuntimeException if no {@link Provider} supports a {@link MessageDigestSpi} implementation for this algorithm.
-		 * @see Bytes#toHexString(byte[])
 		 */
 		public String checksum(@Nonnull final char[] characters) {
 			return MessageDigests.checksum(newMessageDigest(), characters);
@@ -986,7 +972,6 @@ public final class MessageDigests {
 		 * @return The lowercase hex checksum string of the resulting hash value.
 		 * @throws RuntimeException if no {@link Provider} supports a {@link MessageDigestSpi} implementation for this algorithm.
 		 * @throws IOException if there is an I/O exception reading from the input stream.
-		 * @see Bytes#toHexString(byte[])
 		 */
 		public String checksum(@Nonnull final InputStream inputStream) throws IOException {
 			return MessageDigests.checksum(newMessageDigest(), inputStream);
@@ -1001,7 +986,6 @@ public final class MessageDigests {
 		 * @return The lowercase hex checksum string of the resulting hash value.
 		 * @throws RuntimeException if no {@link Provider} supports a {@link MessageDigestSpi} implementation for this algorithm.
 		 * @throws IOException if there is an I/O exception reading from the file.
-		 * @see Bytes#toHexString(byte[])
 		 */
 		public String checksum(@Nonnull final Path file) throws IOException {
 			return MessageDigests.checksum(newMessageDigest(), file);

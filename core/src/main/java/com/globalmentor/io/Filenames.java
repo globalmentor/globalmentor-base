@@ -380,21 +380,6 @@ public final class Filenames {
 	}
 
 	/**
-	 * Appends a given string to the end of a filename before the extension, if any.
-	 * @apiNote This is useful for forming a locale-aware filename, such as <code>test_fr.txt</code> from <code>test.txt</code>.
-	 * @apiNote Here "base filename" refers to the filename with <em>all</em> extensions removed. That is both <code>example.bar</code> and
-	 *          <code>example.foo.bar</code> would result in a base filename of <code>example</code>.
-	 * @param filename The filename that may contain an extension.
-	 * @param charSequence The characters to append to the filename.
-	 * @return A filename with the given character sequence appended before the filename extension, if any.
-	 * @deprecated to be removed in favor of {@link #appendBase(String, CharSequence)}.
-	 */
-	@Deprecated
-	public static String appendBaseFilename(final String filename, final CharSequence charSequence) {
-		return appendBase(filename, charSequence);
-	}
-
-	/**
 	 * Changes the base filename, preserving the extension(s), if any.
 	 * @apiNote Here "base filename" refers to the filename with <em>all</em> extensions removed. That is both <code>example.bar</code> and
 	 *          <code>example.foo.bar</code> would result in a base filename of <code>example</code>.
@@ -430,19 +415,6 @@ public final class Filenames {
 	public static String getBase(@Nonnull final String filename) {
 		final int separatorIndex = filename.indexOf(EXTENSION_SEPARATOR); //see if we can find the extension separator
 		return separatorIndex >= 0 ? filename.substring(0, separatorIndex) : filename; //insert the characters before the extension or, if there is no extension, at the end of the string
-	}
-
-	/**
-	 * Retrieves a base filename with no extensions
-	 * @apiNote Here "base filename" refers to the filename with <em>all</em> extensions removed. That is both <code>example.bar</code> and
-	 *          <code>example.foo.bar</code> would result in a base filename of <code>example</code>.
-	 * @param filename The filename that may contain an extension.
-	 * @return A filename with all extensions, if any, removed.
-	 * @deprecated to be removed in favor of {@link #getBase(String)}.
-	 */
-	@Deprecated
-	public static String getBaseFilename(final String filename) {
-		return getBase(filename);
 	}
 
 	/**
@@ -560,17 +532,6 @@ public final class Filenames {
 	public static boolean hasExtension(@Nonnull final String filename, @Nonnull final String extension) {
 		requireNonNull(extension);
 		return findExtension(filename).map(foundExtension -> Extensions.equals(foundExtension, extension)).orElse(false);
-	}
-
-	/**
-	 * Extracts the extension from a filename.
-	 * @param filename The filename to examine.
-	 * @return The extension of the name (not including '.'), which may not be present.
-	 * @deprecated to be removed in favor of {@link #findExtension(String)}.
-	 */
-	@Deprecated
-	public static String getExtension(@Nonnull final String filename) {
-		return findExtension(filename).orElse(null);
 	}
 
 	/**

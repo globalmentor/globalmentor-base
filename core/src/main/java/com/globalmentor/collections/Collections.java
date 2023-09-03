@@ -116,22 +116,6 @@ public class Collections {
 	}
 
 	/**
-	 * Creates a hash set of the given generic type and initializes it with the given elements.
-	 * @param <E> The type of elements the hash set will contain.
-	 * @param elements The elements with which to initialize the hash set.
-	 * @return A new hash set containing the given elements.
-	 * @deprecated to be removed in favor of safer approaches such as <code>Set.of(…)</code> in Java 9+.
-	 */
-	@Deprecated
-	@SafeVarargs
-	@SuppressWarnings("varargs")
-	public static <E> HashSet<E> createHashSet(final E... elements) {
-		final HashSet<E> hashSet = new HashSet<E>(elements.length); //create a new hash set large enough to store the given elements
-		java.util.Collections.addAll(hashSet, elements); //add all of the given elements to the hash set
-		return hashSet; //return the hash set we created and initialized
-	}
-
-	/**
 	 * Retrieves the first iterated object, if any, from the collection.
 	 * @param <T> The type of object stored in the collection.
 	 * @param collection The collection from which the object should be retrieved.
@@ -176,30 +160,6 @@ public class Collections {
 			changed = true;
 		}
 		if(collection.addAll(newCollection)) { //add all the contents of the new collection
-			changed = true;
-		}
-		return changed;
-	}
-
-	/**
-	 * Sets the contents of the collection to the contents of the other given collection. This is a convenience method for {@link Collection#clear()} followed by
-	 * {@link java.util.Collections#addAll(Collection, Object...)}.
-	 * @param <T> The type of objects in the collection.
-	 * @param collection The collection to set.
-	 * @param newElements The elements to set in the collection.
-	 * @return <code>true</code> if the collection changed as a result of the call.
-	 * @deprecated to be removed as of little value, to reduce generics varargs usage.
-	 */
-	@Deprecated
-	@SafeVarargs
-	@SuppressWarnings("varargs")
-	public static <T> boolean set(final Collection<T> collection, final T... newElements) {
-		boolean changed = false;
-		if(!collection.isEmpty()) {
-			collection.clear(); //clear the contents of the collection
-			changed = true;
-		}
-		if(java.util.Collections.addAll(collection, newElements)) { //add all the contents of the new collection
 			changed = true;
 		}
 		return changed;

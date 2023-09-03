@@ -30,23 +30,6 @@ import javax.annotation.*;
 public class Maps {
 
 	/**
-	 * Adds values from an array of map entries to a map. If more than one pair with the same name is given, the last one will override the others.
-	 * @param <N> The type of the name used as key of the map.
-	 * @param <V> The type of the value of the map.
-	 * @param map The map to receive the name-value pair names and values.
-	 * @param entries An array of map entries.
-	 * @return The given map.
-	 * @deprecated to be removed.
-	 */
-	@Deprecated
-	public static <N, V> Map<N, V> addAll(final Map<N, V> map, final Map.Entry<N, V>[] entries) {
-		for(final Map.Entry<N, V> entry : entries) { //look at each name-value pair
-			map.put(entry.getKey(), entry.getValue()); //add the name-value pair name and value to the map
-		}
-		return map; //return the map with the new values added
-	}
-
-	/**
 	 * Puts all given associations from map entries pairs to a map. If more than one entry with the same key is given, the last one will override the others.
 	 * @param <K> The map entry key type.
 	 * @param <V> The map entry value type.
@@ -98,37 +81,6 @@ public class Maps {
 				entryIterator.remove(); //remove this entry
 			}
 		}
-	}
-
-	/**
-	 * Retrieves all map entries from the given map and returns them as a set of name value pairs.
-	 * @param <K> The type of key.
-	 * @param <V> The type of value.
-	 * @param map The map from which to the retrieve the key values.
-	 * @return A set of the key value pairs added.
-	 * @deprecated to be removed in favor of {@link Map#entrySet()} and collecting a stream.
-	 */
-	@Deprecated
-	public static <K, V> Set<Map.Entry<K, V>> getKeyValues(final Map<K, V> map) {
-		return getKeyValues(map, new HashSet<Map.Entry<K, V>>());
-	}
-
-	/**
-	 * Retrieves all map entries from the given map and returns them as name value pairs in the given collection.
-	 * @param <K> The type of key.
-	 * @param <V> The type of value.
-	 * @param <C> The type of collection.
-	 * @param map The map from which to the retrieve the key values.
-	 * @param collection The collection to which the key value pairs should be added.
-	 * @return The given collection, with the key value pairs added.
-	 * @deprecated to be removed in favor of collecting and sorting a stream.
-	 */
-	@Deprecated
-	public static <K, V, C extends Collection<Map.Entry<K, V>>> C getKeyValues(final Map<K, V> map, final C collection) {
-		for(final Map.Entry<K, V> entry : map.entrySet()) { //defensively copy all the map entries and add them to the collection
-			collection.add(new AbstractMap.SimpleImmutableEntry<>(entry));
-		}
-		return collection;
 	}
 
 	/**
