@@ -179,27 +179,4 @@ public class ASCIITest {
 		assertThrows(IllegalArgumentException.class, () -> ASCII.valueOfDigit((char)(ASCII.DIGIT_LAST + 1)));
 	}
 
-	/** @see ASCII#valueOfhexDigit(char) */
-	@Test
-	void testValueOfHexDigit() {
-		assertThat(ASCII.valueOfHexDigit('0'), is(0));
-		assertThat(ASCII.valueOfHexDigit('1'), is(1));
-		assertThat(ASCII.valueOfDigit('5'), is(5));
-		assertThat(ASCII.valueOfHexDigit('9'), is(9));
-		assertThat(ASCII.valueOfHexDigit('a'), is(10));
-		assertThat(ASCII.valueOfHexDigit('A'), is(10));
-		assertThat(ASCII.valueOfHexDigit('c'), is(12));
-		assertThat(ASCII.valueOfHexDigit('C'), is(12));
-		assertThat(ASCII.valueOfHexDigit('f'), is(15));
-		assertThat(ASCII.valueOfHexDigit('F'), is(15));
-		assertThrows(IllegalArgumentException.class, () -> ASCII.valueOfDigit('x'));
-		assertThrows(IllegalArgumentException.class, () -> ASCII.valueOfDigit('!'));
-		assertThrows(IllegalArgumentException.class, () -> ASCII.valueOfHexDigit((char)(ASCII.DIGIT_FIRST - 1)));
-		assertThrows(IllegalArgumentException.class, () -> ASCII.valueOfHexDigit((char)(ASCII.DIGIT_LAST + 1)));
-		assertThrows(IllegalArgumentException.class, () -> ASCII.valueOfHexDigit((char)('a' - 1)));
-		assertThrows(IllegalArgumentException.class, () -> ASCII.valueOfHexDigit((char)('A' - 1)));
-		assertThrows(IllegalArgumentException.class, () -> ASCII.valueOfHexDigit((char)('f' + 1)));
-		assertThrows(IllegalArgumentException.class, () -> ASCII.valueOfHexDigit((char)('F' + 1)));
-	}
-
 }

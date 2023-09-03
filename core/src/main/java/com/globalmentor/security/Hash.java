@@ -16,15 +16,13 @@
 
 package com.globalmentor.security;
 
-import static com.globalmentor.java.Bytes.*;
 import static java.util.Objects.*;
 
 import java.security.MessageDigest;
 import java.util.Arrays;
+import java.util.HexFormat;
 
 import javax.annotation.*;
-
-import com.globalmentor.java.Bytes;
 
 /**
  * The encapsulation of message digest output, providing data immutability and convenience methods for updating other message digests.
@@ -68,7 +66,7 @@ public final class Hash {
 	 * @see MessageDigest#digest()
 	 */
 	public static Hash fromChecksum(@Nonnull final CharSequence checksum) {
-		return new Hash(Bytes.fromHexString(checksum));
+		return new Hash(HexFormat.of().parseHex(checksum));
 	}
 
 	/**
@@ -110,10 +108,13 @@ public final class Hash {
 	 * Computes a lowercase hex checksum string for the hash bytes.
 	 * @apiNote This method considers a <dfn>checksum</dfn> to be a string version of a message <dfn>digest</dfn>, as the former is often used in the context of
 	 *          file contents verification.
+	 * @implNote This implementation exposes the underlying mutable bytes of the hash to {@link HexFormat#formatHex(byte[])}, which is considered safe because the
+	 *           class is <code>final</code> and part of the JDK.
 	 * @return The lowercase hex checksum string of the hash bytes.
+	 * @see #getBytes()
 	 */
 	public String toChecksum() {
-		return toHexString(getBytes());
+		return HexFormat.of().formatHex(bytes);
 	}
 
 	/**

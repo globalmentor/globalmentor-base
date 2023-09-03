@@ -591,23 +591,4 @@ public class ASCII {
 		return c - DIGIT_FIRST;
 	}
 
-	/**
-	 * Find the value of the hexadecimal digit, without regard to case. For example the value of character <code>'5'</code> is the integer <code>5</code>, and the
-	 * value of character <code>'c'</code> is the integer <code>12</code>.
-	 * @param c The hexadecimal digit character.
-	 * @return The value the character represents.
-	 * @throws IllegalArgumentException if the given character is not a hexadecimal digit character.
-	 * @see #valueOfDigit(char)
-	 */
-	public static int valueOfHexDigit(final char c) {
-		if(DIGIT_CHARACTERS.contains(c)) {
-			return valueOfDigit(c);
-		}
-		final char normalizedCharacter = toLowerCase(c); //normalize input, which we expect to be a letter now
-		//because HEX_CHARACTERS contains two ranges, it's more efficient to explicitly check the normalized character
-		checkArgument(normalizedCharacter >= LOWERCASE_HEX_LETTER_DIGIT_FIRST && normalizedCharacter <= LOWERCASE_HEX_LETTER_DIGIT_LAST,
-				"Character `%s` is not an ASCII digit.", c);
-		return normalizedCharacter - LOWERCASE_HEX_LETTER_DIGIT_FIRST + 10;
-	}
-
 }
