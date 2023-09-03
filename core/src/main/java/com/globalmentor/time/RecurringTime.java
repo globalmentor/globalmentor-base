@@ -79,7 +79,7 @@ public final class RecurringTime {
 	 * 
 	 */
 	public static RecurringTime fromNowByInterval(final long interval, @Nonnull final TimeUnit timeUnit) {
-		return fromNowByInterval(Duration.of(interval, ElapsingTime.toChronoUnit(timeUnit)));
+		return fromNowByInterval(Duration.of(interval, timeUnit.toChronoUnit()));
 	}
 
 	/**
@@ -135,7 +135,7 @@ public final class RecurringTime {
 	 * @throws ArithmeticException if a numeric overflow occurs
 	 */
 	public static RecurringTime fromNowByPeriod(final long period, @Nonnull final TimeUnit timeUnit) {
-		return fromNowByPeriod(Duration.of(period, ElapsingTime.toChronoUnit(timeUnit)));
+		return fromNowByPeriod(Duration.of(period, timeUnit.toChronoUnit()));
 	}
 
 	/**
