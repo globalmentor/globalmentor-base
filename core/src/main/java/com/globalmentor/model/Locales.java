@@ -26,6 +26,7 @@ import javax.annotation.*;
 import com.globalmentor.io.Filenames;
 
 import static java.util.Objects.*;
+import static java.util.function.Predicate.*;
 import static com.globalmentor.text.RegularExpressions.*;
 
 /**
@@ -102,7 +103,7 @@ public final class Locales {
 	 * @throws NullPointerException if the given locale is <code>null</code>.
 	 */
 	public static Optional<String> findLanguage(@Nonnull final Locale locale) {
-		return Optional.of(locale.getLanguage()).filter(__ -> !__.isEmpty()); //TODO switch to `filter(not(String::isEmpty))` in Java 11
+		return Optional.of(locale.getLanguage()).filter(not(String::isEmpty));
 	}
 
 	/**
@@ -115,7 +116,7 @@ public final class Locales {
 	 * @throws NullPointerException if the given locale is <code>null</code>.
 	 */
 	public static Optional<String> findScript(@Nonnull final Locale locale) {
-		return Optional.of(locale.getScript()).filter(__ -> !__.isEmpty()); //TODO switch to `filter(not(String::isEmpty))` in Java 11
+		return Optional.of(locale.getScript()).filter(not(String::isEmpty));
 	}
 
 	/**
@@ -127,7 +128,7 @@ public final class Locales {
 	 * @throws NullPointerException if the given locale is <code>null</code>.
 	 */
 	public static Optional<String> findCountry(@Nonnull final Locale locale) {
-		return Optional.of(locale.getCountry()).filter(__ -> !__.isEmpty()); //TODO switch to `filter(not(String::isEmpty))` in Java 11
+		return Optional.of(locale.getCountry()).filter(not(String::isEmpty));
 	}
 
 	/**
@@ -139,7 +140,7 @@ public final class Locales {
 	 * @throws NullPointerException if the given locale is <code>null</code>.
 	 */
 	public static Optional<String> findVariant(@Nonnull final Locale locale) {
-		return Optional.of(locale.getVariant()).filter(__ -> !__.isEmpty()); //TODO switch to `filter(not(String::isEmpty))` in Java 11
+		return Optional.of(locale.getVariant()).filter(not(String::isEmpty));
 	}
 
 	/**
@@ -153,7 +154,7 @@ public final class Locales {
 	 * @throws MissingResourceException if a three-letter language abbreviation is not available for the locale.
 	 */
 	public static Optional<String> findISO3Language(@Nonnull final Locale locale) throws MissingResourceException {
-		return Optional.of(locale.getISO3Language()).filter(__ -> !__.isEmpty()); //TODO switch to `filter(not(String::isEmpty))` in Java 11
+		return Optional.of(locale.getISO3Language()).filter(not(String::isEmpty));
 	}
 
 	/**
@@ -165,7 +166,7 @@ public final class Locales {
 	 * @throws NullPointerException if the given locale is <code>null</code>.
 	 */
 	public final static Optional<String> findDisplayLanguage(@Nonnull final Locale locale) {
-		return Optional.of(locale.getDisplayLanguage()).filter(__ -> !__.isEmpty()); //TODO switch to `filter(not(String::isEmpty))` in Java 11
+		return Optional.of(locale.getDisplayLanguage()).filter(not(String::isEmpty));
 	}
 
 	/**
@@ -178,7 +179,7 @@ public final class Locales {
 	 * @throws NullPointerException either of the given locales is <code>null</code>.
 	 */
 	public static Optional<String> findDisplayLanguage(@Nonnull final Locale locale, @Nonnull final Locale inLocale) {
-		return Optional.of(locale.getDisplayLanguage(inLocale)).filter(__ -> !__.isEmpty()); //TODO switch to `filter(not(String::isEmpty))` in Java 11
+		return Optional.of(locale.getDisplayLanguage(inLocale)).filter(not(String::isEmpty));
 	}
 
 	/**
@@ -190,7 +191,7 @@ public final class Locales {
 	 * @throws NullPointerException if the given locale is <code>null</code>.
 	 */
 	public static Optional<String> findDisplayScript(@Nonnull final Locale locale) {
-		return Optional.of(locale.getDisplayScript()).filter(__ -> !__.isEmpty()); //TODO switch to `filter(not(String::isEmpty))` in Java 11
+		return Optional.of(locale.getDisplayScript()).filter(not(String::isEmpty));
 	}
 
 	/**
@@ -203,7 +204,7 @@ public final class Locales {
 	 * @throws NullPointerException if either of the given locales is <code>null</code>.
 	 */
 	public static Optional<String> findDisplayScript(@Nonnull final Locale locale, @Nonnull final Locale inLocale) {
-		return Optional.of(locale.getDisplayScript(inLocale)).filter(__ -> !__.isEmpty()); //TODO switch to `filter(not(String::isEmpty))` in Java 11
+		return Optional.of(locale.getDisplayScript(inLocale)).filter(not(String::isEmpty));
 	}
 
 	/**
@@ -215,7 +216,7 @@ public final class Locales {
 	 * @throws NullPointerException if the given locale is <code>null</code>.
 	 */
 	public static Optional<String> findDisplayCountry(@Nonnull final Locale locale) {
-		return Optional.of(locale.getDisplayCountry()).filter(__ -> !__.isEmpty()); //TODO switch to `filter(not(String::isEmpty))` in Java 11
+		return Optional.of(locale.getDisplayCountry()).filter(not(String::isEmpty));
 	}
 
 	/**
@@ -228,7 +229,7 @@ public final class Locales {
 	 * @throws NullPointerException if either of the given locales is <code>null</code>.
 	 */
 	public static Optional<String> findDisplayCountry(@Nonnull final Locale locale, @Nonnull final Locale inLocale) {
-		return Optional.of(locale.getDisplayCountry(inLocale)).filter(__ -> !__.isEmpty()); //TODO switch to `filter(not(String::isEmpty))` in Java 11
+		return Optional.of(locale.getDisplayCountry(inLocale)).filter(not(String::isEmpty));
 	}
 
 	/**
@@ -240,7 +241,7 @@ public final class Locales {
 	 * @throws NullPointerException if the given locale is <code>null</code>.
 	 */
 	public static Optional<String> findDisplayVariant(@Nonnull final Locale locale) {
-		return Optional.of(locale.getDisplayVariant()).filter(__ -> !__.isEmpty()); //TODO switch to `filter(not(String::isEmpty))` in Java 11
+		return Optional.of(locale.getDisplayVariant()).filter(not(String::isEmpty));
 	}
 
 	/**
@@ -253,7 +254,7 @@ public final class Locales {
 	 * @throws NullPointerException if either of the given locales is <code>null</code>.
 	 */
 	public static Optional<String> findDisplayVariant(@Nonnull final Locale locale, @Nonnull final Locale inLocale) {
-		return Optional.of(locale.getDisplayVariant(inLocale)).filter(__ -> !__.isEmpty()); //TODO switch to `filter(not(String::isEmpty))` in Java 11
+		return Optional.of(locale.getDisplayVariant(inLocale)).filter(not(String::isEmpty));
 	}
 
 	/**
@@ -265,7 +266,7 @@ public final class Locales {
 	 * @throws NullPointerException if the given locale is <code>null</code>.
 	 */
 	public static Optional<String> findDisplayName(@Nonnull final Locale locale) {
-		return Optional.of(locale.getDisplayName()).filter(__ -> !__.isEmpty()); //TODO switch to `filter(not(String::isEmpty))` in Java 11
+		return Optional.of(locale.getDisplayName()).filter(not(String::isEmpty));
 	}
 
 	/**
@@ -278,7 +279,7 @@ public final class Locales {
 	 * @throws NullPointerException if either of the given locales is <code>null</code>.
 	 */
 	public static Optional<String> findDisplayName(@Nonnull final Locale locale, @Nonnull final Locale inLocale) {
-		return Optional.of(locale.getDisplayName(inLocale)).filter(__ -> !__.isEmpty()); //TODO switch to `filter(not(String::isEmpty))` in Java 11
+		return Optional.of(locale.getDisplayName(inLocale)).filter(not(String::isEmpty));
 	}
 
 	/**

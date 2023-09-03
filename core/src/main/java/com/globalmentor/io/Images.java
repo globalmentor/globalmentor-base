@@ -17,11 +17,8 @@
 package com.globalmentor.io;
 
 import static com.globalmentor.net.MediaType.*;
-import static java.util.stream.Collectors.*;
 
 import java.util.*;
-import java.util.AbstractMap.SimpleImmutableEntry;
-import java.util.stream.Stream;
 
 import com.globalmentor.net.MediaType;
 
@@ -87,21 +84,20 @@ public class Images {
 	 * Internet media types for known image filename extensions. Filename extensions are in canonical (lowercase) form.
 	 * @apiNote This map may not include all the file extensions defined in this class.
 	 */
-	public static final Map<String, MediaType> MEDIA_TYPES_BY_FILENAME_EXTENSION = Stream.of(
+	public static final Map<String, MediaType> MEDIA_TYPES_BY_FILENAME_EXTENSION = Map.of(
 			//.bmp
-			new SimpleImmutableEntry<>(BMP_FILENAME_EXTENSION, BMP_MEDIA_TYPE),
+			BMP_FILENAME_EXTENSION, BMP_MEDIA_TYPE,
 			//.gif
-			new SimpleImmutableEntry<>(GIF_FILENAME_EXTENSION, GIF_MEDIA_TYPE),
+			GIF_FILENAME_EXTENSION, GIF_MEDIA_TYPE,
 			//.jpg
-			new SimpleImmutableEntry<>(JPG_FILENAME_EXTENSION, JPEG_MEDIA_TYPE),
+			JPG_FILENAME_EXTENSION, JPEG_MEDIA_TYPE,
 			//.jpeg
-			new SimpleImmutableEntry<>("jpeg", JPEG_MEDIA_TYPE),
+			"jpeg", JPEG_MEDIA_TYPE,
 			//.png
-			new SimpleImmutableEntry<>(PNG_FILENAME_EXTENSION, PNG_MEDIA_TYPE),
+			PNG_FILENAME_EXTENSION, PNG_MEDIA_TYPE,
 			//.tif
-			new SimpleImmutableEntry<>(TIF_FILENAME_EXTENSION, TIFF_MEDIA_TYPE),
+			TIF_FILENAME_EXTENSION, TIFF_MEDIA_TYPE,
 			//.tiff
-			new SimpleImmutableEntry<>("tiff", TIFF_MEDIA_TYPE))
-			.collect(collectingAndThen(toMap(Map.Entry::getKey, Map.Entry::getValue), Collections::unmodifiableMap));
+			"tiff", TIFF_MEDIA_TYPE);
 
 }

@@ -576,7 +576,7 @@ public final class MediaType {
 				//add the new parameter
 				Stream.of(newParameter))
 				//collect into an immutable set
-				.collect(collectingAndThen(toSet(), Collections::unmodifiableSet));
+				.collect(toUnmodifiableSet());
 		if(getParameters().equals(newParameters)) { //if our change didn't actually result in changes
 			return this; //just return this instance, as there would be no difference
 		}

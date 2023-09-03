@@ -17,11 +17,8 @@
 package com.globalmentor.io;
 
 import static com.globalmentor.net.MediaType.*;
-import static java.util.stream.Collectors.*;
 
 import java.util.*;
-import java.util.AbstractMap.SimpleImmutableEntry;
-import java.util.stream.Stream;
 
 import com.globalmentor.net.MediaType;
 
@@ -52,11 +49,10 @@ public class Video {
 	 * Internet media types for known video filename extensions. Filename extensions are in canonical (lowercase) form.
 	 * @apiNote This map may not include all the file extensions defined in this class.
 	 */
-	public static final Map<String, MediaType> MEDIA_TYPES_BY_FILENAME_EXTENSION = Stream.of(
+	public static final Map<String, MediaType> MEDIA_TYPES_BY_FILENAME_EXTENSION = Map.of(
 			//.mpg
-			new SimpleImmutableEntry<>(MPG_FILENAME_EXTENSION, MPEG_MEDIA_TYPE),
+			MPG_FILENAME_EXTENSION, MPEG_MEDIA_TYPE,
 			//.mpeg
-			new SimpleImmutableEntry<>("mpeg", MPEG_MEDIA_TYPE))
-			.collect(collectingAndThen(toMap(Map.Entry::getKey, Map.Entry::getValue), Collections::unmodifiableMap));
+			"mpeg", MPEG_MEDIA_TYPE);
 
 }
