@@ -39,21 +39,6 @@ public class IOStreams {
 	public static final int DEFAULT_BUFFER_SIZE = 1 << 13; //8182
 
 	/**
-	 * Copies all information from an input stream to an output stream. After copying is finished, both streams are left open.
-	 * @implSpec This implementation delegates to {@link #copy(InputStream, OutputStream, ProgressListener)}.
-	 * @param inputStream The source of the data.
-	 * @param outputStream The destination of the data.
-	 * @return The total number of bytes copied.
-	 * @throws IOException Thrown if there is an error reading from or writing to a stream.
-	 * @see InputStream#transferTo(OutputStream)
-	 * @deprecated to be removed in favor of {@link InputStream#transferTo(OutputStream)}.
-	 */
-	@Deprecated(forRemoval = true)
-	public static long copy(final InputStream inputStream, final OutputStream outputStream) throws IOException {
-		return copy(inputStream, outputStream, null);
-	}
-
-	/**
 	 * Copies all information from an input stream to an output stream. Both streams are used as-is. After copying is finished, both streams are left open.
 	 * @implSpec This implementation delegates to {@link #copy(InputStream, OutputStream, long, ProgressListener)}.
 	 * @param inputStream The source of the data.

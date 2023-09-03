@@ -17,10 +17,7 @@
 package com.globalmentor.java;
 
 import java.io.*;
-import java.net.URI;
 import java.nio.charset.Charset;
-
-import com.globalmentor.io.IO;
 
 import static com.globalmentor.java.CharSequences.*;
 import static com.globalmentor.java.Characters.*;
@@ -407,37 +404,10 @@ public class Strings {
 	 * @param len The requested length.
 	 * @param ch The character to be added to the string, if needed.
 	 * @return A string with the correct length.
-	 * @deprecated to be removed in favor of {@link #forceLength(String, int, char)}.
-	 */
-	@Deprecated
-	public static String makeStringLength(final String inString, final int len, final char ch) {
-		return forceLength(inString, len, ch);
-	}
-
-	/**
-	 * Ensures that the given string is the correct length by adding or deleting characters to or from the end.
-	 * @param inString The string to process.
-	 * @param len The requested length.
-	 * @param ch The character to be added to the string, if needed.
-	 * @return A string with the correct length.
 	 * @see StringBuilders#appendForceLength(StringBuilder, CharSequence, int, char)
 	 */
 	public static String forceLength(final String inString, final int len, final char ch) {
 		return forceLength(inString, len, ch, -1);
-	}
-
-	/**
-	 * Ensures that the given string is the correct length by adding or deleting characters to or from the requested position.
-	 * @param inString The string to process.
-	 * @param len The requested length.
-	 * @param ch The character to be added to the string, if needed.
-	 * @param pos The position at which to insert or delete characters, or -1 if the end should be used.
-	 * @return A string with the correct length.
-	 * @deprecated to be removed in favor of {@link #forceLength(String, int, char, int)}.
-	 */
-	@Deprecated
-	public static String makeStringLength(final String inString, final int len, final char ch, int pos) {
-		return forceLength(inString, len, ch, pos);
 	}
 
 	/**
@@ -847,7 +817,7 @@ public class Strings {
 	}
 
 	/**
-	 * If the input string begins with the specifid string, trims that string.
+	 * If the input string begins with the specified string, trims that string.
 	 * @param inString The string to be processed.
 	 * @param beginString The string to be trimmed, if it appears at the beginning of inString.
 	 * @return The string, trimmed if needed.
@@ -918,40 +888,6 @@ public class Strings {
 			lineBeginIndex = lineEndIndex; //start looking at the next line
 		}
 		return outStringBuffer.toString(); //return the string from the we constructed
-	}
-
-	/**
-	 * Writes an object to a string using the given I/O support, converting bytes to a string using the UTF-8 charset.
-	 * @param <T> The type of the object
-	 * @param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
-	 * @param object The object to write to a string.
-	 * @param io The I/O support for writing the object.
-	 * @return The given object converted to a string.
-	 * @throws IOException if there is an error writing the data.
-	 * @deprecated to be removed.
-	 */
-	@Deprecated
-	public static <T> String write(final URI baseURI, final T object, final IO<T> io) throws IOException {
-		return write(baseURI, object, io, UTF_8); //write and convert to a string using UTF_8
-	}
-
-	/**
-	 * Writes an object to a string using the given I/O support.
-	 * @param <T> The type of the object
-	 * @param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
-	 * @param object The object to write to a string.
-	 * @param io The I/O support for writing the object.
-	 * @param charset The encoding with which to interpret the written bytes.
-	 * @return The given object converted to a string.
-	 * @throws IOException if there is an error writing the data.
-	 * @deprecated to be removed.
-	 */
-	@Deprecated
-	public static <T> String write(final URI baseURI, final T object, final IO<T> io, final Charset charset) throws IOException {
-		try (final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) { //create a new byte array output stream
-			io.write(byteArrayOutputStream, baseURI, object); //write the object, determining the base URI from the file
-			return byteArrayOutputStream.toString(charset.name()); //convert the byte array to a string using the given encoding
-		}
 	}
 
 }

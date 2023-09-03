@@ -77,7 +77,7 @@ public final class ElapsingTime {
 	 * @implSpec This method uses {@link System#nanoTime()} as the source of nanosecond time.
 	 * @param startNanoTime The start time in nanoseconds, in terms of {@link System#nanoTime()}.
 	 * @return A new elapsing time measurer elapsing since the given start time.
-	 * @see #sinceNow()
+	 * @see #fromNow()
 	 */
 	public static ElapsingTime sinceNanoTime(final long startNanoTime) {
 		return since(startNanoTime, System::nanoTime, NANOSECONDS);
@@ -89,20 +89,10 @@ public final class ElapsingTime {
 	 * @param timeSupplier The time source for measuring elapsed time since the start time.
 	 * @param timeUnit The unit in which time is measured.
 	 * @return A new elapsing time measurer elapsing since the given start time.
-	 * @see #sinceNow(LongSupplier, TimeUnit)
+	 * @see #fromNow(LongSupplier, TimeUnit)
 	 */
 	public static ElapsingTime since(final long startTime, @Nonnull final LongSupplier timeSupplier, @Nonnull final TimeUnit timeUnit) {
 		return new ElapsingTime(startTime, timeSupplier, timeUnit);
-	}
-
-	/**
-	 * Creates a means of measuring elapsed time from the current time.
-	 * @return A new elapsing time measurer.
-	 * @deprecated to be removed in favor of {@link #fromNow()}.
-	 */
-	@Deprecated
-	public static ElapsingTime sinceNow() {
-		return fromNow();
 	}
 
 	/**
@@ -160,18 +150,6 @@ public final class ElapsingTime {
 		final long durationInTimeUnit = getTimeUnit().convert(duration);
 		checkArgument(durationInTimeUnit != Long.MIN_VALUE && durationInTimeUnit != Long.MAX_VALUE, "Duration %s will cause an overflow.", duration);
 		return withElapsed(durationInTimeUnit);
-	}
-
-	/**
-	 * Creates a means of measuring elapsed time from the current time, using the given time supplier.
-	 * @param timeSupplier The time source for measuring elapsed time since the start time.
-	 * @param timeUnit The unit in which time is measured.
-	 * @return A new elapsing time measurer.
-	 * @deprecated to be removed in favor of {@link #fromNow(LongSupplier, TimeUnit)}.
-	 */
-	@Deprecated
-	public static ElapsingTime sinceNow(@Nonnull final LongSupplier timeSupplier, @Nonnull final TimeUnit timeUnit) {
-		return fromNow(timeSupplier, timeUnit);
 	}
 
 	/**

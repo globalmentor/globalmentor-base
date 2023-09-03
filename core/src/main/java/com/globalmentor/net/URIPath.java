@@ -449,18 +449,6 @@ public final class URIPath {
 	}
 
 	/**
-	 * Returns the raw, encoded name of the resource at the given path, which will be the name of the last path component. If the path is a collection (i.e. it
-	 * ends with slash), the component before the last slash will be returned. As examples, "/path/name.ext" and "name.ext" will return "name.ext". "/path/",
-	 * "path/", and "path" will all return "path".
-	 * @return The raw name of the last last path component, the empty string if the path is the empty string, or "/" if the path is the root path.
-	 * @deprecated to be removed in favor of {@link #findRawName()}.
-	 */
-	@Deprecated
-	public String getRawName() {
-		return findRawName().orElse(null);
-	}
-
-	/**
 	 * Returns the decoded name of the resource at the given path, which will be the name of the last path component. If the path is a collection (i.e. it ends
 	 * with slash), the component before the last slash will be returned. As examples, "/path/name.ext" and "name.ext" will return "name.ext". "/path/", "path/",
 	 * and "path" will all return "path".
@@ -468,18 +456,6 @@ public final class URIPath {
 	 */
 	public Optional<String> findName() {
 		return URIs.findName(uri);
-	}
-
-	/**
-	 * Returns the decoded name of the resource at the given path, which will be the name of the last path component. If the path is a collection (i.e. it ends
-	 * with slash), the component before the last slash will be returned. As examples, "/path/name.ext" and "name.ext" will return "name.ext". "/path/", "path/",
-	 * and "path" will all return "path".
-	 * @return The decoded name of the last last path component, the empty string if the path is the empty string, or "/" if the path is the root path.
-	 * @deprecated to be removed in favor of {@link #findName()}.
-	 */
-	@Deprecated
-	public String getName() {
-		return findName().orElse(null);
 	}
 
 	/** @return A path-only URI containing this URI path. */

@@ -19,8 +19,6 @@ package com.globalmentor.text;
 import java.io.IOException;
 import java.util.*;
 
-import static java.util.Collections.*;
-
 import static com.globalmentor.java.Characters.*;
 import static com.globalmentor.java.Conditions.*;
 
@@ -32,32 +30,6 @@ import com.globalmentor.java.Objects;
  * @author Garret Wilson
  */
 public class TextFormatter {
-
-	/**
-	 * Formats an array of bytes into a sequence of hex characters, with each character pair representing the hexadecimal value of the byte.
-	 * @param <A> The type of the appendable.
-	 * @param appendable The formatting destination.
-	 * @param bytes The values to convert.
-	 * @return A lowercase string with hexadecimal digits, each pair representing a byte in the byte array.
-	 * @throws IOException if there is an error writing to the appendable.
-	 * @deprecated in favor of merely appending {@link Bytes#toHexString(byte[])}.
-	 */
-	@Deprecated
-	public static <A extends Appendable> A formatHex(final A appendable, final byte[] bytes) throws IOException {
-		appendable.append(Bytes.toHexString(bytes));
-		return appendable; //return the appendable we used
-	}
-
-	/**
-	 * Formats an array of bytes into a sequence of hex characters, with each character pair representing the hexadecimal value of the byte.
-	 * @param bytes The values to convert.
-	 * @return A lowercase string with hexadecimal digits, each pair representing a byte in the byte array.
-	 * @deprecated in favor of {@link Bytes#toHexString(byte[])}.
-	 */
-	@Deprecated
-	public static String formatHex(final byte[] bytes) {
-		return Bytes.toHexString(bytes);
-	}
 
 	/**
 	 * Appends the string representations of the given items separated by a {@value Characters#COMMA_CHAR}. <code>null</code> objects are represented by
@@ -397,54 +369,6 @@ public class TextFormatter {
 	 * quotation.
 	 * @param <A> The type of the appendable.
 	 * @param appendable The formatting destination.
-	 * @param attribute The attribute to format.
-	 * @return The appendable used for formatting.
-	 * @throws IOException if there is an error writing to the appendable.
-	 * @deprecated to be removed.
-	 */
-	@Deprecated
-	public static <A extends Appendable> A formatAttribute(final A appendable, final com.globalmentor.model.NameValuePair<?, ?> attribute) throws IOException {
-		return formatAttribute(appendable, attribute, QUOTATION_MARK_CHAR);
-	}
-
-	/**
-	 * Formats a single name-value attribute using {@value Characters#EQUALS_SIGN_CHAR} for assignment.
-	 * @param <A> The type of the appendable.
-	 * @param appendable The formatting destination.
-	 * @param attribute The attribute to format.
-	 * @param quote The quote character to use for the value, or {@link Characters#UNDEFINED_CHAR} if the value should not be quoted.
-	 * @return The appendable used for formatting.
-	 * @throws IOException if there is an error writing to the appendable.
-	 * @deprecated to be removed.
-	 */
-	@Deprecated
-	public static <A extends Appendable> A formatAttribute(final A appendable, final com.globalmentor.model.NameValuePair<?, ?> attribute, final char quote)
-			throws IOException {
-		return formatAttribute(appendable, attribute, EQUALS_SIGN_CHAR, quote);
-	}
-
-	/**
-	 * Formats a single name-value attribute.
-	 * @param <A> The type of the appendable.
-	 * @param appendable The formatting destination.
-	 * @param attribute The attribute to format.
-	 * @param assignment The character for assigning the value to the attribute.
-	 * @param quote The quote character to use for the value, or {@link Characters#UNDEFINED_CHAR} if the value should not be quoted.
-	 * @return The appendable used for formatting.
-	 * @throws IOException if there is an error writing to the appendable.
-	 * @deprecated to be removed.
-	 */
-	@Deprecated
-	public static <A extends Appendable> A formatAttribute(final A appendable, final com.globalmentor.model.NameValuePair<?, ?> attribute, final char assignment,
-			final char quote) throws IOException {
-		return formatAttribute(appendable, attribute.getName(), attribute.getValue(), assignment, quote);
-	}
-
-	/**
-	 * Formats a single name-value attribute using {@value Characters#EQUALS_SIGN_CHAR} for assignment and {@value Characters#QUOTATION_MARK_CHAR} for value
-	 * quotation.
-	 * @param <A> The type of the appendable.
-	 * @param appendable The formatting destination.
 	 * @param name The name to format.
 	 * @param value The value to format.
 	 * @return The appendable used for formatting.
@@ -489,50 +413,6 @@ public class TextFormatter {
 		appendable.append(Objects.toString(value)); //value
 		if(quote != UNDEFINED_CHAR) { //if the attribute value is quoted
 			appendable.append(quote); //"
-		}
-		return appendable; //return the appendable we used
-	}
-
-	/**
-	 * Formats a series of name-value pairs using the format: <var>name</var>="<var>value</var>", <var>name</var>="<var>value</var>"
-	 * @param <A> The type of the appendable.
-	 * @param appendable The formatting destination.
-	 * @param attributes The attributes to format.
-	 * @return The appendable used for formatting.
-	 * @throws IOException if there is an error writing to the appendable.
-	 * @deprecated to be converted to use {@link Map.Entry}.
-	 */
-	@Deprecated
-	public static <A extends Appendable> A formatAttributes(final A appendable, final com.globalmentor.model.NameValuePair<?, ?>... attributes)
-			throws IOException {
-		return formatAttributes(appendable, COMMA_CHAR, EQUALS_SIGN_CHAR, QUOTATION_MARK_CHAR, emptySet(), attributes); //format the attributes using the standard formatting characters
-	}
-
-	/**
-	 * Formats a series of name-value pairs.
-	 * @param <A> The type of the appendable.
-	 * @param appendable The formatting destination.
-	 * @param separator The character for separating the attribute, or {@link Characters#UNDEFINED_CHAR} if there should be no separator.
-	 * @param assignment The character for assigning the value to the attribute.
-	 * @param quote The quote character to use for the value, or {@link Characters#UNDEFINED_CHAR} if no values should be quoted.
-	 * @param unquotedNames The set of names that should not be quoted.
-	 * @param attributes The attributes to format.
-	 * @return The appendable used for formatting.
-	 * @throws IOException if there is an error writing to the appendable.
-	 * @deprecated to be converted to use {@link Map.Entry}.
-	 */
-	@Deprecated
-	public static <A extends Appendable> A formatAttributes(final A appendable, final char separator, final char assignment, final char quote,
-			final Set<?> unquotedNames, final com.globalmentor.model.NameValuePair<?, ?>... attributes) throws IOException {
-		int appendedItemCount = 0;
-		for(final com.globalmentor.model.NameValuePair<?, ?> attribute : attributes) { //for each attribute
-			if(appendedItemCount > 0 && separator != UNDEFINED_CHAR) { //if we have already appended items and we have a separator
-				appendable.append(separator); //append a separator
-			}
-			final Object name = attribute.getName(); //get the attribute name
-			final char thisQuote = quote == UNDEFINED_CHAR || unquotedNames.contains(name) ? UNDEFINED_CHAR : quote; //if this is an unquoted name, turn of quotes for this value; short-circuit the lookup if quoting is already turned off
-			formatAttribute(appendable, attribute, separator, thisQuote);
-			appendedItemCount++; //show that we appended another item
 		}
 		return appendable; //return the appendable we used
 	}

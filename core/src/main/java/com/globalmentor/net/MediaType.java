@@ -286,52 +286,6 @@ public final class MediaType {
 	}
 
 	/**
-	 * Parses a media type object from a sequence of characters.
-	 * @implSpec The primary type, subtype, and parameter names, if any, are each normalized to lowercase. The value of the {@value MediaType#CHARSET_PARAMETER}
-	 *           parameter, if present, is normalized to lowercase.
-	 * @param charSequence The character sequence representation of the media type.
-	 * @return A new media type object parsed from the string.
-	 * @throws IllegalArgumentException if the primary type, subtype, and/or a parameter name does not conform to the {@link MediaType#RESTRICTED_NAME_PATTERN}
-	 *           pattern.
-	 * @deprecated in favor of {@link #parse(CharSequence)}; to be removed in next major version.
-	 */
-	@Deprecated
-	public static MediaType create(final CharSequence charSequence) {
-		return parse(charSequence);
-	}
-
-	/**
-	 * Parses a media type object from a sequence of characters.
-	 * @implSpec The primary type, subtype, and parameter names, if any, are each normalized to lowercase. The value of the {@value MediaType#CHARSET_PARAMETER}
-	 *           parameter, if present, is normalized to lowercase.
-	 * @param charSequence The character sequence representation of the media type.
-	 * @return A new media type object parsed from the string.
-	 * @throws IllegalArgumentException if the name does not conform to the {@link MediaType#RESTRICTED_NAME_PATTERN} pattern.
-	 * @throws IllegalArgumentException if the primary type, subtype, and/or a parameter name does not conform to the {@link MediaType#RESTRICTED_NAME_PATTERN}
-	 *           pattern.
-	 * @deprecated in favor of {@link #parse(CharSequence)}; to be removed in next major version.
-	 */
-	@Deprecated
-	public static MediaType of(final CharSequence charSequence) {
-		return parse(charSequence);
-	}
-
-	/**
-	 * Creates a media type object from primary type, a subtype, and optional parameters.
-	 * @implSpec The primary type and subtype are each normalized to lowercase.
-	 * @param primaryType The primary type.
-	 * @param subType The subtype.
-	 * @param parameters Optional name-value pairs representing parameters of the media type.
-	 * @return A new media type object constructed from the given information.
-	 * @throws IllegalArgumentException if the primary type and/or subtype does not conform to the {@link MediaType#RESTRICTED_NAME_PATTERN} pattern.
-	 * @deprecated in favor of {@link #of(String, String, Parameter...)}; to be removed in next major version.
-	 */
-	@Deprecated
-	public static MediaType create(final String primaryType, final String subType, final Parameter... parameters) {
-		return of(primaryType, subType, parameters);
-	}
-
-	/**
 	 * Returns a media type object from primary type, a subtype, and optional parameters.
 	 * @implSpec The primary type and subtype are each normalized to lowercase.
 	 * @param primaryType The primary type.
@@ -448,19 +402,6 @@ public final class MediaType {
 	}
 
 	/**
-	 * Matches a media type against a primary type and subtype. Comparisons are ASCII case-insensitive. This method supports wildcard subtypes.
-	 * @param primaryType The primary type with which to compare the media type.
-	 * @param subType The subtype with which to compare the media type.
-	 * @return <code>true</code> if the media type has a primary type and a subtype matching those given.
-	 * @see #WILDCARD_SUBTYPE
-	 * @deprecated to be replaced with {@link #matches(String, String)}.
-	 */
-	@Deprecated
-	public boolean match(@Nonnull final String primaryType, @Nonnull final String subType) {
-		return matches(primaryType, subType);
-	}
-
-	/**
 	 * Matches a media type against a primary type and subtype, with a class parameter indicating the given object class. This method supports wildcard subtypes.
 	 * @param primaryType The primary type with which to compare the media type.
 	 * @param subType The subtype with which to compare the media type.
@@ -481,26 +422,6 @@ public final class MediaType {
 	 */
 	public boolean matches(@Nonnull final Class<?> objectClass) {
 		return matches(APPLICATION_PRIMARY_TYPE, X_JAVA_OBJECT); //check for application/x-java-object and class name
-	}
-
-	/**
-	 * @return A string representation of the the base media type, that is, the same primary and subtype as the media type, but with no parameters.
-	 * @deprecated to be removed in favor of {@link #toBaseTypeString()}.
-	 */
-	@Deprecated
-	public String getBaseType() {
-		return toBaseTypeString();
-	}
-
-	/**
-	 * Determines the base media type, with no parameters, of the media type. Useful for making comparisons or for storing in canonical form in a hash table. If
-	 * this media type is already a base media type, this media type is returned.
-	 * @return A media type with the same primary and subtype as the media type, but with no parameters.
-	 * @deprecated to be removed in favor of {@link #toBaseType()}.
-	 */
-	@Deprecated
-	public MediaType getBaseContentType() {
-		return toBaseType();
 	}
 
 	/**
@@ -815,10 +736,8 @@ public final class MediaType {
 		 * @throws NullPointerException if the given name and/or value is <code>null</code>.
 		 * @throws IllegalArgumentException if the name does not conform to the {@link MediaType#RESTRICTED_NAME_PATTERN} pattern.
 		 * @throws IllegalArgumentException if the parameter value includes control characters other than horizontal tab.
-		 * @deprecated in favor of {@link #of(String, String)}; to be made non-public in next major version.
 		 */
-		@Deprecated
-		public Parameter(final String name, final String value) {
+		Parameter(final String name, final String value) {
 			super(ASCII.toLowerCase(checkArgumentRestrictedName(name)).toString(),
 					ASCII.equalsIgnoreCase(name, CHARSET_PARAMETER) ? ASCII.toLowerCase(value).toString() : value);
 			checkArgument(!contains(value, QUOTED_STRING_PROHIBITED_CONTROL_CHARACTERS), "Parameter value `%s` containing non-tab control characters not supported.",

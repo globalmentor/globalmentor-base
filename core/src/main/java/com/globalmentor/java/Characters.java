@@ -32,7 +32,6 @@ import static com.globalmentor.java.Integers.*;
 import static com.globalmentor.java.Conditions.*;
 import static com.globalmentor.java.StringBuilders.*;
 
-import com.globalmentor.text.ASCII;
 import com.globalmentor.text.RomanNumerals;
 
 /**
@@ -58,13 +57,6 @@ public final class Characters {
 
 	/** A shared instance of an empty array of characters. */
 	public static final char[] NO_CHARS = new char[0];
-
-	/**
-	 * A shared instance of an empty array of characters.
-	 * @deprecated to be removed in favor of {@link #NO_CHARS}.
-	 */
-	@Deprecated
-	public static final char[] EMPTY_ARRAY = NO_CHARS;
 
 	/** The shared instance of no characters. */
 	public static final Characters NONE = new Characters(NO_CHARS); //must be defined before the predefined instances below
@@ -805,17 +797,6 @@ public final class Characters {
 	 */
 	public static boolean isASCII(final char c) { //TODO reconcile with ASCII.isASCII()
 		return c >= 0 && c < 0x80; //see if this character is between 0 and 128, inclusive
-	}
-
-	/**
-	 * Determines whether a character is one of the digits '0'-'9'.
-	 * @param c The character to examine.
-	 * @return <code>true</code> if the character is an ISO_LATIN_1 digit.
-	 * @deprecated Use {@link ASCII#DIGIT_CHARACTERS}.
-	 */
-	@Deprecated
-	public static final boolean isLatinDigit(final char c) {
-		return c >= '0' && c <= '9'; //see if the character falls in the range of the Latin digits
 	}
 
 	/**

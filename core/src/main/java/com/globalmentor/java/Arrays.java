@@ -255,19 +255,6 @@ public class Arrays {
 	}
 
 	/**
-	 * Creates an array of the specified length containing the same types of components as does the provided array.
-	 * @param <T> The type of elements contained in the array.
-	 * @param array The template array indicating the types of components.
-	 * @param length The requested length of the created array.
-	 * @return A new array of the requested length containing the same components as the original array.
-	 */
-	@SuppressWarnings("unchecked")
-	@Deprecated
-	public static <T> T[] createArray(final T[] array, final int length) {
-		return (T[])createArray(array.getClass().getComponentType(), length); //create a new array based upon the component type of the template arraycreateArray(array, minLength)
-	}
-
-	/**
 	 * Returns an array with at least given length. If the given array already has at least the minimum number of elements, it is returned. Otherwise, a new array
 	 * is created containing the same types of components as does the provided array.
 	 * <p>
@@ -277,7 +264,6 @@ public class Arrays {
 	 * @param array The template array indicating the types of components.
 	 * @param minLength The minimum length of the returned array.
 	 * @return An array of at least the requested length containing the same components as the original array; either the original array or a new array.
-	 * @see #createArray(Object[], int)
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T> T[] getArray(T[] array, final int minLength) {

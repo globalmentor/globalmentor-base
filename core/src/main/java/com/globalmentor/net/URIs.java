@@ -17,7 +17,6 @@
 package com.globalmentor.net;
 
 import java.io.*;
-import java.lang.reflect.Array;
 import java.net.*;
 import java.util.*;
 import java.util.regex.Pattern;
@@ -443,17 +442,6 @@ public class URIs {
 	}
 
 	/**
-	 * Returns a path object to represent the path of the URI.
-	 * @param uri The URI for which a path object should be returned.
-	 * @return An object representing the path, or <code>null</code> if the URI has no path.
-	 * @deprecated to remove in favor of {@link #findURIPath(URI)}
-	 */
-	@Deprecated
-	public static URIPath getPath(final URI uri) {
-		return findURIPath(uri).orElse(null);
-	}
-
-	/**
 	 * Returns the raw name of the resource at the given URI's path, which will be the raw name of the last path component. If the path is a collection (i.e. it
 	 * ends with slash), the component before the last slash will be returned. As examples, "/path/name.ext" and "name.ext" will return "name.ext". "/path/",
 	 * "path/", and "path" will all return "path". A empty path will return "", while the root path will return "/".
@@ -473,25 +461,6 @@ public class URIs {
 	}
 
 	/**
-	 * Returns the raw name of the resource at the given URI's path, which will be the raw name of the last path component. If the path is a collection (i.e. it
-	 * ends with slash), the component before the last slash will be returned. As examples, "/path/name.ext" and "name.ext" will return "name.ext". "/path/",
-	 * "path/", and "path" will all return "path".
-	 * @apiNote The return value of "/" for <code>http://example.com</code> indicates that it is a special resource that doesn't have a name, but still
-	 *          distinguishes between that case and the resource <code>http://example.com</code>, which has an empty relative path and is not equivalent to the
-	 *          root. Thus "" and "/" should be considered special values indicating certain conditions, not actual names.
-	 * @implSpec This method correctly handles {@value URIs#INFO_SCHEME} URIs.
-	 * @param uri The URI the path of which will be examined.
-	 * @return The name of the last last path component, the empty string if the path is the empty string, "/" if the path is the root path, or <code>null</code>
-	 *         if the URI has no path.
-	 * @throws NullPointerException if the given URI is <code>null</code>.
-	 * @deprecated to be removed in favor of {@link #findRawName(URI)}.
-	 */
-	@Deprecated
-	public static String getRawName(final URI uri) {
-		return findRawName(uri).orElse(null);
-	}
-
-	/**
 	 * Returns the decoded name of the resource at the given URI's path, which will be the decoded name of the last path component. If the path is a collection
 	 * (i.e. it ends with slash), the component before the last slash will be returned. As examples, "/path/name.ext" and "name.ext" will return "name.ext".
 	 * "/path/", "path/", and "path" will all return "path". The path name is first extracted from the URI's raw path and then decoded so that encoded
@@ -507,26 +476,6 @@ public class URIs {
 	 */
 	public static Optional<String> findName(final URI uri) {
 		return findRawName(uri).map(URIs::decode);
-	}
-
-	/**
-	 * Returns the decoded name of the resource at the given URI's path, which will be the decoded name of the last path component. If the path is a collection
-	 * (i.e. it ends with slash), the component before the last slash will be returned. As examples, "/path/name.ext" and "name.ext" will return "name.ext".
-	 * "/path/", "path/", and "path" will all return "path". The path name is first extracted from the URI's raw path and then decoded so that encoded
-	 * {@value URIs#PATH_SEPARATOR} characters will not prevent correct parsing.
-	 * @apiNote The return value of "/" for <code>http://example.com</code> indicates that it is a special resource that doesn't have a name, but still
-	 *          distinguishes between that case and the resource <code>http://example.com</code>, which has an empty relative path and is not equivalent to the
-	 *          root. Thus "" and "/" should be considered special values indicating certain conditions, not actual names.
-	 * @implSpec This method correctly handles {@value URIs#INFO_SCHEME} URIs.
-	 * @param uri The URI the path of which will be examined.
-	 * @return The name of the last path component, the empty string if the path is the empty string, "/" if the path is the root path, or <code>null</code> if
-	 *         the URI has no path.
-	 * @throws NullPointerException if the given URI is <code>null</code>.
-	 * @deprecated to be removed in favor of {@link #findName(URI)}.
-	 */
-	@Deprecated
-	public static String getName(final URI uri) {
-		return findName(uri).orElse(null);
 	}
 
 	/**
@@ -560,24 +509,6 @@ public class URIs {
 			pathStringBuilder.append(name).append(PATH_SEPARATOR); //append "name/" to the root path to yield "/name/"
 		}
 		return pathStringBuilder.toString(); //return the new path we determined
-	}
-
-	/**
-	 * Changes the name of the path of the given URI to the given name. If the path is a collection (i.e. it ends with slash), the name is the last component
-	 * before the last slash. As examples, "/path/name.ext" and "name.ext" will change "name.ext". "/path/", "path/", and "path" will all change "path". For a
-	 * requested name of "name", a path of "" will return "name", and a path of "/" will return "/name/".
-	 * @apiNote Neither an empty path or the root path are considered to have names, and thus are not allowed to have their names changed.
-	 * @param path The path, which should be encoded if {@value URIs#PATH_SEPARATOR} characters are present.
-	 * @param name The new name of the path.
-	 * @return A new path with the name changed to the given name.
-	 * @throws NullPointerException if the given path and/or name is <code>null</code>.
-	 * @throws IllegalArgumentException if the given path is the empty string or is the root path.
-	 * @see #getName(String)
-	 * @deprecated to be removed in favor of {@link #changePathName(String, String)}
-	 */
-	@Deprecated
-	public static String changeName(final String path, final String name) {
-		return changePathName(path, name);
 	}
 
 	/**
@@ -692,18 +623,6 @@ public class URIs {
 	}
 
 	/**
-	 * Extracts the extension from a URI's name. This this the preferred method for extracting an extension from a URI, as this method correctly parses the raw
-	 * form of the URI path to find the extension before decoding.
-	 * @param uri The URI to examine.
-	 * @return The extension of the URI's name (not including '.'), or <code>null</code> if no extension is present.
-	 * @deprecated to be removed in favor of {@link #findNameExtension(URI)}.
-	 */
-	@Deprecated
-	public static String getNameExtension(@Nonnull final URI uri) {
-		return findNameExtension(uri).orElse(null);
-	}
-
-	/**
 	 * Extracts the raw, encoded extension from a URI's name.
 	 * @param uri The URI to examine.
 	 * @return The raw, encoded extension of the URI's name (not including '.'), which may not be present.
@@ -711,17 +630,6 @@ public class URIs {
 	 */
 	public static Optional<String> findRawNameExtension(@Nonnull final URI uri) {
 		return findRawName(uri).flatMap(Filenames::findExtension);
-	}
-
-	/**
-	 * Extracts the raw, encoded extension from a URI's name.
-	 * @param uri The URI to examine.
-	 * @return The raw, encoded extension of the URI's name (not including '.'), or <code>null</code> if no extension is present.
-	 * @deprecated to be removed in favor of {@link #findRawNameExtension(URI)}.
-	 */
-	@Deprecated
-	public static String getRawNameExtension(@Nonnull final URI uri) {
-		return findRawNameExtension(uri).orElse(null);
 	}
 
 	/**
@@ -995,17 +903,6 @@ public class URIs {
 	 * Retrieves the parameters from the query of a URI, if present.
 	 * @param uri The URI from which to extract parameters.
 	 * @return An array of parameters.
-	 * @deprecated to be removed in favor of {@link #getQueryParameterMap(URI)}.
-	 */
-	@Deprecated
-	public static CollectionMap<String, String, List<String>> getParameterMap(final URI uri) {
-		return getQueryParameterMap(uri);
-	}
-
-	/**
-	 * Retrieves the parameters from the query of a URI, if present.
-	 * @param uri The URI from which to extract parameters.
-	 * @return An array of parameters.
 	 */
 	public static CollectionMap<String, String, List<String>> getQueryParameterMap(final URI uri) {
 		final List<URIQueryParameter> parameters = getQueryParameters(uri).orElse(null); //get the parameters from the URI TODO map and collect
@@ -1051,33 +948,6 @@ public class URIs {
 			parameters.add(new URIQueryParameter(name, value));
 		}
 		return parameters; //return the parameters
-	}
-
-	/**
-	 * Retrieves the query parameters from a URI.
-	 * @param uri The URI which may contain a query.
-	 * @return An array of parameters represented by the URI query, or <code>null</code> if the given URI does not contain a query.
-	 * @deprecated to be removed in favor of {@link #getQueryParameters(URI)}.
-	 */
-	@Deprecated
-	public static com.globalmentor.model.NameValuePair<String, String>[] getParameters(final URI uri) {
-		return getParameters(uri.getRawQuery()); //return the parameters for this URI query, if there is a query
-	}
-
-	/**
-	 * Retrieves the parameters from a URI query. An empty string query will return an empty array of name/value pairs.
-	 * @param query The string containing URI query parameters (without the '?' prefix), or <code>null</code>.
-	 * @return An array of parameters represented by the query, or <code>null</code> if the given query is <code>null</code>.
-	 * @deprecated to be removed in favor of {@link #getQueryParameters(String)}.
-	 */
-	@Deprecated
-	@SuppressWarnings("unchecked")
-	public static com.globalmentor.model.NameValuePair<String, String>[] getParameters(final String query) {
-		if(query == null) {
-			return null;
-		}
-		return getQueryParameters(query)
-				.toArray((com.globalmentor.model.NameValuePair<String, String>[])Array.newInstance(com.globalmentor.model.NameValuePair.class, 0));
 	}
 
 	/**
@@ -1398,32 +1268,6 @@ public class URIs {
 	 */
 	public static URI createMailtoURI(final String username, final String domain) {
 		return URI.create(MAILTO_SCHEME + SCHEME_SEPARATOR + encode(username) + MAILTO_USERNAME_DOMAIN_SEPARATOR + encode(domain)); //construct and return the mailto URI
-	}
-
-	/**
-	 * Creates a URI from the given URI string relative to the given context object.
-	 * @param contextObject The source context, such as a URL, a URI, a File, or <code>null</code> if the filename should not be referenced from any object.
-	 * @param string The string version of a URI, either relative or absolute, or a URI fragment beginning with "#".
-	 * @return A URI constructed from the URI string and context object.
-	 * @throws URISyntaxException Thrown if the context object and string cannot be used to create a valid URI.
-	 * @see File
-	 * @see URI
-	 * @see URL
-	 * @deprecated because this ancient code doesn't have an obvious utility, is confusing, and jumbles various types, many of them legacy.
-	 */
-	@Deprecated
-	public static URI createURI(final Object contextObject, final String string) throws URISyntaxException {
-		if(contextObject instanceof URI) { //if the context is a URI
-			//TODO if the string contains illegal URI characters, such as spaces, this won't work
-			//TODO also check to see if the string is null.
-			return resolve((URI)contextObject, new URI(string)); //resolve the URI form of the string, creating a URISyntaxException if there is a problem
-		} else if(contextObject instanceof URL) { //if the context is a URL
-			return resolve(((URL)contextObject).toURI(), string); //convert the URL to a URI and use it as a context
-		} else if(contextObject instanceof File) { //if the context object is a file
-			return createURI(Files.toURI(((File)contextObject)), string); //convert the File to a URI and use it as a context
-		} else { //if we don't recognize the context object
-			return new URI(string); //create a new URI from the string, ignoring the context object
-		}
 	}
 
 	/**

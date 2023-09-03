@@ -16,7 +16,6 @@
 
 package com.globalmentor.io;
 
-import static com.globalmentor.io.IOStreams.*;
 import static java.lang.Math.*;
 import static java.util.Arrays.*;
 import static org.hamcrest.MatcherAssert.*;
@@ -44,9 +43,10 @@ public class FixedLengthInputStreamTest {
 		int total = 0;
 		do {
 			final int length = min(random.nextInt(Short.MAX_VALUE / 3), testData.length - total); //get the next size to retrieve; require at least three passes
+			@SuppressWarnings("resource")
 			final InputStream inputStream = new FixedLengthInputStream(testInputStream, length, false); //don't close the underlying stream on each pass
 			final ByteArrayOutputStream output = new ByteArrayOutputStream();
-			copy(inputStream, output);
+			inputStream.transferTo(output);
 			assertThat(output.toByteArray().length, is(length));
 			assertThat(output.toByteArray(), is(copyOfRange(testData, total, total + length)));
 			total += length;

@@ -375,21 +375,6 @@ public class Paths {
 
 	/**
 	 * Adds the given extension to a path and returns the new path with the new extension. The filename is not checked to see if it currently has an extension.
-	 * @implSpec This method delegates to {@link #addFilenameExtension(Path, String)}.
-	 * @param path The path to which to add an extension.
-	 * @param extension The extension to add.
-	 * @return The path with the new extension.
-	 * @throws IllegalArgumentException If a filename is not present.
-	 * @see Filenames#addExtension(String, String)
-	 * @deprecated to be removed in favor of {@link #addFilenameExtension(Path, String)}.
-	 */
-	@Deprecated
-	public static Path addExtension(@Nonnull final Path path, @Nonnull final String extension) {
-		return addFilenameExtension(path, extension);
-	}
-
-	/**
-	 * Adds the given extension to a path and returns the new path with the new extension. The filename is not checked to see if it currently has an extension.
 	 * @implSpec This method delegates to {@link Filenames#addExtension(String, String)}.
 	 * @param path The path to which to add an extension.
 	 * @param extension The extension to add.
@@ -403,22 +388,6 @@ public class Paths {
 		final String filename = findFilename(path)
 				.orElseThrow(() -> new IllegalArgumentException(String.format("Path %s has no filename to which an extension can be added.", path)));
 		return path.resolveSibling(Filenames.addExtension(filename, extension));
-	}
-
-	/**
-	 * Changes the last extension of a path's filename and returns a new path with the filename with the new extension. If the filename does not currently have an
-	 * extension, one will be added.
-	 * @implSpec This method delegates to {@link #changeFilenameExtension(Path, String)}.
-	 * @param path The path for which an extension will be changed.
-	 * @param extension The extension to set, or <code>null</code> if the extension should be removed.
-	 * @return The path with the filename with the new extension.
-	 * @throws IllegalArgumentException If a filename is not present, or if the name is just a "/".
-	 * @see Filenames#changeExtension(String, String)
-	 * @deprecated to be removed in favor of {@link #changeFilenameExtension(Path, String)}.
-	 */
-	@Deprecated
-	public static Path changeExtension(@Nonnull final Path path, @Nullable final String extension) {
-		return changeFilenameExtension(path, extension);
 	}
 
 	/**
@@ -445,19 +414,6 @@ public class Paths {
 	 */
 	public static Optional<String> findFilenameExtension(@Nonnull final Path path) {
 		return findFilename(path).flatMap(Filenames::findExtension);
-	}
-
-	/**
-	 * Removes the last extension, if any, of a path's filename and returns a new filename with no extension.
-	 * @implSpec This method delegates to {@link #removeFilenameExtension(Path)}.
-	 * @param path The path for which an extension will be removed.
-	 * @return The path with the filename with no extension.
-	 * @see Filenames#removeExtension(String)
-	 * @deprecated to be removed in favor of {@link #removeFilenameExtension(Path)}.
-	 */
-	@Deprecated
-	public static Path removeExtension(@Nonnull final Path path) {
-		return removeFilenameExtension(path);
 	}
 
 	/**

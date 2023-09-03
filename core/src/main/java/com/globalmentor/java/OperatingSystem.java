@@ -48,18 +48,6 @@ public class OperatingSystem {
 	public static final String WINDOWS = "windows";
 
 	/**
-	 * Returns the system line separator string.
-	 * @return The the system line separator string.
-	 * @throws SecurityException if a security manager exists and its <code>checkPropertyAccess</code> method doesn't allow access to this system property.
-	 * @see #LINE_SEPARATOR_PROPERTY
-	 * @deprecated in favor of {@link System#lineSeparator()}.
-	 */
-	@Deprecated
-	public static String getLineSeparator() throws SecurityException {
-		return System.getProperty(LINE_SEPARATOR_PROPERTY); //return the line separator
-	}
-
-	/**
 	 * Returns the home directory of the user.
 	 * @return The user home directory.
 	 * @throws SecurityException if a security manager exists and its <code>checkPropertyAccess</code> method doesn't allow access to this system property.

@@ -19,7 +19,6 @@ package com.globalmentor.io;
 import static java.util.Objects.*;
 
 import java.io.*;
-import java.net.URI;
 
 import javax.annotation.*;
 
@@ -48,29 +47,5 @@ public interface IO<T> {
 		return () -> { //no-op
 		};
 	}
-
-	/**
-	 * Reads an object from an input stream.
-	 * @param inputStream The input stream from which to read the data.
-	 * @param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
-	 * @return The object read from the input stream.
-	 * @throws NullPointerException if the given input stream is <code>null</code>.
-	 * @throws IOException Thrown if there is an error reading the data.
-	 * @deprecated to be moved to an I/O strategy class, or removed altogether.
-	 */
-	@Deprecated
-	public T read(final InputStream inputStream, final URI baseURI) throws IOException;
-
-	/**
-	 * Writes an object to an output stream.
-	 * @param outputStream The output stream to which to write the data.
-	 * @param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
-	 * @param object The object to write to the given output stream.
-	 * @throws NullPointerException if the given output stream and/or object is <code>null</code>.
-	 * @throws IOException Thrown if there is an error writing the data.
-	 * @deprecated to be moved to an I/O strategy class, or removed altogether.
-	 */
-	@Deprecated
-	public void write(final OutputStream outputStream, final URI baseURI, final T object) throws IOException;
 
 }

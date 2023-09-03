@@ -43,7 +43,7 @@ public class IOStreamsTest {
 				DEFAULT_BUFFER_SIZE * 2 + 1, DEFAULT_BUFFER_SIZE * 3)) {
 			final byte[] bytes = Bytes.generateRandom(length, random);
 			try (final InputStream inputStream = new ByteArrayInputStream(bytes); final ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
-				IOStreams.copy(inputStream, outputStream);
+				inputStream.transferTo(outputStream);
 				assertThat(format("Copied %d bytes.", length), outputStream.toByteArray(), is(bytes));
 			}
 		}

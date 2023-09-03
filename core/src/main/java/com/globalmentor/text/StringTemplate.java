@@ -52,10 +52,8 @@ public final class StringTemplate {
 	 * @param components The components that make up the template; any {@link Replacement} instance will result in replaced content, while any other object will
 	 *          be included verbatim using {@link Object#toString()} when the template is applied.
 	 * @throws NullPointerException if the given components array or one of the components is <code>null</code>.
-	 * @deprecated in favor of the static factory method {@link #of(Object...)}.
 	 */
-	@Deprecated
-	public StringTemplate(final Object... components) {
+	private StringTemplate(final Object... components) {
 		this.components = components.clone(); //clone the components so that they won't be modified later
 		for(final Object component : components) { //for each component
 			requireNonNull(component, "Component cannot be null.");

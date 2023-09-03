@@ -40,26 +40,6 @@ import static com.globalmentor.java.Arrays.*;
 public class Iterators {
 
 	/**
-	 * @param <T> The type of the iterator.
-	 * @return The immutable empty iterator.
-	 * @deprecated to be removed in favor of {@link java.util.Collections#emptyIterator()}.
-	 */
-	@Deprecated
-	public static final <T> Iterator<T> emptyIterator() {
-		return java.util.Collections.emptyIterator();
-	}
-
-	/**
-	 * @param <T> The generic type of empty iterable to return.
-	 * @return The immutable empty iterable.
-	 * @deprecated to be removed in favor of {@link java.util.Collections#emptySet()}.
-	 */
-	@Deprecated
-	public static final <T> Iterable<T> emptyIterable() {
-		return java.util.Collections.emptySet();
-	}
-
-	/**
 	 * Returns an iterator concatenating the contents of two iterators.
 	 * @apiNote The returned iterator can be used as an {@link Iterator} or an {@link Enumeration}.
 	 * @param <E> The type of elements returned by the iterators.

@@ -132,30 +132,6 @@ public class RegularExpressions {
 
 	/**
 	 * Creates a regular expression character class (e.g. "[abc]") from the given characters (e.g. 'a', 'b', and 'c').
-	 * @param characters The characters to be included in the character class.
-	 * @return The new character class including the given characters.
-	 * @throws NullPointerException if the given characters is <code>null</code>.
-	 * @deprecated in favor of {@link #characterClassOf(char...)}.
-	 */
-	@Deprecated
-	public static String createCharacterClass(final char... characters) {
-		return characterClassOf(characters);
-	}
-
-	/**
-	 * Creates a regular expression character class (e.g. "[abc]") from the given characters (e.g. 'a', 'b', and 'c').
-	 * @param characters The characters to be included in the character class.
-	 * @return The new character class including the given characters.
-	 * @throws NullPointerException if the given characters is <code>null</code>.
-	 * @deprecated in favor of {@link #characterClassOf(Characters)}.
-	 */
-	@Deprecated
-	public static String createCharacterClass(final Characters characters) {
-		return characterClassOf(characters);
-	}
-
-	/**
-	 * Creates a regular expression character class (e.g. "[abc]") from the given characters (e.g. 'a', 'b', and 'c').
 	 * @implSpec This implementation delegates to {@link #characterClassOf(Characters)}.
 	 * @implNote The current implementation includes control characters literally rather than escaping them.
 	 * @param characters The characters to be included in the character class.

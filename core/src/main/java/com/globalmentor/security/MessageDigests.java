@@ -633,17 +633,6 @@ public final class MessageDigests {
 		}
 
 		/**
-		 * Creates a new message digest instance for this algorithm.
-		 * @return An instance of a message digest for this algorithm.
-		 * @throws RuntimeException if no {@link Provider} supports a {@link MessageDigestSpi} implementation for this algorithm.
-		 * @deprecated in favor of {@link #newMessageDigest()}, which has a clearer and less misleading name.
-		 */
-		@Deprecated
-		public MessageDigest getInstance() {
-			return newMessageDigest();
-		}
-
-		/**
 		 * Computes a digest using this algorithm for the given byte.
 		 * @param b The byte to digest.
 		 * @return The array of bytes for the resulting hash value.

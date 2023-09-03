@@ -310,62 +310,6 @@ public class Conditions {
 	 * Checks the results of an expression to see if an argument is correct, and throws a {@link ConfiguredStateException} if the value is <code>false</code>.
 	 * @param test The result of the test.
 	 * @throws ConfiguredStateException if the given value is <code>false</code>.
-	 * @deprecated to be removed in favor of {@link #checkConfiguredState(boolean)}.
-	 */
-	@Deprecated
-	public static void checkConfiguration(final boolean test) {
-		checkConfiguredState(test);
-	}
-
-	/**
-	 * Checks the results of an expression to see if an argument is correct, and throws a {@link ConfiguredStateException} if the value is <code>false</code>.
-	 * @param test The result of the test.
-	 * @param description A description of the test to be used when generating an exception, optionally formatted with arguments, or <code>null</code> for no
-	 *          description.
-	 * @param arguments The arguments to be applied when formatting, or an empty array if the message should not be formatted.
-	 * @throws NullPointerException if the given arguments is <code>null</code>.
-	 * @throws ConfiguredStateException if the given value is <code>false</code>.
-	 * @throws IllegalArgumentException if the description is an invalid pattern, or if an argument in the arguments array is not of the type expected by the
-	 *           format element(s) that use it.
-	 * @see String#format(String, Object...)
-	 * @deprecated to be removed in favor of {@link #checkConfiguredState(boolean, String, Object...)}.
-	 */
-	@Deprecated
-	public static void checkConfiguration(final boolean test, String description, final Object... arguments) {
-		checkConfiguredState(test, description, arguments);
-	}
-
-	/**
-	 * Checks to see if a given variable is an instance of any object, and throws a {@link ConfiguredStateException} if the variable is <code>null</code>.
-	 * @param <T> The type of variable to check.
-	 * @param variable The variable to check.
-	 * @return The given variable.
-	 * @throws ConfiguredStateException if the given variable is <code>null</code>.
-	 * @deprecated to be removed in favor of {@link #checkConfiguredStateNotNull(Object)}.
-	 */
-	@Deprecated
-	public static <T> T checkConfigurationNotNull(final T variable) {
-		return checkConfiguredStateNotNull(variable);
-	}
-
-	/**
-	 * Checks to see if a given variable is an instance of any object, and throws a {@link ConfiguredStateException} if the variable is <code>null</code>.
-	 * @param <T> The type of variable to check.
-	 * @param variable The variable to check.
-	 * @param description A description of the variable to be used when generating an exception, or <code>null</code> for no description.
-	 * @return The given variable.
-	 * @throws NullPointerException if the given variable is <code>null</code>.
-	 * @deprecated to be removed in favor of {@link #checkConfiguredStateNotNull(Object, String)}.
-	 */
-	@Deprecated
-	public static <T> T checkConfigurationNotNull(final T variable, final String description) {
-		return checkConfiguredStateNotNull(variable, description);
-	}
-
-	/**
-	 * Checks the results of an expression to see if an argument is correct, and throws a {@link ConfiguredStateException} if the value is <code>false</code>.
-	 * @param test The result of the test.
-	 * @throws ConfiguredStateException if the given value is <code>false</code>.
 	 */
 	public static void checkConfiguredState(final boolean test) {
 		checkConfiguredState(test, null); //check the test with no description

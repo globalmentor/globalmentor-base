@@ -67,13 +67,6 @@ public final class Classes {
 	 */
 	public static final Pattern SETTER_METHOD_NAME_PATTERN = Pattern.compile("(" + SET_SETTER_PREFIX + ")(.+)");
 
-	/**
-	 * The slash character (<code>'/'</code>) that separates components in a resource path.
-	 * @deprecated Moved to {@link ClassResources#PATH_SEPARATOR}.
-	 */
-	@Deprecated
-	public static final char RESOURCE_PATH_SEPARATOR = ClassResources.PATH_SEPARATOR;
-
 	/** This class cannot be publicly instantiated. */
 	private Classes() {
 	}
