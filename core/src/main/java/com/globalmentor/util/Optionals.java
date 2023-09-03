@@ -62,7 +62,9 @@ public class Optionals {
 	 * @throws NullPointerException if the supplier is <code>null</code> or returns <code>null</code>.
 	 * @see <a href="https://bugs.openjdk.java.net/browse/JDK-8080418">JDK-8080418</a>
 	 * @see <a href="https://docs.oracle.com/javase/9/docs/api/java/util/Optional.html#or-java.util.function.Supplier-">Optional.or()</a>
+	 * @deprecated to be removed in favor of {@link Optional#or(Supplier)}.
 	 */
+	@Deprecated(forRemoval = true)
 	public static <T> Optional<T> or(@Nonnull final Optional<T> optional, @Nonnull final Supplier<Optional<T>> supplier) {
 		requireNonNull(supplier);
 		return optional.isPresent() ? optional : requireNonNull(supplier.get());
@@ -79,7 +81,9 @@ public class Optionals {
 	 *           <code>null</code>.
 	 * @see <a href=
 	 *      "https://docs.oracle.com/javase/9/docs/api/java/util/Optional.html#ifPresentOrElse-java.util.function.Consumer-java.lang.Runnable-">Optional.ifPresentOrElse()</a>
+	 * @deprecated to be removed in favor of {@link Optional#ifPresentOrElse(Consumer, Runnable)}.
 	 */
+	@Deprecated(forRemoval = true)
 	public static <T> void ifPresentOrElse(@Nonnull final Optional<T> optional, @Nonnull final Consumer<? super T> action, @Nonnull final Runnable emptyAction) {
 		if(optional.isPresent()) {
 			action.accept(optional.get());
@@ -113,7 +117,9 @@ public class Optionals {
 	 * @param optional The optional to check
 	 * @return A stream, either containing the optional value, or empty if the optional is empty.
 	 * @see <a href= "https://docs.oracle.com/javase/9/docs/api/java/util/Optional.html#stream--">Optional.stream()</a>
+	 * @deprecated to be removed in favor of {@link Optional#stream()}.
 	 */
+	@Deprecated(forRemoval = true)
 	public static <T> Stream<T> stream(@Nonnull final Optional<T> optional) {
 		return optional.isPresent() ? Stream.of(optional.get()) : Stream.empty();
 	}

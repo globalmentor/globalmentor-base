@@ -40,13 +40,15 @@ public class IOStreams {
 
 	/**
 	 * Copies all information from an input stream to an output stream. After copying is finished, both streams are left open.
-	 * @apiNote This method will likely eventually be deprecated in favor of Java 9+ <code>InputStream.transferTo(OutputStream)</code>.
 	 * @implSpec This implementation delegates to {@link #copy(InputStream, OutputStream, ProgressListener)}.
 	 * @param inputStream The source of the data.
 	 * @param outputStream The destination of the data.
 	 * @return The total number of bytes copied.
 	 * @throws IOException Thrown if there is an error reading from or writing to a stream.
+	 * @see InputStream#transferTo(OutputStream)
+	 * @deprecated to be removed in favor of {@link InputStream#transferTo(OutputStream)}.
 	 */
+	@Deprecated(forRemoval = true)
 	public static long copy(final InputStream inputStream, final OutputStream outputStream) throws IOException {
 		return copy(inputStream, outputStream, null);
 	}
@@ -60,6 +62,7 @@ public class IOStreams {
 	 * @return The total number of bytes copied.
 	 * @throws IOException Thrown if there is an error reading from or writing to a stream.
 	 * @throws IOException if an expected content length was given and the number of bytes written to the output stream is not what was expected.
+	 * @see InputStream#transferTo(OutputStream)
 	 */
 	public static long copy(final InputStream inputStream, final OutputStream outputStream, final ProgressListener progressListener) throws IOException {
 		return copy(inputStream, outputStream, -1, progressListener); //we don't know how many bytes to expect
@@ -74,6 +77,7 @@ public class IOStreams {
 	 * @return The total number of bytes copied.
 	 * @throws IOException Thrown if there is an error reading from or writing to a stream.
 	 * @throws IOException if an expected content length was given and the number of bytes written to the output stream is not what was expected.
+	 * @see InputStream#transferTo(OutputStream)
 	 */
 	public static long copy(final InputStream inputStream, final OutputStream outputStream, final long expectedContentLength) throws IOException {
 		return copy(inputStream, outputStream, expectedContentLength, null); //we don't have a progress listener
@@ -95,6 +99,7 @@ public class IOStreams {
 	 * @throws IOException Thrown if there is an error reading from or writing to a stream.
 	 * @throws IOException if an expected content length was given and the number of bytes written to the output stream is not what was expected.
 	 * @see #DEFAULT_BUFFER_SIZE
+	 * @see InputStream#transferTo(OutputStream)
 	 */
 	public static long copy(final InputStream inputStream, final OutputStream outputStream, final long expectedContentLength,
 			final ProgressListener progressListener) throws IOException {
