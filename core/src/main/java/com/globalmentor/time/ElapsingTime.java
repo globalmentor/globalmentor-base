@@ -16,12 +16,11 @@
 
 package com.globalmentor.time;
 
-import static java.lang.String.format;
+import static com.globalmentor.java.Conditions.checkArgument;
 import static java.util.Objects.*;
 import static java.util.concurrent.TimeUnit.*;
 
 import java.time.Duration;
-import java.time.temporal.ChronoUnit;
 import java.util.concurrent.TimeUnit;
 import java.util.function.*;
 
@@ -135,8 +134,6 @@ public final class ElapsingTime {
 	 *          an elapsing time that has not yet started elapsing, and which will produce negative elapsing time durations until the given elapsed time has
 	 *          passed.
 	 * @implSpec This implementation delegates to {@link #since(long, LongSupplier, TimeUnit)}.
-	 * @implNote This method will also throw an {@link IllegalArgumentException} if an intermediate conversion causes an overflow, which will be mitigated in Java
-	 *           11.
 	 * @param elapsed The elapsed of time the resulting elapsing time will conceptually have already elapsing when returned, using the time unit of this elapsing
 	 *          time.
 	 * @return A new elapsing time measurer that conceptually has already been elapsing since the given elapsed time.
@@ -160,14 +157,8 @@ public final class ElapsingTime {
 	 * @throws IllegalArgumentException if the duration would overflow when converting to the unit of this elapsing time.
 	 */
 	public ElapsingTime withElapsed(@Nonnull final Duration duration) {
-		//TODO switch to `getTimeUnit().convert(duration)` in Java 11+, detecting overflow and throwing an exception accordingly
-		final long durationInNs; //use nanoseconds to prevent truncation when converting to coarser grained units
-		try {
-			durationInNs = duration.toNanos(); //use nanoseconds to prevent truncation when converting to coarser grained units
-		} catch(final ArithmeticException arithmeticException) {
-			throw new IllegalArgumentException(format("Duration %s will cause an overflow.", duration), arithmeticException);
-		}
-		final long durationInTimeUnit = getTimeUnit().convert(durationInNs, NANOSECONDS);
+		final long durationInTimeUnit = getTimeUnit().convert(duration);
+		checkArgument(durationInTimeUnit != Long.MIN_VALUE && durationInTimeUnit != Long.MAX_VALUE, "Duration %s will cause an overflow.", duration);
 		return withElapsed(durationInTimeUnit);
 	}
 
@@ -215,7 +206,7 @@ public final class ElapsingTime {
 	 * @throws ArithmeticException if a numeric overflow occurs.
 	 */
 	public Duration get() {
-		return Duration.of(getElapsedTime(), toChronoUnit(getTimeUnit()));
+		return Duration.of(getElapsedTime(), getTimeUnit().toChronoUnit());
 	}
 
 	/**
@@ -225,7 +216,7 @@ public final class ElapsingTime {
 	 * @see #getTimeUnit()
 	 */
 	long convertToTimeUnit(@Nonnull final Duration duration) {
-		return duration.get(toChronoUnit(getTimeUnit()));
+		return duration.get(getTimeUnit().toChronoUnit());
 	}
 
 	@Override
@@ -257,25 +248,26 @@ public final class ElapsingTime {
 	 * @param timeUnit Some time unit.
 	 * @return The converted {@link ChronoUnit} equivalent to the given {@link TimeUnit}.
 	 */
-	static ChronoUnit toChronoUnit(@Nonnull final TimeUnit timeUnit) { //TODO switch to `timeUnit.toChronoUnit()` in Java 9+
-		switch(timeUnit) {
-			case NANOSECONDS:
-				return ChronoUnit.NANOS;
-			case MICROSECONDS:
-				return ChronoUnit.MICROS;
-			case MILLISECONDS:
-				return ChronoUnit.MILLIS;
-			case SECONDS:
-				return ChronoUnit.SECONDS;
-			case MINUTES:
-				return ChronoUnit.MINUTES;
-			case HOURS:
-				return ChronoUnit.HOURS;
-			case DAYS:
-				return ChronoUnit.DAYS;
-			default:
-				throw new AssertionError();
-		}
-	}
+	//TODO delete	
+	//	static ChronoUnit toChronoUnit(@Nonnull final TimeUnit timeUnit) { //TODO switch to `timeUnit.toChronoUnit()` in Java 9+
+	//		switch(timeUnit) {
+	//			case NANOSECONDS:
+	//				return ChronoUnit.NANOS;
+	//			case MICROSECONDS:
+	//				return ChronoUnit.MICROS;
+	//			case MILLISECONDS:
+	//				return ChronoUnit.MILLIS;
+	//			case SECONDS:
+	//				return ChronoUnit.SECONDS;
+	//			case MINUTES:
+	//				return ChronoUnit.MINUTES;
+	//			case HOURS:
+	//				return ChronoUnit.HOURS;
+	//			case DAYS:
+	//				return ChronoUnit.DAYS;
+	//			default:
+	//				throw new AssertionError();
+	//		}
+	//	}
 
 }

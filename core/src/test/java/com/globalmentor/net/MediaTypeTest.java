@@ -19,7 +19,6 @@ package com.globalmentor.net;
 import static org.hamcrest.Matchers.*;
 import static com.github.npathai.hamcrestopt.OptionalMatchers.*;
 import static java.nio.charset.StandardCharsets.*;
-import static java.util.stream.Collectors.*;
 import static org.hamcrest.MatcherAssert.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.zalando.fauxpas.FauxPas.*;
@@ -27,7 +26,6 @@ import static org.zalando.fauxpas.FauxPas.*;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.*;
-import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.stream.*;
 
 import org.junit.jupiter.api.Test;
@@ -201,16 +199,16 @@ public class MediaTypeTest {
 			final MediaType mediaTypeWithParameter = mediaType.withParameter("new", "foobar");
 			assertThat(mediaTypeWithParameter.getPrimaryType(), is("text"));
 			assertThat(mediaTypeWithParameter.getSubType(), is("plain"));
-			assertThat(mediaTypeWithParameter.getParameters(), containsInAnyOrder(MediaType.Parameter.of("charset", "us-ascii"),
-					MediaType.Parameter.of("foo", "bar"), MediaType.Parameter.of("test", "example"), MediaType.Parameter.of("new", "foobar")));
+			assertThat(mediaTypeWithParameter.getParameters(), containsInAnyOrder(MediaType.Parameter.of("charset", "us-ascii"), MediaType.Parameter.of("foo", "bar"),
+					MediaType.Parameter.of("test", "example"), MediaType.Parameter.of("new", "foobar")));
 		}
 		{ //different case
 			final MediaType mediaType = MediaType.parse("text/plain; charset=us-ascii; foo=bar; test=example");
 			final MediaType mediaTypeWithParameter = mediaType.withParameter("NEW", "foobar");
 			assertThat(mediaTypeWithParameter.getPrimaryType(), is("text"));
 			assertThat(mediaTypeWithParameter.getSubType(), is("plain"));
-			assertThat(mediaTypeWithParameter.getParameters(), containsInAnyOrder(MediaType.Parameter.of("charset", "us-ascii"),
-					MediaType.Parameter.of("foo", "bar"), MediaType.Parameter.of("test", "example"), MediaType.Parameter.of("new", "foobar")));
+			assertThat(mediaTypeWithParameter.getParameters(), containsInAnyOrder(MediaType.Parameter.of("charset", "us-ascii"), MediaType.Parameter.of("foo", "bar"),
+					MediaType.Parameter.of("test", "example"), MediaType.Parameter.of("new", "foobar")));
 		}
 		{ //duplicate parameter names
 			final MediaType mediaType = MediaType.parse("text/plain; test=foo; charset=us-ascii; test=bar");
@@ -448,17 +446,12 @@ public class MediaTypeTest {
 	}
 
 	/** A map of parameter serializations, quoted if needed, associated with their raw values. */
-	private static final Map<String, String> PARAMETER_VALUE_STRINGS_BY_VALUE = Stream.of(
-			//TODO switch to Java 11 Entry.of()
-			new SimpleImmutableEntry<>("", "\"\""), new SimpleImmutableEntry<>("x", "x"), new SimpleImmutableEntry<>("3", "3"),
-			new SimpleImmutableEntry<>("foo", "foo"), new SimpleImmutableEntry<>("fooBar", "fooBar"), new SimpleImmutableEntry<>("FooBar", "FooBar"),
-			new SimpleImmutableEntry<>("FOOBAR", "FOOBAR"), new SimpleImmutableEntry<>("foo bar", "\"foo bar\""),
-			new SimpleImmutableEntry<>("foo@bar", "\"foo@bar\""), new SimpleImmutableEntry<>("foo?bar", "\"foo?bar\""),
-			new SimpleImmutableEntry<>("foo=bar", "\"foo=bar\""), new SimpleImmutableEntry<>("foo\tbar", "\"foo\tbar\""),
-			new SimpleImmutableEntry<>("foo\"bar\"", "\"foo\\\"bar\\\"\""), new SimpleImmutableEntry<>("\\foo\\\"bar\"", "\"\\\\foo\\\\\\\"bar\\\"\""),
-			new SimpleImmutableEntry<>("foo(bar)", "\"foo(bar)\""))
-			//TODO switch to Java 10 Collectors.toUnmodifiableMap()
-			.collect(Collectors.collectingAndThen(toMap(Map.Entry::getKey, Map.Entry::getValue), Collections::unmodifiableMap));
+	private static final Map<String, String> PARAMETER_VALUE_STRINGS_BY_VALUE = Stream
+			.of(Map.entry("", "\"\""), Map.entry("x", "x"), Map.entry("3", "3"), Map.entry("foo", "foo"), Map.entry("fooBar", "fooBar"),
+					Map.entry("FooBar", "FooBar"), Map.entry("FOOBAR", "FOOBAR"), Map.entry("foo bar", "\"foo bar\""), Map.entry("foo@bar", "\"foo@bar\""),
+					Map.entry("foo?bar", "\"foo?bar\""), Map.entry("foo=bar", "\"foo=bar\""), Map.entry("foo\tbar", "\"foo\tbar\""),
+					Map.entry("foo\"bar\"", "\"foo\\\"bar\\\"\""), Map.entry("\\foo\\\"bar\"", "\"\\\\foo\\\\\\\"bar\\\"\""), Map.entry("foo(bar)", "\"foo(bar)\""))
+			.collect(Collectors.toUnmodifiableMap(Map.Entry::getKey, Map.Entry::getValue));
 
 	/** @see MediaType.Parameter#parseValue(CharSequence) */
 	@Test

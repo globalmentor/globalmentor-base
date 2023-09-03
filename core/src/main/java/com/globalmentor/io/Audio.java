@@ -17,11 +17,8 @@
 package com.globalmentor.io;
 
 import static com.globalmentor.net.MediaType.*;
-import static java.util.stream.Collectors.*;
 
 import java.util.*;
-import java.util.AbstractMap.SimpleImmutableEntry;
-import java.util.stream.Stream;
 
 import com.globalmentor.net.MediaType;
 
@@ -89,14 +86,13 @@ public class Audio {
 	 * Internet media types for known audio filename extensions. Filename extensions are in canonical (lowercase) form.
 	 * @apiNote This map may not include all the file extensions defined in this class.
 	 */
-	public static final Map<String, MediaType> MEDIA_TYPES_BY_FILENAME_EXTENSION = Stream.of(
+	public static final Map<String, MediaType> MEDIA_TYPES_BY_FILENAME_EXTENSION = Map.of(
 			//.au
-			new SimpleImmutableEntry<>(AU_FILENAME_EXTENSION, BASIC_MEDIA_TYPE),
+			AU_FILENAME_EXTENSION, BASIC_MEDIA_TYPE,
 			//.mp3
-			new SimpleImmutableEntry<>(MP3_FILENAME_EXTENSION, MPEG_MEDIA_TYPE),
+			MP3_FILENAME_EXTENSION, MPEG_MEDIA_TYPE,
 			//.ogg
-			new SimpleImmutableEntry<>(OGG_FILENAME_EXTENSION, OGG_VORBIS_MEDIA_TYPE))
-			.collect(collectingAndThen(toMap(Map.Entry::getKey, Map.Entry::getValue), Collections::unmodifiableMap));
+			OGG_FILENAME_EXTENSION, OGG_VORBIS_MEDIA_TYPE);
 
 	//utilities
 

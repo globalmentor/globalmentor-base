@@ -28,7 +28,6 @@ import static java.util.stream.Collectors.*;
 import java.io.IOException;
 import java.lang.management.*;
 import java.util.*;
-import java.util.Collections;
 
 import com.globalmentor.collections.*;
 import com.globalmentor.java.Objects;
@@ -158,12 +157,10 @@ public class StackProbeOperation extends AbstractReadWriteLockOperation {
 		readLock().lock();
 		try {
 			stackProbeCounts = classMethodCounts.entrySet().stream()
-					//TODO switch to Map.entry() in Java 9+
-					.map(entry -> new AbstractMap.SimpleImmutableEntry<>(entry.getKey(), Objects.clone(entry.getValue())))
+					.map(entry -> Map.entry(entry.getKey(), Objects.clone(entry.getValue())))
 					//TODO testing
 					.sorted(Map.Entry.<String, Count>comparingByValue().reversed())
-					//TODO switch to Collectors.toUnmodifiableList() in Java 10+
-					.collect(collectingAndThen(toList(), Collections::unmodifiableList)); //clone and get the stack probe counts
+					.collect(toUnmodifiableList()); //clone and get the stack probe counts
 		} finally {
 			readLock().unlock();
 		}

@@ -46,8 +46,10 @@ public final class Bytes {
 	 * @param bytes The values to convert.
 	 * @return A lowercase string with hexadecimal digits, each pair representing a byte in the byte array.
 	 * @see <a href="https://stackoverflow.com/q/2817752">Java code To convert byte to Hexadecimal</a>
+	 * @deprecated to be removed in favor of {@link java.util.HexFormat#of()} and {@link java.util.HexFormat#formatHex(byte[])}.
 	 */
-	public static String toHexString(final byte[] bytes) { //TODO switch to Java 17 `HexFormat`
+	@Deprecated(forRemoval = true)
+	public static String toHexString(final byte[] bytes) {
 		final int length = bytes.length;
 		final byte[] hexCharBytes = new byte[length * 2]; //based on Java 17 source code, it's more efficient to construct a string using ASCII bytes than characters
 		for(int i = length - 1; i >= 0; --i) {
@@ -67,8 +69,10 @@ public final class Bytes {
 	 * @throws IllegalArgumentException if a hex value is missing one of its pairs (i.e. the sequence length is odd) or if a hex representation contains an
 	 *           invalid character.
 	 * @see <a href="https://stackoverflow.com/q/140131">Convert a string representation of a hex dump to a byte array using Java?</a>
+	 * @deprecated to be removed in favor of {@link java.util.HexFormat#of()} and {@link java.util.HexFormat#parseHex(CharSequence)}.
 	 */
-	public static byte[] fromHexString(@Nonnull final CharSequence hex) { //TODO switch to Java 17 `HexFormat`
+	@Deprecated(forRemoval = true)
+	public static byte[] fromHexString(@Nonnull final CharSequence hex) {
 		final int length = hex.length();
 		checkArgument((length & 1) == 0, "String must have an even number of characters, representing a pair of hex digit for each byte.)");
 		final int byteCount = length / 2;

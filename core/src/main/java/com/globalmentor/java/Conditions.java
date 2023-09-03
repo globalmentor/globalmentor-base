@@ -423,11 +423,12 @@ public class Conditions {
 	 * <p>
 	 * This is normally a precondition check.
 	 * </p>
-	 * @apiNote Java 9 introduced an equivalent method in {@link java.util.Objects}.
+	 * @apiNote Java 9 introduced an equivalent method {@link java.util.Objects#checkIndex(int, int)}.
 	 * @param index The index to check.
 	 * @param length The exclusive length.
 	 * @return The given index.
 	 * @throws IndexOutOfBoundsException if the index is less than zero, or equal to or greater than given length.
+	 * @see java.util.Objects#checkIndex(int, int)
 	 */
 	public static int checkIndexBounds(final int index, final int length) {
 		return checkIndexBounds(index, 0, length);
@@ -438,11 +439,12 @@ public class Conditions {
 	 * <p>
 	 * This is normally a precondition check.
 	 * </p>
-	 * @apiNote Java 16 introduced an equivalent method in {@link java.util.Objects}.
+	 * @apiNote Java 16 introduced an equivalent method in {@link java.util.Objects#checkIndex(long, long)}.
 	 * @param index The index to check.
 	 * @param length The exclusive length.
 	 * @return The given index.
 	 * @throws IndexOutOfBoundsException if the index is less than zero, or equal to or greater than given length.
+	 * @see java.util.Objects#checkIndex(long, long)
 	 */
 	public static long checkIndexBounds(final long index, final long length) {
 		return checkIndexBounds(index, 0, length);
