@@ -20,7 +20,6 @@ import static java.util.Arrays.*;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
-import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -36,8 +35,8 @@ public class FunctionsTest {
 	@Test
 	void testCountingConsumer() {
 		final List<Map.Entry<String, Long>> results = new ArrayList<>();
-		asList("foo", "bar", "baz").forEach(Functions.countingConsumer((id, count) -> results.add(new SimpleImmutableEntry<>(id, count))));
-		assertThat(results, contains(new SimpleImmutableEntry<>("foo", 1L), new SimpleImmutableEntry<>("bar", 2L), new SimpleImmutableEntry<>("baz", 3L)));
+		asList("foo", "bar", "baz").forEach(Functions.countingConsumer((id, count) -> results.add(Map.entry(id, count))));
+		assertThat(results, contains(Map.entry("foo", 1L), Map.entry("bar", 2L), Map.entry("baz", 3L)));
 	}
 
 	/** {@link Functions#countingConsumer(AtomicLong, java.util.function.BiConsumer) */
@@ -45,15 +44,15 @@ public class FunctionsTest {
 	void testCountingConsumerWithProvidedCounter() {
 		final AtomicLong counter = new AtomicLong(5);
 		final List<Map.Entry<String, Long>> results = new ArrayList<>();
-		asList("foo", "bar", "baz").forEach(Functions.countingConsumer(counter, (id, count) -> results.add(new SimpleImmutableEntry<>(id, count))));
-		assertThat(results, contains(new SimpleImmutableEntry<>("foo", 6L), new SimpleImmutableEntry<>("bar", 7L), new SimpleImmutableEntry<>("baz", 8L)));
+		asList("foo", "bar", "baz").forEach(Functions.countingConsumer(counter, (id, count) -> results.add(Map.entry(id, count))));
+		assertThat(results, contains(Map.entry("foo", 6L), Map.entry("bar", 7L), Map.entry("baz", 8L)));
 	}
 
 	/** {@link Functions#countingConsumer(java.util.function.BiConsumer)} */
 	@Test
 	void testCountingConsumerEmpty() {
 		final List<Map.Entry<String, Long>> results = new ArrayList<>();
-		Collections.<String>emptySet().forEach(Functions.countingConsumer((id, count) -> results.add(new SimpleImmutableEntry<>(id, count))));
+		Collections.<String>emptySet().forEach(Functions.countingConsumer((id, count) -> results.add(Map.entry(id, count))));
 		assertThat(results, is(empty()));
 	}
 
