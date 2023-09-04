@@ -908,7 +908,7 @@ public final class Classes {
 			final Map<Class<? extends R>, Map.Entry<Class<? extends R>, Integer>> classHeightMap) {
 		final Map.Entry<Class<? extends R>, Integer> oldClassHeight = classHeightMap.get(objectClass); //get the old height
 		if(oldClassHeight == null || oldClassHeight.getValue().intValue() < height) { //if there was no old height, or the old height is not as large as the new height
-			classHeightMap.put(objectClass, new AbstractMap.SimpleImmutableEntry<Class<? extends R>, Integer>(objectClass, height)); //update the height for the class
+			classHeightMap.put(objectClass, Map.entry(objectClass, height)); //update the height for the class
 		}
 	}
 

@@ -17,14 +17,11 @@
 package com.globalmentor.java;
 
 import java.util.*;
-import java.util.AbstractMap.SimpleEntry;
 import java.util.function.ToIntBiFunction;
-import java.util.stream.Stream;
 
 import static com.github.npathai.hamcrestopt.OptionalMatchers.*;
 import static com.globalmentor.java.CharSequences.*;
 import static java.util.Arrays.*;
-import static java.util.stream.Collectors.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.hamcrest.MatcherAssert.*;
