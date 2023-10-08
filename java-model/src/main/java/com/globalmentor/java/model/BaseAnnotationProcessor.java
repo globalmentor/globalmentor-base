@@ -16,24 +16,77 @@
 
 package com.globalmentor.java.model;
 
+import static com.globalmentor.collections.Sets.*;
+import static java.util.stream.Collectors.*;
+
 import java.lang.annotation.Annotation;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import javax.annotation.*;
 import javax.annotation.processing.*;
+import javax.lang.model.SourceVersion;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.*;
 import javax.lang.model.util.*;
 
 /**
  * A base implementation of an annotation providing convenient access to element and type utilities.
+ * @implSpec This processor by default supports the latest supported source version.
  * @author Garret Wilson
  * @see ModelElements
  * @see ModelTypes
  */
 public abstract class BaseAnnotationProcessor extends AbstractProcessor {
+
+	/**
+	 * The canonical names class names representing annotation type supported by this processor. These will be merged with any annotations indicated by the
+	 * {@link SupportedAnnotationTypes} annotation.
+	 */
+	private final Set<String> supportedAnnotationTypeCanonicalNames;
+
+	/** Constructor specifying no specific annotation types; those may still be specified using the {@link SupportedAnnotationTypes} annotation. */
+	public BaseAnnotationProcessor() {
+		this(Set.of());
+	}
+
+	/**
+	 * Supported annotation types constructors.
+	 * @param supportedAnnotationTypes The canonical names class names representing annotation type supported by this processor, in addition to any specified by
+	 *          the {@link SupportedAnnotationTypes} annotation.
+	 */
+	public BaseAnnotationProcessor(final Set<Class<? extends Annotation>> supportedAnnotationTypes) {
+		this.supportedAnnotationTypeCanonicalNames = supportedAnnotationTypes.stream().map(Class::getCanonicalName).collect(toUnmodifiableSet());
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @implSpec This processor returns the union of any supported annotation types provided in the constructor, and any specified by the
+	 *           {@link SupportedAnnotationTypes} annotation.
+	 */
+	@Override
+	public Set<String> getSupportedAnnotationTypes() {
+		if(supportedAnnotationTypeCanonicalNames.isEmpty()) { //if we have no specific supported annotation types, return the default value
+			return super.getSupportedAnnotationTypes(); //beyond checking for the `SupportedAnnotationTypes` annotation, the default version provides additional functionality such as appropriate warnings 
+		}
+		final SupportedAnnotationTypes supportedAnnotationTypesAnnotation = getClass().getAnnotation(SupportedAnnotationTypes.class);
+		if(supportedAnnotationTypesAnnotation == null) {
+			return supportedAnnotationTypeCanonicalNames;
+		}
+		assert supportedAnnotationTypesAnnotation != null;
+		return union(super.getSupportedAnnotationTypes(), supportedAnnotationTypeCanonicalNames);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @implSpec This implementation indicates support for the latest supported source version.
+	 * @see SourceVersion#latestSupported()
+	 */
+	@Override
+	public SourceVersion getSupportedSourceVersion() {
+		return SourceVersion.latestSupported();
+	}
 
 	/**
 	 * Returns the processing environment providing by the tool framework.
