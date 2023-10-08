@@ -17,8 +17,13 @@
 package com.globalmentor.collections;
 
 import static java.util.Collections.*;
+import static java.util.Objects.*;
+import static java.util.stream.Collectors.*;
+import static java.util.stream.Stream.*;
 
 import java.util.*;
+
+import javax.annotation.Nonnull;
 
 /**
  * Utilities to be used with sets.
@@ -180,4 +185,24 @@ public class Sets {
 			}
 		}
 	}
+
+	/**
+	 * Returns some set representing the union of two given sets.
+	 * @implNote No guarantees are made about whether the returned set is mutable, nor whether the returned set is a new instance or a reference to one of the
+	 *           given sets.
+	 * @param <T> The common type found in the sets.
+	 * @param set1 The first set of the union.
+	 * @param set2 The second set of the union.
+	 * @return A set containing the logical union of the contents of the given two sets.
+	 */
+	public static <T> Set<T> union(@Nonnull final Set<T> set1, @Nonnull final Set<T> set2) {
+		if(set1.isEmpty()) {
+			return requireNonNull(set2);
+		}
+		if(set2.isEmpty()) {
+			return set1;
+		}
+		return concat(set1.stream(), set2.stream()).collect(toUnmodifiableSet());
+	}
+
 }
