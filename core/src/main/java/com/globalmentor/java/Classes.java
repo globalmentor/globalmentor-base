@@ -74,6 +74,7 @@ public final class Classes {
 	/**
 	 * Determines the Java class represented by the given URI. A URI represents a Java class if it has a {@value Java#JAVA_URI_SCHEME} scheme in the form
 	 * <code>java:/<var>com</var>/<var>example</var>/<var>package</var>/<var>Class</var></code>.
+	 * @implSpec This implementation looks for a class using the class loader of the {@link Classes} class.
 	 * @param resourceURI The URI which is expected to represent a Java class, or <code>null</code>.
 	 * @return The Java class represented by the given URI, or <code>null</code> if the URI is not a <code>java:</code> URI.
 	 * @throws IllegalArgumentException if the given URI represents a Java class that does not have the correct syntax, e.g. it does not have an absolute
@@ -88,7 +89,7 @@ public final class Classes {
 				checkNotCollectionPath(classPath); //a class URI is not a collection
 				if(classPath.startsWith(ROOT_PATH)) { //if the path is absolute
 					final String className = decode(classPath.substring(ROOT_PATH.length()).replace(PATH_SEPARATOR, PACKAGE_SEPARATOR)); //skip the root path delimiter, replace path separators with package separators, and decode the string before trying to load the class
-					return Class.forName(className);
+					return Class.forName(className, true, Classes.class.getClassLoader());
 				} else { //if the path is not absolute
 					throw new IllegalArgumentException("Java URI " + resourceURI + " does not have an absolute path.");
 				}

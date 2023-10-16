@@ -39,6 +39,7 @@ public class Packages {
 	/**
 	 * Determines the Java package represented by the given URI. A URI represents a Java package if it has a {@value Java#JAVA_URI_SCHEME} scheme in the form
 	 * <code>java:/<var>com</var>/<var>example</var>/<var>package</var>/</code>.
+	 * @implSpec This implementation looks for a package using the class loader of the {@link Packages} class.
 	 * @param resourceURI The URI which is expected to represent a Java package, or <code>null</code>.
 	 * @return The Java package represented by the given URI, or <code>null</code> if the URI is not a <code>java:</code> URI.
 	 * @throws IllegalArgumentException if the given URI represents a Java package that does not have the correct syntax, e.g. it does not have an absolute
@@ -53,7 +54,7 @@ public class Packages {
 				checkCollectionPath(classPath); //a package URI is a collection
 				if(classPath.startsWith(ROOT_PATH)) { //if the path is absolute
 					final String packageName = decode(classPath.substring(ROOT_PATH.length()).replace(PATH_SEPARATOR, PACKAGE_SEPARATOR)); //skip the root path delimiter, replace path separators with package separators, and decode the string before trying to load the class
-					final Package pkg = Package.getPackage(packageName);
+					final Package pkg = Packages.class.getClassLoader().getDefinedPackage(packageName);
 					if(pkg == null) {
 						throw new ClassNotFoundException("Package not found: " + packageName);
 					}
