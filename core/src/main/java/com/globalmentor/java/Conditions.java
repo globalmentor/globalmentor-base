@@ -18,6 +18,7 @@ package com.globalmentor.java;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Optional;
+import java.util.function.*;
 
 import javax.annotation.*;
 
@@ -33,7 +34,7 @@ import com.globalmentor.model.ConfiguredStateException;
 public class Conditions {
 
 	/**
-	 * Checks the results of an expression to see if an argument is correct, and throws an {@link IllegalArgumentException} if the value is <code>false</code>.
+	 * Checks the result of an expression to see if an argument is correct, and throws an {@link IllegalArgumentException} if the value is <code>false</code>.
 	 * @apiNote This is a precondition check.
 	 * @param test The result of the test.
 	 * @throws IllegalArgumentException if the given value is <code>false</code>.
@@ -43,7 +44,7 @@ public class Conditions {
 	}
 
 	/**
-	 * Checks the results of an expression to see if an argument is correct, and throws an {@link IllegalArgumentException} if the value is <code>false</code>.
+	 * Checks the result of an expression to see if an argument is correct, and throws an {@link IllegalArgumentException} if the value is <code>false</code>.
 	 * @apiNote This is a precondition check.
 	 * @param test The result of the test.
 	 * @param description A description of the test to be used when generating an exception, optionally formatted with arguments, or <code>null</code> for no
@@ -62,6 +63,38 @@ public class Conditions {
 			}
 			throw new IllegalArgumentException(description);
 		}
+	}
+
+	/**
+	 * Creates a consumer to check the result of a predicate to see if an argument is correct, and throws an {@link IllegalArgumentException} if the value is
+	 * <code>false</code>.
+	 * @apiNote This method is useful for checking an optionally present value using e.g. {@link Optional#ifPresent(Consumer)}.
+	 * @apiNote This is a precondition check.
+	 * @param <T> The type of object being tested.
+	 * @param predicate The predicate to test.
+	 * @return A consumer that will throw {@link IllegalArgumentException} if the result of the predicate is <code>false</code>.
+	 */
+	public static <T> Consumer<T> checkArgument(@Nonnull final Predicate<? super T> predicate) {
+		return checkArgument(predicate, null); //check the test with no description
+	}
+
+	/**
+	 * Creates a consumer to check the result of a predicate to see if an argument is correct, and throws an {@link IllegalArgumentException} if the value is
+	 * <code>false</code>.
+	 * @apiNote This method is useful for checking an optionally present value using e.g. {@link Optional#ifPresent(Consumer)}.
+	 * @apiNote This is a precondition check.
+	 * @param <T> The type of object being tested.
+	 * @param predicate The predicate to test.
+	 * @param description A description of the test to be used when generating an exception, optionally formatted with arguments, or <code>null</code> for no
+	 *          description.
+	 * @param arguments The arguments to be applied when formatting, or an empty array if the message should not be formatted.
+	 * @return A consumer that will throw {@link IllegalArgumentException} if the result of the predicate is <code>false</code>; or {@link NullPointerException}
+	 *         if the given arguments is <code>null</code>; or {@link IllegalArgumentException} if the description is an invalid pattern, or if an argument in the
+	 *         arguments array is not of the type expected by the format element(s) that use it.
+	 * @see String#format(String, Object...)
+	 */
+	public static <T> Consumer<T> checkArgument(@Nonnull final Predicate<? super T> predicate, String description, final Object... arguments) {
+		return __ -> checkArgument(predicate.test(__));
 	}
 
 	/**
@@ -307,7 +340,7 @@ public class Conditions {
 	}
 
 	/**
-	 * Checks the results of an expression to see if an argument is correct, and throws a {@link ConfiguredStateException} if the value is <code>false</code>.
+	 * Checks the result of an expression to see if an argument is correct, and throws a {@link ConfiguredStateException} if the value is <code>false</code>.
 	 * @param test The result of the test.
 	 * @throws ConfiguredStateException if the given value is <code>false</code>.
 	 */
@@ -316,7 +349,7 @@ public class Conditions {
 	}
 
 	/**
-	 * Checks the results of an expression to see if an argument is correct, and throws a {@link ConfiguredStateException} if the value is <code>false</code>.
+	 * Checks the result of an expression to see if an argument is correct, and throws a {@link ConfiguredStateException} if the value is <code>false</code>.
 	 * @param test The result of the test.
 	 * @param description A description of the test to be used when generating an exception, optionally formatted with arguments, or <code>null</code> for no
 	 *          description.
@@ -334,6 +367,36 @@ public class Conditions {
 			}
 			throw new ConfiguredStateException(description);
 		}
+	}
+
+	/**
+	 * Creates a consumer to check the result of an expression to see if an argument is correct, and throws a {@link ConfiguredStateException} if the value is
+	 * <code>false</code>.
+	 * @apiNote This method is useful for checking an optionally present value using e.g. {@link Optional#ifPresent(Consumer)}.
+	 * @param <T> The type of object being tested.
+	 * @param predicate The predicate to test.
+	 * @return A consumer that will throw {@link ConfiguredStateException} if the given value is <code>false</code>.
+	 */
+	public static <T> Consumer<T> checkConfiguredState(@Nonnull final Predicate<? super T> predicate) {
+		return checkConfiguredState(predicate, null); //check the test with no description
+	}
+
+	/**
+	 * Creates a consumer to check the result of an expression to see if an argument is correct, and throws a {@link ConfiguredStateException} if the value is
+	 * <code>false</code>.
+	 * @apiNote This method is useful for checking an optionally present value using e.g. {@link Optional#ifPresent(Consumer)}.
+	 * @param <T> The type of object being tested.
+	 * @param predicate The predicate to test.
+	 * @param description A description of the test to be used when generating an exception, optionally formatted with arguments, or <code>null</code> for no
+	 *          description.
+	 * @param arguments The arguments to be applied when formatting, or an empty array if the message should not be formatted.
+	 * @return A consumer that will throw {@link ConfiguredStateException} if the given value is <code>false</code>; or {@link NullPointerException} if the given
+	 *         arguments is <code>null</code>; or {@link IllegalArgumentException} if the description is an invalid pattern, or if an argument in the arguments
+	 *         array is not of the type expected by the format element(s) that use it.
+	 * @see String#format(String, Object...)
+	 */
+	public static <T> Consumer<T> checkConfiguredState(@Nonnull final Predicate<? super T> predicate, String description, final Object... arguments) {
+		return __ -> checkConfiguredState(predicate.test(__), description, arguments);
 	}
 
 	/**
@@ -448,7 +511,6 @@ public class Conditions {
 	 * @throws IllegalStateException if the given state is <code>false</code>.
 	 */
 	public static void checkState(final boolean state, String description, final Object... errorMessageArgs) {
-
 		if(!state) {
 			if(description != null && description.length() > 0) {
 				description = String.format(description, errorMessageArgs);
@@ -456,28 +518,27 @@ public class Conditions {
 
 			throw new IllegalStateException(description);
 		}
-
 	}
 
 	/**
-	 * Checks the results of an expression to see if an operation is supported, and throws an {@link UnsupportedOperationException} if the value is
+	 * Checks the result of an expression to see if an operation is supported, and throws an {@link UnsupportedOperationException} if the value is
 	 * <code>false</code>.
 	 * @param test The result of the test.
 	 * @throws UnsupportedOperationException if the given value is <code>false</code>.
 	 */
 	public static void checkSupportedOperation(final boolean test) {
-		checkArgument(test, null); //check the test with no description
+		checkSupportedOperation(test, null); //check the test with no description
 	}
 
 	/**
-	 * Checks the results of an expression to see if an operation is supported, and throws an {@link UnsupportedOperationException} if the value is
+	 * Checks the result of an expression to see if an operation is supported, and throws an {@link UnsupportedOperationException} if the value is
 	 * <code>false</code>.
 	 * @param test The result of the test.
 	 * @param description A description of the test to be used when generating an exception, optionally formatted with arguments, or <code>null</code> for no
 	 *          description.
 	 * @param arguments The arguments to be applied when formatting, or an empty array if the message should not be formatted.
 	 * @throws NullPointerException if the given arguments is <code>null</code>.
-	 * @throws IllegalArgumentException if the given value is <code>false</code>.
+	 * @throws UnsupportedOperationException if the given value is <code>false</code>.
 	 * @throws IllegalArgumentException if the description is an invalid pattern, or if an argument in the arguments array is not of the type expected by the
 	 *           format element(s) that use it.
 	 * @see String#format(String, Object...)
@@ -489,6 +550,36 @@ public class Conditions {
 			}
 			throw new UnsupportedOperationException(description);
 		}
+	}
+
+	/**
+	 * Creates a consumer to check the result of a predicate to see if an operation is supported, and throws an {@link UnsupportedOperationException} if the value
+	 * is <code>false</code>.
+	 * @apiNote This method is useful for checking an optionally present value using e.g. {@link Optional#ifPresent(Consumer)}.
+	 * @param <T> The type of object being tested.
+	 * @param predicate The predicate to test.
+	 * @return A consumer that will throw {@link UnsupportedOperationException} if the given value is <code>false</code>.
+	 */
+	public static <T> Consumer<T> checkSupportedOperation(@Nonnull final Predicate<? super T> predicate) {
+		return checkSupportedOperation(predicate, null); //check the test with no description
+	}
+
+	/**
+	 * Creates a consumer to check the result of a predicate to see if an operation is supported, and throws an {@link UnsupportedOperationException} if the value
+	 * is <code>false</code>.
+	 * @apiNote This method is useful for checking an optionally present value using e.g. {@link Optional#ifPresent(Consumer)}.
+	 * @param <T> The type of object being tested.
+	 * @param predicate The predicate to test.
+	 * @param description A description of the test to be used when generating an exception, optionally formatted with arguments, or <code>null</code> for no
+	 *          description.
+	 * @param arguments The arguments to be applied when formatting, or an empty array if the message should not be formatted.
+	 * @return A consumer that will throw {@link UnsupportedOperationException} if the given value is <code>false</code>; or {@link NullPointerException} if the
+	 *         given arguments is <code>null</code>; or {@link IllegalArgumentException} if the description is an invalid pattern, or if an argument in the
+	 *         arguments array is not of the type expected by the format element(s) that use it.
+	 * @see String#format(String, Object...)
+	 */
+	public static <T> Consumer<T> checkSupportedOperation(@Nonnull final Predicate<? super T> predicate, String description, final Object... arguments) {
+		return __ -> checkSupportedOperation(predicate.test(__), description, arguments);
 	}
 
 	/**
