@@ -29,7 +29,7 @@ import static java.util.Objects.*;
 import javax.annotation.Nonnull;
 
 import com.globalmentor.java.Bytes;
-import com.globalmentor.model.ObjectHolder;
+import com.globalmentor.model.MutableReference;
 
 /**
  * The Byte Order Mark (BOM) designations for different character encodings.
@@ -190,10 +190,10 @@ public enum ByteOrderMark {
 	 * @see <a href="http://www.w3.org/TR/2008/REC-xml-20081126/#sec-guessing-no-ext-info">XML 1.0 (Fifth Edition): F.1 Detection Without External Encoding
 	 *      Information)</a>
 	 */
-	public static Optional<ByteOrderMark> impute(final byte[] bytes, final CharSequence expectedChars, final ObjectHolder<ByteOrderMark> actualBOM) { //TODO maybe allow a default eight-bit encoding to be specified
+	public static Optional<ByteOrderMark> impute(final byte[] bytes, final CharSequence expectedChars, final MutableReference<ByteOrderMark> actualBOM) { //TODO maybe allow a default eight-bit encoding to be specified
 		Optional<ByteOrderMark> bom = ByteOrderMark.detect(bytes); //check the byte order mark by itself; if there is no BOM, this will return null
 		if(bom.isPresent()) { //if we found a byte order mark TODO improve with Java 9: https://bugs.openjdk.java.net/browse/JDK-8071670
-			actualBOM.setObject(bom.get()); //show that we actually found a byte order mark
+			actualBOM.set(bom.get()); //show that we actually found a byte order mark
 		} else { //if no byte order mark was found, try to compare characters with what is expected
 			if(bytes.length >= 4 && expectedChars.length() >= 1) { //if there are at least four bytes in the array, and we have at least one character to compare them with
 				final char expected0 = expectedChars.charAt(0); //find the first character they were expecting
