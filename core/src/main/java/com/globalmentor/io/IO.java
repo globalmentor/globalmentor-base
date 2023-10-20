@@ -23,11 +23,10 @@ import java.io.*;
 import javax.annotation.*;
 
 /**
- * Support for reading or writing a particular type.
- * @param <T> The type to read and write.
+ * I/O utilities.
  * @author Garret Wilson
  */
-public interface IO<T> {
+public class IO {
 
 	/**
 	 * Converts an object to a {@link Closeable} instance so that it can be used with try-with-resources.
