@@ -19,7 +19,7 @@ package com.globalmentor.collections;
 import static com.globalmentor.collections.SuffixTrees.*;
 
 import com.globalmentor.collections.CharSequenceSuffixTree.*;
-import com.globalmentor.model.ObjectHolder;
+import com.globalmentor.model.MutableReference;
 
 /**
  * Utilities for working with suffix trees of sequences of characters.
@@ -40,7 +40,7 @@ public class CharSequenceSuffixTrees {
 	 */
 	public static CharSequence getLongestRepeatedSubsequence(final CharSequence charSequence) {
 		final CharSequenceSuffixTree suffixTree = CharSequenceSuffixTree.create(charSequence); //create a suffix tree
-		final ObjectHolder<String> result = new ObjectHolder<String>(); //create an object to hold the resulting string
+		final MutableReference<String> result = new MutableReference<String>(); //create an object to hold the resulting string
 		visit(suffixTree, new AbstractCharSequenceVisitor() {
 
 			int maxLength = 0; //keep track of the longest length
@@ -50,13 +50,13 @@ public class CharSequenceSuffixTrees {
 				if(!node.isLeaf()) { //ignore leaf nodes---they aren't repeated sequences
 					if(charSequence.length() > maxLength) { //if this depth is farther than any before
 						maxLength = charSequence.length(); //update our max length
-						result.setObject(charSequence.toString()); //make a copy and keep track of the resulting string
+						result.set(charSequence.toString()); //make a copy and keep track of the resulting string
 					}
 				}
 				return true;
 			}
 		});
-		return result.getObject(); //return the result, if any
+		return result.get(); //return the result, if any
 	}
 
 	/**
@@ -72,7 +72,7 @@ public class CharSequenceSuffixTrees {
 	 */
 	public static CharSequence getLongestSequentialRepeatedSubsequence(final CharSequence charSequence) {
 		final CharSequenceSuffixTree suffixTree = CharSequenceSuffixTree.create(charSequence); //create a suffix tree
-		final ObjectHolder<String> result = new ObjectHolder<String>(); //create an object to hold the resulting string
+		final MutableReference<String> result = new MutableReference<String>(); //create an object to hold the resulting string
 		visit(suffixTree, new AbstractCharSequenceVisitor() {
 
 			int maxLength = 0; //keep track of the longest length
@@ -83,14 +83,14 @@ public class CharSequenceSuffixTrees {
 					if(charSequence.length() > maxLength) { //if this depth is farther than any before, see if the repeat sequence is sequential
 						if(parentEdge.getChildNode().startsWith(charSequence)) { //if the same sequence appears starting with the edge's child node
 							maxLength = charSequence.length(); //update our max length
-							result.setObject(charSequence.toString()); //make a copy and keep track of the sequentially repeated sequence
+							result.set(charSequence.toString()); //make a copy and keep track of the sequentially repeated sequence
 						}
 					}
 				}
 				return true;
 			}
 		});
-		return result.getObject(); //return the result, if any
+		return result.get(); //return the result, if any
 	}
 
 	/**
