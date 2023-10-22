@@ -41,7 +41,7 @@ import com.globalmentor.model.Count;
 public class CharSequenceSuffixTreeTest {
 
 	/** Interesting test string to use for creating suffix trees. */
-	private static final Set<String> TEST_STRINGS = Sets.immutableSetOf("xabxa", "bananas", "bookkeeper", "mississippi", "dooodah",
+	private static final Set<String> TEST_STRINGS = Set.of("xabxa", "bananas", "bookkeeper", "mississippi", "dooodah",
 			"I at once heard the rickety crickety creaking of the bridge.");
 
 	/**

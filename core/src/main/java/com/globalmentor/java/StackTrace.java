@@ -16,16 +16,13 @@
 
 package com.globalmentor.java;
 
-import static com.globalmentor.collections.Sets.*;
 import static com.globalmentor.java.Conditions.*;
 import static com.globalmentor.java.Packages.*;
+import static java.util.Arrays.*;
+import static java.util.stream.Collectors.*;
 
 import java.io.*;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import com.globalmentor.collections.Lists;
+import java.util.*;
 
 /**
  * Convenience class and methods for working with stack traces.
@@ -49,7 +46,7 @@ public class StackTrace {
 	public StackTrace() {
 		final StackTraceElement[] stackTraceElements = new Throwable().getStackTrace(); //get the current stack trace elements
 		assert stackTraceElements.length > 1 : "A caller must have called this constructor, so there must be a stack trace with more than one element.";
-		this.stackTraceElements = Lists.immutableListOf(stackTraceElements, 1, stackTraceElements.length);
+		this.stackTraceElements = stream(stackTraceElements, 1, stackTraceElements.length).collect(toUnmodifiableList());
 	}
 
 	/**
@@ -71,7 +68,7 @@ public class StackTrace {
 	 * @throws ArrayIndexOutOfBoundsException if the start index is less than zero or the end index is greater than the length.
 	 */
 	public StackTrace(final StackTraceElement[] stackTraceElements, final int start, final int end) {
-		this.stackTraceElements = Lists.immutableListOf(stackTraceElements, start, end);
+		this.stackTraceElements = stream(stackTraceElements, start, end).collect(toUnmodifiableList());
 	}
 
 	/**
@@ -184,7 +181,7 @@ public class StackTrace {
 	 * @return The stack trace element ignoring the named classes, or <code>null</code> if there is no stack trace element without one of the ignored class names.
 	 */
 	public StackTraceElement getStackTraceElementIgnoreClasses(final String... ignoreClassNames) {
-		return getStackTraceElementIgnoreClasses(immutableSetOf(ignoreClassNames));
+		return getStackTraceElementIgnoreClasses(Set.of(ignoreClassNames));
 	}
 
 	/**
@@ -221,7 +218,7 @@ public class StackTrace {
 	 *         names.
 	 */
 	public StackTraceElement getStackTraceElementIgnorePackages(final String... ignorePackageNames) {
-		return getStackTraceElementIgnorePackages(immutableSetOf(ignorePackageNames));
+		return getStackTraceElementIgnorePackages(Set.of(ignorePackageNames));
 	}
 
 	/**

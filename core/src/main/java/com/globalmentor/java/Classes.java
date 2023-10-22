@@ -29,7 +29,6 @@ import static com.globalmentor.java.Java.*;
 import static com.globalmentor.java.Strings.*;
 import static com.globalmentor.net.URIs.*;
 
-import com.globalmentor.collections.Sets;
 import com.globalmentor.io.*;
 import com.globalmentor.net.*;
 
@@ -40,8 +39,8 @@ import com.globalmentor.net.*;
 public final class Classes {
 
 	/** The set of classes that wrap primitive types. */
-	public static final Set<Class<?>> PRIMITIVE_WRAPPER_CLASSES = Sets.<Class<?>>immutableSetOf(Boolean.class, Byte.class, Character.class, Short.class,
-			Integer.class, Long.class, Float.class, Double.class);
+	public static final Set<Class<?>> PRIMITIVE_WRAPPER_CLASSES = Set.of(Boolean.class, Byte.class, Character.class, Short.class, Integer.class, Long.class,
+			Float.class, Double.class);
 
 	/** The name extension for Java class files. */
 	public static final String CLASS_FILENAME_EXTENSION = "class";

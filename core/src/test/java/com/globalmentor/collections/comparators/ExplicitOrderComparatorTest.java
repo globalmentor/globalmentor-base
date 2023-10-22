@@ -26,15 +26,13 @@ import java.util.*;
 
 import org.junit.jupiter.api.*;
 
-import com.globalmentor.collections.Lists;
-
 /**
  * Tests of {@link ExplicitOrderComparator}.
  * @author Garret Wilson
  */
 public class ExplicitOrderComparatorTest {
 
-	private final List<String> order = Lists.immutableListOf("foo", "bar");
+	private final List<String> order = List.of("foo", "bar");
 
 	/** Sorts <code>"foo"</code> and <code>"bar"</code> first, sorting the remaining strings in case naively by order to make the tests deterministic. */
 	private final Comparator<String> FOO_BAR_FIRST_COMPARATOR = ExplicitOrderComparator.explicitOrderFirst(order).thenComparing(naturalOrder());

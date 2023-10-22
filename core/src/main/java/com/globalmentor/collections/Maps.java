@@ -16,10 +16,7 @@
 
 package com.globalmentor.collections;
 
-import static java.util.Collections.*;
-
 import java.util.*;
-import java.util.Collections;
 
 import javax.annotation.*;
 
@@ -73,7 +70,7 @@ public class Maps {
 	 * @param map The map from which to remove values.
 	 * @param set The set to indicate which key entries to retain.
 	 */
-	public static <K, V> void retainAll(final Map<K, V> map, final Set<K> set) {
+	public static <K, V> void retainAll(final Map<K, V> map, final Set<? super K> set) {
 		final Iterator<Map.Entry<K, V>> entryIterator = map.entrySet().iterator(); //get an iterator to the entries in the map
 		while(entryIterator.hasNext()) { //while there are more entries
 			final Map.Entry<K, V> entry = entryIterator.next(); //get the next entry
@@ -84,34 +81,14 @@ public class Maps {
 	}
 
 	/**
-	 * Creates a read-only copy of the given map. If the map is already read-only, the map itself is returned.
-	 * @param <K> The type of key contained in the map.
-	 * @param <V> The type of value contained in the map.
-	 * @param map The map which should be returned in read-only form.
-	 * @return The immutable version of the map.
-	 * @throws NullPointerException if the given map is <code>null</code>.
-	 */
-	public static <K, V> Map<K, V> toImmutableMap(final Map<K, V> map) { //TODO improve to return an ImmutableMap<K, V>
-		if(map instanceof ImmutableMap) { //if the map is already immutable TODO fix for Java's immutable maps
-			return map;
-		}
-		final int size = map.size(); //see how big the map is
-		if(size == 1) { //if the map only contains one map entry
-			final Map.Entry<K, V> entry = map.entrySet().iterator().next();
-			return singletonMap(entry.getKey(), entry.getValue()); //return an immutable map containing the single key and value
-		}
-		return Collections.unmodifiableMap(new HashMap<K, V>(map)); //copy the map and wrap it in an unmodifiable map
-	}
-
-	/**
 	 * Converts the given map to a properties object. If the map is already a properties object, it is returned. Otherwise, a new properties object is created and
 	 * populated with the entries of the given map.
 	 * @param map The map to convert to a properties object.
 	 * @return A properties object, potentially the same instance, containing entries from the given map.
 	 */
 	public static Properties toProperties(@Nonnull final Map<?, ?> map) {
-		if(map instanceof Properties) { //if the map is already a properties object
-			return (Properties)map; //return the map as a properties object
+		if(map instanceof Properties properties) { //if the map is already a properties object
+			return properties; //return the map as a properties object
 		} else { //if the map is not a properties object
 			final Properties properties = new Properties(); //create a new properties object
 			properties.putAll(map); //put all the properties from the map

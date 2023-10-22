@@ -29,9 +29,6 @@ import javax.annotation.*;
 import com.globalmentor.collections.Lists;
 import com.globalmentor.java.Objects;
 
-import static com.globalmentor.collections.Collections.*;
-import static com.globalmentor.java.Arrays.*;
-
 /**
  * Various utilities to be used with iterators.
  * @author Garret Wilson
@@ -75,19 +72,6 @@ public class Iterators {
 	 */
 	public static <E> JoinIterator<E> concat(@Nonnull final Iterator<E> iterator, @Nonnull final Enumeration<E> enumeration) {
 		return concat(iterator, toIterator(enumeration));
-	}
-
-	/**
-	 * Creates a copy of the iterator that contains the same data but will not reflect any modified values of the underlying collection. Creates a new collection,
-	 * collects the values of the given iterator, then returns an iterator to the new collection.
-	 * @param <E> The type of items that the iterator is set up to iterate.
-	 * @param iterator The iterator to make a copy of.
-	 * @return An iterator containing the same values as the given iterator but not reflecting the underlying values of the original collection.
-	 */
-	public static <E> ListIterator<E> createCopy(final Iterator<E> iterator) {
-		final List<E> list = new ArrayList<E>(); //create a list in which to store the iterator contents
-		addAll(list, iterator); //add the contents of the iterator to the list
-		return list.listIterator(); //return an iterator to our local list containing what the original iterator contained 		
 	}
 
 	/**
@@ -186,32 +170,6 @@ public class Iterators {
 	 */
 	public static <E> Iterator<E> reverse(@Nonnull final ListIterator<E> listIterator) {
 		return new ReverseIterator<>(listIterator);
-	}
-
-	/**
-	 * Returns a copy of the contents of the iterator in a new array in iterator traversal order.
-	 * @param <E> The type of the iterator.
-	 * @param iterator The iterator the contents of which to return as an array.
-	 * @param elementClass The class representing the type of elements returned by the iterable.
-	 * @return A array containing the contents of the iterable.
-	 * @throws NullPointerException if the given iterator and/or element class is <code>null</code>.
-	 */
-	public static <E> E[] toArray(final Iterator<E> iterator, final Class<E> elementClass) {
-		final List<E> list = new ArrayList<E>(); //create a list in which to store the iterator contents
-		addAll(list, iterator); //add the contents of the iterator to the list
-		return list.toArray(createArray(elementClass, list.size())); //create an array and return the contents of the list in it
-	}
-
-	/**
-	 * Returns a copy of the contents of the iterable in a new array in iterator traversal order.
-	 * @param <E> The type of the iterator.
-	 * @param iterable The iterable the contents of which to return as an array.
-	 * @param elementClass The class representing the type of elements returned by the iterable.
-	 * @return A array containing the contents of the iterable.
-	 * @throws NullPointerException if the given iterable and/or element class is <code>null</code>.
-	 */
-	public static <E> E[] toArray(final Iterable<E> iterable, final Class<E> elementClass) {
-		return toArray(iterable.iterator(), elementClass); //get an iterator to the iterable and return an array from it
 	}
 
 	/**
