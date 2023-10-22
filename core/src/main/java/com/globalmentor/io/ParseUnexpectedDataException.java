@@ -16,7 +16,6 @@
 
 package com.globalmentor.io;
 
-import static com.globalmentor.collections.Lists.*;
 import static java.util.Objects.*;
 
 import java.io.Reader;
@@ -84,7 +83,7 @@ public class ParseUnexpectedDataException extends ParseIOException {
 	 * @param expectedStrings The expected strings.
 	 */
 	protected void setExpectedStrings(@Nonnull final List<String> expectedStrings) {
-		this.expectedStrings = immutableListOf(expectedStrings);
+		this.expectedStrings = List.copyOf(expectedStrings);
 	}
 
 	/** The string found, if strings were expected, else <code>null</code>. */
@@ -226,9 +225,9 @@ public class ParseUnexpectedDataException extends ParseIOException {
 	 */
 	public ParseUnexpectedDataException(final String[] expectedStrings, final String foundString, final long lineIndex, final long charIndex,
 			final String sourceName) {
-		super("Unexpected character: expected one of " + convertStringsToMessage(immutableListOf(expectedStrings)) + " found "
-				+ convertStringsToMessage(immutableListOf(foundString)) + ".", sourceName, lineIndex, charIndex);
-		setExpectedStrings(immutableListOf(expectedStrings)); //save the expected strings
+		super("Unexpected character: expected one of " + convertStringsToMessage(List.of(expectedStrings)) + " found "
+				+ convertStringsToMessage(List.of(foundString)) + ".", sourceName, lineIndex, charIndex);
+		setExpectedStrings(List.of(expectedStrings)); //save the expected strings
 		setFoundString(foundString); //save the string found
 	}
 
@@ -254,7 +253,7 @@ public class ParseUnexpectedDataException extends ParseIOException {
 		if(getExpectedCharacters().isPresent()) { //if we were expecting characters
 			return Characters.getLabel(getFoundCharacter()); //we will have found a character, so return it
 		} else if(getExpectedStrings().isPresent()) { //if we were expecting strings
-			return convertStringsToMessage(immutableListOf(getFoundString().get())); //we will have found a string, so return what we found
+			return convertStringsToMessage(getFoundString().map(List::of).orElseThrow(IllegalStateException::new)); //we will have found a string, so return what we found
 		} else
 			//if we don't know what we were expecting
 			return ""; //return a null string; this in theory should never happen

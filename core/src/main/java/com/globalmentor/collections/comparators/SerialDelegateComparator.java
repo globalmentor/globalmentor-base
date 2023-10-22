@@ -16,8 +16,6 @@
 
 package com.globalmentor.collections.comparators;
 
-import static com.globalmentor.collections.Lists.*;
-
 import java.util.Comparator;
 import java.util.List;
 
@@ -65,7 +63,7 @@ public class SerialDelegateComparator<T> extends AbstractSortOrderComparator<T> 
 			throw new IllegalArgumentException("At least one delegate comparator must be given.");
 		}
 		@SuppressWarnings("varargs")
-		final List<Comparator<? super T>> comparatorList = immutableListOf(comparators); //copy the comparators so no one can modify them externally to this class
+		final List<Comparator<? super T>> comparatorList = List.of(comparators); //copy the comparators so no one can modify them externally to this class
 		this.comparators = comparatorList;
 	}
 

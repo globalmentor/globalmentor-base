@@ -21,8 +21,6 @@ import static org.hamcrest.MatcherAssert.*;
 
 import org.junit.jupiter.api.Test;
 
-import com.globalmentor.collections.Lists;
-
 /**
  * Tests of {@link FilenameExtensionIterator}.
  * 
@@ -33,14 +31,14 @@ public class FilenameExtensionIteratorTest {
 	/** Indirectly tests the iterator by examining the results of using it as an {@link Iterable} . */
 	@Test
 	public void testAsIterable() {
-		assertThat(Lists.listOf(new FilenameExtensionIterator("")), empty());
-		assertThat(Lists.listOf(new FilenameExtensionIterator("example")), empty());
-		assertThat(Lists.listOf(new FilenameExtensionIterator(".example")), contains("example"));
-		assertThat(Lists.listOf(new FilenameExtensionIterator(".foo.bar")), contains("foo.bar", "bar"));
-		assertThat(Lists.listOf(new FilenameExtensionIterator(".example.foo.bar")), contains("example.foo.bar", "foo.bar", "bar"));
-		assertThat(Lists.listOf(new FilenameExtensionIterator("example.foo.bar")), contains("foo.bar", "bar"));
-		assertThat(Lists.listOf(new FilenameExtensionIterator("example.foobar")), contains("foobar"));
-		assertThat(Lists.listOf(new FilenameExtensionIterator("foo.bar")), contains("bar"));
+		assertThat(new FilenameExtensionIterator("").hasNext(), is(false));
+		assertThat(new FilenameExtensionIterator("example").hasNext(), is(false));
+		assertThat(() -> new FilenameExtensionIterator(".example"), contains("example"));
+		assertThat(() -> new FilenameExtensionIterator(".foo.bar"), contains("foo.bar", "bar"));
+		assertThat(() -> new FilenameExtensionIterator(".example.foo.bar"), contains("example.foo.bar", "foo.bar", "bar"));
+		assertThat(() -> new FilenameExtensionIterator("example.foo.bar"), contains("foo.bar", "bar"));
+		assertThat(() -> new FilenameExtensionIterator("example.foobar"), contains("foobar"));
+		assertThat(() -> new FilenameExtensionIterator("foo.bar"), contains("bar"));
 	}
 
 }

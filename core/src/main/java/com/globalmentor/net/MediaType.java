@@ -30,7 +30,6 @@ import static java.util.stream.Collectors.*;
 
 import java.io.IOException;
 
-import static com.globalmentor.collections.Sets.*;
 import static com.globalmentor.java.CharSequences.*;
 import static com.globalmentor.java.Characters.SPACE_CHAR;
 import static com.globalmentor.java.Conditions.*;
@@ -295,7 +294,7 @@ public final class MediaType {
 	 * @throws IllegalArgumentException if the primary type and/or subtype does not conform to the {@link MediaType#RESTRICTED_NAME_PATTERN} pattern.
 	 */
 	public static MediaType of(final String primaryType, final String subType, final Parameter... parameters) {
-		return new MediaType(primaryType, subType, immutableSetOf(parameters)); //create a new media type from the given values, creating an immutable copy of the parameters
+		return new MediaType(primaryType, subType, Set.of(parameters)); //create a new media type from the given values, creating an immutable copy of the parameters
 	}
 
 	/**
@@ -309,7 +308,7 @@ public final class MediaType {
 	 * @throws IllegalArgumentException if the primary type and/or subtype does not conform to the {@link MediaType#RESTRICTED_NAME_PATTERN} pattern.
 	 */
 	public static MediaType of(final String primaryType, final String subType, final Set<Parameter> parameters) {
-		return new MediaType(primaryType, subType, immutableSetOf(parameters)); //create a new media type from the given values, creating an immutable copy of the parameters
+		return new MediaType(primaryType, subType, Set.copyOf(parameters)); //create a new media type from the given values, creating an immutable copy of the parameters
 	}
 
 	/**
@@ -616,7 +615,7 @@ public final class MediaType {
 	 * @return A string representing the type in the form "<var>primaryType</var>/<var>subType</var>[;<var>parameters</var>]".
 	 */
 	public static String toString(@Nonnull final String primaryType, @Nonnull final String subType, final Parameter... parameters) {
-		return toString(primaryType, subType, immutableSetOf(parameters));
+		return toString(primaryType, subType, Set.of(parameters));
 	}
 
 	/**
