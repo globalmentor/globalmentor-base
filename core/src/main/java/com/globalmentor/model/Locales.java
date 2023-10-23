@@ -67,6 +67,26 @@ public final class Locales {
 	}
 
 	/**
+	 * Returns a locale representing only the language, excluding any script, country, or variant. The language locale is equivalent to what <cite>RFC 5646</cite>
+	 * refers to as the "primary language" subtag of a language tag.
+	 * @apiNote If no language is present, this method throws an {@link IllegalArgumentException} rather than returning {@link Optional} because it is assumed
+	 *          that logic needing the {@link Locale} form of the primary language is already working in a context in which the data is expected to be a valid
+	 *          language tag, and for which {@link Locale#ROOT} would not be considered valid data.
+	 * @implNote The implementation requests a new {@link Locale} for the locale language, if any, even if the given locale does not return any components such as
+	 *           {@link Locale#getCountry()}, because the given {@link Locale} instance may contain additional information that do not appear via its accessor
+	 *           methods (and that may still appear in {@link Locale#toString()} for example).
+	 * @param locale The locale from which to find a language locale.
+	 * @return A {@link Locale} representing only the language of the given locale.
+	 * @throws IllegalArgumentException if the given locale has no language; for example if the given locale is {@link Locale#ROOT}.
+	 * @see #findLanguage(Locale)
+	 * @see Locale#forLanguageTag(String)
+	 */
+	public static Locale toLanguageLocale(@Nonnull final Locale locale) {
+		return findLanguage(locale).map(Locale::forLanguageTag)
+				.orElseThrow(() -> new IllegalArgumentException("Cannot produce a language locale for locale `%s`, which has no language.".formatted(locale)));
+	}
+
+	/**
 	 * Finds the script for a locale, which is an ISO 15924 4-letter script code. The first letter is uppercase and the rest are lowercase; for example
 	 * <code>Latn</code> and <code>Cyrl</code>.
 	 * @apiNote This is a utility method that calls {@link Locale#getScript()}, returning {@link Optional#empty()} rather than the empty string to indicate no

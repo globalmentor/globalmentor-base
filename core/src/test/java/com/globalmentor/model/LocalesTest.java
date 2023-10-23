@@ -19,6 +19,7 @@ package com.globalmentor.model;
 import static com.github.npathai.hamcrestopt.OptionalMatchers.*;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Locale;
 
@@ -46,6 +47,15 @@ public class LocalesTest {
 	void testFindLanguage() {
 		assertThat(Locales.findLanguage(Locale.forLanguageTag("hy-Latn-IT-arevela")), isPresentAndIs("hy"));
 		assertThat("Canonicalized", Locales.findLanguage(Locale.forLanguageTag("zh-hak-CN")), isPresentAndIs("hak")); //canonicalized to `hak-CN`
+	}
+
+	/** @see Locales#toLanguageLocale(Locale) */
+	@Test
+	void testToLanguageLocale() {
+		assertThat(Locales.toLanguageLocale(Locale.forLanguageTag("en")), is(Locale.forLanguageTag("en")));
+		assertThat(Locales.toLanguageLocale(Locale.forLanguageTag("en-US")), is(Locale.forLanguageTag("en")));
+		assertThat(Locales.toLanguageLocale(Locale.forLanguageTag("hy-Latn-IT-arevela")), is(Locale.forLanguageTag("hy")));
+		assertThrows(IllegalArgumentException.class, () -> Locales.toLanguageLocale(Locale.ROOT));
 	}
 
 	/** @see Locales#findScript(Locale) */
