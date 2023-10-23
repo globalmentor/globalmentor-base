@@ -30,7 +30,7 @@ import com.globalmentor.text.ASCII;
 /**
  * Constants and utilities for working with language tags as per <cite>RFC 5646</cite>.
  * @author Garret Wilson
- * @see <a href="https://datatracker.ietf.org/doc/html/rfc5646">RFC 5646: Tags for Identifying Languages</a>
+ * @see <a href="https://www.rfc-editor.org/rfc/rfc5646.html">RFC 5646: Tags for Identifying Languages</a>
  * @see Locale
  * @see Locales
  */
