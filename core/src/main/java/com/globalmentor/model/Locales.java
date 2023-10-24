@@ -35,17 +35,87 @@ public final class Locales {
 	/** The character used to separate components in a locale: '_'. */
 	public static final char LOCALE_SEPARATOR = '_';
 
+	/** The artificial language code used by {@link Locale} for indicating a blank language when producing a language tag. */
+	public static final String UNDETERMINED_LANGUAGE_CODE = "und";
+
+	/**
+	 * Converts a string that represents some series of subtags in legacy {@link Locale} syntax to the <cite>RFC 5646</cite> syntax for language subtags. The
+	 * string may be an entire locale or just a locale component. For example this method converts the locale string <code>en_US</code> to <code>en-US</code>. It
+	 * also converts the variant locale component <code>rozaj_biske</code> to <code>rozaj-biske</code>. Parts of the string that are already formatted using the
+	 * language tag delimiter will be unchanged.
+	 * @param string The locale-syntax string, which may be an entire locale or only a locale component.
+	 * @return The string formatted as a sequence of language tag subtags as per <cite>RFC 5646</cite>.
+	 * @see <a href="https://www.rfc-editor.org/rfc/rfc5646.html">RFC 5646: Tags for Identifying Languages</a>
+	 */
+	public static String toLanguageTagSubtags(@Nonnull final String string) {
+		return string.replace(LOCALE_SEPARATOR, LanguageTags.SUBTAG_SEPARATOR);
+	}
+
+	/**
+	 * Determines whether the given locale indicates a language, i.e. its {@link Locale#getLanguage()} component is not empty. If the output of this method is
+	 * <code>true</code>, {@link #toPrimaryLanguageLocale(Locale)} will not throw an exception. Notably this method will return <code>false</code> for
+	 * {@link Locale#ROOT}.
+	 * @apiNote This is useful for filtering out locales (e.g. from a stream or {@link Optional}) that are not useful as language tags (as their
+	 *          {@link Locale#toLanguageTag()} would produce a string with the code {@value #UNDETERMINED_LANGUAGE_CODE}). Primarily this precludes
+	 *          {@link Locale#ROOT}, for which all components are blank.
+	 * @param locale The locale to check.
+	 * @return <code>true</code> if this locale indicates a language.
+	 * @see #isPrimaryLanguageLocale(Locale)
+	 */
+	public static boolean isLanguagePresent(@Nonnull final Locale locale) {
+		return !locale.getLanguage().isEmpty();
+	}
+
 	/**
 	 * Finds the language code of a locale.
-	 * @apiNote This is a utility method that calls {@link Locale#getLanguage()}, returning {@link Optional#empty()} rather than the empty string to indicate no
-	 *          defined value.
+	 * @apiNote This is a utility method that calls {@link Locale#getLanguage()} and converts it to language tag syntax, returning {@link Optional#empty()} rather
+	 *          than the empty string to indicate no defined value.
 	 * @implNote This method returns the new forms for the obsolete ISO 639 codes.
+	 * @implNote This method returns canonicalized language tag information, without <code>extlang</code> subtags, so there appears to be no concern for the
+	 *           legacy {@link Locale} syntax versus the modern language tag syntax. For example the language tag <code>zh-hak-CN</code> which has a language
+	 *           (with an <code>extlang</code> subtag) of <code>zh-hak</code>, will be canonicalized to <code>hak-CN</code>, so that this method returns
+	 *           <code>hak</code> for the language code. See <a href="https://www.rfc-editor.org/rfc/rfc5646.html">RFC 5646: Tags for Identifying Languages § 4.5.
+	 *           Canonicalization of Language Tags</a> for more information, which states, "The canonical form contains no 'extlang' subtags."
 	 * @param locale The locale from which to find the value.
 	 * @return The language code, which will not be present if none is defined.
 	 * @throws NullPointerException if the given locale is <code>null</code>.
 	 */
 	public static Optional<String> findLanguage(@Nonnull final Locale locale) {
 		return Optional.of(locale.getLanguage()).filter(not(String::isEmpty));
+	}
+
+	/**
+	 * Determines whether the given locale <em>only</em> indicates a language, i.e. its {@link Locale#getLanguage()} component is not empty, but its other
+	 * components <em>are</em> empty. This method will always return true for a locale produced by {@link #toPrimaryLanguageLocale(Locale)}. This method returns
+	 * <code>false</code> for {@link Locale#ROOT}.
+	 * @param locale The locale to check.
+	 * @return <code>true</code> if the language component is present but all of the other components of the given locale are missing.
+	 * @see #isLanguagePresent(Locale)
+	 * @see #toPrimaryLanguageLocale(Locale)
+	 */
+	public static boolean isPrimaryLanguageLocale(@Nonnull final Locale locale) {
+		return isLanguagePresent(locale) && locale.getScript().isEmpty() && locale.getCountry().isEmpty() && locale.getVariant().isEmpty();
+	}
+
+	/**
+	 * Returns a locale representing only the language, excluding any script, country, or variant. This is equivalent to what <cite>RFC 5646</cite> refers to as
+	 * the "primary language" subtag of a language tag.
+	 * @apiNote If no language is present, this method throws an {@link IllegalArgumentException} rather than returning {@link Optional} because it is assumed
+	 *          that logic needing the {@link Locale} form of the primary language is already working in a context in which the data is expected to be a valid
+	 *          language tag, and for which {@link Locale#ROOT} would not be considered valid data.
+	 * @implNote The implementation requests a new {@link Locale} for the locale language, if any, even if the given locale does not return any components such as
+	 *           {@link Locale#getCountry()}, because the given {@link Locale} instance may contain additional information that do not appear via its accessor
+	 *           methods (and that may still appear in {@link Locale#toString()} for example).
+	 * @param locale The locale from which to find a language locale.
+	 * @return A {@link Locale} representing only the language of the given locale.
+	 * @throws IllegalArgumentException if the given locale has no language; for example if the given locale is {@link Locale#ROOT}.
+	 * @see #findLanguage(Locale)
+	 * @see #isPrimaryLanguageLocale(Locale)
+	 * @see Locale#forLanguageTag(String)
+	 */
+	public static Locale toPrimaryLanguageLocale(@Nonnull final Locale locale) {
+		return findLanguage(locale).map(Locale::forLanguageTag)
+				.orElseThrow(() -> new IllegalArgumentException("Cannot produce a language locale for locale `%s`, which has no language.".formatted(locale)));
 	}
 
 	/**
@@ -74,7 +144,10 @@ public final class Locales {
 	}
 
 	/**
-	 * Finds the variant code for a locale.
+	 * Finds the variant code for a locale in legacy {@link Locale} syntax.
+	 * @apiNote <em>Important:</em> Non-legacy code should almost always use {@link #findLanguageTagVariant(Locale)} instead, which ensures that the returned
+	 *          value uses the correct RFC 5646 language tag syntax. For example, for the language tag <code>sl-rozaj-biske</code>, this method will return, not
+	 *          the language tag syntax <code>rozaj-biske</code>, but the legacy {@link Locale} syntax <code>rozaj_biske</code>.
 	 * @apiNote This is a utility method that calls {@link Locale#getVariant()}, returning {@link Optional#empty()} rather than the empty string to indicate no
 	 *          defined value.
 	 * @param locale The locale from which to find the value.
@@ -83,6 +156,20 @@ public final class Locales {
 	 */
 	public static Optional<String> findVariant(@Nonnull final Locale locale) {
 		return Optional.of(locale.getVariant()).filter(not(String::isEmpty));
+	}
+
+	/**
+	 * Finds the variant code for a locale in language tag format. For example, for the language tag <code>sl-rozaj-biske</code>, this method will return the
+	 * variant <code>rozaj-biske</code> in language tag syntax.
+	 * @apiNote This is a utility method that calls {@link Locale#getVariant()} and converts it to language tag syntax, returning {@link Optional#empty()} rather
+	 *          than the empty string to indicate no defined value.
+	 * @param locale The locale from which to find the value.
+	 * @return The variant code, which will not be present if none is defined.
+	 * @throws NullPointerException if the given locale is <code>null</code>.
+	 * @see <a href="https://www.rfc-editor.org/rfc/rfc5646.html">RFC 5646: Tags for Identifying Languages</a>
+	 */
+	public static Optional<String> findLanguageTagVariant(@Nonnull final Locale locale) {
+		return findVariant(locale).map(Locales::toLanguageTagSubtags);
 	}
 
 	/**
