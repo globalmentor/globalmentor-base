@@ -35,6 +35,9 @@ public final class Locales {
 	/** The character used to separate components in a locale: '_'. */
 	public static final char LOCALE_SEPARATOR = '_';
 
+	/** The artificial language code used by {@link Locale} for indicating a blank language when producing a language tag. */
+	public static final String UNDETERMINED_LANGUAGE_CODE = "und";
+
 	/**
 	 * Converts a string that represents some series of subtags in legacy {@link Locale} syntax to the <cite>RFC 5646</cite> syntax for language subtags. The
 	 * string may be an entire locale or just a locale component. For example this method converts the locale string <code>en_US</code> to <code>en-US</code>. It
@@ -46,6 +49,21 @@ public final class Locales {
 	 */
 	public static String toLanguageTagSubtags(@Nonnull final String string) {
 		return string.replace(LOCALE_SEPARATOR, LanguageTags.SUBTAG_SEPARATOR);
+	}
+
+	/**
+	 * Determines whether the given locale indicates a language, i.e. its {@link Locale#getLanguage()} component is not empty. If the output of this method is
+	 * <code>true</code>, {@link #toPrimaryLanguageLocale(Locale)} will not throw an exception. Notably this method will return <code>false</code> for
+	 * {@link Locale#ROOT}.
+	 * @apiNote This is useful for filtering out locales (e.g. from a stream or {@link Optional}) that are not useful as language tags (as their
+	 *          {@link Locale#toLanguageTag()} would produce a string with the code {@value #UNDETERMINED_LANGUAGE_CODE}). Primarily this precludes
+	 *          {@link Locale#ROOT}, for which all components are blank.
+	 * @param locale The locale to check.
+	 * @return <code>true</code> if this locale indicates a language.
+	 * @see #isPrimaryLanguageLocale(Locale)
+	 */
+	public static boolean isLanguagePresent(@Nonnull final Locale locale) {
+		return !locale.getLanguage().isEmpty();
 	}
 
 	/**
@@ -67,8 +85,21 @@ public final class Locales {
 	}
 
 	/**
-	 * Returns a locale representing only the language, excluding any script, country, or variant. The language locale is equivalent to what <cite>RFC 5646</cite>
-	 * refers to as the "primary language" subtag of a language tag.
+	 * Determines whether the given locale <em>only</em> indicates a language, i.e. its {@link Locale#getLanguage()} component is not empty, but its other
+	 * components <em>are</em> empty. This method will always return true for a locale produced by {@link #toPrimaryLanguageLocale(Locale)}. This method returns
+	 * <code>false</code> for {@link Locale#ROOT}.
+	 * @param locale The locale to check.
+	 * @return <code>true</code> if the language component is present but all of the other components of the given locale are missing.
+	 * @see #isLanguagePresent(Locale)
+	 * @see #toPrimaryLanguageLocale(Locale)
+	 */
+	public static boolean isPrimaryLanguageLocale(@Nonnull final Locale locale) {
+		return isLanguagePresent(locale) && locale.getScript().isEmpty() && locale.getCountry().isEmpty() && locale.getVariant().isEmpty();
+	}
+
+	/**
+	 * Returns a locale representing only the language, excluding any script, country, or variant. This is equivalent to what <cite>RFC 5646</cite> refers to as
+	 * the "primary language" subtag of a language tag.
 	 * @apiNote If no language is present, this method throws an {@link IllegalArgumentException} rather than returning {@link Optional} because it is assumed
 	 *          that logic needing the {@link Locale} form of the primary language is already working in a context in which the data is expected to be a valid
 	 *          language tag, and for which {@link Locale#ROOT} would not be considered valid data.
@@ -79,9 +110,10 @@ public final class Locales {
 	 * @return A {@link Locale} representing only the language of the given locale.
 	 * @throws IllegalArgumentException if the given locale has no language; for example if the given locale is {@link Locale#ROOT}.
 	 * @see #findLanguage(Locale)
+	 * @see #isPrimaryLanguageLocale(Locale)
 	 * @see Locale#forLanguageTag(String)
 	 */
-	public static Locale toLanguageLocale(@Nonnull final Locale locale) {
+	public static Locale toPrimaryLanguageLocale(@Nonnull final Locale locale) {
 		return findLanguage(locale).map(Locale::forLanguageTag)
 				.orElseThrow(() -> new IllegalArgumentException("Cannot produce a language locale for locale `%s`, which has no language.".formatted(locale)));
 	}

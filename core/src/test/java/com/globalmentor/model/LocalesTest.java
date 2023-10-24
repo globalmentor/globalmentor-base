@@ -42,6 +42,18 @@ public class LocalesTest {
 		assertThat("Variant", Locales.toLanguageTagSubtags("rozaj_biske"), is("rozaj-biske")); //e.g. `Locale.forLanguageTag("sl-rozaj-biske").getVariant()`
 	}
 
+	/** @see Locales#isLanguagePresent(Locale) */
+	@Test
+	void testIsLanguagePresent() {
+		assertThat(Locales.isLanguagePresent(Locale.ROOT), is(false));
+		assertThat(Locales.isLanguagePresent(new Locale("")), is(false));
+		assertThat(Locales.isLanguagePresent(new Locale("en")), is(true));
+		assertThat(Locales.isLanguagePresent(new Locale("en", "US")), is(true));
+		assertThat(Locales.isLanguagePresent(new Locale("", "")), is(false));
+		assertThat(Locales.isLanguagePresent(new Locale("", "", "")), is(false));
+		assertThat(Locales.isLanguagePresent(Locale.forLanguageTag("hy-Latn-IT-arevela")), is(true));
+	}
+
 	/** @see Locales#findLanguage(Locale) */
 	@Test
 	void testFindLanguage() {
@@ -49,13 +61,22 @@ public class LocalesTest {
 		assertThat("Canonicalized", Locales.findLanguage(Locale.forLanguageTag("zh-hak-CN")), isPresentAndIs("hak")); //canonicalized to `hak-CN`
 	}
 
-	/** @see Locales#toLanguageLocale(Locale) */
+	/** @see Locales#isPrimaryLanguageLocale(Locale) */
 	@Test
-	void testToLanguageLocale() {
-		assertThat(Locales.toLanguageLocale(Locale.forLanguageTag("en")), is(Locale.forLanguageTag("en")));
-		assertThat(Locales.toLanguageLocale(Locale.forLanguageTag("en-US")), is(Locale.forLanguageTag("en")));
-		assertThat(Locales.toLanguageLocale(Locale.forLanguageTag("hy-Latn-IT-arevela")), is(Locale.forLanguageTag("hy")));
-		assertThrows(IllegalArgumentException.class, () -> Locales.toLanguageLocale(Locale.ROOT));
+	void testIsPrimaryLanguageLocale() {
+		assertThat(Locales.isPrimaryLanguageLocale(Locale.forLanguageTag("en")), is(true));
+		assertThat(Locales.isPrimaryLanguageLocale(Locale.forLanguageTag("en-US")), is(false));
+		assertThat(Locales.isPrimaryLanguageLocale(Locale.forLanguageTag("hy-Latn-IT-arevela")), is(false));
+		assertThat(Locales.isPrimaryLanguageLocale(Locale.ROOT), is(false));
+	}
+
+	/** @see Locales#toPrimaryLanguageLocale(Locale) */
+	@Test
+	void testToPrimaryLanguageLocale() {
+		assertThat(Locales.toPrimaryLanguageLocale(Locale.forLanguageTag("en")), is(Locale.forLanguageTag("en")));
+		assertThat(Locales.toPrimaryLanguageLocale(Locale.forLanguageTag("en-US")), is(Locale.forLanguageTag("en")));
+		assertThat(Locales.toPrimaryLanguageLocale(Locale.forLanguageTag("hy-Latn-IT-arevela")), is(Locale.forLanguageTag("hy")));
+		assertThrows(IllegalArgumentException.class, () -> Locales.toPrimaryLanguageLocale(Locale.ROOT));
 	}
 
 	/** @see Locales#findScript(Locale) */
