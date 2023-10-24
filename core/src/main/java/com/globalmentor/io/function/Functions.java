@@ -70,7 +70,6 @@ public class Functions {
 			public void accept(final T t) {
 				biConsumer.accept(t, counter.incrementAndGet());
 			}
-
 		};
 	}
 
@@ -106,7 +105,7 @@ public class Functions {
 	 * @apiNote The following example obtains a predicate that filters <code>Person</code> objects having a middle name, assuming that
 	 *          <code>Person.findMiddleName()</code> returns {@code Optional<String>}. <pre>{@code
 	 *   List<Person> people = …;
-	 *   people.stream().filter(testing(Person::findLastName, Optional::isPresent)).…
+	 *   people.stream().filter(testing(Person::findMiddleName, Optional::isPresent)).…
 	 * }</pre>
 	 * @apiNote This pattern follows that of {@link java.util.Comparator#comparing(Function, Comparator)}.
 	 * @param <T> The type of input to be tested.
