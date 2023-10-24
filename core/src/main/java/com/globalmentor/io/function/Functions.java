@@ -100,4 +100,26 @@ public class Functions {
 		return (final T t, final U u) -> function.apply(u);
 	}
 
+	/**
+	 * Accepts a function that extracts a value from a type <code>T</code> and returns a {@code Predicate<T>} that tests the extracted value using the specified
+	 * predicate.
+	 * @apiNote The following example obtains a predicate that filters <code>Person</code> objects having a middle name, assuming that
+	 *          <code>Person.findMiddleName()</code> returns {@code Optional<String>}. <pre>{@code
+	 *   List<Person> people = …;
+	 *   people.stream().filter(testing(Person::findLastName, Optional::isPresent)).…
+	 * }</pre>
+	 * @apiNote This pattern follows that of {@link java.util.Comparator#comparing(Function, Comparator)}.
+	 * @param <T> The type of input to be tested.
+	 * @param <U> The type of the extracted value.
+	 * @param valueExtractor The function used to extract the actual value to test.
+	 * @param valueTester The predicate used to test the value extracted from the input.
+	 * @return A predicate that tests an extracted value using the specified predicate.
+	 * @throws NullPointerException if either argument is <code>null</code>
+	 */
+	public static <T, U> Predicate<T> testing(@Nonnull final Function<? super T, ? extends U> valueExtractor, @Nonnull final Predicate<? super U> valueTester) {
+		requireNonNull(valueExtractor);
+		requireNonNull(valueTester);
+		return input -> valueTester.test(valueExtractor.apply(input));
+	}
+
 }
