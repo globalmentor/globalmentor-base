@@ -20,6 +20,7 @@ import static java.util.Arrays.*;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
+import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -56,4 +57,12 @@ public class FunctionsTest {
 		assertThat(results, is(empty()));
 	}
 
+	/** {@link Functions#testing(java.util.function.Function, java.util.function.Predicate)} */
+	void testTesting() {
+		Set<LocalDate> localDates = Set.of(LocalDate.of(1950, 01, 02), LocalDate.of(1960, 03, 04), LocalDate.of(1970, 10, 20), LocalDate.of(1985, 11, 05),
+				LocalDate.of(1999, 12, 31), LocalDate.of(2005, 05, 05), LocalDate.of(2015, 06, 25));
+		assertThat(localDates.stream().filter(Functions.testing(LocalDate::getYear, __ -> __ < 2000))::iterator,
+				contains(LocalDate.of(1950, 01, 02), LocalDate.of(1960, 03, 04), LocalDate.of(1970, 10, 20), LocalDate.of(1985, 11, 05), LocalDate.of(1999, 12, 31)));
+
+	}
 }
