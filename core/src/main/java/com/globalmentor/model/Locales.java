@@ -42,10 +42,12 @@ public final class Locales {
 	 * Converts a string that represents some series of subtags in legacy {@link Locale} syntax to the <cite>RFC 5646</cite> syntax for language subtags. The
 	 * string may be an entire locale or just a locale component. For example this method converts the locale string <code>en_US</code> to <code>en-US</code>. It
 	 * also converts the variant locale component <code>rozaj_biske</code> to <code>rozaj-biske</code>. Parts of the string that are already formatted using the
-	 * language tag delimiter will be unchanged.
+	 * language tag delimiter will remain unchanged.
 	 * @param string The locale-syntax string, which may be an entire locale or only a locale component.
 	 * @return The string formatted as a sequence of language tag subtags as per <cite>RFC 5646</cite>.
 	 * @see <a href="https://www.rfc-editor.org/rfc/rfc5646.html">RFC 5646: Tags for Identifying Languages</a>
+	 * @see <a href="https://bugs.java.com/bugdatabase/view_bug?bug_id=JDK-8318828">JDK-8318828: `Locale.getVariant()` returns different delimiter than in
+	 *      language tag</a>
 	 */
 	public static String toLanguageTagSubtags(@Nonnull final String string) {
 		return string.replace(LOCALE_SEPARATOR, LanguageTags.SUBTAG_SEPARATOR);
@@ -147,12 +149,15 @@ public final class Locales {
 	 * Finds the variant code for a locale in legacy {@link Locale} syntax.
 	 * @apiNote <em>Important:</em> Non-legacy code should almost always use {@link #findLanguageTagVariant(Locale)} instead, which ensures that the returned
 	 *          value uses the correct RFC 5646 language tag syntax. For example, for the language tag <code>sl-rozaj-biske</code>, this method will return, not
-	 *          the language tag syntax <code>rozaj-biske</code>, but the legacy {@link Locale} syntax <code>rozaj_biske</code>.
+	 *          the language tag syntax <code>rozaj-biske</code>, but the legacy {@link Locale} syntax <code>rozaj_biske</code>. See
+	 *          <a href="https://bugs.java.com/bugdatabase/view_bug?bug_id=JDK-8318828">JDK-8318828</a> for more details and the latest status.
 	 * @apiNote This is a utility method that calls {@link Locale#getVariant()}, returning {@link Optional#empty()} rather than the empty string to indicate no
 	 *          defined value.
 	 * @param locale The locale from which to find the value.
 	 * @return The variant code, which will not be present if none is defined.
 	 * @throws NullPointerException if the given locale is <code>null</code>.
+	 * @see <a href="https://bugs.java.com/bugdatabase/view_bug?bug_id=JDK-8318828">JDK-8318828: `Locale.getVariant()` returns different delimiter than in
+	 *      language tag</a>
 	 */
 	public static Optional<String> findVariant(@Nonnull final Locale locale) {
 		return Optional.of(locale.getVariant()).filter(not(String::isEmpty));
@@ -167,6 +172,8 @@ public final class Locales {
 	 * @return The variant code, which will not be present if none is defined.
 	 * @throws NullPointerException if the given locale is <code>null</code>.
 	 * @see <a href="https://www.rfc-editor.org/rfc/rfc5646.html">RFC 5646: Tags for Identifying Languages</a>
+	 * @see <a href="https://bugs.java.com/bugdatabase/view_bug?bug_id=JDK-8318828">JDK-8318828: `Locale.getVariant()` returns different delimiter than in
+	 *      language tag</a>
 	 */
 	public static Optional<String> findLanguageTagVariant(@Nonnull final Locale locale) {
 		return findVariant(locale).map(Locales::toLanguageTagSubtags);
