@@ -23,8 +23,7 @@ import static java.util.Arrays.*;
 import static java.util.Collections.*;
 
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import static com.globalmentor.java.Arrays.*;
 import static com.globalmentor.java.CharSequences.*;
@@ -32,7 +31,7 @@ import static com.globalmentor.java.Integers.*;
 import static com.globalmentor.java.Conditions.*;
 import static com.globalmentor.java.StringBuilders.*;
 
-import com.globalmentor.text.RomanNumerals;
+import com.globalmentor.text.*;
 
 /**
  * An immutable set of characters that supports various searching and other functions. This essentially provides an efficient yet immutable array with
@@ -60,6 +59,21 @@ public final class Characters {
 
 	/** The shared instance of no characters. */
 	public static final Characters NONE = new Characters(NO_CHARS); //must be defined before the predefined instances below
+
+	/** The code point of the first C0 control character. */
+	public static final char CONTROL_C0_CHAR_FIRST = 0x0000;
+	/** The code point of the last C0 control character. */
+	public static final char CONTROL_C0_CHAR_LAST = 0x001F;
+
+	/** The code point of the symbol for the first C0 control character. */
+	public static final char CONTROL_C0_SYMBOL_CHAR_FIRST = 0x2400;
+	/** The code point of the symbol for the last C0 control character. */
+	public static final char CONTROL_C0_SYMBOL_CHAR_LAST = 0x241F;
+
+	/** The code point of the first C1 control character. */
+	public static final char CONTROL_C1_CHAR_FIRST = 0x007F;
+	/** The code point of the last C1 control character. */
+	public static final char CONTROL_C1_CHAR_LAST = 0x009F;
 
 	/** The character with Unicode code point zero. */
 	public static final char NULL_CHAR = 0x0000;
@@ -119,6 +133,8 @@ public final class Characters {
 	public static final char GRAVE_ACCENT_CHAR = 0x0060;
 	/** A tilde character (007E;TILDE;Sm;0;ON;;;;;N;;;;;). */
 	public static final char TILDE_CHAR = 0x007E;
+	/** A delete (DELETE) control character (007F;&lt;control&gt;;Cc;0;BN;;;;;N;DELETE;;;;). */
+	public static final char DELETE_CHAR = 0x007F;
 	/** A next line (NEL) control character. */
 	public static final char NEXT_LINE_CHAR = 0x0085;
 	/** A start of string control character. */
@@ -221,21 +237,23 @@ public final class Characters {
 	public static final char RIGHT_POINTING_ANGLE_BRACKET = 0x232A;
 
 	/** The symbol for NULL (2400;SYMBOL FOR NULL;So;0;ON;;;;;N;GRAPHIC FOR NULL;;;;). */
-	public static final char NULL_SYMBOL = 0x2400;
+	public static final char NULL_SYMBOL_CHAR = 0x2400;
 	/** The symbol for line feed (240A;SYMBOL FOR LINE FEED;So;0;ON;;;;;N;GRAPHIC FOR LINE FEED;;;;). */
-	public static final char LINE_FEED_SYMBOL = 0x240A;
+	public static final char LINE_FEED_SYMBOL_CHAR = 0x240A;
 	/** The symbol for vertical tab (240B;SYMBOL FOR VERTICAL TABULATION;So;0;ON;;;;;N;GRAPHIC FOR VERTICAL TABULATION;;;;). */
-	public static final char VERTICAL_TAB_SYMBOL = 0x240B;
+	public static final char VERTICAL_TAB_SYMBOL_CHAR = 0x240B;
 	/** The symbol for form feed (240C;SYMBOL FOR FORM FEED;So;0;ON;;;;;N;GRAPHIC FOR FORM FEED;;;;). */
-	public static final char FORM_FEED_SYMBOL = 0x240C;
+	public static final char FORM_FEED_SYMBOL_CHAR = 0x240C;
 	/** The symbol for carriage return (240D;SYMBOL FOR CARRIAGE RETURN;So;0;ON;;;;;N;GRAPHIC FOR CARRIAGE RETURN;;;;). */
-	public static final char CARRIAGE_RETURN_SYMBOL = 0x240D;
+	public static final char CARRIAGE_RETURN_SYMBOL_CHAR = 0x240D;
 	/** The symbol for end of transmission (2404;SYMBOL FOR END OF TRANSMISSION;So;0;ON;;;;;N;GRAPHIC FOR END OF TRANSMISSION;;;;). */
-	public static final char END_OF_TRANSMISSION_SYMBOL = 0x2404;
+	public static final char END_OF_TRANSMISSION_SYMBOL_CHAR = 0x2404;
 	/** The symbol for space (2420;SYMBOL FOR SPACE;So;0;ON;;;;;N;GRAPHIC FOR SPACE;;;;). */
-	public static final char SPACE_SYMBOL = 0x2420;
+	public static final char SPACE_SYMBOL_CHAR = 0x2420;
+	/** A symbol for delete (2421;SYMBOL FOR DELETE;So;0;ON;;;;;N;GRAPHIC FOR DELETE;;;;). */
+	public static final char DELETE_SYMBOL_CHAR = 0x2421;
 	/** The blank symbol (2422;BLANK SYMBOL;So;0;ON;;;;;N;BLANK;;;;). */
-	public static final char BLANK_SYMBOL = 0x2422;
+	public static final char BLANK_SYMBOL_CHAR = 0x2422;
 
 	/** A reversed double prime quotation mark. */
 	public static final char REVERSED_DOUBLE_PRIME_QUOTATION_MARK_CHAR = 0x301D;
@@ -263,14 +281,17 @@ public final class Characters {
 	/** An invalid, undefined Unicode character which is "guaranteed not to be a Unicode character at all. */
 	public static final char UNDEFINED_CHAR = 0xFFFF;
 
-	/** Unicode control characters (0x0000-0x001F, 0x007F-0x09F). */
-	public static final String CONTROL_CHARS = "" + (char)0x0000 + (char)0x0001 + (char)0x0002 + (char)0x0003 + (char)0x0004 + (char)0x0005 + (char)0x0006
-			+ (char)0x0007 + (char)0x0008 + (char)0x0009 + (char)0x000A + (char)0x000B + (char)0x000C + (char)0x000D + (char)0x000E + (char)0x000F + (char)0x0010
-			+ (char)0x0011 + (char)0x0012 + (char)0x0013 + (char)0x0014 + (char)0x0015 + (char)0x0016 + (char)0x0017 + (char)0x0018 + (char)0x0019 + (char)0x001A
-			+ (char)0x001B + (char)0x001C + (char)0x001D + (char)0x001E + (char)0x001F + (char)0x007F + (char)0x0080 + (char)0x0081 + (char)0x0082 + (char)0x0083
-			+ (char)0x0084 + (char)0x0085 + (char)0x0086 + (char)0x0087 + (char)0x0088 + (char)0x0089 + (char)0x008A + (char)0x008B + (char)0x008C + (char)0x008D
-			+ (char)0x008E + (char)0x008F + (char)0x0090 + (char)0x0091 + (char)0x0092 + (char)0x0093 + (char)0x0094 + (char)0x0095 + (char)0x0096 + (char)0x0097
-			+ (char)0x0098 + (char)0x0099 + (char)0x009A + (char)0x009B + (char)0x009C + (char)0x009D + (char)0x009E + (char)0x009F;
+	/** Unicode C0 control characters (U+0000-U+001F). */
+	public static final Characters CONTROL_C0_CHARACTERS = Characters.ofRange(CONTROL_C0_CHAR_FIRST, CONTROL_C0_CHAR_LAST);
+
+	/** Unicode C0 control symbol characters (U+2400-U+241F). */
+	public static final Characters CONTROL_C0_SYMBOL_CHARACTERS = Characters.ofRange(CONTROL_C0_SYMBOL_CHAR_FIRST, CONTROL_C0_SYMBOL_CHAR_LAST);
+
+	/** Unicode C1 control characters ( U+007F-U+09F). */
+	public static final Characters CONTROL_C1_CHARACTERS = Characters.ofRange(CONTROL_C1_CHAR_FIRST, CONTROL_C1_CHAR_LAST);
+
+	/** Unicode control characters (U+0000-0x001F, U+007F-U+09F). */
+	public static final Characters CONTROL_CHARACTERS = CONTROL_C0_CHARACTERS.add(CONTROL_C1_CHARACTERS);
 
 	/** Unicode paragraph separator characters. */
 	public static final String PARAGRAPH_SEPARATOR_CHARS = "" + LINE_FEED_CHAR + CARRIAGE_RETURN_CHAR + INFORMATION_SEPARATOR_FOUR_CHAR
@@ -302,17 +323,15 @@ public final class Characters {
 				  * U3000 IDEOGRAPHIC SPACE
 	*/
 
-	/**
-	 * Unicode formatting characters; Unicode characters marked with "Cf", such as <code>WORD_JOINER</code>.
-	 */
-	public static final String FORMAT_CHARS = "" + ZERO_WIDTH_NON_JOINER_CHAR + ZERO_WIDTH_JOINER_CHAR + LEFT_TO_RIGHT_MARK_CHAR + RIGHT_TO_LEFT_MARK_CHAR
-			+ WORD_JOINER_CHAR + ZERO_WIDTH_NO_BREAK_SPACE_CHAR;
+	/** Unicode formatting characters; Unicode characters marked with "Cf", such as <code>WORD_JOINER</code>. */
+	public static final Characters FORMAT_CHARACTERS = Characters.of(ZERO_WIDTH_NON_JOINER_CHAR, ZERO_WIDTH_JOINER_CHAR, LEFT_TO_RIGHT_MARK_CHAR,
+			RIGHT_TO_LEFT_MARK_CHAR, WORD_JOINER_CHAR, ZERO_WIDTH_NO_BREAK_SPACE_CHAR);
 
 	/**
 	 * Characters that do not contain visible "content", and may be trimmed from ends of a string. These include whitespace, control characters, and formatting
 	 * characters.
 	 */
-	public static final Characters TRIM_CHARACTERS = WHITESPACE_CHARACTERS.add(CONTROL_CHARS).add(FORMAT_CHARS);
+	public static final Characters TRIM_CHARACTERS = WHITESPACE_CHARACTERS.add(CONTROL_CHARACTERS).add(FORMAT_CHARACTERS);
 
 	/**
 	 * A regular expression pattern for the class of trim characters.
@@ -934,7 +953,7 @@ public final class Characters {
 	 * @param c The code point a string representation of which to append.
 	 * @return The string builder.
 	 * @throws NullPointerException if the given string builder is <code>null</code>.
-	 * @see #appendUnicodeString(StringBuilder, int)
+	 * @see #appendUnicodeCodePointLabel(StringBuilder, int)
 	 */
 	public static StringBuilder appendLabel(final StringBuilder stringBuilder, final int c) {
 		if(Character.isISOControl(c) || (Character.isBmpCodePoint(c) && Character.isSurrogate((char)c))) { //if this is a control character or a surrogate
@@ -949,7 +968,7 @@ public final class Characters {
 					stringBuilder.append("'\\n'");
 					break;
 				default: //if we don't recognize the character
-					appendUnicodeString(stringBuilder, c); //append a Unicode representation
+					appendUnicodeCodePointLabel(stringBuilder, c); //append a Unicode representation
 					break;
 			}
 		} else { //for all other characters
@@ -968,25 +987,37 @@ public final class Characters {
 	 * @return The string builder.
 	 * @throws NullPointerException if the given string builder is <code>null</code>.
 	 */
-	public static StringBuilder appendUnicodeString(final StringBuilder stringBuilder, final int c) {
+	public static StringBuilder appendUnicodeCodePointLabel(final StringBuilder stringBuilder, final int c) {
 		stringBuilder.append('U').append('+'); //U+
 		final int length = Character.isSupplementaryCodePoint(c) ? 6 : 4; //allow for supplementary Unicode code points
-		stringBuilder.append(toHexString(c, length).toUpperCase()); //append the hex value of the character
+		stringBuilder.append(toHexString(c, length, Case.UPPERCASE)); //append the hex value of the character
 		return stringBuilder;
 	}
 
 	/**
-	 * Parses a string and returns its character value.
-	 * @param string A string expected to contain a single character.
-	 * @return The single character contained by the string.
-	 * @throws NullPointerException if the given string is <code>null</code>
-	 * @throws IllegalArgumentException if the string is not composed of a single character.
+	 * Returns a character for display to represent the given character. Typically this is the character itself, but for certain characters, notably control
+	 * characters, a symbol may be returned. Note that in some cases this will result in ambiguity between whether the original character was a control character
+	 * replaced by a symbol, or already the control symbol character itself.
+	 * @apiNote This method does not sanitize character in any secure way to provide against injection attacks. It only makes a character more readable for
+	 *          displaying to a user.
+	 * @implSpec This implementation replaces C0 control characters and the delete character with their corresponding symbols
+	 * @param c The character to display.
+	 * @return A character that might be more appropriate for displaying to the user.
+	 * @see #CONTROL_C0_CHARACTERS
+	 * @see #CONTROL_C0_SYMBOL_CHARACTERS
+	 * @see #DELETE_CHAR
+	 * @see #DELETE_SYMBOL_CHAR
 	 */
-	public static final Character parseCharacter(final String string) {
-		if(string.length() != 1) { //if this string isn't composed of a single character
-			throw new IllegalArgumentException("The string \"" + string + "\" does not represent a single character.");
-		}
-		return Character.valueOf(string.charAt(0)); //return the first and only character in the string
+	public static char toDisplay(final char c) {
+		return switch(c) {
+			case DELETE_CHAR -> DELETE_SYMBOL_CHAR;
+			default -> {
+				if(CONTROL_C0_CHARACTERS.contains(c)) {
+					yield (char)(c + (CONTROL_C0_SYMBOL_CHAR_FIRST - CONTROL_C0_CHAR_FIRST));
+				}
+				yield c;
+			}
+		};
 	}
 
 }

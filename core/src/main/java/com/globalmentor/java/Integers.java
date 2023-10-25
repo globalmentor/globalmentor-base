@@ -16,7 +16,7 @@
 
 package com.globalmentor.java;
 
-import com.globalmentor.text.Case;
+import com.globalmentor.text.*;
 
 /**
  * Utilities for manipulating integer objects.
@@ -103,7 +103,7 @@ public class Integers {
 	 */
 	public static int parseOrdinalValue(final String ordinal) { //TODO the name of this should probably be changed
 		//TODO add more complex parsing routines for the ordinals past 10
-		final String[] ordinals = new String[] { "first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth", "tenth", "eleventh" };
+		final String[] ordinals = new String[] {"first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth", "tenth", "eleventh"};
 		for(int i = 0; i < ordinals.length; ++i) { //look at each of the ordinals
 			if(ordinals[i].equalsIgnoreCase(ordinal)) //if this string matches
 				return i + 1; //return the order
@@ -118,9 +118,9 @@ public class Integers {
 	 */
 	public static int parseNumberTextValue(final String numberText) { //TODO the name of this should probably be changed; TODO i18n
 		//TODO add more complex parsing routines for numbers past 30; i18n;
-		final String[] numbers = new String[] { "zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve",
+		final String[] numbers = new String[] {"zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve",
 				"thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen", "twenty", "twenty-one", "twenty-two", "twenty-three", "twenty-four",
-				"twenty-five", "twenty-six", "twenty-seven", "twenty-eight", "twenty-nine", "thirty" };
+				"twenty-five", "twenty-six", "twenty-seven", "twenty-eight", "twenty-nine", "thirty"};
 		for(int i = 0; i < numbers.length; ++i) { //look at each of the numbers
 			if(numbers[i].equalsIgnoreCase(numberText)) //if this string matches
 				return i; //return the number value
@@ -163,7 +163,7 @@ public class Integers {
 	public static String toHexString(final int value, final int length, final Case hexCase) {
 		String hexString = Integer.toHexString(value); //convert the integer to hex
 		if(hexCase == Case.UPPERCASE) { //if uppercase is requested
-			hexString = hexString.toUpperCase();
+			hexString = ASCII.toUpperCaseString(hexString);
 		}
 		return Strings.forceLength(hexString, length, '0', 0); //make the string the correct length by padding the beginning with zeros
 	}

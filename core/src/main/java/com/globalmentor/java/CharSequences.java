@@ -1420,4 +1420,38 @@ public class CharSequences {
 	public static <CS extends CharSequence> CS nullify(final CS charSequence) {
 		return charSequence != null && charSequence.length() > 0 ? charSequence : null;
 	}
+
+	/**
+	 * Modifies text as needed to displayable text by e.g. converting control characters to visible characters representing the control characters.
+	 * @apiNote This method does not fully sanitize text in any secure way to provide against injection attacks. It only makes a string more readable for
+	 *          displaying to a user.
+	 * @implSpec This implementation uses {@link Characters#toDisplay(char)}.
+	 * @param text The text to display.
+	 * @return A string form of character sequence that might be more appropriate for displaying to the user.
+	 */
+	public static CharSequence toDisplay(@Nonnull final CharSequence text) {
+		//assume most character sequences don't need any characters replaced
+		final int length = text.length();
+		boolean unchanged = true;
+		int i;
+		for(i = 0; i < length && unchanged; i++) {
+			final char c = text.charAt(i);
+			unchanged = Characters.toDisplay(c) == c;
+		}
+		if(unchanged) {
+			return text;
+		}
+		assert i > 0 : "A character could not have changed if the string were empty.";
+		//copy characters and convert, starting at `i-1`, which was the first changed character 
+		final StringBuilder stringBuilder = new StringBuilder(length);
+		stringBuilder.append(text); //append all the text; may be more efficient than appending character by character
+		for(i = i - 1; i < length; i++) {
+			final char c = text.charAt(i);
+			final char display = Characters.toDisplay(c);
+			if(display != c) {
+				stringBuilder.setCharAt(i, display);
+			}
+		}
+		return stringBuilder;
+	}
 }

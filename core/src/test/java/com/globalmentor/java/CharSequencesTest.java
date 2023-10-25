@@ -179,4 +179,20 @@ public class CharSequencesTest {
 		assertThat(normalizeForSearch("x\u20DD"), is("x")); //enclosing circle
 	}
 
+	/** @see CharSequences#toDisplay(CharSequence) */
+	@Test
+	void testToDisplay() {
+		assertThat(toDisplay(""), hasToString(""));
+		assertThat(toDisplay("\u0000"), hasToString("␀"));
+		assertThat(toDisplay("\u001F"), hasToString("␟"));
+		assertThat(toDisplay("x"), hasToString("x"));
+		assertThat(toDisplay("\u007Fx"), hasToString("␡x"));
+		assertThat(toDisplay("x\u007F"), hasToString("x␡"));
+		assertThat(toDisplay("a\tz"), hasToString("a␉z"));
+		assertThat(toDisplay("abc123™😂"), hasToString("abc123™😂"));
+		assertThat(toDisplay("abc\t123™😂"), hasToString("abc␉123™😂"));
+		assertThat(toDisplay("abc\r\n123™😂"), hasToString("abc␍␊123™😂"));
+		assertThat(toDisplay("\tabc\r\n123™😂\u0007"), hasToString("␉abc␍␊123™😂␇"));
+	}
+
 }
