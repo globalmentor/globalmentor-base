@@ -46,7 +46,7 @@ public class CharactersTest {
 		assertThat(WHITESPACE_CHARACTERS.split("\r\na\tb\tc\td\te\tf\r\n"), is(asList("a", "b", "c", "d", "e", "f")));
 	}
 
-	/** @see Characters#isContinuousSequence(char...)) */
+	/** @see Characters#isContinuousSequence(char...) */
 	@Test
 	void testIsContinuousSequence() {
 		assertThat(Characters.isContinuousSequence(NO_CHARS), is(true));
@@ -60,6 +60,35 @@ public class CharactersTest {
 		assertThat(Characters.isContinuousSequence('a', 'b', 'c', 'd'), is(true));
 		assertThat(Characters.isContinuousSequence('a', '1', '2', 'x'), is(false));
 		assertThat(Characters.isContinuousSequence('a', 'z'), is(false));
+	}
+
+	/** @see Characters#appendUnicodeCodePointLabel(StringBuilder, int) */
+	@Test
+	void testAppendUnicodeCodePointLabel() {
+		assertThat(Characters.appendUnicodeCodePointLabel(new StringBuilder(), 0x00), hasToString("U+0000"));
+		assertThat(Characters.appendUnicodeCodePointLabel(new StringBuilder(), 'A'), hasToString("U+0041"));
+		assertThat(Characters.appendUnicodeCodePointLabel(new StringBuilder(), 'x'), hasToString("U+0078"));
+		assertThat(Characters.appendUnicodeCodePointLabel(new StringBuilder(), 'é'), hasToString("U+00E9"));
+		assertThat(Characters.appendUnicodeCodePointLabel(new StringBuilder(), 0xFF), hasToString("U+00FF"));
+		assertThat(Characters.appendUnicodeCodePointLabel(new StringBuilder(), '™'), hasToString("U+2122"));
+		assertThat(Characters.appendUnicodeCodePointLabel(new StringBuilder(), 0x1F602), hasToString("U+01F602")); //face with tears of joy emoji `😂`
+	}
+
+	/** @see Characters#toDisplay(char) */
+	@Test
+	void testToDisplay() {
+		assertThat(Characters.toDisplay((char)0x00), is('␀'));
+		assertThat(Characters.toDisplay((char)0x07), is('␇'));
+		assertThat(Characters.toDisplay((char)0x0A), is('␊'));
+		assertThat(Characters.toDisplay((char)0x0D), is('␍'));
+		assertThat(Characters.toDisplay((char)0x1F), is('␟'));
+		assertThat(Characters.toDisplay(' '), is(' '));
+		assertThat(Characters.toDisplay((char)0x7F), is('␡'));
+		assertThat(Characters.toDisplay('A'), is('A'));
+		assertThat(Characters.toDisplay('x'), is('x'));
+		assertThat(Characters.toDisplay('é'), is('é'));
+		assertThat(Characters.toDisplay((char)0xFF), is((char)0xFF));
+		assertThat(Characters.toDisplay('™'), is('™'));
 	}
 
 }
