@@ -23,8 +23,7 @@ import static java.util.Arrays.*;
 import static java.util.Collections.*;
 
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import static com.globalmentor.java.Arrays.*;
 import static com.globalmentor.java.CharSequences.*;
@@ -32,7 +31,7 @@ import static com.globalmentor.java.Integers.*;
 import static com.globalmentor.java.Conditions.*;
 import static com.globalmentor.java.StringBuilders.*;
 
-import com.globalmentor.text.RomanNumerals;
+import com.globalmentor.text.*;
 
 /**
  * An immutable set of characters that supports various searching and other functions. This essentially provides an efficient yet immutable array with
@@ -991,7 +990,7 @@ public final class Characters {
 	public static StringBuilder appendUnicodeCodePointLabel(final StringBuilder stringBuilder, final int c) {
 		stringBuilder.append('U').append('+'); //U+
 		final int length = Character.isSupplementaryCodePoint(c) ? 6 : 4; //allow for supplementary Unicode code points
-		stringBuilder.append(toHexString(c, length).toUpperCase()); //append the hex value of the character
+		stringBuilder.append(toHexString(c, length, Case.UPPERCASE)); //append the hex value of the character
 		return stringBuilder;
 	}
 
