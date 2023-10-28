@@ -2186,9 +2186,9 @@ public class URIs {
 	 * Decompresses a URI from a shorter string representation.
 	 * @param string The alphanumeric string.
 	 * @return An uncompressed URI from the alphanumeric string.
-	 * @throws SyntaxException Thrown if the given string is not correctly encoded.
+	 * @throws ArgumentSyntaxException Thrown if the given string is not correctly encoded.
 	 */
-	public static URI decompress(final String string) throws SyntaxException {
+	public static URI decompress(final String string) throws ArgumentSyntaxException {
 		final int ENCODE_BASE = COMPRESS_ENCODE_CHARS.length(); //this is the base into which we'll encode certain characters TODO maybe place this outside the method
 		final StringBuilder stringBuilder = new StringBuilder();
 		for(int i = 0; i < string.length(); ++i) { //look at each character
@@ -2198,18 +2198,18 @@ public class URIs {
 			} else { //if this is a character to be encoded
 				final int high = COMPRESS_ENCODE_CHARS.indexOf(character); //get the high bits
 				if(high < 0) { //if the high character wasn't recognized
-					throw new SyntaxException("Invalid character.", string); //indicate that an unexpected character was encountered					
+					throw new ArgumentSyntaxException("Invalid character.", string); //indicate that an unexpected character was encountered					
 				}
 				if(i == string.length() - 1) { //if there are no more characters
-					throw new SyntaxException("Incomplete encoding sequence.", string); //indicate that the encoding character was not present.
+					throw new ArgumentSyntaxException("Incomplete encoding sequence.", string); //indicate that the encoding character was not present.
 				}
 				final int low = COMPRESS_ENCODE_CHARS.indexOf(string.charAt(++i)); //go to the next character and get its index
 				if(low < 0) { //if the low character wasn't recognized
-					throw new SyntaxException("Invalid character.", string); //indicate that an unexpected character was encountered					
+					throw new ArgumentSyntaxException("Invalid character.", string); //indicate that an unexpected character was encountered					
 				}
 				final int index = high * ENCODE_BASE + low; //get the index of the original character
 				if(index >= OTHER_CHARS.length()) { //if the resulting sequence does not match one of our original characters
-					throw new SyntaxException("Invalid encoding sequence.", string); //indicate that the encoding resulted in an invalid sequence					
+					throw new ArgumentSyntaxException("Invalid encoding sequence.", string); //indicate that the encoding resulted in an invalid sequence					
 				}
 				stringBuilder.append(OTHER_CHARS.charAt(index)); //add the encoded character to our string builder
 			}
