@@ -48,14 +48,15 @@ public class SetsTest {
 		assertThat(Sets.union(Set.of("a", "b", "c"), Set.of("x", "y", "z")), is(Set.of("a", "b", "c", "x", "y", "z")));
 	}
 
-	/** @see Sets#unionCopyOf(Set, Object) */
+	/** @see Sets#unionCopyOf(Collection, Object) */
 	@Test
-	void testUnionCopyOfSetElement() {
+	void testUnionCopyOfCollectionElement() {
 		assertThrows(NullPointerException.class, () -> Sets.unionCopyOf(Set.of(), null));
 		assertThat(Sets.unionCopyOf(Set.of(), "other")::iterator, containsInAnyOrder("other"));
 		assertThat(Sets.unionCopyOf(Set.of("foo"), "other")::iterator, containsInAnyOrder("foo", "other"));
 		assertThat(Sets.unionCopyOf(Set.of("foo", "bar"), "other")::iterator, containsInAnyOrder("foo", "bar", "other"));
 		assertThat(Sets.unionCopyOf(Set.of("one", "two", "three"), "other")::iterator, containsInAnyOrder("one", "two", "three", "other"));
+		assertThat(Sets.unionCopyOf(List.of("one", "two", "three", "two", "three"), "other")::iterator, containsInAnyOrder("one", "two", "three", "other"));
 		assertThrows(NullPointerException.class, () -> Sets.unionCopyOf(Set.of("one", "two", "three"), null));
 	}
 

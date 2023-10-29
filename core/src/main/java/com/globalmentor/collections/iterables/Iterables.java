@@ -153,7 +153,7 @@ public class Iterables {
 	 * @see #toStream(Iterable)
 	 * @see Stream#concat(Stream, Stream)
 	 */
-	public static <T> Stream<T> toStreamConcat(@Nonnull final Iterable<T> iterable, @Nullable T element) {
+	public static <T> Stream<T> toStreamConcat(@Nonnull final Iterable<? extends T> iterable, @Nullable T element) {
 		return concat(toStream(iterable), Stream.of(element));
 	}
 

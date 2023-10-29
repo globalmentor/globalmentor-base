@@ -51,18 +51,20 @@ public class Sets {
 	}
 
 	/**
-	 * Returns a set representing the union of the given set and another element. The returned set will be a copy of the original set and the given element, in
-	 * effect adding the element to the set. <code>null</code> elements are not supported.
-	 * @param <T> The common type found in the sets.
-	 * @param set The set to copy and to which to add an element.
-	 * @param element The element to add to the set.
-	 * @return A set containing the logical union of the given set and a set containing the given element.
+	 * Returns a set representing the union of the given collection and another element. The returned set will be a copy of the original collection and the given
+	 * element, in effect adding the element to the union set. <code>null</code> elements are not supported.
+	 * @param <E> The common type of element found in the collections.
+	 * @param collection The collection to copy and to which to add an element.
+	 * @param element The element to add to the collection.
+	 * @return A set containing the logical union of the given collection and some set containing the given element.
+	 * @throws NullPointerException if the collection and/or element is <code>null</code>.
+	 * @see Set#copyOf(Collection)
 	 */
-	public static <T> Set<T> unionCopyOf(@Nonnull final Set<T> set, @Nonnull final T element) {
-		if(set.isEmpty()) {
+	public static <E> Set<E> unionCopyOf(@Nonnull final Collection<? extends E> collection, @Nonnull final E element) {
+		if(collection.isEmpty()) {
 			return Set.of(element);
 		}
-		return toStreamConcat(set, element).collect(toUnmodifiableSet());
+		return toStreamConcat(collection, element).collect(toUnmodifiableSet());
 	}
 
 }
