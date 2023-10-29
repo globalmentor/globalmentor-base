@@ -31,21 +31,23 @@ import org.junit.jupiter.api.*;
  */
 public class SetsTest {
 
-	/** @see Sets#union(Set, Set) */
+	/** @see Sets#toUnion(Set, Set) */
 	@Test
-	void testUnion() {
-		assertThat(Sets.union(Set.of(), Set.of()), is(emptySet()));
-		assertThat(Sets.union(Set.of("a"), Set.of()), is(Set.of("a")));
-		assertThat(Sets.union(Set.of("a", "b"), Set.of()), is(Set.of("a", "b")));
-		assertThat(Sets.union(Set.of("a", "b", "c"), Set.of()), is(Set.of("a", "b", "c")));
-		assertThat(Sets.union(Set.of(), Set.of("x")), is(Set.of("x")));
-		assertThat(Sets.union(Set.of(), Set.of("x", "y")), is(Set.of("x", "y")));
-		assertThat(Sets.union(Set.of(), Set.of("x", "y", "z")), is(Set.of("x", "y", "z")));
-		assertThat(Sets.union(Set.of("a"), Set.of("x")), is(Set.of("a", "x")));
-		assertThat(Sets.union(Set.of("a", "b"), Set.of("x")), is(Set.of("a", "b", "x")));
-		assertThat(Sets.union(Set.of("a"), Set.of("x", "y")), is(Set.of("a", "x", "y")));
-		assertThat(Sets.union(Set.of("a", "b"), Set.of("x", "y")), is(Set.of("a", "b", "x", "y")));
-		assertThat(Sets.union(Set.of("a", "b", "c"), Set.of("x", "y", "z")), is(Set.of("a", "b", "c", "x", "y", "z")));
+	void testToUnion() {
+		assertThat(Sets.toUnion(Set.of(), Set.of()), is(emptySet()));
+		final var setA = Set.of("a");
+		assertThat(Sets.toUnion(setA, Set.of()), is(sameInstance(setA)));
+		assertThat(Sets.toUnion(Set.of("a", "b"), Set.of()), is(Set.of("a", "b")));
+		assertThat(Sets.toUnion(Set.of("a", "b", "c"), Set.of()), is(Set.of("a", "b", "c")));
+		final var setX = Set.of("x");
+		assertThat(Sets.toUnion(Set.of(), setX), is(sameInstance(setX)));
+		assertThat(Sets.toUnion(Set.of(), Set.of("x", "y")), is(Set.of("x", "y")));
+		assertThat(Sets.toUnion(Set.of(), Set.of("x", "y", "z")), is(Set.of("x", "y", "z")));
+		assertThat(Sets.toUnion(Set.of("a"), Set.of("x")), is(Set.of("a", "x")));
+		assertThat(Sets.toUnion(Set.of("a", "b"), Set.of("x")), is(Set.of("a", "b", "x")));
+		assertThat(Sets.toUnion(Set.of("a"), Set.of("x", "y")), is(Set.of("a", "x", "y")));
+		assertThat(Sets.toUnion(Set.of("a", "b"), Set.of("x", "y")), is(Set.of("a", "b", "x", "y")));
+		assertThat(Sets.toUnion(Set.of("a", "b", "c"), Set.of("x", "y", "z")), is(Set.of("a", "b", "c", "x", "y", "z")));
 	}
 
 	/** @see Sets#unionCopyOf(Collection, Collection) */

@@ -32,22 +32,25 @@ import javax.annotation.*;
 public class Sets {
 
 	/**
-	 * Returns some set representing the union of two given sets.
-	 * @implNote No guarantees are made about whether the returned set is mutable, nor whether the returned set is a new instance or a reference to one of the
-	 *           given sets.
+	 * Returns some set representing the union of two given sets, returning one of the given sets if possible (if the other set is empty). If both sets are
+	 * non-empty, the returned set will be a union copy of the two sets.
+	 * @apiNote This method can be though of as analogous to a coercion. It is a convenient and efficient method to use when it is likely that one of the input
+	 *          sets will be empty, in a context in which it would be appropriate to use either of the given inputs as the result. If it is desired that a new
+	 *          copy always be returned, use {@link #unionCopyOf(Collection, Collection)} instead.
 	 * @param <T> The common type found in the sets.
 	 * @param set1 The first set of the union.
 	 * @param set2 The second set of the union.
-	 * @return A set containing the logical union of the contents of the given two sets.
+	 * @return A set containing the logical union of the contents of the given two sets, which will be one of the input sets if the other set is empty.
+	 * @see #unionCopyOf(Collection, Collection)
 	 */
-	public static <T> Set<T> union(@Nonnull final Set<T> set1, @Nonnull final Set<T> set2) {
+	public static <T> Set<T> toUnion(@Nonnull final Set<T> set1, @Nonnull final Set<T> set2) {
 		if(set1.isEmpty()) {
 			return requireNonNull(set2);
 		}
 		if(set2.isEmpty()) {
 			return set1;
 		}
-		return concat(set1.stream(), set2.stream()).collect(toUnmodifiableSet());
+		return unionCopyOf(set1, set2);
 	}
 
 	/**

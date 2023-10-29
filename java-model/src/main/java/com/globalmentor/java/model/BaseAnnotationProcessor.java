@@ -75,7 +75,7 @@ public abstract class BaseAnnotationProcessor extends AbstractProcessor {
 			return supportedAnnotationTypeCanonicalNames;
 		}
 		assert supportedAnnotationTypesAnnotation != null;
-		return union(super.getSupportedAnnotationTypes(), supportedAnnotationTypeCanonicalNames);
+		return toUnion(super.getSupportedAnnotationTypes(), supportedAnnotationTypeCanonicalNames);
 	}
 
 	/**
