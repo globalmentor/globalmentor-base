@@ -16,6 +16,7 @@
 
 package com.globalmentor.collections.iterables;
 
+import static java.util.stream.Stream.*;
 import static java.util.stream.StreamSupport.*;
 
 import java.util.*;
@@ -139,6 +140,21 @@ public class Iterables {
 	 */
 	public static <T> Stream<T> toStream(@Nonnull final Iterable<T> iterable) {
 		return iterable instanceof Collection ? ((Collection<T>)iterable).stream() : stream(iterable.spliterator(), false);
+	}
+
+	/**
+	 * Returns a new stream from the given iterable, concatenated with a stream of the additional element.
+	 * @apiNote This is a convenient way to append an element to a collection in the form of a stream.
+	 * @implSpec The stream returned by this implementation is not parallel.
+	 * @param <T> The type of elements returned by the iterable's iterator.
+	 * @param iterable The iterable to be converted to a stream.
+	 * @param element The additional element to concatenate, which may be <code>null</code>, in which case <code>null</code> will be concatenated.
+	 * @return A stream that iterates over the contents of the given iterable followed by the given element.
+	 * @see #toStream(Iterable)
+	 * @see Stream#concat(Stream, Stream)
+	 */
+	public static <T> Stream<T> toStreamConcat(@Nonnull final Iterable<T> iterable, @Nullable T element) {
+		return concat(toStream(iterable), Stream.of(element));
 	}
 
 }

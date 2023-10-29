@@ -23,6 +23,7 @@ import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -66,6 +67,32 @@ public class IterablesTest {
 		assertThat(Iterables.getOnly(singletonList("foo")), is("foo"));
 		assertThrows(IllegalArgumentException.class, () -> Iterables.getOnly(asList("foo", "bar")));
 		assertThrows(IllegalArgumentException.class, () -> Iterables.getOnly(asList(1, 2, 3)));
+	}
+
+	/** @see Iterables#toStream(Iterable) */
+	@Test
+	void testToStream() {
+		assertThat(Iterables.toStream(Set.of())::iterator, containsInAnyOrder());
+		assertThat(Iterables.toStream(Set.of())::iterator, containsInAnyOrder());
+		assertThat(Iterables.toStream(Set.of("foo"))::iterator, containsInAnyOrder("foo"));
+		assertThat(Iterables.toStream(Set.of("foo", "bar"))::iterator, containsInAnyOrder("foo", "bar"));
+		assertThat(Iterables.toStream(Set.of("one", "two", "three"))::iterator, containsInAnyOrder("one", "two", "three"));
+		assertThat("Non-collection iterable argument.", Iterables.toStream(Stream.of("one", "two", "three")::iterator)::iterator,
+				containsInAnyOrder("one", "two", "three"));
+		assertThat(Iterables.toStream(Set.of("one", "two", "three"))::iterator, containsInAnyOrder("one", "two", "three"));
+	}
+
+	/** @see Iterables#toStreamConcat(Iterable, Object) */
+	@Test
+	void testToStreamConcat() {
+		assertThat(Iterables.toStreamConcat(Set.of(), null)::iterator, containsInAnyOrder(nullValue()));
+		assertThat(Iterables.toStreamConcat(Set.of(), "other")::iterator, containsInAnyOrder("other"));
+		assertThat(Iterables.toStreamConcat(Set.of("foo"), "other")::iterator, containsInAnyOrder("foo", "other"));
+		assertThat(Iterables.toStreamConcat(Set.of("foo", "bar"), "other")::iterator, containsInAnyOrder("foo", "bar", "other"));
+		assertThat(Iterables.toStreamConcat(Set.of("one", "two", "three"), "other")::iterator, containsInAnyOrder("one", "two", "three", "other"));
+		assertThat("Non-collection iterable argument.", Iterables.toStreamConcat(Stream.of("one", "two", "three")::iterator, "other")::iterator,
+				containsInAnyOrder("one", "two", "three", "other"));
+		assertThat(Iterables.toStreamConcat(Set.of("one", "two", "three"), null)::iterator, containsInAnyOrder("one", "two", "three", null));
 	}
 
 }
