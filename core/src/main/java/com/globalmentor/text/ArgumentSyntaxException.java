@@ -16,6 +16,8 @@
 
 package com.globalmentor.text;
 
+import static com.globalmentor.java.Conditions.*;
+
 /**
  * An unchecked illegal argument exception to indicate that an argument was not in the correct format or did not have the correct checksums.
  * @author Garret Wilson
@@ -134,9 +136,37 @@ public class ArgumentSyntaxException extends IllegalArgumentException {
 	 * @throws IllegalArgumentException if the given index is less than -1.
 	 */
 	public ArgumentSyntaxException(final String message, final Throwable cause, final CharSequence input, final int index) {
-		super(SyntaxException.createMessage(message, cause, input, index), cause); //construct the parent class with the message and the cause
+		super(createMessage(message, cause, input, index), cause); //construct the parent class with the message and the cause
 		this.input = input; //save the input, if any
 		this.index = index; //save the index		
+	}
+
+	/**
+	 * Creates a message based upon a given input string, an optional index, and an optional message.
+	 * @param message The message to include, or <code>null</code> if there is no custom message to include.
+	 * @param cause The cause error or <code>null</code> if the cause is nonexistent or unknown.
+	 * @param input The input character sequence, or <code>null</code> if the input string is not known.
+	 * @param index The index into the input string of the position at which the parse error occurred, or -1 if the position is not known.
+	 * @return A string explaining the exception based upon the given input and optional index.
+	 * @throws IllegalArgumentException if the given index is less than -1.
+	 */
+	private static String createMessage(String message, final Throwable cause, final CharSequence input, final int index) {
+		checkArgumentMinimum(index, -1); //make sure the index is not less than negative one, the "unknown index" value
+		if(message == null) { //if there is no message
+			message = cause != null ? cause.getMessage() : null; //try to get the message from the cause
+			if(message == null) { //if there is still no message
+				message = "Syntax exception"; //use a general message
+				final StringBuilder stringBuilder = new StringBuilder(message); //create a string builder
+				if(index >= 0) { //if there is an index
+					stringBuilder.append("at index ").append(Integer.valueOf(index)).append(' '); //add the index
+				}
+				if(input != null) { //if there is input
+					stringBuilder.append("in input ").append(input); //append the input			
+				}
+				return stringBuilder.toString(); //return the constructed message
+			}
+		}
+		return message; //we found a message that we didn't have to construct, so return it
 	}
 
 }

@@ -111,11 +111,11 @@ public class ReaderParser {
 	 * @param c The character returned from a reader's {@link Reader#read()} operation.
 	 * @return The given character.
 	 * @throws NullPointerException if the given reader is <code>null</code>.
-	 * @throws ParseEOFException if the given character represents the end of the reader's data.
+	 * @throws ParseEndException if the given character represents the end of the reader's data.
 	 */
-	public static int checkReaderNotEnd(@Nonnull final Reader reader, final int c) throws ParseEOFException {
+	public static int checkReaderNotEnd(@Nonnull final Reader reader, final int c) throws ParseEndException {
 		if(c < 0) { //if this returned character represents the end of the reader's data
-			throw new ParseEOFException(reader);
+			throw new ParseEndException(reader);
 		}
 		return c;
 	}
@@ -128,7 +128,7 @@ public class ReaderParser {
 	 * @throws NullPointerException if the given reader is <code>null</code>.
 	 * @throws IOException if there is an error reading from the reader.
 	 * @throws ParseUnexpectedDataException if the current character in the reader does not match the specified character.
-	 * @throws ParseEOFException if the reader has no more characters.
+	 * @throws ParseEndException if the reader has no more characters.
 	 * @see #confirm(Reader, char)
 	 */
 	public static char check(@Nonnull final Reader reader, final char character) throws IOException, ParseUnexpectedDataException {
@@ -147,7 +147,7 @@ public class ReaderParser {
 	 * @throws NullPointerException if the given reader and/or the given characters is <code>null</code>.
 	 * @throws IOException if there is an error reading from the reader.
 	 * @throws ParseUnexpectedDataException if the current character in the reader does not match one of the specified characters.
-	 * @throws ParseEOFException if the reader has no more characters.
+	 * @throws ParseEndException if the reader has no more characters.
 	 */
 	public static char check(@Nonnull final Reader reader, @Nonnull final Characters characters) throws IOException, ParseUnexpectedDataException {
 		final char c = readRequired(reader); //read the next character
@@ -166,7 +166,7 @@ public class ReaderParser {
 	 * @throws NullPointerException if the given reader and/or the given characters is <code>null</code>.
 	 * @throws IOException if there is an error reading from the reader.
 	 * @throws ParseUnexpectedDataException if one of the characters in the reader does not match one of the specified characters.
-	 * @throws ParseEOFException if the reader has no more characters.
+	 * @throws ParseEndException if the reader has no more characters.
 	 */
 	public static String checkCount(@Nonnull final Reader reader, @Nonnull final Characters characters, final int count)
 			throws IOException, ParseUnexpectedDataException {
@@ -183,7 +183,7 @@ public class ReaderParser {
 	 * @throws NullPointerException if the given reader, characters, and/or string builder is <code>null</code>.
 	 * @throws IOException if there is an error reading from the reader.
 	 * @throws ParseUnexpectedDataException if one of the characters in the reader does not match one of the specified characters.
-	 * @throws ParseEOFException if the reader has no more characters.
+	 * @throws ParseEndException if the reader has no more characters.
 	 */
 	public static StringBuilder checkCount(@Nonnull final Reader reader, @Nonnull final Characters characters, int count,
 			@Nonnull final StringBuilder stringBuilder) throws IOException, ParseUnexpectedDataException {
@@ -201,7 +201,7 @@ public class ReaderParser {
 	 * @throws NullPointerException if the given reader and/or match character sequence is <code>null</code>.
 	 * @throws IOException if there is an error reading from the reader.
 	 * @throws ParseUnexpectedDataException if the current character in the reader does not match the specified character sequence.
-	 * @throws ParseEOFException if the reader has no more characters.
+	 * @throws ParseEndException if the reader has no more characters.
 	 */
 	public static CharSequence check(@Nonnull final Reader reader, @Nonnull final CharSequence match) throws IOException, ParseUnexpectedDataException {
 		final int matchLength = match.length(); //get the length to match
@@ -327,10 +327,10 @@ public class ReaderParser {
 	 * @return The string builder given, or <code>null</code> if no string builder was provided.
 	 * @throws NullPointerException if the given reader is <code>null</code>.
 	 * @throws IOException if there is an error reading from the reader.
-	 * @throws ParseEOFException if the reader has no more characters and the end-is-error flag is <code>true</code>.
+	 * @throws ParseEndException if the reader has no more characters and the end-is-error flag is <code>true</code>.
 	 */
 	protected static StringBuilder consumeUntil(@Nonnull final Reader reader, final char untilCharacter, final boolean isEndError,
-			@Nullable final StringBuilder stringBuilder, final boolean includeReached) throws IOException, ParseEOFException {
+			@Nullable final StringBuilder stringBuilder, final boolean includeReached) throws IOException, ParseEndException {
 		return consumeUntil(reader, null, untilCharacter, isEndError, stringBuilder, includeReached);
 	}
 
@@ -345,10 +345,10 @@ public class ReaderParser {
 	 * @return The string builder given, or <code>null</code> if no string builder was provided.
 	 * @throws NullPointerException if the given reader is <code>null</code>.
 	 * @throws IOException if there is an error reading from the reader.
-	 * @throws ParseEOFException if the reader has no more characters and the end-is-error flag is <code>true</code>.
+	 * @throws ParseEndException if the reader has no more characters and the end-is-error flag is <code>true</code>.
 	 */
 	protected static StringBuilder consumeUntil(@Nonnull final Reader reader, @Nullable final Characters untilCharacters, final boolean isEndError,
-			@Nullable final StringBuilder stringBuilder, final boolean includeReached) throws IOException, ParseEOFException {
+			@Nullable final StringBuilder stringBuilder, final boolean includeReached) throws IOException, ParseEndException {
 		return consumeUntil(reader, requireNonNull(untilCharacters), (char)0, isEndError, stringBuilder, includeReached);
 	}
 
@@ -363,10 +363,10 @@ public class ReaderParser {
 	 * @return The string builder given, or <code>null</code> if no string builder was provided.
 	 * @throws NullPointerException if the given reader is <code>null</code>.
 	 * @throws IOException if there is an error reading from the reader.
-	 * @throws ParseEOFException if the reader has no more characters and the end-is-error flag is <code>true</code>.
+	 * @throws ParseEndException if the reader has no more characters and the end-is-error flag is <code>true</code>.
 	 */
 	protected static StringBuilder consumeUntil(@Nonnull final Reader reader, @Nullable final Characters untilCharacters, final char untilCharacter,
-			final boolean isEndError, @Nullable final StringBuilder stringBuilder, final boolean includeReached) throws IOException, ParseEOFException {
+			final boolean isEndError, @Nullable final StringBuilder stringBuilder, final boolean includeReached) throws IOException, ParseEndException {
 		int c; //the character read
 		boolean reached;
 		do {
@@ -374,7 +374,7 @@ public class ReaderParser {
 			c = reader.read(); //read another character
 			if(c < 0) { //if this returned character represents the end of the reader's data
 				if(isEndError) { //if requested make sure we're not at the end of the reader
-					throw new ParseEOFException(reader);
+					throw new ParseEndException(reader);
 				} else {
 					return stringBuilder; //there's no content to include, and there was no character to reset; in short, we're finished
 				}
@@ -401,7 +401,7 @@ public class ReaderParser {
 	 * @param character The character to pass.
 	 * @throws NullPointerException if the given reader is <code>null</code>.
 	 * @throws IOException if there is an error reading from the reader.
-	 * @throws ParseEOFException if the reader has no more characters.
+	 * @throws ParseEndException if the reader has no more characters.
 	 */
 	public static void pass(@Nonnull final Reader reader, final char character) throws IOException {
 		consumeUntil(reader, character, false, null, true);
@@ -428,9 +428,9 @@ public class ReaderParser {
 	 * @param character The character to pass.
 	 * @throws NullPointerException if the given reader is <code>null</code>.
 	 * @throws IOException if there is an error reading from the reader.
-	 * @throws ParseEOFException if the reader has no more characters.
+	 * @throws ParseEndException if the reader has no more characters.
 	 */
-	public static void passRequired(@Nonnull final Reader reader, final char character) throws IOException, ParseEOFException {
+	public static void passRequired(@Nonnull final Reader reader, final char character) throws IOException, ParseEndException {
 		consumeUntil(reader, character, true, null, true);
 	}
 
@@ -442,9 +442,9 @@ public class ReaderParser {
 	 * @param characters The characters one of which to reach.
 	 * @throws NullPointerException if the given reader is and/or characters <code>null</code>.
 	 * @throws IOException if there is an error reading from the reader.
-	 * @throws ParseEOFException if the reader has no more characters.
+	 * @throws ParseEndException if the reader has no more characters.
 	 */
-	public static void passRequired(@Nonnull final Reader reader, @Nonnull final Characters characters) throws IOException, ParseEOFException {
+	public static void passRequired(@Nonnull final Reader reader, @Nonnull final Characters characters) throws IOException, ParseEndException {
 		consumeUntil(reader, characters, true, null, true);
 	}
 
@@ -471,9 +471,9 @@ public class ReaderParser {
 	 * @return The next character that will be returned the reader's {@link Reader#read()} operation.
 	 * @throws NullPointerException if the given reader is <code>null</code>.
 	 * @throws IOException if there is an error reading from the reader.
-	 * @throws ParseEOFException if the reader has no more characters.
+	 * @throws ParseEndException if the reader has no more characters.
 	 */
-	public static char peekRequired(@Nonnull final Reader reader) throws IOException, ParseEOFException {
+	public static char peekRequired(@Nonnull final Reader reader) throws IOException, ParseEndException {
 		final int c = peek(reader); //peek a character
 		checkReaderNotEnd(reader, c); //make sure we're not at the end of the reader
 		return (char)c; //return the character peeked
@@ -486,7 +486,7 @@ public class ReaderParser {
 	 * @param character The character to pass.
 	 * @throws NullPointerException if the given reader is <code>null</code>.
 	 * @throws IOException if there is an error reading from the reader.
-	 * @throws ParseEOFException if the reader has no more characters.
+	 * @throws ParseEndException if the reader has no more characters.
 	 */
 	public static void reach(@Nonnull final Reader reader, final char character) throws IOException {
 		consumeUntil(reader, character, false, null, false);
@@ -512,9 +512,9 @@ public class ReaderParser {
 	 * @param character The character to pass.
 	 * @throws NullPointerException if the given reader is <code>null</code>.
 	 * @throws IOException if there is an error reading from the reader.
-	 * @throws ParseEOFException if the reader has no more characters.
+	 * @throws ParseEndException if the reader has no more characters.
 	 */
-	public static void reachRequired(@Nonnull final Reader reader, final char character) throws IOException, ParseEOFException {
+	public static void reachRequired(@Nonnull final Reader reader, final char character) throws IOException, ParseEndException {
 		consumeUntil(reader, character, true, null, false);
 	}
 
@@ -526,9 +526,9 @@ public class ReaderParser {
 	 * @param characters The characters one of which to reach.
 	 * @throws NullPointerException if the given reader and/or characters is <code>null</code>.
 	 * @throws IOException if there is an error reading from the reader.
-	 * @throws ParseEOFException if the reader has no more characters.
+	 * @throws ParseEndException if the reader has no more characters.
 	 */
-	public static void reachRequired(@Nonnull final Reader reader, @Nonnull final Characters characters) throws IOException, ParseEOFException {
+	public static void reachRequired(@Nonnull final Reader reader, @Nonnull final Characters characters) throws IOException, ParseEndException {
 		consumeUntil(reader, characters, true, null, false);
 	}
 
@@ -539,11 +539,11 @@ public class ReaderParser {
 	 * @param endDelimiter The character to expect at the end of the characters.
 	 * @throws IOException Thrown when an I/O error occurs.
 	 * @throws ParseUnexpectedDataException Thrown when an unexpected character is found.
-	 * @throws ParseEOFException Thrown when the end of the reader is reached unexpectedly.
+	 * @throws ParseEndException Thrown when the end of the reader is reached unexpectedly.
 	 * @return The characters between the delimiters.
 	 */
 	public static String readEnclosedRequired(final Reader reader, final char startDelimiter, final char endDelimiter)
-			throws IOException, ParseUnexpectedDataException, ParseEOFException {
+			throws IOException, ParseUnexpectedDataException, ParseEndException {
 		check(reader, startDelimiter); //read the first delimiter
 		final String string = readUntilRequired(reader, endDelimiter); //read until the end delimiter is reached
 		check(reader, endDelimiter); //read the ending delimiter
@@ -557,9 +557,9 @@ public class ReaderParser {
 	 * @return The character returned from the reader's {@link Reader#read()} operation.
 	 * @throws NullPointerException if the given reader is <code>null</code>.
 	 * @throws IOException if there is an error reading from the reader.
-	 * @throws ParseEOFException if the reader has no more characters.
+	 * @throws ParseEndException if the reader has no more characters.
 	 */
-	public static char readRequired(@Nonnull final Reader reader) throws IOException, ParseEOFException {
+	public static char readRequired(@Nonnull final Reader reader) throws IOException, ParseEndException {
 		final int c = reader.read(); //read the next character
 		checkReaderNotEnd(reader, c); //make sure we're not at the end of the reader
 		return (char)c; //return the character read
@@ -573,13 +573,13 @@ public class ReaderParser {
 	 * @throws NullPointerException if the given reader is <code>null</code>.
 	 * @throws IllegalArgumentException if the given count is less than zero.
 	 * @throws IOException if there is an error reading from the reader.
-	 * @throws ParseEOFException if the reader has no more characters.
+	 * @throws ParseEndException if the reader has no more characters.
 	 */
-	public static String readRequiredCount(@Nonnull final Reader reader, final int count) throws IOException, ParseEOFException {
+	public static String readRequiredCount(@Nonnull final Reader reader, final int count) throws IOException, ParseEndException {
 		checkArgumentNotNegative(count); //make sure the count isn't negative
 		final char[] characters = new char[count]; //create a new buffer
 		if(reader.read(characters) != count) { //read the characters; if all the character weren't read
-			throw new ParseEOFException(reader);
+			throw new ParseEndException(reader);
 		}
 		return new String(characters); //return a new string from the characters read 
 	}
@@ -595,14 +595,14 @@ public class ReaderParser {
 	 * @throws IllegalArgumentException if the given count is less than zero.
 	 * @throws IOException if there is an error reading from the reader.
 	 * @throws ParseUnexpectedDataException if one of the characters read is not included in the given characters.
-	 * @throws ParseEOFException if the reader has no more characters.
+	 * @throws ParseEndException if the reader has no more characters.
 	 */
 	public static String readRequiredCount(@Nonnull final Reader reader, @Nonnull final Characters characters, final int count)
 			throws IOException, ParseUnexpectedDataException {
 		checkArgumentNotNegative(count); //make sure the count isn't negative
 		final char[] buffer = new char[count]; //create a new buffer
 		if(read(reader, buffer) != count) { //read the characters; if all the character weren't read
-			throw new ParseEOFException(reader);
+			throw new ParseEndException(reader);
 		}
 		for(int i = 0; i < count; ++i) { //look at each character
 			final char c = buffer[i]; //look at this character
@@ -671,7 +671,7 @@ public class ReaderParser {
 	 * @return The string read until the given character or the empty string if there is no such a character.
 	 * @throws NullPointerException if the given reader and/or characters is <code>null</code>.
 	 * @throws IOException if there is an error reading from the reader.
-	 * @throws ParseEOFException if the reader has no more characters.
+	 * @throws ParseEndException if the reader has no more characters.
 	 */
 	public static String readPastRequired(@Nonnull final Reader reader, @Nonnull final Characters characters) throws IOException {
 		return consumeUntil(reader, characters, true, new StringBuilder(), true).toString();
@@ -699,9 +699,9 @@ public class ReaderParser {
 	 * @return The string read until the given character.
 	 * @throws NullPointerException if the given reader is <code>null</code>.
 	 * @throws IOException if there is an error reading from the reader.
-	 * @throws ParseEOFException if the reader has no more characters.
+	 * @throws ParseEndException if the reader has no more characters.
 	 */
-	public static String readUntilRequired(@Nonnull final Reader reader, final char character) throws IOException, ParseEOFException {
+	public static String readUntilRequired(@Nonnull final Reader reader, final char character) throws IOException, ParseEndException {
 		return consumeUntil(reader, character, true, new StringBuilder(), false).toString();
 	}
 
@@ -714,9 +714,9 @@ public class ReaderParser {
 	 * @return The string read until the given character.
 	 * @throws NullPointerException if the given reader and/or characters is <code>null</code>.
 	 * @throws IOException if there is an error reading from the reader.
-	 * @throws ParseEOFException if the reader has no more characters.
+	 * @throws ParseEndException if the reader has no more characters.
 	 */
-	public static String readUntilRequired(@Nonnull final Reader reader, @Nonnull final Characters characters) throws IOException, ParseEOFException {
+	public static String readUntilRequired(@Nonnull final Reader reader, @Nonnull final Characters characters) throws IOException, ParseEndException {
 		return consumeUntil(reader, characters, true, new StringBuilder(), false).toString();
 	}
 

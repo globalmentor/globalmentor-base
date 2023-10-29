@@ -16,14 +16,13 @@
 
 package com.globalmentor.io;
 
-import java.io.LineNumberReader;
 import java.io.Reader;
 
 /**
  * Unexpected end of file error when parsing an input stream. Used by {@link ParseReader}.
  * @see ParseIOException
  */
-public class ParseEOFException extends ParseIOException { //TODO rename to ParseEndException
+public class ParseEndException extends ParseIOException {
 
 	private static final long serialVersionUID = 1L;
 
@@ -31,9 +30,8 @@ public class ParseEOFException extends ParseIOException { //TODO rename to Parse
 	 * Reader constructor with a default message and no cause. This constructor will attempt to determine the location from the reader.
 	 * @param reader The reader from which the error occurred.
 	 * @throws NullPointerException if the given reader is <code>null</code>.
-	 * @see LineNumberReader
 	 */
-	public ParseEOFException(final Reader reader) {
+	public ParseEndException(final Reader reader) {
 		this(reader, "Unexpected end of data.");
 	}
 
@@ -43,7 +41,7 @@ public class ParseEOFException extends ParseIOException { //TODO rename to Parse
 	 * @param message The error message, or <code>null</code> if there is no error message.
 	 * @throws NullPointerException if the given reader is <code>null</code>.
 	 */
-	public ParseEOFException(final Reader reader, final String message) {
+	public ParseEndException(final Reader reader, final String message) {
 		this(message, getLineIndex(reader), getCharacterIndex(reader));
 	}
 
@@ -54,7 +52,7 @@ public class ParseEOFException extends ParseIOException { //TODO rename to Parse
 	 * @param charIndex The index of the character at which the error occurred on the current line, or -1 if not known.
 	 * @throws NullPointerException if the given reader is <code>null</code>.
 	 */
-	public ParseEOFException(final String message, final long lineIndex, final long charIndex) {
+	public ParseEndException(final String message, final long lineIndex, final long charIndex) {
 		super(message, lineIndex, charIndex);
 	}
 

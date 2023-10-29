@@ -309,16 +309,16 @@ public class ParseReader extends ProcessingBufferedReader //TODO clean up and un
 	 * Read a single character, and throws an exception if the end of the file is reached.
 	 * @return The character read.
 	 * @throws IOException Thrown if a general I/O error occurs.
-	 * @throws ParseEOFException Thrown if the end of the file is reached unexpectedly.
+	 * @throws ParseEndException Thrown if the end of the file is reached unexpectedly.
 	 * @see ProcessingBufferedReader#read
 	 */
-	public char readChar() throws IOException, ParseEOFException {
+	public char readChar() throws IOException, ParseEndException {
 		final int i = read(); //read a character
 		if(i != -1) //if we haven't reached the end of the file
 			return (char)i; //return the character
 		else
 			//if we did reach the end of the file
-			throw new ParseEOFException("End of stream reached while reading a character.", getLineIndex(), getCharIndex()); //show that we hit the end of the file
+			throw new ParseEndException("End of stream reached while reading a character.", getLineIndex(), getCharIndex()); //show that we hit the end of the file
 	}
 
 	/**
@@ -328,18 +328,18 @@ public class ParseReader extends ProcessingBufferedReader //TODO clean up and un
 	 * before characters are read in a call to readCharacter().
 	 * @return The next character that will be read after the character retrieved in the last read() or peek().
 	 * @throws IOException Thrown when a general I/O error occurs.
-	 * @throws ParseEOFException Thrown if the end of the file is reached unexpectedly.
+	 * @throws ParseEndException Thrown if the end of the file is reached unexpectedly.
 	 * @see ProcessingBufferedReader#read
 	 * @see ParseReader#readChar
 	 * @see ProcessingBufferedReader#resetPeek
 	 */
-	public char peekChar() throws IOException, ParseEOFException {
+	public char peekChar() throws IOException, ParseEndException {
 		final int i = peek(); //peek at a character
 		if(i != -1) //if we haven't reached the end of the file
 			return (char)i; //return the character
 		else
 			//if we did reach the end of the file
-			throw new ParseEOFException("End of stream reached while reading a character.", getLineIndex(), getCharIndex()); //show that we hit the end of the file
+			throw new ParseEndException("End of stream reached while reading a character.", getLineIndex(), getCharIndex()); //show that we hit the end of the file
 	}
 
 	/**
@@ -347,12 +347,12 @@ public class ParseReader extends ProcessingBufferedReader //TODO clean up and un
 	 * @param len The number of characters to peek.
 	 * @return A string containing the characters peeked.
 	 * @throws IOException Thrown when a general I/O error occurs.
-	 * @throws ParseEOFException Thrown if the end of the file is reached unexpectedly.
+	 * @throws ParseEndException Thrown if the end of the file is reached unexpectedly.
 	 */
-	public String peekString(int len) throws IOException, ParseEOFException {
+	public String peekString(int len) throws IOException, ParseEndException {
 		final char[] charArray = new char[len]; //create a character array with enough room to hold these characters
 		if(peek(charArray, 0, len) != len) //read the appropriate number of characters; if we didn't read enough
-			throw new ParseEOFException("End of stream reached while peeking a character.", getLineIndex(), getCharIndex()); //show that we hit the end of the file
+			throw new ParseEndException("End of stream reached while peeking a character.", getLineIndex(), getCharIndex()); //show that we hit the end of the file
 		return new String(charArray); //create and return a string from the characters we peeked
 	}
 
@@ -386,9 +386,9 @@ public class ParseReader extends ProcessingBufferedReader //TODO clean up and un
 	 * @return The next character that will be read after the character retrieved in the last read() or peek().
 	 * @throws IOException Thrown when an i/o error occurs.
 	 * @throws ParseUnexpectedDataException Thrown when an unexpected character is found.
-	 * @throws ParseEOFException Thrown when the end of the input stream is reached unexpectedly.
+	 * @throws ParseEndException Thrown when the end of the input stream is reached unexpectedly.
 	 */
-	public char peekExpectedChar(final String expectedChars) throws IOException, ParseUnexpectedDataException, ParseEOFException {
+	public char peekExpectedChar(final String expectedChars) throws IOException, ParseUnexpectedDataException, ParseEndException {
 
 		//TODO fix a little problem here that could show up: to throw the error, we read, but we don't know if peeking has been reset, so reading may not get the same character that was peeked
 		final char c = peekChar(); //see what the next character will be
@@ -407,11 +407,11 @@ public class ParseReader extends ProcessingBufferedReader //TODO clean up and un
 	 * @return The index of the string which is waiting to be read.
 	 * @throws IOException Thrown when an i/o error occurs.
 	 * @throws ParseUnexpectedDataException Thrown when an unexpected character is found.
-	 * @throws ParseEOFException Thrown when the end of the input stream is reached unexpectedly.
+	 * @throws ParseEndException Thrown when the end of the input stream is reached unexpectedly.
 	 * @see ParseReader#peekChar
 	 * @see ParseReader#readExpectedStrings
 	 */
-	public int peekExpectedStrings(final String[] expectedStrings) throws IOException, ParseUnexpectedDataException, ParseEOFException {
+	public int peekExpectedStrings(final String[] expectedStrings) throws IOException, ParseUnexpectedDataException, ParseEndException {
 		final long beginLineIndex = getLineIndex(), beginCharIndex = getCharIndex() + 1; //make a note of where we start searching TODO what if we've been peeking before getting here? compensate
 		final StringBuilder stringBuilder = new StringBuilder(); //this will hold the characters we peek
 		int matchesRemaining; //we'll use this to see how many strings we have left that still match up to and including compareIndex
@@ -428,7 +428,7 @@ public class ParseReader extends ProcessingBufferedReader //TODO clean up and un
 			}
 		}
 		if(isEnd()) //if we reached the end of the file
-			throw new ParseEOFException("End of stream reached while reading data.", beginLineIndex, beginCharIndex); //show that we hit the end of the file
+			throw new ParseEndException("End of stream reached while reading data.", beginLineIndex, beginCharIndex); //show that we hit the end of the file
 		else { //if we didn't reach the end of the file
 			throw new ParseUnexpectedDataException(expectedStrings, stringBuilder.toString(), beginLineIndex, beginCharIndex, getName()); //show that we didn't get the string we were expecting TODO we may want to have an XMLUnexpectedStringException or something
 		}
@@ -443,10 +443,10 @@ public class ParseReader extends ProcessingBufferedReader //TODO clean up and un
 	 * @return The index of the string which is waiting to be read.
 	 * @throws IOException Thrown when an i/o error occurs.
 	 * @throws ParseUnexpectedDataException Thrown when an unexpected character is found.
-	 * @throws ParseEOFException Thrown when the end of the input stream is reached unexpectedly.
+	 * @throws ParseEndException Thrown when the end of the input stream is reached unexpectedly.
 	 * @see ParseReader#peekExpectedStrings
 	 */
-	public int readExpectedStrings(final String[] expectedStrings) throws IOException, ParseUnexpectedDataException, ParseEOFException {
+	public int readExpectedStrings(final String[] expectedStrings) throws IOException, ParseUnexpectedDataException, ParseEndException {
 		resetPeek(); //reset our peeking so that we'll really be peeking the next character
 		final int matchedStringIndex = peekExpectedStrings(expectedStrings); ///see which string is waiting
 		skip(expectedStrings[matchedStringIndex].length()); //skip the string we found to simulate reading it
@@ -458,11 +458,11 @@ public class ParseReader extends ProcessingBufferedReader //TODO clean up and un
 	 * @param n The number of characters to skip.
 	 * @return The number of characters actually skipped.
 	 * @throws IOException Thrown when a general I/O error occurs.
-	 * @throws ParseEOFException Thrown if the end of the file is reached unexpectedly.
+	 * @throws ParseEndException Thrown if the end of the file is reached unexpectedly.
 	 */
-	public long skipChars(long n) throws IOException, ParseEOFException {
+	public long skipChars(long n) throws IOException, ParseEndException {
 		if(skip(n) != n) //skip the requested number of characters; if we could not read as many as were requested
-			throw new ParseEOFException("End of stream reached while reading a character.", getLineIndex(), getCharIndex()); //show that we hit the end of the file
+			throw new ParseEndException("End of stream reached while reading a character.", getLineIndex(), getCharIndex()); //show that we hit the end of the file
 		return n; //if we make it here, we will have skipped all the characters
 	}
 
@@ -471,13 +471,13 @@ public class ParseReader extends ProcessingBufferedReader //TODO clean up and un
 	 * unexpectedly reached. Resets peeking.
 	 * @param skipChars The characters which should be skipped.
 	 * @throws IOException Thrown when an i/o error occurs.
-	 * @throws ParseEOFException Thrown if the end of the file is reached unexpectedly.
+	 * @throws ParseEndException Thrown if the end of the file is reached unexpectedly.
 	 * @return The number of characters skipped.
 	 */
-	public long skipChars(final String skipChars) throws IOException, ParseEOFException {
+	public long skipChars(final String skipChars) throws IOException, ParseEndException {
 		final long numCharsSkipped = skipCharsEOF(skipChars); //skip characters without throwing an exception when we run out of data
 		if(isEnd()) //if we reached the end of the file
-			throw new ParseEOFException("End of stream reached while skipping data.", getLineIndex(), getCharIndex()); //show that we hit the end of the file
+			throw new ParseEndException("End of stream reached while skipping data.", getLineIndex(), getCharIndex()); //show that we hit the end of the file
 		return numCharsSkipped; //return the number of characters we skipped
 	}
 
@@ -516,10 +516,10 @@ public class ParseReader extends ProcessingBufferedReader //TODO clean up and un
 	 * Reads characters until a particular character is reached. The delimiter character reached will be the next character read.
 	 * @param delimiterChar The character which indicates reading should stop.
 	 * @throws IOException Thrown when an i/o error occurs.
-	 * @throws ParseEOFException Thrown when the end of the input stream is reached unexpectedly.
+	 * @throws ParseEndException Thrown when the end of the input stream is reached unexpectedly.
 	 * @return The characters up to but not including the delimiter character reached.
 	 */
-	public String readStringUntilChar(char delimiterChar) throws IOException, ParseEOFException {
+	public String readStringUntilChar(char delimiterChar) throws IOException, ParseEndException {
 		return readStringUntilChar(String.valueOf(delimiterChar)); //convert this character to a string and call the version of this function which accepts a string as a parameter
 	}
 
@@ -539,13 +539,13 @@ public class ParseReader extends ProcessingBufferedReader //TODO clean up and un
 	 * peeking. Note that this function has a limitation of the largest integer for the number of characters returned.
 	 * @param delimiterCharString A list of characters which indicate reading should stop.
 	 * @throws IOException Thrown when an i/o error occurs.
-	 * @throws ParseEOFException Thrown when the end of the input stream is reached unexpectedly.
+	 * @throws ParseEndException Thrown when the end of the input stream is reached unexpectedly.
 	 * @return The characters up to but not including the delimiter character reached.
 	 */
-	public String readStringUntilChar(String delimiterCharString) throws IOException, ParseEOFException {
+	public String readStringUntilChar(String delimiterCharString) throws IOException, ParseEndException {
 		final String characterString = readStringUntilCharEOF(delimiterCharString); //read the characters until the delimiter without throwing an error when we run out of data
 		if(isEnd()) { //if we reached the end of the file
-			throw new ParseEOFException("End of stream reached while reading data.", getLineIndex(), getCharIndex()); //show that we hit the end of the file
+			throw new ParseEndException("End of stream reached while reading data.", getLineIndex(), getCharIndex()); //show that we hit the end of the file
 		}
 		return characterString; //return the string we read
 	}
@@ -555,10 +555,10 @@ public class ParseReader extends ProcessingBufferedReader //TODO clean up and un
 	 * Note that this function has a limitation of the largest integer for the number of characters returned.
 	 * @param delimiterString The string that indicates reading should stop.
 	 * @throws IOException Thrown when an i/o error occurs.
-	 * @throws ParseEOFException Thrown when the end of the input stream is reached unexpectedly.
+	 * @throws ParseEndException Thrown when the end of the input stream is reached unexpectedly.
 	 * @return The characters up to but not including the delimiter string reached.
 	 */
-	public String readStringUntilString(String delimiterString) throws IOException, ParseEOFException {
+	public String readStringUntilString(String delimiterString) throws IOException, ParseEndException {
 		final StringBuilder stringBuilder = new StringBuilder();
 		final char delimiter = delimiterString.charAt(0); //get the first character of the delimiter string
 		while(true) {
@@ -577,10 +577,10 @@ public class ParseReader extends ProcessingBufferedReader //TODO clean up and un
 	 * number of characters returned.
 	 * @param delimiterString The string that indicates reading should stop.
 	 * @throws IOException Thrown when an i/o error occurs.
-	 * @throws ParseEOFException Thrown when the end of the input stream is reached unexpectedly.
+	 * @throws ParseEndException Thrown when the end of the input stream is reached unexpectedly.
 	 * @return The characters up to but not including the delimiter string reached.
 	 */
-	public String readStringUntilSkipString(String delimiterString) throws IOException, ParseEOFException {
+	public String readStringUntilSkipString(String delimiterString) throws IOException, ParseEndException {
 		final String string = readStringUntilString(delimiterString); //read up to the delimiter string
 		readExpectedString(delimiterString); //read the delimiter string
 		return string; //return the string before the delimiter
@@ -622,10 +622,10 @@ public class ParseReader extends ProcessingBufferedReader //TODO clean up and un
 	 * @param expectedChar The character expected.
 	 * @throws IOException Thrown when an i/o error occurs.
 	 * @throws ParseUnexpectedDataException Thrown when an unexpected character is found.
-	 * @throws ParseEOFException Thrown when the end of the input stream is reached unexpectedly.
+	 * @throws ParseEndException Thrown when the end of the input stream is reached unexpectedly.
 	 * @return The character read.
 	 */
-	public char readExpectedChar(final char expectedChar) throws IOException, ParseUnexpectedDataException, ParseEOFException {
+	public char readExpectedChar(final char expectedChar) throws IOException, ParseUnexpectedDataException, ParseEndException {
 		char c = readChar(); //read a character
 		if(c != expectedChar) //if we don't get the character we expected
 			throw new ParseUnexpectedDataException(expectedChar, c, getLineIndex(), getCharIndex()); //show that we didn't get the character we were expecting
@@ -637,10 +637,10 @@ public class ParseReader extends ProcessingBufferedReader //TODO clean up and un
 	 * @param expectedChars A string with the list of allowed characters.
 	 * @throws IOException Thrown when an i/o error occurs.
 	 * @throws ParseUnexpectedDataException Thrown when an unexpected character is found.
-	 * @throws ParseEOFException Thrown when the end of the input stream is reached unexpectedly.
+	 * @throws ParseEndException Thrown when the end of the input stream is reached unexpectedly.
 	 * @return The character read.
 	 */
-	public char readExpectedChar(final String expectedChars) throws IOException, ParseUnexpectedDataException, ParseEOFException {
+	public char readExpectedChar(final String expectedChars) throws IOException, ParseUnexpectedDataException, ParseEndException {
 		char c = readChar(); //read a character
 		if(expectedChars.indexOf(c) == -1) //if this character doesn't match any we expect
 			throw new ParseUnexpectedDataException(Characters.from(expectedChars), c, getLineIndex(), getCharIndex()); //show that we didn't get the character we were expecting TODO switch to using Characters throughout
@@ -651,13 +651,13 @@ public class ParseReader extends ProcessingBufferedReader //TODO clean up and un
 	 * Gets the specified number of characters from the reader.
 	 * @param len The number of characters to read.
 	 * @throws IOException Thrown when an i/o error occurs.
-	 * @throws ParseEOFException Thrown if the end of the file is reached unexpectedly.
+	 * @throws ParseEndException Thrown if the end of the file is reached unexpectedly.
 	 * @return The characters read.
 	 */
-	public String readString(final int len) throws IOException, ParseEOFException {
+	public String readString(final int len) throws IOException, ParseEndException {
 		final char[] charArray = new char[len]; //create a character array with enough room to hold these characters
 		if(read(charArray, 0, len) != len) //read the appropriate number of characters; if we didn't read enough
-			throw new ParseEOFException("End of stream reached while reading a character.", getLineIndex(), getCharIndex()); //show that we hit the end of the file
+			throw new ParseEndException("End of stream reached while reading a character.", getLineIndex(), getCharIndex()); //show that we hit the end of the file
 		return new String(charArray); //create and return a string from the characters we read
 	}
 
@@ -666,10 +666,10 @@ public class ParseReader extends ProcessingBufferedReader //TODO clean up and un
 	 * @param expectedString The characters expected.
 	 * @throws IOException Thrown when an i/o error occurs.
 	 * @throws ParseUnexpectedDataException Thrown when an unexpected character is found.
-	 * @throws ParseEOFException Thrown when the end of the input stream is reached unexpectedly.
+	 * @throws ParseEndException Thrown when the end of the input stream is reached unexpectedly.
 	 * @return The string read.
 	 */
-	public String readExpectedString(final String expectedString) throws IOException, ParseUnexpectedDataException, ParseEOFException {
+	public String readExpectedString(final String expectedString) throws IOException, ParseUnexpectedDataException, ParseEndException {
 		final String foundString = readString(expectedString.length()); //read the string into memory
 		if(!foundString.equals(expectedString)) //if the string we read does not match
 			throw new ParseUnexpectedDataException(new String[] {expectedString}, foundString, getLineIndex(), getCharIndex(), getName()); //show that we didn't get the string we were expecting
@@ -681,10 +681,10 @@ public class ParseReader extends ProcessingBufferedReader //TODO clean up and un
 	 * @param expectedString The characters expected.
 	 * @throws IOException Thrown when an i/o error occurs.
 	 * @throws ParseUnexpectedDataException Thrown when an unexpected character is found.
-	 * @throws ParseEOFException Thrown when the end of the input stream is reached unexpectedly.
+	 * @throws ParseEndException Thrown when the end of the input stream is reached unexpectedly.
 	 * @return The string read.
 	 */
-	public String readExpectedStringIgnoreCase(final String expectedString) throws IOException, ParseUnexpectedDataException, ParseEOFException {
+	public String readExpectedStringIgnoreCase(final String expectedString) throws IOException, ParseUnexpectedDataException, ParseEndException {
 		final String foundString = readString(expectedString.length()); //read the string into memory
 		if(!foundString.equalsIgnoreCase(expectedString)) //if the string we read does not match, even if we ignore case
 			throw new ParseUnexpectedDataException(new String[] {expectedString}, foundString, getLineIndex(), getCharIndex(), getName()); //show that we didn't get the string we were expecting
@@ -695,10 +695,10 @@ public class ParseReader extends ProcessingBufferedReader //TODO clean up and un
 	 * Reads text from an input stream that ends in a certain delimiter. The ending delimiter will be discarded.
 	 * @param endDelimiter The string to expect at the end of the characters.
 	 * @throws IOException Thrown when an i/o error occurs.
-	 * @throws ParseEOFException Thrown when the end of the input stream is reached unexpectedly.
+	 * @throws ParseEndException Thrown when the end of the input stream is reached unexpectedly.
 	 * @return The characters before the delimiter.
 	 */
-	public String readDelimitedString(final String endDelimiter) throws IOException, ParseEOFException {
+	public String readDelimitedString(final String endDelimiter) throws IOException, ParseEndException {
 		final StringBuilder characterData = new StringBuilder(); //this will hold the characters we find
 		final int endDelimiterLength = endDelimiter.length(); //store the length of the ending delimiter
 		final char endDelimiterLastChar = endDelimiter.charAt(endDelimiter.length() - 1); //get the last character in the ending delimiter
@@ -719,11 +719,11 @@ public class ParseReader extends ProcessingBufferedReader //TODO clean up and un
 	 * @param endDelimiter The string to expect at the end of the characters.
 	 * @throws IOException Thrown when an i/o error occurs.
 	 * @throws ParseUnexpectedDataException Thrown when an unexpected character is found.
-	 * @throws ParseEOFException Thrown when the end of the input stream is reached unexpectedly.
+	 * @throws ParseEndException Thrown when the end of the input stream is reached unexpectedly.
 	 * @return The characters between the delimiters.
 	 */
 	public String readDelimitedString(final String startDelimiter, final String endDelimiter)
-			throws IOException, ParseUnexpectedDataException, ParseEOFException {
+			throws IOException, ParseUnexpectedDataException, ParseEndException {
 		readExpectedString(startDelimiter); //make sure the characters start with the correct delimiters
 		return readDelimitedString(endDelimiter); //read the content up to the ending delimiter and throw away the end delimiter
 		//TODO somehow fit an error here for EOF (which happens now) which indicates that we were searching for the end delimiters (which we don't do now)
@@ -735,10 +735,10 @@ public class ParseReader extends ProcessingBufferedReader //TODO clean up and un
 	 * @param endDelimiter The character to expect at the end of the characters.
 	 * @throws IOException Thrown when an i/o error occurs.
 	 * @throws ParseUnexpectedDataException Thrown when an unexpected character is found.
-	 * @throws ParseEOFException Thrown when the end of the input stream is reached unexpectedly.
+	 * @throws ParseEndException Thrown when the end of the input stream is reached unexpectedly.
 	 * @return The characters between the delimiters.
 	 */
-	public String readDelimitedString(final char startDelimiter, final char endDelimiter) throws IOException, ParseUnexpectedDataException, ParseEOFException {
+	public String readDelimitedString(final char startDelimiter, final char endDelimiter) throws IOException, ParseUnexpectedDataException, ParseEndException {
 		readExpectedChar(startDelimiter); //read the first delimiter
 		final String string = readStringUntilChar(endDelimiter); //read until the end delimiter is reached
 		readExpectedChar(endDelimiter); //read the ending delimiter
@@ -751,11 +751,11 @@ public class ParseReader extends ProcessingBufferedReader //TODO clean up and un
 	 * @param endDelimiter The character to expect at the end of the characters.
 	 * @throws IOException Thrown when an i/o error occurs.
 	 * @throws ParseUnexpectedDataException Thrown when an unexpected character is found.
-	 * @throws ParseEOFException Thrown when the end of the input stream is reached unexpectedly.
+	 * @throws ParseEndException Thrown when the end of the input stream is reached unexpectedly.
 	 * @return The delimiters with the character between them.
 	 */
 	public String readDelimitedStringInclusive(final char startDelimiter, final char endDelimiter)
-			throws IOException, ParseUnexpectedDataException, ParseEOFException {
+			throws IOException, ParseUnexpectedDataException, ParseEndException {
 		return readExpectedChar(startDelimiter) + readStringUntilChar(endDelimiter) + readExpectedChar(endDelimiter); //read the start and ending delimiters, and everything in-between		
 	}
 
@@ -765,11 +765,11 @@ public class ParseReader extends ProcessingBufferedReader //TODO clean up and un
 	 * @param endDelimiter The string to expect at the end of the characters.
 	 * @throws IOException Thrown when an i/o error occurs.
 	 * @throws ParseUnexpectedDataException Thrown when an unexpected character is found.
-	 * @throws ParseEOFException Thrown when the end of the input stream is reached unexpectedly.
+	 * @throws ParseEndException Thrown when the end of the input stream is reached unexpectedly.
 	 * @return The delimiters with the character between them.
 	 */
 	public String readDelimitedStringInclusive(final String startDelimiter, final String endDelimiter)
-			throws IOException, ParseUnexpectedDataException, ParseEOFException {
+			throws IOException, ParseUnexpectedDataException, ParseEndException {
 		//read the expected delimiters and the character data between them and return it all as one string
 		return readExpectedString(startDelimiter) + readDelimitedString(startDelimiter, endDelimiter) + readExpectedString(endDelimiter);
 	}

@@ -23,7 +23,7 @@ import java.util.StringTokenizer;
 import static com.globalmentor.text.TextFormatter.*;
 
 import com.globalmentor.java.CharSequences;
-import com.globalmentor.text.SyntaxException;
+import com.globalmentor.text.ArgumentSyntaxException;
 
 /**
  * A nonce that uses the current time, the date, a secret key, and a random number. This implementation stores information in the form:
@@ -93,9 +93,9 @@ public class DefaultNonce implements Nonce {
 	 * Creates a nonce from a formatted string.
 	 * @param string The string containing the nonce.
 	 * @return A nonce containing values that would generate the same string as the one given.
-	 * @throws SyntaxException if the given string does not have the correct format for this type of nonce.
+	 * @throws ArgumentSyntaxException if the given string does not have the correct format for this type of nonce.
 	 */
-	public DefaultNonce createNonce(final String string) throws SyntaxException {
+	public DefaultNonce createNonce(final String string) throws ArgumentSyntaxException {
 		try {
 			final StringTokenizer tokenizer = new StringTokenizer(string, DELIMITER_STRING); //tokenize the string on the delimiter
 			if(tokenizer.hasMoreTokens()) { //if there is a private key 
@@ -106,18 +106,18 @@ public class DefaultNonce implements Nonce {
 						final long value = Long.parseLong(tokenizer.nextToken(), 16); //parse the hex value
 						return new DefaultNonce(privateKey, time, value); //create and return a new nonce from the values
 					} else { //if there is no value
-						throw new SyntaxException("Missing value.", string);
+						throw new ArgumentSyntaxException("Missing value.", string);
 					}
 				} else { //if there is no time
-					throw new SyntaxException("Missing time.", string);
+					throw new ArgumentSyntaxException("Missing time.", string);
 				}
 			} else { //if there is no key
-				throw new SyntaxException("Missing key.", string);
+				throw new ArgumentSyntaxException("Missing key.", string);
 			}
 		} catch(final NumberFormatException numberFormatException) { //if one of the numbers couldn't be parsed
-			throw new SyntaxException(numberFormatException, string); //indicate that the string couldn't be parsed
+			throw new ArgumentSyntaxException(numberFormatException, string); //indicate that the string couldn't be parsed
 		} catch(final IllegalArgumentException illegalArgumentException) { //if one of the parameters were incorrect
-			throw new SyntaxException(illegalArgumentException, string); //indicate that the string couldn't be parsed
+			throw new ArgumentSyntaxException(illegalArgumentException, string); //indicate that the string couldn't be parsed
 		}
 	}
 
