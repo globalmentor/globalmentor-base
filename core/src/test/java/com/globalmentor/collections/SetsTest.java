@@ -48,15 +48,31 @@ public class SetsTest {
 		assertThat(Sets.union(Set.of("a", "b", "c"), Set.of("x", "y", "z")), is(Set.of("a", "b", "c", "x", "y", "z")));
 	}
 
+	/** @see Sets#unionCopyOf(Collection, Collection) */
+	@Test
+	void testUnionCopyOfCollectionCollection() {
+		assertThat(Sets.unionCopyOf(Set.of(), Set.of()), is(emptySet()));
+		assertThat(Sets.unionCopyOf(Set.of("foo"), Set.of()), containsInAnyOrder("foo"));
+		assertThat(Sets.unionCopyOf(Set.of(), Set.of("other")), containsInAnyOrder("other"));
+		assertThat(Sets.unionCopyOf(Set.of("foo"), Set.of("other")), containsInAnyOrder("foo", "other"));
+		assertThat(Sets.unionCopyOf(Set.of("foo", "bar"), Set.of("other")), containsInAnyOrder("foo", "bar", "other"));
+		assertThrows(NullPointerException.class, () -> Sets.unionCopyOf(Arrays.asList("foo", null, "bar"), Set.of("other")));
+		assertThat(Sets.unionCopyOf(Set.of("foo", "bar"), Set.of("other", "one")), containsInAnyOrder("foo", "bar", "other", "one"));
+		assertThat(Sets.unionCopyOf(Set.of("one", "two", "three"), Set.of("other")), containsInAnyOrder("one", "two", "three", "other"));
+		assertThat(Sets.unionCopyOf(Set.of("one", "two", "three"), Set.of("other", "one")), containsInAnyOrder("one", "two", "three", "other"));
+		assertThat(Sets.unionCopyOf(List.of("one", "two", "three", "two", "three"), List.of("other", "one")), containsInAnyOrder("one", "two", "three", "other"));
+		assertThrows(NullPointerException.class, () -> Sets.unionCopyOf(Set.of("one", "two", "three"), singleton(null)));
+	}
+
 	/** @see Sets#unionCopyOf(Collection, Object) */
 	@Test
 	void testUnionCopyOfCollectionElement() {
 		assertThrows(NullPointerException.class, () -> Sets.unionCopyOf(Set.of(), null));
-		assertThat(Sets.unionCopyOf(Set.of(), "other")::iterator, containsInAnyOrder("other"));
-		assertThat(Sets.unionCopyOf(Set.of("foo"), "other")::iterator, containsInAnyOrder("foo", "other"));
-		assertThat(Sets.unionCopyOf(Set.of("foo", "bar"), "other")::iterator, containsInAnyOrder("foo", "bar", "other"));
-		assertThat(Sets.unionCopyOf(Set.of("one", "two", "three"), "other")::iterator, containsInAnyOrder("one", "two", "three", "other"));
-		assertThat(Sets.unionCopyOf(List.of("one", "two", "three", "two", "three"), "other")::iterator, containsInAnyOrder("one", "two", "three", "other"));
+		assertThat(Sets.unionCopyOf(Set.of(), "other"), containsInAnyOrder("other"));
+		assertThat(Sets.unionCopyOf(Set.of("foo"), "other"), containsInAnyOrder("foo", "other"));
+		assertThat(Sets.unionCopyOf(Set.of("foo", "bar"), "other"), containsInAnyOrder("foo", "bar", "other"));
+		assertThat(Sets.unionCopyOf(Set.of("one", "two", "three"), "other"), containsInAnyOrder("one", "two", "three", "other"));
+		assertThat(Sets.unionCopyOf(List.of("one", "two", "three", "two", "three"), "other"), containsInAnyOrder("one", "two", "three", "other"));
 		assertThrows(NullPointerException.class, () -> Sets.unionCopyOf(Set.of("one", "two", "three"), null));
 	}
 

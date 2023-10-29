@@ -51,6 +51,29 @@ public class Sets {
 	}
 
 	/**
+	 * Returns a set representing the union of the given collection and another collection. The returned union set will be a copy of the original collections.
+	 * <code>null</code> elements are not supported.
+	 * @param <E> The common type of element found in the collections.
+	 * @param collection1 The first collection of the union.
+	 * @param collection2 The second collection of the union.
+	 * @return A set containing the logical union of the two collections.
+	 * @throws NullPointerException if either of the collections is <code>null</code>.
+	 * @see Set#copyOf(Collection)
+	 */
+	public static <E> Set<E> unionCopyOf(@Nonnull final Collection<? extends E> collection1, @Nonnull final Collection<? extends E> collection2) {
+		if(collection1.isEmpty()) {
+			if(collection2.isEmpty()) {
+				return Set.of();
+			}
+			return Set.copyOf(collection2);
+		}
+		if(collection2.isEmpty()) {
+			return Set.copyOf(collection1);
+		}
+		return concat(collection1.stream(), collection2.stream()).collect(toUnmodifiableSet());
+	}
+
+	/**
 	 * Returns a set representing the union of the given collection and another element. The returned set will be a copy of the original collection and the given
 	 * element, in effect adding the element to the union set. <code>null</code> elements are not supported.
 	 * @param <E> The common type of element found in the collections.
