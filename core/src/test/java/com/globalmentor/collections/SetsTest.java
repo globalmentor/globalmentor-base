@@ -19,6 +19,7 @@ package com.globalmentor.collections;
 import static java.util.Collections.*;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.*;
 
@@ -45,6 +46,17 @@ public class SetsTest {
 		assertThat(Sets.union(Set.of("a"), Set.of("x", "y")), is(Set.of("a", "x", "y")));
 		assertThat(Sets.union(Set.of("a", "b"), Set.of("x", "y")), is(Set.of("a", "b", "x", "y")));
 		assertThat(Sets.union(Set.of("a", "b", "c"), Set.of("x", "y", "z")), is(Set.of("a", "b", "c", "x", "y", "z")));
+	}
+
+	/** @see Sets#unionCopyOf(Set, Object) */
+	@Test
+	void testUnionCopyOfSetElement() {
+		assertThrows(NullPointerException.class, () -> Sets.unionCopyOf(Set.of(), null));
+		assertThat(Sets.unionCopyOf(Set.of(), "other")::iterator, containsInAnyOrder("other"));
+		assertThat(Sets.unionCopyOf(Set.of("foo"), "other")::iterator, containsInAnyOrder("foo", "other"));
+		assertThat(Sets.unionCopyOf(Set.of("foo", "bar"), "other")::iterator, containsInAnyOrder("foo", "bar", "other"));
+		assertThat(Sets.unionCopyOf(Set.of("one", "two", "three"), "other")::iterator, containsInAnyOrder("one", "two", "three", "other"));
+		assertThrows(NullPointerException.class, () -> Sets.unionCopyOf(Set.of("one", "two", "three"), null));
 	}
 
 }

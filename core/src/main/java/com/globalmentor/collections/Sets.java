@@ -16,6 +16,7 @@
 
 package com.globalmentor.collections;
 
+import static com.globalmentor.collections.iterables.Iterables.*;
 import static java.util.Objects.*;
 import static java.util.stream.Collectors.*;
 import static java.util.stream.Stream.*;
@@ -47,6 +48,21 @@ public class Sets {
 			return set1;
 		}
 		return concat(set1.stream(), set2.stream()).collect(toUnmodifiableSet());
+	}
+
+	/**
+	 * Returns a set representing the union of the given set and another element. The returned set will be a copy of the original set and the given element, in
+	 * effect adding the element to the set. <code>null</code> elements are not supported.
+	 * @param <T> The common type found in the sets.
+	 * @param set The set to copy and to which to add an element.
+	 * @param element The element to add to the set.
+	 * @return A set containing the logical union of the given set and a set containing the given element.
+	 */
+	public static <T> Set<T> unionCopyOf(@Nonnull final Set<T> set, @Nonnull final T element) {
+		if(set.isEmpty()) {
+			return Set.of(element);
+		}
+		return toStreamConcat(set, element).collect(toUnmodifiableSet());
 	}
 
 }
