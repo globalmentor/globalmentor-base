@@ -16,8 +16,14 @@
 
 package com.globalmentor.text;
 
+import static com.github.npathai.hamcrestopt.OptionalMatchers.*;
 import static com.globalmentor.text.RegularExpressions.*;
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.util.Optional;
+import java.util.regex.Pattern;
+
 import static org.hamcrest.MatcherAssert.*;
 
 import org.junit.jupiter.api.Test;
@@ -32,7 +38,7 @@ public class RegularExpressionsTest {
 
 	/** @see RegularExpressions#QUOTED_STRING */
 	@Test
-	public void testQuotedString() {
+	void testQuotedString() {
 		assertThat("".matches(QUOTED_STRING), is(false));
 		assertThat("\"".matches(QUOTED_STRING), is(false));
 		assertThat("\"\"".matches(QUOTED_STRING), is(true));
@@ -56,7 +62,7 @@ public class RegularExpressionsTest {
 
 	/** @see RegularExpressions#QUOTED_STRING_ALLOWING_ESCAPE_QUOTE */
 	@Test
-	public void testQuotedStringAllowingEscapeQuote() {
+	void testQuotedStringAllowingEscapeQuote() {
 		assertThat("".matches(QUOTED_STRING_ALLOWING_ESCAPE_QUOTE), is(false));
 		assertThat("\"".matches(QUOTED_STRING_ALLOWING_ESCAPE_QUOTE), is(false));
 		assertThat("\"\"".matches(QUOTED_STRING_ALLOWING_ESCAPE_QUOTE), is(true));
@@ -80,7 +86,7 @@ public class RegularExpressionsTest {
 
 	/** @see RegularExpressions#QUOTED_STRING_ALLOWING_ESCAPE_ANYTHING */
 	@Test
-	public void testQuotedStringAllowingEscapeAnything() {
+	void testQuotedStringAllowingEscapeAnything() {
 		assertThat("".matches(QUOTED_STRING_ALLOWING_ESCAPE_ANYTHING), is(false));
 		assertThat("\"".matches(QUOTED_STRING_ALLOWING_ESCAPE_ANYTHING), is(false));
 		assertThat("\"\"".matches(QUOTED_STRING_ALLOWING_ESCAPE_ANYTHING), is(true));
@@ -100,6 +106,34 @@ public class RegularExpressionsTest {
 		assertThat("\"foo\\nbar\"".matches(QUOTED_STRING_ALLOWING_ESCAPE_ANYTHING), is(true));
 		assertThat("\"foo\\tbar\"".matches(QUOTED_STRING_ALLOWING_ESCAPE_ANYTHING), is(true));
 		assertThat("\"foo\\xbar\"".matches(QUOTED_STRING_ALLOWING_ESCAPE_ANYTHING), is(true));
+	}
+
+	/**
+	 * @see RegularExpressions#checkArgumentMatches(CharSequence, Pattern)
+	 * @see RegularExpressions#checkArgumentMatches(CharSequence, Pattern, String, Object...)
+	 */
+	@Test
+	void testCheckArgumentMatches() {
+		final Pattern fooBarPattern = Pattern.compile("(foo)(?:bar)?");
+		checkArgumentMatches("foo", fooBarPattern);
+		checkArgumentMatches("foobar", fooBarPattern);
+		checkArgumentMatches("foo", fooBarPattern, "error message");
+		checkArgumentMatches("foo", fooBarPattern, "error message", 123);
+		checkArgumentMatches("foo", fooBarPattern, "error message %d", 123);
+		final IllegalArgumentException illegalArgumentException = assertThrows(IllegalArgumentException.class, () -> checkArgumentMatches("bar", fooBarPattern),
+				"non-matching input");
+		assertThat(illegalArgumentException.getMessage(), is("Input `bar` did not match pattern `(foo)(?:bar)?`."));
+	}
+
+	/** @see RegularExpressions#findMatch(CharSequence, Pattern) */
+	@Test
+	void testFindMatch() {
+		final Pattern fooBarPattern = Pattern.compile("(foo)(?:bar)?");
+		assertThat(findMatch(fooBarPattern, "foo"), isPresent());
+		assertThat(findMatch(fooBarPattern, "foo").orElseThrow().group(1), is("foo"));
+		assertThat(findMatch(fooBarPattern, "bar"), is(Optional.empty()));
+		assertThat(findMatch(fooBarPattern, "foobar"), isPresent());
+		assertThat(findMatch(fooBarPattern, "foobar").orElseThrow().group(1), is("foo"));
 	}
 
 }
