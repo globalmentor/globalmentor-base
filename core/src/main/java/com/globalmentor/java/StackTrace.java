@@ -23,6 +23,9 @@ import static java.util.stream.Collectors.*;
 
 import java.io.*;
 import java.util.*;
+import java.util.regex.Pattern;
+
+import com.globalmentor.text.RegExGroup;
 
 /**
  * Convenience class and methods for working with stack traces.
@@ -30,6 +33,45 @@ import java.util.*;
  * @author Garret Wilson
  */
 public class StackTrace {
+
+	/** A typical label for a stack element filename component indicating unknown source. */
+	public static final String ELEMENT_FILE_NAME_UNKNOWN_SOURCE = "Unknown Source";
+
+	/** A typical label for a stack element filename component indicating a native method. */
+	public static final String ELEMENT_FILE_NAME_NATIVE_METHOD = "Native Method";
+
+	/**
+	 * Regular expression definition for matching a stack trace element.
+	 * @see StackTraceElement#toString()
+	 */
+	public enum ElementRegExGroup implements RegExGroup.ByNumber {
+		/** @see StackTraceElement#getClassLoaderName() */
+		CLASS_LOADER_NAME,
+		/** @see StackTraceElement#getModuleName() */
+		MODULE_NAME,
+		/** @see StackTraceElement#getModuleVersion() */
+		MODULE_VERSION,
+		/** @see StackTraceElement#getClassName() */
+		CLASS_NAME,
+		/** @see StackTraceElement#getMethodName() */
+		METHOD_NAME,
+		/** @see StackTraceElement#getFileName() */
+		FILE_NAME,
+		/** @see StackTraceElement#getLineNumber() */
+		LINE_NUMBER;
+
+		/**
+		 * The pattern for matching the stack trace element.
+		 * @see StackTraceElement#toString()
+		 * @see java.lang.module.ModuleDescriptor#version()
+		 */
+		public static final Pattern PATTERN = Pattern.compile("(?:([^\\s@/]+)/)?" //optional class loader name with slash 
+				+ "(?:(?:([^\\s@/]+)@([\\d.+-]+))?/)?" //optional module name/module version, followed by slash	//TODO improve module version regex
+				+ "([^\\s(]+)" //declaring class is always required
+				+ "\\.([^\\s.(]+)" //method name is always required (this regex will require backtracking)
+				+ "\\(([^:)]+)(?::(\\d+))??\\)"); //"file name" (always present in some form, but not necessarily the actual filename) and optional line number
+
+	}
 
 	/** The list of stack trace elements. */
 	private final List<StackTraceElement> stackTraceElements;
