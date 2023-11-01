@@ -82,7 +82,7 @@ public class StackTrace {
 		 * @see java.lang.module.ModuleDescriptor#version()
 		 */
 		public static final Pattern PATTERN = Pattern.compile("(?:([^\\s@/]+)/)?" //optional class loader name with slash 
-				+ "(?:(?:([^\\s@/]+)@([\\d.+-]+))?/)?" //optional module name/module version, followed by slash	//TODO improve module version regex
+				+ "(?:(?:([^\\s@/]+)(?:@([\\d.+-]+))?)?/)?" //optional module name/module version, followed by slash	//TODO improve module version regex
 				+ "([^\\s(]+)" //declaring class is always required
 				+ "\\.([^\\s.(]+)" //method name is always required (this regex will require backtracking)
 				+ "\\(([^:)]+)(?::(\\d+))??\\)"); //"file name" (always present in some form, but not necessarily the actual filename) and optional line number

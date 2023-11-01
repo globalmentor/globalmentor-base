@@ -39,12 +39,18 @@ public class StackTraceTest {
 	 * @see StackTraceElement#toString()
 	 */
 	static final String ELEMENT_STRING = "com.foo.loader/foo@9.0/com.foo.Main.run(Main.java:101)";
-
 	/**
 	 * The line number is unavailable.
 	 * @see StackTraceElement#toString()
 	 */
 	static final String ELEMENT_STRING_NO_LINE_NUMBER = "com.foo.loader/foo@9.0/com.foo.Main.run(Main.java)";
+	/**
+	 * The module version is not present.
+	 * @implNote This example is not given in the API, but in the OpenJDK 17 source code the module version is optional and may not be present in the string form,
+	 *           along with the version delimiter.
+	 * @see StackTraceElement#toString()
+	 */
+	static final String ELEMENT_STRING_NO_MODULE_VERSION = "com.foo.loader/foo/com.foo.Main.run(Main.java:101)";
 	/**
 	 * Neither the file name nor the line number is available.
 	 * @see StackTraceElement#toString()
@@ -60,6 +66,13 @@ public class StackTraceTest {
 	 * @see StackTraceElement#toString()
 	 */
 	static final String ELEMENT_STRING_UNNAMED_MODULE = "com.foo.loader//com.foo.bar.App.run(App.java:12)";
+	/**
+	 * A stack trace element string containing all of the possible components.
+	 * @implNote This is not one of the examples given in the API, but it is unambiguous and the regular expression allows it. As the format examples are
+	 *           "typical" and there are no prohibitions, it is best to support this variation.
+	 * @see StackTraceElement#toString()
+	 */
+	static final String ELEMENT_STRING_NO_CLASSLOADER_UNNAMED_MODULE_SLASH_PREFIX = "/com.foo.bar.App.run(App.java:12)";
 	/**
 	 * The class of the execution point is defined in acme module loaded by a built-in class loader such as the application class loader.
 	 * @see StackTraceElement#toString()
@@ -79,9 +92,6 @@ public class StackTraceTest {
 	 */
 	@Test
 	void testStackTraceElementPattern() {
-		assertThat(
-				"No class loader and unnamed module; should not allow trailing slash if neither are present, but currently must allow as side effect of current regex.",
-				findMatch(ElementRegEx.PATTERN, "/com.foo.bar.App.run(App.java:12)"), isPresent());
 		assertThat("Initial spaces not allowed.", findMatch(ElementRegEx.PATTERN, " " + ELEMENT_STRING), is(Optional.empty()));
 		assertThat("Trailing spaces not allowed.", findMatch(ElementRegEx.PATTERN, ELEMENT_STRING + " "), is(Optional.empty()));
 		final Matcher matcher = findMatch(ElementRegEx.PATTERN, ELEMENT_STRING).orElseThrow(AssertionError::new);
@@ -108,6 +118,22 @@ public class StackTraceTest {
 		assertThat(ElementRegEx.METHOD_NAME_GROUP.findIn(matcher), isPresentAndIs("run"));
 		assertThat(ElementRegEx.FILE_NAME_GROUP.findIn(matcher), isPresentAndIs("Main.java"));
 		assertThat(ElementRegEx.LINE_NUMBER_GROUP.findIn(matcher), is(Optional.empty()));
+	}
+
+	/**
+	 * @see StackTrace.ElementRegEx#PATTERN
+	 * @see #ELEMENT_STRING_NO_MODULE_VERSION
+	 */
+	@Test
+	void testStackTraceElementPatternNoModuleVersion() {
+		final Matcher matcher = findMatch(ElementRegEx.PATTERN, ELEMENT_STRING_NO_MODULE_VERSION).orElseThrow(AssertionError::new);
+		assertThat(ElementRegEx.CLASS_LOADER_NAME_GROUP.findIn(matcher), isPresentAndIs("com.foo.loader"));
+		assertThat(ElementRegEx.MODULE_NAME_GROUP.findIn(matcher), isPresentAndIs("foo"));
+		assertThat(ElementRegEx.MODULE_VERSION_GROUP.findIn(matcher), is(Optional.empty()));
+		assertThat(ElementRegEx.CLASS_NAME_GROUP.findIn(matcher), isPresentAndIs("com.foo.Main"));
+		assertThat(ElementRegEx.METHOD_NAME_GROUP.findIn(matcher), isPresentAndIs("run"));
+		assertThat(ElementRegEx.FILE_NAME_GROUP.findIn(matcher), isPresentAndIs("Main.java"));
+		assertThat(ElementRegEx.LINE_NUMBER_GROUP.findIn(matcher), isPresentAndIs("101"));
 	}
 
 	/**
@@ -160,6 +186,22 @@ public class StackTraceTest {
 
 	/**
 	 * @see StackTrace.ElementRegEx#PATTERN
+	 * @see #ELEMENT_STRING_NO_CLASSLOADER_UNNAMED_MODULE_SLASH_PREFIX
+	 */
+	@Test
+	void testStackTraceElementPatternNoClassLoaderUnnamedModule() {
+		final Matcher matcher = findMatch(ElementRegEx.PATTERN, ELEMENT_STRING_NO_CLASSLOADER_UNNAMED_MODULE_SLASH_PREFIX).orElseThrow(AssertionError::new);
+		assertThat(ElementRegEx.CLASS_LOADER_NAME_GROUP.findIn(matcher), is(Optional.empty()));
+		assertThat(ElementRegEx.MODULE_NAME_GROUP.findIn(matcher), is(Optional.empty()));
+		assertThat(ElementRegEx.MODULE_VERSION_GROUP.findIn(matcher), is(Optional.empty()));
+		assertThat(ElementRegEx.CLASS_NAME_GROUP.findIn(matcher), isPresentAndIs("com.foo.bar.App"));
+		assertThat(ElementRegEx.METHOD_NAME_GROUP.findIn(matcher), isPresentAndIs("run"));
+		assertThat(ElementRegEx.FILE_NAME_GROUP.findIn(matcher), isPresentAndIs("App.java"));
+		assertThat(ElementRegEx.LINE_NUMBER_GROUP.findIn(matcher), isPresentAndIs("12"));
+	}
+
+	/**
+	 * @see StackTrace.ElementRegEx#PATTERN
 	 * @see #ELEMENT_STRING_BUILT_IN_CLASSS_LOADER
 	 */
 	@Test
@@ -196,12 +238,16 @@ public class StackTraceTest {
 		assertThat(StackTrace.parseElement(ELEMENT_STRING), is(new StackTraceElement("com.foo.loader", "foo", "9.0", "com.foo.Main", "run", "Main.java", 101)));
 		assertThat(StackTrace.parseElement(ELEMENT_STRING_NO_LINE_NUMBER),
 				is(new StackTraceElement("com.foo.loader", "foo", "9.0", "com.foo.Main", "run", "Main.java", ELEMENT_LINE_NUMBER_UNKNOWN)));
+		assertThat(StackTrace.parseElement(ELEMENT_STRING_NO_MODULE_VERSION),
+				is(new StackTraceElement("com.foo.loader", "foo", null, "com.foo.Main", "run", "Main.java", 101)));
 		assertThat(StackTrace.parseElement(ELEMENT_STRING_UNKNOWN_SOURCE),
 				is(new StackTraceElement("com.foo.loader", "foo", "9.0", "com.foo.Main", "run", ELEMENT_FILE_NAME_UNKNOWN_SOURCE, ELEMENT_LINE_NUMBER_UNKNOWN)));
 		assertThat(StackTrace.parseElement(ELEMENT_STRING_NATIVE_METHOD),
 				is(new StackTraceElement("com.foo.loader", "foo", "9.0", "com.foo.Main", "run", ELEMENT_FILE_NAME_NATIVE_METHOD, ELEMENT_LINE_NUMBER_NATIVE_METHOD)));
 		assertThat(StackTrace.parseElement(ELEMENT_STRING_UNNAMED_MODULE),
 				is(new StackTraceElement("com.foo.loader", null, null, "com.foo.bar.App", "run", "App.java", 12)));
+		assertThat(StackTrace.parseElement(ELEMENT_STRING_NO_CLASSLOADER_UNNAMED_MODULE_SLASH_PREFIX),
+				is(new StackTraceElement(null, null, null, "com.foo.bar.App", "run", "App.java", 12)));
 		assertThat(StackTrace.parseElement(ELEMENT_STRING_BUILT_IN_CLASSS_LOADER),
 				is(new StackTraceElement(null, "acme", "2.1", "org.acme.Lib", "test", "Lib.java", 80)));
 		assertThat(StackTrace.parseElement(ELEMENT_STRING_APPLICATION_CLASSPATH),
