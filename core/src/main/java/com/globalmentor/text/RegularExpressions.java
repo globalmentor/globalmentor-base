@@ -25,7 +25,7 @@ import java.util.regex.*;
 
 import javax.annotation.*;
 
-import com.globalmentor.java.Characters;
+import com.globalmentor.java.*;
 
 /**
  * Constants and utility methods for regular expression-related tasks.
@@ -216,6 +216,72 @@ public class RegularExpressions {
 	public static Optional<Matcher> findMatch(@Nonnull final Pattern pattern, final CharSequence input) {
 		final Matcher matcher = pattern.matcher(input);
 		return matcher.matches() ? Optional.of(matcher) : Optional.empty();
+	}
+
+	/**
+	 * A utility that encapsulates a set of capturing groups for a regular expression. Each instance is a group that can be matched.
+	 * @apiNote The following is the envisioned use. Note that this pattern names the instance <code>XXXRegEx</code> to encapsulate all regular expression
+	 *          information (even though technically it is a {@link NumberedCapturingGroup}), and names each group instance with a <code>_GROUP</code> suffix for
+	 *          clarity. (A {@link NamedCapturingGroup} may wish to leave off this suffix if more concise matching group names are desired.) : <pre>{@code
+	 *
+	 * enum FooBarRegEx implements RegularExpressions.NumberedCapturingGroup {
+	 *   FOO_GROUP, BAR_GROUP;
+	 *
+	 *   public static final Pattern PATTERN = Pattern.compile("(foo)(bar)?");
+	 * }
+	 * …
+	 * Matcher matcher = FooBarRegEx.PATTERN.matcher("foo");
+	 * assert matcher.matches();
+	 * Optional<String> foundFoo = FooBarRegEx.FOO.findIn(matcher); //`Optional.of("foo")`
+	 * Optional<String> foundBar = FooBarRegEx.BAR.findIn(matcher); //`Optional.empty()`
+	 * }</pre>
+	 * @author Garret Wilson
+	 */
+	public interface CapturingGroup extends EnumLike {
+
+		/**
+		 * Finds the input subsequence captured by this group in the given matcher. The way this group identifies the captured group in the match depends on the
+		 * implementation of this class.
+		 * @param matcher The matcher to check.
+		 * @return The subsequence captured by this group in the match, which will be empty if this group did not capture part of the input.
+		 * @throws IllegalStateException If no match has yet been attempted, or if the previous match operation failed.
+		 */
+		public Optional<String> findIn(@Nonnull final Matcher matcher);
+
+	}
+
+	/** A regular expression group definition that finds captured groups based upon the group's order in the pattern. */
+	public interface NumberedCapturingGroup extends CapturingGroup {
+
+		/**
+		 * {@inheritDoc}
+		 * @implSpec This implementation finds the captured group using the one-based equivalent of this group's ordinal.
+		 * @see #ordinal()
+		 * @see Matcher#group(int)
+		 * @throws IndexOutOfBoundsException If there is no capturing group in the pattern with the one-based equivalent of this group's ordinal.
+		 */
+		@Override
+		default Optional<String> findIn(@Nonnull final Matcher matcher) {
+			return Optional.ofNullable(matcher.group(ordinal() + 1));
+		}
+
+	}
+
+	/** A regular expression group definition that finds captured groups based upon the group's name in the pattern. */
+	public interface NamedCapturingGroup extends CapturingGroup {
+
+		/**
+		 * {@inheritDoc}
+		 * @implSpec This implementation finds the captured group using the this group's name.
+		 * @see #name()
+		 * @see Matcher#group(String)
+		 * @throws IndexOutOfBoundsException If there is no capturing group in the pattern with the this group's name.
+		 */
+		@Override
+		default Optional<String> findIn(@Nonnull final Matcher matcher) {
+			return Optional.ofNullable(matcher.group(ordinal() + 1));
+		}
+
 	}
 
 }

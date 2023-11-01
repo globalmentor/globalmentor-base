@@ -25,11 +25,10 @@ import java.io.*;
 import java.util.*;
 import java.util.regex.Pattern;
 
-import com.globalmentor.text.RegExGroup;
+import com.globalmentor.text.RegularExpressions;
 
 /**
  * Convenience class and methods for working with stack traces.
- * 
  * @author Garret Wilson
  */
 public class StackTrace {
@@ -44,21 +43,21 @@ public class StackTrace {
 	 * Regular expression definition for matching a stack trace element.
 	 * @see StackTraceElement#toString()
 	 */
-	public enum ElementRegExGroup implements RegExGroup.ByNumber {
+	public enum ElementRegEx implements RegularExpressions.NumberedCapturingGroup {
 		/** @see StackTraceElement#getClassLoaderName() */
-		CLASS_LOADER_NAME,
+		CLASS_LOADER_NAME_GROUP,
 		/** @see StackTraceElement#getModuleName() */
-		MODULE_NAME,
+		MODULE_NAME_GROUP,
 		/** @see StackTraceElement#getModuleVersion() */
-		MODULE_VERSION,
+		MODULE_VERSION_GROUP,
 		/** @see StackTraceElement#getClassName() */
-		CLASS_NAME,
+		CLASS_NAME_GROUP,
 		/** @see StackTraceElement#getMethodName() */
-		METHOD_NAME,
+		METHOD_NAME_GROUP,
 		/** @see StackTraceElement#getFileName() */
-		FILE_NAME,
+		FILE_NAME_GROUP,
 		/** @see StackTraceElement#getLineNumber() */
-		LINE_NUMBER;
+		LINE_NUMBER_GROUP;
 
 		/**
 		 * The pattern for matching the stack trace element.
