@@ -18,12 +18,15 @@ package com.globalmentor.java;
 
 import static com.globalmentor.java.Conditions.*;
 import static com.globalmentor.java.Packages.*;
+import static com.globalmentor.text.RegularExpressions.*;
 import static java.util.Arrays.*;
 import static java.util.stream.Collectors.*;
 
 import java.io.*;
 import java.util.*;
-import java.util.regex.Pattern;
+import java.util.regex.*;
+
+import javax.annotation.*;
 
 import com.globalmentor.text.RegularExpressions;
 
@@ -38,6 +41,20 @@ public class StackTrace {
 
 	/** A typical label for a stack element filename component indicating a native method. */
 	public static final String ELEMENT_FILE_NAME_NATIVE_METHOD = "Native Method";
+
+	/**
+	 * The artificial line number used by this class to indicate an unknown line number.
+	 * @apiNote This value is specific to this implementation, so it is not made public, but made visible for testing. Checking for an unknown line number should
+	 *          allow for any negative number as per the API.
+	 * @see StackTraceElement#StackTraceElement(String, String, String, String, String, String, int)
+	 */
+	static final int ELEMENT_LINE_NUMBER_UNKNOWN = -1;
+
+	/**
+	 * The artificial line number indicating a native method.
+	 * @see StackTraceElement#StackTraceElement(String, String, String, String, String, String, int)
+	 */
+	public static final int ELEMENT_LINE_NUMBER_NATIVE_METHOD = -2;
 
 	/**
 	 * Regular expression definition for matching a stack trace element.
@@ -69,7 +86,23 @@ public class StackTrace {
 				+ "([^\\s(]+)" //declaring class is always required
 				+ "\\.([^\\s.(]+)" //method name is always required (this regex will require backtracking)
 				+ "\\(([^:)]+)(?::(\\d+))??\\)"); //"file name" (always present in some form, but not necessarily the actual filename) and optional line number
+	}
 
+	/**
+	 * Parses a stack trace element from a character sequence.
+	 * @param text The text to be parsed as a stack trace element.
+	 * @return The stack trace element parsed from the text.
+	 * @throws IllegalArgumentException if the given text cannot be parsed as a stack trace element.
+	 */
+	public static StackTraceElement parseElement(@Nonnull final CharSequence text) {
+		final Matcher matcher = checkArgumentMatches(text, ElementRegEx.PATTERN, "The text `%s` could not be parsed as a stack trace eleemnt.", text);
+		final Optional<String> foundFileName = ElementRegEx.FILE_NAME_GROUP.findIn(matcher);
+		final int lineNumber = ElementRegEx.LINE_NUMBER_GROUP.findIn(matcher).map(Integer::valueOf)
+				//if there is no line number, use -2 for "Native Method" as per the API
+				.orElse(foundFileName.filter(ELEMENT_FILE_NAME_NATIVE_METHOD::equals).isPresent() ? ELEMENT_LINE_NUMBER_NATIVE_METHOD : -1);
+		return new StackTraceElement(ElementRegEx.CLASS_LOADER_NAME_GROUP.findIn(matcher).orElse(null), ElementRegEx.MODULE_NAME_GROUP.findIn(matcher).orElse(null),
+				ElementRegEx.MODULE_VERSION_GROUP.findIn(matcher).orElse(null), ElementRegEx.CLASS_NAME_GROUP.findIn(matcher).orElseThrow(AssertionError::new),
+				ElementRegEx.METHOD_NAME_GROUP.findIn(matcher).orElseThrow(AssertionError::new), foundFileName.orElse(null), lineNumber);
 	}
 
 	/** The list of stack trace elements. */

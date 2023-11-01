@@ -190,6 +190,24 @@ public class StackTraceTest {
 		assertThat(ElementRegEx.LINE_NUMBER_GROUP.findIn(matcher), isPresentAndIs("9"));
 	}
 
+	/** @see StackTrace#parseElement(CharSequence) */
+	@Test
+	void testParseElement() {
+		assertThat(StackTrace.parseElement(ELEMENT_STRING), is(new StackTraceElement("com.foo.loader", "foo", "9.0", "com.foo.Main", "run", "Main.java", 101)));
+		assertThat(StackTrace.parseElement(ELEMENT_STRING_NO_LINE_NUMBER),
+				is(new StackTraceElement("com.foo.loader", "foo", "9.0", "com.foo.Main", "run", "Main.java", ELEMENT_LINE_NUMBER_UNKNOWN)));
+		assertThat(StackTrace.parseElement(ELEMENT_STRING_UNKNOWN_SOURCE),
+				is(new StackTraceElement("com.foo.loader", "foo", "9.0", "com.foo.Main", "run", ELEMENT_FILE_NAME_UNKNOWN_SOURCE, ELEMENT_LINE_NUMBER_UNKNOWN)));
+		assertThat(StackTrace.parseElement(ELEMENT_STRING_NATIVE_METHOD),
+				is(new StackTraceElement("com.foo.loader", "foo", "9.0", "com.foo.Main", "run", ELEMENT_FILE_NAME_NATIVE_METHOD, ELEMENT_LINE_NUMBER_NATIVE_METHOD)));
+		assertThat(StackTrace.parseElement(ELEMENT_STRING_UNNAMED_MODULE),
+				is(new StackTraceElement("com.foo.loader", null, null, "com.foo.bar.App", "run", "App.java", 12)));
+		assertThat(StackTrace.parseElement(ELEMENT_STRING_BUILT_IN_CLASSS_LOADER),
+				is(new StackTraceElement(null, "acme", "2.1", "org.acme.Lib", "test", "Lib.java", 80)));
+		assertThat(StackTrace.parseElement(ELEMENT_STRING_APPLICATION_CLASSPATH),
+				is(new StackTraceElement(null, null, null, "MyClass", "mash", "MyClass.java", 9)));
+	}
+
 	@Test
 	void testStackElements() {
 		final StackTraceElement[] stackTraceElements = new Throwable().getStackTrace();
