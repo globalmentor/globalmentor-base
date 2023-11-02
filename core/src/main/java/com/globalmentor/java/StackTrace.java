@@ -36,6 +36,9 @@ import com.globalmentor.text.RegularExpressions;
  */
 public class StackTrace {
 
+	/** Convenience shared empty array of stack trace elements. */
+	public static final StackTraceElement[] NO_ELEMENTS = new StackTraceElement[0];
+
 	/** A typical label for a stack element filename component indicating unknown source. */
 	public static final String ELEMENT_FILE_NAME_UNKNOWN_SOURCE = "Unknown Source";
 

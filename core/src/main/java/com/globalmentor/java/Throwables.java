@@ -30,15 +30,30 @@ import javax.annotation.*;
 public class Throwables {
 
 	/**
+	 * Clears the stack trace elements of an existing throwable.
+	 * @apiNote This is a fluent convenience method equivalent to calling {@link Throwable#setStackTrace(StackTraceElement[])} with an empty array of stack trace
+	 *          elements and returning the original throwable.
+	 * @param <T> The type of throwable the stack trace of which to set.
+	 * @param throwable The throwable the stack trace of which to set.
+	 * @return The given throwable after setting its stack trace.
+	 * @throws NullPointerException if the throwable is <code>null</code>.
+	 * @see #setStackTrace(Throwable, StackTraceElement...)
+	 */
+	public static <T extends Throwable> T clearStackTrace(@Nonnull T throwable) {
+		return setStackTrace(throwable, StackTrace.NO_ELEMENTS);
+	}
+
+	/**
 	 * Sets the stack trace elements of an existing throwable.
 	 * @apiNote This is a fluent convenience method equivalent to calling {@link Throwable#setStackTrace(StackTraceElement[])} and returning the original
 	 *          throwable. Additionally it uses varargs to allow easier stack trace setting manually in code.
 	 * @param <T> The type of throwable the stack trace of which to set.
 	 * @param throwable The throwable the stack trace of which to set.
-	 * @return The given throwable after setting its stack trace.
 	 * @param stackTraceElements The stack trace elements to be associated with the throwable.
+	 * @return The given throwable after setting its stack trace.
 	 * @throws NullPointerException if the throwable, stack trace, or any of the stack trace elements are <code>null</code>.
 	 * @see Throwable#setStackTrace(StackTraceElement[])
+	 * @see #clearStackTrace(Throwable)
 	 */
 	public static <T extends Throwable> T setStackTrace(@Nonnull T throwable, @Nonnull StackTraceElement... stackTraceElements) {
 		throwable.setStackTrace(stackTraceElements);
