@@ -20,12 +20,30 @@ import static com.globalmentor.java.Conditions.*;
 
 import java.io.*;
 
+import javax.annotation.*;
+
 /**
  * Utilities for working with throwables and exceptions.
  * @author Garret Wilson
  * @see Throwable
  */
 public class Throwables {
+
+	/**
+	 * Sets the stack trace elements of an existing throwable.
+	 * @apiNote This is a fluent convenience method equivalent to calling {@link Throwable#setStackTrace(StackTraceElement[])} and returning the original
+	 *          throwable. Additionally it uses varargs to allow easier stack trace setting manually in code.
+	 * @param <T> The type of throwable the stack trace of which to set.
+	 * @param throwable The throwable the stack trace of which to set.
+	 * @return The given throwable after setting its stack trace.
+	 * @param stackTraceElements The stack trace elements to be associated with the throwable.
+	 * @throws NullPointerException if the throwable, stack trace, or any of the stack trace elements are <code>null</code>.
+	 * @see Throwable#setStackTrace(StackTraceElement[])
+	 */
+	public static <T extends Throwable> T setStackTrace(@Nonnull T throwable, @Nonnull StackTraceElement... stackTraceElements) {
+		throwable.setStackTrace(stackTraceElements);
+		return throwable;
+	}
 
 	/**
 	 * Returns a string representing the stack trace of the given throwable.
@@ -35,7 +53,7 @@ public class Throwables {
 	 * @throws NullPointerException if the given throwable is <code>null</code>.
 	 * @see Throwable#printStackTrace(PrintWriter)
 	 */
-	public static String toStackTraceString(final Throwable throwable) {
+	public static String toStackTraceString(@Nonnull final Throwable throwable) {
 		try (final StringWriter stringWriter = new StringWriter(); final PrintWriter printWriter = new PrintWriter(stringWriter)) {
 			throwable.printStackTrace(printWriter); //print to the print writer which prints to the string writer which prints to the string
 			printWriter.flush(); //flush the output
