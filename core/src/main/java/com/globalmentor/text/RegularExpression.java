@@ -20,21 +20,20 @@ import static com.globalmentor.java.CharSequences.*;
 import static com.globalmentor.java.Conditions.*;
 import static java.util.Objects.*;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.Optional;
+import java.util.regex.*;
 
 import javax.annotation.*;
 
-import com.globalmentor.java.Characters;
+import com.globalmentor.java.*;
 
 /**
- * Constants and utility methods for regular expression-related tasks.
+ * Constants and utility methods for regular expressions and related tasks.
  * @apiNote Many of these constants and utilities assist in forming regular expressions to use with {@link Pattern}.
- * @implNote Several solutions implemented here were inspired from <cite>Mastering Regular Expressions, Third Edition</cite>.
  * @author Garret Wilson
  * @see Pattern
  */
-public class RegularExpressions {
+public class RegularExpression {
 
 	/** The regular expression character that matches any character. */
 	public static final char WILDCARD_CHAR = '.';
@@ -96,27 +95,27 @@ public class RegularExpressions {
 	 * Checks to make sure an argument matches a given regular expression pattern, returning the successful matcher.
 	 * @apiNote This is a precondition check.
 	 * @apiNote Unlike other precondition checks, this method returns a {@link Matcher} to allow subsequent checks on the input. If the original text is desired,
-	 *          call {@link Matcher#group()} after a successful match, which will return group 0, indicating the entire matched string.
+	 *          call {@link Matcher#group()} after a successful match, which will return group <code>0></code>, indicating the entire matched string.
 	 * @param input The character sequence to be matched.
 	 * @param pattern The regular expression pattern against which the input will be matched.
-	 * @return A matcher that has successfully matched the given string.
+	 * @return A matcher that has successfully matched the given input.
 	 * @throws IllegalArgumentException if the given input does not match the pattern.
 	 */
 	public static Matcher checkArgumentMatches(final CharSequence input, @Nonnull final Pattern pattern) {
-		return checkArgumentMatches(input, pattern, null);
+		return checkArgumentMatches(input, pattern, "Input `%s` did not match pattern `%s`.", input, pattern);
 	}
 
 	/**
 	 * Checks to make sure an argument matches a given regular expression pattern, returning the successful matcher.
 	 * @apiNote This is a precondition check.
 	 * @apiNote Unlike other precondition checks, this method returns a {@link Matcher} to allow subsequent checks on the input. If the original text is desired,
-	 *          call {@link Matcher#group()} after a successful match, which will return group 0, indicating the entire matched string.
+	 *          call {@link Matcher#group()} after a successful match, which will return group <code>0></code>, indicating the entire matched string.
 	 * @param input The character sequence to be matched.
 	 * @param pattern The regular expression pattern against which the input will be matched.
 	 * @param description A description of the test to be used when generating an exception, optionally formatted with arguments, or <code>null</code> for no
 	 *          description.
 	 * @param arguments The arguments to be applied when formatting, or an empty array if the message should not be formatted.
-	 * @return A matcher that has successfully matched the given string.
+	 * @return A matcher that has successfully matched the given input.
 	 * @throws IllegalArgumentException if the given input does not match the pattern.
 	 * @throws NullPointerException if the given arguments is <code>null</code>.
 	 * @throws IllegalArgumentException if the description is an invalid pattern, or if an argument in the arguments array is not of the type expected by the
@@ -205,4 +204,83 @@ public class RegularExpressions {
 	public static String escapePatternString(final String patternString) {
 		return escape(patternString, RESTRICTED, ESCAPE); //escape the string
 	}
+
+	/**
+	 * Matches an input against a pattern and, if the input matchers, returns the matcher.
+	 * @apiNote This is a convenience method to call {@link Pattern#matcher(CharSequence)} and {@link Matcher#matches()}.
+	 * @param pattern The pattern against which the character sequence will be matched.
+	 * @param input The character sequence to be matched.
+	 * @return A new matcher for the matched pattern, which will not be present if the pattern did not match.
+	 */
+	public static Optional<Matcher> findMatch(@Nonnull final Pattern pattern, final CharSequence input) {
+		final Matcher matcher = pattern.matcher(input);
+		return matcher.matches() ? Optional.of(matcher) : Optional.empty();
+	}
+
+	/**
+	 * A utility that encapsulates a set of capturing groups for a regular expression. Each instance is a group that can be matched.
+	 * @apiNote The following is the envisioned use. Note that this pattern names the instance <code>XXXRegEx</code> to encapsulate all regular expression
+	 *          information (even though technically it is a {@link NumberedCapturingGroup}), and names each group instance with a <code>_GROUP</code> suffix for
+	 *          clarity. (A {@link NamedCapturingGroup} may wish to leave off this suffix if more concise matching group names are desired.) : <pre>{@code
+	 *
+	 * enum FooBarRegEx implements RegularExpressions.NumberedCapturingGroup {
+	 *   FOO_GROUP, BAR_GROUP;
+	 *
+	 *   public static final Pattern PATTERN = Pattern.compile("(foo)(bar)?");
+	 * }
+	 * …
+	 * Matcher matcher = FooBarRegEx.PATTERN.matcher("foo");
+	 * assert matcher.matches();
+	 * Optional<String> foundFoo = FooBarRegEx.FOO.findIn(matcher); //`Optional.of("foo")`
+	 * Optional<String> foundBar = FooBarRegEx.BAR.findIn(matcher); //`Optional.empty()`
+	 * }</pre>
+	 * @author Garret Wilson
+	 */
+	public interface CapturingGroup extends EnumLike {
+
+		/**
+		 * Finds the input subsequence captured by this group in the given matcher. The way this group identifies the captured group in the match depends on the
+		 * implementation of this class.
+		 * @param matcher The matcher to check.
+		 * @return The subsequence captured by this group in the match, which will be empty if this group did not capture part of the input.
+		 * @throws IllegalStateException If no match has yet been attempted, or if the previous match operation failed.
+		 */
+		public Optional<String> findIn(@Nonnull final Matcher matcher);
+
+	}
+
+	/** A regular expression group definition that finds captured groups based upon the group's order in the pattern. */
+	public interface NumberedCapturingGroup extends CapturingGroup {
+
+		/**
+		 * {@inheritDoc}
+		 * @implSpec This implementation finds the captured group using the one-based equivalent of this group's ordinal.
+		 * @see #ordinal()
+		 * @see Matcher#group(int)
+		 * @throws IndexOutOfBoundsException If there is no capturing group in the pattern with the one-based equivalent of this group's ordinal.
+		 */
+		@Override
+		default Optional<String> findIn(@Nonnull final Matcher matcher) {
+			return Optional.ofNullable(matcher.group(ordinal() + 1));
+		}
+
+	}
+
+	/** A regular expression group definition that finds captured groups based upon the group's name in the pattern. */
+	public interface NamedCapturingGroup extends CapturingGroup {
+
+		/**
+		 * {@inheritDoc}
+		 * @implSpec This implementation finds the captured group using the this group's name.
+		 * @see #name()
+		 * @see Matcher#group(String)
+		 * @throws IndexOutOfBoundsException If there is no capturing group in the pattern with the this group's name.
+		 */
+		@Override
+		default Optional<String> findIn(@Nonnull final Matcher matcher) {
+			return Optional.ofNullable(matcher.group(ordinal() + 1));
+		}
+
+	}
+
 }

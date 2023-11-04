@@ -17,8 +17,14 @@
 package com.globalmentor.java;
 
 import static org.hamcrest.Matchers.*;
+import static com.github.npathai.hamcrestopt.OptionalMatchers.*;
+import static com.globalmentor.java.StackTrace.*;
+import static com.globalmentor.text.RegularExpression.*;
 import static org.hamcrest.MatcherAssert.*;
 import static org.junit.jupiter.api.Assertions.*;
+
+import java.util.Optional;
+import java.util.regex.Matcher;
 
 import org.junit.jupiter.api.Test;
 
@@ -28,16 +34,234 @@ import org.junit.jupiter.api.Test;
  */
 public class StackTraceTest {
 
+	/**
+	 * A stack trace element string containing all of the possible components.
+	 * @see StackTraceElement#toString()
+	 */
+	static final String ELEMENT_STRING = "com.foo.loader/foo@9.0/com.foo.Main.run(Main.java:101)";
+	/**
+	 * The line number is unavailable.
+	 * @see StackTraceElement#toString()
+	 */
+	static final String ELEMENT_STRING_NO_LINE_NUMBER = "com.foo.loader/foo@9.0/com.foo.Main.run(Main.java)";
+	/**
+	 * The module version is not present.
+	 * @implNote This example is not given in the API, but in the OpenJDK 17 source code the module version is optional and may not be present in the string form,
+	 *           along with the version delimiter.
+	 * @see StackTraceElement#toString()
+	 */
+	static final String ELEMENT_STRING_NO_MODULE_VERSION = "com.foo.loader/foo/com.foo.Main.run(Main.java:101)";
+	/**
+	 * Neither the file name nor the line number is available.
+	 * @see StackTraceElement#toString()
+	 */
+	static final String ELEMENT_STRING_UNKNOWN_SOURCE = "com.foo.loader/foo@9.0/com.foo.Main.run(Unknown Source)";
+	/**
+	 * The method containing the execution point is a native method.
+	 * @see StackTraceElement#toString()
+	 */
+	static final String ELEMENT_STRING_NATIVE_METHOD = "com.foo.loader/foo@9.0/com.foo.Main.run(Native Method)";
+	/**
+	 * The class of the execution point is defined in the unnamed module of the class loader named <code>com.foo.loader</code>.
+	 * @see StackTraceElement#toString()
+	 */
+	static final String ELEMENT_STRING_UNNAMED_MODULE = "com.foo.loader//com.foo.bar.App.run(App.java:12)";
+	/**
+	 * A stack trace element string containing all of the possible components.
+	 * @implNote This is not one of the examples given in the API, but it is unambiguous and the regular expression allows it. As the format examples are
+	 *           "typical" and there are no prohibitions, it is best to support this variation.
+	 * @see StackTraceElement#toString()
+	 */
+	static final String ELEMENT_STRING_NO_CLASSLOADER_UNNAMED_MODULE_SLASH_PREFIX = "/com.foo.bar.App.run(App.java:12)";
+	/**
+	 * The class of the execution point is defined in acme module loaded by a built-in class loader such as the application class loader.
+	 * @see StackTraceElement#toString()
+	 */
+	static final String ELEMENT_STRING_BUILT_IN_CLASSS_LOADER = "acme@2.1/org.acme.Lib.test(Lib.java:80)";
+	/**
+	 * <code>MyClass</code> class is on the application class path.
+	 * @see StackTraceElement#toString()
+	 */
+	static final String ELEMENT_STRING_APPLICATION_CLASSPATH = "MyClass.mash(MyClass.java:9)";
+
 	private final StackTrace classVariableStackTrace = new StackTrace();
 
+	/**
+	 * @see StackTrace.ElementRegEx#PATTERN
+	 * @see #ELEMENT_STRING
+	 */
 	@Test
-	public void testStackElements() {
+	void testStackTraceElementPattern() {
+		assertThat("Initial spaces not allowed.", findMatch(ElementRegEx.PATTERN, " " + ELEMENT_STRING), is(Optional.empty()));
+		assertThat("Trailing spaces not allowed.", findMatch(ElementRegEx.PATTERN, ELEMENT_STRING + " "), is(Optional.empty()));
+		final Matcher matcher = findMatch(ElementRegEx.PATTERN, ELEMENT_STRING).orElseThrow(AssertionError::new);
+		assertThat(ElementRegEx.CLASS_LOADER_NAME_GROUP.findIn(matcher), isPresentAndIs("com.foo.loader"));
+		assertThat(ElementRegEx.MODULE_NAME_GROUP.findIn(matcher), isPresentAndIs("foo"));
+		assertThat(ElementRegEx.MODULE_VERSION_GROUP.findIn(matcher), isPresentAndIs("9.0"));
+		assertThat(ElementRegEx.CLASS_NAME_GROUP.findIn(matcher), isPresentAndIs("com.foo.Main"));
+		assertThat(ElementRegEx.METHOD_NAME_GROUP.findIn(matcher), isPresentAndIs("run"));
+		assertThat(ElementRegEx.FILE_NAME_GROUP.findIn(matcher), isPresentAndIs("Main.java"));
+		assertThat(ElementRegEx.LINE_NUMBER_GROUP.findIn(matcher), isPresentAndIs("101"));
+	}
+
+	/**
+	 * @see StackTrace.ElementRegEx#PATTERN
+	 * @see #ELEMENT_STRING_NO_LINE_NUMBER
+	 */
+	@Test
+	void testStackTraceElementPatternNoLineNumber() {
+		final Matcher matcher = findMatch(ElementRegEx.PATTERN, ELEMENT_STRING_NO_LINE_NUMBER).orElseThrow(AssertionError::new);
+		assertThat(ElementRegEx.CLASS_LOADER_NAME_GROUP.findIn(matcher), isPresentAndIs("com.foo.loader"));
+		assertThat(ElementRegEx.MODULE_NAME_GROUP.findIn(matcher), isPresentAndIs("foo"));
+		assertThat(ElementRegEx.MODULE_VERSION_GROUP.findIn(matcher), isPresentAndIs("9.0"));
+		assertThat(ElementRegEx.CLASS_NAME_GROUP.findIn(matcher), isPresentAndIs("com.foo.Main"));
+		assertThat(ElementRegEx.METHOD_NAME_GROUP.findIn(matcher), isPresentAndIs("run"));
+		assertThat(ElementRegEx.FILE_NAME_GROUP.findIn(matcher), isPresentAndIs("Main.java"));
+		assertThat(ElementRegEx.LINE_NUMBER_GROUP.findIn(matcher), is(Optional.empty()));
+	}
+
+	/**
+	 * @see StackTrace.ElementRegEx#PATTERN
+	 * @see #ELEMENT_STRING_NO_MODULE_VERSION
+	 */
+	@Test
+	void testStackTraceElementPatternNoModuleVersion() {
+		final Matcher matcher = findMatch(ElementRegEx.PATTERN, ELEMENT_STRING_NO_MODULE_VERSION).orElseThrow(AssertionError::new);
+		assertThat(ElementRegEx.CLASS_LOADER_NAME_GROUP.findIn(matcher), isPresentAndIs("com.foo.loader"));
+		assertThat(ElementRegEx.MODULE_NAME_GROUP.findIn(matcher), isPresentAndIs("foo"));
+		assertThat(ElementRegEx.MODULE_VERSION_GROUP.findIn(matcher), is(Optional.empty()));
+		assertThat(ElementRegEx.CLASS_NAME_GROUP.findIn(matcher), isPresentAndIs("com.foo.Main"));
+		assertThat(ElementRegEx.METHOD_NAME_GROUP.findIn(matcher), isPresentAndIs("run"));
+		assertThat(ElementRegEx.FILE_NAME_GROUP.findIn(matcher), isPresentAndIs("Main.java"));
+		assertThat(ElementRegEx.LINE_NUMBER_GROUP.findIn(matcher), isPresentAndIs("101"));
+	}
+
+	/**
+	 * @see StackTrace.ElementRegEx#PATTERN
+	 * @see #ELEMENT_STRING_UNKNOWN_SOURCE
+	 */
+	@Test
+	void testStackTraceElementPatternUnknownSource() {
+		final Matcher matcher = findMatch(ElementRegEx.PATTERN, ELEMENT_STRING_UNKNOWN_SOURCE).orElseThrow(AssertionError::new);
+		assertThat(ElementRegEx.CLASS_LOADER_NAME_GROUP.findIn(matcher), isPresentAndIs("com.foo.loader"));
+		assertThat(ElementRegEx.MODULE_NAME_GROUP.findIn(matcher), isPresentAndIs("foo"));
+		assertThat(ElementRegEx.MODULE_VERSION_GROUP.findIn(matcher), isPresentAndIs("9.0"));
+		assertThat(ElementRegEx.CLASS_NAME_GROUP.findIn(matcher), isPresentAndIs("com.foo.Main"));
+		assertThat(ElementRegEx.METHOD_NAME_GROUP.findIn(matcher), isPresentAndIs("run"));
+		assertThat(ElementRegEx.FILE_NAME_GROUP.findIn(matcher), isPresentAndIs(ELEMENT_FILE_NAME_UNKNOWN_SOURCE));
+		assertThat(ElementRegEx.LINE_NUMBER_GROUP.findIn(matcher), is(Optional.empty()));
+	}
+
+	/**
+	 * @see StackTrace.ElementRegEx#PATTERN
+	 * @see #ELEMENT_STRING_NATIVE_METHOD
+	 */
+	@Test
+	void testStackTraceElementPatternNativeMethod() {
+		final Matcher matcher = findMatch(ElementRegEx.PATTERN, ELEMENT_STRING_NATIVE_METHOD).orElseThrow(AssertionError::new);
+		assertThat(ElementRegEx.CLASS_LOADER_NAME_GROUP.findIn(matcher), isPresentAndIs("com.foo.loader"));
+		assertThat(ElementRegEx.MODULE_NAME_GROUP.findIn(matcher), isPresentAndIs("foo"));
+		assertThat(ElementRegEx.MODULE_VERSION_GROUP.findIn(matcher), isPresentAndIs("9.0"));
+		assertThat(ElementRegEx.CLASS_NAME_GROUP.findIn(matcher), isPresentAndIs("com.foo.Main"));
+		assertThat(ElementRegEx.METHOD_NAME_GROUP.findIn(matcher), isPresentAndIs("run"));
+		assertThat(ElementRegEx.FILE_NAME_GROUP.findIn(matcher), isPresentAndIs(ELEMENT_FILE_NAME_NATIVE_METHOD));
+		assertThat(ElementRegEx.LINE_NUMBER_GROUP.findIn(matcher), is(Optional.empty()));
+	}
+
+	/**
+	 * @see StackTrace.ElementRegEx#PATTERN
+	 * @see #ELEMENT_STRING_UNNAMED_MODULE
+	 */
+	@Test
+	void testStackTraceElementPatternUnnamedModule() {
+		final Matcher matcher = findMatch(ElementRegEx.PATTERN, ELEMENT_STRING_UNNAMED_MODULE).orElseThrow(AssertionError::new);
+		assertThat(ElementRegEx.CLASS_LOADER_NAME_GROUP.findIn(matcher), isPresentAndIs("com.foo.loader"));
+		assertThat(ElementRegEx.MODULE_NAME_GROUP.findIn(matcher), is(Optional.empty()));
+		assertThat(ElementRegEx.MODULE_VERSION_GROUP.findIn(matcher), is(Optional.empty()));
+		assertThat(ElementRegEx.CLASS_NAME_GROUP.findIn(matcher), isPresentAndIs("com.foo.bar.App"));
+		assertThat(ElementRegEx.METHOD_NAME_GROUP.findIn(matcher), isPresentAndIs("run"));
+		assertThat(ElementRegEx.FILE_NAME_GROUP.findIn(matcher), isPresentAndIs("App.java"));
+		assertThat(ElementRegEx.LINE_NUMBER_GROUP.findIn(matcher), isPresentAndIs("12"));
+	}
+
+	/**
+	 * @see StackTrace.ElementRegEx#PATTERN
+	 * @see #ELEMENT_STRING_NO_CLASSLOADER_UNNAMED_MODULE_SLASH_PREFIX
+	 */
+	@Test
+	void testStackTraceElementPatternNoClassLoaderUnnamedModule() {
+		final Matcher matcher = findMatch(ElementRegEx.PATTERN, ELEMENT_STRING_NO_CLASSLOADER_UNNAMED_MODULE_SLASH_PREFIX).orElseThrow(AssertionError::new);
+		assertThat(ElementRegEx.CLASS_LOADER_NAME_GROUP.findIn(matcher), is(Optional.empty()));
+		assertThat(ElementRegEx.MODULE_NAME_GROUP.findIn(matcher), is(Optional.empty()));
+		assertThat(ElementRegEx.MODULE_VERSION_GROUP.findIn(matcher), is(Optional.empty()));
+		assertThat(ElementRegEx.CLASS_NAME_GROUP.findIn(matcher), isPresentAndIs("com.foo.bar.App"));
+		assertThat(ElementRegEx.METHOD_NAME_GROUP.findIn(matcher), isPresentAndIs("run"));
+		assertThat(ElementRegEx.FILE_NAME_GROUP.findIn(matcher), isPresentAndIs("App.java"));
+		assertThat(ElementRegEx.LINE_NUMBER_GROUP.findIn(matcher), isPresentAndIs("12"));
+	}
+
+	/**
+	 * @see StackTrace.ElementRegEx#PATTERN
+	 * @see #ELEMENT_STRING_BUILT_IN_CLASSS_LOADER
+	 */
+	@Test
+	void testStackTraceElementPatternBuiltInClassLoader() {
+		final Matcher matcher = findMatch(ElementRegEx.PATTERN, ELEMENT_STRING_BUILT_IN_CLASSS_LOADER).orElseThrow(AssertionError::new);
+		assertThat(ElementRegEx.CLASS_LOADER_NAME_GROUP.findIn(matcher), is(Optional.empty()));
+		assertThat(ElementRegEx.MODULE_NAME_GROUP.findIn(matcher), isPresentAndIs("acme"));
+		assertThat(ElementRegEx.MODULE_VERSION_GROUP.findIn(matcher), isPresentAndIs("2.1"));
+		assertThat(ElementRegEx.CLASS_NAME_GROUP.findIn(matcher), isPresentAndIs("org.acme.Lib"));
+		assertThat(ElementRegEx.METHOD_NAME_GROUP.findIn(matcher), isPresentAndIs("test"));
+		assertThat(ElementRegEx.FILE_NAME_GROUP.findIn(matcher), isPresentAndIs("Lib.java"));
+		assertThat(ElementRegEx.LINE_NUMBER_GROUP.findIn(matcher), isPresentAndIs("80"));
+	}
+
+	/**
+	 * @see StackTrace.ElementRegEx#PATTERN
+	 * @see #ELEMENT_STRING_APPLICATION_CLASSPATH
+	 */
+	@Test
+	void testStackTraceElementPatternApplicationClasspath() {
+		final Matcher matcher = findMatch(ElementRegEx.PATTERN, ELEMENT_STRING_APPLICATION_CLASSPATH).orElseThrow(AssertionError::new);
+		assertThat(ElementRegEx.CLASS_LOADER_NAME_GROUP.findIn(matcher), is(Optional.empty()));
+		assertThat(ElementRegEx.MODULE_NAME_GROUP.findIn(matcher), is(Optional.empty()));
+		assertThat(ElementRegEx.MODULE_VERSION_GROUP.findIn(matcher), is(Optional.empty()));
+		assertThat(ElementRegEx.CLASS_NAME_GROUP.findIn(matcher), isPresentAndIs("MyClass"));
+		assertThat(ElementRegEx.METHOD_NAME_GROUP.findIn(matcher), isPresentAndIs("mash"));
+		assertThat(ElementRegEx.FILE_NAME_GROUP.findIn(matcher), isPresentAndIs("MyClass.java"));
+		assertThat(ElementRegEx.LINE_NUMBER_GROUP.findIn(matcher), isPresentAndIs("9"));
+	}
+
+	/** @see StackTrace#parseElement(CharSequence) */
+	@Test
+	void testParseElement() {
+		assertThat(StackTrace.parseElement(ELEMENT_STRING), is(new StackTraceElement("com.foo.loader", "foo", "9.0", "com.foo.Main", "run", "Main.java", 101)));
+		assertThat(StackTrace.parseElement(ELEMENT_STRING_NO_LINE_NUMBER),
+				is(new StackTraceElement("com.foo.loader", "foo", "9.0", "com.foo.Main", "run", "Main.java", ELEMENT_LINE_NUMBER_UNKNOWN)));
+		assertThat(StackTrace.parseElement(ELEMENT_STRING_NO_MODULE_VERSION),
+				is(new StackTraceElement("com.foo.loader", "foo", null, "com.foo.Main", "run", "Main.java", 101)));
+		assertThat(StackTrace.parseElement(ELEMENT_STRING_UNKNOWN_SOURCE),
+				is(new StackTraceElement("com.foo.loader", "foo", "9.0", "com.foo.Main", "run", ELEMENT_FILE_NAME_UNKNOWN_SOURCE, ELEMENT_LINE_NUMBER_UNKNOWN)));
+		assertThat(StackTrace.parseElement(ELEMENT_STRING_NATIVE_METHOD),
+				is(new StackTraceElement("com.foo.loader", "foo", "9.0", "com.foo.Main", "run", ELEMENT_FILE_NAME_NATIVE_METHOD, ELEMENT_LINE_NUMBER_NATIVE_METHOD)));
+		assertThat(StackTrace.parseElement(ELEMENT_STRING_UNNAMED_MODULE),
+				is(new StackTraceElement("com.foo.loader", null, null, "com.foo.bar.App", "run", "App.java", 12)));
+		assertThat(StackTrace.parseElement(ELEMENT_STRING_NO_CLASSLOADER_UNNAMED_MODULE_SLASH_PREFIX),
+				is(new StackTraceElement(null, null, null, "com.foo.bar.App", "run", "App.java", 12)));
+		assertThat(StackTrace.parseElement(ELEMENT_STRING_BUILT_IN_CLASSS_LOADER),
+				is(new StackTraceElement(null, "acme", "2.1", "org.acme.Lib", "test", "Lib.java", 80)));
+		assertThat(StackTrace.parseElement(ELEMENT_STRING_APPLICATION_CLASSPATH),
+				is(new StackTraceElement(null, null, null, "MyClass", "mash", "MyClass.java", 9)));
+	}
+
+	@Test
+	void testStackElements() {
 		final StackTraceElement[] stackTraceElements = new Throwable().getStackTrace();
 		assertThat("Stack trace elements not the length expected.", new StackTrace().getStackTraceElements().size(), equalTo(stackTraceElements.length));
 	}
 
 	@Test
-	public void testEqualsMethod() {
+	void testEqualsMethod() {
 		final StackTrace methodStackTrace1 = new StackTrace();
 		final StackTrace methodStackTrace2 = new StackTrace();
 		assertTrue(methodStackTrace1.isCurrentMethodIntersected(methodStackTrace2));
