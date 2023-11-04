@@ -19,7 +19,7 @@ package com.globalmentor.java;
 import static org.hamcrest.Matchers.*;
 import static com.github.npathai.hamcrestopt.OptionalMatchers.*;
 import static com.globalmentor.java.StackTrace.*;
-import static com.globalmentor.text.RegularExpressions.*;
+import static com.globalmentor.text.RegularExpression.*;
 import static org.hamcrest.MatcherAssert.*;
 import static org.junit.jupiter.api.Assertions.*;
 

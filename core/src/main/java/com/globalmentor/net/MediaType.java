@@ -35,7 +35,7 @@ import static com.globalmentor.java.Characters.SPACE_CHAR;
 import static com.globalmentor.java.Conditions.*;
 import static com.globalmentor.java.Characters.QUOTATION_MARK_CHAR;
 import static com.globalmentor.text.ABNF.*;
-import static com.globalmentor.text.RegularExpressions.*;
+import static com.globalmentor.text.RegularExpression.*;
 import static java.lang.String.format;
 import static java.nio.charset.StandardCharsets.*;
 import static java.util.Collections.*;

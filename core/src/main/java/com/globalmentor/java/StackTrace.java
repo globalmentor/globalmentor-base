@@ -18,7 +18,7 @@ package com.globalmentor.java;
 
 import static com.globalmentor.java.Conditions.*;
 import static com.globalmentor.java.Packages.*;
-import static com.globalmentor.text.RegularExpressions.*;
+import static com.globalmentor.text.RegularExpression.*;
 import static java.util.Arrays.*;
 import static java.util.stream.Collectors.*;
 
@@ -28,7 +28,7 @@ import java.util.regex.*;
 
 import javax.annotation.*;
 
-import com.globalmentor.text.RegularExpressions;
+import com.globalmentor.text.RegularExpression;
 
 /**
  * Convenience class and methods for working with stack traces.
@@ -63,7 +63,7 @@ public class StackTrace {
 	 * Regular expression definition for matching a stack trace element.
 	 * @see StackTraceElement#toString()
 	 */
-	public enum ElementRegEx implements RegularExpressions.NumberedCapturingGroup {
+	public enum ElementRegEx implements RegularExpression.NumberedCapturingGroup {
 		/** @see StackTraceElement#getClassLoaderName() */
 		CLASS_LOADER_NAME_GROUP,
 		/** @see StackTraceElement#getModuleName() */

@@ -28,13 +28,12 @@ import javax.annotation.*;
 import com.globalmentor.java.*;
 
 /**
- * Constants and utility methods for regular expression-related tasks.
+ * Constants and utility methods for regular expressions and related tasks.
  * @apiNote Many of these constants and utilities assist in forming regular expressions to use with {@link Pattern}.
- * @implNote Several solutions implemented here were inspired from <cite>Mastering Regular Expressions, Third Edition</cite>.
  * @author Garret Wilson
  * @see Pattern
  */
-public class RegularExpressions {
+public class RegularExpression {
 
 	/** The regular expression character that matches any character. */
 	public static final char WILDCARD_CHAR = '.';

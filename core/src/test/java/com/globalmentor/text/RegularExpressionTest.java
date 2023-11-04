@@ -17,7 +17,7 @@
 package com.globalmentor.text;
 
 import static com.github.npathai.hamcrestopt.OptionalMatchers.*;
-import static com.globalmentor.text.RegularExpressions.*;
+import static com.globalmentor.text.RegularExpression.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -29,14 +29,13 @@ import static org.hamcrest.MatcherAssert.*;
 import org.junit.jupiter.api.Test;
 
 /**
- * Tests of {@link RegularExpressions}.
- * @implNote Some test strings are from <cite>Mastering Regular Expressions, Third Edition</cite>.
+ * Tests of {@link RegularExpression}.
  * @author Garret Wilson
  *
  */
-public class RegularExpressionsTest {
+public class RegularExpressionTest {
 
-	/** @see RegularExpressions#QUOTED_STRING */
+	/** @see RegularExpression#QUOTED_STRING */
 	@Test
 	void testQuotedString() {
 		assertThat("".matches(QUOTED_STRING), is(false));
@@ -60,7 +59,7 @@ public class RegularExpressionsTest {
 		assertThat("\"foo\\xbar\"".matches(QUOTED_STRING), is(true));
 	}
 
-	/** @see RegularExpressions#QUOTED_STRING_ALLOWING_ESCAPE_QUOTE */
+	/** @see RegularExpression#QUOTED_STRING_ALLOWING_ESCAPE_QUOTE */
 	@Test
 	void testQuotedStringAllowingEscapeQuote() {
 		assertThat("".matches(QUOTED_STRING_ALLOWING_ESCAPE_QUOTE), is(false));
@@ -84,7 +83,7 @@ public class RegularExpressionsTest {
 		assertThat("\"foo\\xbar\"".matches(QUOTED_STRING_ALLOWING_ESCAPE_QUOTE), is(false));
 	}
 
-	/** @see RegularExpressions#QUOTED_STRING_ALLOWING_ESCAPE_ANYTHING */
+	/** @see RegularExpression#QUOTED_STRING_ALLOWING_ESCAPE_ANYTHING */
 	@Test
 	void testQuotedStringAllowingEscapeAnything() {
 		assertThat("".matches(QUOTED_STRING_ALLOWING_ESCAPE_ANYTHING), is(false));
@@ -109,8 +108,8 @@ public class RegularExpressionsTest {
 	}
 
 	/**
-	 * @see RegularExpressions#checkArgumentMatches(CharSequence, Pattern)
-	 * @see RegularExpressions#checkArgumentMatches(CharSequence, Pattern, String, Object...)
+	 * @see RegularExpression#checkArgumentMatches(CharSequence, Pattern)
+	 * @see RegularExpression#checkArgumentMatches(CharSequence, Pattern, String, Object...)
 	 */
 	@Test
 	void testCheckArgumentMatches() {
@@ -125,7 +124,7 @@ public class RegularExpressionsTest {
 		assertThat(illegalArgumentException.getMessage(), is("Input `bar` did not match pattern `(foo)(?:bar)?`."));
 	}
 
-	/** @see RegularExpressions#findMatch(CharSequence, Pattern) */
+	/** @see RegularExpression#findMatch(CharSequence, Pattern) */
 	@Test
 	void testFindMatch() {
 		final Pattern fooBarPattern = Pattern.compile("(foo)(?:bar)?");
