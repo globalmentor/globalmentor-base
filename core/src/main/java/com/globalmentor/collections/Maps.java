@@ -27,6 +27,23 @@ import javax.annotation.*;
 public class Maps {
 
 	/**
+	 * Returns an unmodifiable {@link Map.Entry} containing the given nullable key and nullable value.
+	 * @apiNote This method is similar to {@link Map#entry(Object, Object)}, except that this method accepts <code>null</code> keys and values. If it is known
+	 *          that the key and value cannot be <code>null</code>, {@link Map#entry(Object, Object)} is preferred, as it is part of the JDK and it is best to
+	 *          guard against <code>null</code> value whenever possible.
+	 * @implSpec This implementation returns an instance of {@link AbstractMap.SimpleImmutableEntry}.
+	 * @param <K> The type of the key.
+	 * @param <V> The type of the value.
+	 * @param key The map entry key.
+	 * @param value The map entry value.
+	 * @return A map entry containing the specified key and value.
+	 * @see Map#entry(Object, Object)
+	 */
+	public static <K, V> Map.Entry<K, V> entryOfNullables(@Nullable final K key, @Nullable final V value) {
+		return new AbstractMap.SimpleImmutableEntry<>(key, value);
+	}
+
+	/**
 	 * Puts all given associations from map entries pairs to a map. If more than one entry with the same key is given, the last one will override the others.
 	 * @param <K> The map entry key type.
 	 * @param <V> The map entry value type.
