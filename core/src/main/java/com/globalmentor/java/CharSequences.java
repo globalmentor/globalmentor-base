@@ -926,7 +926,7 @@ public class CharSequences {
 		if(longestCommonSuffix.isEmpty()) {
 			return Optional.empty();
 		}
-		return Optional.of(String.join(String.valueOf(delimiter), longestCommonSuffix)); //TODO improve to better handle beginning ending delimters
+		return Optional.of(String.join(String.valueOf(delimiter), longestCommonSuffix)); //TODO improve to better handle beginning ending delimiters
 	}
 
 	/**
