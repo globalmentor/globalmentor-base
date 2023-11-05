@@ -20,13 +20,15 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import javax.annotation.*;
 
 import static java.util.Collections.emptyList;
 import static java.util.Objects.*;
+import static java.util.stream.Collectors.mapping;
+import static java.util.stream.Collectors.toList;
 
-import com.globalmentor.collections.*;
 import com.globalmentor.io.*;
 
 import com.globalmentor.java.Characters;
@@ -904,23 +906,17 @@ public class URIs {
 	 * @param uri The URI from which to extract parameters.
 	 * @return An array of parameters.
 	 */
-	public static CollectionMap<String, String, List<String>> getQueryParameterMap(final URI uri) {
-		final List<URIQueryParameter> parameters = getQueryParameters(uri).orElse(null); //get the parameters from the URI TODO map and collect
-		final CollectionMap<String, String, List<String>> parameterListMap = new ArrayListHashMap<String, String>(); //create a new list map in which to store the parameters
-		if(parameters != null) { //if this URI specified a query
-			for(final URIQueryParameter parameter : parameters) { //for each parameter
-				parameterListMap.addItem(parameter.getName(), parameter.getValue()); //add this name and value, each of which may have been encoded
-			}
-		}
-		return parameterListMap; //return the parameters, if any
+	public static Map<String, List<String>> getQueryParameterMap(final URI uri) {
+		return findQueryParameters(uri).stream().flatMap(List::stream)
+				.collect(Collectors.groupingBy(URIQueryParameter::getName, mapping(URIQueryParameter::getValue, toList())));
 	}
 
 	/**
-	 * Retrieves the query parameters from a URI.
+	 * Finds and retrieves the query parameters from a URI.
 	 * @param uri The URI which may contain a query.
 	 * @return A list of parameters represented by the URI query, which will not be present if the given URI does not contain a query.
 	 */
-	public static Optional<List<URIQueryParameter>> getQueryParameters(final URI uri) {
+	public static Optional<List<URIQueryParameter>> findQueryParameters(final URI uri) {
 		return Optional.ofNullable(uri.getRawQuery()).map(URIs::getQueryParameters);
 	}
 
