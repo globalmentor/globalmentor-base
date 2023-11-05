@@ -23,11 +23,13 @@ import static com.globalmentor.model.Count.*;
 import static com.globalmentor.text.TextFormatter.*;
 
 import static java.util.Objects.*;
+import static java.util.concurrent.ConcurrentHashMap.*;
 import static java.util.stream.Collectors.*;
 
 import java.io.IOException;
 import java.lang.management.*;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.globalmentor.collections.*;
 import com.globalmentor.java.Objects;
@@ -36,7 +38,6 @@ import com.globalmentor.model.*;
 
 /**
  * Operation that probes the stack.
- * 
  * @author Garret Wilson
  */
 public class StackProbeOperation extends AbstractReadWriteLockOperation {
@@ -53,9 +54,8 @@ public class StackProbeOperation extends AbstractReadWriteLockOperation {
 	/** The explicit package names to be included. */
 	private final ReadWriteLockSet<String> includePackageNames = new DecoratorReadWriteLockSet<String>(new HashSet<String>(), this);
 
-	/** The map of line numbers for each class method found. */
-	private final ReadWriteLockCollectionMap<String, Integer, Set<Integer>> classMethodLineNumbers = new DecoratorReadWriteLockCollectionMap<String, Integer, Set<Integer>>(
-			new HashSetHashMap<String, Integer>());
+	/** The thread-safe map of line numbers for each class method found. */
+	private final Map<String, Set<Integer>> classMethodLineNumbers = new ConcurrentHashMap<>();
 
 	/**
 	 * Adds a package to be ignored. Child packages will also be ignored.
@@ -144,7 +144,7 @@ public class StackProbeOperation extends AbstractReadWriteLockOperation {
 					incrementCounterMapCount(classMethodCounts, classMethodName); //increment the number of times we've seen this method
 					final int lineNumber = stackTraceElement.getLineNumber();
 					if(lineNumber >= 0) { //update our record of line numbers
-						classMethodLineNumbers.addItem(classMethodName, lineNumber);
+						classMethodLineNumbers.computeIfAbsent(classMethodName, __ -> newKeySet()).add(lineNumber);
 					}
 				}
 			}
@@ -156,11 +156,9 @@ public class StackProbeOperation extends AbstractReadWriteLockOperation {
 		final List<Map.Entry<String, Count>> stackProbeCounts;
 		readLock().lock();
 		try {
-			stackProbeCounts = classMethodCounts.entrySet().stream()
-					.map(entry -> Map.entry(entry.getKey(), Objects.clone(entry.getValue())))
+			stackProbeCounts = classMethodCounts.entrySet().stream().map(entry -> Map.entry(entry.getKey(), Objects.clone(entry.getValue())))
 					//TODO testing
-					.sorted(Map.Entry.<String, Count>comparingByValue().reversed())
-					.collect(toUnmodifiableList()); //clone and get the stack probe counts
+					.sorted(Map.Entry.<String, Count>comparingByValue().reversed()).collect(toUnmodifiableList()); //clone and get the stack probe counts
 		} finally {
 			readLock().unlock();
 		}
