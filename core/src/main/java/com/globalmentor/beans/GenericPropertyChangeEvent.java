@@ -25,15 +25,16 @@ import com.globalmentor.event.TargetedEvent;
 /**
  * A property value change event is a Java Beans property change event retrofitted to use generics to cast to proper value type. This event is also
  * <dfn>targeted</dfn>, specifying an event target which may or may not be the same as the source object firing this event.
+ * @implNote The event target is not serialized.
  * @param <V> The type of property value.
  * @author Garret Wilson
  */
 public class GenericPropertyChangeEvent<V> extends PropertyChangeEvent implements TargetedEvent {
 
-	private static final long serialVersionUID = -5536234428687771677L;
+	private static final long serialVersionUID = 2L;
 
 	/** The target of the event, or <code>null</code> if the event target is not known. */
-	private final Object target;
+	private transient final Object target;
 
 	/**
 	 * Returns the object to which the event applies. This may be a different than <dfn>source</dfn>, which is the object that generated this event instance.
@@ -41,6 +42,15 @@ public class GenericPropertyChangeEvent<V> extends PropertyChangeEvent implement
 	 */
 	public Object getTarget() {
 		return target;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @implNote This version declared <code>final</code> to mitigate <code>this</code> escape.
+	 */
+	@Override
+	public final void setPropagationId(final Object propagationId) {
+		super.setPropagationId(propagationId);
 	}
 
 	/**
@@ -84,8 +94,7 @@ public class GenericPropertyChangeEvent<V> extends PropertyChangeEvent implement
 	 * @param propertyChangeEvent A property change event the values of which will later cast to this class' generic type.
 	 * @throws NullPointerException if the given source is <code>null</code>.
 	 */
-	@SuppressWarnings("unchecked")
-	//we can only assume that the given event's old and new values are of the correct type
+	@SuppressWarnings({"unchecked", "this-escape"}) //we can only assume that the given event's old and new values are of the correct type
 	public GenericPropertyChangeEvent(final Object source, final PropertyChangeEvent propertyChangeEvent) {
 		this(source, propertyChangeEvent instanceof TargetedEvent ? ((TargetedEvent)propertyChangeEvent).getTarget() : source,
 				propertyChangeEvent.getPropertyName(), (V)propertyChangeEvent.getOldValue(), (V)propertyChangeEvent.getNewValue()); //construct the parent class with identical values except for source
