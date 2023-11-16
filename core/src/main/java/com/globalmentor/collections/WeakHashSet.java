@@ -28,7 +28,9 @@ import java.util.*;
  * @author Garret Wilson
  * @see HashSet
  * @see WeakHashMap
+ * @deprecated in favor of {@link java.util.Collections#newSetFromMap(Map)} with a {@link WeakHashSet}.
  */
+@Deprecated(forRemoval = true)
 public class WeakHashSet<E> extends AbstractSet<E> implements Set<E> {
 
 	/** The weak hash map that backs this set. */
@@ -139,7 +141,7 @@ public class WeakHashSet<E> extends AbstractSet<E> implements Set<E> {
 	 * @throws NullPointerException if the specified element is null and this set does not support null elements.
 	 * @throws IllegalArgumentException if some aspect of the specified element prevents it from being added to this set.
 	 */
-	public boolean add(E o) {
+	public final boolean add(E o) {
 		return map.put(o, DUMMY_VALUE) == null;
 	}
 
