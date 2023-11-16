@@ -290,6 +290,7 @@ public class ProcessingBufferedReader extends Reader {
 	 * Constructor to create a {@link ProcessingBufferedReader} from another reader.
 	 * @param reader The reader that contains the data.
 	 */
+	@SuppressWarnings("this-escape")
 	public ProcessingBufferedReader(final Reader reader) {
 		this.reader = reader; //store the reader they passed us
 		createBuffer(); //create our buffer
@@ -302,6 +303,7 @@ public class ProcessingBufferedReader extends Reader {
 	 * @param prereadCharacters The characters that have already been read.
 	 * @throws IOException if <var>prereadCharacters</var> is too long for the buffer.
 	 */
+	@SuppressWarnings("this-escape")
 	public ProcessingBufferedReader(final Reader reader, final CharSequence prereadCharacters) throws IOException {
 		this(reader); //do the default construction
 		loadBuffer(prereadCharacters); //load the specified characters into the buffer
@@ -312,6 +314,7 @@ public class ProcessingBufferedReader extends Reader {
 	 * @param characters The string that should be used for input.
 	 * @throws IOException if an I/O error occurs.
 	 */
+	@SuppressWarnings("this-escape")
 	public ProcessingBufferedReader(final CharSequence characters) throws IOException {
 		reader = null; //show that we will not have an input reader to read from; this will be fine, because we'll never have have to fetch any other buffers
 		setBuffer(characters.toString().toCharArray()); //use the characters from the char sequence

@@ -41,6 +41,7 @@ public class DefaultListIterator<E> extends AbstractListIterator<E, E> {
 	 * @throws NullPointerException if the given list is <code>null</code>.
 	 * @throws IndexOutOfBoundsException if the index is out of range (<var>index</var> &lt; 0 || <var>index</var> &gt; <code>size()</code>).
 	 */
+	@SuppressWarnings("this-escape") //TODO improve design to prevent potential `this` escape and obviate warning
 	public DefaultListIterator(final List<E> list, final int index) {
 		super(list, index); //construct the parent class
 		updateIncludedIndexes(); //initialize the iterator

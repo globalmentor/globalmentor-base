@@ -74,8 +74,7 @@ public class ResourceIOException extends IOException {
 	 * @throws NullPointerException if the given resource URI is <code>null</code>.
 	 */
 	public ResourceIOException(final URI resourceURI, final String message, final Throwable cause) {
-		super(message); //construct the parent class
-		initCause(cause); //indicate the source of this exception
+		super(message, cause); //construct the parent class
 		this.resourceURI = requireNonNull(resourceURI, "Resource URI cannot be null."); //save the resource URI
 	}
 

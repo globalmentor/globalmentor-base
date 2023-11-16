@@ -51,8 +51,8 @@ public class WeakHashSet<E> extends AbstractSet<E> implements Set<E> {
 	 * @throws NullPointerException Thrown if the specified collection is <code>null</code>.
 	 */
 	public WeakHashSet(final Collection<E> collection) {
-		map = new WeakHashMap<E, Object>(Math.max((int)(collection.size() / .75f) + 1, 16)); //create a new hash map big enough to hold the collection 
-		addAll(collection); //add the contents of the collection
+		map = new WeakHashMap<E, Object>(Math.max((int)(collection.size() / .75f) + 1, 16)); //create a new hash map big enough to hold the collection
+		collection.forEach(this::add); //add the contents of the collection
 	}
 
 	/**

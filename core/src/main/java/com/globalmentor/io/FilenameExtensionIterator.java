@@ -58,6 +58,7 @@ public class FilenameExtensionIterator implements Iterator<String> {
 	 * @param filename The filename over which extensions should be iterated.
 	 * @param extensionDelimiter The filename extension delimiter.
 	 */
+	@SuppressWarnings("this-escape")
 	public FilenameExtensionIterator(@Nonnull final CharSequence filename, final char extensionDelimiter) {
 		this.filename = requireNonNull(filename);
 		this.extensionDelimiter = extensionDelimiter;
@@ -84,7 +85,7 @@ public class FilenameExtensionIterator implements Iterator<String> {
 	 * Determines the next delimiter index based on the current "next" delimiter index.
 	 * @return The index of the new "next" delimiter index, based on the current "next" delimiter index.
 	 */
-	protected int findNextDelimiterIndex() {
+	protected final int findNextDelimiterIndex() {
 		return indexOf(filename, extensionDelimiter, nextDelimiterIndex + 1);
 	}
 

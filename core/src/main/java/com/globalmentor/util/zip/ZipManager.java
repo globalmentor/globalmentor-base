@@ -124,6 +124,7 @@ public class ZipManager {
 	 * @param baseURI The base URI to use in determining zip entry URIs.
 	 * @throws IOException Thrown if there is an error accessing the given zip file.
 	 */
+	@SuppressWarnings("this-escape")
 	public ZipManager(final File zippedFile, final URI baseURI) throws IOException {
 		file = zippedFile; //store the file we're using
 		this.baseURI = baseURI; //store the URI to use when calculating zip entry URIs
@@ -135,7 +136,7 @@ public class ZipManager {
 	 * current path under the directory of the zip file.
 	 * @throws IOException Thrown if there is an error opening and reading from the zip file.
 	 */
-	protected void loadZipEntries() throws IOException {
+	protected final void loadZipEntries() throws IOException {
 		final Map<URI, ZipEntry> zipEntryMap = getZipEntryMap(); //get the map of zip entries
 		zipEntryMap.clear(); //remove all entries from the zip entry map
 		try (final ZipFile zipFile = new ZipFile(getFile())) { //open the zip file for reading
