@@ -17,6 +17,7 @@
 package com.globalmentor.collections;
 
 import static com.globalmentor.collections.CharSequenceSuffixTrees.*;
+import static java.lang.Math.*;
 //import static com.globalmentor.collections.SuffixTrees.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -106,7 +107,7 @@ public class CharSequenceSuffixTreeTest {
 		int branchCount = 0;
 		for(final Node node : suffixTree.getNodes()) { //check that we counted each node, and update the leaf/branch counts
 			assertTrue(nodeChildEdgeCountMap.containsKey(node), "Node " + node + " never counted.");
-			final long childBranchCount = Count.getCount(nodeChildEdgeCountMap, node);
+			final int childBranchCount = toIntExact(Count.getCount(nodeChildEdgeCountMap, node));
 			if(Count.getCount(nodeChildEdgeCountMap, node) == 0L) { //update the branch/leaf count
 				leafNodeCount++;
 			} else {
