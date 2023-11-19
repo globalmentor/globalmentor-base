@@ -20,6 +20,7 @@ import java.util.ArrayList;
 
 /**
  * Represents a list that is a subset of some larger list, based upon an array.
+ * @param <E> The type of elements in this sublist.
  * @author Garret Wilson
  */
 public class ArraySubList<E> extends ArrayList<E> implements SubList<E> {

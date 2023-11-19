@@ -20,6 +20,7 @@ import java.security.Principal;
 
 /**
  * A representation of an individual.
+ * @param <I> The type of user ID.
  * @author Garret Wilson
  */
 public interface User<I> extends IDed<I>, Principal {

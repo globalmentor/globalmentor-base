@@ -24,6 +24,7 @@ import static java.util.Objects.*;
  * <p>
  * This implementation provides the capability to provide automatic conversion of the ID when the ID is set, such as converting to lowercase.
  * </p>
+ * @param <I> The type of ID.
  * @author Garret Wilson
  * @see Object#equals
  */

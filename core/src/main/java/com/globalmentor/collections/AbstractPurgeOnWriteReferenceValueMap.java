@@ -437,6 +437,7 @@ public abstract class AbstractPurgeOnWriteReferenceValueMap<K, V, R extends Refe
 
 	/**
 	 * An object that remembers the key associated with it.
+	 * @param <K> The type of key.
 	 * @author Garret Wilson
 	 */
 	protected interface Keyed<K> {

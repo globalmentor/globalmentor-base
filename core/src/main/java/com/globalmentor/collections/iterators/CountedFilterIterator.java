@@ -28,6 +28,7 @@ import com.globalmentor.model.Filter;
  * <p>
  * The iterator can also restrict the number of returned elements to a given maximum.
  * </p>
+ * @param <E> The type of elements returned by this iterator.
  * @author Garret Wilson
  */
 public class CountedFilterIterator<E> extends IteratorDecorator<E> { //TODO refactor by extending FilterIterator and adding count and max count

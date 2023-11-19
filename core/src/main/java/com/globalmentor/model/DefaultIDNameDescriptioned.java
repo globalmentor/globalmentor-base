@@ -19,6 +19,9 @@ package com.globalmentor.model;
 /**
  * A convenience class for storing an ID, a name, and a description. Is useful to serve as a base class to other classes that are identified by an ID and have a
  * name and a description.
+ * @param <I> The type of ID.
+ * @param <N> The type of name.
+ * @param <D> The type of description.
  * @author Garret Wilson
  */
 public class DefaultIDNameDescriptioned<I, N extends Comparable<N>, D> extends DefaultIDNamed<I, N> {

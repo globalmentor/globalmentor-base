@@ -20,6 +20,7 @@ import java.util.List;
 
 /**
  * Represents a list that is a subset of some larger list.
+ * @param <E> The type of elements in this sublist.
  * @author Garret Wilson
  */
 public interface SubList<E> extends List<E> {

@@ -20,6 +20,7 @@ import java.util.*;
 
 /**
  * A list iterator that wraps an existing list iterator, providing access through the {@link ListIterator} interface.
+ * @param <E> The type of elements returned by this iterator.
  * @author Garret Wilson
  */
 public class ListIteratorDecorator<E> extends IteratorDecorator<E> implements ListIterator<E> {

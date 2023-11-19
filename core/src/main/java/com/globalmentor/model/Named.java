@@ -21,6 +21,7 @@ package com.globalmentor.model;
  * <p>
  * A name is considered to be semantically similar to an id, which may or may not be for human consumption, but has weaker unique constraints.
  * </p>
+ * @param <N> The type of name.
  * @author Garret Wilson
  * @see Labeled
  */

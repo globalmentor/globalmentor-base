@@ -32,6 +32,7 @@ import com.globalmentor.model.Filter;
  * <p>
  * This iterator allows filtering of the returned objects.
  * </p>
+ * @param <E> The type of elements returned by this iterator.
  * @author Garret Wilson
  */
 public class ListRandomIterator<E> implements Iterator<E> { //TODO fix setRandomOrder() 

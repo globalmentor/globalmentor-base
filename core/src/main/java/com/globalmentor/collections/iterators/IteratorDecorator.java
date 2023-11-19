@@ -27,7 +27,7 @@ import static java.util.Objects.*;
  * @apiNote This iterator also serves as an adapter, converting an iterator to an {@link Enumeration}.
  * @implNote Subclasses may override {@link #hasNext()} and/or {@link #next()}, and {@link Enumeration} compatibility will be maintained.
  * 
- * @param <E> the type of elements returned by this iterator.
+ * @param <E> The type of elements returned by this iterator.
  * @author Garret Wilson
  */
 public class IteratorDecorator<E> extends AbstractIteratorDecorator<E> {

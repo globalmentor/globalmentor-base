@@ -19,6 +19,8 @@ package com.globalmentor.model;
 /**
  * A default implementation of an IDed and named object comparable by name. This implementation does not allow a <code>null</code> name. Note: Because this
  * class considers equality by ID and order by name, this class has a natural ordering that is inconsistent with equals.
+ * @param <I> The type of ID.
+ * @param <N> The type of name.
  * @author Garret Wilson
  */
 public class DefaultComparableIDNamed<I, N extends Comparable<N>> extends DefaultComparableNamed<N> implements IDed<I>, Comparable<Named<N>> {

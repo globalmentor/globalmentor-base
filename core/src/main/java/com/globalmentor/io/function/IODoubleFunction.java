@@ -27,6 +27,8 @@ import java.util.function.DoubleFunction;
  * <p>
  * This interface is similar to {@link DoubleFunction} except that it is allowed to throw an {@link IOException}.
  * </p>
+ *
+ * @param <R> The type of the result of the function.
  * 
  * @author Magno N A Cruz
  * @see IOFunction

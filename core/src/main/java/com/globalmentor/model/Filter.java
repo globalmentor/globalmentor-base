@@ -19,6 +19,7 @@ package com.globalmentor.model;
 /**
  * Indicates a class that determines whether a given object will pass through the filter or be filtered out.
  * @author Garret Wilson
+ * @param <T> The type of object being filtered.
  */
 public interface Filter<T> {
 

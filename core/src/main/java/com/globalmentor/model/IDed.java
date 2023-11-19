@@ -18,6 +18,7 @@ package com.globalmentor.model;
 
 /**
  * An object that can be identified by an ID.
+ * @param <I> The type of ID.
  * @author Garret Wilson
  */
 public interface IDed<I> {
