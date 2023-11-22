@@ -154,7 +154,10 @@ public class StackProbeOperation extends AbstractReadWriteLockOperation {
 		}
 	}
 
-	/** @return A list of collected class+method names and their associated counts, in the order of highest to lowest occurrence. */
+	/**
+	 * Returns a list of collected class+method names and their associated counts, in the order of highest to lowest occurrence.
+	 * @return A list of collected class+method names and their associated counts, in the order of highest to lowest occurrence.
+	 */
 	public synchronized List<Map.Entry<String, Count>> getSortedStackProbeCounts() {
 		final List<Map.Entry<String, Count>> stackProbeCounts;
 		readLock().lock();

@@ -27,7 +27,10 @@ public interface Operation extends Runnable {
 	/** Cancels the operation. If called before execution has started, the operation will not execute. */
 	public void cancel();
 
-	/** @return Whether this operation has been canceled and should not execute. */
+	/**
+	 * Returns whether this operation has been canceled.
+	 * @return Whether this operation has been canceled and should not execute.
+	 */
 	public boolean isCanceled();
 
 }

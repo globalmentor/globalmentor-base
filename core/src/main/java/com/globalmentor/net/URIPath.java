@@ -458,12 +458,16 @@ public final class URIPath {
 		return URIs.findName(uri);
 	}
 
-	/** @return A path-only URI containing this URI path. */
+	/**
+	 * Returns a path-only URI containing this URI path.
+	 * @return A path-only URI containing this URI path.
+	 */
 	public URI toURI() {
 		return uri;
 	}
 
 	/**
+	 * Returns a URI containing this URI path in the {@value URIs#PATH_SCHEME} scheme.
 	 * @return A URI containing this URI path in the {@value URIs#PATH_SCHEME} scheme.
 	 * @see URIs#PATH_SCHEME
 	 */
@@ -503,12 +507,18 @@ public final class URIPath {
 		return isRelative() ? this : URIPath.of(uri.getRawPath().substring(1)); //if the URI path is not relative, remove the beginning path separator
 	}
 
-	/** @return A string representation of the raw, encoded path as it would appear in a URI. */
+	/**
+	 * Returns a string representation of the raw, encoded path as it would appear in a URI.
+	 * @return A string representation of the raw, encoded path as it would appear in a URI.
+	 */
 	public String toString() {
 		return uri.getRawPath(); //return the raw path from the local URI
 	}
 
-	/** @return A string representation of the path with any URI escape sequences decoded. */
+	/**
+	 * Returns a string representation of the path with any URI escape sequences decoded.
+	 * @return A string representation of the path with any URI escape sequences decoded.
+	 */
 	public String toDecodedString() {
 		return uri.getPath(); //return the path from the local URI
 	}

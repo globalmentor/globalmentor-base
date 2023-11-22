@@ -74,7 +74,10 @@ public class AsynchronousWriter extends Writer {
 	/** The underlying writer to which information will be asynchronously written. */
 	private final Writer writer;
 
-	/** @return The underlying writer to which information will be asynchronously written. */
+	/**
+	 * Returns the underlying writer to which information will be asynchronously written.
+	 * @return The underlying writer to which information will be asynchronously written.
+	 */
 	protected Writer getWriter() {
 		return writer;
 	}
@@ -85,6 +88,7 @@ public class AsynchronousWriter extends Writer {
 	private BlockingQueue<char[]> blockingQueue;
 
 	/**
+	 * Returns the underlying blocking queue used for producing and consuming information.
 	 * @return The underlying blocking queue used for producing and consuming information, or <code>null</code> if the underlying stream has been closed.
 	 */
 	protected BlockingQueue<char[]> getBlockingQueue() {
@@ -96,7 +100,10 @@ public class AsynchronousWriter extends Writer {
 	 */
 	private final Queue<IOException> ioExceptionQueue = new ConcurrentLinkedQueue<IOException>();
 
-	/** @return Whether this writer is still open. */
+	/**
+	 * Returns whether this writer is still open.
+	 * @return Whether this writer is still open.
+	 */
 	public boolean isOpen() {
 		return blockingQueue != null;
 	}
@@ -155,7 +162,7 @@ public class AsynchronousWriter extends Writer {
 	 * @throws IOException if an I/O error occurs.
 	 */
 	public void write(int c) throws IOException {
-		produce(new char[] { (char)c }); //always create a new character array and produce the buffer, so that we won't hold up the production process from other threads; go ahead and produce the array because we don't need to make a copy
+		produce(new char[] {(char)c}); //always create a new character array and produce the buffer, so that we won't hold up the production process from other threads; go ahead and produce the array because we don't need to make a copy
 	}
 
 	/**

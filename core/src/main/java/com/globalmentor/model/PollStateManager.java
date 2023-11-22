@@ -106,7 +106,10 @@ public class PollStateManager<S> {
 		stateInfos.add(new StateInfo(state, minDuration, maxDuration, minPollCount, maxPollCount));
 	}
 
-	/** @return Info for the current state, or <code>null</code> if no states are defined. */
+	/**
+	 * Returns info for the current state.
+	 * @return Info for the current state, or <code>null</code> if no states are defined.
+	 */
 	protected synchronized StateInfo getStateInfo() {
 		return !stateInfos.isEmpty() ? stateInfos.get(stateInfoIndex) : null;
 	}

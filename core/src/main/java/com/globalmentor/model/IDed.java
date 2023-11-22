@@ -23,7 +23,10 @@ package com.globalmentor.model;
  */
 public interface IDed<I> {
 
-	/** @return The identifier, preferably unique, of the object; or <code>null</code> if the object has no ID. */
+	/**
+	 * Returns the identifier.
+	 * @return The identifier, preferably unique, of the object; or <code>null</code> if the object has no ID.
+	 */
 	public I getID();
 
 }

@@ -31,7 +31,10 @@ public class FixedLengthInputStream extends InputStreamDecorator<InputStream> {
 	/** The number of bytes left to be read. */
 	private long length;
 
-	/** @return The number of bytes left to be read. */
+	/**
+	 * Returns the number of bytes left to be read.
+	 * @return The number of bytes left to be read.
+	 */
 	protected long getLength() {
 		return length;
 	}

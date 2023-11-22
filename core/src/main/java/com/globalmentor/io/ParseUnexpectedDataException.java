@@ -42,7 +42,10 @@ public class ParseUnexpectedDataException extends ParseIOException {
 	/** The expected characters, if characters were expected, else <code>null</code>. */
 	private transient Characters expectedCharacters = null;
 
-	/** @return The expected characters, if characters were expected. */
+	/**
+	 * Returns the expected characters.
+	 * @return The expected characters, if characters were expected.
+	 */
 	public Optional<Characters> findExpectedCharacters() {
 		return Optional.ofNullable(expectedCharacters);
 	}
@@ -58,7 +61,10 @@ public class ParseUnexpectedDataException extends ParseIOException {
 	/** The character found, if characters were expected, else <code>0</code>. */
 	private char foundCharacter = (char)0;
 
-	/** @return The character found, if characters were expected, else <code>0</code>. */
+	/**
+	 * Returns the character found.
+	 * @return The character found, if characters were expected, else <code>0</code>.
+	 */
 	public char getFoundCharacter() {
 		return foundCharacter;
 	}
@@ -74,7 +80,10 @@ public class ParseUnexpectedDataException extends ParseIOException {
 	/** The expected strings, if strings were expected, else <code>null</code>. */
 	private transient List<String> expectedStrings = null;
 
-	/** @return The expected strings, if strings were expected. */
+	/**
+	 * Returns the expected strings.
+	 * @return The expected strings, if strings were expected.
+	 */
 	public Optional<List<String>> findExpectedStrings() {
 		return Optional.ofNullable(expectedStrings);
 	}
@@ -90,7 +99,10 @@ public class ParseUnexpectedDataException extends ParseIOException {
 	/** The string found, if strings were expected, else <code>null</code>. */
 	private String foundString = null;
 
-	/** @return The string found, if strings were expected. */
+	/**
+	 * Returns the string found.
+	 * @return The string found, if strings were expected.
+	 */
 	public Optional<String> getFoundString() {
 		return Optional.ofNullable(foundString);
 	}

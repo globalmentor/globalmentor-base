@@ -32,7 +32,10 @@ import java.util.function.Consumer;
  */
 public abstract class AbstractIteratorDecorator<E> implements Iterator<E>, Enumeration<E> {
 
-	/** @return The iterator this class decorates. */
+	/**
+	 * Returns the iterator this class decorates.
+	 * @return The iterator this class decorates.
+	 */
 	protected abstract Iterator<E> getIterator();
 
 	//Iterator<E>

@@ -30,7 +30,10 @@ public final class DefaultPasswordAuthenticable extends AbstractAuthenticable {
 	/** The password authentication to provide. */
 	private final PasswordAuthentication passwordAuthentication;
 
-	/** @return The password authentication to provide. */
+	/**
+	 * Returns the password authentication to provide.
+	 * @return The password authentication to provide.
+	 */
 	public PasswordAuthentication getPasswordAuthentication() {
 		return passwordAuthentication;
 	}

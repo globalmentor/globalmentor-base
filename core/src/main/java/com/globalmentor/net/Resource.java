@@ -27,7 +27,10 @@ public interface Resource {
 	/** The Java property name of a resource's URI. */
 	public static final String URI_PROPERTY_NAME = "uri";
 
-	/** @return The resource identifier URI, or <code>null</code> if the identifier is not known. */
+	/**
+	 * Returns the resource identifier URI, or <code>null</code> if the identifier is not known.
+	 * @return The resource identifier URI, or <code>null</code> if the identifier is not known.
+	 */
 	public URI getURI();
 
 }

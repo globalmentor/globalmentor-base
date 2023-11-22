@@ -32,7 +32,10 @@ public class ResourceIOException extends IOException {
 	/** The URI of the resource to which the exception is related. */
 	private final URI resourceURI;
 
-	/** @return The URI of the resource to which the exception is related. */
+	/**
+	 * Returns the URI of the resource to which the exception is related.
+	 * @return The URI of the resource to which the exception is related.
+	 */
 	public URI getResourceURI() {
 		return resourceURI;
 	}

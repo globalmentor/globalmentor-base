@@ -33,7 +33,10 @@ import javax.annotation.*;
  */
 public abstract class AbstractCompoundTokenization implements CompoundTokenization {
 
-	/** @return a segment transformation function that performs no changes on a segment before joining. */
+	/**
+	 * Returns a segment transformation function that performs no changes on a segment before joining.
+	 * @return a segment transformation function that performs no changes on a segment before joining.
+	 */
 	protected static BiFunction<? super Integer, ? super CharSequence, ? extends CharSequence> noSegmentTransformation() {
 		return (i, segment) -> segment;
 	}

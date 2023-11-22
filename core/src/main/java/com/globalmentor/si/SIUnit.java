@@ -61,7 +61,10 @@ public enum SIUnit //TODO add units at http://en.wikipedia.org/wiki/SI_derived_u
 	/** The unit symbol, or <code>null</code> if this unit has no symbol. */
 	private final String symbol;
 
-	/** @return The unit symbol, or <code>null</code> if this unit has no symbol. */
+	/**
+	 * Returns the unit symbol.
+	 * @return The unit symbol, or <code>null</code> if this unit has no symbol.
+	 */
 	public String getSymbol() {
 		return symbol;
 	}

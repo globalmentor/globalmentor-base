@@ -25,13 +25,15 @@ import com.globalmentor.java.Characters;
  * @author Garret Wilson
  */
 @Deprecated
-public class ParseReader extends ProcessingBufferedReader //TODO clean up and undeprecate
-{
+public class ParseReader extends ProcessingBufferedReader { //TODO clean up and undeprecate
 
 	/** The source of the data (e.g. a String, File, or URL). */
 	private Object SourceObject = null;
 
-	/** @return The source of the data, if one has been assigned. */
+	/**
+	 * Returns the source of the data.
+	 * @return The source of the data, if one has been assigned.
+	 */
 	public Object getSourceObject() {
 		return SourceObject;
 	}
@@ -77,6 +79,7 @@ public class ParseReader extends ProcessingBufferedReader //TODO clean up and un
 	private long LineIndex = 0;
 
 	/**
+	 * Returns the index of the line of the character at the specified index in the buffer.
 	 * @param bufferIndex The buffer index of specified character.
 	 * @return The index of the line of the character at the specified index in the buffer.
 	 * @see #getCharIndex
@@ -87,6 +90,7 @@ public class ParseReader extends ProcessingBufferedReader //TODO clean up and un
 	}
 
 	/**
+	 * Returns the index of the line of the character last read.
 	 * @return The index of the line of the character last read, or 0 if no characters have been read.
 	 * @see #getCharIndex
 	 */
@@ -107,6 +111,7 @@ public class ParseReader extends ProcessingBufferedReader //TODO clean up and un
 	private long CharIndex = -1;
 
 	/**
+	 * Returns the character index of the character at the specified index in the buffer.
 	 * @param bufferIndex The buffer index of the specified character.
 	 * @return The character index of the character at the specified index in the buffer.
 	 * @see #getLineIndex
@@ -117,6 +122,7 @@ public class ParseReader extends ProcessingBufferedReader //TODO clean up and un
 	}
 
 	/**
+	 * Returns the index of the character last read.
 	 * @return The index of the character last read, or -1 if no characters have been read.
 	 * @see #getLineIndex
 	 */
@@ -143,6 +149,7 @@ public class ParseReader extends ProcessingBufferedReader //TODO clean up and un
 	private int LastPositionIndex;
 
 	/**
+	 * Returns the index of the last time the line and character indexes were updated.
 	 * @return The index of the last time the line and character indexes were updated.
 	 * @see #getLineIndex
 	 * @see #getCharIndex

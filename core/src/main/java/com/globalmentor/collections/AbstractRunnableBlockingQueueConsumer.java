@@ -34,7 +34,10 @@ public abstract class AbstractRunnableBlockingQueueConsumer<E> implements Consum
 	/** The blocking queue from which elements are being consumed. */
 	private final BlockingQueue<E> blockingQueue;
 
-	/** @return The blocking queue from which elements are being consumed. */
+	/**
+	 * Return the blocking queue from which elements are being consumed.
+	 * @return The blocking queue from which elements are being consumed.
+	 */
 	protected BlockingQueue<E> getBlockingQueue() {
 		return blockingQueue;
 	}

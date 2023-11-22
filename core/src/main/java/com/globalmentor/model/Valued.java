@@ -23,7 +23,10 @@ package com.globalmentor.model;
  */
 public interface Valued<V> {
 
-	/** @return The current value, or <code>null</code> if there is no value. */
+	/**
+	 * Returns the current value.
+	 * @return The current value, or <code>null</code> if there is no value.
+	 */
 	public V getValue();
 
 }

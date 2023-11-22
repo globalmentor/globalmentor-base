@@ -46,7 +46,10 @@ public class ListRandomIterator<E> implements Iterator<E> { //TODO fix setRandom
 	/** The filter used to exclude items from the iterator. */
 	private Filter<E> filter;
 
-	/** @return The filter used to exclude items from the iterator. */
+	/**
+	 * Returns the filter used to exclude items from the iterator.
+	 * @return The filter used to exclude items from the iterator.
+	 */
 	public Filter<E> getFilter() {
 		return filter;
 	}

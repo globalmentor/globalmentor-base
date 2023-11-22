@@ -22,7 +22,10 @@ package com.globalmentor.net;
  */
 public interface Client {
 
-	/** @return Whether this client logs its communication. */
+	/**
+	 * Returns whether this client logs its communication.
+	 * @return Whether this client logs its communication.
+	 */
 	public boolean isLogged();
 
 	/**

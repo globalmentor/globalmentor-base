@@ -32,7 +32,10 @@ public class ProgressEvent extends EventObject {
 	/** The amount of recent progress, or <code>-1</code> if not known. */
 	private final long delta;
 
-	/** @return The amount of recent progress, or <code>-1</code> if not known. */
+	/**
+	 * Returns the amount of recent progress.
+	 * @return The amount of recent progress, or <code>-1</code> if not known.
+	 */
 	public long getDelta() {
 		return delta;
 	}
@@ -40,7 +43,10 @@ public class ProgressEvent extends EventObject {
 	/** The total progress to this point, or <code>-1</code> if not known. */
 	private final long value;
 
-	/** @return The total progress to this point, or <code>-1</code> if not known. */
+	/**
+	 * Returns the total progress to this point.
+	 * @return The total progress to this point, or <code>-1</code> if not known.
+	 */
 	public long getValue() {
 		return value;
 	}
@@ -48,7 +54,10 @@ public class ProgressEvent extends EventObject {
 	/** The goal, or <code>-1</code> if not known. */
 	private final long maximum;
 
-	/** @return The goal, or <code>-1</code> if not known. */
+	/**
+	 * Returns the goal.
+	 * @return The goal, or <code>-1</code> if not known.
+	 */
 	public long getMaximum() {
 		return maximum;
 	}
@@ -86,7 +95,10 @@ public class ProgressEvent extends EventObject {
 		this.maximum = maximum;
 	}
 
-	/** @return A string representing a progress bar with the current progress. */
+	/**
+	 * Returns a string representing a progress bar with the current progress.
+	 * @return A string representing a progress bar with the current progress.
+	 */
 	public String getProgressBarString() {
 		final long value = getValue();
 		final long maximum = getMaximum();

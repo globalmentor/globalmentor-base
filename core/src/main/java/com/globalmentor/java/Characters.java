@@ -584,12 +584,18 @@ public final class Characters {
 		return of(toCharArray(charSequence));
 	}
 
-	/** @return <code>true</code> if this object contains no characters. */
+	/**
+	 * Indicates whether this object contains no characters.
+	 * @return <code>true</code> if this object contains no characters.
+	 */
 	public boolean isEmpty() {
 		return chars.length == 0;
 	}
 
-	/** @return The number of characters. */
+	/**
+	 * Returns the number of characters.
+	 * @return The number of characters.
+	 */
 	public int size() {
 		return chars.length;
 	}

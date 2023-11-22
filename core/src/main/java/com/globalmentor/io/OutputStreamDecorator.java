@@ -33,7 +33,10 @@ public class OutputStreamDecorator<O extends OutputStream> extends OutputStream 
 	/** The output stream being decorated. */
 	private O outputStream;
 
-	/** @return The output stream being decorated, or <code>null</code> if it has been released after this stream was closed. */
+	/**
+	 * Returns the output stream being decorated.
+	 * @return The output stream being decorated, or <code>null</code> if it has been released after this stream was closed.
+	 */
 	protected O getOutputStream() {
 		return outputStream;
 	}

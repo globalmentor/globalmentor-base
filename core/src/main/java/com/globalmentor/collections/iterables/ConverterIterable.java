@@ -35,7 +35,10 @@ public class ConverterIterable<I, O> implements Iterable<O> {
 	/** The iterable this class decorates. */
 	private final Iterable<I> iterable;
 
-	/** @return The iterable this class decorates. */
+	/**
+	 * Returns the iterable this class decorates.
+	 * @return The iterable this class decorates.
+	 */
 	protected Iterable<I> getIterable() {
 		return iterable;
 	}
@@ -43,7 +46,10 @@ public class ConverterIterable<I, O> implements Iterable<O> {
 	/** The converter for converting the elements. */
 	private final Converter<I, O> converter;
 
-	/** @return The converter for converting the elements. */
+	/**
+	 * Returns the converter for converting the elements.
+	 * @return The converter for converting the elements.
+	 */
 	public Converter<I, O> getConverter() {
 		return converter;
 	}

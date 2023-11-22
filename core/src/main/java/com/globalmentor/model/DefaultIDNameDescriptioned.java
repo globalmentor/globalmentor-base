@@ -29,7 +29,10 @@ public class DefaultIDNameDescriptioned<I, N extends Comparable<N>, D> extends D
 	/** The description of the object, or <code>null</code> if the object has no description. */
 	private D description;
 
-	/** @return The description of the object, or <code>null</code> if the object has no description. */
+	/**
+	 * Returns the description of the object.
+	 * @return The description of the object, or <code>null</code> if the object has no description.
+	 */
 	public D getDescription() {
 		return description;
 	}

@@ -57,7 +57,10 @@ public class RandomIntegerIterator implements Iterator<Integer> { //TODO maybe l
 	/** The filter used to exclude items from the iterator. */
 	private Filter<Integer> filter;
 
-	/** @return The filter used to exclude items from the iterator. */
+	/**
+	 * Returns the filter used to exclude items from the iterator.
+	 * @return The filter used to exclude items from the iterator.
+	 */
 	public Filter<Integer> getFilter() {
 		return filter;
 	}
@@ -242,6 +245,7 @@ public class RandomIntegerIterator implements Iterator<Integer> { //TODO maybe l
 	}
 
 	/**
+	 * Returns the next random integer in the iteration.
 	 * @return The next random integer in the iteration, or <code>null</code> if the iteration has no more elements.
 	 */
 	protected Integer getNext() {

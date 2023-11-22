@@ -41,7 +41,10 @@ public abstract class AbstractPostponedEvent<L extends EventListener, E extends 
 	/** The manager that keeps track of event listeners, or <code>null</code> if there is no manager and therefore no listeners. */
 	private final EventListenerManager eventListenerManager;
 
-	/** @return The manager that keeps track of event listeners, or <code>null</code> if there is no manager and therefore no listeners. */
+	/**
+	 * Returns the manager that keeps track of event listeners, or <code>null</code> if there is no manager and therefore no listeners.
+	 * @return The manager that keeps track of event listeners, or <code>null</code> if there is no manager and therefore no listeners.
+	 */
 	protected EventListenerManager getEventListenerManager() {
 		return eventListenerManager;
 	}
@@ -49,7 +52,10 @@ public abstract class AbstractPostponedEvent<L extends EventListener, E extends 
 	/** The key under which listeners have been stored in the listener manager. */
 	private final Class<L> listenerKey;
 
-	/** @return The key under which listeners have been stored in the listener manager. */
+	/**
+	 * Returns the key under which listeners have been stored in the listener manager.
+	 * @return The key under which listeners have been stored in the listener manager.
+	 */
 	protected Class<L> getListenerKey() {
 		return listenerKey;
 	}
@@ -76,7 +82,8 @@ public abstract class AbstractPostponedEvent<L extends EventListener, E extends 
 	}
 
 	/**
-	 * Fires the postponed event. This method delegates to {@link #fireEvent(EventListener, EventObject)}, and concrete classes should usually override that method instead of this one.
+	 * Fires the postponed event. This method delegates to {@link #fireEvent(EventListener, EventObject)}, and concrete classes should usually override that
+	 * method instead of this one.
 	 * @throws IllegalStateException if the postponed event has already been fired.
 	 */
 	public void fireEvent() {

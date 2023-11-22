@@ -30,7 +30,10 @@ public class FilenamePatternFilter extends AbstractFileFilter {
 	/** The pattern for checking the filename. */
 	private final Pattern filenamePattern;
 
-	/** @return The pattern for checking the filename. */
+	/**
+	 * Returns the pattern for checking the filename.
+	 * @return The pattern for checking the filename.
+	 */
 	public Pattern getFilenamePattern() {
 		return filenamePattern;
 	}

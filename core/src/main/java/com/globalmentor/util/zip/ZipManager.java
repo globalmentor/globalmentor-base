@@ -37,7 +37,10 @@ public class ZipManager {
 	/** The file containing the zipped information. */
 	private final File file;
 
-	/** @return The file containing the zipped information. */
+	/**
+	 * Returns the file containing the zipped information.
+	 * @return The file containing the zipped information.
+	 */
 	public File getFile() {
 		return file;
 	}
@@ -45,7 +48,10 @@ public class ZipManager {
 	/** The base URI to use in determining zip entry URIs. */
 	private final URI baseURI;
 
-	/** @return The base URI to use in determining zip entry URIs. */
+	/**
+	 * Returns the base URI to use in determining zip entry URIs.
+	 * @return The base URI to use in determining zip entry URIs.
+	 */
 	public URI getBaseURI() {
 		return baseURI;
 	}
@@ -56,6 +62,7 @@ public class ZipManager {
 	private final Map<URI, ZipEntry> zipEntryMap = new HashMap<URI, ZipEntry>();
 
 	/**
+	 * Returns a map for storing zip entries, each keyed to a URI of what their filename would be if uncompressed.
 	 * @return A map for storing zip entries, each keyed to a URI of what their filename would be if uncompressed.
 	 */
 	protected Map<URI, ZipEntry> getZipEntryMap() {
@@ -71,7 +78,10 @@ public class ZipManager {
 		return zipEntryMap.get(uri); //get the zip entry keyed to the given URI
 	}
 
-	/** @return An iterator to all zip entries in the zip file in an undefined order. */
+	/**
+	 * Returns an iterator to all zip entries in the zip file in an undefined order.
+	 * @return An iterator to all zip entries in the zip file in an undefined order.
+	 */
 	public Iterator<ZipEntry> getZipEntryIterator() {
 		return zipEntryMap.values().iterator();
 	}

@@ -29,7 +29,10 @@ import java.util.*;
  */
 public abstract class AbstractEnumerationDecorator<E> implements Enumeration<E>, Iterator<E> {
 
-	/** @return The enumeration this class decorates. */
+	/**
+	 * Returns the enumeration this class decorates.
+	 * @return The enumeration this class decorates.
+	 */
 	protected abstract Enumeration<E> getEnumeration();
 
 	//Enumeration<E>

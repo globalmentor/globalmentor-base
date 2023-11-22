@@ -40,7 +40,10 @@ public class ArgumentSyntaxException extends IllegalArgumentException {
 		return input;
 	}
 
-	/** @return The input if known. */
+	/**
+	 * Returns the input if known.
+	 * @return The input if known.
+	 */
 	public Optional<String> findInput() {
 		return Optional.ofNullable(input);
 	}
@@ -49,6 +52,7 @@ public class ArgumentSyntaxException extends IllegalArgumentException {
 	private final int index;
 
 	/**
+	 * Returns the index into the input of the position at which the error occurred.
 	 * @return The index into the input of the position at which the error occurred, or -1 if the position is not known.
 	 * @deprecated to be removed in favor of {@link #findIndex()}.
 	 */
@@ -57,7 +61,10 @@ public class ArgumentSyntaxException extends IllegalArgumentException {
 		return index;
 	}
 
-	/** @return The index into the input of the position at which the error occurred if known. */
+	/**
+	 * Returns the index into the input of the position at which the error occurred.
+	 * @return The index into the input of the position at which the error occurred if known.
+	 */
 	public OptionalInt findIndex() {
 		return index == -1 ? OptionalInt.empty() : OptionalInt.of(index);
 	}

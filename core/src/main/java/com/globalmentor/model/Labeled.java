@@ -23,7 +23,10 @@ package com.globalmentor.model;
  */
 public interface Labeled {
 
-	/** @return A label meant for human consumption identifying the object. */
+	/**
+	 * Returns a label meant for human consumption identifying the object.
+	 * @return A label meant for human consumption identifying the object.
+	 */
 	public CharSequence getLabel();
 
 }

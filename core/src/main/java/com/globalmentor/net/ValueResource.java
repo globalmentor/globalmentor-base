@@ -25,10 +25,16 @@ package com.globalmentor.net;
  */
 public interface ValueResource<V> extends Resource {
 
-	/** @return The class representing the type of value represented by the resource. */
+	/**
+	 * Returns the class representing the type of value represented by the resource.
+	 * @return The class representing the type of value represented by the resource.
+	 */
 	public Class<V> getValueClass();
 
-	/** @return The non-<code>null</code> value represented by the resource. */
+	/**
+	 * Returns the non-<code>null</code> value represented by the resource.
+	 * @return The non-<code>null</code> value represented by the resource.
+	 */
 	public V getValue();
 
 }

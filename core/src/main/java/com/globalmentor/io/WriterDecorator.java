@@ -29,7 +29,10 @@ public class WriterDecorator extends Writer {
 	/** The wrapped writer. */
 	private final Writer writer;
 
-	/** @return The wrapped writer. */
+	/**
+	 * Returns the wrapped writer.
+	 * @return The wrapped writer.
+	 */
 	protected Writer getWriter() {
 		return writer;
 	}

@@ -37,7 +37,10 @@ public enum SortOrder {
 
 	private char sign;
 
-	/** @return The sign indicating the order: <code>+</code> for {@link #ASCENDING} or <code>-</code> for {@link #DESCENDING}. */
+	/**
+	 * Returns the sign indicating the order: <code>+</code> for {@link #ASCENDING} or <code>-</code> for {@link #DESCENDING}.
+	 * @return The sign indicating the order.
+	 */
 	public char getSign() {
 		return sign;
 	}

@@ -35,7 +35,10 @@ public abstract class AbstractListIterator<I, E> implements ListIterator<I> {
 	/** The list over which to iterate. */
 	private final List<E> list;
 
-	/** @return The list over which to iterate. */
+	/**
+	 * Returns the list over which to iterate.
+	 * @return The list over which to iterate.
+	 */
 	protected final List<E> getList() {
 		return list;
 	}

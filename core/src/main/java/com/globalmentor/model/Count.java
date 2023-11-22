@@ -38,7 +38,10 @@ public class Count extends AbstractLong<Count> implements CloneSupported {
 	/** The current count. */
 	private long count;
 
-	/** @return The current count. */
+	/**
+	 * Returns the current count.
+	 * @return The current count.
+	 */
 	public long getCount() {
 		return count;
 	}

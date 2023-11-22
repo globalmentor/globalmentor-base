@@ -152,7 +152,10 @@ public class ResourceRecord {
 
 		private final int id;
 
-		/** @return The type ID. */
+		/**
+		 * Returns The type ID.
+		 * @return The type ID.
+		 */
 		public int getId() {
 			return id;
 		}
@@ -169,7 +172,10 @@ public class ResourceRecord {
 
 	private final String type;
 
-	/** @return The type of resource record. */
+	/**
+	 * Returns the type of resource record.
+	 * @return The type of resource record.
+	 */
 	public String getType() {
 		return type;
 	}
@@ -177,8 +183,8 @@ public class ResourceRecord {
 	private final DomainName name;
 
 	/**
-	 * @return The domain name of the resource record, which may be absolute or relative if the name should be resolved against the origin; or empty to indicate
-	 *         the origin should be used.
+	 * Returns the domain name of the resource record, which may be absolute or relative if the name should be resolved against the origin.
+	 * @return The domain name of the resource record, or empty to indicate the origin should be used.
 	 */
 	public Optional<DomainName> getName() {
 		return Optional.ofNullable(name);
@@ -186,14 +192,20 @@ public class ResourceRecord {
 
 	private final String value;
 
-	/** @return The resource record value encoded as a appropriate for the resource record type. */
+	/**
+	 * Returns the resource record value encoded as a appropriate for the resource record type.
+	 * @return The resource record value encoded as a appropriate for the resource record type.
+	 */
 	public String getValue() {
 		return value;
 	}
 
 	private final long ttl;
 
-	/** @return The resource record cache time to live, in seconds; or empty if not specified, indicating the default TTL should be used. */
+	/**
+	 * Returns the resource record cache time to live, in seconds.
+	 * @return The resource record cache time to live, in seconds; or empty if not specified, indicating the default TTL should be used.
+	 */
 	public OptionalLong getTtl() {
 		return ttl >= 0 ? OptionalLong.of(ttl) : OptionalLong.empty();
 	}

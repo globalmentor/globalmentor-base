@@ -33,7 +33,10 @@ public class AbstractCollatingComparator implements Comparator<CharSequence> {
 
 	private final Collator collator;
 
-	/** @return The collator being used by this comparator. */
+	/**
+	 * Returns the collator being used by this comparator.
+	 * @return The collator being used by this comparator.
+	 */
 	public Collator getCollator() {
 		return collator;
 	}

@@ -25,10 +25,16 @@ import java.util.EventObject;
  */
 public interface PostponedEvent<E extends EventObject> {
 
-	/** @return Whether the postponed event has been fired. */
+	/**
+	 * Returns whether the postponed event has been fired.
+	 * @return Whether the postponed event has been fired.
+	 */
 	public boolean isFired();
 
-	/** @return The event that has been postponed. */
+	/**
+	 * Returns the event that has been postponed.
+	 * @return The event that has been postponed.
+	 */
 	public E getEvent();
 
 	/**

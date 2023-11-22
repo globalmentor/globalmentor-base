@@ -25,6 +25,7 @@ import java.util.prefs.Preferences;
 public interface Preferencesable {
 
 	/**
+	 * Returns the preferences that should be used for this object.
 	 * @return The preferences that should be used for this object, or the default preferences for this class if no preferences are specifically set.
 	 * @throws SecurityException Thrown if a security manager is present and it denies <code>RuntimePermission("preferences")</code>.
 	 */

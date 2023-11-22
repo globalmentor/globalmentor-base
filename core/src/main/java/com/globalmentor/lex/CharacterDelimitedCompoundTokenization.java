@@ -36,7 +36,10 @@ public class CharacterDelimitedCompoundTokenization extends AbstractCompoundToke
 
 	private final char delimiter;
 
-	/** @return The delimiter used by this tokenization. */
+	/**
+	 * Returns the delimiter used by this tokenization.
+	 * @return The delimiter used by this tokenization.
+	 */
 	public char getDelimiter() {
 		return delimiter;
 	}

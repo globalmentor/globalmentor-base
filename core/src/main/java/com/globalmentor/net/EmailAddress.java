@@ -65,9 +65,9 @@ public final class EmailAddress implements Resource, Comparable<EmailAddress> {
 	 * address</cite></a>.
 	 * @see <a href="http://stackoverflow.com/q/201323/421049">Using a regular expression to validate an email address</a>
 	 */
-	public static final Pattern LOCAL_PART_PATTERN = Pattern.compile("[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*"
-			+ "|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]"
-			+ "|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\"");
+	public static final Pattern LOCAL_PART_PATTERN = Pattern.compile("[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*" //
+			+ "|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]" //
+			+ "|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\""); //
 
 	/**
 	 * A regular expression pattern for matching the domain of an email addresses according to <cite>RFC 5322</cite>. This pattern is derived from the regular
@@ -75,10 +75,10 @@ public final class EmailAddress implements Resource, Comparable<EmailAddress> {
 	 * address</cite></a>.
 	 * @see <a href="http://stackoverflow.com/q/201323/421049">Using a regular expression to validate an email address</a>
 	 */
-	public static final Pattern DOMAIN_PATTERN = Pattern.compile("(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?"
-			+ "|\\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\\.){3}"
-			+ "(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:"
-			+ "(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]"
+	public static final Pattern DOMAIN_PATTERN = Pattern.compile("(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?" //
+			+ "|\\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\\.){3}" //
+			+ "(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:" //
+			+ "(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]" //
 			+ "|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\]");
 
 	/**
@@ -101,7 +101,10 @@ public final class EmailAddress implements Resource, Comparable<EmailAddress> {
 	/** The local part of the email address. */
 	private final String localPart;
 
-	/** @return The local part of the email address. */
+	/**
+	 * Returns the local part of the email address.
+	 * @return The local part of the email address.
+	 */
 	public String getLocalPart() {
 		return localPart;
 	}
@@ -109,7 +112,10 @@ public final class EmailAddress implements Resource, Comparable<EmailAddress> {
 	/** The domain of the email address. */
 	private final String domain;
 
-	/** @return The domain of the email address. */
+	/**
+	 * Returns the domain of the email address.
+	 * @return The domain of the email address.
+	 */
 	public String getDomain() {
 		return domain;
 	}

@@ -31,7 +31,10 @@ public class ResourceEvent extends EventObject {
 	/** The old parent resource reference URI, or <code>null</code> if not applicable. */
 	private final URI oldParentResourceURI;
 
-	/** @return The old parent resource reference URI, or <code>null</code> if not applicable. */
+	/**
+	 * Returns the old parent resource reference URI.
+	 * @return The old parent resource reference URI, or <code>null</code> if not applicable.
+	 */
 	public URI getOldParentResourceURI() {
 		return oldParentResourceURI;
 	}
@@ -39,7 +42,10 @@ public class ResourceEvent extends EventObject {
 	/** A description of the old parent resource, or <code>null</code> if not applicable. */
 	private transient final Resource oldParentResource;
 
-	/** @return A description of the old parent resource, or <code>null</code> if not applicable. */
+	/**
+	 * Returns a description of the old parent resource.
+	 * @return A description of the old parent resource, or <code>null</code> if not applicable.
+	 */
 	public Resource getOldParentResource() {
 		return oldParentResource;
 	}
@@ -47,7 +53,10 @@ public class ResourceEvent extends EventObject {
 	/** The parent resource reference URI, or <code>null</code> if not applicable. */
 	private final URI parentResourceURI;
 
-	/** @return The parent resource reference URI, or <code>null</code> if not applicable. */
+	/**
+	 * Returns the parent resource reference URI.
+	 * @return The parent resource reference URI, or <code>null</code> if not applicable.
+	 */
 	public URI getParentResourceURI() {
 		return parentResourceURI;
 	}
@@ -55,7 +64,10 @@ public class ResourceEvent extends EventObject {
 	/** A description of the parent resource, or <code>null</code> if not applicable. */
 	private transient final Resource parentResource;
 
-	/** @return A description of the parent resource, or <code>null</code> if not applicable. */
+	/**
+	 * Returns a description of the parent resource.
+	 * @return A description of the parent resource, or <code>null</code> if not applicable.
+	 */
 	public Resource getParentResource() {
 		return parentResource;
 	}
@@ -63,7 +75,10 @@ public class ResourceEvent extends EventObject {
 	/** The previous resource reference URI, or <code>null</code> if not applicable. */
 	private final URI oldResourceURI;
 
-	/** @return The previous resource reference URI, or <code>null</code> if not applicable. */
+	/**
+	 * Returns the previous resource reference URI.
+	 * @return The previous resource reference URI, or <code>null</code> if not applicable.
+	 */
 	public URI getOldResourceURI() {
 		return oldResourceURI;
 	}
@@ -71,7 +86,10 @@ public class ResourceEvent extends EventObject {
 	/** A description of the old resource, or <code>null</code> if not applicable. */
 	private transient final Resource oldResource;
 
-	/** @return A description of the old resource, or <code>null</code> if not applicable. */
+	/**
+	 * Returns a description of the old resource.
+	 * @return A description of the old resource, or <code>null</code> if not applicable.
+	 */
 	public Resource getOldResource() {
 		return oldResource;
 	}
@@ -79,7 +97,10 @@ public class ResourceEvent extends EventObject {
 	/** The resource reference URI, or <code>null</code> if not applicable. */
 	private final URI resourceURI;
 
-	/** @return The resource reference URI, or <code>null</code> if not applicable. */
+	/**
+	 * Returns the resource reference URI.
+	 * @return The resource reference URI, or <code>null</code> if not applicable.
+	 */
 	public URI getResourceURI() {
 		return resourceURI;
 	}
@@ -87,7 +108,10 @@ public class ResourceEvent extends EventObject {
 	/** A description of the resource, or <code>null</code> if there is no description. */
 	private transient final Resource resource;
 
-	/** @return A description of the resource, or <code>null</code> if there is no description. */
+	/**
+	 * Returns a description of the resource.
+	 * @return A description of the resource, or <code>null</code> if there is no description.
+	 */
 	public Resource getResource() {
 		return resource;
 	}

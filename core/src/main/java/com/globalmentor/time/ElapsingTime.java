@@ -180,6 +180,7 @@ public final class ElapsingTime {
 	}
 
 	/**
+	 * Returns the time elapsed until the current time.
 	 * @return The time elapsed until the current time.
 	 * @throws ArithmeticException if a numeric overflow occurs.
 	 */

@@ -75,7 +75,10 @@ public class ProcessingBufferedReader extends Reader {
 	/** The size of the extra buffer for unreading data. */
 	private int undoBufferSize = DEFAULT_UNDO_BUFFER_SIZE;
 
-	/** @return The size of the extra buffer for unreading data. */
+	/**
+	 * Returns the size of the extra buffer for unreading data.
+	 * @return The size of the extra buffer for unreading data.
+	 */
 	public int getUndoBufferSize() {
 		return undoBufferSize;
 	}
@@ -83,7 +86,10 @@ public class ProcessingBufferedReader extends Reader {
 	/** The internal buffer used to hold characters. */
 	private char[] Buffer = null;
 
-	/** @return The internal buffer used to hold characters. */
+	/**
+	 * Returns the internal buffer used to hold characters.
+	 * @return The internal buffer used to hold characters.
+	 */
 	protected char[] getBuffer() {
 		return Buffer;
 	}
@@ -103,8 +109,9 @@ public class ProcessingBufferedReader extends Reader {
 	private boolean lastBuffer = false;
 
 	/**
-	 * @return Whether or not we've read the last buffer. Technically the last buffer could have been read, but it might have been filled completely, in which
-	 *         case this function would still return <code>false</code>.
+	 * Returns whether or not we've read the last buffer. Technically the last buffer could have been read, but it might have been filled completely, in which
+	 * case this function would still return <code>false</code>.
+	 * @return Whether or not we've read the last buffer.
 	 */
 	protected boolean isLastBuffer() {
 		return lastBuffer;
@@ -121,7 +128,10 @@ public class ProcessingBufferedReader extends Reader {
 	/** The index of the next character to be read. */
 	private int readIndex;
 
-	/** @return The index of the next character to be read. */
+	/**
+	 * Returns the index of the next character to be read.
+	 * @return The index of the next character to be read.
+	 */
 	protected int getReadIndex() {
 		return readIndex;
 	}
@@ -141,7 +151,10 @@ public class ProcessingBufferedReader extends Reader {
 	/** The index of the next character to be peeked. After each read this is set to equal ReadIndex. */
 	private int peekIndex;
 
-	/** @return The index of the next character to be peeked. After each read this is set to equal ReadIndex. */
+	/**
+	 * Returns the index of the next character to be peeked. After each read this is set to equal ReadIndex.
+	 * @return The index of the next character to be peeked. After each read this is set to equal ReadIndex.
+	 */
 	protected int getPeekIndex() {
 		return peekIndex;
 	}
@@ -157,7 +170,10 @@ public class ProcessingBufferedReader extends Reader {
 	/** The index directly after the end of the last character in the buffer. */
 	private int bufferEndIndex = 0;
 
-	/** @return The index directly after the end of the last character in the buffer. */
+	/**
+	 * Returns the index directly after the end of the last character in the buffer.
+	 * @return The index directly after the end of the last character in the buffer.
+	 */
 	protected int getBufferEndIndex() {
 		return bufferEndIndex;
 	}
@@ -177,7 +193,8 @@ public class ProcessingBufferedReader extends Reader {
 	private int fetchBufferIndex = 0;
 
 	/**
-	 * @return The index where a new buffer should be read. Usually equals <code>BufferEndIndex</code>.
+	 * Returns the index where a new buffer should be read. Usually equals {@link #getBufferEndIndex()}.
+	 * @return The index where a new buffer should be read.
 	 * @see ProcessingBufferedReader#getBufferEndIndex
 	 */
 	protected int getFetchBufferIndex() {
@@ -196,7 +213,10 @@ public class ProcessingBufferedReader extends Reader {
 	/** Whether or not the end of the data has been reached. */
 	private boolean eof = false;
 
-	/** @return Whether or not the end of the data has been reached. */
+	/**
+	 * Indicates whether the end of the data has been reached.
+	 * @return <code>true</code> if the end of the data has been reached.
+	 */
 	public boolean isEnd() {
 		return eof;
 	}
@@ -232,7 +252,10 @@ public class ProcessingBufferedReader extends Reader {
 	/** The index in the buffer of the mark, which will be negative if the reader is not marked. */
 	private int markIndex = -1;
 
-	/** @return The index in the buffer of the mark, which will be negative if the reader is not marked. */
+	/**
+	 * Returns the index in the buffer of the mark.
+	 * @return The index in the buffer of the mark, which will be negative if the reader is not marked.
+	 */
 	protected int getMarkIndex() {
 		return markIndex;
 	}
@@ -281,7 +304,10 @@ public class ProcessingBufferedReader extends Reader {
 	/** The reader from which we extract the information. */
 	private Reader reader = null;
 
-	/** @return The reader from which we extract the information. */
+	/**
+	 * The reader from which we extract the information.
+	 * @return The reader from which we extract the information.
+	 */
 	protected Reader getReader() {
 		return reader;
 	}

@@ -71,7 +71,10 @@ public class CharSequenceSuffixTree extends AbstractSuffixTree<CharSequenceSuffi
 	/** The character sequence represented by the suffix tree. */
 	private final CharSequence charSequence;
 
-	/** @return The character sequence represented by the suffix tree. */
+	/**
+	 * Returns the character sequence represented by the suffix tree.
+	 * @return The character sequence represented by the suffix tree.
+	 */
 	public CharSequence getCharSequence() {
 		return charSequence;
 	}
@@ -264,10 +267,16 @@ public class CharSequenceSuffixTree extends AbstractSuffixTree<CharSequenceSuffi
 	 */
 	protected interface EdgeKey {
 
-		/** @return The parent node. */
+		/**
+		 * Returns the parent node.
+		 * @return The parent node.
+		 */
 		public Node getParentNode();
 
-		/** @return The first character of the edge, or {@link Characters#UNDEFINED_CHAR} if the edge is empty. */
+		/**
+		 * Returns the first character of the edge.
+		 * @return The first character of the edge, or {@link Characters#UNDEFINED_CHAR} if the edge is empty.
+		 */
 		public char getFirstChar();
 	}
 
@@ -415,7 +424,10 @@ public class CharSequenceSuffixTree extends AbstractSuffixTree<CharSequenceSuffi
 			this.end = checkArgumentMinimum(end, start);
 		}
 
-		/** @return The subsequence of characters this edge represents. */
+		/**
+		 * Returns the subsequence of characters this edge represents.
+		 * @return The subsequence of characters this edge represents.
+		 */
 		public CharSequence getSubSequence() {
 			return getCharSequence().subSequence(getStart(), getEnd());
 		}

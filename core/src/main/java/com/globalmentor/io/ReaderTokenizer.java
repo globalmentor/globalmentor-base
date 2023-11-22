@@ -47,7 +47,10 @@ public class ReaderTokenizer implements Iterator<String>, Iterable<String> {
 	/** The source of the input characters. */
 	private final Reader reader;
 
-	/** @return The source of the input characters. */
+	/**
+	 * Returns the source of the input characters.
+	 * @return The source of the input characters.
+	 */
 	protected Reader getReader() {
 		return reader;
 	}
@@ -55,7 +58,10 @@ public class ReaderTokenizer implements Iterator<String>, Iterable<String> {
 	/** The characters delimiting tokens. */
 	private Characters delimiters;
 
-	/** @return The characters delimiting tokens. */
+	/**
+	 * Returns the characters delimiting tokens.
+	 * @return The characters delimiting tokens.
+	 */
 	public Characters getDelimiters() {
 		return delimiters;
 	}
@@ -63,7 +69,10 @@ public class ReaderTokenizer implements Iterator<String>, Iterable<String> {
 	/** The valid group beginning characters. */
 	private final String groupBegins;
 
-	/** @return The valid group beginning characters. */
+	/**
+	 * Returns the valid group beginning characters.
+	 * @return The valid group beginning characters.
+	 */
 	public String getGroupBegins() {
 		return groupBegins;
 	}
@@ -71,7 +80,10 @@ public class ReaderTokenizer implements Iterator<String>, Iterable<String> {
 	/** The valid group ending characters. */
 	private final String groupEnds;
 
-	/** @return The valid group ending characters, matching to beginning characters. */
+	/**
+	 * Returns the valid group ending characters, matching to beginning characters.
+	 * @return The valid group ending characters, matching to beginning characters.
+	 */
 	public String getGroupEnds() {
 		return groupEnds;
 	}
@@ -119,7 +131,10 @@ public class ReaderTokenizer implements Iterator<String>, Iterable<String> {
 		}
 	}
 
-	/** @return The number of nested groups currently being processed. */
+	/**
+	 * Returns the number of nested groups currently being processed.
+	 * @return The number of nested groups currently being processed.
+	 */
 	protected int getGroupDepth() {
 		return groupStackStringBuilder.length();
 	}

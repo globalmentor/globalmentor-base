@@ -31,14 +31,20 @@ public class ExplicitOrderComparator<T> implements Comparator<T> {
 
 	private final List<T> order;
 
-	/** @return The list that determines the explicit order of the objects. */
+	/**
+	 * Returns the list that determines the explicit order of the objects.
+	 * @return The list that determines the explicit order of the objects.
+	 */
 	protected List<T> getOrder() {
 		return order;
 	}
 
 	private final boolean orderedFirst;
 
-	/** @return <code>true</code> if explicitly ordered items should come before items with no known order. */
+	/**
+	 * Indicates whether explicitly ordered items should come before items with no known order.
+	 * @return <code>true</code> if explicitly ordered items should come before items with no known order.
+	 */
 	protected boolean isOrderedFirst() {
 		return orderedFirst;
 	}

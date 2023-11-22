@@ -34,7 +34,10 @@ public class DecoratorReadWriteLockCollection<E> extends ReadWriteLockDecorator 
 	/** The collection this class decorates. */
 	private final Collection<E> collection;
 
-	/** @return The collection this class decorates. */
+	/**
+	 * Returns the collection this class decorates.
+	 * @return The collection this class decorates.
+	 */
 	protected Collection<E> getCollection() {
 		return collection;
 	}

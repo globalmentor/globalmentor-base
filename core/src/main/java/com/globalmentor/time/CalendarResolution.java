@@ -57,7 +57,10 @@ public enum CalendarResolution {
 	/** The related {@link Calendar} field. */
 	final int calendarField;
 
-	/** @return The related {@link Calendar} field. */
+	/**
+	 * Returns the related {@link Calendar} field.
+	 * @return The related {@link Calendar} field.
+	 */
 	public int getCalendarField() {
 		return calendarField;
 	}

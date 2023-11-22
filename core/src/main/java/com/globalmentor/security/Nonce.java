@@ -25,10 +25,16 @@ import java.util.Date;
  */
 public interface Nonce {
 
-	/** @return The time represented by the nonce. */
+	/**
+	 * Returns the time represented by the nonce.
+	 * @return The time represented by the nonce.
+	 */
 	public Date getTime();
 
-	/** @return The private key represented by the nonce. */
+	/**
+	 * Returns the private key represented by the nonce.
+	 * @return The private key represented by the nonce.
+	 */
 	public String getPrivateKey();
 
 	/** @return A string representation of the nonce, suitable for serialization. */

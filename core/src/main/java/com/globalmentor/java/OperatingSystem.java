@@ -78,6 +78,7 @@ public class OperatingSystem {
 	}
 
 	/**
+	 * Indicates whether the operating system is Windows.
 	 * @return <code>true</code> if the operating system is a version of Windows.
 	 * @throws SecurityException if a security manager exists and its <code>checkPropertyAccess</code> method doesn't allow access to this system property.
 	 * @see #OS_NAME_PROPERTY

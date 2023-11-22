@@ -31,7 +31,10 @@ public class FileExtensionFilter implements FileFilter, FilenameFilter {
 	/** The extensions to include. */
 	private final Set<String> extensionSet = new HashSet<String>();
 
-	/** @return The extensions to include. */
+	/**
+	 * Returns the extensions to include.
+	 * @return The extensions to include.
+	 */
 	protected Set<String> getExtensionSet() {
 		return extensionSet;
 	}

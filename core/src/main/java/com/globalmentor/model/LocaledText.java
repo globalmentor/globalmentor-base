@@ -29,7 +29,10 @@ public class LocaledText extends DefaultLocaleable implements CharSequence, Comp
 	/** The non-<code>null</code> text. */
 	private String text;
 
-	/** @return The non-<code>null</code> text represented. */
+	/**
+	 * Returns the represented text
+	 * @return The non-<code>null</code> text represented.
+	 */
 	public String getText() {
 		return text;
 	}

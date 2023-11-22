@@ -38,7 +38,10 @@ public abstract class AbstractChainedSortOrderComparator<T> extends AbstractSort
 	/** The comparator to perform subordinate sorting. */
 	private final Comparator<T> subordinateComparator;
 
-	/** @return The comparator to perform subordinate sorting. */
+	/**
+	 * Returns the comparator to perform subordinate sorting.
+	 * @return The comparator to perform subordinate sorting.
+	 */
 	public Comparator<T> getSubordinateComparator() {
 		return subordinateComparator;
 	}
