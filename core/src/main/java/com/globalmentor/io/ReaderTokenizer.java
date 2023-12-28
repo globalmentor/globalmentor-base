@@ -102,7 +102,6 @@ public class ReaderTokenizer implements Iterator<String>, Iterable<String> {
 	/**
 	 * Pops a group from the stack and returns the group beginning character.
 	 * @return The character used to begin the group.
-	 * @throws StringIndexOutOfBoundsException {@inheritDoc}
 	 * @throws EmptyStackException if there are no groups left.
 	 */
 	protected char popGroup() throws EmptyStackException {
@@ -119,7 +118,6 @@ public class ReaderTokenizer implements Iterator<String>, Iterable<String> {
 	/**
 	 * Returns the character of the group currently on the stack.
 	 * @return The character used to begin the group.
-	 * @throws StringIndexOutOfBoundsException {@inheritDoc}
 	 * @throws EmptyStackException if there are no groups left.
 	 */
 	protected char peekGroup() throws EmptyStackException {
