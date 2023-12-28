@@ -28,21 +28,25 @@ import com.globalmentor.java.Characters;
 /**
  * Class for unexpected characters encountered when parsing an input stream. Used by {@link ParseReader}.
  * <p>
- * This implementation assumes that if a list of strings were expected, a string will have been found. That is, if {@link #getExpectedCharacters()} returns a
+ * This implementation assumes that if a list of strings were expected, a string will have been found. That is, if {@link #findExpectedCharacters()} returns a
  * value {@link #getFoundCharacter()} will hold a valid value; otherwise, {@link #getFoundString()} will hold the appropriate value.
  * </p>
+ * @implNote This class does not fully support serialization; any expected strings or characters will be lost if serialized.
  * @see ParseIOException
  * @see ParseReader
  */
 public class ParseUnexpectedDataException extends ParseIOException {
 
-	private static final long serialVersionUID = 2L;
+	private static final long serialVersionUID = 3L;
 
 	/** The expected characters, if characters were expected, else <code>null</code>. */
-	private Characters expectedCharacters = null;
+	private transient Characters expectedCharacters = null;
 
-	/** @return The expected characters, if characters were expected. */
-	public Optional<Characters> getExpectedCharacters() {
+	/**
+	 * Returns the expected characters.
+	 * @return The expected characters, if characters were expected.
+	 */
+	public Optional<Characters> findExpectedCharacters() {
 		return Optional.ofNullable(expectedCharacters);
 	}
 
@@ -50,14 +54,17 @@ public class ParseUnexpectedDataException extends ParseIOException {
 	 * Sets the expected characters.
 	 * @param expectedCharacters The expected characters.
 	 */
-	protected void setExpectedCharacters(@Nonnull final Characters expectedCharacters) {
+	protected final void setExpectedCharacters(@Nonnull final Characters expectedCharacters) {
 		this.expectedCharacters = requireNonNull(expectedCharacters);
 	}
 
 	/** The character found, if characters were expected, else <code>0</code>. */
 	private char foundCharacter = (char)0;
 
-	/** @return The character found, if characters were expected, else <code>0</code>. */
+	/**
+	 * Returns the character found.
+	 * @return The character found, if characters were expected, else <code>0</code>.
+	 */
 	public char getFoundCharacter() {
 		return foundCharacter;
 	}
@@ -66,15 +73,18 @@ public class ParseUnexpectedDataException extends ParseIOException {
 	 * Sets the character found.
 	 * @param foundCharacter The character found.
 	 */
-	protected void setFoundCharacter(final char foundCharacter) {
+	protected final void setFoundCharacter(final char foundCharacter) {
 		this.foundCharacter = foundCharacter;
 	}
 
 	/** The expected strings, if strings were expected, else <code>null</code>. */
-	private List<String> expectedStrings = null;
+	private transient List<String> expectedStrings = null;
 
-	/** @return The expected strings, if strings were expected. */
-	public Optional<List<String>> getExpectedStrings() {
+	/**
+	 * Returns the expected strings.
+	 * @return The expected strings, if strings were expected.
+	 */
+	public Optional<List<String>> findExpectedStrings() {
 		return Optional.ofNullable(expectedStrings);
 	}
 
@@ -82,14 +92,17 @@ public class ParseUnexpectedDataException extends ParseIOException {
 	 * Sets the expected strings.
 	 * @param expectedStrings The expected strings.
 	 */
-	protected void setExpectedStrings(@Nonnull final List<String> expectedStrings) {
+	protected final void setExpectedStrings(@Nonnull final List<String> expectedStrings) {
 		this.expectedStrings = List.copyOf(expectedStrings);
 	}
 
 	/** The string found, if strings were expected, else <code>null</code>. */
 	private String foundString = null;
 
-	/** @return The string found, if strings were expected. */
+	/**
+	 * Returns the string found.
+	 * @return The string found, if strings were expected.
+	 */
 	public Optional<String> getFoundString() {
 		return Optional.ofNullable(foundString);
 	}
@@ -98,7 +111,7 @@ public class ParseUnexpectedDataException extends ParseIOException {
 	 * Sets the string found.
 	 * @param foundString The string found.
 	 */
-	protected void setFoundString(@Nonnull final String foundString) {
+	protected final void setFoundString(@Nonnull final String foundString) {
 		this.foundString = requireNonNull(foundString);
 	}
 
@@ -138,6 +151,7 @@ public class ParseUnexpectedDataException extends ParseIOException {
 	 * @param lineIndex The index of the line in which the error occurred.
 	 * @param charIndex The index of the character at which the error occurred on the current line.
 	 */
+	@SuppressWarnings("this-escape")
 	public ParseUnexpectedDataException(final String message, final char foundChar, final long lineIndex, final long charIndex) {
 		super(message != null ? message : "Unexpected character: found " + Characters.getLabel(foundChar) + ".", (String)null, lineIndex, charIndex);
 		setFoundCharacter(foundChar); //save the character found
@@ -183,6 +197,7 @@ public class ParseUnexpectedDataException extends ParseIOException {
 	 * @param lineIndex The index of the line in which the error occurred.
 	 * @param charIndex The index of the character at which the error occurred on the current line.
 	 */
+	@SuppressWarnings("this-escape")
 	public ParseUnexpectedDataException(final String message, final char expectedChar, final char foundChar, final long lineIndex, final long charIndex) {
 		super(message != null ? message : "Unexpected character: expected " + Characters.getLabel(expectedChar) + " found " + Characters.getLabel(foundChar) + ".",
 				(String)null, lineIndex, charIndex);
@@ -208,6 +223,7 @@ public class ParseUnexpectedDataException extends ParseIOException {
 	 * @param lineIndex The index of the line in which the error occurred.
 	 * @param charIndex The index of the character at which the error occurred on the current line.
 	 */
+	@SuppressWarnings("this-escape")
 	public ParseUnexpectedDataException(final Characters expectedChars, final char foundChar, final long lineIndex, final long charIndex) {
 		super("Unexpected character: expected one of " + expectedChars.toLabelArrayString() + " found " + Characters.getLabel(foundChar) + ".", (String)null,
 				lineIndex, charIndex);
@@ -223,6 +239,7 @@ public class ParseUnexpectedDataException extends ParseIOException {
 	 * @param charIndex The index of the character at which the error occurred on the current line.
 	 * @param sourceName The name of the source of the data (perhaps a filename).
 	 */
+	@SuppressWarnings("this-escape")
 	public ParseUnexpectedDataException(final String[] expectedStrings, final String foundString, final long lineIndex, final long charIndex,
 			final String sourceName) {
 		super("Unexpected character: expected one of " + convertStringsToMessage(List.of(expectedStrings)) + " found "
@@ -236,13 +253,9 @@ public class ParseUnexpectedDataException extends ParseIOException {
 	 * @return A message with the expected data.
 	 */
 	public String getExpectedMessage() {
-		if(getExpectedCharacters().isPresent()) { //if we have expected characters
-			return getExpectedCharacters().map(Characters::toLabelArrayString).get(); //return a string of our expected characters
-		} else if(getExpectedStrings().isPresent()) //if we have expected strings
-			return getExpectedStrings().map(ParseIOException::convertStringsToMessage).get(); //return a string of our expected strings
-		else { //if we don't know what we were expecting
-			return ""; //return a null string; this in theory should never happen
-		}
+		return findExpectedCharacters().map(Characters::toLabelArrayString) //if we have expected characters, return a string of our expected characters
+				.orElseGet(() -> findExpectedStrings().map(ParseIOException::convertStringsToMessage) //if we have expected strings, return a string of our expected strings
+						.orElse("")); //if we don't know what we were expecting, return an empty string; this in theory should never happen
 	}
 
 	/**
@@ -250,9 +263,9 @@ public class ParseUnexpectedDataException extends ParseIOException {
 	 * @return A message with the data found.
 	 */
 	public String getFoundMessage() {
-		if(getExpectedCharacters().isPresent()) { //if we were expecting characters
+		if(findExpectedCharacters().isPresent()) { //if we were expecting characters
 			return Characters.getLabel(getFoundCharacter()); //we will have found a character, so return it
-		} else if(getExpectedStrings().isPresent()) { //if we were expecting strings
+		} else if(findExpectedStrings().isPresent()) { //if we were expecting strings
 			return convertStringsToMessage(getFoundString().map(List::of).orElseThrow(IllegalStateException::new)); //we will have found a string, so return what we found
 		} else
 			//if we don't know what we were expecting

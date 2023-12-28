@@ -25,12 +25,14 @@ package com.globalmentor.java;
 public interface EnumLike {
 
 	/**
+	 * Returns the name associated with this object.
 	 * @return The name associated with this object.
 	 * @see Enum#name()
 	 */
 	String name();
 
 	/**
+	 * Returns the ordinal associated with this object.
 	 * @return The ordinal associated with this object.
 	 * @see Enum#ordinal()
 	 */

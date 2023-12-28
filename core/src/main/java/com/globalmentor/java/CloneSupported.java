@@ -27,10 +27,8 @@ package com.globalmentor.java;
 public interface CloneSupported extends Cloneable {
 
 	/**
-	 * {@inheritDoc}
-	 * <p>
-	 * This version is guaranteed not to throw {@link CloneNotSupportedException}.
-	 * </p>
+	 * Creates and returns a copy of this object.
+	 * @implSpec This version is guaranteed not to throw {@link CloneNotSupportedException}.
 	 */
 	public Object clone() throws CloneNotSupportedException;
 

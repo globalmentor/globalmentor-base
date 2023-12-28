@@ -44,7 +44,10 @@ public class AbstractClient implements Client {
 		this.logged = logged;
 	}
 
-	/** @return The default instance of this class, or <code>null</code> if there is no default instance. */
+	/**
+	 * Returns the default instance of this class.
+	 * @return The default instance of this class, or <code>null</code> if there is no default instance.
+	 */
 	protected AbstractClient getDefaultInstance() {
 		return null; //by default there is no default instance of this class
 	}
@@ -61,6 +64,7 @@ public class AbstractClient implements Client {
 	}
 
 	/**
+	 * Returns the authenticator associated with this client.
 	 * @return The authenticator associated with this client or, if there is no authenticator defined, the authenticator associated with the default instance of
 	 *         the client.
 	 */
@@ -90,7 +94,10 @@ public class AbstractClient implements Client {
 	/** The ID of the user to which this client is restricted, or <code>null</code> if this client is not restricted to a single user. */
 	private String username;
 
-	/** @return The ID of the user to which this client is restricted, or <code>null</code> if this client is not restricted to a single user. */
+	/**
+	 * Returns the ID of the user to which this client is restricted.
+	 * @return The ID of the user to which this client is restricted, or <code>null</code> if this client is not restricted to a single user.
+	 */
 	public String getUsername() {
 		return username;
 	}

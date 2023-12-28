@@ -45,7 +45,10 @@ public abstract class AbstractConverterCollection<S, D> extends CollectionDecora
 	 */
 	protected abstract D convert(final S source);
 
-	/** @return A custom proxied iterator that will convert returned elements on the fly. */
+	/**
+	 * Returns a custom proxied iterator that will convert returned elements on the fly.
+	 * @return A custom proxied iterator that will convert returned elements on the fly.
+	 */
 	@SuppressWarnings("unchecked")
 	public Iterator<D> iterator() {
 		return new ConverterIterator((Iterator<S>)super.iterator()); //create an iterator that will convert the elements

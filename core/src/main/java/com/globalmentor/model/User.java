@@ -20,20 +20,33 @@ import java.security.Principal;
 
 /**
  * A representation of an individual.
+ * @param <I> The type of user ID.
  * @author Garret Wilson
  */
 public interface User<I> extends IDed<I>, Principal {
 
-	/** @return The first name of the user. */
+	/**
+	 * Returns the first name of the user.
+	 * @return The first name of the user.
+	 */
 	public String getFirstName();
 
-	/** @return The last name of the user. */
+	/**
+	 * Returns the last name of the user.
+	 * @return The last name of the user.
+	 */
 	public String getLastName();
 
-	/** @return The composite name of the user. */
+	/**
+	 * Returns the composite name of the user.
+	 * @return The composite name of the user.
+	 */
 	public String getFullName();
 
-	/** @return The password of the user. */
+	/**
+	 * Returns the password of the user.
+	 * @return The password of the user.
+	 */
 	public char[] getPassword();
 
 }

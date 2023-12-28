@@ -22,7 +22,10 @@ import java.io.*;
  * Utility methods for working with {@link Writer} instances.
  * @author Garret Wilson
  */
-public class Writers {
+public final class Writers {
+
+	private Writers() {
+	}
 
 	/**
 	 * Copies the contents of a reader to a writer. Neither reader nor writer is closed after the operation.
@@ -37,6 +40,5 @@ public class Writers {
 			writer.write(buffer, 0, charactersRead); //write the characters to the output stream
 		}
 	}
-
 
 }

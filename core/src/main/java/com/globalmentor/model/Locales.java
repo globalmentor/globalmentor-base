@@ -32,6 +32,9 @@ import static java.util.function.Predicate.*;
  */
 public final class Locales {
 
+	private Locales() {
+	}
+
 	/** The character used to separate components in a locale: '_'. */
 	public static final char LOCALE_SEPARATOR = '_';
 

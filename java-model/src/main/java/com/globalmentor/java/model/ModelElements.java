@@ -35,7 +35,10 @@ import javax.lang.model.util.*;
  * @see Types
  * @see ModelTypes
  */
-public class ModelElements {
+public final class ModelElements {
+
+	private ModelElements() {
+	}
 
 	/**
 	 * Finds a type element from a class if the type element is uniquely determinable in the environment.

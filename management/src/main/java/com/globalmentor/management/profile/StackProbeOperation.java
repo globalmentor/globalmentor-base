@@ -43,19 +43,26 @@ import com.globalmentor.model.*;
 public class StackProbeOperation extends AbstractReadWriteLockOperation {
 
 	/** The running count of class+method names. */
+	@SuppressWarnings("this-escape") //`this` provides access to the locks, which have been initialized; decorator class is trusted not to circumvent interface
 	private final ReadWriteLockMap<String, Count> classMethodCounts = new DecoratorReadWriteLockMap<String, Count>(new HashMap<String, Count>(), this);
 
 	/** The MX bean for analyzing current threads. */
 	private final ThreadMXBean threadMXBean = ManagementFactory.getThreadMXBean();
 
 	/** The package names to be ignored; these packages include child packages. */
+	@SuppressWarnings("this-escape") //`this` provides access to the locks, which have been initialized; decorator class is trusted not to circumvent interface
 	private final ReadWriteLockSet<String> ignoreParentPackageNames = new DecoratorReadWriteLockSet<String>(new HashSet<String>(), this);
 
 	/** The explicit package names to be included. */
+	@SuppressWarnings("this-escape") //`this` provides access to the locks, which have been initialized; decorator class is trusted not to circumvent interface
 	private final ReadWriteLockSet<String> includePackageNames = new DecoratorReadWriteLockSet<String>(new HashSet<String>(), this);
 
 	/** The thread-safe map of line numbers for each class method found. */
 	private final Map<String, Set<Integer>> classMethodLineNumbers = new ConcurrentHashMap<>();
+
+	/** Constructor. */
+	public StackProbeOperation() {
+	}
 
 	/**
 	 * Adds a package to be ignored. Child packages will also be ignored.
@@ -151,7 +158,10 @@ public class StackProbeOperation extends AbstractReadWriteLockOperation {
 		}
 	}
 
-	/** @return A list of collected class+method names and their associated counts, in the order of highest to lowest occurrence. */
+	/**
+	 * Returns a list of collected class+method names and their associated counts, in the order of highest to lowest occurrence.
+	 * @return A list of collected class+method names and their associated counts, in the order of highest to lowest occurrence.
+	 */
 	public synchronized List<Map.Entry<String, Count>> getSortedStackProbeCounts() {
 		final List<Map.Entry<String, Count>> stackProbeCounts;
 		readLock().lock();

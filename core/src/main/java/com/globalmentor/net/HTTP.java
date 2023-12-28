@@ -36,7 +36,10 @@ import static java.nio.charset.StandardCharsets.*;
  * @see <a href="https://www.rfc-editor.org/rfc/rfc9112.html">RFC 9112: HTTP/1.1</a>
  * @author Garret Wilson
  */
-public class HTTP {
+public final class HTTP {
+
+	private HTTP() {
+	}
 
 	/** The HTTP scheme identifier. */
 	public static final String HTTP_URI_SCHEME = "http";

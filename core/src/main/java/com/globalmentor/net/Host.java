@@ -38,7 +38,10 @@ public class Host extends DefaultComparableNamed<String> {
 	/** The port of the host, or <code>-1</code> if no port is specified. */
 	private final int port;
 
-	/** @return The port of the host, or <code>-1</code> if no port is specified. */
+	/**
+	 * Returns The port of the host.
+	 * @return The port of the host, or <code>-1</code> if no port is specified.
+	 */
 	public int getPort() {
 		return port;
 	}
@@ -101,8 +104,7 @@ public class Host extends DefaultComparableNamed<String> {
 	/**
 	 * If <code>object</code> is another <code>Host</code>, compares the hostname and port.
 	 * @param object The object with which to compare this host; should be another <code>Host</code>.
-	 * @return <code>true</code> if this host equals a host specified in
-		<code>object</code>.
+	 * @return <code>true</code> if this host equals a host specified in <code>object</code>.
 	 * @see #getName()
 	 * @see #getPort()
 	 */

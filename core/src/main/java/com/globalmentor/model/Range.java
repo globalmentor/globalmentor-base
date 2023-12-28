@@ -32,7 +32,10 @@ public class Range<T extends Comparable<? super T>> implements Comparable<Range<
 	/** The lower bound of the range, inclusive, or <code>null</code> for infinity. */
 	private final T lowerBound;
 
-	/** @return The lower bound of the range, inclusive, or <code>null</code> for infinity. */
+	/**
+	 * Returns the lower bound of the range.
+	 * @return The lower bound of the range, inclusive, or <code>null</code> for infinity.
+	 */
 	public T getLowerBound() {
 		return lowerBound;
 	}
@@ -40,7 +43,10 @@ public class Range<T extends Comparable<? super T>> implements Comparable<Range<
 	/** The upper bound of the range, inclusive, or <code>null</code> for infinity. */
 	private final T upperBound;
 
-	/** @return The upper bound of the range, inclusive, or <code>null</code> for infinity. */
+	/**
+	 * The upper bound of the range, inclusive.
+	 * @return The upper bound of the range, inclusive, or <code>null</code> for infinity.
+	 */
 	public T getUpperBound() {
 		return upperBound;
 	}

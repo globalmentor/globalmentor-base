@@ -64,8 +64,11 @@ import java.util.concurrent.CopyOnWriteArraySet;
  * @author Garret Wilson
  * @see javax.swing.event.EventListenerList
  */
-public class EventListenerManager //TODO fix to not use WeakHashSet, which isn't a good idea, as anonymous listeners may not be referenced after being added to this class
-{
+public class EventListenerManager { //TODO fix to not use WeakHashSet, which isn't a good idea, as anonymous listeners may not be referenced after being added to this class
+
+	/** Constructor. */
+	public EventListenerManager() {
+	}
 
 	//Rather than synchronizing on the map, each method that accesses the map is
 	//	synchronized because the map can be created and destroyed.

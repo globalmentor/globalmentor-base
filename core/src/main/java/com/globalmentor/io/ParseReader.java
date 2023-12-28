@@ -25,13 +25,15 @@ import com.globalmentor.java.Characters;
  * @author Garret Wilson
  */
 @Deprecated
-public class ParseReader extends ProcessingBufferedReader //TODO clean up and undeprecate
-{
+public class ParseReader extends ProcessingBufferedReader { //TODO clean up and undeprecate
 
 	/** The source of the data (e.g. a String, File, or URL). */
 	private Object SourceObject = null;
 
-	/** @return The source of the data, if one has been assigned. */
+	/**
+	 * Returns the source of the data.
+	 * @return The source of the data, if one has been assigned.
+	 */
 	public Object getSourceObject() {
 		return SourceObject;
 	}
@@ -40,7 +42,7 @@ public class ParseReader extends ProcessingBufferedReader //TODO clean up and un
 	 * Sets the source of the reader's data.
 	 * @param newSourceObject The new source of the reader's data.
 	 */
-	public void setSourceObject(final Object newSourceObject) {
+	public final void setSourceObject(final Object newSourceObject) {
 		SourceObject = newSourceObject;
 	}
 
@@ -53,7 +55,7 @@ public class ParseReader extends ProcessingBufferedReader //TODO clean up and un
 	 * @return The name of this reader, if one has been assigned, else the empty string.
 	 * @see #getSourceObject
 	 */
-	public String getName() {
+	public final String getName() {
 		if(Name != null) //if we have a name
 			return Name; //return the name
 		else if(getSourceObject() != null) //if we don't have a name but have a source object
@@ -77,6 +79,7 @@ public class ParseReader extends ProcessingBufferedReader //TODO clean up and un
 	private long LineIndex = 0;
 
 	/**
+	 * Returns the index of the line of the character at the specified index in the buffer.
 	 * @param bufferIndex The buffer index of specified character.
 	 * @return The index of the line of the character at the specified index in the buffer.
 	 * @see #getCharIndex
@@ -87,6 +90,7 @@ public class ParseReader extends ProcessingBufferedReader //TODO clean up and un
 	}
 
 	/**
+	 * Returns the index of the line of the character last read.
 	 * @return The index of the line of the character last read, or 0 if no characters have been read.
 	 * @see #getCharIndex
 	 */
@@ -107,6 +111,7 @@ public class ParseReader extends ProcessingBufferedReader //TODO clean up and un
 	private long CharIndex = -1;
 
 	/**
+	 * Returns the character index of the character at the specified index in the buffer.
 	 * @param bufferIndex The buffer index of the specified character.
 	 * @return The character index of the character at the specified index in the buffer.
 	 * @see #getLineIndex
@@ -117,6 +122,7 @@ public class ParseReader extends ProcessingBufferedReader //TODO clean up and un
 	}
 
 	/**
+	 * Returns the index of the character last read.
 	 * @return The index of the character last read, or -1 if no characters have been read.
 	 * @see #getLineIndex
 	 */
@@ -143,6 +149,7 @@ public class ParseReader extends ProcessingBufferedReader //TODO clean up and un
 	private int LastPositionIndex;
 
 	/**
+	 * Returns the index of the last time the line and character indexes were updated.
 	 * @return The index of the last time the line and character indexes were updated.
 	 * @see #getLineIndex
 	 * @see #getCharIndex
@@ -177,6 +184,7 @@ public class ParseReader extends ProcessingBufferedReader //TODO clean up and un
 	 * @param reader The reader that contains the data.
 	 * @param name The name of the reader.
 	 */
+	@SuppressWarnings("this-escape")
 	public ParseReader(final Reader reader, final String name) {
 		this(reader); //do the default constructing
 		setName(name); //set the name of the reader
@@ -197,6 +205,7 @@ public class ParseReader extends ProcessingBufferedReader //TODO clean up and un
 	 * @param name The name of the reader.
 	 * @throws IOException Thrown when an I/O error occurs.
 	 */
+	@SuppressWarnings("this-escape")
 	public ParseReader(final String inString, final String name) throws IOException {
 		super(inString); //construct the parent class
 		setSourceObject(inString); //show where we're getting the data from
@@ -223,6 +232,7 @@ public class ParseReader extends ProcessingBufferedReader //TODO clean up and un
 	 * @throws IOException Thrown if <code>prereadCharacters</code> is too long for the buffer.
 	 * @see ProcessingBufferedReader
 	 */
+	@SuppressWarnings("this-escape")
 	public ParseReader(final Reader inReader, final Object sourceObject) throws IOException {
 		super(inReader); //allow the super class to do the constructing
 		setSourceObject(sourceObject); //make a record of the object representing the location of the data
@@ -237,6 +247,7 @@ public class ParseReader extends ProcessingBufferedReader //TODO clean up and un
 	 * @throws IOException Thrown if <code>prereadCharacters</code> is too long for the buffer.
 	 * @see ProcessingBufferedReader
 	 */
+	@SuppressWarnings("this-escape")
 	public ParseReader(final Reader inReader, final StringBuffer prereadCharacters, final Object sourceObject) throws IOException {
 		super(inReader, prereadCharacters); //allow the super class to do the constructing
 		setSourceObject(sourceObject); //make a record of the object representing the location of the data

@@ -27,7 +27,10 @@ import javax.annotation.*;
  * @author Garret Wilson
  * @see Throwable
  */
-public class Throwables {
+public final class Throwables {
+
+	private Throwables() {
+	}
 
 	/**
 	 * Clears the stack trace elements of an existing throwable.

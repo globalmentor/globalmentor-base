@@ -33,7 +33,10 @@ public class InputStreamDecorator<I extends InputStream> extends InputStream {
 	/** The input stream being decorated. */
 	private I inputStream;
 
-	/** @return The input stream being decorated, or <code>null</code> if it has been released after this stream was closed. */
+	/**
+	 * Returns the input stream being decorated.
+	 * @return The input stream being decorated, or <code>null</code> if it has been released after this stream was closed.
+	 */
 	protected I getInputStream() {
 		return inputStream;
 	}

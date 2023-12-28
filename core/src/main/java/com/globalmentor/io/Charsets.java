@@ -31,7 +31,10 @@ import javax.annotation.*;
  * @see <a href="http://www.w3.org/TR/REC-xml/#sec-guessing">XML 1.0 Fourth Edition: Autodetection of Character Encodings (Non-Normative)</a>
  * @see StandardCharsets
  */
-public class Charsets {
+public final class Charsets {
+
+	private Charsets() {
+	}
 
 	/** The canonical name of the eight-bit UTF-8 charset (to which the big-endian/little-endian byte order does not apply). */
 	public static final String UTF_8_NAME = "UTF-8";

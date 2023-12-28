@@ -22,7 +22,10 @@ import com.globalmentor.java.Enums;
  * Constants and utilities for lexical analysis.
  * @author Garret Wilson
  */
-public class Lex {
+public final class Lex {
+
+	private Lex() {
+	}
 
 	/**
 	 * Returns a serialized form of an identifier. Usually the identifier is an {@link Enum}, resulting in a special token serialized form.

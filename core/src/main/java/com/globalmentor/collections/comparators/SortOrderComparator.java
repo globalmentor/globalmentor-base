@@ -26,7 +26,10 @@ import java.util.Comparator;
  */
 public interface SortOrderComparator<T> extends Comparator<T> {
 
-	/** @return The order in which to perform comparisons. */
+	/**
+	 * Returns the sort order.
+	 * @return The order in which to perform comparisons.
+	 */
 	public SortOrder getSortOrder();
 
 }

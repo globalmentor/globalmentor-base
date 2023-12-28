@@ -23,7 +23,7 @@ import static java.util.Objects.*;
 
 /**
  * An abstract base implementation of a suffix tree for a sequence of elements (most commonly characters).
- * 
+ * @param <E> The type of suffix tree edge.
  * @author Garret Wilson
  */
 public abstract class AbstractSuffixTree<E extends SuffixTree.Edge> implements SuffixTree {
@@ -155,6 +155,7 @@ public abstract class AbstractSuffixTree<E extends SuffixTree.Edge> implements S
 	 * Constructor.
 	 * @param explicit Whether the suffix tree is explicit, with every suffix ending on a leaf node.
 	 */
+	@SuppressWarnings("this-escape")
 	protected AbstractSuffixTree(final boolean explicit) {
 		this.explicit = explicit;
 		addNode(); //create the root node

@@ -32,7 +32,10 @@ import com.globalmentor.text.ASCII;
  * Utilities for working with {@link Duration}.
  * @author Garret Wilson
  */
-public class Durations {
+public final class Durations {
+
+	private Durations() {
+	}
 
 	/**
 	 * Parses a duration as a user might enter it. This might be the full ISO 8601 form as accepted by {@link Duration#parse(CharSequence)} (e.g.

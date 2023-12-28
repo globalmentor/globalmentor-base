@@ -31,7 +31,10 @@ public final class MutableReference<T> {
 
 	private T object;
 
-	/** @return The referenced object. */
+	/**
+	 * Returns the referenced object.
+	 * @return The referenced object, which may be <code>null</code>.
+	 */
 	@Nullable
 	public T get() {
 		return object;
@@ -58,7 +61,10 @@ public final class MutableReference<T> {
 		this.object = object;
 	}
 
-	/** @return <code>true</code> if the object being referenced is not equal to <code>null</code>. */
+	/**
+	 * Returns whether there is an object being referenced.
+	 * @return <code>true</code> if the object being referenced is not equal to <code>null</code>.
+	 */
 	public boolean isPresent() {
 		return get() != null;
 	}

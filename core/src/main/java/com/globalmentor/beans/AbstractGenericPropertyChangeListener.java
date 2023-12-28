@@ -25,6 +25,10 @@ import java.beans.PropertyChangeEvent;
  */
 public abstract class AbstractGenericPropertyChangeListener<V> implements GenericPropertyChangeListener<V> {
 
+	/** Constructor */
+	protected AbstractGenericPropertyChangeListener() {
+	}
+
 	/**
 	 * Called when a bound property is changed. This not-generics version calls the generic version, creating a new event if necessary. No checks are made at
 	 * compile time to ensure the given event actually supports the given generic type.

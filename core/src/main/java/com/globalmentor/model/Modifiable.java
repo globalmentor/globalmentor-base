@@ -27,7 +27,10 @@ public interface Modifiable {
 	/** The name of the modified property, if it is bound in any modifiable object. */
 	public static final String MODIFIED_PROPERTY = getPropertyName(Modifiable.class, "modified");
 
-	/** @return Whether the object has been modified. */
+	/**
+	 * Indicates whether the object has been modified.
+	 * @return Whether the object has been modified.
+	 */
 	public boolean isModified();
 
 	/**

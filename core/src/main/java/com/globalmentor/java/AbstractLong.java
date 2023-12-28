@@ -28,6 +28,10 @@ public abstract class AbstractLong<L extends Number> extends Number implements C
 
 	private static final long serialVersionUID = -2681685252069816876L;
 
+	/** Constructor. */
+	protected AbstractLong() {
+	}
+
 	/** {@inheritDoc} This version delegates to {@link #longValue()}. */
 	@Override
 	public int intValue() {

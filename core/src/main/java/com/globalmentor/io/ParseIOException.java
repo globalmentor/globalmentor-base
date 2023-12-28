@@ -33,7 +33,8 @@ public class ParseIOException extends IOException {
 	private final long lineIndex;
 
 	/**
-	 * @return The index of the line on which the error occurred, or -1 if the line index is not known..
+	 * Returns the index of the line on which the error occurred.
+	 * @return The index of the line on which the error occurred, or -1 if the line index is not known.
 	 * @see #getCharIndex()
 	 */
 	public long getLineIndex() {
@@ -41,13 +42,14 @@ public class ParseIOException extends IOException {
 	}
 
 	/**
-	 * The index of the character at which the error occurred on the current line, or -1 if the character index is not known..
+	 * The index of the character at which the error occurred on the current line, or -1 if the character index is not known.
 	 * @see #lineIndex
 	 */
 	private final long charIndex;
 
 	/**
-	 * @return The index of the character at which the error occurred on the current line, or -1 if the character index is not known..
+	 * Returns the index of the character at which the error occurred on the current line.
+	 * @return The index of the character at which the error occurred on the current line, or -1 if the character index is not known.
 	 * @see #getLineIndex()
 	 */
 	public long getCharIndex() {
@@ -57,7 +59,10 @@ public class ParseIOException extends IOException {
 	/** The name of the source of this exception, such as a filename, or <code>null</code> if not known. */
 	private String sourceName = "";
 
-	/** @return The name of the source of this exception, such as a filename, or <code>null</code> if not known. */
+	/**
+	 * Returns the name of the source of this exception, such as a filename.
+	 * @return The name of the source of this exception, such as a filename, or <code>null</code> if not known.
+	 */
 	public String getSourceName() {
 		return sourceName;
 	}

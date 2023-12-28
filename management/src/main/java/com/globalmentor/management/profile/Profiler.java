@@ -29,7 +29,10 @@ import java.time.Duration;
  * 
  * @author Garret Wilson
  */
-public class Profiler {
+public final class Profiler {
+
+	private Profiler() {
+	}
 
 	/** The operation manager for managing probe operations. */
 	private static final OperationManager probeOperationManager = new OperationManager();
@@ -37,7 +40,10 @@ public class Profiler {
 	/** The operation to use for probing the stack, or <code>null</code> if no stack probe operation has been specified. */
 	private static StackProbeOperation stackProbeOperation = null;
 
-	/** @return The current configured stack probe operation, or <code>null</code> if no stack probe operation is configured. */
+	/**
+	 * Returns the current configured stack probe operation.
+	 * @return The current configured stack probe operation, or <code>null</code> if no stack probe operation is configured.
+	 */
 	public static synchronized StackProbeOperation getStackProbeOperation() {
 		return stackProbeOperation;
 	}

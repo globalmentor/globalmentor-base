@@ -26,6 +26,10 @@ import java.beans.PropertyVetoException;
  */
 public abstract class AbstractSequenceTask extends AbstractTask implements SequenceTask {
 
+	/** Constructor. */
+	protected AbstractSequenceTask() {
+	}
+
 	/** The index in the sequence, or -1 if the sequence has not started. */
 	private int sequenceIndex = -1;
 

@@ -18,6 +18,8 @@ package com.globalmentor.text;
 
 import static com.globalmentor.java.Conditions.*;
 
+import java.util.*;
+
 /**
  * An unchecked illegal argument exception to indicate that an argument was not in the correct format or did not have the correct checksums.
  * @author Garret Wilson
@@ -27,19 +29,44 @@ public class ArgumentSyntaxException extends IllegalArgumentException {
 	private static final long serialVersionUID = 1L;
 
 	/** The input, or <code>null</code> if the input is not known. */
-	private final CharSequence input;
+	private final String input;
 
-	/** @return The input, or <code>null</code> if the input is not known. */
-	public CharSequence getInput() {
+	/**
+	 * @return The input, or <code>null</code> if the input is not known.
+	 * @deprecated to be removed in favor of {@link #findInput()}.
+	 */
+	@Deprecated(forRemoval = true)
+	public String getInput() {
 		return input;
+	}
+
+	/**
+	 * Returns the input if known.
+	 * @return The input if known.
+	 */
+	public Optional<String> findInput() {
+		return Optional.ofNullable(input);
 	}
 
 	/** The index into the input of the position at which the error occurred, or -1 if the position is not known. */
 	private final int index;
 
-	/** @return The index into the input of the position at which the error occurred, or -1 if the position is not known. */
+	/**
+	 * Returns the index into the input of the position at which the error occurred.
+	 * @return The index into the input of the position at which the error occurred, or -1 if the position is not known.
+	 * @deprecated to be removed in favor of {@link #findIndex()}.
+	 */
+	@Deprecated(forRemoval = true)
 	public int getIndex() {
 		return index;
+	}
+
+	/**
+	 * Returns the index into the input of the position at which the error occurred.
+	 * @return The index into the input of the position at which the error occurred if known.
+	 */
+	public OptionalInt findIndex() {
+		return index == -1 ? OptionalInt.empty() : OptionalInt.of(index);
 	}
 
 	/**
@@ -137,7 +164,7 @@ public class ArgumentSyntaxException extends IllegalArgumentException {
 	 */
 	public ArgumentSyntaxException(final String message, final Throwable cause, final CharSequence input, final int index) {
 		super(createMessage(message, cause, input, index), cause); //construct the parent class with the message and the cause
-		this.input = input; //save the input, if any
+		this.input = input != null ? input.toString() : null; //save the input, if any, as a string
 		this.index = index; //save the index		
 	}
 

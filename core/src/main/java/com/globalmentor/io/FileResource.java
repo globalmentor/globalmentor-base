@@ -34,7 +34,10 @@ public class FileResource extends DefaultResource {
 	/** The file this resource represents. */
 	private final File file;
 
-	/** @return The file this resource represents. */
+	/**
+	 * Returns the file this resource represents.
+	 * @return The file this resource represents.
+	 */
 	public File getFile() {
 		return file;
 	}

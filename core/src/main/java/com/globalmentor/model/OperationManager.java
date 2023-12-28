@@ -42,7 +42,10 @@ public class OperationManager {
 	/** The queue for scheduling operations. */
 	private final BlockingQueue<ScheduledOperation> scheduledOperationQueue;
 
-	/** @return The queue for scheduling operations. */
+	/**
+	 * Returns the queue for scheduling operations.
+	 * @return The queue for scheduling operations.
+	 */
 	protected BlockingQueue<ScheduledOperation> getScheduledOperationQueue() {
 		return scheduledOperationQueue;
 	}
@@ -50,7 +53,10 @@ public class OperationManager {
 	/** The worker that executes scheduled operations. */
 	private final Runnable scheduledOperationWorker;
 
-	/** @return The worker that executes scheduled operations. */
+	/**
+	 * Returns the worker that executes scheduled operations.
+	 * @return The worker that executes scheduled operations.
+	 */
 	protected Runnable getScheduledOperationWorker() {
 		return scheduledOperationWorker;
 	}
@@ -58,7 +64,10 @@ public class OperationManager {
 	/** The thread for asynchronous execution. */
 	private final Thread executionThread;
 
-	/** @return The thread for asynchronous execution. */
+	/**
+	 * Returns the thread for asynchronous execution.
+	 * @return The thread for asynchronous execution.
+	 */
 	protected Thread getExecutionThread() {
 		return executionThread;
 	}
@@ -125,7 +134,10 @@ public class OperationManager {
 		/** The scheduled operation. */
 		private final Operation operation;
 
-		/** @return The scheduled operation. */
+		/**
+		 * Returns the scheduled operation.
+		 * @return The scheduled operation.
+		 */
 		public Operation getOperation() {
 			return operation;
 		}
@@ -133,7 +145,10 @@ public class OperationManager {
 		/** The time the operation was scheduled. */
 		private Instant scheduledTime;
 
-		/** @return The time the operation was scheduled. */
+		/**
+		 * Returns the time the operation was scheduled.
+		 * @return The time the operation was scheduled.
+		 */
 		public Instant getScheduledTime() {
 			return scheduledTime;
 		}
@@ -150,7 +165,10 @@ public class OperationManager {
 		/** The delay past the scheduled time before the operation should begin (which may be 0). */
 		private final Duration delayDuration;
 
-		/** @return The delay past the scheduled time before the operation should begin (which may be 0). */
+		/**
+		 * Returns the delay past the scheduled time before the operation should begin (which may be 0).
+		 * @return The delay past the scheduled time before the operation should begin (which may be 0).
+		 */
 		public Duration getDelayDuration() {
 			return delayDuration;
 		}
@@ -158,7 +176,10 @@ public class OperationManager {
 		/** Whether this operation should be repeated. */
 		private final boolean repeated;
 
-		/** @return Whether this operation should be repeated. */
+		/**
+		 * Returns whether this operation should be repeated.
+		 * @return Whether this operation should be repeated.
+		 */
 		public boolean isRepeated() {
 			return repeated;
 		}

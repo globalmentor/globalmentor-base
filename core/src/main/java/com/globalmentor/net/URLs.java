@@ -27,7 +27,10 @@ import com.globalmentor.io.*;
  * @author Garret Wilson
  * @see URL
  */
-public class URLs {
+public final class URLs {
+
+	private URLs() {
+	}
 
 	/**
 	 * Retrieves a <code>File</code> representing the file of the URL.

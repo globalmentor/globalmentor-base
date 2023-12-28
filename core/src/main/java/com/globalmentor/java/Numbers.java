@@ -23,7 +23,10 @@ import java.math.BigInteger;
  * Utilities for manipulating numbers.
  * @author Garret Wilson
  */
-public class Numbers {
+public final class Numbers {
+
+	private Numbers() {
+	}
 
 	/** The double value representing 1/3. */
 	public static final double ONE_THIRD_DOUBLE = 1.0d / 3.0d;

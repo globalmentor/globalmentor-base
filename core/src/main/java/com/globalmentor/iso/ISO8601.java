@@ -22,7 +22,10 @@ import com.globalmentor.java.Characters;
  * Definitions related to ISO 8601-2004, "Data elements and interchange formats — Information interchange — Representation of dates and times".
  * @author Garret Wilson
  */
-public class ISO8601 {
+public final class ISO8601 {
+
+	private ISO8601() {
+	}
 
 	/** The delimiter (for "period") that introduces a duration. */
 	public static final char PERIOD_BEGIN = 'P';

@@ -22,7 +22,10 @@ import java.lang.reflect.UndeclaredThrowableException;
  * Utility methods for threads.
  * @author Garret Wilson
  */
-public class Threads {
+public final class Threads {
+
+	private Threads() {
+	}
 
 	/**
 	 * Joins a thread, ignoring any interruptions. If any interruptions occur, they will be ignored and joining will be attempted again.

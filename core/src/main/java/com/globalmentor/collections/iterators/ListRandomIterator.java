@@ -32,6 +32,7 @@ import com.globalmentor.model.Filter;
  * <p>
  * This iterator allows filtering of the returned objects.
  * </p>
+ * @param <E> The type of elements returned by this iterator.
  * @author Garret Wilson
  */
 public class ListRandomIterator<E> implements Iterator<E> { //TODO fix setRandomOrder() 
@@ -45,7 +46,10 @@ public class ListRandomIterator<E> implements Iterator<E> { //TODO fix setRandom
 	/** The filter used to exclude items from the iterator. */
 	private Filter<E> filter;
 
-	/** @return The filter used to exclude items from the iterator. */
+	/**
+	 * Returns the filter used to exclude items from the iterator.
+	 * @return The filter used to exclude items from the iterator.
+	 */
 	public Filter<E> getFilter() {
 		return filter;
 	}
@@ -160,6 +164,10 @@ public class ListRandomIterator<E> implements Iterator<E> { //TODO fix setRandom
 	 * @author Garret Wilson
 	 */
 	protected class IndexFilter implements Filter<Integer> {
+
+		/** Constructor. */
+		public IndexFilter() {
+		}
 
 		/**
 		 * Determines whether a given object should pass through the filter or be filtered out. An integer object will be filtered out if the object at that index

@@ -27,7 +27,10 @@ public class Fraction<N extends Number, D extends Number> {
 	/** The numerator of the fraction. */
 	private final N numerator;
 
-	/** @return The numerator of the fraction. */
+	/**
+	 * Returns the numerator of the fraction.
+	 * @return The numerator of the fraction.
+	 */
 	public N getNumerator() {
 		return numerator;
 	}
@@ -35,7 +38,10 @@ public class Fraction<N extends Number, D extends Number> {
 	/** The denominator of the fraction. */
 	private final D denominator;
 
-	/** @return The denominator of the fraction. */
+	/**
+	 * Returns the denominator of the fraction.
+	 * @return The denominator of the fraction.
+	 */
 	public D getDenominator() {
 		return denominator;
 	}
@@ -50,7 +56,7 @@ public class Fraction<N extends Number, D extends Number> {
 		this.denominator = denominator;
 	}
 
-	/** @return A string representation of the fraction in the form <var>numerator</var>/<var>denominator</var>. */
+	/** @return A string representation of the fraction in the form <code><var>numerator</var>/<var>denominator</var></code>. */
 	public String toString() {
 		return getNumerator().toString() + "/" + getDenominator().toString(); //don't format the numbers; this general method lets each number format itself
 	}

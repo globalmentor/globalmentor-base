@@ -51,7 +51,10 @@ public class BoundPropertyObject implements PropertyBindable, PropertyConstraina
 	/** Lazily-created support that keeps track of {@link PropertyChangeListener}s that have been registered, and handles firing of events. */
 	private PropertyChangeSupport propertyChangeSupport = null;
 
-	/** @return Support for property change event management, creating support if necessary. */
+	/**
+	 * Return support for property change event management, creating support if necessary.
+	 * @return Support for property change event management, creating support if necessary.
+	 */
 	protected synchronized PropertyChangeSupport getPropertyChangeSupport() {
 		if(propertyChangeSupport == null) { //if we don't have property change support, yet
 			propertyChangeSupport = new PropertyChangeSupport(this); //create new property change support				
@@ -62,7 +65,10 @@ public class BoundPropertyObject implements PropertyBindable, PropertyConstraina
 	/** Lazily-created support that keeps track of {@link VetoableChangeListener}s that have been registered, and handles firing of events. */
 	private VetoableChangeSupport vetoableChangeSupport = null;
 
-	/** @return Support for vetoable change management, creating support if necessary. */
+	/**
+	 * Returns support for vetoable change management, creating support if necessary.
+	 * @return Support for vetoable change management, creating support if necessary.
+	 */
 	protected synchronized VetoableChangeSupport getVetoableChangeSupport() {
 		if(vetoableChangeSupport == null) { //if we don't have vetoable change support, yet
 			vetoableChangeSupport = new VetoableChangeSupport(this); //create new vetoable change support				
@@ -73,7 +79,10 @@ public class BoundPropertyObject implements PropertyBindable, PropertyConstraina
 	/** A lazily-created property change listener to repeat copies of events received, using this object as the source. */
 	private PropertyChangeListener repeatPropertyChangeListener = null;
 
-	/** @return A property change listener to repeat copies of events received, using this object as the source. */
+	/**
+	 * Returns a property change listener to repeat copies of events received, using this object as the source.
+	 * @return A property change listener to repeat copies of events received, using this object as the source.
+	 */
 	protected synchronized PropertyChangeListener getRepeatPropertyChangeListener() { //TODO update to work with PropertyValueChangeEvent	//TODO synchronize on something else
 		if(repeatPropertyChangeListener == null) { //if we have not yet created the repeater property change listener
 			repeatPropertyChangeListener = new PropertyChangeListener() { //create a listener to listen for a changing property value
@@ -90,7 +99,10 @@ public class BoundPropertyObject implements PropertyBindable, PropertyConstraina
 	/** A lazily-created property change listener to forward along events received unmodified. */
 	private PropertyChangeListener forwardPropertyChangeListener = null;
 
-	/** @return A lazily-created property change listener to forward along events received unmodified. */
+	/**
+	 * returns a lazily-created property change listener to forward along events received unmodified.
+	 * @return A lazily-created property change listener to forward along events received unmodified.
+	 */
 	protected synchronized PropertyChangeListener getForwardPropertyChangeListener() { //TODO synchronize on something else
 		if(forwardPropertyChangeListener == null) { //if we have not yet created the forward property change listener
 			forwardPropertyChangeListener = new PropertyChangeListener() { //create a listener to listen for a changing property value
@@ -106,7 +118,10 @@ public class BoundPropertyObject implements PropertyBindable, PropertyConstraina
 	/** A lazily-created vetoable change listener to repeat copies of events received, using this object as the source. */
 	private VetoableChangeListener repeatVetoableChangeListener = null;
 
-	/** @return A vetoable change listener to repeat copies of events received, using this object as the source. */
+	/**
+	 * Returns a vetoable change listener to repeat copies of events received, using this object as the source.
+	 * @return A vetoable change listener to repeat copies of events received, using this object as the source.
+	 */
 	protected synchronized VetoableChangeListener getRepeatVetoableChangeListener() { //TODO synchronize on something else
 		if(repeatVetoableChangeListener == null) { //if we have not yet created the repeater vetoable change listener
 			repeatVetoableChangeListener = new VetoableChangeListener() { //create a listener to listen for a changing property value

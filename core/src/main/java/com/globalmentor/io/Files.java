@@ -482,6 +482,7 @@ public class Files {
 	}
 
 	/**
+	 * Returns the user's current directory.
 	 * @return The user's current directory.
 	 * @throws SecurityException Thrown if we don't have permission to access the user's directory.
 	 * @see System

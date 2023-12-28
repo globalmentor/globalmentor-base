@@ -24,7 +24,10 @@ import com.globalmentor.net.MediaType;
  * Utilities and constants for working with archive content.
  * @author Garret Wilson
  */
-public class Archive {
+public final class Archive {
+
+	private Archive() {
+	}
 
 	//media types
 

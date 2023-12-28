@@ -26,7 +26,10 @@ import com.globalmentor.net.MediaType;
  * Utilities and constants for working with video content.
  * @author Garret Wilson
  */
-public class Video {
+public final class Video {
+
+	private Video() {
+	}
 
 	//media types
 

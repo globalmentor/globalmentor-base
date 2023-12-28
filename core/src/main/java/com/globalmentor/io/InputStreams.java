@@ -31,7 +31,10 @@ import com.globalmentor.java.Bytes;
  * Class to manipulate input streams.
  * @author Garret Wilson
  */
-public class InputStreams {
+public final class InputStreams {
+
+	private InputStreams() {
+	}
 
 	/** The shared instance of an input stream with no content. */
 	public static final InputStream EMPTY_INPUT_STREAM = new EmptyInputStream();

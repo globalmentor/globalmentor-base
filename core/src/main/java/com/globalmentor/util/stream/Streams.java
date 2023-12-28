@@ -29,7 +29,10 @@ import javax.annotation.*;
  * Utilities for working with {@link Stream}s.
  * @author Garret Wilson
  */
-public class Streams {
+public final class Streams {
+
+	private Streams() {
+	}
 
 	/**
 	 * Reduction operator to require a stream to contain at most one element.

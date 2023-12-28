@@ -20,7 +20,10 @@ package com.globalmentor.java;
  * Utilities for manipulating float objects and values.
  * @author Garret Wilson
  */
-public class Floats {
+public final class Floats {
+
+	private Floats() {
+	}
 
 	/**
 	 * Checks to make sure that a given value is within the given range.

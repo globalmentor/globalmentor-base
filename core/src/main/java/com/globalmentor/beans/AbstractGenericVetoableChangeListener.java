@@ -28,6 +28,10 @@ import static com.globalmentor.beans.AbstractGenericPropertyChangeListener.getGe
  */
 public abstract class AbstractGenericVetoableChangeListener<V> implements GenericVetoableChangeListener<V> {
 
+	/** Constructor. */
+	protected AbstractGenericVetoableChangeListener() {
+	}
+
 	/**
 	 * Called when a constrained property is changed. This not-generics version calls the generic version, creating a new event if necessary.
 	 * @param propertyChangeEvent An event object describing the event source, the property that is changing, and its old and new values.

@@ -81,7 +81,10 @@ public class W3CDateFormat extends SimpleDateFormat {
 	/** The style to use for formatting. */
 	private final Style style;
 
-	/** @return The style to use for formatting. */
+	/**
+	 * Returns the style to use for formatting.
+	 * @return The style to use for formatting.
+	 */
 	protected Style getStyle() {
 		return style;
 	}

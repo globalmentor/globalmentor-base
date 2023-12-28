@@ -29,7 +29,10 @@ import com.globalmentor.java.Objects;
  * Utilities for formatting text.
  * @author Garret Wilson
  */
-public class TextFormatter {
+public final class TextFormatter {
+
+	private TextFormatter() {
+	}
 
 	/**
 	 * Appends the string representations of the given items separated by a {@value Characters#COMMA_CHAR}. <code>null</code> objects are represented by

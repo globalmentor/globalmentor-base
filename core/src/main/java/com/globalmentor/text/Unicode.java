@@ -22,7 +22,10 @@ import com.globalmentor.java.Integers;
  * General information and utilities for working with Unicode.
  * @author Garret Wilson
  */
-public class Unicode {
+public final class Unicode {
+
+	private Unicode() {
+	}
 
 	/**
 	 * A map of Unicode characters stored at Adobe Symbol font indexes. Conversion from the symbol font to Unicode is be performed using:

@@ -20,6 +20,7 @@ import java.util.Objects;
 
 /**
  * A default implementation of a named object.
+ * @param <N> The type of name.
  * @author Garret Wilson
  */
 public class DefaultNamed<N> implements Named<N> {

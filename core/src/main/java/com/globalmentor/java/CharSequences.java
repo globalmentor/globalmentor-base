@@ -42,7 +42,10 @@ import com.globalmentor.text.Case;
  * @see StringBuilders
  * @author Garret Wilson
  */
-public class CharSequences {
+public final class CharSequences {
+
+	private CharSequences() {
+	}
 
 	/**
 	 * Checks the given bounds of a character sequence.

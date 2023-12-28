@@ -21,12 +21,16 @@ package com.globalmentor.model;
  * <p>
  * A name is considered to be semantically similar to an id, which may or may not be for human consumption, but has weaker unique constraints.
  * </p>
+ * @param <N> The type of name.
  * @author Garret Wilson
  * @see Labeled
  */
 public interface Named<N> {
 
-	/** @return The name of the object, or <code>null</code> if the object has no name. */
+	/**
+	 * Returns the name of the object.
+	 * @return The name of the object, or <code>null</code> if the object has no name.
+	 */
 	public N getName();
 
 }

@@ -28,6 +28,7 @@ import com.globalmentor.model.Filter;
  * <p>
  * The iterator can also restrict the number of returned elements to a given maximum.
  * </p>
+ * @param <E> The type of elements returned by this iterator.
  * @author Garret Wilson
  */
 public class CountedFilterIterator<E> extends IteratorDecorator<E> { //TODO refactor by extending FilterIterator and adding count and max count
@@ -43,7 +44,10 @@ public class CountedFilterIterator<E> extends IteratorDecorator<E> { //TODO refa
 	/** The filter used to exclude items from the iterator. */
 	private Filter<E> filter;
 
-	/** @return The filter used to exclude items from the iterator. */
+	/**
+	 * Return the filter used to exclude items from the iterator.
+	 * @return The filter used to exclude items from the iterator.
+	 */
 	public Filter<E> getFilter() {
 		return filter;
 	}
@@ -118,6 +122,7 @@ public class CountedFilterIterator<E> extends IteratorDecorator<E> { //TODO refa
 	}
 
 	/**
+	 * Returns the next random integer in the iteration.
 	 * @return The next random integer in the iteration, or {@link #NO_NEXT_OBJECT} if the iteration has no more elements.
 	 */
 	protected Object getNext() {

@@ -36,7 +36,10 @@ public final class CodePointCharacter {
 
 	private final int codePoint;
 
-	/** @return The Unicode code point represented. */
+	/**
+	 * Returns the Unicode code point represented.
+	 * @return The Unicode code point represented.
+	 */
 	public int getCodePoint() {
 		return codePoint;
 	}

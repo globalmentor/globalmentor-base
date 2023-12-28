@@ -20,6 +20,7 @@ import static java.util.Objects.*;
 
 /**
  * A default implementation of a named object comparable by name. This implementation does not allow a <code>null</code> name.
+ * @param <N> The type of name.
  * @author Garret Wilson
  */
 public class DefaultComparableNamed<N extends Comparable<N>> extends DefaultNamed<N> implements Comparable<Named<N>> {

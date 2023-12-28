@@ -25,7 +25,10 @@ import com.globalmentor.event.ProgressListener;
  * Utilities for working with streams generally.
  * @author Garret Wilson
  */
-public class IOStreams {
+public final class IOStreams {
+
+	private IOStreams() {
+	}
 
 	/**
 	 * The recommended default size of I/O buffers.

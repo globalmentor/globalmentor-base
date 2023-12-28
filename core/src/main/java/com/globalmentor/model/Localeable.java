@@ -29,7 +29,10 @@ public interface Localeable {
 	/** The name of the locale property, if it is bound in any modifiable object. */
 	public static final String LOCALE_PROPERTY_NAME = getPropertyName(Localeable.class, "locale");
 
-	/** @return The locale or <code>null</code> if no locale is indicated. */
+	/**
+	 * Returns the locale.
+	 * @return The locale or <code>null</code> if no locale is indicated.
+	 */
 	public Locale getLocale();
 
 	/**

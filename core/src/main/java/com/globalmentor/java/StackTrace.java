@@ -64,19 +64,19 @@ public class StackTrace {
 	 * @see StackTraceElement#toString()
 	 */
 	public enum ElementRegEx implements RegularExpression.NumberedCapturingGroup {
-		/** @see StackTraceElement#getClassLoaderName() */
+		/** The group of the element for StackTraceElement#getClassLoaderName(). */
 		CLASS_LOADER_NAME_GROUP,
-		/** @see StackTraceElement#getModuleName() */
+		/** The group of the element for StackTraceElement#getModuleName(). */
 		MODULE_NAME_GROUP,
-		/** @see StackTraceElement#getModuleVersion() */
+		/** The group of the element for StackTraceElement#getModuleVersion(). */
 		MODULE_VERSION_GROUP,
-		/** @see StackTraceElement#getClassName() */
+		/** The group of the element for StackTraceElement#getClassName(). */
 		CLASS_NAME_GROUP,
-		/** @see StackTraceElement#getMethodName() */
+		/** The group of the element for StackTraceElement#getMethodName(). */
 		METHOD_NAME_GROUP,
-		/** @see StackTraceElement#getFileName() */
+		/** The group of the element for StackTraceElement#getFileName(). */
 		FILE_NAME_GROUP,
-		/** @see StackTraceElement#getLineNumber() */
+		/** The group of the element for StackTraceElement#getLineNumber(). */
 		LINE_NUMBER_GROUP;
 
 		/**
@@ -111,7 +111,10 @@ public class StackTrace {
 	/** The list of stack trace elements. */
 	private final List<StackTraceElement> stackTraceElements;
 
-	/** @return A read only list of elements in this stack trace, with the deepest elements at the front of the list. */
+	/**
+	 * Returns a read only list of elements in this stack trace, with the deepest elements at the front of the list.
+	 * @return A read only list of elements in this stack trace, with the deepest elements at the front of the list.
+	 */
 	public List<StackTraceElement> getStackTraceElements() {
 		return stackTraceElements;
 	}

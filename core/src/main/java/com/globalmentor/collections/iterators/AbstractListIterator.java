@@ -35,7 +35,10 @@ public abstract class AbstractListIterator<I, E> implements ListIterator<I> {
 	/** The list over which to iterate. */
 	private final List<E> list;
 
-	/** @return The list over which to iterate. */
+	/**
+	 * Returns the list over which to iterate.
+	 * @return The list over which to iterate.
+	 */
 	protected final List<E> getList() {
 		return list;
 	}
@@ -77,7 +80,7 @@ public abstract class AbstractListIterator<I, E> implements ListIterator<I> {
 	 * Ensures that the current next and previous indexes are included. This method must be called whenever the indexes need to be recalculated, such as after the
 	 * iterator is initialized.
 	 */
-	protected void updateIncludedIndexes() {
+	protected final void updateIncludedIndexes() {
 		if(nextIndex < list.size() && !isIncluded(nextIndex)) { //if the next index is on a non-included index
 			nextIndex = getNextIncludedIndex(nextIndex); //advance to the next included index
 		}

@@ -18,12 +18,15 @@ package com.globalmentor.math;
 
 /**
  * Methods implementing the Luhn Algorithm or "modulus 10". Used, for example, by the Primary Account Number (PAN) of an identification card as defined in
- * ISO/IEC 7812-1:2000(E), "Identification cards — Identification of issuers — Part 1: Numbering system". See ISO/IEC 7812-1:2000(E),
- * "Annex B: Luhn formula for computing modulus 10 'double-add-double' check digit".
+ * ISO/IEC 7812-1:2000(E), "Identification cards — Identification of issuers — Part 1: Numbering system". See ISO/IEC 7812-1:2000(E), "Annex B: Luhn formula for
+ * computing modulus 10 'double-add-double' check digit".
  * @author Garret Wilson
  * @see <a href="http://en.wikipedia.org/wiki/Luhn_formula">Luhn algorithm</a>
  */
-public class Luhn {
+public final class Luhn {
+
+	private Luhn() {
+	}
 
 	/**
 	 * Determines if the given sequence of digits ends with the correct check digit. Each digit must be a value from '0' to '9', inclusive. If the sequence of

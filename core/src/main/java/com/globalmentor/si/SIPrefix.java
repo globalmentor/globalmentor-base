@@ -76,7 +76,10 @@ public enum SIPrefix implements Named<String> {
 	/** The prefix name. */
 	private final String name;
 
-	/** @return The prefix name. */
+	/**
+	 * Returns the prefix name.
+	 * @return The prefix name.
+	 */
 	public String getName() {
 		return name;
 	}
@@ -84,7 +87,10 @@ public enum SIPrefix implements Named<String> {
 	/** The prefix symbol. */
 	private final String symbol;
 
-	/** @return The prefix symbol. */
+	/**
+	 * Returns the prefix symbol.
+	 * @return The prefix symbol.
+	 */
 	public String getSymbol() {
 		return symbol;
 	}
@@ -92,7 +98,10 @@ public enum SIPrefix implements Named<String> {
 	/** The power of the prefix factor with 10 as the base. */
 	private final int factorPower;
 
-	/** @return The power of the prefix factor with 10 as the base. */
+	/**
+	 * Returns the power of the prefix factor with 10 as the base.
+	 * @return The power of the prefix factor with 10 as the base.
+	 */
 	public int getFactorPower() {
 		return factorPower;
 	}
@@ -100,7 +109,10 @@ public enum SIPrefix implements Named<String> {
 	/** The power of the prefix. */
 	private final BigDecimal factor;
 
-	/** @return The power of the prefix. */
+	/**
+	 * Returns the power of the prefix.
+	 * @return The power of the prefix.
+	 */
 	public BigDecimal getFactor() {
 		return factor;
 	}

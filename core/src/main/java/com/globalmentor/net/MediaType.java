@@ -238,21 +238,30 @@ public final class MediaType {
 
 	private final String primaryType;
 
-	/** @return The primary type of the media type. */
+	/**
+	 * Returns the primary type of the media type.
+	 * @return The primary type of the media type.
+	 */
 	public String getPrimaryType() {
 		return primaryType;
 	}
 
 	private final String subType;
 
-	/** @return The subtype of the media type. */
+	/**
+	 * Returns the subtype of the media type.
+	 * @return The subtype of the media type.
+	 */
 	public String getSubType() {
 		return subType;
 	}
 
 	private final Set<Parameter> parameters;
 
-	/** @return The set of parameters, which may be empty, but will never be <code>null</code>. */
+	/**
+	 * Returns the parameters.
+	 * @return The set of parameters, which may be empty, but will never be <code>null</code>.
+	 */
 	public Set<Parameter> getParameters() {
 		return parameters;
 	}

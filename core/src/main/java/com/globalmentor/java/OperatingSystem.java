@@ -25,7 +25,10 @@ import static com.globalmentor.java.Strings.*;
  * Utilities for working with operating system-specific attributes.
  * @author Garret Wilson
  */
-public class OperatingSystem {
+public final class OperatingSystem {
+
+	private OperatingSystem() {
+	}
 
 	/** The property specifying the line separator character for the platform. */
 	public static final String LINE_SEPARATOR_PROPERTY = "line.separator";
@@ -78,6 +81,7 @@ public class OperatingSystem {
 	}
 
 	/**
+	 * Indicates whether the operating system is Windows.
 	 * @return <code>true</code> if the operating system is a version of Windows.
 	 * @throws SecurityException if a security manager exists and its <code>checkPropertyAccess</code> method doesn't allow access to this system property.
 	 * @see #OS_NAME_PROPERTY

@@ -33,28 +33,40 @@ public class MethodSignature extends AbstractHashObject {
 
 	private final String name;
 
-	/** @return The name of the method. */
+	/**
+	 * Returns the name of the method.
+	 * @return The name of the method.
+	 */
 	public String getName() {
 		return name;
 	}
 
 	private final Class<?> returnType;
 
-	/** @return The return type of the method. */
+	/**
+	 * Returns the return type of the method.
+	 * @return The return type of the method.
+	 */
 	public Class<?> getReturnType() {
 		return returnType;
 	}
 
 	private final List<Class<?>> parameterTypes;
 
-	/** @return The parameter types of the method. */
+	/**
+	 * Returns the parameter types of the method.
+	 * @return The parameter types of the method.
+	 */
 	public List<Class<?>> getParameterTypes() {
 		return parameterTypes;
 	}
 
 	private final boolean returnTypeSignificant;
 
-	/** @return Whether, for purposes of equality, the return type is significant. */
+	/**
+	 * Returns whether, for purposes of equality, the return type is significant.
+	 * @return <code>true</code> if, for purposes of equality, the return type is significant.
+	 */
 	public boolean isReturnTypeSignificant() {
 		return returnTypeSignificant;
 	}

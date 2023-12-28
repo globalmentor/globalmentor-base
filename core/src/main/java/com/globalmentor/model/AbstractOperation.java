@@ -37,6 +37,10 @@ import static com.globalmentor.model.TaskState.*;
  */
 public abstract class AbstractOperation extends AbstractTask implements Operation, Runnable, Task {
 
+	/** Constructor. */
+	protected AbstractOperation() {
+	}
+
 	/**
 	 * {@inheritDoc} This implementation sets the state to {@link TaskState#CANCELED}.
 	 * @see #setState(TaskState)

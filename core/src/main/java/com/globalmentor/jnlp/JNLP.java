@@ -22,7 +22,10 @@ import com.globalmentor.net.MediaType;
  * Constant values for accessing the JNLP servlet.
  * @author Garret Wilson
  */
-public class JNLP {
+public final class JNLP {
+
+	private JNLP() {
+	}
 
 	/** The media type for JNLP: <code>application/x-java-jnlp-file</code>. */
 	public static final MediaType MEDIA_TYPE = MediaType.of(MediaType.APPLICATION_PRIMARY_TYPE, "x-java-jnlp-file");

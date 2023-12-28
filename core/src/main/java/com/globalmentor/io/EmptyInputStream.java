@@ -26,6 +26,10 @@ import java.io.InputStream;
  */
 public class EmptyInputStream extends InputStream {
 
+	/** Constructor. */
+	public EmptyInputStream() {
+	}
+
 	/** {@inheritDoc} This version always returns -1. */
 	@Override
 	public int read() throws IOException {

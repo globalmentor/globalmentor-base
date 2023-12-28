@@ -22,7 +22,10 @@ package com.globalmentor.model;
  * @author Garret Wilson
  * 
  */
-public class Labels {
+public final class Labels {
+
+	private Labels() {
+	}
 
 	/**
 	 * Determines a human-readable representation of a given object.

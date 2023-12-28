@@ -25,6 +25,7 @@ import java.net.URI;
  * <p>
  * This implementation considers objects equal if they are of the the specified runtime type and have the same URI.
  * </p>
+ * @param <C> The recursive <code>THIS</code> type.
  * @author Garret Wilson
  */
 public abstract class AbstractObjectResource<C extends AbstractObjectResource<C>> extends DefaultResource implements Comparable<Resource> {

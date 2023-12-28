@@ -38,7 +38,10 @@ public class Count extends AbstractLong<Count> implements CloneSupported {
 	/** The current count. */
 	private long count;
 
-	/** @return The current count. */
+	/**
+	 * Returns the current count.
+	 * @return The current count.
+	 */
 	public long getCount() {
 		return count;
 	}
@@ -172,6 +175,10 @@ public class Count extends AbstractLong<Count> implements CloneSupported {
 	 * @param <K> The type of key used in the map.
 	 */
 	public static class CounterMapEntryComparator<K> implements Comparator<Map.Entry<K, Count>> {
+
+		/** Constructor. */
+		public CounterMapEntryComparator() {
+		}
 
 		@Override
 		public int compare(final Map.Entry<K, Count> entry1, final Map.Entry<K, Count> entry2) {

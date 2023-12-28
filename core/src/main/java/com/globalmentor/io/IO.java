@@ -26,7 +26,10 @@ import javax.annotation.*;
  * I/O utilities.
  * @author Garret Wilson
  */
-public class IO {
+public final class IO {
+
+	private IO() {
+	}
 
 	/**
 	 * Converts an object to a {@link Closeable} instance so that it can be used with try-with-resources.

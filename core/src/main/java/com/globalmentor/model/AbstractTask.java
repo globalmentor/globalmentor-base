@@ -27,10 +27,17 @@ import com.globalmentor.event.EventListenerManager;
  */
 public abstract class AbstractTask extends BoundPropertyObject implements Task {
 
+	/** Constructor. */
+	protected AbstractTask() {
+	}
+
 	/** The object managing event listeners. */
 	private final EventListenerManager eventListenerManager = new EventListenerManager();
 
-	/** @return The object managing event listeners. */
+	/**
+	 * Returns the object managing event listeners.
+	 * @return The object managing event listeners.
+	 */
 	protected EventListenerManager getEventListenerManager() {
 		return eventListenerManager;
 	}

@@ -33,6 +33,10 @@ public abstract class AbstractCloseable implements Closeable {
 
 	private boolean closed = false;
 
+	/** Constructor. */
+	protected AbstractCloseable() {
+	}
+
 	/**
 	 * {@inheritDoc} Implementations must override {@link #closeImpl()}.
 	 * @see #closeImpl()

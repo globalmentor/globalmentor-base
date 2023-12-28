@@ -18,11 +18,15 @@ package com.globalmentor.model;
 
 /**
  * An object that can be identified by an ID.
+ * @param <I> The type of ID.
  * @author Garret Wilson
  */
 public interface IDed<I> {
 
-	/** @return The identifier, preferably unique, of the object; or <code>null</code> if the object has no ID. */
+	/**
+	 * Returns the identifier.
+	 * @return The identifier, preferably unique, of the object; or <code>null</code> if the object has no ID.
+	 */
 	public I getID();
 
 }

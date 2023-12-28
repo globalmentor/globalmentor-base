@@ -60,7 +60,10 @@ public class DefaultNonce implements Nonce {
 	/** A random value held by the nonce. */
 	private final long value;
 
-	/** @return A random value held by the nonce. */
+	/**
+	 * Returns a random value held by the nonce.
+	 * @return A random value held by the nonce.
+	 */
 	public long getValue() {
 		return value;
 	}

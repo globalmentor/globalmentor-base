@@ -31,7 +31,10 @@ import static com.globalmentor.lex.CompoundTokenization.*;
  * Utilities for working with enums.
  * @author Garret Wilson
  */
-public class Enums {
+public final class Enums {
+
+	private Enums() {
+	}
 
 	/**
 	 * Returns the enum constant specified by the given name for the indicated enum type, if the name is in fact of the indicated enum type.

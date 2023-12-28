@@ -27,7 +27,10 @@ public class CaptureOutputStream extends OutputStreamDecorator<OutputStream> {
 	/** The byte array output stream that captures transferred data. */
 	private ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
-	/** @return The current captured data accumulated from transfers, leaving the data to be retrieved again at a future time. */
+	/**
+	 * Returns the current captured data accumulated from transfers, leaving the data to be retrieved again at a future time.
+	 * @return The current captured data accumulated from transfers, leaving the data to be retrieved again at a future time.
+	 */
 	public byte[] getCapturedBytes() {
 		return getCapturedBytes(false); //return the captured bytes without clearing the data
 	}

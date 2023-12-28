@@ -42,6 +42,7 @@ public class HashMapResourceBundle extends ResourceBundle {
 	 * Parent constructor using a hash map.
 	 * @param parent The parent resource bundle, or <code>null</code> if there should be no parent for resolving resources.
 	 */
+	@SuppressWarnings("this-escape")
 	public HashMapResourceBundle(final ResourceBundle parent) {
 		map = new HashMap<String, Object>(); //create a default hash map
 		setParent(parent); //set the parent to that given

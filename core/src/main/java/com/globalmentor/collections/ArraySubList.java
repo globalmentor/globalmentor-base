@@ -20,11 +20,16 @@ import java.util.ArrayList;
 
 /**
  * Represents a list that is a subset of some larger list, based upon an array.
+ * @param <E> The type of elements in this sublist.
  * @author Garret Wilson
  */
 public class ArraySubList<E> extends ArrayList<E> implements SubList<E> {
 
 	private static final long serialVersionUID = -4622676698966860986L;
+
+	/** Constructor. */
+	public ArraySubList() {
+	}
 
 	/** The size of the super-list of which this list is a sublist. */
 	private int superListSize = 0;

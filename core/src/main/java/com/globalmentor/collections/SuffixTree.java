@@ -23,13 +23,22 @@ package com.globalmentor.collections;
  */
 public interface SuffixTree {
 
-	/** @return Whether the suffix tree is explicit, with every suffix ending on a leaf node. */
+	/**
+	 * Returns whether the suffix tree is explicit, with every suffix ending on a leaf node.
+	 * @return Whether the suffix tree is explicit, with every suffix ending on a leaf node.
+	 */
 	public boolean isExplicit();
 
-	/** @return A read-only iterable of the nodes in the tree. */
+	/**
+	 * Returns a read-only iterable of the nodes in the tree.
+	 * @return A read-only iterable of the nodes in the tree.
+	 */
 	public Iterable<? extends Node> getNodes();
 
-	/** @return The number of nodes in the suffix tree. */
+	/**
+	 * Returns the number of nodes in the suffix tree.
+	 * @return The number of nodes in the suffix tree.
+	 */
 	public int getNodeCount();
 
 	/**
@@ -46,7 +55,10 @@ public interface SuffixTree {
 	 */
 	public Node getNode(final int nodeIndex);
 
-	/** @return A read-only iterable of edges in the tree. */
+	/**
+	 * Returns a read-only iterable of edges in the tree.
+	 * @return A read-only iterable of edges in the tree.
+	 */
 	public Iterable<? extends Edge> getEdges();
 
 	/**
@@ -56,19 +68,34 @@ public interface SuffixTree {
 	 */
 	public interface Node {
 
-		/** @return The index of the node. */
+		/**
+		 * Returns the index of the node.
+		 * @return The index of the node.
+		 */
 		public int getIndex();
 
-		/** @return Whether this node is a leaf node in the suffix tree. */
+		/**
+		 * Returns whether this node is a leaf node in the suffix tree.
+		 * @return Whether this node is a leaf node in the suffix tree.
+		 */
 		public boolean isLeaf();
 
-		/** @return The parent node of this node, or <code>null</code> if this node has no parent node (i.e. it is the root node). */
+		/**
+		 * Returns the parent node of this node.
+		 * @return The parent node of this node, or <code>null</code> if this node has no parent node (i.e. it is the root node).
+		 */
 		public Node getParentNode();
 
-		/** @return The node representing the next smaller suffix, or <code>null</code> if there is no known smaller suffix node. */
+		/**
+		 * Returns the node representing the next smaller suffix.
+		 * @return The node representing the next smaller suffix, or <code>null</code> if there is no known smaller suffix node.
+		 */
 		public Node getSuffixNode();
 
-		/** @return An iterable to the child edges of this node. */
+		/**
+		 * Returns an iterable to the child edges of this node.
+		 * @return An iterable to the child edges of this node.
+		 */
 		public Iterable<? extends Edge> getChildEdges();
 
 	};
@@ -80,28 +107,46 @@ public interface SuffixTree {
 	 */
 	public interface Edge {
 
-		/** @return The parent node representing the root end of the edge. */
+		/**
+		 * Returns the parent node representing the root end of the edge.
+		 * @return The parent node representing the root end of the edge.
+		 */
 		public Node getParentNode();
 
-		/** @return The child node representing the leaf end of the edge. */
+		/**
+		 * Returns the child node representing the leaf end of the edge.
+		 * @return The child node representing the leaf end of the edge.
+		 */
 		public Node getChildNode();
 
-		/** @return The position of the start element, inclusive. */
+		/**
+		 * Returns the position of the start element, inclusive.
+		 * @return The position of the start element, inclusive.
+		 */
 		public int getStart();
 
-		/** @return The position of the last element, exclusive. */
+		/**
+		 * Returns the position of the last element, exclusive.
+		 * @return The position of the last element, exclusive.
+		 */
 		public int getEnd();
 
 		/**
-		 * Returns the length of the edge, i.e. <code>end</code>-<code>start</code>.
+		 * Returns the length of the edge, i.e. <code><var>end</var>-<var>start</var></code>.
 		 * @return The number of elements on the edge.
 		 */
 		public int getLength();
 
-		/** @return <code>true</code> if this edge is empty and has no elements. */
+		/**
+		 * Indicates whether this edge is empty and has no elements.
+		 * @return <code>true</code> if this edge is empty and has no elements.
+		 */
 		public boolean isEmpty();
 
-		/** @return An iterable to the child edges of this edge's child node. */
+		/**
+		 * Returns an iterable to the child edges of this edge's child node.
+		 * @return An iterable to the child edges of this edge's child node.
+		 */
 		public Iterable<? extends Edge> getChildEdges();
 
 	};

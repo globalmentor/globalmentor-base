@@ -49,7 +49,10 @@ import com.globalmentor.text.*;
  * @see URI
  * @see <a href="https://tools.ietf.org/html/rfc3986">RFC 3986: Uniform Resource Identifiers (URI): Generic Syntax</a>
  */
-public class URIs {
+public final class URIs {
+
+	private URIs() {
+	}
 
 	/** The shared static empty array of URIs. */
 	public static final URI[] NO_URIS = new URI[0];

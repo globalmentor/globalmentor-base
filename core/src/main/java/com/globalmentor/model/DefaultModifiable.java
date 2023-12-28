@@ -32,6 +32,10 @@ import com.globalmentor.beans.BoundPropertyObject;
  */
 public class DefaultModifiable extends BoundPropertyObject implements Modifiable {
 
+	/** Constructor. */
+	public DefaultModifiable() {
+	}
+
 	/** Whether the object has been modified; the default is not modified. */
 	private boolean modified = false;
 

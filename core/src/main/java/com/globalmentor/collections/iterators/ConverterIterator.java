@@ -34,7 +34,10 @@ public class ConverterIterator<I, O> implements Iterator<O> {
 	/** The iterator this class decorates. */
 	private final Iterator<I> iterator;
 
-	/** @return The iterator this class decorates. */
+	/**
+	 * Returns the iterator this class decorates.
+	 * @return The iterator this class decorates.
+	 */
 	protected Iterator<I> getIterator() {
 		return iterator;
 	}
@@ -42,7 +45,10 @@ public class ConverterIterator<I, O> implements Iterator<O> {
 	/** The converter for converting the elements. */
 	private final Converter<I, O> converter;
 
-	/** @return The converter for converting the elements. */
+	/**
+	 * Returns the converter for converting the elements.
+	 * @return The converter for converting the elements.
+	 */
 	public Converter<I, O> getConverter() {
 		return converter;
 	}
@@ -50,7 +56,7 @@ public class ConverterIterator<I, O> implements Iterator<O> {
 	/**
 	 * Iterator and converter constructor.
 	 * @param iterator The iterator of source objects.
-	 * @param converter The conversor to be used on the iterable.
+	 * @param converter The converter to be used on the iterable.
 	 * @throws NullPointerException of if the given iterator and/or converter is <code>null</code>.
 	 */
 	public ConverterIterator(final Iterator<I> iterator, final Converter<I, O> converter) {

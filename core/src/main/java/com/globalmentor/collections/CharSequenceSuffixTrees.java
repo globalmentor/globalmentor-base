@@ -26,7 +26,10 @@ import com.globalmentor.model.MutableReference;
  * 
  * @author Garret Wilson
  */
-public class CharSequenceSuffixTrees {
+public final class CharSequenceSuffixTrees {
+
+	private CharSequenceSuffixTrees() {
+	}
 
 	/**
 	 * Determines the longest subsequence that is repeated in the given subsequence.

@@ -27,7 +27,10 @@ import javax.annotation.*;
  * Utility methods for working with {@link Reader} instances.
  * @author Garret Wilson
  */
-public class Readers {
+public final class Readers {
+
+	private Readers() {
+	}
 
 	/**
 	 * The size of buffer in characters to use when reading from a reader.

@@ -28,7 +28,10 @@ public class DirectoryFileFilter extends AbstractFileFilter {
 	/** <code>true</code> if only directories will be accepted, else <code>false</code> for only files. */
 	private final boolean acceptDirectoryStatus;
 
-	/** @return <code>true</code> if only directories will be accepted, else <code>false</code> for only files. */
+	/**
+	 * Indicates whether only directories or only files will be accepted.
+	 * @return <code>true</code> if only directories will be accepted, else <code>false</code> for only files.
+	 */
 	protected boolean getAcceptDirectoryStatus() {
 		return acceptDirectoryStatus;
 	}

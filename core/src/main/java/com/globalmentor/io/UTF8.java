@@ -26,7 +26,10 @@ package com.globalmentor.io;
  * @see <a href="http://developers.sun.com/dev/gadc/technicalpublications/articles/utf8.html">Sun: What Is UTF-8 And Why Is It Important?</a>
  * @see <a href="http://www.cl.cam.ac.uk/~mgk25/ucs/examples/UTF-8-test.txt">UTF-8 Test</a>
  */
-public class UTF8 {
+public final class UTF8 {
+
+	private UTF8() {
+	}
 
 	/** The largest code point value that can be encoded in one byte. */
 	public static final int MAX_ENCODED_BYTE_COUNT1 = 0x7F;

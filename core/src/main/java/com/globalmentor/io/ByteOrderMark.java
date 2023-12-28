@@ -62,17 +62,24 @@ public enum ByteOrderMark {
 	/** The bytes of this byte order mark. */
 	private final byte[] bytes;
 
-	/** @return The bytes of this byte order mark. */
+	/**
+	 * Returns the bytes of this byte order mark.
+	 * @return The bytes of this byte order mark.
+	 */
 	public byte[] getBytes() {
 		return bytes.clone(); //clone the bytes so that the authoritative copy cannot be modified
 	}
 
-	/** @return The number of bytes in this byte order mark. */
+	/**
+	 * Returns the number of bytes in this byte order mark.
+	 * @return The number of bytes in this byte order mark.
+	 */
 	public int getLength() {
 		return bytes.length;
 	}
 
 	/**
+	 * Indicates whether the byte order mark is one of the "middle-endian" or "mixed-endian" orders for which no charset exists.
 	 * @return <code>true</code> if the byte order mark is one of the "middle-endian" or "mixed-endian" orders for which no charset exists.
 	 * @see #UTF_32BE_MIXED
 	 * @see #UTF_32LE_MIXED
@@ -94,7 +101,10 @@ public enum ByteOrderMark {
 		return this;
 	}
 
-	/** @return The minimum number of bytes used for each character in the charset represented by this byte order mark. */
+	/**
+	 * Returns the minimum number of bytes used for each character in the charset represented by this byte order mark.
+	 * @return The minimum number of bytes used for each character in the charset represented by this byte order mark.
+	 */
 	public int getMinimumBytesPerCharacter() {
 		switch(this) {
 			case UTF_8:
@@ -112,7 +122,10 @@ public enum ByteOrderMark {
 		}
 	}
 
-	/** @return The byte order of this byte order mark, or <code>null</code> if there is one byte per character or the byte order is mixed. */
+	/**
+	 * Returns the byte order of this byte order mark.
+	 * @return The byte order of this byte order mark, or <code>null</code> if there is one byte per character or the byte order is mixed.
+	 */
 	public ByteOrder getByteOrder() {
 		switch(this) {
 			case UTF_16BE:
@@ -131,8 +144,8 @@ public enum ByteOrderMark {
 	}
 
 	/**
-	 * The index, of a group of encoded bytes for this identified byte order, of the least significant byte. For example, this method would return <code>0</code>
-	 * and <code>1</code> for UTF-16LE and UTF-16BE, respectively. The index will be less than {@link #getMinimumBytesPerCharacter()}.
+	 * Returns the index, of a group of encoded bytes for this identified byte order, of the least significant byte. For example, this method would return
+	 * <code>0</code> and <code>1</code> for UTF-16LE and UTF-16BE, respectively. The index will be less than {@link #getMinimumBytesPerCharacter()}.
 	 * @return The index of the least significant byte within an encoded group for this identified byte order.
 	 */
 	public int getLeastSignificantByteIndex() {

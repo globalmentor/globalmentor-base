@@ -18,6 +18,8 @@ package com.globalmentor.model;
 
 /**
  * A convenience class for storing an ID and a name. This class is useful to serve as a base class to other classes that are identified by an ID and a name.
+ * @param <I> The type of ID.
+ * @param <N> The type of name.
  * @author Garret Wilson
  */
 public class DefaultIDNamed<I, N> extends DefaultIDed<I> implements Named<N> {

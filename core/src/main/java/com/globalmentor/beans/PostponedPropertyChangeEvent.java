@@ -43,6 +43,7 @@ public class PostponedPropertyChangeEvent implements PostponedEvent<PropertyChan
 	private final PropertyChangeSupport propertyChangeSupport;
 
 	/**
+	 * Returns the property change support that will ultimately fire the property change event.
 	 * @return The property change support that will ultimately fire the property change event, or <code>null</code> if there is no property change support and
 	 *         therefore no listeners.
 	 */
