@@ -35,6 +35,10 @@ import java.util.*;
  */
 public abstract class AbstractPrimedIterator<E> implements Iterator<E> {
 
+	/** Constructor. */
+	protected AbstractPrimedIterator() {
+	}
+
 	/** Indicates whether the iterator has been primed. */
 	private boolean primed = false;
 

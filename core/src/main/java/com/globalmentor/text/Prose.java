@@ -30,7 +30,10 @@ import static com.globalmentor.java.Characters.*;
  * </p>
  * @author Garret Wilson
  */
-public class Prose {
+public final class Prose {
+
+	private Prose() {
+	}
 
 	/*TODO add these values from OEBPS 1.x, which are from the 13th Edition of _The Chicago Manual of Style_
 	cover the book cover(s), jacket information, etc.

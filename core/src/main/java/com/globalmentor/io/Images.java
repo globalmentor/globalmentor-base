@@ -26,7 +26,10 @@ import com.globalmentor.net.MediaType;
  * Utilities and constants for working with image content.
  * @author Garret Wilson
  */
-public class Images {
+public final class Images {
+
+	private Images() {
+	}
 
 	//media types
 

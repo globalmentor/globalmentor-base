@@ -36,6 +36,9 @@ import com.globalmentor.text.ASCII;
  */
 public final class LanguageTags {
 
+	private LanguageTags() {
+	}
+
 	/** The character used to separate subtags. */
 	public static final char SUBTAG_SEPARATOR = '-';
 

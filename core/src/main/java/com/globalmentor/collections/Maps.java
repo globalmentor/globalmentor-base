@@ -24,7 +24,10 @@ import javax.annotation.*;
  * Various utilities to be used with objects implementing the {@link Map} interface.
  * @author Garret Wilson
  */
-public class Maps {
+public final class Maps {
+
+	private Maps() {
+	}
 
 	/**
 	 * Returns an unmodifiable {@link Map.Entry} containing the given nullable key and nullable value.

@@ -25,7 +25,10 @@ import static com.globalmentor.java.Java.*;
  * Utilities methods for working with preferences.
  * @author Garret Wilson
  */
-public class PreferencesUtilities {
+public final class PreferencesUtilities {
+
+	private PreferencesUtilities() {
+	}
 
 	/** The character used to separate elements in preference paths. */
 	protected static final char PATH_SEPARATOR = '/';

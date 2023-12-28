@@ -34,7 +34,10 @@ import com.globalmentor.java.Objects;
  * @author Garret Wilson
  * @see Iterator
  */
-public class Iterators {
+public final class Iterators {
+
+	private Iterators() {
+	}
 
 	/**
 	 * Returns an iterator concatenating the contents of two iterators.

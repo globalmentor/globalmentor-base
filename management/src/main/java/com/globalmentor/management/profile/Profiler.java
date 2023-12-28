@@ -29,7 +29,10 @@ import java.time.Duration;
  * 
  * @author Garret Wilson
  */
-public class Profiler {
+public final class Profiler {
+
+	private Profiler() {
+	}
 
 	/** The operation manager for managing probe operations. */
 	private static final OperationManager probeOperationManager = new OperationManager();

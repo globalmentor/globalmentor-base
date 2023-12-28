@@ -279,6 +279,10 @@ public class AsynchronousWriter extends Writer {
 	 */
 	protected class Consumer implements Runnable {
 
+		/** Constructor. */
+		public Consumer() {
+		}
+
 		/**
 		 * The main functionality of the consumer, which consumes data from the blocking queue and writes it to the underlying writer. If
 		 * {@link AsynchronousWriter#FLUSH_INDICATOR} is consumed, the underlying writer is flushed. If {@link AsynchronousWriter#CLOSE_INDICATOR} is consumed, the

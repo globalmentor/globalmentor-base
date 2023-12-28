@@ -30,6 +30,10 @@ import java.io.*;
  */
 public class WildcardFileFilter extends AbstractFileFilter {
 
+	/** Constructor. */
+	public WildcardFileFilter() {
+	}
+
 	@Override
 	public boolean accept(final File pathname) {
 		return true;

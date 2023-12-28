@@ -23,7 +23,10 @@ import java.util.*;
  * @author Garret Wilson
  * @see java.util.Collection
  */
-public class Collections {
+public final class Collections {
+
+	private Collections() {
+	}
 
 	/**
 	 * Adds all of the elements specified by the given iterable to the specified collection.

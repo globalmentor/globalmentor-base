@@ -22,7 +22,11 @@ import java.net.*;
  * Abstract authenticator implementation.
  * @author Garret Wilson
  */
-public abstract class AbstractAuthenticable /*TODO fix extends Authenticator*/implements Authenticable {
+public abstract class AbstractAuthenticable /*TODO fix extends Authenticator*/ implements Authenticable {
+
+	/** Constructor. */
+	protected AbstractAuthenticable() {
+	}
 
 	/**
 	 * Determines password information in relation to a given description. This version delegates to {@link #getPasswordAuthentication(URI, String)}.

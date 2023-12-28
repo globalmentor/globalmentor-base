@@ -26,7 +26,10 @@ import static com.globalmentor.net.URIs.*;
  * Utilities for manipulating a universally unique identifier (UUID).
  * @author Garret Wilson
  */
-public class UUIDs {
+public final class UUIDs {
+
+	private UUIDs() {
+	}
 
 	/** The UUID URN namespace identifier "uuid". */
 	public static final String UUID_URN_NAMESPACE = "uuid";

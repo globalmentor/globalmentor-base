@@ -33,7 +33,10 @@ import com.globalmentor.java.*;
  * @author Garret Wilson
  * @see Pattern
  */
-public class RegularExpression {
+public final class RegularExpression {
+
+	private RegularExpression() {
+	}
 
 	/** The regular expression character that matches any character. */
 	public static final char WILDCARD_CHAR = '.';

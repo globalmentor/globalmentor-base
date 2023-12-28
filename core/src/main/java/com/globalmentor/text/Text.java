@@ -35,7 +35,10 @@ import static com.globalmentor.java.Characters.*;
  * Constants and utilities for text.
  * @author Garret Wilson
  */
-public class Text {
+public final class Text {
+
+	private Text() {
+	}
 
 	/** The MIME subtype of <code>text/plain</code>. */
 	public static final String PLAIN_SUBTYPE = "plain";

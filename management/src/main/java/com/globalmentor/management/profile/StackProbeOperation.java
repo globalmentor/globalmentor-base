@@ -60,6 +60,10 @@ public class StackProbeOperation extends AbstractReadWriteLockOperation {
 	/** The thread-safe map of line numbers for each class method found. */
 	private final Map<String, Set<Integer>> classMethodLineNumbers = new ConcurrentHashMap<>();
 
+	/** Constructor. */
+	public StackProbeOperation() {
+	}
+
 	/**
 	 * Adds a package to be ignored. Child packages will also be ignored.
 	 * @param parentPackage The package to be ignored.

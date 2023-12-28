@@ -29,7 +29,10 @@ import com.globalmentor.java.Objects;
  * Utilities to use with {@link Optional}.
  * @author Garret Wilson
  */
-public class Optionals {
+public final class Optionals {
+
+	private Optionals() {
+	}
 
 	/**
 	 * Convenience method that returns a value if and only if it the given optional is present and is an instance of the given class. This method is equivalent to

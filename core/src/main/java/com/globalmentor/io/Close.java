@@ -27,7 +27,10 @@ import javax.annotation.*;
  * 
  * @author Garret Wilson
  */
-public class Close {
+public final class Close {
+
+	private Close() {
+	}
 
 	/**
 	 * Produces a {@link Closeable} object that will close by invoking the given consumer.

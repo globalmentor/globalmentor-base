@@ -24,7 +24,10 @@ import java.util.Optional;
  * @author Garret Wilson
  * @see java.util.Arrays
  */
-public class Arrays {
+public final class Arrays {
+
+	private Arrays() {
+	}
 
 	/**
 	 * Creates a new array and appends the value to the contents of the given array.

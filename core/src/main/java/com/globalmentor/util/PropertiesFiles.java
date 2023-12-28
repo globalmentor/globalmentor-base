@@ -20,7 +20,10 @@ package com.globalmentor.util;
  * Definitions and utilities for working with {@link java.util.Properties} particularly as stored in Java properties files.
  * @author Garret Wilson
  */
-public class PropertiesFiles {
+public final class PropertiesFiles {
+
+	private PropertiesFiles() {
+	}
 
 	/** The common filename extension for Java properties files. */
 	public static final String FILENAME_EXTENSION = "properties";

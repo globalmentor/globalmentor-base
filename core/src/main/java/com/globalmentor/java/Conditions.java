@@ -31,7 +31,10 @@ import com.globalmentor.model.ConfiguredStateException;
  *          <a href="https://github.com/google/guava">Google Guava Library</a>.
  * @author Garret Wilson
  */
-public class Conditions {
+public final class Conditions {
+
+	private Conditions() {
+	}
 
 	/**
 	 * Checks the result of an expression to see if an argument is correct, and throws an {@link IllegalArgumentException} if the value is <code>false</code>.

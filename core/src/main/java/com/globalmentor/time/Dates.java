@@ -23,7 +23,10 @@ import java.util.GregorianCalendar;
  * Utilities for dealing with dates.
  * @author Garret Wilson
  */
-public class Dates {
+public final class Dates {
+
+	private Dates() {
+	}
 
 	/** The origin of Microsoft Excel date serial values, 31 December 1899. */
 	protected static final Date EXCEL_EPOCH_DATE = new GregorianCalendar(1899, GregorianCalendar.DECEMBER, 31).getTime();

@@ -30,7 +30,10 @@ import com.globalmentor.collections.iterators.Iterators;
  * Utilities to be used with lists.
  * @author Garret Wilson
  */
-public class Lists {
+public final class Lists {
+
+	private Lists() {
+	}
 
 	/**
 	 * Provides a reversed view of the list by returning an iterable that produces iterators that iterate from the end to the start of the list. The list itself

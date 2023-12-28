@@ -176,6 +176,10 @@ public class Count extends AbstractLong<Count> implements CloneSupported {
 	 */
 	public static class CounterMapEntryComparator<K> implements Comparator<Map.Entry<K, Count>> {
 
+		/** Constructor. */
+		public CounterMapEntryComparator() {
+		}
+
 		@Override
 		public int compare(final Map.Entry<K, Count> entry1, final Map.Entry<K, Count> entry2) {
 			return Longs.compare(entry1.getValue().getCount(), entry2.getValue().getCount());

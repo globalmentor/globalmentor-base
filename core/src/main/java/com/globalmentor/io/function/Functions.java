@@ -27,7 +27,10 @@ import javax.annotation.*;
  * Utility higher-order functions.
  * @author Garret Wilson
  */
-public class Functions {
+public final class Functions {
+
+	private Functions() {
+	}
 
 	/**
 	 * Creates a consumer that counts the number of times it has been invoked and passes that count to the provided consumer. Use the function to replace this:

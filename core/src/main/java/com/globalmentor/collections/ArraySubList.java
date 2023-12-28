@@ -27,6 +27,10 @@ public class ArraySubList<E> extends ArrayList<E> implements SubList<E> {
 
 	private static final long serialVersionUID = -4622676698966860986L;
 
+	/** Constructor. */
+	public ArraySubList() {
+	}
+
 	/** The size of the super-list of which this list is a sublist. */
 	private int superListSize = 0;
 

@@ -28,7 +28,10 @@ import com.globalmentor.collections.SuffixTree.*;
  * 
  * @author Garret Wilson
  */
-public class SuffixTrees {
+public final class SuffixTrees {
+
+	private SuffixTrees() {
+	}
 
 	/**
 	 * Prints a character representation of the tree and its branches, starting from the root node.
@@ -111,7 +114,8 @@ public class SuffixTrees {
 	 * @return <code>true</code> if visiting completed all the nodes.
 	 */
 	@SuppressWarnings("unchecked")
-	public static <N extends Node, E extends Edge> boolean visitChildren(final SuffixTree suffixTree, final N node, final int length, final Visitor<N, E> visitor) {
+	public static <N extends Node, E extends Edge> boolean visitChildren(final SuffixTree suffixTree, final N node, final int length,
+			final Visitor<N, E> visitor) {
 		for(final Edge childEdge : node.getChildEdges()) { //iterate the child edges
 			if(!visit(suffixTree, (N)childEdge.getChildNode(), (E)childEdge, length + childEdge.getLength(), visitor)) { //visit each child node, stopping if requested
 				return false;

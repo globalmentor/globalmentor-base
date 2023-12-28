@@ -33,7 +33,10 @@ import javax.lang.model.util.*;
  * @see Types
  * @see ModelElements
  */
-public class ModelTypes {
+public final class ModelTypes {
+
+	private ModelTypes() {
+	}
 
 	/**
 	 * The simple name of the special <code>value</code> annotation element allowing for shorthand value notation.

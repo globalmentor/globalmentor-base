@@ -27,7 +27,10 @@ import com.globalmentor.collections.comparators.SortOrder;
  * @author Garret Wilson
  * @see Comparable
  */
-public class Comparables {
+public final class Comparables {
+
+	private Comparables() {
+	}
 
 	/**
 	 * Compares two comparables for order in ascending order. Returns a negative integer, zero, or a positive integer as the first argument is less than, equal

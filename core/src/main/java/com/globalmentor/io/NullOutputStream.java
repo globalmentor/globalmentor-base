@@ -25,6 +25,10 @@ import java.io.OutputStream;
  */
 public class NullOutputStream extends OutputStream {
 
+	/** Constructor. */
+	public NullOutputStream() {
+	}
+
 	/**
 	 * Writes the specified byte to this output stream. This version does nothing.
 	 * @param b The byte to write.

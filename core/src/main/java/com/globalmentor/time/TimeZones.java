@@ -29,7 +29,10 @@ import com.globalmentor.java.Integers;
  * Constant values and utilities for working with time zones.
  * @author Garret Wilson
  */
-public class TimeZones {
+public final class TimeZones {
+
+	private TimeZones() {
+	}
 
 	/**
 	 * The ID for indicating the GMT zone.

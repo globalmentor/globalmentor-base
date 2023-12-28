@@ -28,7 +28,10 @@ import javax.annotation.*;
  * @author Garret Wilson
  * @see AnnotatedElement
  */
-public class AnnotatedElements {
+public final class AnnotatedElements {
+
+	private AnnotatedElements() {
+	}
 
 	/**
 	 * Finds an element's annotation for the specified type.

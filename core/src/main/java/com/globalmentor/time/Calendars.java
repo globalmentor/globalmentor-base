@@ -26,7 +26,10 @@ import static java.util.concurrent.TimeUnit.*;
  * Constants and utilities for working with dates and times.
  * @author Garret Wilson
  */
-public class Calendars {
+public final class Calendars {
+
+	private Calendars() {
+	}
 
 	/** The number of days in a week. */
 	public static final int WEEK_DAY_COUNT = 7;

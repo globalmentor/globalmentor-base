@@ -22,7 +22,10 @@ import java.util.*;
  * Various utilities for working with a string tokenizer.
  * @author Garret Wilson
  */
-public class StringTokenizers {
+public final class StringTokenizers {
+
+	private StringTokenizers() {
+	}
 
 	/**
 	 * Retrieves all remaining tokens from a string tokenizer and returns them in an array of strings.

@@ -48,6 +48,9 @@ import java.io.*;
  */
 public final class MessageDigests {
 
+	private MessageDigests() {
+	}
+
 	/** The MD2 message digest algorithm as defined in <a href="https://tools.ietf.org/html/rfc1319">RFC 1319</a>. */
 	public static final Algorithm MD2 = new Algorithm("MD2");
 

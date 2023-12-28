@@ -32,7 +32,10 @@ import com.globalmentor.collections.iterators.Iterators;
  * @author Garret Wilson
  * @see Iterable
  */
-public class Iterables {
+public final class Iterables {
+
+	private Iterables() {
+	}
 
 	/**
 	 * Returns an {@link Optional} describing the first element of this iterable, or an empty {@code Optional} if the iterable is empty.

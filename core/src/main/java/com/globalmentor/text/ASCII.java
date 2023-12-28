@@ -28,7 +28,10 @@ import com.globalmentor.java.Characters;
  * Constants and utilities for working with US_ASCII.
  * @author Garret Wilson
  */
-public class ASCII {
+public final class ASCII {
+
+	private ASCII() {
+	}
 
 	/** The value of the first lowercase letter. */
 	public static final char LOWERCASE_LETTER_FIRST = 'a';

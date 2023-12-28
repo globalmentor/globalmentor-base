@@ -29,7 +29,10 @@ import javax.annotation.*;
  * Utilities to be used with sets.
  * @author Garret Wilson
  */
-public class Sets {
+public final class Sets {
+
+	private Sets() {
+	}
 
 	/**
 	 * Returns some set representing the union of two given sets, returning one of the given sets if possible (if the other set is empty). If both sets are

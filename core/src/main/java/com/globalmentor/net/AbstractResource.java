@@ -28,6 +28,10 @@ import static com.globalmentor.java.Characters.*;
  */
 public abstract class AbstractResource implements Resource {
 
+	/** Constructor. */
+	protected AbstractResource() {
+	}
+
 	/**
 	 * {@inheritDoc} This implementation compares the resource URIs. If neither object has a reference URI, the default identity comparison is performed.
 	 * @see #getURI()

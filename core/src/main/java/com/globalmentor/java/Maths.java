@@ -23,7 +23,10 @@ import java.util.Collection;
  * Utilities for working with math.
  * @author Garret Wilson
  */
-public class Maths {
+public final class Maths {
+
+	private Maths() {
+	}
 
 	/**
 	 * Finds the floor of a value with a particular precision of a specified digit. A position of zero will result in the input value. Otherwise, the value will

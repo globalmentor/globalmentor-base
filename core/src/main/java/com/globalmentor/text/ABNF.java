@@ -24,7 +24,10 @@ import com.globalmentor.java.Characters;
  * @author Garret Wilson
  * @see <a href="http://www.ietf.org/rfc/rfc2234.txt">RFC 2234</a>
  */
-public class ABNF {
+public final class ABNF {
+
+	private ABNF() {
+	}
 
 	/** Alphabetic characters: 0x41-5A / 0x61-7A (A-Z / a-z). */
 	public static final Characters ALPHA_CHARACTERS = Characters.ofRange((char)0x41, (char)0x5A).addRange((char)0x61, (char)0x7A);

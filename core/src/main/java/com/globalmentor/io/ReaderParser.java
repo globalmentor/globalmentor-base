@@ -57,7 +57,10 @@ import static com.globalmentor.java.Conditions.*;
  * @author Garret Wilson
  * @see Reader#markSupported()
  */
-public class ReaderParser {
+public final class ReaderParser {
+
+	private ReaderParser() {
+	}
 
 	/**
 	 * The minimum number of characters to mark in a reader. This value is guaranteed to be at least <code>1</code> for marking a single character. If fewer than

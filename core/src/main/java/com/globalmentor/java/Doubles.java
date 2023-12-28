@@ -23,7 +23,10 @@ import static java.lang.Math.*;
  * Utilities for manipulating double objects and values.
  * @author Garret Wilson
  */
-public class Doubles {
+public final class Doubles {
+
+	private Doubles() {
+	}
 
 	/**
 	 * Checks to make sure that a given value is within the given range.

@@ -165,6 +165,10 @@ public class ListRandomIterator<E> implements Iterator<E> { //TODO fix setRandom
 	 */
 	protected class IndexFilter implements Filter<Integer> {
 
+		/** Constructor. */
+		public IndexFilter() {
+		}
+
 		/**
 		 * Determines whether a given object should pass through the filter or be filtered out. An integer object will be filtered out if the object at that index
 		 * in our list doesn't pass our main list filter.

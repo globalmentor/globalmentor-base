@@ -25,6 +25,10 @@ import java.io.*;
  */
 public abstract class AbstractFileFilter implements FileFilter, FilenameFilter {
 
+	/** Constructor. */
+	protected AbstractFileFilter() {
+	}
+
 	/**
 	 * {@inheritDoc}
 	 * <p>

@@ -26,7 +26,10 @@ import com.globalmentor.net.MediaType;
  * Utilities and constants for working with audio content.
  * @author Garret Wilson
  */
-public class Audio {
+public final class Audio {
+
+	private Audio() {
+	}
 
 	//media types
 

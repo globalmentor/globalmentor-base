@@ -287,6 +287,10 @@ public class CharSequenceSuffixTree extends AbstractSuffixTree<CharSequenceSuffi
 	 */
 	protected static abstract class AbstractEdgeKey implements EdgeKey {
 
+		/** Constructor. */
+		protected AbstractEdgeKey() {
+		}
+
 		/**
 		 * {@inheritDoc} This version hashes the index of the parent node, if any, and first character.
 		 * @see #getParentNode()
