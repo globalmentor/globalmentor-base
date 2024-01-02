@@ -29,6 +29,9 @@ public interface CloneSupported extends Cloneable {
 	/**
 	 * Creates and returns a copy of this object.
 	 * @implSpec This version is guaranteed not to throw {@link CloneNotSupportedException}.
+	 * @return A clone of this instance.
+	 * @throws CloneNotSupportedException if the object's class does not support the {@link Cloneable} interface. As this interface extends {@link Cloneable},
+	 *           this exception will never by thrown by the JVM for implementations of this method.
 	 */
 	public Object clone() throws CloneNotSupportedException;
 
