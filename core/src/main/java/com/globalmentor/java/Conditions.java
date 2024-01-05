@@ -110,7 +110,9 @@ public final class Conditions {
 	 * @throws IllegalArgumentException if the given object not of the indicated type.
 	 */
 	public static <T> T checkArgumentIsInstance(final Object object, @Nonnull final Class<T> instanceClass) {
-		return checkArgumentIsInstance(object, instanceClass, "Argument not instance of class `%s`.", instanceClass.getName());
+		final String instanceClassCanonicalName = instanceClass.getCanonicalName(); //the canonical name is more user-friendly for named inner classes, although it will be missing for e.g. anonymous inner classes
+		return checkArgumentIsInstance(object, instanceClass, "Argument not instance of class `%s`.",
+				instanceClassCanonicalName != null ? instanceClassCanonicalName : instanceClass.getName());
 	}
 
 	/**
