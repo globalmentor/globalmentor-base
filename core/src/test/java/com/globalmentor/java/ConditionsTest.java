@@ -29,7 +29,7 @@ import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 /**
  * Tests for {@link Conditions}.
@@ -73,34 +73,11 @@ public class ConditionsTest {
 	 */
 	@Test
 	void testCheckArgumentErrorMessage() {
-
-		try {
-			checkArgument(false);
-			fail("The statement above should have thrown an IllegalArgumentExcepton");
-		} catch(final IllegalArgumentException illegalArgumentException) {
-			assertThat(illegalArgumentException.getMessage(), equalTo(null));
-		}
-
-		try {
-			checkArgument(false, "error message");
-			fail("The statement above should have thrown an IllegalArgumentExcepton");
-		} catch(final IllegalArgumentException illegalArgumentException) {
-			assertThat(illegalArgumentException.getMessage(), equalTo("error message"));
-		}
-
-		try {
-			checkArgument(false, "error message %d", 123);
-			fail("The statement above should have thrown an IllegalArgumentExcepton");
-		} catch(final IllegalArgumentException illegalArgumentException) {
-			assertThat(illegalArgumentException.getMessage(), equalTo("error message 123"));
-		}
-
-		try {
-			checkArgument(false, "error message", 123); // The arguments of the error message should be ignored.
-			fail("The statement above should have thrown an IllegalArgumentExcepton");
-		} catch(final IllegalArgumentException illegalArgumentException) {
-			assertThat(illegalArgumentException.getMessage(), equalTo("error message"));
-		}
+		assertThat(assertThrows(IllegalArgumentException.class, () -> checkArgument(false)).getMessage(), equalTo(null));
+		assertThat(assertThrows(IllegalArgumentException.class, () -> checkArgument(false, "error message")).getMessage(), equalTo("error message"));
+		assertThat(assertThrows(IllegalArgumentException.class, () -> checkArgument(false, "error message %d", 123)).getMessage(), equalTo("error message 123"));
+		assertThat("The arguments of the error message should be ignored.",
+				assertThrows(IllegalArgumentException.class, () -> checkArgument(false, "error message", 123)).getMessage(), equalTo("error message"));
 	}
 
 	/**
@@ -130,34 +107,14 @@ public class ConditionsTest {
 	 */
 	@Test
 	void testCheckArgumentIsInstanceErrorMessage() {
-
-		try {
-			checkArgumentIsInstance(null, Boolean.class);
-			fail("The statement above should have thrown an IllegalArgumentExcepton");
-		} catch(final IllegalArgumentException illegalArgumentException) {
-			assertThat(illegalArgumentException.getMessage(), equalTo(null));
-		}
-
-		try {
-			checkArgumentIsInstance(null, Boolean.class, "error message");
-			fail("The statement above should have thrown an IllegalArgumentExcepton");
-		} catch(final IllegalArgumentException illegalArgumentException) {
-			assertThat(illegalArgumentException.getMessage(), equalTo("error message"));
-		}
-
-		try {
-			checkArgumentIsInstance(null, Boolean.class, "error message %d", 123);
-			fail("The statement above should have thrown an IllegalArgumentExcepton");
-		} catch(final IllegalArgumentException illegalArgumentException) {
-			assertThat(illegalArgumentException.getMessage(), equalTo("error message 123"));
-		}
-
-		try {
-			checkArgumentIsInstance(null, Boolean.class, "error message", 123); // The arguments of the error message should be ignored.
-			fail("The statement above should have thrown an IllegalArgumentExcepton");
-		} catch(final IllegalArgumentException illegalArgumentException) {
-			assertThat(illegalArgumentException.getMessage(), equalTo("error message"));
-		}
+		assertThrows(IllegalArgumentException.class, () -> checkArgumentIsInstance(null, Boolean.class));
+		assertThat(assertThrows(IllegalArgumentException.class, () -> checkArgumentIsInstance(null, Boolean.class, "error message")).getMessage(),
+				equalTo("error message"));
+		assertThat(assertThrows(IllegalArgumentException.class, () -> checkArgumentIsInstance(null, Boolean.class, "error message %d", 123)).getMessage(),
+				equalTo("error message 123"));
+		assertThat("The arguments of the error message should be ignored.",
+				assertThrows(IllegalArgumentException.class, () -> checkArgumentIsInstance(null, Boolean.class, "error message", 123)).getMessage(),
+				equalTo("error message"));
 	}
 
 	/** Tests the {@link Conditions#checkArgumentNotNull(Object)} and the {@link Conditions#checkArgumentNotNull(Object, String, Object...)} methods. */
@@ -182,34 +139,12 @@ public class ConditionsTest {
 	 */
 	@Test
 	void testCheckArgumentNotNullErrorMessage() {
-
-		try {
-			checkArgumentNotNull(null);
-			fail("The statement above should have thrown an IllegalArgumentExcepton");
-		} catch(final IllegalArgumentException illegalArgumentException) {
-			assertThat(illegalArgumentException.getMessage(), equalTo(null));
-		}
-
-		try {
-			checkArgumentNotNull(null, "error message");
-			fail("The statement above should have thrown an IllegalArgumentExcepton");
-		} catch(final IllegalArgumentException illegalArgumentException) {
-			assertThat(illegalArgumentException.getMessage(), equalTo("error message"));
-		}
-
-		try {
-			checkArgumentNotNull(null, "error message %d", 123);
-			fail("The statement above should have thrown an IllegalArgumentExcepton");
-		} catch(final IllegalArgumentException illegalArgumentException) {
-			assertThat(illegalArgumentException.getMessage(), equalTo("error message 123"));
-		}
-
-		try {
-			checkArgumentNotNull(null, "error message", 123); // The arguments of the error message should be ignored.
-			fail("The statement above should have thrown an IllegalArgumentExcepton");
-		} catch(final IllegalArgumentException illegalArgumentException) {
-			assertThat(illegalArgumentException.getMessage(), equalTo("error message"));
-		}
+		assertThrows(IllegalArgumentException.class, () -> checkArgumentNotNull(null));
+		assertThat(assertThrows(IllegalArgumentException.class, () -> checkArgumentNotNull(null, "error message")).getMessage(), equalTo("error message"));
+		assertThat(assertThrows(IllegalArgumentException.class, () -> checkArgumentNotNull(null, "error message %d", 123)).getMessage(),
+				equalTo("error message 123"));
+		assertThat("The arguments of the error message should be ignored.",
+				assertThrows(IllegalArgumentException.class, () -> checkArgumentNotNull(null, "error message", 123)).getMessage(), equalTo("error message"));
 	}
 
 	/** Tests the {@link Conditions#checkArgumentPresent(Optional)} and the {@link Conditions#checkArgumentPresent(Optional, String, Object...)} methods. */
@@ -240,34 +175,14 @@ public class ConditionsTest {
 	 */
 	@Test
 	void testCheckArgumentPresentErrorMessage() {
-
-		try {
-			checkArgumentPresent(Optional.empty());
-			fail("The statement above should have thrown an IllegalArgumentExcepton");
-		} catch(final IllegalArgumentException illegalArgumentException) {
-			assertThat(illegalArgumentException.getMessage(), equalTo(null));
-		}
-
-		try {
-			checkArgumentPresent(Optional.empty(), "error message");
-			fail("The statement above should have thrown an IllegalArgumentExcepton");
-		} catch(final IllegalArgumentException illegalArgumentException) {
-			assertThat(illegalArgumentException.getMessage(), equalTo("error message"));
-		}
-
-		try {
-			checkArgumentPresent(Optional.empty(), "error message %d", 123);
-			fail("The statement above should have thrown an IllegalArgumentExcepton");
-		} catch(final IllegalArgumentException illegalArgumentException) {
-			assertThat(illegalArgumentException.getMessage(), equalTo("error message 123"));
-		}
-
-		try {
-			checkArgumentPresent(Optional.empty(), "error message", 123); // The arguments of the error message should be ignored.
-			fail("The statement above should have thrown an IllegalArgumentExcepton");
-		} catch(final IllegalArgumentException illegalArgumentException) {
-			assertThat(illegalArgumentException.getMessage(), equalTo("error message"));
-		}
+		assertThrows(IllegalArgumentException.class, () -> checkArgumentPresent(Optional.empty()));
+		assertThat(assertThrows(IllegalArgumentException.class, () -> checkArgumentPresent(Optional.empty(), "error message")).getMessage(),
+				equalTo("error message"));
+		assertThat(assertThrows(IllegalArgumentException.class, () -> checkArgumentPresent(Optional.empty(), "error message %d", 123)).getMessage(),
+				equalTo("error message 123"));
+		assertThat("The arguments of the error message should be ignored.",
+				assertThrows(IllegalArgumentException.class, () -> checkArgumentPresent(Optional.empty(), "error message", 123)).getMessage(),
+				equalTo("error message"));
 	}
 
 	/** Tests the {@link Conditions#checkArgumentMinimum(int, int)} and the {@link Conditions#checkArgumentMinimum(long, long)} methods. */
@@ -448,34 +363,12 @@ public class ConditionsTest {
 	 */
 	@Test
 	void testCheckConfigedStateErrorMessage() {
-
-		try {
-			checkConfiguredState(false);
-			fail("The statement above should have thrown an ConfigurationException");
-		} catch(final ConfiguredStateException configurationException) {
-			assertThat(configurationException.getMessage(), equalTo(null));
-		}
-
-		try {
-			checkConfiguredState(false, "error message");
-			fail("The statement above should have thrown an ConfigurationException");
-		} catch(final ConfiguredStateException configurationException) {
-			assertThat(configurationException.getMessage(), equalTo("error message"));
-		}
-
-		try {
-			checkConfiguredState(false, "error message %d", 123);
-			fail("The statement above should have thrown an ConfigurationException");
-		} catch(final ConfiguredStateException configurationException) {
-			assertThat(configurationException.getMessage(), equalTo("error message 123"));
-		}
-
-		try {
-			checkConfiguredState(false, "error message", 123); // The arguments of the error message should be ignored.
-			fail("The statement above should have thrown an ConfigurationException");
-		} catch(final ConfiguredStateException configurationException) {
-			assertThat(configurationException.getMessage(), equalTo("error message"));
-		}
+		assertThrows(ConfiguredStateException.class, () -> checkConfiguredState(false));
+		assertThat(assertThrows(ConfiguredStateException.class, () -> checkConfiguredState(false, "error message")).getMessage(), equalTo("error message"));
+		assertThat(assertThrows(ConfiguredStateException.class, () -> checkConfiguredState(false, "error message %d", 123)).getMessage(),
+				equalTo("error message 123"));
+		assertThat("The arguments of the error message should be ignored.",
+				assertThrows(ConfiguredStateException.class, () -> checkConfiguredState(false, "error message", 123)).getMessage(), equalTo("error message"));
 	}
 
 	/** Tests the {@link Conditions#checkConfiguredStateNotNull(Object)} and the {@link Conditions#checkConfiguredStateNotNull(Object, String)} methods. */
@@ -497,21 +390,8 @@ public class ConditionsTest {
 	 */
 	@Test
 	void testCheckConfiguredStateNotNullErrorMessage() {
-
-		try {
-			checkConfiguredStateNotNull(null);
-			fail("The statement above should have thrown an ConfigurationException");
-		} catch(final ConfiguredStateException illegalArgumentException) {
-			assertThat(illegalArgumentException.getMessage(), equalTo(null));
-		}
-
-		try {
-			checkConfiguredStateNotNull(null, "error message");
-			fail("The statement above should have thrown an ConfigurationException");
-		} catch(final ConfiguredStateException illegalArgumentException) {
-			assertThat(illegalArgumentException.getMessage(), equalTo("error message"));
-		}
-
+		assertThrows(ConfiguredStateException.class, () -> checkConfiguredStateNotNull(null));
+		assertThat(assertThrows(ConfiguredStateException.class, () -> checkConfiguredStateNotNull(null, "error message")).getMessage(), equalTo("error message"));
 	}
 
 	/** Tests the {@link Conditions#checkIndexBounds(int, int)} and {@link Conditions#checkIndexBounds(int, int, int)} methods. */
@@ -621,34 +501,11 @@ public class ConditionsTest {
 	 */
 	@Test
 	void testCheckStateErrorMessage() {
-
-		try {
-			checkState(false);
-			fail("The statement above should have thrown an IllegalStateException");
-		} catch(final IllegalStateException illegalStateException) {
-			assertThat(illegalStateException.getMessage(), equalTo(null));
-		}
-
-		try {
-			checkState(false, "error message");
-			fail("The statement above should have thrown an IllegalStateException");
-		} catch(final IllegalStateException illegalStateException) {
-			assertThat(illegalStateException.getMessage(), equalTo("error message"));
-		}
-
-		try {
-			checkState(false, "error message %d", 123);
-			fail("The statement above should have thrown an IllegalStateException");
-		} catch(final IllegalStateException illegalStateException) {
-			assertThat(illegalStateException.getMessage(), equalTo("error message 123"));
-		}
-
-		try {
-			checkState(false, "error message", 123); // The arguments of the error message should be ignored.
-			fail("The statement above should have thrown an IllegalStateException");
-		} catch(final IllegalStateException illegalStateException) {
-			assertThat(illegalStateException.getMessage(), equalTo("error message"));
-		}
+		assertThat(assertThrows(IllegalStateException.class, () -> checkState(false)).getMessage(), equalTo(null));
+		assertThat(assertThrows(IllegalStateException.class, () -> checkState(false, "error message")).getMessage(), equalTo("error message"));
+		assertThat(assertThrows(IllegalStateException.class, () -> checkState(false, "error message %d", 123)).getMessage(), equalTo("error message 123"));
+		assertThat("The arguments of the error message should be ignored.",
+				assertThrows(IllegalStateException.class, () -> checkState(false, "error message", 123)).getMessage(), equalTo("error message"));
 	}
 
 	/**
