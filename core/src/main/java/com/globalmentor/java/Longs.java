@@ -18,6 +18,8 @@ package com.globalmentor.java;
 
 import static com.globalmentor.java.Conditions.*;
 
+import javax.annotation.*;
+
 /**
  * Utilities for manipulating long objects.
  * @author Garret Wilson
@@ -41,7 +43,7 @@ public class Longs {
 	}
 
 	/**
-	 * Converts a long into a hex string with the specified number of digits.
+	 * Converts a long to a hex string with the specified number of digits.
 	 * @param value The value to convert.
 	 * @param length The number of digits the returned string should have.
 	 * @return Lowercase hex version of the given value with the correct number of digits, using zeros to pad the left of the string to the correct length.
@@ -52,25 +54,86 @@ public class Longs {
 	}
 
 	/**
-	 * Converts a long value into its equivalent big-endian sequence of bytes, equivalent to <code>ByteBuffer.allocate(8).putLong(value).array()</code>.
-	 * @implNote Modified from code in an <a href="https://stackoverflow.com/a/27610608">answer on Stack Overflow</a>.
-	 * @param value The value to convert to a sequence of bytes.
-	 * @return The sequence of bytes representing the long value in network byte order.
+	 * Determines the a long value equivalent of a big-endian sequence of bytes, equivalent to that produced by {@link java.nio.ByteBuffer#putLong(long)}, stored
+	 * in the given array.
+	 * @apiNote This method requires exactly the number of bytes necessary. If some of the bytes should be ignored, use {@link #fromBytes(byte[], int)}.
+	 * @implSpec This implementation delegates to {@link #fromBytes(byte[], int)}.
+	 * @param bytes The array in which the bytes are stored.
+	 * @return The long value stored as bytes.
+	 * @throws IllegalArgumentException if the number of bytes given is not exactly {@value Long#BYTES}.
+	 * @throws ArrayIndexOutOfBoundsException if the given array does not have sufficient bytes to store a long value.
 	 */
-	public static byte[] toBytes(long value) {
-		return new byte[] {(byte)(value >> 8 * 7), (byte)(value >> 8 * 6), (byte)(value >> 8 * 5), (byte)(value >> 8 * 4), (byte)(value >> 8 * 3),
-				(byte)(value >> 8 * 2), (byte)(value >> 8 * 1), (byte)value};
+	public static long fromBytes(@Nonnull final byte[] bytes) {
+		checkArgument(bytes.length == Long.BYTES, "Exactly %d bytes are required to define a long value.", Long.BYTES);
+		return fromBytes(bytes, 0);
 	}
 
 	/**
-	 * Converts a big-endian sequence of bytes into the represented long value, equivalent to <code>ByteBuffer.wrap(bytes).getLong()</code>.
+	 * Determines the a long value equivalent of a big-endian sequence of bytes, equivalent to that produced by {@link java.nio.ByteBuffer#putLong(int, long)},
+	 * stored in the given array at the given index.
+	 * @param bytes The array in which the bytes are stored.
+	 * @param index The initial index in the array at which the bytes are stored.
+	 * @return The long value stored as bytes.
+	 * @throws ArrayIndexOutOfBoundsException if the given array, starting at the given index, does not have sufficient bytes to store a long value.
+	 */
+	public static long fromBytes(@Nonnull final byte[] bytes, final int index) {
+		long value = 0;
+		for(int i = index, len = index + Long.BYTES; i < len; i++) {
+			value = (value << 8) | (bytes[i] & 0xFF);
+		}
+		return value;
+	}
+
+	/**
+	 * Converts a long value to its equivalent big-endian sequence of bytes, equivalent to <code>ByteBuffer.allocate(8).putLong(value).array()</code>.
+	 * @implNote This implementation delegates to {@link #toBytes(long, byte[])}.
+	 * @param value The value to convert to a sequence of bytes.
+	 * @return The sequence of bytes representing the long value in network byte order.
+	 */
+	public static byte[] toBytes(final long value) {
+		return toBytes(value, new byte[Long.BYTES]);
+	}
+
+	/**
+	 * Converts a long value to its equivalent big-endian sequence of bytes, equivalent to {@link java.nio.ByteBuffer#putLong(long)}, storing the bytes in the
+	 * given array at the first index.
+	 * @implSpec This implementation delegates to {@link #toBytes(long, byte[], int)}.
+	 * @param value The value to convert to a sequence of bytes.
+	 * @param bytes The array in which to store the bytes.
+	 * @return The given array of bytes with the long value stored.
+	 * @throws ArrayIndexOutOfBoundsException if the given array does not have sufficient bytes to store a long value.
+	 */
+	public static byte[] toBytes(final long value, @Nonnull final byte[] bytes) {
+		return toBytes(value, bytes, 0);
+	}
+
+	/**
+	 * Converts a long value to its equivalent big-endian sequence of bytes, equivalent to {@link java.nio.ByteBuffer#putLong(int, long)}, storing the bytes in
+	 * the given array at the given index.
+	 * @param value The value to convert to a sequence of bytes.
+	 * @param bytes The array in which to store the bytes.
+	 * @param index The index in the array at which to begin storing the bytes.
+	 * @return The given array of bytes with the long value stored.
+	 * @throws ArrayIndexOutOfBoundsException if the given array, starting at the given index, does not have sufficient bytes to store a long value.
+	 */
+	public static byte[] toBytes(long value, @Nonnull final byte[] bytes, final int index) {
+		for(int i = index + Long.BYTES - 1; i >= index; i--) {
+			bytes[i] = (byte)(value & 0xFF);
+			value = value >>> Byte.SIZE;
+		}
+		return bytes;
+	}
+
+	/**
+	 * Converts a big-endian sequence of bytes to the represented long value, equivalent to <code>ByteBuffer.wrap(bytes).getLong()</code>.
 	 * @implNote Modified from code in an <a href="https://stackoverflow.com/a/27610608">answer on Stack Overflow</a>.
 	 * @param bytes The bytes to convert to a long.
 	 * @return The long value represented by the network byte order sequence of bytes.
+	 * @deprecated to be removed in favor of {@link #fromBytes(byte[])}.
 	 */
+	@Deprecated(forRemoval = true)
 	public static long toLong(final byte[] bytes) {
-		return (bytes[0] & 0xFFL) << 8 * 7 | (bytes[1] & 0xFFL) << 8 * 6 | (bytes[2] & 0xFFL) << 8 * 5 | (bytes[3] & 0xFFL) << 8 * 4 | (bytes[4] & 0xFFL) << 8 * 3
-				| (bytes[5] & 0xFFL) << 8 * 2 | (bytes[6] & 0xFFL) << 8 * 1 | (bytes[7] & 0xFFL);
+		return fromBytes(bytes);
 	}
 
 	/**
