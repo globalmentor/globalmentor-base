@@ -110,7 +110,7 @@ public final class Conditions {
 	 * @throws IllegalArgumentException if the given object not of the indicated type.
 	 */
 	public static <T> T checkArgumentIsInstance(final Object object, @Nonnull final Class<T> instanceClass) {
-		return checkArgumentIsInstance(object, instanceClass, null);
+		return checkArgumentIsInstance(object, instanceClass, "Argument not instance of class `%s`.", instanceClass.getName());
 	}
 
 	/**
@@ -138,18 +138,21 @@ public final class Conditions {
 	/**
 	 * Checks to make sure an argument isn't <code>null</code>, throwing {@link IllegalArgumentException} if the object is <code>null</code>.
 	 * @apiNote This is a precondition check.
+	 * @apiNote Normally an idiomatic Java precondition check for a <code>null</code> argument should throw {@link NullPointerException} instead of an
+	 *          {@link IllegalArgumentException}.
 	 * @param <T> The type of the object to be tested.
 	 * @param object The object to test.
 	 * @return The object, if it is not <code>null</code>.
 	 * @throws IllegalArgumentException if the given object is <code>null</code>.
 	 */
 	public static <T> T checkArgumentNotNull(final T object) {
-		return checkArgumentNotNull(object, null); //check the object with no description
+		return checkArgumentNotNull(object, "Argument cannot be `null`.");
 	}
 
 	/**
 	 * Checks to make sure an argument isn't <code>null</code>, throwing {@link IllegalArgumentException} if the object is <code>null</code>.
 	 * @apiNote This is a precondition check.
+	 * @apiNote Normally in Java a precondition check for a <code>null</code> argument should throw {@link NullPointerException}.
 	 * @param <T> The type of the object to be tested.
 	 * @param object The object to test.
 	 * @param description A description of the test to be used when generating an exception, optionally formatted with arguments, or <code>null</code> for no
@@ -184,7 +187,7 @@ public final class Conditions {
 	 * @see Optional#get()
 	 */
 	public static <T> T checkArgumentPresent(@Nonnull final Optional<T> optional) {
-		return checkArgumentPresent(optional, null);
+		return checkArgumentPresent(optional, "Argument not present.");
 	}
 
 	/**
@@ -410,7 +413,7 @@ public final class Conditions {
 	 * @throws ConfiguredStateException if the given variable is <code>null</code>.
 	 */
 	public static <T> T checkConfiguredStateNotNull(final T variable) {
-		return checkConfiguredStateNotNull(variable, null); //check for null with no description
+		return checkConfiguredStateNotNull(variable, "Configured state cannot be `null`.");
 	}
 
 	/**
