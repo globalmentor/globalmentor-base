@@ -22,22 +22,11 @@ import static java.util.Objects.*;
 
 /**
  * Abstract implementation of an iterator that filters an existing iterator.
- * 
- * <p>
- * This version does not support {@link #remove()}.
- * </p>
- * 
- * <p>
- * This version releases the decorated iterator when iteration is finished.
- * </p>
- * 
- * <p>
- * This class is not thread safe.
- * </p>
- * 
- * @author Garret Wilson
- * 
+ * @implSpec This version does not support {@link #remove()}.
+ * @implSpec This version releases the decorated iterator when iteration is finished.
+ * @implSpec This class is not thread safe.
  * @param <E> The type of element returned by the iterator.
+ * @author Garret Wilson
  */
 public abstract class AbstractFilteredIterator<E> extends AbstractPrimedIterator<E> {
 

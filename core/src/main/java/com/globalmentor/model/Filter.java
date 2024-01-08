@@ -16,12 +16,17 @@
 
 package com.globalmentor.model;
 
+import java.util.function.Predicate;
+
 /**
- * Indicates a class that determines whether a given object will pass through the filter or be filtered out.
+ * Indicates a class that determines whether a given object will pass through the filter or be filtered out by use of the {@link #isPass(Object)} method.
  * @author Garret Wilson
  * @param <T> The type of object being filtered.
+ * @deprecated in favor of {@link java.util.function.Predicate}.
  */
-public interface Filter<T> {
+@FunctionalInterface
+@Deprecated(forRemoval = true)
+public interface Filter<T> extends Predicate<T> {
 
 	/**
 	 * Determines whether a given object should pass through the filter or be filtered out.
@@ -29,4 +34,14 @@ public interface Filter<T> {
 	 * @return <code>true</code> if the object should pass through the filter, else <code>false</code> if the object should be filtered out.
 	 */
 	public boolean isPass(final T object);
+
+	/**
+	 * {@inheritDoc}
+	 * @implSpec This implementation delegates to {@link #isPass(Object)}.
+	 */
+	@Override
+	default boolean test(final T t) {
+		return isPass(t);
+	}
+
 }

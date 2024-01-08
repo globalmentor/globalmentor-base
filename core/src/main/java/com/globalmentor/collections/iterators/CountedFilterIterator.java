@@ -17,8 +17,7 @@
 package com.globalmentor.collections.iterators;
 
 import java.util.*;
-
-import com.globalmentor.model.Filter;
+import java.util.function.Predicate;
 
 /**
  * An iterator that filters the results of an existing iterator.
@@ -31,7 +30,7 @@ import com.globalmentor.model.Filter;
  * @param <E> The type of elements returned by this iterator.
  * @author Garret Wilson
  */
-public class CountedFilterIterator<E> extends IteratorDecorator<E> { //TODO refactor by extending FilterIterator and adding count and max count
+public class CountedFilterIterator<E> extends IteratorDecorator<E> { //TODO refactor by extending FilterIterator and adding count and max count, or removing the filter from this class altogether
 
 	/**
 	 * The number of elements to return, or -1 if all of the elements in the proxied iterator should be returned.
@@ -42,13 +41,13 @@ public class CountedFilterIterator<E> extends IteratorDecorator<E> { //TODO refa
 	protected int count;
 
 	/** The filter used to exclude items from the iterator. */
-	private Filter<E> filter;
+	private Predicate<E> filter;
 
 	/**
 	 * Return the filter used to exclude items from the iterator.
 	 * @return The filter used to exclude items from the iterator.
 	 */
-	public Filter<E> getFilter() {
+	public Predicate<E> getFilter() {
 		return filter;
 	}
 
@@ -56,7 +55,7 @@ public class CountedFilterIterator<E> extends IteratorDecorator<E> { //TODO refa
 	 * Sets the filter used to exclude items from the iterator.
 	 * @param filter The new filter to use, or <code>null</code> if there should be no filtering.
 	 */
-	public void setFilter(final Filter<E> filter) {
+	public void setFilter(final Predicate<E> filter) {
 		this.filter = filter;
 	}
 
@@ -126,10 +125,10 @@ public class CountedFilterIterator<E> extends IteratorDecorator<E> { //TODO refa
 	 * @return The next random integer in the iteration, or {@link #NO_NEXT_OBJECT} if the iteration has no more elements.
 	 */
 	protected Object getNext() {
-		final Filter<E> filter = getFilter(); //get our filter, if there is one
+		final Predicate<E> filter = getFilter(); //get our filter, if there is one
 		while(getIterator().hasNext()) { //while there are available items in the proxied iterator
 			final E next = getIterator().next(); //get the next element from the iterator
-			final boolean isPass = filter == null || filter.isPass(next); //see if our next element passes
+			final boolean isPass = filter == null || filter.test(next); //see if our next element passes
 			if(isPass) { //if this item isn't filtered out
 				return next; //return the object we found
 			}

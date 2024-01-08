@@ -19,17 +19,20 @@ package com.globalmentor.collections.iterators;
 import java.util.*;
 import java.util.function.Predicate;
 
+import static java.util.Objects.*;
+
 /**
- * An iterator that filters an existing iterator using a filter.
+ * An iterator that filters an existing iterator using a filter {@link Predicate}.
  * @implSpec This version does not support {@link #remove()}.
  * @implSpec This version releases the decorated iterator when iteration is finished.
  * @implSpec This class is not thread safe.
  * @param <E> The type of element returned by the iterator.
  * @author Garret Wilson
- * @deprecated in favor of {@link FilterIterator}.
  */
-@Deprecated(forRemoval = true)
-public class FilteredIterator<E> extends FilterIterator<E> {
+public class FilterIterator<E> extends AbstractFilteredIterator<E> {
+
+	/** The filter for this iterator's elements. */
+	private final Predicate<E> filter;
 
 	/**
 	 * Decorated iterator and filter constructor.
@@ -37,8 +40,18 @@ public class FilteredIterator<E> extends FilterIterator<E> {
 	 * @param filter The filter for this iterator's elements.
 	 * @throws NullPointerException if the given iterator and/or filter is <code>null</code>.
 	 */
-	public FilteredIterator(final Iterator<E> iterator, final Predicate<E> filter) {
-		super(iterator, filter);
+	public FilterIterator(final Iterator<E> iterator, final Predicate<E> filter) {
+		super(iterator);
+		this.filter = requireNonNull(filter);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @implSpec This version delegates to the filter's {@link Predicate#test(Object)}.
+	 */
+	@Override
+	protected boolean isPass(final E element) {
+		return filter.test(element);
 	}
 
 }

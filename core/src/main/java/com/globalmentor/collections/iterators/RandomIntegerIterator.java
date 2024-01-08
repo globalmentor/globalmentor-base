@@ -17,8 +17,7 @@
 package com.globalmentor.collections.iterators;
 
 import java.util.*;
-
-import com.globalmentor.model.Filter;
+import java.util.function.Predicate;
 
 /**
  * An iterator that iterates a sequence of random iterators. The iterator has the ability to restrict its output to a particular range. A subset of the range
@@ -55,13 +54,13 @@ public class RandomIntegerIterator implements Iterator<Integer> { //TODO maybe l
 	protected int count;
 
 	/** The filter used to exclude items from the iterator. */
-	private Filter<Integer> filter;
+	private Predicate<Integer> filter;
 
 	/**
 	 * Returns the filter used to exclude items from the iterator.
 	 * @return The filter used to exclude items from the iterator.
 	 */
-	public Filter<Integer> getFilter() {
+	public Predicate<Integer> getFilter() {
 		return filter;
 	}
 
@@ -69,7 +68,7 @@ public class RandomIntegerIterator implements Iterator<Integer> { //TODO maybe l
 	 * Sets the filter used to exclude items from the iterator.
 	 * @param filter The new filter to use, or <code>null</code> if there should be no filtering.
 	 */
-	public void setFilter(final Filter<Integer> filter) {
+	public void setFilter(final Predicate<Integer> filter) {
 		this.filter = filter;
 	}
 
@@ -249,12 +248,12 @@ public class RandomIntegerIterator implements Iterator<Integer> { //TODO maybe l
 	 * @return The next random integer in the iteration, or <code>null</code> if the iteration has no more elements.
 	 */
 	protected Integer getNext() {
-		final Filter<Integer> filter = getFilter(); //get our filter, if there is one
+		final Predicate<Integer> filter = getFilter(); //get our filter, if there is one
 		int includedRange = range - excludedIntegerSortedSet.size(); //see how many are left in the range if we exclude the excluded integers
 		while(includedRange > 0) { //while there are available items to choose from
 			final int index = random.nextInt(includedRange); //select an index into the included range that's left
 			int value = rangeMin + index; //shift the index to the start of the range
-			if(excludedIntegerSortedSet.size() > 0) { //if we have any exluded integers, adjust our value accordingly; otherwise, we already have the correct value
+			if(excludedIntegerSortedSet.size() > 0) { //if we have any excluded integers, adjust our value accordingly; otherwise, we already have the correct value
 				final Iterator<Integer> excludedIntegerIterator = excludedIntegerSortedSet.iterator(); //look at the excluded integers in order
 				while(excludedIntegerIterator.hasNext()) { //look at each excluded integer in order
 					final Integer excludedInteger = excludedIntegerIterator.next(); //get the next excluded integer in order
@@ -266,7 +265,7 @@ public class RandomIntegerIterator implements Iterator<Integer> { //TODO maybe l
 				}
 			}
 			final Integer nextInteger = Integer.valueOf(value); //we've found the next integer value
-			final boolean isPass = filter == null || filter.isPass(nextInteger); //see if our next integer passes
+			final boolean isPass = filter == null || filter.test(nextInteger); //see if our next integer passes
 			if(!repeat || !isPass) { //if we shouldn't repeat values, or if this item is filtered out
 				excludedIntegerSortedSet.add(nextInteger); //add this integer to our excluded integer set so that we won't use it next time
 				--includedRange; //show that we have a smaller included range to choose from, now that we've excluded something

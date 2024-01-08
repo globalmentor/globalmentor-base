@@ -17,8 +17,7 @@
 package com.globalmentor.collections.iterators;
 
 import java.util.*;
-
-import com.globalmentor.model.Filter;
+import java.util.function.Predicate;
 
 /**
  * An iterator that randomly iterates a list.
@@ -44,13 +43,13 @@ public class ListRandomIterator<E> implements Iterator<E> { //TODO fix setRandom
 	protected final RandomIntegerIterator indexIterator;
 
 	/** The filter used to exclude items from the iterator. */
-	private Filter<E> filter;
+	private Predicate<E> filter;
 
 	/**
 	 * Returns the filter used to exclude items from the iterator.
 	 * @return The filter used to exclude items from the iterator.
 	 */
-	public Filter<E> getFilter() {
+	public Predicate<E> getFilter() {
 		return filter;
 	}
 
@@ -58,7 +57,7 @@ public class ListRandomIterator<E> implements Iterator<E> { //TODO fix setRandom
 	 * Sets the filter used to exclude items from the iterator.
 	 * @param filter The new filter to use.
 	 */
-	public void setFilter(final Filter<E> filter) {
+	public void setFilter(final Predicate<E> filter) {
 		this.filter = filter;
 	}
 
@@ -163,22 +162,21 @@ public class ListRandomIterator<E> implements Iterator<E> { //TODO fix setRandom
 	 * A class that filters random integers based upon whether the object at the given index in our list passes the criteria of our local filter.
 	 * @author Garret Wilson
 	 */
-	protected class IndexFilter implements Filter<Integer> {
+	protected class IndexFilter implements Predicate<Integer> {
 
 		/** Constructor. */
 		public IndexFilter() {
 		}
 
 		/**
-		 * Determines whether a given object should pass through the filter or be filtered out. An integer object will be filtered out if the object at that index
-		 * in our list doesn't pass our main list filter.
-		 * @param integer The integer to filter.
-		 * @return <code>true</code> if the object should pass through the filter, else <code>false</code> if the object should be filtered out.
+		 * {@inheritDoc}
+		 * @implSpec An integer object will be filtered out if the object at that index in our list doesn't pass our main list filter.
 		 */
-		public boolean isPass(final Integer integer) {
+		@Override
+		public boolean test(final Integer integer) {
 			if(getFilter() != null) { //if we have a local filter
 				final E item = list.get(integer.intValue()); //get this item in our list
-				return getFilter().isPass(item); //filter the item in our list using our local filter
+				return getFilter().test(item); //filter the item in our list using our local filter
 			} else { //if we don't have a filter
 				return true; //let everything pass
 			}
