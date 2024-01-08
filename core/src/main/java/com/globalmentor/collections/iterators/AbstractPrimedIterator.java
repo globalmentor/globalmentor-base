@@ -20,18 +20,10 @@ import java.util.*;
 
 /**
  * Abstract implementation of an iterator that lazily primes its next value.
- * 
- * <p>
- * This version does not support {@link #remove()}.
- * </p>
- * 
- * <p>
- * This class is not thread safe.
- * </p>
- * 
- * @author Garret Wilson
- * 
+ * @implSpec This version does not support {@link #remove()}.
+ * @implSpec This class is not thread safe.
  * @param <E> The type of element returned by the iterator.
+ * @author Garret Wilson
  */
 public abstract class AbstractPrimedIterator<E> implements Iterator<E> {
 

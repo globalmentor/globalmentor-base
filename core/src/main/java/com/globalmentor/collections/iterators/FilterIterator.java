@@ -18,6 +18,8 @@ package com.globalmentor.collections.iterators;
 
 import java.util.*;
 
+import static java.util.Objects.*;
+
 import com.globalmentor.model.Filter;
 
 /**
@@ -27,10 +29,11 @@ import com.globalmentor.model.Filter;
  * @implSpec This class is not thread safe.
  * @param <E> The type of element returned by the iterator.
  * @author Garret Wilson
- * @deprecated in favor of {@link FilterIterator}.
  */
-@Deprecated(forRemoval = true)
-public class FilteredIterator<E> extends FilterIterator<E> {
+public class FilterIterator<E> extends AbstractFilteredIterator<E> {
+
+	/** The filter for this iterator's elements. */
+	private final Filter<E> filter;
 
 	/**
 	 * Decorated iterator and filter constructor.
@@ -38,8 +41,17 @@ public class FilteredIterator<E> extends FilterIterator<E> {
 	 * @param filter The filter for this iterator's elements.
 	 * @throws NullPointerException if the given iterator and/or filter is <code>null</code>.
 	 */
-	public FilteredIterator(final Iterator<E> iterator, final Filter<E> filter) {
-		super(iterator, filter);
+	public FilterIterator(final Iterator<E> iterator, final Filter<E> filter) {
+		super(iterator);
+		this.filter = requireNonNull(filter);
+	}
+
+	/**
+	 * {@inheritDoc} This version delegates to {@link Filter#isPass(Object)}.
+	 */
+	@Override
+	protected boolean isPass(final E element) {
+		return filter.isPass(element);
 	}
 
 }

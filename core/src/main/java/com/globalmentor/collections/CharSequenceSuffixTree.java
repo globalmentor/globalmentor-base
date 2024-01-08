@@ -669,7 +669,7 @@ public class CharSequenceSuffixTree extends AbstractSuffixTree<CharSequenceSuffi
 	 * 
 	 * @author Garret Wilson
 	 */
-	private class MapEntryNodeEdgeIterator extends FilteredIterator<CharSequenceEdge> { //TODO add per-node linked lists or other shortcuts to speed iteration
+	private class MapEntryNodeEdgeIterator extends FilterIterator<CharSequenceEdge> { //TODO add per-node linked lists or other shortcuts to speed iteration
 
 		/**
 		 * Parent node constructor.
