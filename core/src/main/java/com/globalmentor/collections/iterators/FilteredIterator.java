@@ -17,11 +17,10 @@
 package com.globalmentor.collections.iterators;
 
 import java.util.*;
-
-import com.globalmentor.model.Filter;
+import java.util.function.Predicate;
 
 /**
- * An iterator that filters an existing iterator using a {@link Filter}.
+ * An iterator that filters an existing iterator using a filter.
  * @implSpec This version does not support {@link #remove()}.
  * @implSpec This version releases the decorated iterator when iteration is finished.
  * @implSpec This class is not thread safe.
@@ -38,7 +37,7 @@ public class FilteredIterator<E> extends FilterIterator<E> {
 	 * @param filter The filter for this iterator's elements.
 	 * @throws NullPointerException if the given iterator and/or filter is <code>null</code>.
 	 */
-	public FilteredIterator(final Iterator<E> iterator, final Filter<E> filter) {
+	public FilteredIterator(final Iterator<E> iterator, final Predicate<E> filter) {
 		super(iterator, filter);
 	}
 

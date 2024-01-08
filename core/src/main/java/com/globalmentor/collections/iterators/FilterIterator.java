@@ -17,13 +17,12 @@
 package com.globalmentor.collections.iterators;
 
 import java.util.*;
+import java.util.function.Predicate;
 
 import static java.util.Objects.*;
 
-import com.globalmentor.model.Filter;
-
 /**
- * An iterator that filters an existing iterator using a {@link Filter}.
+ * An iterator that filters an existing iterator using a filter {@link Predicate}.
  * @implSpec This version does not support {@link #remove()}.
  * @implSpec This version releases the decorated iterator when iteration is finished.
  * @implSpec This class is not thread safe.
@@ -33,7 +32,7 @@ import com.globalmentor.model.Filter;
 public class FilterIterator<E> extends AbstractFilteredIterator<E> {
 
 	/** The filter for this iterator's elements. */
-	private final Filter<E> filter;
+	private final Predicate<E> filter;
 
 	/**
 	 * Decorated iterator and filter constructor.
@@ -41,17 +40,18 @@ public class FilterIterator<E> extends AbstractFilteredIterator<E> {
 	 * @param filter The filter for this iterator's elements.
 	 * @throws NullPointerException if the given iterator and/or filter is <code>null</code>.
 	 */
-	public FilterIterator(final Iterator<E> iterator, final Filter<E> filter) {
+	public FilterIterator(final Iterator<E> iterator, final Predicate<E> filter) {
 		super(iterator);
 		this.filter = requireNonNull(filter);
 	}
 
 	/**
-	 * {@inheritDoc} This version delegates to {@link Filter#isPass(Object)}.
+	 * {@inheritDoc}
+	 * @implSpec This version delegates to the filter's {@link Predicate#test(Object)}.
 	 */
 	@Override
 	protected boolean isPass(final E element) {
-		return filter.isPass(element);
+		return filter.test(element);
 	}
 
 }

@@ -28,7 +28,6 @@ import static java.util.Objects.*;
 
 import com.globalmentor.collections.iterators.*;
 import com.globalmentor.java.*;
-import com.globalmentor.model.Filter;
 
 /**
  * A suffix tree for a sequence of characters.
@@ -676,12 +675,7 @@ public class CharSequenceSuffixTree extends AbstractSuffixTree<CharSequenceSuffi
 		 * @param parentNode The node serving as the parent of all edges to return.
 		 */
 		public MapEntryNodeEdgeIterator(final Node parentNode) {
-			super(edgeMap.values().iterator(), new Filter<CharSequenceEdge>() { //we'll filter the edges
-
-				public boolean isPass(final CharSequenceEdge edge) {
-					return edge.getParentNode().getIndex() == parentNode.getIndex(); //TODO add equals() method
-				}
-			});
+			super(edgeMap.values().iterator(), edge -> edge.getParentNode().getIndex() == parentNode.getIndex()); //we'll filter the edges TODO add equals() method
 		}
 	}
 
