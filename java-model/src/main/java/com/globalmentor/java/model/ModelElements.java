@@ -76,7 +76,7 @@ public final class ModelElements {
 	 */
 	public static Optional<? extends AnnotationMirror> findElementAnnotationMirrorForClass(@Nonnull final TypeElement typeElement,
 			@Nonnull final Class<? extends Annotation> annotationClass) {
-		return elementEnnotationMirrorsForClass(typeElement, annotationClass).findAny();
+		return elementAnnotationMirrorsForClass(typeElement, annotationClass).findAny();
 	}
 
 	/**
@@ -85,7 +85,7 @@ public final class ModelElements {
 	 * @param annotationClass The type of annotation to find.
 	 * @return The mirrors for the annotation(s) annotating the indicated type, if any.
 	 */
-	public static Stream<? extends AnnotationMirror> elementEnnotationMirrorsForClass(@Nonnull final TypeElement typeElement,
+	public static Stream<? extends AnnotationMirror> elementAnnotationMirrorsForClass(@Nonnull final TypeElement typeElement,
 			@Nonnull final Class<? extends Annotation> annotationClass) {
 		final String canonicalName = annotationClass.getCanonicalName();
 		checkArgument(canonicalName != null, "Annotation class `%s` has no canonical name.", annotationClass.getName()); //check for completeness; not realistically possible: an annotation cannot be defined as an anonymous inner class
