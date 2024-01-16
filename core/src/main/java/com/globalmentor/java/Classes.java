@@ -42,28 +42,48 @@ public final class Classes {
 	public static final Set<Class<?>> PRIMITIVE_WRAPPER_CLASSES = Set.of(Boolean.class, Byte.class, Character.class, Short.class, Integer.class, Long.class,
 			Float.class, Double.class);
 
-	/** The name extension for Java class files. */
+	/**
+	 * The name extension for Java class files.
+	 * @deprecated To be removed in favor of a separate library.
+	 */
+	@Deprecated(forRemoval = true)
 	public static final String CLASS_FILENAME_EXTENSION = "class";
 
-	/** The getter prefix "get". */
+	/**
+	 * The getter prefix "get".
+	 * @deprecated To be removed in favor of a separate library.
+	 */
+	@Deprecated(forRemoval = true)
 	public static final String GET_GETTER_PREFIX = "get";
 
-	/** The getter prefix "is". */
+	/**
+	 * The getter prefix "is".
+	 * @deprecated To be removed in favor of a separate library.
+	 */
+	@Deprecated(forRemoval = true)
 	public static final String IS_GETTER_PREFIX = "is";
 
-	/** The getter prefix "set". */
+	/**
+	 * The getter prefix "set".
+	 * @deprecated To be removed in favor of a separate library.
+	 */
+	@Deprecated(forRemoval = true)
 	public static final String SET_SETTER_PREFIX = "set";
 
 	/**
 	 * The pattern recognizing a getter method name: "get" or "is" followed by any other characters (assuming they are Java characters), with the prefix in
 	 * matching group 1 and the property name in matching group 2.
+	 * @deprecated To be removed in favor of a separate library.
 	 */
+	@Deprecated(forRemoval = true)
 	public static final Pattern GETTER_METHOD_NAME_PATTERN = Pattern.compile("(" + GET_GETTER_PREFIX + '|' + IS_GETTER_PREFIX + ")(.+)");
 
 	/**
 	 * The pattern recognizing a setter method name: "set" followed by any other characters (assuming they are Java characters), with the prefix in matching group
 	 * 1 and the property name in matching group 2.
+	 * @deprecated To be removed in favor of a separate library.
 	 */
+	@Deprecated(forRemoval = true)
 	public static final Pattern SETTER_METHOD_NAME_PATTERN = Pattern.compile("(" + SET_SETTER_PREFIX + ")(.+)");
 
 	/** This class cannot be publicly instantiated. */
@@ -378,6 +398,27 @@ public final class Classes {
 	}
 
 	/**
+	 * Finds a method object that reflects the specified public member method of the class or interface represented by the given class.
+	 * @apiNote This method is equivalent to calling {@link Class#getMethod(String, Class...)} except that if no matching method is found, an empty
+	 *          {@link Optional} is returned rather than a {@link NoSuchMethodException} being thrown.
+	 * @param objectClass The class for which the method should be found.
+	 * @param name The name of the method.
+	 * @param parameterTypes The list of parameters.
+	 * @return The method object that matches the specified name and parameter types, or empty if if a matching method is not found or if the name is is
+	 *         "&lt;init&gt;"or "&lt;clinit&gt;".
+	 * @throws NullPointerException if the given name is <code>null</code>
+	 * @throws SecurityException If a security manager is present that denies access to the constructor or the caller's class loader is different and denies
+	 *           access to the package of this class.
+	 */
+	public static Optional<Method> findMethod(final Class<?> objectClass, final String name, final Class<?>... parameterTypes) throws SecurityException {
+		try {
+			return Optional.of(objectClass.getMethod(name, parameterTypes));
+		} catch(final NoSuchMethodException noSuchMethodException) {
+			return Optional.empty();
+		}
+	}
+
+	/**
 	 * Returns a <code>Method</code> object that reflects the specified public member method of the class or interface represented by this <code>Class</code>
 	 * object. This method differs from {@link Class#getMethod(String, Class...)} in that if no matching method is found, <code>null</code> is returned rather
 	 * than a {@link NoSuchMethodException} being thrown.
@@ -389,14 +430,11 @@ public final class Classes {
 	 * @throws NullPointerException if <code>name</code> is <code>null</code>
 	 * @throws SecurityException If a security manager is present that denies access to the constructor or the caller's class loader is different and denies
 	 *           access to the package of this class.
-	 * @since JDK1.1
+	 * @deprecated in favor of {@link #findMethod(Class, String, Class...)}
 	 */
+	@Deprecated(forRemoval = true)
 	public static Method getMethod(final Class<?> objectClass, final String name, final Class<?>... parameterTypes) throws SecurityException {
-		try {
-			return objectClass.getMethod(name, parameterTypes); //ask the class for the method
-		} catch(final NoSuchMethodException noSuchMethodException) { //if the method isn't found
-			return null; //indicate that the method couldn't be found
-		}
+		return findMethod(objectClass, name, parameterTypes).orElse(null);
 	}
 
 	/**
@@ -452,9 +490,11 @@ public final class Classes {
 	 * @param objectClass The class for which a getter method should be returned.
 	 * @param propertyName The property name, such as "propertyName".
 	 * @return The method with the name "get<var>PropertyName</var>", or <code>null</code> if such a method was not found.
+	 * @deprecated To be removed in favor of a separate library.
 	 */
+	@Deprecated(forRemoval = true)
 	public static Method getGetPropertyMethod(final Class<?> objectClass, final String propertyName) {
-		return getMethod(objectClass, getGetPropertyMethodName(propertyName)); //return the getter method, if there is one
+		return findMethod(objectClass, getGetPropertyMethodName(propertyName)).orElse(null); //return the getter method, if there is one
 	}
 
 	/**
@@ -464,10 +504,12 @@ public final class Classes {
 	 * @param propertyName The property name, such as "propertyName".
 	 * @return The method with the name "is<var>PropertyName</var>" having a {@link Boolean#TYPE} return type, or <code>null</code> if such a method was not
 	 *         found.
+	 * @deprecated To be removed in favor of a separate library.
 	 */
+	@Deprecated(forRemoval = true)
 	public static Method getIsPropertyMethod(final Class<?> objectClass, final String propertyName) {
-		final Method method = getMethod(objectClass, getIsPropertyMethodName(propertyName)); //get the getter method, if there is one
-		return method != null && Boolean.TYPE.equals(method.getReturnType()) ? method : null; //if there is such a method, make sure it returns a boolean
+		final Optional<Method> foundMethod = findMethod(objectClass, getIsPropertyMethodName(propertyName)); //get the getter method, if there is one
+		return foundMethod.filter(method -> Boolean.TYPE.equals(method.getReturnType())).orElse(null); //if there is such a method, make sure it returns a boolean
 	}
 
 	/**
@@ -478,10 +520,12 @@ public final class Classes {
 	 * @param propertyName The property name, such as "propertyName".
 	 * @return The method with the name "get<var>PropertyName</var>", or the name "is<var>PropertyName</var>" having a {@link Boolean#TYPE}; or <code>null</code>
 	 *         if such a method was not found.
+	 * @deprecated To be removed in favor of a separate library.
 	 */
+	@Deprecated(forRemoval = true)
 	public static Method getGetterMethod(final Class<?> objectClass, final String propertyName) {
-		final Method getPropertyMethod = getMethod(objectClass, getGetPropertyMethodName(propertyName)); //get the getProperty method, if there is one
-		return getPropertyMethod != null ? getPropertyMethod : getIsPropertyMethod(objectClass, propertyName); //if there is no getProperty method, check for a boolean isProperty method
+		return findMethod(objectClass, getGetPropertyMethodName(propertyName)) //get the getProperty method, if there is one
+				.orElseGet(() -> getIsPropertyMethod(objectClass, propertyName)); //if there is no getProperty method, check for a boolean isProperty method
 	}
 
 	/**
@@ -492,9 +536,11 @@ public final class Classes {
 	 * @param valueClass The type of property value to be set.
 	 * @return The method with the name "set<var>PropertyName</var>" and the given value class as a parameter type, or <code>null</code> if such a method was not
 	 *         found.
+	 * @deprecated To be removed in favor of a separate library.
 	 */
+	@Deprecated(forRemoval = true)
 	public static Method getSetterMethod(final Class<?> objectClass, final String propertyName, final Class<?> valueClass) {
-		return getMethod(objectClass, getSetPropertyMethodName(propertyName), valueClass); //return the setter method, if there is one
+		return findMethod(objectClass, getSetPropertyMethodName(propertyName), valueClass).orElse(null); //return the setter method, if there is one
 	}
 
 	/**
@@ -504,7 +550,9 @@ public final class Classes {
 	 * @param valueClass The type of property value to be set.
 	 * @return The method with the name "set<var>PropertyName</var>" and a single parameter assignment-compatible with the given value class, or <code>null</code>
 	 *         if such a method was not found.
+	 * @deprecated To be removed in favor of a separate library.
 	 */
+	@Deprecated(forRemoval = true)
 	public static Method getCompatibleSetterMethod(final Class<?> objectClass, final String propertyName, final Class<?> valueClass) {
 		final String setterMethodName = getSetPropertyMethodName(propertyName); //get the setter name to look for
 		for(final Method method : objectClass.getMethods()) { //look at each object method
@@ -526,7 +574,9 @@ public final class Classes {
 	 * @param method The method to check
 	 * @return <code>true</code> if the method has a return type but no parameters, and the name of the method is in the form "get<var>PropertyName</var>" or
 	 *         "is<var>PropertyName</var>".
+	 * @deprecated To be removed in favor of a separate library.
 	 */
+	@Deprecated(forRemoval = true)
 	public static boolean isGetterMethod(final Method method) {
 		return isGetterMethodName(method.getName()) && method.getReturnType() != null && method.getParameterTypes().length == 0; //see if the method has a getter name with a return type and no parameters
 	}
@@ -535,7 +585,9 @@ public final class Classes {
 	 * Determines if the given method name is that of a getter method.
 	 * @param methodName The method name, such as "getPropertyName" or "isPropertyName".
 	 * @return <code>true</code> if the name of the method is in the form "get<var>PropertyName</var>" or "is<var>PropertyName</var>".
+	 * @deprecated To be removed in favor of a separate library.
 	 */
+	@Deprecated(forRemoval = true)
 	public static boolean isGetterMethodName(final String methodName) {
 		return GETTER_METHOD_NAME_PATTERN.matcher(methodName).matches(); //see if the method name matches the getter method name pattern
 	}
@@ -544,7 +596,9 @@ public final class Classes {
 	 * Determines if the given method is a setter method.
 	 * @param method The method name to check
 	 * @return <code>true</code> if the method has no return type and a single parameter, and the name of the method is in the form "set<var>PropertyName</var>".
+	 * @deprecated To be removed in favor of a separate library.
 	 */
+	@Deprecated(forRemoval = true)
 	public static boolean isSetterMethod(final Method method) {
 		return isSetterMethodName(method.getName()) && method.getReturnType() == null && method.getParameterTypes().length == 1; //see if the method has a setter name with no return type and a single parameter		
 	}
@@ -553,7 +607,9 @@ public final class Classes {
 	 * Determines if the given method name is that of a setter method.
 	 * @param methodName The method name, such as "setPropertyName".
 	 * @return <code>true</code> if the name of the method is in the form "set<var>PropertyName</var>".
+	 * @deprecated To be removed in favor of a separate library.
 	 */
+	@Deprecated(forRemoval = true)
 	public static boolean isSetterMethodName(final String methodName) {
 		return SETTER_METHOD_NAME_PATTERN.matcher(methodName).matches(); //see if the method name matches the setter method name pattern
 	}
@@ -565,7 +621,9 @@ public final class Classes {
 	 *         "get<var>PropertyName</var>" or "is<var>PropertyName</var>" or the method is not a getter method.
 	 * @see Method#getName()
 	 * @see #isGetterMethod(Method)
+	 * @deprecated To be removed in favor of a separate library.
 	 */
+	@Deprecated(forRemoval = true)
 	public static String getGetterPropertyName(final Method method) {
 		String propertyName = getGetterPropertyName(method.getName()); //get the getter property name
 		if(propertyName != null) { //if the name is for a getter property
@@ -581,7 +639,9 @@ public final class Classes {
 	 * @param methodName The method name, such as "getPropertyName" or "isPropertyName".
 	 * @return The property name in the form <var>propertyName</var>, or <code>null</code> if the name of the method is not in the form
 	 *         "get<var>PropertyName</var>" or "is<var>PropertyName</var>".
+	 * @deprecated To be removed in favor of a separate library.
 	 */
+	@Deprecated(forRemoval = true)
 	public static String getGetterPropertyName(final String methodName) {
 		final Matcher matcher = GETTER_METHOD_NAME_PATTERN.matcher(methodName); //match the method name against the getter method name pattern
 		return matcher.matches() ? Java.getVariableName(matcher.group(2)) : null; //if there is a match, return the variable name of the matching group; otherwise return null
@@ -593,7 +653,9 @@ public final class Classes {
 	 * @return The property name in the form <var>propertyName</var>, or <code>null</code> if the name of the method is not in the form
 	 *         "set<var>PropertyName</var>".
 	 * @see Method#getName()
+	 * @deprecated To be removed in favor of a separate library.
 	 */
+	@Deprecated(forRemoval = true)
 	public static String getSetterPropertyName(final Method method) {
 		return getSetterPropertyName(method.getName());
 	}
@@ -603,7 +665,9 @@ public final class Classes {
 	 * @param methodName The method name, such as "setPropertyName".
 	 * @return The property name in the form <var>propertyName</var>, or <code>null</code> if the name of the method is not in the form
 	 *         "set<var>PropertyName</var>".
+	 * @deprecated To be removed in favor of a separate library.
 	 */
+	@Deprecated(forRemoval = true)
 	public static String getSetterPropertyName(final String methodName) {
 		final Matcher matcher = SETTER_METHOD_NAME_PATTERN.matcher(methodName); //match the method name against the setter method name pattern
 		return matcher.matches() ? Java.getVariableName(matcher.group(2)) : null; //if there is a match, return the variable name of the matching group; otherwise return null
@@ -613,7 +677,9 @@ public final class Classes {
 	 * The name of the "get" getter method corresponding to the given property.
 	 * @param propertyName The property name, such as "propertyName".
 	 * @return The name of the getter method in the form "get<var>PropertyName</var>".
+	 * @deprecated To be removed in favor of a separate library.
 	 */
+	@Deprecated(forRemoval = true)
 	public static String getGetPropertyMethodName(final String propertyName) {
 		return GET_GETTER_PREFIX + getProperName(propertyName); //return "getPropertyName"
 	}
@@ -622,7 +688,9 @@ public final class Classes {
 	 * The name of the "is" getter method corresponding to the given property.
 	 * @param propertyName The property name, such as "propertyName".
 	 * @return The name of the getter method in the form "is<var>PropertyName</var>".
+	 * @deprecated To be removed in favor of a separate library.
 	 */
+	@Deprecated(forRemoval = true)
 	public static String getIsPropertyMethodName(final String propertyName) {
 		return IS_GETTER_PREFIX + getProperName(propertyName); //return "isPropertyName"
 	}
@@ -631,7 +699,9 @@ public final class Classes {
 	 * The name of the "set" setter method corresponding to the given property.
 	 * @param propertyName The property name, such as "propertyName".
 	 * @return The name of the setter method in the form "set<var>PropertyName</var>".
+	 * @deprecated To be removed in favor of a separate library.
 	 */
+	@Deprecated(forRemoval = true)
 	public static String getSetPropertyMethodName(final String propertyName) {
 		return SET_SETTER_PREFIX + getProperName(propertyName); //return "setPropertyName"
 	}

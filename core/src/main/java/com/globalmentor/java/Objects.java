@@ -214,7 +214,9 @@ public class Objects {
 	 * @throws IllegalAccessException if the getter method enforces Java language access control and the getter method is inaccessible.
 	 * @throws InvocationTargetException if the getter method throws an exception.
 	 * @throws ExceptionInInitializerError if the initialization provoked by the getter method fails.
+	 * @deprecated To be removed in favor of a separate library.
 	 */
+	@Deprecated(forRemoval = true)
 	public static Object getProperty(final Object object, final String propertyName)
 			throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
 		final Method getterMethod = getGetterMethod(object.getClass(), propertyName); //get the getter property, if there is one
