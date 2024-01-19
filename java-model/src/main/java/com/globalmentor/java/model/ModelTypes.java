@@ -26,6 +26,8 @@ import javax.lang.model.element.*;
 import javax.lang.model.type.*;
 import javax.lang.model.util.*;
 
+import com.globalmentor.java.Annotations;
+
 /**
  * Utilities for working with Java model {@link TypeMirror} and classes.
  * @author Garret Wilson
@@ -39,15 +41,8 @@ public final class ModelTypes {
 	}
 
 	/**
-	 * The simple name of the special <code>value</code> annotation element allowing for shorthand value notation.
-	 * @see <a href="https://docs.oracle.com/javase/specs/jls/se21/html/jls-9.html#jls-9.7.3">The Java® Language Specification, Java SE 21 Edition § 9.7.3.
-	 *      Single-Element Annotations</a>
-	 */
-	private static final String ANNOTATION_VALUE_ELEMENT_SIMPLE_NAME = "value";
-
-	/**
-	 * Finds the annotation value mapped to the {@value #ANNOTATION_VALUE_ELEMENT_SIMPLE_NAME} element from an annotation mirror.
-	 * @apiNote The {@value #ANNOTATION_VALUE_ELEMENT_SIMPLE_NAME} element is the special element which allows the element value to be left out in the source
+	 * Finds the annotation value mapped to the {@value Annotations#VALUE_ELEMENT_NAME} element from an annotation mirror.
+	 * @apiNote The {@value Annotations#VALUE_ELEMENT_NAME} element is the special element which allows the element value to be left out in the source
 	 *          file.
 	 * @implSpec This implementation delegates to {@link #findAnnotationElementValueBySimpleName(AnnotationMirror, CharSequence)}.
 	 * @param annotationMirror The annotation mirror in which to look up an element value.
@@ -56,7 +51,7 @@ public final class ModelTypes {
 	 *      Single-Element Annotations</a>
 	 */
 	public static Optional<? extends AnnotationValue> findAnnotationValueElementValue(@Nonnull AnnotationMirror annotationMirror) {
-		return findAnnotationElementValueBySimpleName(annotationMirror, ANNOTATION_VALUE_ELEMENT_SIMPLE_NAME);
+		return findAnnotationElementValueBySimpleName(annotationMirror, Annotations.VALUE_ELEMENT_NAME);
 	}
 
 	/**
