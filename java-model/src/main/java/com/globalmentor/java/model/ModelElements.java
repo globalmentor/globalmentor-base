@@ -28,6 +28,8 @@ import javax.lang.model.element.*;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.util.*;
 
+import com.globalmentor.java.Annotations;
+
 /**
  * Utilities for working with Java model {@link Element} and related classes.
  * @author Garret Wilson
@@ -68,28 +70,28 @@ public final class ModelElements {
 	}
 
 	/**
-	 * Retrieves an annotation mirror from a type element for annotations of a particular type.
+	 * Retrieves an annotation mirror from an element for annotations of a particular type.
 	 * @implSpec This implementation does not check for repeated annotations.
-	 * @param typeElement The type element representing the type potentially annotated with the specified annotation.
+	 * @param element The element such as representing a type or method potentially annotated with the specified annotation.
 	 * @param annotationClass The type of annotation to find.
 	 * @return The mirrors for the annotation annotating the indicated type, if any.
 	 */
-	public static Optional<? extends AnnotationMirror> findElementAnnotationMirrorForClass(@Nonnull final TypeElement typeElement,
+	public static Optional<? extends AnnotationMirror> findElementAnnotationMirrorForClass(@Nonnull final Element element,
 			@Nonnull final Class<? extends Annotation> annotationClass) {
-		return elementAnnotationMirrorsForClass(typeElement, annotationClass).findAny();
+		return elementAnnotationMirrorsForClass(element, annotationClass).findAny();
 	}
 
 	/**
 	 * Retrieves all the annotation mirrors from a type element for annotations of a particular type.
-	 * @param typeElement The type element representing the type potentially annotated with the specified annotation.
+	 * @param element The element such as representing a type or method potentially annotated with the specified annotation.
 	 * @param annotationClass The type of annotation to find.
 	 * @return The mirrors for the annotation(s) annotating the indicated type, if any.
 	 */
-	public static Stream<? extends AnnotationMirror> elementAnnotationMirrorsForClass(@Nonnull final TypeElement typeElement,
+	public static Stream<? extends AnnotationMirror> elementAnnotationMirrorsForClass(@Nonnull final Element element,
 			@Nonnull final Class<? extends Annotation> annotationClass) {
 		final String canonicalName = annotationClass.getCanonicalName();
 		checkArgument(canonicalName != null, "Annotation class `%s` has no canonical name.", annotationClass.getName()); //check for completeness; not realistically possible: an annotation cannot be defined as an anonymous inner class
-		return typeElement.getAnnotationMirrors().stream().filter(annotationMirror -> {
+		return element.getAnnotationMirrors().stream().filter(annotationMirror -> {
 			final Element annotationElement = annotationMirror.getAnnotationType().asElement();
 			assert annotationElement instanceof TypeElement : "An annotation mirror type's element should always be a `TypeElement`.";
 			return ((TypeElement)annotationElement).getQualifiedName().contentEquals(canonicalName);
@@ -107,6 +109,22 @@ public final class ModelElements {
 			@Nonnull final Class<? extends Annotation> annotationClass) {
 		return typeElement.getInterfaces().stream().flatMap(asInstances(DeclaredType.class))
 				.filter(interfaceType -> findElementAnnotationMirrorForClass((TypeElement)interfaceType.asElement(), annotationClass).isPresent());
+	}
+
+	/**
+	 * Creates an abstraction implementation for a model element.
+	 * @param element The element such as representing a type or method for which an abstraction should be created.
+	 * @return An adapter of the type element to an annotations abstraction interface.
+	 */
+	public static Annotations annotationsOf(@Nonnull final Element element) {
+		return new Annotations() {
+			@Override
+			public Optional<Object> findAnnotationValue(final Class<? extends Annotation> annotationClass) {
+				return findElementAnnotationMirrorForClass(element, annotationClass) //
+						.flatMap(ModelTypes::findAnnotationValueElementValue) //
+						.map(AnnotationValue::getValue);
+			}
+		};
 	}
 
 }
