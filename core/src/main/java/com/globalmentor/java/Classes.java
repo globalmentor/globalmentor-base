@@ -20,6 +20,7 @@ import java.lang.reflect.*;
 import java.net.*;
 import java.util.*;
 import java.util.regex.*;
+import java.util.stream.Stream;
 
 import static java.util.Objects.*;
 
@@ -398,10 +399,30 @@ public final class Classes {
 	}
 
 	/**
+	 * Returns a stream of all the declared methods of the class or interface.
+	 * @apiNote This is a convenience method returning the same methods as {@link Class#getDeclaredMethods()}.
+	 * @param clazz The class representing the class or interface.
+	 * @return A stream of the declared methods of the given class.
+	 */
+	public static Stream<Method> declaredMethods(final Class<?> clazz) {
+		return Stream.of(clazz.getDeclaredMethods());
+	}
+
+	/**
+	 * Returns a stream of methods represented by the class or interface, including those inherited from superclasses and superinterfaces.
+	 * @apiNote This is a convenience method returning the same methods as {@link Class#getMethods()}.
+	 * @param clazz The class representing the class or interface.
+	 * @return A stream of the public methods of the given class.
+	 */
+	public static Stream<Method> methods(final Class<?> clazz) {
+		return Stream.of(clazz.getMethods());
+	}
+
+	/**
 	 * Finds a method object that reflects the specified public member method of the class or interface represented by the given class.
 	 * @apiNote This method is equivalent to calling {@link Class#getMethod(String, Class...)} except that if no matching method is found, an empty
 	 *          {@link Optional} is returned rather than a {@link NoSuchMethodException} being thrown.
-	 * @param objectClass The class for which the method should be found.
+	 * @param clazz The class for which the method should be found.
 	 * @param name The name of the method.
 	 * @param parameterTypes The list of parameters.
 	 * @return The method object that matches the specified name and parameter types, or empty if if a matching method is not found or if the name is is
@@ -410,9 +431,9 @@ public final class Classes {
 	 * @throws SecurityException If a security manager is present that denies access to the constructor or the caller's class loader is different and denies
 	 *           access to the package of this class.
 	 */
-	public static Optional<Method> findMethod(final Class<?> objectClass, final String name, final Class<?>... parameterTypes) throws SecurityException {
+	public static Optional<Method> findMethod(final Class<?> clazz, final String name, final Class<?>... parameterTypes) throws SecurityException {
 		try {
-			return Optional.of(objectClass.getMethod(name, parameterTypes));
+			return Optional.of(clazz.getMethod(name, parameterTypes));
 		} catch(final NoSuchMethodException noSuchMethodException) {
 			return Optional.empty();
 		}
