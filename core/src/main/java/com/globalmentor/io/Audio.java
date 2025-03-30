@@ -33,8 +33,6 @@ public final class Audio {
 
 	//media types
 
-	/** Single channel audio encoded using 8-bit ISDN mu-law [PCM] at a sample rate of 8000 Hz. */
-
 	/**
 	 * Basic audio content defined in <cite>RFC 2046</cite> but removed in later versions such as <cite>RFC 6838</cite> to indicate "an absolutely minimal lowest
 	 * common denominator audio format" of "single channel audio encoded using 8bit ISDN mu-law [PCM] at a sample rate of 8000 Hz".

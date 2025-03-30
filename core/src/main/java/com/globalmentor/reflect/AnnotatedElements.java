@@ -16,12 +16,17 @@
 
 package com.globalmentor.reflect;
 
+import static com.globalmentor.java.Classes.*;
+import static com.globalmentor.java.Conditions.*;
+
 import java.lang.annotation.Annotation;
-import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.*;
 import java.util.Optional;
 import java.util.stream.Stream;
 
 import javax.annotation.*;
+
+import com.globalmentor.java.Annotations;
 
 /**
  * Utilities for working with annotated elements.
@@ -105,6 +110,35 @@ public final class AnnotatedElements {
 	 */
 	public static Stream<Annotation> declaredAnnotations(@Nonnull AnnotatedElement annotatedElement) {
 		return Stream.of(annotatedElement.getDeclaredAnnotations());
+	}
+
+	/**
+	 * Creates an abstraction implementation for an annotated element.
+	 * @param annotatedElement The annotated element for which an abstraction should be created.
+	 * @return An adapter of the annotated element to an annotations abstraction interface.
+	 */
+	public static Annotations annotationsOf(@Nonnull final AnnotatedElement annotatedElement) {
+		return new Annotations() {
+
+			@Override
+			public Optional<Object> findAnnotationValue(final Class<? extends Annotation> annotationClass) {
+				return findAnnotation(annotatedElement, annotationClass).flatMap(annotation -> {
+					return findMethod(annotationClass, VALUE_ELEMENT_NAME).map(valueMethod -> {
+						try {
+							return valueMethod.invoke(annotation);
+						} catch(final IllegalAccessException illegalAccessException) {
+							throw unexpected("Found method not expected to be inaccessible.", illegalAccessException);
+						} catch(final InvocationTargetException invocationTargetException) {
+							final Throwable targetException = invocationTargetException.getTargetException();
+							if(targetException instanceof RuntimeException targetRuntimeException) {
+								throw targetRuntimeException;
+							}
+							throw new RuntimeException(targetException);
+						}
+					});
+				});
+			}
+		};
 	}
 
 }

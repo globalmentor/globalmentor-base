@@ -183,15 +183,15 @@ public final class TextFormatter {
 		return formatList(appendable, COMMA_CHAR, items);
 	}
 
-	/**
-	 * Appends the string representations of the given items separated by a {@value Characters#COMMA_CHAR}. <code>null</code> objects are represented by
-	 * {@value Java#NULL_KEYWORD}.
-	 * @param separator The separator character to be inserted between the item strings, or {@link Characters#UNDEFINED_CHAR} if there should be no separator.
-	 * @param items The items to be formatted.
-	 * @return The string containing the formatted list.
-	 * @see Object#toString()
-	 * @see Characters#COMMA_CHAR
-	 */
+	//	/**
+	//	 * Appends the string representations of the given items separated by a {@value Characters#COMMA_CHAR}. <code>null</code> objects are represented by
+	//	 * {@value Java#NULL_KEYWORD}.
+	//	 * @param separator The separator character to be inserted between the item strings, or {@link Characters#UNDEFINED_CHAR} if there should be no separator.
+	//	 * @param items The items to be formatted.
+	//	 * @return The string containing the formatted list.
+	//	 * @see Object#toString()
+	//	 * @see Characters#COMMA_CHAR
+	//	 */
 	/*TODO fix; causes ambiguity
 	public static String formatList(final Object... items)
 	{

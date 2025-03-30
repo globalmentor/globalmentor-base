@@ -25,17 +25,17 @@ import java.net.URI;
  */
 public interface Authenticable {
 
-	/**
-	 * Determines user and password information.
-	 * @return The password authentication collected from the user, or <code>null</code> if none is provided.
-	 */
+	//	/**
+	//	 * Determines user and password information.
+	//	 * @return The password authentication collected from the user, or <code>null</code> if none is provided.
+	//	 */
 	//TODO fix	public PasswordAuthentication getPasswordAuthentication();
 
-	/**
-	 * Determines password information for a given user. The user must not be allowed to change the username.
-	 * @param username The user for which password information should be gathered.
-	 * @return The password authentication collected from the user, or <code>null</code> if none is provided.
-	 */
+	//	/**
+	//	 * Determines password information for a given user. The user must not be allowed to change the username.
+	//	 * @param username The user for which password information should be gathered.
+	//	 * @return The password authentication collected from the user, or <code>null</code> if none is provided.
+	//	 */
 	//TODO fix	public PasswordAuthentication getPasswordAuthentication(final String username);
 
 	/**

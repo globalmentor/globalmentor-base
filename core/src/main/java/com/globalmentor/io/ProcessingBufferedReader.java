@@ -273,7 +273,7 @@ public class ProcessingBufferedReader extends Reader {
 		//		this.readAheadLimit=readAheadLimit;
 	}
 
-	/** Removes the current mark. */
+	//	/** Removes the current mark. */
 	/*TODO del
 		protected void unmark()
 		{

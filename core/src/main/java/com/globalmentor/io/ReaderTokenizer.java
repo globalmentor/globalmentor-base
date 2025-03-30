@@ -142,9 +142,9 @@ public class ReaderTokenizer implements Iterator<String>, Iterable<String> {
 	 */
 	private String primedToken = null;
 
-	/**
-	 * @return The next primed token, or <code>null</code> if there is no next token or the token has not been primed.
-	 */
+	//	/**
+	//	 * @return The next primed token, or <code>null</code> if there is no next token or the token has not been primed.
+	//	 */
 	//TODO del		protected String getPrimedToken() {return nextToken;}
 
 	/**

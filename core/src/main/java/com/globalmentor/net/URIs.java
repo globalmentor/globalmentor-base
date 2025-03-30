@@ -781,12 +781,12 @@ public final class URIs {
 		return paramStringBuilder.toString(); //return the query parameter string we constructed
 	}
 
-	/**
-	 * Creates a path-based query from a standard URI query. A query in the form <code>?var1=value1&amp;var2=value2</code> will be converted to the form
-	 * <code>/var1%3Dvalue1/var2&3Dvalue2</code>.
-	 * @param query The standard URI query string, optionally beginning with '?'.
-	 * @return A query string converted to a path. A query string beginning with '?' will be converted into an absolute path.
-	 */
+	//	/**
+	//	 * Creates a path-based query from a standard URI query. A query in the form <code>?var1=value1&amp;var2=value2</code> will be converted to the form
+	//	 * <code>/var1%3Dvalue1/var2&3Dvalue2</code>.
+	//	 * @param query The standard URI query string, optionally beginning with '?'.
+	//	 * @return A query string converted to a path. A query string beginning with '?' will be converted into an absolute path.
+	//	 */
 	/*TODO fix; do *not* use URLEncoder, which is for www-encoded forms	
 		public static String createPathQuery(final String query)
 		{
@@ -823,12 +823,12 @@ public final class URIs {
 		}
 	*/
 
-	/**
-	 * Creates a standard URI based query from a path-based query. A query in the form <code>/var1%3Dvalue1/var2&3Dvalue2</code> will be converted to the form
-	 * <code>?var1=value1&amp;var2=value2</code>.
-	 * @param pathQuery The standard URI query string, optionally beginning with '?'.
-	 * @return A query string converted to a path. A query string beginning with '?' will be converted into an absolute path.
-	 */
+	//	/**
+	//	 * Creates a standard URI based query from a path-based query. A query in the form <code>/var1%3Dvalue1/var2&3Dvalue2</code> will be converted to the form
+	//	 * <code>?var1=value1&amp;var2=value2</code>.
+	//	 * @param pathQuery The standard URI query string, optionally beginning with '?'.
+	//	 * @return A query string converted to a path. A query string beginning with '?' will be converted into an absolute path.
+	//	 */
 	/*TODO fix; do *not* use URLEncoder, which is for www-encoded forms	
 		public static String createQuery(final String pathQuery)
 		{
@@ -865,11 +865,11 @@ public final class URIs {
 		}
 	*/
 
-	/**
-	 * Retrieves name-value parameters from a standard URI query string.
-	 * @param query The URI query string, optionally beginning with a '?' character.
-	 * @return An array of name-value pairs representing query parameters.
-	 */
+	//	/**
+	//	 * Retrieves name-value parameters from a standard URI query string.
+	//	 * @param query The URI query string, optionally beginning with a '?' character.
+	//	 * @return An array of name-value pairs representing query parameters.
+	//	 */
 	/*TODO fix; do *not* use URLEncoder, which is for www-encoded forms	
 		public static NameValuePair<String, String>[] getQueryParameters(final String query)
 		{
@@ -1360,15 +1360,15 @@ public final class URIs {
 		return rawPath != null || rawFragment != null || rawFragment != null ? stringBuilder.toString() : null;
 	}
 
-	/**
-	 * Returns a relative path to the URL from the given context URL. This version requires the file to be on the same branch of the context path (e.g.
-	 * "http://abc.de/a/c/d.html" is not on the same branch of "http://abc.de/a/b"). TODO del The context URL must be a URL of a directory, ending with the
-	 * directory divider character '/'
-	 * @param contextURL The reference URL to use in making the relative path.
-	 * @param url The URL for which a relative path should be returned, in relation to the context URL.
-	 * @return A relative path to the URL in relation to the context URL.
-	 * @throws MalformedURLException Thrown if a relative URL cannot be determined from the context URL.
-	 */
+	//	/**
+	//	 * Returns a relative path to the URL from the given context URL. This version requires the file to be on the same branch of the context path (e.g.
+	//	 * "http://abc.de/a/c/d.html" is not on the same branch of "http://abc.de/a/b"). TODO del The context URL must be a URL of a directory, ending with the
+	//	 * directory divider character '/'
+	//	 * @param contextURL The reference URL to use in making the relative path.
+	//	 * @param url The URL for which a relative path should be returned, in relation to the context URL.
+	//	 * @return A relative path to the URL in relation to the context URL.
+	//	 * @throws MalformedURLException Thrown if a relative URL cannot be determined from the context URL.
+	//	 */
 	/*TODO fix
 		public static String getRelativePath(final URL contextURL, final URL url) throws MalformedURLException
 		{
@@ -1383,11 +1383,11 @@ public final class URIs {
 		}
 	*/
 
-	/**
-	 * Opens a connection to the given URL, recognizing redirects. This method was inspired by the source code to <code>javax.swing.JTextPane.getStream()</code>.
-	 * @param url The URL a connection to which should be opened.
-	 * @return A connection to the given URL or the URL to which it redirects.
-	 */
+	//	/**
+	//	 * Opens a connection to the given URL, recognizing redirects. This method was inspired by the source code to <code>javax.swing.JTextPane.getStream()</code>.
+	//	 * @param url The URL a connection to which should be opened.
+	//	 * @return A connection to the given URL or the URL to which it redirects.
+	//	 */
 	/*TODO fix; we need to leave the old version in XMLTextPane because it changes the URL appropriately instead of just automatically redirecting
 		public static URLConnection openConnection(final URL url) {	//TODO fix throws IOException
 			final URLConnection urlConnection=url.openConnection(); //open a connection to the URL
@@ -1414,13 +1414,13 @@ public final class URIs {
 		if(contentType!=null) {	//if we receive at least a guess of the content type
 	*/
 
-	/**
-	 * Loads the contents of a URL into an array of bytes.
-	 * @param url The URL from which to read.
-	 * @return An array of bytes from the URL.
-	 * @throws IOException Thrown if there is an error loading the bytes.
-	 * @see InputStreamUtilities#getBytes
-	 */
+	//	/**
+	//	 * Loads the contents of a URL into an array of bytes.
+	//	 * @param url The URL from which to read.
+	//	 * @return An array of bytes from the URL.
+	//	 * @throws IOException Thrown if there is an error loading the bytes.
+	//	 * @see InputStreamUtilities#getBytes
+	//	 */
 	/*TODO fix
 		public static byte[] readBytes(final URL url) throws IOException
 		{
@@ -1431,13 +1431,13 @@ public final class URIs {
 		}
 	*/
 
-	/**
-	 * Loads the contents of a URL into a string.
-	 * @param url The URL from which to read.
-	 * @param encoding The encoding (such as UTF-8) used to store the string.
-	 * @return A string containing the contents of the URL.
-	 * @throws IOException Thrown if there is an error loading the bytes.
-	 */
+	//	/**
+	//	 * Loads the contents of a URL into a string.
+	//	 * @param url The URL from which to read.
+	//	 * @param encoding The encoding (such as UTF-8) used to store the string.
+	//	 * @return A string containing the contents of the URL.
+	//	 * @throws IOException Thrown if there is an error loading the bytes.
+	//	 */
 	/*TODO fix
 		public static String readString(final URL url, final String encoding) throws IOException
 		{
@@ -1990,12 +1990,14 @@ public final class URIs {
 	/**
 	 * Encodes the URI reserved characters in the string according to the URI encoding rules in <a href="https://tools.ietf.org/html/rfc3986">RFC 3986</a>,
 	 * "Uniform Resource Identifiers (URI): Generic Syntax" using the URI escape character, {@value URIs#ESCAPE_CHAR}.
+	 * @apiNote This API method is exposed to support use cases that allow certain other valid characters that are not strictly allowed by the URI specification,
+	 *          such as URI template path parameters as described in <a href="https://www.rfc-editor.org/rfc/rfc6570">RFC 6570: URI Template</a>.
 	 * @param string The data to URI-encode.
 	 * @param validCharacters Characters that should not be encoded; all other characters will be encoded.
 	 * @return A string containing the escaped data.
 	 * @see URIs#ESCAPE_CHAR
 	 */
-	static String encode(final String string, final Characters validCharacters) {
+	public static String encode(final String string, final Characters validCharacters) {
 		return encode(string, validCharacters, ESCAPE_CHAR); //encode the string with the normal escape character
 	}
 
@@ -2041,30 +2043,49 @@ public final class URIs {
 	/**
 	 * Ensures that the given URI is in canonical form.
 	 * <p>
-	 * This implementation, following the recommendation of <a href="https://tools.ietf.org/html/rfc3986">RFC 3986</a>, ensures that all hexadecimal escape codes
-	 * are in uppercase.
+	 * This implementation, following the recommendation of <a href="https://datatracker.ietf.org/doc/html/rfc3986">RFC 3986</a>, ensures that all hexadecimal
+	 * escape codes are in uppercase.
 	 * </p>
 	 * @apiNote This method should be distinguished from {@link #normalize(URI)}, which normalizes the hierarchy of path segments.
 	 * @implNote This implementation does not currently encode any non-ASCII or reserved characters.
+	 * @implSpec This implementation delegates to {@link #normalizeEncodingCase(String)}.
 	 * @param uri The URI to be returned in canonical form.
 	 * @return The canonical form of the given URI.
 	 * @throws NullPointerException if the given URI is <code>null</code>.
 	 * @throws IllegalArgumentException if the given URI has an invalid escape sequence.
+	 * @see <a href="https://datatracker.ietf.org/doc/html/rfc3986#section-2.1">RFC 3986 § 2.1. Percent-Encoding</a>
+	 * @see <a href="https://datatracker.ietf.org/doc/html/rfc3986#section-6.2.2.1">RFC 3986 § 6.2.2.1. Case Normalization</a>
 	 */
 	public static URI canonicalize(final URI uri) {
 		final String uriString = uri.toString(); //get the string version of the URI
-		final int uriStringLength = uriString.length(); //get the length of the string
+		final String canonicalUriString = normalizeEncodingCase(uriString);
+		return canonicalUriString != uriString ? URI.create(canonicalUriString) : uri; //only create a new URI if something changed
+	}
+
+	/**
+	 * Ensures that the given URI string uses all hexadecimal escape code in uppercase as per
+	 * <a href="https://datatracker.ietf.org/doc/html/rfc3986#section-6.2.2.1">RFC 3986 § 6.2.2.1. Case Normalization</a>. The given character sequence will be
+	 * unmodified. If no changes were made, the given instance will be returned.
+	 * @param uriCharSequence The character sequence of the URI to have its encoding hexadecimal characters normalized.
+	 * @return The canonical form of the given URI. If no changes were made, the original string instance will be returned.
+	 * @throws NullPointerException if the given URI is <code>null</code>.
+	 * @throws IllegalArgumentException if the given URI has an invalid escape sequence.
+	 * @see <a href="https://datatracker.ietf.org/doc/html/rfc3986#section-2.1">RFC 3986 § 2.1. Percent-Encoding</a>
+	 * @see <a href="https://datatracker.ietf.org/doc/html/rfc3986#section-6.2.2.1">RFC 3986 § 6.2.2.1. Case Normalization</a>
+	 */
+	public static String normalizeEncodingCase(final CharSequence uriCharSequence) {
+		final int uriStringLength = uriCharSequence.length(); //get the length of the string
 		StringBuilder uriStringBuilder = null; //we'll only create a string builder if we need one
 		for(int i = 0; i < uriStringLength; ++i) { //for each character, make sure that the escape sequences are in uppercase
-			if(uriString.charAt(i) == ESCAPE_CHAR) { //if this is an escape sequence
+			if(uriCharSequence.charAt(i) == ESCAPE_CHAR) { //if this is an escape sequence
 				if(i >= uriStringLength - 2) { //if there isn't room for an escape sequence
-					throw new IllegalArgumentException("Invalid escape sequence in URI " + uriString + " at index " + i + ".");
+					throw new IllegalArgumentException("Invalid escape sequence in URI " + uriCharSequence + " at index " + i + ".");
 				}
-				final char hex1 = uriString.charAt(i + 1);
-				final char hex2 = uriString.charAt(i + 2);
+				final char hex1 = uriCharSequence.charAt(i + 1);
+				final char hex2 = uriCharSequence.charAt(i + 2);
 				if(ASCII.isLowerCase(hex1) || ASCII.isLowerCase(hex2)) { //if the hex code is not in uppercase
 					if(uriStringBuilder == null) { //if we haven't yet created a string builder
-						uriStringBuilder = new StringBuilder(uriString); //create a new string builder for manipulating the URI
+						uriStringBuilder = new StringBuilder(uriCharSequence); //create a new string builder for manipulating the URI
 					}
 					uriStringBuilder.setCharAt(i + 1, ASCII.toUpperCase(hex1)); //convert any hex characters to uppercase
 					uriStringBuilder.setCharAt(i + 2, ASCII.toUpperCase(hex2));
@@ -2072,7 +2093,7 @@ public final class URIs {
 				i += 2; //skip the escape sequence
 			}
 		}
-		return uriStringBuilder != null ? URI.create(uriStringBuilder.toString()) : uri; //if we modified the URI, return a new URI created from the string builder
+		return uriStringBuilder != null ? uriStringBuilder.toString() : uriCharSequence.toString(); //if we modified the URI, return a new URI created from the string builder
 	}
 
 	/**
@@ -2118,13 +2139,14 @@ public final class URIs {
 		return !relativeURI.isAbsolute(); //if the relativized URI is not absolute, the URI is relative to the base
 	}
 
-	/** Characters that can appear in a URI path with no escape sequences. */
+	//	/** Characters that can appear in a URI path with no escape sequences. */
 	//TODO del	protected static final String COMPRESS_CHARS=ALPHA_CHARS+DIGIT_CHARS;	//length 49
-	/**
-	 * Compresses a URI into a shorter string representation. The resulting string consists only of URI <code>xalpha</code> characters with no escape sequences.
-	 * @param uri The URI to compress.
-	 * @return A compressed string representation of the URI.
-	 */
+
+	//	/**
+	//	 * Compresses a URI into a shorter string representation. The resulting string consists only of URI <code>xalpha</code> characters with no escape sequences.
+	//	 * @param uri The URI to compress.
+	//	 * @return A compressed string representation of the URI.
+	//	 */
 	/*TODO fix
 		public static String compress(final URI uri)
 		{

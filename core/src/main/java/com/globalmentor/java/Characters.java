@@ -333,10 +333,10 @@ public final class Characters {
 	 */
 	public static final Characters TRIM_CHARACTERS = WHITESPACE_CHARACTERS.add(CONTROL_CHARACTERS).add(FORMAT_CHARACTERS);
 
-	/**
-	 * A regular expression pattern for the class of trim characters.
-	 * @see #TRIM_CHARS
-	 */
+	//	/**
+	//	 * A regular expression pattern for the class of trim characters.
+	//	 * @see #TRIM_CHARS
+	//	 */
 	//TODO del if not needed	public static final Pattern TRIM_PATTERN=Pattern.compile("["+TRIM_CHARS+"]");
 
 	/**
@@ -345,10 +345,10 @@ public final class Characters {
 	 */
 	public static final String LIST_DELIMITER_CHARS = TRIM_CHARACTERS + ",;";
 
-	/**
-	 * A regular expression character class pattern for the class of list delimiter characters.
-	 * @see #LIST_DELIMITER_CHARS
-	 */
+	//	/**
+	//	 * A regular expression character class pattern for the class of list delimiter characters.
+	//	 * @see #LIST_DELIMITER_CHARS
+	//	 */
 	//TODO del if not needed	public static final Pattern LIST_DELIMITER_CLASS_PATTERN=Pattern.compile(createCharacterClass(LIST_DELIMITER_CHARS));
 
 	/** Characters that could be considered the start of a quotation. */
@@ -395,10 +395,10 @@ public final class Characters {
 	/** Characters that separate words. */
 	public static final Characters WORD_DELIMITER_CHARACTERS = WHITESPACE_CHARACTERS.add(PUNCTUATION_CHARS); //TODO this needs fixed
 
-	/**
-	 * A regular expression pattern for the class of word delimiter characters.
-	 * @see #WORD_DELIMITER_CHARS
-	 */
+	//	/**
+	//	 * A regular expression pattern for the class of word delimiter characters.
+	//	 * @see #WORD_DELIMITER_CHARS
+	//	 */
 	//TODO fix; these characters must be escaped, or this Pattern.toString() will run into an endless loop!	public static final Pattern WORD_DELIMITER_PATTERN=Pattern.compile("["+WORD_DELIMITER_CHARS+"]");
 
 	//Unicode categories; see http://www.unicode.org/reports/tr44/#General_Category_Values
