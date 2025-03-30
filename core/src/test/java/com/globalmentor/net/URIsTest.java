@@ -1234,13 +1234,24 @@ public class URIsTest {
 
 	/** @see URIs#canonicalize(URI) */
 	@Test
-	public void testCanonicalize() {
+	public void testCanonicalizeUri() {
 		//TODO decide on whether IRIs should be allowed, and test
 		assertThat(URIs.canonicalize(URI.create("http://example.com/")).toString(), is("http://example.com/")); //compare string versions, because equals() accepts both cases
 		assertThat(URIs.canonicalize(URI.create("http://example.com/touch%C3%A9")).toString(), is("http://example.com/touch%C3%A9"));
 		assertThat(URIs.canonicalize(URI.create("http://example.com/touch%C3%a9")).toString(), is("http://example.com/touch%C3%A9"));
 		assertThat(URIs.canonicalize(URI.create("http://example.com/touch%c3%A9")).toString(), is("http://example.com/touch%C3%A9"));
 		assertThat(URIs.canonicalize(URI.create("http://example.com/touch%c3%a9")).toString(), is("http://example.com/touch%C3%A9"));
+	}
+
+	/** @see URIs#normalizeEncodingCase(CharSequence) */
+	@Test
+	public void testNormalizeEncodingCase() {
+		//TODO decide on whether IRIs should be allowed, and test
+		assertThat(URIs.normalizeEncodingCase("http://example.com/"), is("http://example.com/"));
+		assertThat(URIs.normalizeEncodingCase("http://example.com/touch%C3%A9"), is("http://example.com/touch%C3%A9"));
+		assertThat(URIs.normalizeEncodingCase("http://example.com/touch%C3%a9"), is("http://example.com/touch%C3%A9"));
+		assertThat(URIs.normalizeEncodingCase("http://example.com/touch%c3%A9"), is("http://example.com/touch%C3%A9"));
+		assertThat(URIs.normalizeEncodingCase("http://example.com/touch%c3%a9"), is("http://example.com/touch%C3%A9"));
 	}
 
 	/** @see URIs#encode(String) */
