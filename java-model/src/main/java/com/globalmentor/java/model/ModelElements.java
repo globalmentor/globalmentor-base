@@ -119,6 +119,11 @@ public final class ModelElements {
 	public static Annotations annotationsOf(@Nonnull final Element element) {
 		return new Annotations() {
 			@Override
+			public boolean isAnnotationPresent(final Class<? extends Annotation> annotationClass) {
+				return findElementAnnotationMirrorForClass(element, annotationClass).isPresent();
+			}
+
+			@Override
 			public Optional<Object> findAnnotationValue(final Class<? extends Annotation> annotationClass) {
 				return findElementAnnotationMirrorForClass(element, annotationClass) //
 						.flatMap(ModelTypes::findAnnotationValueElementValue) //

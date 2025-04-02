@@ -121,6 +121,11 @@ public final class AnnotatedElements {
 		return new Annotations() {
 
 			@Override
+			public boolean isAnnotationPresent(final Class<? extends Annotation> annotationClass) {
+				return annotatedElement.isAnnotationPresent(annotationClass);
+			}
+
+			@Override
 			public Optional<Object> findAnnotationValue(final Class<? extends Annotation> annotationClass) {
 				return findAnnotation(annotatedElement, annotationClass).flatMap(annotation -> {
 					return findMethod(annotationClass, VALUE_ELEMENT_NAME).map(valueMethod -> {

@@ -17,7 +17,11 @@
 package com.globalmentor.java.model;
 
 import static com.github.npathai.hamcrestopt.OptionalMatchers.*;
+import static com.globalmentor.java.model.ModelElements.annotationsOf;
 import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
+
+import java.lang.reflect.AnnotatedElement;
 
 import javax.lang.model.element.Element;
 
@@ -38,11 +42,18 @@ import com.karuslabs.elementary.junit.annotations.*;
 @Introspect
 public class ModelElementsTest {
 
+	/** Tests {@link Annotations#isAnnotationPresent(Class)} of the implementation for {@link AnnotatedElement}. */
+	@Test
+	void testIsAnnotationPresentOfTypedElement(final Labels labels) throws NoSuchMethodException, SecurityException {
+		assertThat(annotationsOf(labels.get("methodWithAnnotationHavingNoValue")).isAnnotationPresent(BeforeEach.class), is(true));
+		assertThat(annotationsOf(labels.get("methodWithAnnotationHavingValue")).isAnnotationPresent(Disabled.class), is(true));
+		assertThat(annotationsOf(labels.get("methodWithAnnotationHavingValue")).isAnnotationPresent(BeforeEach.class), is(false));
+	}
+
 	/** Tests {@link Annotations#findAnnotationValue(Class)} of the implementation for {@link Element}. */
 	@Test
 	void testFindAnnotationValueOfTypeElement(final Labels labels) throws NoSuchMethodException, SecurityException {
-		assertThat(ModelElements.annotationsOf(labels.get("methodWithAnnotationHavingValue")).findAnnotationValue(Disabled.class),
-				isPresentAndIs("value for testing"));
+		assertThat(annotationsOf(labels.get("methodWithAnnotationHavingValue")).findAnnotationValue(Disabled.class), isPresentAndIs("value for testing"));
 	}
 
 	/**
@@ -50,6 +61,10 @@ public class ModelElementsTest {
 	 * @apiNote The annotations here have no semantic significance; they are only for testing annotation access.
 	 */
 	interface TestAnnotatedInterface {
+
+		@BeforeEach
+		@Label("methodWithAnnotationHavingNoValue")
+		public void methodWithAnnotationHavingNoValue();
 
 		@Disabled("value for testing")
 		@Label("methodWithAnnotationHavingValue")

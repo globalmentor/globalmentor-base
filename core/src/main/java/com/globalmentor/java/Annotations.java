@@ -49,6 +49,14 @@ public interface Annotations {
 	public static final String VALUE_ELEMENT_NAME = "value";
 
 	/**
+	 * Determines whether an annotation of the identified annotation type is <em>present</em>.
+	 * @apiNote This method functions identically to {@link AnnotatedElement#isAnnotationPresent(Class)}.
+	 * @param annotationClass The class object representing the annotation type.
+	 * @return <code>true</code> if an annotation of the specified annotation type is present.
+	 */
+	public boolean isAnnotationPresent(@Nonnull final Class<? extends Annotation> annotationClass);
+
+	/**
 	 * Finds the value of the <code>value</code> element of the identified annotation type if such an annotation is <em>present</em> and has a <code>value</code>
 	 * element.
 	 * @apiNote This method functions identically to {@link AnnotatedElement#getAnnotation(Class)} except that it returns an {@link Optional}.

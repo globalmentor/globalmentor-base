@@ -17,9 +17,12 @@
 package com.globalmentor.reflect;
 
 import static com.github.npathai.hamcrestopt.OptionalMatchers.*;
+import static com.globalmentor.reflect.AnnotatedElements.annotationsOf;
 import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
 
 import java.lang.reflect.AnnotatedElement;
+import java.util.Optional;
 
 import org.junit.jupiter.api.*;
 
@@ -31,10 +34,20 @@ import com.globalmentor.java.Annotations;
  */
 public class AnnotatedElementsTest {
 
+	/** Tests {@link Annotations#isAnnotationPresent(Class)} of the implementation for {@link AnnotatedElement}. */
+	@Test
+	void testIsAnnotationPresentOfAnnotatedElement() throws NoSuchMethodException, SecurityException {
+		assertThat(annotationsOf(TestAnnotatedInterface.class.getMethod("methodWithAnnotationHavingNoValue")).isAnnotationPresent(BeforeEach.class), is(true));
+		assertThat(annotationsOf(TestAnnotatedInterface.class.getMethod("methodWithAnnotationHavingValue")).isAnnotationPresent(Disabled.class), is(true));
+		assertThat(annotationsOf(TestAnnotatedInterface.class.getMethod("methodWithAnnotationHavingValue")).isAnnotationPresent(BeforeEach.class), is(false));
+	}
+
 	/** Tests {@link Annotations#findAnnotationValue(Class)} of the implementation for {@link AnnotatedElement}. */
 	@Test
 	void testFindAnnotationValueOfAnnotatedElement() throws NoSuchMethodException, SecurityException {
-		assertThat(AnnotatedElements.annotationsOf(TestAnnotatedInterface.class.getMethod("methodWithAnnotationHavingValue")).findAnnotationValue(Disabled.class),
+		assertThat(annotationsOf(TestAnnotatedInterface.class.getMethod("methodWithAnnotationHavingValue")).findAnnotationValue(BeforeEach.class),
+				is(Optional.empty()));
+		assertThat(annotationsOf(TestAnnotatedInterface.class.getMethod("methodWithAnnotationHavingValue")).findAnnotationValue(Disabled.class),
 				isPresentAndIs("value for testing"));
 	}
 
@@ -43,6 +56,9 @@ public class AnnotatedElementsTest {
 	 * @apiNote The annotations here have no semantic significance; they are only for testing annotation access.
 	 */
 	interface TestAnnotatedInterface {
+
+		@BeforeEach
+		public void methodWithAnnotationHavingNoValue();
 
 		@Disabled("value for testing")
 		public void methodWithAnnotationHavingValue();
