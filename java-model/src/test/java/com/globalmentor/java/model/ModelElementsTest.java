@@ -16,18 +16,12 @@
 
 package com.globalmentor.java.model;
 
-import static com.github.npathai.hamcrestopt.OptionalMatchers.*;
-import static com.globalmentor.java.model.ModelElements.annotationsOf;
-import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.Matchers.*;
-
-import java.lang.reflect.AnnotatedElement;
-
-import javax.lang.model.element.Element;
+import static java.util.Objects.*;
 
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import com.globalmentor.java.AbstractAnnotationsTest;
 import com.globalmentor.java.Annotations;
 import com.karuslabs.elementary.junit.Labels;
 import com.karuslabs.elementary.junit.ToolsExtension;
@@ -35,25 +29,26 @@ import com.karuslabs.elementary.junit.annotations.*;
 
 /**
  * Tests of {@link ModelElements} and its implementation of {@link Annotations}.
- * @implNote These tests parallel those for {@link java.lang.reflect.AnnotatedElement} in {@link AnnotatedElementsTest}, and should be kept in sync.
  * @author Garret Wilson
  */
 @ExtendWith(ToolsExtension.class)
 @Introspect
-public class ModelElementsTest {
+public class ModelElementsTest extends AbstractAnnotationsTest {
 
-	/** Tests {@link Annotations#isAnnotationPresent(Class)} of the implementation for {@link AnnotatedElement}. */
-	@Test
-	void testIsAnnotationPresentOfTypedElement(final Labels labels) throws NoSuchMethodException, SecurityException {
-		assertThat(annotationsOf(labels.get("methodWithAnnotationHavingNoValue")).isAnnotationPresent(BeforeEach.class), is(true));
-		assertThat(annotationsOf(labels.get("methodWithAnnotationHavingValue")).isAnnotationPresent(Disabled.class), is(true));
-		assertThat(annotationsOf(labels.get("methodWithAnnotationHavingValue")).isAnnotationPresent(BeforeEach.class), is(false));
+	private final Labels labels;
+
+	ModelElementsTest(final Labels labels) {
+		this.labels = requireNonNull(labels);
 	}
 
-	/** Tests {@link Annotations#findAnnotationValue(Class)} of the implementation for {@link Element}. */
-	@Test
-	void testFindAnnotationValueOfTypeElement(final Labels labels) throws NoSuchMethodException, SecurityException {
-		assertThat(annotationsOf(labels.get("methodWithAnnotationHavingValue")).findAnnotationValue(Disabled.class), isPresentAndIs("value for testing"));
+	/**
+	 * {@inheritDoc}
+	 * @implSpec This implementation returns an {@link Annotations} implementation by delegating to
+	 *           {@link ModelElements#annotationsOf(javax.lang.model.element.Element)}
+	 */
+	@Override
+	protected Annotations getMethodTestAnnotations(final String methodName) {
+		return ModelElements.annotationsOf(labels.get(methodName));
 	}
 
 	/**

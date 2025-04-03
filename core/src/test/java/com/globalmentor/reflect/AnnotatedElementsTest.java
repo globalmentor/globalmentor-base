@@ -16,39 +16,30 @@
 
 package com.globalmentor.reflect;
 
-import static com.github.npathai.hamcrestopt.OptionalMatchers.*;
-import static com.globalmentor.reflect.AnnotatedElements.annotationsOf;
-import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.Matchers.*;
-
-import java.lang.reflect.AnnotatedElement;
-import java.util.Optional;
-
 import org.junit.jupiter.api.*;
 
+import com.globalmentor.java.AbstractAnnotationsTest;
 import com.globalmentor.java.Annotations;
 
 /**
  * Tests of {@link AnnotatedElement} and its implementation of {@link Annotations}.
  * @author Garret Wilson
  */
-public class AnnotatedElementsTest {
+public class AnnotatedElementsTest extends AbstractAnnotationsTest {
 
-	/** Tests {@link Annotations#isAnnotationPresent(Class)} of the implementation for {@link AnnotatedElement}. */
-	@Test
-	void testIsAnnotationPresentOfAnnotatedElement() throws NoSuchMethodException, SecurityException {
-		assertThat(annotationsOf(TestAnnotatedInterface.class.getMethod("methodWithAnnotationHavingNoValue")).isAnnotationPresent(BeforeEach.class), is(true));
-		assertThat(annotationsOf(TestAnnotatedInterface.class.getMethod("methodWithAnnotationHavingValue")).isAnnotationPresent(Disabled.class), is(true));
-		assertThat(annotationsOf(TestAnnotatedInterface.class.getMethod("methodWithAnnotationHavingValue")).isAnnotationPresent(BeforeEach.class), is(false));
-	}
-
-	/** Tests {@link Annotations#findAnnotationValue(Class)} of the implementation for {@link AnnotatedElement}. */
-	@Test
-	void testFindAnnotationValueOfAnnotatedElement() throws NoSuchMethodException, SecurityException {
-		assertThat(annotationsOf(TestAnnotatedInterface.class.getMethod("methodWithAnnotationHavingValue")).findAnnotationValue(BeforeEach.class),
-				is(Optional.empty()));
-		assertThat(annotationsOf(TestAnnotatedInterface.class.getMethod("methodWithAnnotationHavingValue")).findAnnotationValue(Disabled.class),
-				isPresentAndIs("value for testing"));
+	/**
+	 * {@inheritDoc}
+	 * @implSpec This implementation returns an {@link Annotations} implementation by delegating to {@link AnnotatedElements#annotationsOf(AnnotatedElement)}.
+	 */
+	@Override
+	protected Annotations getMethodTestAnnotations(final String methodName) {
+		try {
+			return AnnotatedElements.annotationsOf(TestAnnotatedInterface.class.getMethod(methodName));
+		} catch(final NoSuchMethodException noSuchMethodException) {
+			throw new IllegalArgumentException(
+					"Unknown `%s` method referenced in test: %s".formatted(TestAnnotatedInterface.class.getSimpleName(), noSuchMethodException.getMessage()),
+					noSuchMethodException);
+		}
 	}
 
 	/**
