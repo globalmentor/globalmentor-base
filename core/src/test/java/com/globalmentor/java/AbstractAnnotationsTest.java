@@ -16,11 +16,11 @@
 
 package com.globalmentor.java;
 
-import static com.github.npathai.hamcrestopt.OptionalMatchers.*;
+import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresentAndIs;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
-import java.util.Optional;
+import java.util.*;
 
 import javax.annotation.*;
 
@@ -43,6 +43,31 @@ public abstract class AbstractAnnotationsTest {
 		assertThat(getMethodTestAnnotations("methodWithAnnotationHavingNoValue").isAnnotationPresent(BeforeEach.class), is(true));
 		assertThat(getMethodTestAnnotations("methodWithAnnotationHavingValue").isAnnotationPresent(Disabled.class), is(true));
 		assertThat(getMethodTestAnnotations("methodWithAnnotationHavingValue").isAnnotationPresent(BeforeEach.class), is(false));
+	}
+
+	/** Tests {@link Annotations#getWhichAnnotationTypesPresent(Class...)}. */
+	@Test
+	void testGetWhichAnnotationTypesPresent() {
+		assertThat(getMethodTestAnnotations("methodWithAnnotationHavingNoValue").getWhichAnnotationTypesPresent(Set.of()), is(empty()));
+		assertThat(getMethodTestAnnotations("methodWithAnnotationHavingNoValue").getWhichAnnotationTypesPresent(Set.of(BeforeAll.class)), is(empty()));
+		assertThat(getMethodTestAnnotations("methodWithAnnotationHavingNoValue").getWhichAnnotationTypesPresent(Set.of(BeforeEach.class)),
+				containsInAnyOrder(BeforeEach.class));
+		assertThat(getMethodTestAnnotations("methodWithAnnotationHavingNoValue")
+				.getWhichAnnotationTypesPresent(Set.of(BeforeAll.class, BeforeEach.class, AfterEach.class, Test.class)), containsInAnyOrder(BeforeEach.class));
+
+		assertThat(getMethodTestAnnotations("methodWithAnnotationsHavingNoValue").getWhichAnnotationTypesPresent(Set.of()), is(empty()));
+		assertThat(getMethodTestAnnotations("methodWithAnnotationsHavingNoValue").getWhichAnnotationTypesPresent(Set.of(BeforeAll.class)), is(empty()));
+		assertThat(getMethodTestAnnotations("methodWithAnnotationsHavingNoValue").getWhichAnnotationTypesPresent(Set.of(BeforeEach.class, AfterEach.class)),
+				containsInAnyOrder(BeforeEach.class, AfterEach.class));
+		assertThat(getMethodTestAnnotations("methodWithAnnotationsHavingNoValue").getWhichAnnotationTypesPresent(
+				Set.of(BeforeAll.class, BeforeEach.class, AfterEach.class, Test.class)), containsInAnyOrder(BeforeEach.class, AfterEach.class));
+
+		assertThat(getMethodTestAnnotations("methodWithAnnotationHavingValue").getWhichAnnotationTypesPresent(Set.of()), is(empty()));
+		assertThat(getMethodTestAnnotations("methodWithAnnotationHavingValue").getWhichAnnotationTypesPresent(Set.of(BeforeAll.class)), is(empty()));
+		assertThat(getMethodTestAnnotations("methodWithAnnotationHavingValue").getWhichAnnotationTypesPresent(Set.of(Disabled.class)),
+				containsInAnyOrder(Disabled.class));
+		assertThat(getMethodTestAnnotations("methodWithAnnotationHavingValue").getWhichAnnotationTypesPresent(
+				Set.of(BeforeAll.class, BeforeEach.class, Disabled.class, AfterEach.class, Test.class)), containsInAnyOrder(Disabled.class));
 	}
 
 	/** Tests {@link Annotations#findAnnotationValue(Class)}. */

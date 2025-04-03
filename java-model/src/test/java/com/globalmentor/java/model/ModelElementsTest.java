@@ -54,6 +54,11 @@ public class ModelElementsTest extends AbstractAnnotationsTest {
 		@Label("methodWithAnnotationHavingNoValue")
 		public void methodWithAnnotationHavingNoValue();
 
+		@BeforeEach
+		@AfterEach
+		@Label("methodWithAnnotationsHavingNoValue")
+		public void methodWithAnnotationsHavingNoValue();
+
 		@Disabled("value for testing")
 		@Label("methodWithAnnotationHavingValue")
 		public void methodWithAnnotationHavingValue();

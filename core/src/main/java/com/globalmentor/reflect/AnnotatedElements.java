@@ -18,10 +18,11 @@ package com.globalmentor.reflect;
 
 import static com.globalmentor.java.Classes.*;
 import static com.globalmentor.java.Conditions.*;
+import static java.util.stream.Collectors.*;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Stream;
 
 import javax.annotation.*;
@@ -31,6 +32,7 @@ import com.globalmentor.java.Annotations;
 /**
  * Utilities for working with annotated elements.
  * @author Garret Wilson
+ * @apiNote Definitions of "declared", "present", "associated", etc. can be found in {@link AnnotatedElement}.
  * @see AnnotatedElement
  */
 public final class AnnotatedElements {
@@ -126,6 +128,11 @@ public final class AnnotatedElements {
 			}
 
 			@Override
+			public Set<Class<? extends Annotation>> getWhichAnnotationTypesPresent(final Set<Class<? extends Annotation>> annotationClasses) {
+				return Stream.of(annotatedElement.getAnnotations()).map(Annotation::annotationType).filter(annotationClasses::contains).collect(toUnmodifiableSet());
+			}
+
+			@Override
 			public Optional<Object> findAnnotationValue(final Class<? extends Annotation> annotationClass) {
 				return findAnnotation(annotatedElement, annotationClass).flatMap(annotation -> {
 					return findMethod(annotationClass, VALUE_ELEMENT_NAME).map(valueMethod -> {
@@ -143,6 +150,7 @@ public final class AnnotatedElements {
 					});
 				});
 			}
+
 		};
 	}
 

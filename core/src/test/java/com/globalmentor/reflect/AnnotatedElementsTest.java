@@ -51,6 +51,10 @@ public class AnnotatedElementsTest extends AbstractAnnotationsTest {
 		@BeforeEach
 		public void methodWithAnnotationHavingNoValue();
 
+		@BeforeEach
+		@AfterEach
+		public void methodWithAnnotationsHavingNoValue();
+
 		@Disabled("value for testing")
 		public void methodWithAnnotationHavingValue();
 

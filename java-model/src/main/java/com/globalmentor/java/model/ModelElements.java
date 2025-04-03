@@ -18,6 +18,8 @@ package com.globalmentor.java.model;
 
 import static com.globalmentor.java.Conditions.*;
 import static com.globalmentor.java.Objects.*;
+import static java.util.function.Function.*;
+import static java.util.stream.Collectors.*;
 
 import java.lang.annotation.Annotation;
 import java.util.*;
@@ -34,6 +36,7 @@ import com.globalmentor.java.Annotations;
 /**
  * Utilities for working with Java model {@link Element} and related classes.
  * @author Garret Wilson
+ * @apiNote Definitions of "declared", "present", "associated", etc. annotations can be found in {@link java.lang.reflect.AnnotatedElement}.
  * @see Elements
  * @see Types
  * @see ModelTypes
@@ -169,9 +172,27 @@ public final class ModelElements {
 	 */
 	public static Annotations annotationsOf(@Nonnull final Elements elements, @Nonnull final Element element) {
 		return new Annotations() {
+
 			@Override
 			public boolean isAnnotationPresent(final Class<? extends Annotation> annotationClass) {
 				return findElementAnnotationMirrorForClass(elements, element, annotationClass).isPresent();
+			}
+
+			@Override
+			public Set<Class<? extends Annotation>> getWhichAnnotationTypesPresent(final Set<Class<? extends Annotation>> annotationClasses) {
+				final Map<String, Class<? extends Annotation>> annotationClassesByCanonicalName = annotationClasses.stream()
+						.collect(toUnmodifiableMap(Class::getCanonicalName, identity()));
+				//Get the qualified names of the annotation mirrors present on the element.
+				return elements.getAllAnnotationMirrors(element).stream().map(annotationMirror -> {
+					final Element annotationElement = annotationMirror.getAnnotationType().asElement();
+					assert annotationElement instanceof TypeElement : "An annotation mirror type's element should always be a `TypeElement`.";
+					return ((TypeElement)annotationElement).getQualifiedName().toString();
+				})
+						//Look up the annotation class by the annotation element's qualified name.
+						//The `Name` interface implies that we can compare string forms;
+						//`Name.contentEquals(CharSequence)` seems to be more of a utility
+						//method as a parallel to the same method in `String`.
+						.map(annotationClassesByCanonicalName::get).filter(Objects::nonNull).collect(toUnmodifiableSet());
 			}
 
 			@Override
@@ -180,6 +201,7 @@ public final class ModelElements {
 						.flatMap(ModelTypes::findAnnotationValueElementValue) //
 						.map(AnnotationValue::getValue);
 			}
+
 		};
 	}
 
