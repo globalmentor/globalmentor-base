@@ -124,15 +124,17 @@ public abstract class BaseAnnotationProcessor extends AbstractProcessor {
 	}
 
 	/**
-	 * Returns all interfaces of a type element annotated with the given annotation.
-	 * @implSpec This implementation delegates to {@link ModelElements#elementInterfacesAnnotatedWith(Types, TypeElement, Class)}.
+	 * Returns all interfaces of a type element annotated with the given annotation. This method finds interfaced with the annotation <em>present</em> (i.e.
+	 * inheritance is supported).
+	 * @implSpec This implementation delegates to {@link ModelElements#elementInterfacesAnnotatedWith(Elements, Types, TypeElement, Class)}.
+	 * @param elements The element utilities.
 	 * @param typeElement The type element representing the type potentially having an interface annotated with the specified annotation.
 	 * @param annotationClass The type of annotation to look for.
 	 * @return The interfaces of the type element which are in turn annotated with the given annotation.
 	 */
-	public Stream<DeclaredType> elementInterfacesAnnotatedWith(@Nonnull final TypeElement typeElement,
+	public Stream<DeclaredType> elementInterfacesAnnotatedWith(@Nonnull final Elements elements, @Nonnull final TypeElement typeElement,
 			@Nonnull final Class<? extends Annotation> annotationClass) {
-		return ModelElements.elementInterfacesAnnotatedWith(getProcessingEnvironment().getTypeUtils(), typeElement, annotationClass);
+		return ModelElements.elementInterfacesAnnotatedWith(elements, getProcessingEnvironment().getTypeUtils(), typeElement, annotationClass);
 	}
 
 	//## types

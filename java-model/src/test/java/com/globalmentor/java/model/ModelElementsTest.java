@@ -16,14 +16,13 @@
 
 package com.globalmentor.java.model;
 
-import static java.util.Objects.*;
+import static com.karuslabs.elementary.junit.Tools.*;
 
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import com.globalmentor.java.AbstractAnnotationsTest;
 import com.globalmentor.java.Annotations;
-import com.karuslabs.elementary.junit.Labels;
 import com.karuslabs.elementary.junit.ToolsExtension;
 import com.karuslabs.elementary.junit.annotations.*;
 
@@ -35,12 +34,6 @@ import com.karuslabs.elementary.junit.annotations.*;
 @Introspect
 public class ModelElementsTest extends AbstractAnnotationsTest {
 
-	private final Labels labels;
-
-	ModelElementsTest(final Labels labels) {
-		this.labels = requireNonNull(labels);
-	}
-
 	/**
 	 * {@inheritDoc}
 	 * @implSpec This implementation returns an {@link Annotations} implementation by delegating to
@@ -48,7 +41,7 @@ public class ModelElementsTest extends AbstractAnnotationsTest {
 	 */
 	@Override
 	protected Annotations getMethodTestAnnotations(final String methodName) {
-		return ModelElements.annotationsOf(labels.get(methodName));
+		return ModelElements.annotationsOf(elements(), labels().get(methodName));
 	}
 
 	/**
