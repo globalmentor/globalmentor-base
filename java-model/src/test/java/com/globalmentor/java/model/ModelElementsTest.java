@@ -16,33 +16,32 @@
 
 package com.globalmentor.java.model;
 
-import static com.github.npathai.hamcrestopt.OptionalMatchers.*;
-import static org.hamcrest.MatcherAssert.*;
-
-import javax.lang.model.element.Element;
+import static com.karuslabs.elementary.junit.Tools.*;
 
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import com.globalmentor.java.AbstractAnnotationsTest;
 import com.globalmentor.java.Annotations;
-import com.karuslabs.elementary.junit.Labels;
 import com.karuslabs.elementary.junit.ToolsExtension;
 import com.karuslabs.elementary.junit.annotations.*;
 
 /**
  * Tests of {@link ModelElements} and its implementation of {@link Annotations}.
- * @implNote These tests parallel those for {@link java.lang.reflect.AnnotatedElement} in {@link AnnotatedElementsTest}, and should be kept in sync.
  * @author Garret Wilson
  */
 @ExtendWith(ToolsExtension.class)
 @Introspect
-public class ModelElementsTest {
+public class ModelElementsTest extends AbstractAnnotationsTest {
 
-	/** Tests {@link Annotations#findAnnotationValue(Class)} of the implementation for {@link Element}. */
-	@Test
-	void testFindAnnotationValueOfTypeElement(final Labels labels) throws NoSuchMethodException, SecurityException {
-		assertThat(ModelElements.annotationsOf(labels.get("methodWithAnnotationHavingValue")).findAnnotationValue(Disabled.class),
-				isPresentAndIs("value for testing"));
+	/**
+	 * {@inheritDoc}
+	 * @implSpec This implementation returns an {@link Annotations} implementation by delegating to
+	 *           {@link ModelElements#annotationsOf(javax.lang.model.element.Element)}
+	 */
+	@Override
+	protected Annotations getMethodTestAnnotations(final String methodName) {
+		return ModelElements.annotationsOf(elements(), labels().get(methodName));
 	}
 
 	/**
@@ -50,6 +49,15 @@ public class ModelElementsTest {
 	 * @apiNote The annotations here have no semantic significance; they are only for testing annotation access.
 	 */
 	interface TestAnnotatedInterface {
+
+		@BeforeEach
+		@Label("methodWithAnnotationHavingNoValue")
+		public void methodWithAnnotationHavingNoValue();
+
+		@BeforeEach
+		@AfterEach
+		@Label("methodWithAnnotationsHavingNoValue")
+		public void methodWithAnnotationsHavingNoValue();
 
 		@Disabled("value for testing")
 		@Label("methodWithAnnotationHavingValue")

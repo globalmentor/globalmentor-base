@@ -49,6 +49,13 @@
 
 			<dependency>
 				<groupId>com.globalmentor</groupId>
+				<artifactId>globalmentor-core</artifactId>
+				<version>0.17.1-SNAPSHOT</version>
+				<type>test-jar</type>
+			</dependency>
+
+			<dependency>
+				<groupId>com.globalmentor</groupId>
 				<artifactId>globalmentor-java-model</artifactId>
 				<version>0.17.1-SNAPSHOT</version>
 			</dependency>

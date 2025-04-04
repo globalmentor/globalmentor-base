@@ -16,26 +16,30 @@
 
 package com.globalmentor.reflect;
 
-import static com.github.npathai.hamcrestopt.OptionalMatchers.*;
-import static org.hamcrest.MatcherAssert.*;
-
-import java.lang.reflect.AnnotatedElement;
-
 import org.junit.jupiter.api.*;
 
+import com.globalmentor.java.AbstractAnnotationsTest;
 import com.globalmentor.java.Annotations;
 
 /**
  * Tests of {@link AnnotatedElement} and its implementation of {@link Annotations}.
  * @author Garret Wilson
  */
-public class AnnotatedElementsTest {
+public class AnnotatedElementsTest extends AbstractAnnotationsTest {
 
-	/** Tests {@link Annotations#findAnnotationValue(Class)} of the implementation for {@link AnnotatedElement}. */
-	@Test
-	void testFindAnnotationValueOfAnnotatedElement() throws NoSuchMethodException, SecurityException {
-		assertThat(AnnotatedElements.annotationsOf(TestAnnotatedInterface.class.getMethod("methodWithAnnotationHavingValue")).findAnnotationValue(Disabled.class),
-				isPresentAndIs("value for testing"));
+	/**
+	 * {@inheritDoc}
+	 * @implSpec This implementation returns an {@link Annotations} implementation by delegating to {@link AnnotatedElements#annotationsOf(AnnotatedElement)}.
+	 */
+	@Override
+	protected Annotations getMethodTestAnnotations(final String methodName) {
+		try {
+			return AnnotatedElements.annotationsOf(TestAnnotatedInterface.class.getMethod(methodName));
+		} catch(final NoSuchMethodException noSuchMethodException) {
+			throw new IllegalArgumentException(
+					"Unknown `%s` method referenced in test: %s".formatted(TestAnnotatedInterface.class.getSimpleName(), noSuchMethodException.getMessage()),
+					noSuchMethodException);
+		}
 	}
 
 	/**
@@ -43,6 +47,13 @@ public class AnnotatedElementsTest {
 	 * @apiNote The annotations here have no semantic significance; they are only for testing annotation access.
 	 */
 	interface TestAnnotatedInterface {
+
+		@BeforeEach
+		public void methodWithAnnotationHavingNoValue();
+
+		@BeforeEach
+		@AfterEach
+		public void methodWithAnnotationsHavingNoValue();
 
 		@Disabled("value for testing")
 		public void methodWithAnnotationHavingValue();
