@@ -16,6 +16,8 @@
 
 package com.globalmentor.util;
 
+import static java.util.Objects.*;
+
 import java.util.Optional;
 import java.util.OptionalDouble;
 import java.util.OptionalInt;
@@ -67,6 +69,23 @@ public final class Optionals {
 	 */
 	public static boolean isPresentAndEquals(@Nonnull final Optional<?> optional, @Nullable final Object object) {
 		return optional.isPresent() && optional.get().equals(object);
+	}
+
+	/**
+	 * Returns another a second optional if the first optional is not present.
+	 * @apiNote This method is similar to {@link Optional#or(java.util.function.Supplier)} and performs the same logic, but this method is useful in cases in
+	 *          which the other optional is already available and no supplier is needed.
+	 * @param <T> The type of value contained in the optional.
+	 * @param optional The optional to check.
+	 * @param otherOptional The alternative optional.
+	 * @return The given optional or, if the value is not present, the other optional.
+	 * @throws NullPointerException if either argument is <code>null</code>.
+	 * @see Optional#or(java.util.function.Supplier)
+	 * @see <a href="https://stackoverflow.com/q/24599996">Get value from one Optional or another</a>
+	 */
+	public static <T> Optional<T> or(@Nonnull final Optional<T> optional, @Nonnull Optional<T> otherOptional) {
+		requireNonNull(otherOptional);
+		return optional.isPresent() ? optional : otherOptional;
 	}
 
 	/**
