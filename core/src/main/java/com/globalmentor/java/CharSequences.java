@@ -29,7 +29,7 @@ import java.nio.*;
 import java.nio.charset.CharsetDecoder;
 import java.text.Normalizer;
 import java.util.*;
-import java.util.function.ToIntBiFunction;
+import java.util.function.*;
 
 import javax.annotation.*;
 
@@ -964,6 +964,41 @@ public final class CharSequences {
 				return false; //show that the string contains other characters besides the ones specified
 		}
 		return true; //if we make it to here, there weren't any characters other than the ones specified
+	}
+
+	/**
+	 * Tests every character of a sequence to see whether it meets a certain predicate.
+	 * @apiNote Caution: This method may only give correct results if the characters in the sequence all lie within the Unicode BMP. If characters with higher
+	 *          code points than the BMP are expected, {@link #isEveryCodePoint(CharSequence, IntPredicate)} should be used instead. This method may only be
+	 *          safely used if the given predicate provides correct results when given the low and high parts of a surrogate pair as separate characters; for
+	 *          example, a predicate that returned <code>true</code> if every character were in the ASCII range, which would correctly return <code>false</code>
+	 *          if a low or high character of a surrogate pair were encountered.
+	 * @param charSequence The character sequence to check.
+	 * @param predicate The test to apply to each character.
+	 * @return <code>true</code> if every character in the sequence complies with the given predicate, or if the sequence is empty.
+	 * @see #isEveryCodePoint(CharSequence, IntPredicate)
+	 */
+	public static boolean isEveryChar(@Nonnull final CharSequence charSequence, @Nonnull Predicate<Character> predicate) {
+		for(int i = charSequence.length() - 1; i >= 0; i--) {
+			if(!predicate.test(charSequence.charAt(i))) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * Tests every Unicode code point of a sequence to see whether it meets a certain predicate.
+	 * @apiNote This method is to be preferred to {@link #isEveryChar(CharSequence, Predicate)} in almost all cases. {@link #isEveryChar(CharSequence, Predicate)}
+	 *          may be slightly more efficient, but must only be used if the testing logic works with chars in the BMP.
+	 * @param charSequence The character sequence to check.
+	 * @param predicate The test to apply to each code point.
+	 * @return <code>true</code> if every character in the sequence complies with the given predicate, or if the sequence is empty.
+	 */
+	public static boolean isEveryCodePoint(@Nonnull final CharSequence charSequence, @Nonnull IntPredicate predicate) {
+		//Rather than checking to see if all code points match the predicate,
+		//see if there is _not_ any code point that does _not_ match the predicate.
+		return !charSequence.codePoints().filter(predicate.negate()).findAny().isPresent();
 	}
 
 	/**

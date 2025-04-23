@@ -17,7 +17,7 @@
 package com.globalmentor.java;
 
 import java.util.*;
-import java.util.function.ToIntBiFunction;
+import java.util.function.*;
 
 import static com.github.npathai.hamcrestopt.OptionalMatchers.*;
 import static com.globalmentor.java.CharSequences.*;
@@ -29,6 +29,7 @@ import static org.hamcrest.MatcherAssert.*;
 import org.junit.jupiter.api.*;
 
 import com.globalmentor.collections.ListsTest;
+import com.globalmentor.text.ASCII;
 
 /**
  * Tests of {@link CharSequences}.
@@ -106,6 +107,43 @@ public class CharSequencesTest {
 				assertThat(unescapeHex(test + "^58", '^', 2), hasToString(expected + "X"));
 			}
 		});
+	}
+
+	@Test
+	void testIsEveryChar() {
+		assertThat(isEveryChar("", ASCII::isUpperCase), is(true));
+		assertThat(isEveryChar("x", ASCII::isUpperCase), is(false));
+		assertThat(isEveryChar("X", ASCII::isUpperCase), is(true));
+		assertThat(isEveryChar("Xy", ASCII::isUpperCase), is(false));
+		assertThat(isEveryChar("xY", ASCII::isUpperCase), is(false));
+		assertThat(isEveryChar("XY", ASCII::isUpperCase), is(true));
+		assertThat(isEveryChar("xyz", ASCII::isUpperCase), is(false));
+		assertThat(isEveryChar("XyZ", ASCII::isUpperCase), is(false));
+		assertThat(isEveryChar("XYZ", ASCII::isUpperCase), is(true));
+		assertThat(isEveryChar("X9Z", ASCII::isUpperCase), is(false));
+		assertThat(isEveryChar("xyz", ASCII::isASCII), is(true));
+		assertThat(isEveryChar("xéz", ASCII::isASCII), is(false));
+		assertThat("Non-ASCII predicate passing.", isEveryChar("XΔZ", Character::isUpperCase), is(true));
+		assertThat("Non-ASCII predicate failing.", isEveryChar("XδZ", Character::isUpperCase), is(false));
+		assertThat("Non-BMP predicate failing.", isEveryChar("x😂z", ASCII::isASCII), is(false));
+	}
+
+	@Test
+	void testIsEveryCodePoint() {
+		assertThat(isEveryCodePoint("", Character::isUpperCase), is(true));
+		assertThat(isEveryCodePoint("x", Character::isUpperCase), is(false));
+		assertThat(isEveryCodePoint("X", Character::isUpperCase), is(true));
+		assertThat(isEveryCodePoint("Xy", Character::isUpperCase), is(false));
+		assertThat(isEveryCodePoint("xY", Character::isUpperCase), is(false));
+		assertThat(isEveryCodePoint("XY", Character::isUpperCase), is(true));
+		assertThat(isEveryCodePoint("xyz", Character::isUpperCase), is(false));
+		assertThat(isEveryCodePoint("XyZ", Character::isUpperCase), is(false));
+		assertThat(isEveryCodePoint("XYZ", Character::isUpperCase), is(true));
+		assertThat(isEveryCodePoint("X9Z", Character::isUpperCase), is(false));
+		assertThat("Non-ASCII predicate passing.", isEveryCodePoint("XΔZ", Character::isUpperCase), is(true));
+		assertThat("Non-ASCII predicate failing.", isEveryCodePoint("XδZ", Character::isUpperCase), is(false));
+		assertThat("Non-BMP predicate passing: U+118A1.", isEveryCodePoint("X" + Character.toString(0x118A1) + "Z", Character::isUpperCase), is(true));
+		assertThat("Non-BMP predicate failing: U+118C1.", isEveryCodePoint("X" + Character.toString(0x118C1) + "Z", Character::isUpperCase), is(false));
 	}
 
 	/**
