@@ -253,8 +253,9 @@ public final class Prose {
 	 * @return <code>true</code> if the text is a page break heading.
 	 */
 	public static boolean isBreak(final String text) {
-		//if the string is only made up of asterisks and hyphens
-		if(text.length() > 2 && isAllChars(text, Characters.of('*', '-', '_', EM_DASH_CHAR, EN_DASH_CHAR))) //TODO use constants
+		//if the string is only made up of asterisks and hyphens and such
+		final Characters breakCharacters = Characters.of('*', '-', '_', EM_DASH_CHAR, EN_DASH_CHAR); //TODO move
+		if(text.length() > 2 && isEveryChar(text, breakCharacters::contains))
 			return true; //this is a page break heading
 		//if this line contains "page" surrounded by only punctuation
 		else if("page".equalsIgnoreCase(Strings.trim(text, PUNCTUATION_CHARS.add(TRIM_CHARACTERS))))
@@ -285,9 +286,9 @@ public final class Prose {
 				++pageCount; //show we found another page indicator
 			}
 			//if this is a number
-			else if(isDigits(token) || isRomanNumerals(token)) {
+			else if(isEveryCodePoint(token, Character::isDigit) || isEveryChar(token, Characters::isRomanNumeral)) {
 				++numberCount; //show that we found another number
-			} else if(isLetters(token)) { //if this token is letters (but not the special "page" sequence, for which we already checked)
+			} else if(isEveryCodePoint(token, Character::isLetter)) { //if this token is letters (but not the special "page" sequence, for which we already checked)
 				return false; //it's probably not page number if other characters are present---at least we can't take that chance
 			}
 		}
@@ -303,8 +304,8 @@ public final class Prose {
 	public static boolean isSubHeading(final String text) {
 		if(text.length() > 0 && !isQuoted(text)) { //if there is text and it's not quoted
 			//if the text is in uppercase, and there is text TODO a hasLetters() would be equivalent and more efficient
-			if(containsLetter(text) && isUpperCase(text)) {
-				return true; //the text has pased our tests
+			if(containsLetter(text) && isEveryCodePoint(text, c -> !Character.isLetter(c) || Character.isUpperCase(c))) {
+				return true; //the text has passed our tests
 			}
 		}
 		return false; //we don't think this is a subheading
@@ -458,9 +459,9 @@ public final class Prose {
 			if(sectionLabel.equalsIgnoreCase(firstToken)) { //if this token is a section label
 				if(tokenizer.hasMoreTokens()) { //if there is another token
 					final String numberString = tokenizer.nextToken(); //get the next token
-					if(isDigits(numberString)) { //if the section label is followed by a number
+					if(isEveryCodePoint(numberString, Character::isDigit)) { //if the section label is followed by a number
 						return Integer.parseInt(numberString); //return the value of the number
-					} else if(isRomanNumerals(numberString)) { //if the section label is followed by a Roman numeral
+					} else if(isEveryChar(numberString, Characters::isRomanNumeral)) { //if the section label is followed by a Roman numeral
 						return RomanNumerals.parseRomanNumerals(numberString); //return the value of the Roman numerals TODO maybe modularize the Roman numeral routines better at some point
 					} else { //see if this is a number string
 						final int number = Integers.parseNumberTextValue(numberString); //see if this is a number in text
