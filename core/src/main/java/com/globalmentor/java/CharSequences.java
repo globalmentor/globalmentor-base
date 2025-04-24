@@ -29,7 +29,7 @@ import java.nio.*;
 import java.nio.charset.CharsetDecoder;
 import java.text.Normalizer;
 import java.util.*;
-import java.util.function.ToIntBiFunction;
+import java.util.function.*;
 
 import javax.annotation.*;
 
@@ -938,7 +938,9 @@ public final class CharSequences {
 	 * @param c The character that could make up the entire sequence.
 	 * @return <code>true</code> if there are no other characters but the specified character, <code>false</code> if there are other characters or if the string
 	 *         is the empty string.
+	 * @deprecated to be replaced with {@link #isEveryChar(CharSequence, Predicate)}, e.g. {@code isEveryChar(text, character -> character == c))}.
 	 */
+	@Deprecated(forRemoval = true)
 	public static final boolean isAll(final CharSequence charSequence, final char c) {
 		if(charSequence.length() == 0) //if this is an empty string
 			return false; //there are no characters to check
@@ -955,7 +957,9 @@ public final class CharSequences {
 	 * @param characters The characters that could make up the entire string, in any order.
 	 * @return <code>true</code> if there are no other characters but the specified characters, <code>false</code> if there are other characters or if the
 	 *         character sequence is empty.
+	 * @deprecated in favor of {@link #isEveryChar(CharSequence, Predicate)}, e.g. {@code isEveryChar(text, characters::contains))}.
 	 */
+	@Deprecated(forRemoval = true)
 	public static final boolean isAllChars(final CharSequence charSequence, final Characters characters) {
 		if(charSequence.length() == 0) //if this is an empty string
 			return false; //there are no characters to check
@@ -967,11 +971,48 @@ public final class CharSequences {
 	}
 
 	/**
+	 * Tests every character of a sequence to see whether it meets a certain predicate.
+	 * @apiNote Caution: This method may only give correct results if the characters in the sequence all lie within the Unicode BMP. If characters with higher
+	 *          code points than the BMP are expected, {@link #isEveryCodePoint(CharSequence, IntPredicate)} should be used instead. This method may only be
+	 *          safely used if the given predicate provides correct results when given the low and high parts of a surrogate pair as separate characters; for
+	 *          example, a predicate that returned <code>true</code> if every character were in the ASCII range, which would correctly return <code>false</code>
+	 *          if a low or high character of a surrogate pair were encountered.
+	 * @param charSequence The character sequence to check.
+	 * @param predicate The test to apply to each character.
+	 * @return <code>true</code> if every character in the sequence complies with the given predicate, or if the sequence is empty.
+	 * @see #isEveryCodePoint(CharSequence, IntPredicate)
+	 */
+	public static boolean isEveryChar(@Nonnull final CharSequence charSequence, @Nonnull final Predicate<Character> predicate) {
+		for(int i = charSequence.length() - 1; i >= 0; i--) {
+			if(!predicate.test(charSequence.charAt(i))) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * Tests every Unicode code point of a sequence to see whether it meets a certain predicate.
+	 * @apiNote This method is to be preferred to {@link #isEveryChar(CharSequence, Predicate)} in almost all cases. {@link #isEveryChar(CharSequence, Predicate)}
+	 *          may be slightly more efficient, but must only be used if the testing logic works with chars in the BMP.
+	 * @param charSequence The character sequence to check.
+	 * @param predicate The test to apply to each code point.
+	 * @return <code>true</code> if every character in the sequence complies with the given predicate, or if the sequence is empty.
+	 */
+	public static boolean isEveryCodePoint(@Nonnull final CharSequence charSequence, @Nonnull IntPredicate predicate) {
+		//Rather than checking to see if all code points match the predicate,
+		//see if there is _not_ any code point that does _not_ match the predicate.
+		return !charSequence.codePoints().filter(predicate.negate()).findAny().isPresent();
+	}
+
+	/**
 	 * Determines whether a character sequence is capitalized. A character sequence is capitalized if it contains any characters and the first character is
 	 * uppercase.
 	 * @param charSequence The character sequence to examine.
 	 * @return <code>true</code> if the character sequence is capitalized.
+	 * @deprecated in favor of {@link #isEveryCodePoint(CharSequence, IntPredicate)}, e.g. {@code isEveryCodePoint(text, Character::isUpperCase)}.
 	 */
+	@Deprecated(forRemoval = true)
 	public static final boolean isCapitalized(final CharSequence charSequence) {
 		return charSequence.length() > 0 && Character.isUpperCase(charSequence.charAt(0)); //determine if the first character is capitalized
 	}
@@ -980,7 +1021,9 @@ public final class CharSequences {
 	 * Determines whether a character sequence contains only Unicode digits.
 	 * @param charSequence The character sequence to examine.
 	 * @return <code>true</code> if all the characters in the sequence are digits.
+	 * @deprecated in favor of {@link #isEveryCodePoint(CharSequence, IntPredicate)}, e.g. {@code isEveryCodePoint(text, Character::isDigit)}.
 	 */
+	@Deprecated(forRemoval = true)
 	public static final boolean isDigits(final CharSequence charSequence) {
 		if(charSequence.length() == 0) //if this is an empty string
 			return false; //there are no characters to check
@@ -995,7 +1038,9 @@ public final class CharSequences {
 	 * Determines whether a character sequence contains only Unicode letters.
 	 * @param charSequence The character sequence to examine.
 	 * @return <code>true</code> if all the characters in the sequence are letters.
+	 * @deprecated in favor of {@link #isEveryCodePoint(CharSequence, IntPredicate)}, e.g. {@code isEveryCodePoint(text, Character::isLetter)}.
 	 */
+	@Deprecated(forRemoval = true)
 	public static final boolean isLetters(final CharSequence charSequence) {
 		if(charSequence.length() == 0) //if this is an empty string
 			return false; //there are no characters to check
@@ -1010,7 +1055,9 @@ public final class CharSequences {
 	 * Determines whether a character sequence contains only Unicode letters and digits.
 	 * @param charSequence The character sequence to examine.
 	 * @return <code>true</code> if all the characters in the sequence are letters and digits.
+	 * @deprecated in favor of {@link #isEveryCodePoint(CharSequence, IntPredicate)}, e.g. {@code isEveryCodePoint(text, Character::isLetterOrDigit)}.
 	 */
+	@Deprecated(forRemoval = true)
 	public static final boolean isLettersDigits(final CharSequence charSequence) {
 		if(charSequence.length() == 0) //if this is an empty string
 			return false; //there are no characters to check
@@ -1027,7 +1074,10 @@ public final class CharSequences {
 	 * @param charSequence The character sequence to examine.
 	 * @param characters Extra characters to allow.
 	 * @return <code>true</code> if all the characters in the sequence are letters, digits, and/or allowed characters.
+	 * @deprecated in favor of {@link #isEveryCodePoint(CharSequence, IntPredicate)} and {@link Characters}, e.g.
+	 *             {@code isEveryCodePoint(text, c -> Character.isLetterOrDigit(c) || characters.contains(c)}.
 	 */
+	@Deprecated(forRemoval = true)
 	public static final boolean isLettersDigitsCharacters(final CharSequence charSequence, final String characters) {
 		if(charSequence.length() == 0) //if this is an empty string
 			return false; //there are no characters to check
@@ -1043,8 +1093,11 @@ public final class CharSequences {
 	 * Determines whether a character sequence contains only numbers and decimals or commas.
 	 * @param charSequence The character sequence to examine.
 	 * @return <code>true</code> if all the characters represent a number.
+	 * @deprecated in favor of {@link #isEveryCodePoint(CharSequence, IntPredicate)} with a combination of {@link Characters} and/or
+	 *             {@link Character#isLetterOrDigit(int)} as appropriate for the use case.
 	 */
-	public static final boolean isNumber(final CharSequence charSequence) { //TODO use a regex, and verify format
+	@Deprecated(forRemoval = true)
+	public static final boolean isNumber(final CharSequence charSequence) {
 		if(charSequence.length() == 0) //if this is an empty string
 			return false; //there are no characters to check
 		for(int i = charSequence.length() - 1; i >= 0; --i) { //look at each letter in the string
@@ -1058,23 +1111,29 @@ public final class CharSequences {
 	/**
 	 * Determines whether a character sequence contains only Roman numerals.
 	 * @param charSequence The character sequence to examine.
-	 * @return <code>true</code> if all the characters in the sequence are roman numerals.
+	 * @return <code>true</code> if all the characters in the sequence are Roman numerals.
+	 * @deprecated in favor of {@link #isEveryChar(CharSequence, Predicate)} or {@link #isEveryCodePoint(CharSequence, IntPredicate)} in conjunction with
+	 *             {@link com.globalmentor.text.RomanNumerals.RomanNumerals}.
 	 */
+	@Deprecated(forRemoval = true)
 	public static final boolean isRomanNumerals(final CharSequence charSequence) {
 		if(charSequence.length() == 0) //if this is an empty string
 			return false; //there are no characters to check
 		for(int i = charSequence.length() - 1; i >= 0; --i) { //look at each character in the string
-			if(!isRomanNumeral(charSequence.charAt(i))) //if this isn't a roman numberal
-				return false; //show that the string doesn't contain only roman numberals
+			if(!isRomanNumeral(charSequence.charAt(i))) //if this isn't a Roman numeral
+				return false; //show that the string doesn't contain only Roman numerals
 		}
-		return true; //if we make it to here, there weren't any characters in the string that were not roman numerals
+		return true; //if we make it to here, there weren't any characters in the string that were not Roman numerals
 	}
 
 	/**
 	 * Determines whether all the letters in a character sequence are capital letters.
 	 * @param charSequence The character sequence to examine.
 	 * @return <code>true</code> if all the letters in the sequence are capitalized.
+	 * @deprecated in favor of {@link #isEveryCodePoint(CharSequence, IntPredicate)}, e.g.
+	 *             {@code isEveryCodePoint(text, c -> !Character.isLetter(c) || Character.isUpperCase(c))}.
 	 */
+	@Deprecated(forRemoval = true)
 	public static final boolean isUpperCase(final CharSequence charSequence) {
 		if(charSequence.length() == 0) //if this is an empty string
 			return false; //there are no characters to check
