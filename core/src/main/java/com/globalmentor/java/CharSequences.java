@@ -1113,7 +1113,7 @@ public final class CharSequences {
 	 * @param charSequence The character sequence to examine.
 	 * @return <code>true</code> if all the characters in the sequence are Roman numerals.
 	 * @deprecated in favor of {@link #isEveryChar(CharSequence, Predicate)} or {@link #isEveryCodePoint(CharSequence, IntPredicate)} in conjunction with
-	 *             {@link com.globalmentor.text.RomanNumerals.RomanNumerals}.
+	 *             {@link com.globalmentor.text.RomanNumerals}.
 	 */
 	@Deprecated(forRemoval = true)
 	public static final boolean isRomanNumerals(final CharSequence charSequence) {
@@ -1211,10 +1211,8 @@ public final class CharSequences {
 	 * <li>Removes all normalized Unicode marks such as accents.</li>
 	 * <li>Converts the string to lowercase.</li>
 	 * </ul>
-	 * <p>
-	 * This method converts to lowercase using {@link Locale#ROOT}. If you wish you supply a specific locale, use
-	 * {@link #normalizeForSearch(CharSequence, Locale)}.
-	 * </p>
+	 * <p>This method converts to lowercase using {@link Locale#ROOT}. If you wish you supply a specific locale, use
+	 * {@link #normalizeForSearch(CharSequence, Locale)}.</p>
 	 * @param charSequence The character sequence from which to remove marks.
 	 * @return The normalized string with marks removed.
 	 * @see <a href="http://stackoverflow.com/q/3322152/421049">Java - getting rid of accents and converting them to regular letters</a>
