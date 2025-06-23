@@ -261,9 +261,22 @@ public interface CompoundTokenization extends Named<String> {
 
 	/**
 	 * A delimiter-based compound tokenization using <code>-</code> as a delimiter.
+	 * @apiNote This is a general tokenization using dash delimiters without regard to case. For a variation that ensures lowercase, see {@link #SLUG_CASE}.
+	 * @see <a href="https://stringcase.org/cases/kebab/">kebab-case</a>
 	 * @see <a href="https://stackoverflow.com/q/11273282/421049">What's the name for hyphen-separated case?</a>
+	 * @see #SLUG_CASE
 	 */
 	public CharacterDelimitedCompoundTokenization KEBAB_CASE = namedDelimitedBy("kebab-case", '-');
+
+	/**
+	 * The <code>SLUG-CASE</code> variation of <code>kebab-case</code>. This tokenization is typically used to represent web identifier tokens such as found in
+	 * URLs; CSS property names; and path segments.
+	 * @apiNote This tokenization uses a one-way conversion; it will not be possible to return to the previous tokenization unless the previous capitalization was
+	 *          known.
+	 * @see <a href="https://en.wikipedia.org/wiki/Clean_URL#Slug">Slug (web_publishing)</a>
+	 */
+	public CharacterDelimitedCompoundTokenization SLUG_CASE = CompoundTokenization.KEBAB_CASE.namedWithAddedSegmentTransformation("slug-case",
+			segment -> segment.toString().toLowerCase(Locale.ROOT));
 
 	/**
 	 * A delimiter-based compound tokenization using <code>_</code> as a delimiter.

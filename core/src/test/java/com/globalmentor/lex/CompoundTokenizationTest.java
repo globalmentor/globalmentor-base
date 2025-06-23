@@ -502,6 +502,24 @@ public class CompoundTokenizationTest {
 		assertThat(KEBAB_CASE.to(SNAKE_CASE, "old-URL"), is("old_URL"));
 	}
 
+	/** @see CompoundTokenization#SLUG_CASE */
+	@Test
+	void testToSlugCase() {
+		assertThrows(IllegalArgumentException.class, () -> KEBAB_CASE.to(SLUG_CASE, ""));
+		assertThat(CAMEL_CASE.to(SLUG_CASE, "fooBar"), is("foo-bar"));
+		assertThat(CAMEL_CASE.to(SLUG_CASE, "$fooBar"), is("$foo-bar"));
+		assertThat(CAMEL_CASE.to(SLUG_CASE, "$FooBar"), is("$-foo-bar"));
+		assertThat(CAMEL_CASE.to(SLUG_CASE, "FooBar"), is("foo-bar"));
+		assertThat(PASCAL_CASE.to(SLUG_CASE, "FooBar"), is("foo-bar"));
+		assertThat(DOT_CASE.to(SLUG_CASE, "foo.bar"), is("foo-bar"));
+		assertThat(DOT_CASE.to(SLUG_CASE, "foo.Bar"), is("foo-bar"));
+		assertThat(KEBAB_CASE.to(SLUG_CASE, "foo-bar"), is("foo-bar"));
+		assertThat(KEBAB_CASE.to(SLUG_CASE, "foo-Bar"), is("foo-bar"));
+		assertThat(CONSTANT_CASE.to(SLUG_CASE, "FOO_BAR"), is("foo-bar"));
+		assertThat(SNAKE_CASE.to(SLUG_CASE, "foo_bar"), is("foo-bar"));
+		assertThat(SNAKE_CASE.to(SLUG_CASE, "foo_Bar"), is("foo-bar"));
+	}
+
 	//## snake_case
 
 	/**
@@ -632,6 +650,7 @@ public class CompoundTokenizationTest {
 		assertThat(DOT_CASE.to(CONSTANT_CASE, "foo.Bar"), is("FOO_BAR"));
 		assertThat(KEBAB_CASE.to(CONSTANT_CASE, "foo-bar"), is("FOO_BAR"));
 		assertThat(KEBAB_CASE.to(CONSTANT_CASE, "foo-Bar"), is("FOO_BAR"));
+		assertThat(SLUG_CASE.to(CONSTANT_CASE, "foo-bar"), is("FOO_BAR"));
 		assertThat(SNAKE_CASE.to(CONSTANT_CASE, "foo_bar"), is("FOO_BAR"));
 		assertThat(SNAKE_CASE.to(CONSTANT_CASE, "foo_Bar"), is("FOO_BAR"));
 	}
