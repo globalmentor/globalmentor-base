@@ -76,7 +76,7 @@ public class CompoundTokenizationTest {
 
 	/** @see CompoundTokenization#CAMEL_CASE */
 	@Test
-	void testDromedaryCase() {
+	void testToDromedaryCase() {
 		assertThrows(IllegalArgumentException.class, () -> CAMEL_CASE.to(DROMEDARY_CASE, ""));
 		assertThat(CAMEL_CASE.to(DROMEDARY_CASE, "fooBar"), is("fooBar"));
 		assertThat(CAMEL_CASE.to(DROMEDARY_CASE, "$fooBar"), is("$fooBar"));
@@ -105,7 +105,7 @@ public class CompoundTokenizationTest {
 
 	/** @see CompoundTokenization#PASCAL_CASE */
 	@Test
-	void testPascalCase() {
+	void testToPascalCase() {
 		assertThrows(IllegalArgumentException.class, () -> CAMEL_CASE.to(PASCAL_CASE, ""));
 		assertThat(CAMEL_CASE.to(PASCAL_CASE, "fooBar"), is("FooBar"));
 		assertThat(CAMEL_CASE.to(PASCAL_CASE, "$fooBar"), is("$fooBar"));
@@ -617,6 +617,23 @@ public class CompoundTokenizationTest {
 		assertThat(SNAKE_CASE.to(SNAKE_CASE, "URL_converter"), is("URL_converter"));
 		assertThat(SNAKE_CASE.to(SNAKE_CASE, "old_URL_converter"), is("old_URL_converter"));
 		assertThat(SNAKE_CASE.to(SNAKE_CASE, "old_URL"), is("old_URL"));
+	}
+
+	/** @see CompoundTokenization#CONSTANT_CASE */
+	@Test
+	void testToConstantCase() {
+		assertThrows(IllegalArgumentException.class, () -> SNAKE_CASE.to(CONSTANT_CASE, ""));
+		assertThat(CAMEL_CASE.to(CONSTANT_CASE, "fooBar"), is("FOO_BAR"));
+		assertThat(CAMEL_CASE.to(CONSTANT_CASE, "$fooBar"), is("$FOO_BAR"));
+		assertThat(CAMEL_CASE.to(CONSTANT_CASE, "$FooBar"), is("$_FOO_BAR"));
+		assertThat(CAMEL_CASE.to(CONSTANT_CASE, "FooBar"), is("FOO_BAR"));
+		assertThat(PASCAL_CASE.to(CONSTANT_CASE, "FooBar"), is("FOO_BAR"));
+		assertThat(DOT_CASE.to(CONSTANT_CASE, "foo.bar"), is("FOO_BAR"));
+		assertThat(DOT_CASE.to(CONSTANT_CASE, "foo.Bar"), is("FOO_BAR"));
+		assertThat(KEBAB_CASE.to(CONSTANT_CASE, "foo-bar"), is("FOO_BAR"));
+		assertThat(KEBAB_CASE.to(CONSTANT_CASE, "foo-Bar"), is("FOO_BAR"));
+		assertThat(SNAKE_CASE.to(CONSTANT_CASE, "foo_bar"), is("FOO_BAR"));
+		assertThat(SNAKE_CASE.to(CONSTANT_CASE, "foo_Bar"), is("FOO_BAR"));
 	}
 
 	//## transformations

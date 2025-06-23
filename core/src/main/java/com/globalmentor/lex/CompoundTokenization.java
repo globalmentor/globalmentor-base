@@ -19,7 +19,7 @@ package com.globalmentor.lex;
 import static com.globalmentor.io.function.Functions.*;
 import static com.globalmentor.java.Conditions.*;
 
-import java.util.List;
+import java.util.*;
 import java.util.function.*;
 
 import javax.annotation.*;
@@ -267,8 +267,23 @@ public interface CompoundTokenization extends Named<String> {
 
 	/**
 	 * A delimiter-based compound tokenization using <code>_</code> as a delimiter.
+	 * @apiNote This is a general tokenization using underscore delimiters without regard to case. For a variation that ensures uppercase, see
+	 *          {@link #CONSTANT_CASE}.
 	 * @see <a href="https://en.wikipedia.org/wiki/Snake_case">Snake case</a>
+	 * @see #CONSTANT_CASE
 	 */
 	public CharacterDelimitedCompoundTokenization SNAKE_CASE = namedDelimitedBy("snake_case", '_');
+
+	/**
+	 * The <code>CONSTANT_CASE</code> variation of <code>snake_case</code>. This tokenization is typically used to represent constant values in programming
+	 * languages, such as <code>PI</code> and <code>MAX_VALUE</code>; as well as environment variables such as <code>JAVA_HOME</code>.
+	 * @apiNote This tokenization uses a one-way conversion; it will not be possible to return to the previous tokenization unless the previous capitalization was
+	 *          known.
+	 * @see <a href="https://stringcase.org/cases/constant/">CONSTANT_CASE</a>
+	 * @see <a href="https://docs.oracle.com/javase/specs/jls/se21/html/jls-6.html#jls-6.1-360">The Java® Language Specification, Java SE 21 Edition § 6.1-360
+	 *      Constant Names</a>
+	 */
+	public CharacterDelimitedCompoundTokenization CONSTANT_CASE = CompoundTokenization.SNAKE_CASE.namedWithAddedSegmentTransformation("CONSTANT_CASE",
+			segment -> segment.toString().toUpperCase(Locale.ROOT));
 
 }
