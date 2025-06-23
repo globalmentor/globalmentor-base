@@ -22,7 +22,6 @@ import java.util.function.Function;
 import javax.annotation.*;
 
 import com.globalmentor.lex.*;
-import com.globalmentor.text.ASCII;
 
 import static com.globalmentor.java.Java.*;
 import static com.globalmentor.lex.CompoundTokenization.*;
@@ -75,42 +74,31 @@ public final class Enums {
 		return set; //return the set we created and populated
 	}
 
-	/** The transformations to represent an {@link Identifier} enum in serialized form. */
-	public static final CompoundTokenization IDENTIFIER_ENUM_SERIALIZATION_TOKENIZATION = KEBAB_CASE
-			.namedWithAddedSegmentTransformation("serialized-identifier-enum", ASCII::toLowerCase); //enum names will only consist of ASCII characters
-
-	/** The transformations to represent an {@link Identifier} enum in deserialized form. */
-	public static final CompoundTokenization IDENTIFIER_ENUM_DESERIALIZATION_TOKENIZATION = SNAKE_CASE
-			.namedWithAddedSegmentTransformation("DESERIALIZED_IDENTIFIER_ENUM", ASCII::toUpperCase); //enum names will only consist of ASCII characters
-
 	/**
 	 * Returns a form of the enum name appropriate for serialization.
-	 * <p>
-	 * If the enum is a lexical {@link Identifier}, the name is converted to lowercase and all underscore characters ('_') are replaced by hyphens ('-'). For
-	 * example, <code>FILE_NOT_FOUND</code> would produce <code>file-not-found</code>.
-	 * </p>
+	 * <p>If the enum is a lexical {@link Identifier}, the name is converted to lowercase and all underscore characters ('_') are replaced by hyphens ('-'), i.e.
+	 * from <code>CONSTANT_CASE</code> to <code>kebab-case</code>. For example, <code>FILE_NOT_FOUND</code> would produce <code>file-not-found</code>.</p>
 	 * @implNote JDK 6/7 did not work with some enum generics if {@code <E extends Enum<E>>} was used in the signature, but in Eclipse 4.2.1 it worked fine.
 	 *           Nevertheless using {@code Enum<?>} seems more flexible in general as a parameter.
 	 * @param e The enum instance to convert to a serialization form.
 	 * @return A string representing the enum instance in a style appropriate for use in serialization.
 	 * @see Enum#name()
 	 * @see Identifier
-	 * @see #IDENTIFIER_ENUM_SERIALIZATION_TOKENIZATION
+	 * @see CompoundTokenization#CONSTANT_CASE
+	 * @see CompoundTokenization#KEBAB_CASE
 	 */
 	public static String getSerializationName(final Enum<?> e) {
 		final String name = e.name();
 		return e instanceof Identifier //if the enum is an identifier, return its serialized form
-				? IDENTIFIER_ENUM_DESERIALIZATION_TOKENIZATION.to(IDENTIFIER_ENUM_SERIALIZATION_TOKENIZATION, name)
+				? CONSTANT_CASE.to(KEBAB_CASE, name)
 				: name;
 	}
 
 	/**
 	 * Returns the appropriate enum that has been serialized.
-	 * <p>
-	 * If the enum is a lexical {@link Identifier}, the name is converted to uppercase and all hyphen characters ('-') are replaced by underscores ('_') in order
-	 * to determine the original enum name. For example, <code>file-not-found</code> would produce <code>FILE_NOT_FOUND</code>. This method assumes that the
-	 * original enum name does not contain lowercase letters.
-	 * </p>
+	 * <p>If the enum is a lexical {@link Identifier}, the name is converted to uppercase and all hyphen characters ('-') are replaced by underscores ('_'), i.e.
+	 * from <code>kebab-case</code> to <code>CONSTANT_CASE</code>, in order to determine the original enum name. For example, <code>file-not-found</code> would
+	 * produce <code>FILE_NOT_FOUND</code>. This method assumes that the original enum name does not contain lowercase letters.</p>
 	 * @param <E> The type of the enum.
 	 * @param enumType The class object of the enum type from which to return an enum.
 	 * @param serializationName The serialization form of the name of the enum to return.
@@ -120,11 +108,12 @@ public final class Enums {
 	 *           represent an enum type.
 	 * @see Enum#valueOf(Class, String)
 	 * @see Identifier
-	 * @see #IDENTIFIER_ENUM_DESERIALIZATION_TOKENIZATION
+	 * @see CompoundTokenization#KEBAB_CASE
+	 * @see CompoundTokenization#CONSTANT_CASE
 	 */
 	public static <E extends Enum<E>> E getSerializedEnum(@Nonnull final Class<E> enumType, @Nonnull String serializationName) {
 		final String name = Identifier.class.isAssignableFrom(enumType) //if the enum is an identifier, use the deserialized name form
-				? IDENTIFIER_ENUM_SERIALIZATION_TOKENIZATION.to(IDENTIFIER_ENUM_DESERIALIZATION_TOKENIZATION, serializationName)
+				? KEBAB_CASE.to(CONSTANT_CASE, serializationName)
 				: serializationName;
 		return Enum.valueOf(enumType, name); //try to retrieve a corresponding enum from the original form of the name
 	}

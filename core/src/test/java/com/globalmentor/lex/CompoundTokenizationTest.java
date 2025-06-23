@@ -36,7 +36,7 @@ public class CompoundTokenizationTest {
 	//## split and join
 
 	/** The implementations tested by this class that support round-trip split+join. */
-	private static final List<CompoundTokenization> IMPLEMENTATIONS = unmodifiableList(asList(CAMEL_CASE, DOT_CASE, KEBAB_CASE, SNAKE_CASE));
+	private static final List<CompoundTokenization> ROUND_TRIP_IMPLEMENTATIONS = List.of(CAMEL_CASE, DOT_CASE);
 
 	/** A list of tokens to use for testing. */
 	private static final List<String> TEST_TOKENS = unmodifiableList(asList("foobar", "fooBar", "FooBar", "foo.bar", "foo.Bar", "foo-bar", "foo-Bar", "foo_bar",
@@ -47,12 +47,12 @@ public class CompoundTokenizationTest {
 	/**
 	 * @see CompoundTokenization#split(CharSequence)
 	 * @see CompoundTokenization#join(Iterable)
-	 * @see #IMPLEMENTATIONS
+	 * @see #ROUND_TRIP_IMPLEMENTATIONS
 	 * @see #TEST_TOKENS
 	 */
 	@Test
 	void testSplitJoinRoundTripForAllImplementations() {
-		for(final CompoundTokenization tokenization : IMPLEMENTATIONS) {
+		for(final CompoundTokenization tokenization : ROUND_TRIP_IMPLEMENTATIONS) {
 			for(final String token : TEST_TOKENS) {
 				assertThat("(" + tokenization.getName() + ") " + token, tokenization.join(tokenization.split(token)), is(token));
 			}
@@ -76,7 +76,7 @@ public class CompoundTokenizationTest {
 
 	/** @see CompoundTokenization#CAMEL_CASE */
 	@Test
-	void testDromedaryCase() {
+	void testToDromedaryCase() {
 		assertThrows(IllegalArgumentException.class, () -> CAMEL_CASE.to(DROMEDARY_CASE, ""));
 		assertThat(CAMEL_CASE.to(DROMEDARY_CASE, "fooBar"), is("fooBar"));
 		assertThat(CAMEL_CASE.to(DROMEDARY_CASE, "$fooBar"), is("$fooBar"));
@@ -105,7 +105,7 @@ public class CompoundTokenizationTest {
 
 	/** @see CompoundTokenization#PASCAL_CASE */
 	@Test
-	void testPascalCase() {
+	void testToPascalCase() {
 		assertThrows(IllegalArgumentException.class, () -> CAMEL_CASE.to(PASCAL_CASE, ""));
 		assertThat(CAMEL_CASE.to(PASCAL_CASE, "fooBar"), is("FooBar"));
 		assertThat(CAMEL_CASE.to(PASCAL_CASE, "$fooBar"), is("$fooBar"));
@@ -211,7 +211,7 @@ public class CompoundTokenizationTest {
 		assertThrows(IllegalArgumentException.class, () -> CAMEL_CASE.to(KEBAB_CASE, ""));
 		assertThat(CAMEL_CASE.to(KEBAB_CASE, "foobar"), is("foobar"));
 		assertThat(CAMEL_CASE.to(KEBAB_CASE, "fooBar"), is("foo-bar"));
-		assertThat(CAMEL_CASE.to(KEBAB_CASE, "FooBar"), is("Foo-bar"));
+		assertThat(CAMEL_CASE.to(KEBAB_CASE, "FooBar"), is("foo-bar"));
 		assertThrows(IllegalArgumentException.class, () -> CAMEL_CASE.to(KEBAB_CASE, "foo-bar"),
 				"Kebab case segments, split from camel case, must not already use kebab case delimiter.");
 		assertThrows(IllegalArgumentException.class, () -> CAMEL_CASE.to(KEBAB_CASE, "foo-Bar"),
@@ -219,17 +219,17 @@ public class CompoundTokenizationTest {
 		assertThat(CAMEL_CASE.to(KEBAB_CASE, "foo_bar"), is("foo_bar"));
 		assertThat(CAMEL_CASE.to(KEBAB_CASE, "foo_Bar"), is("foo_-bar"));
 		assertThat(CAMEL_CASE.to(KEBAB_CASE, "x"), is("x"));
-		assertThat(CAMEL_CASE.to(KEBAB_CASE, "X"), is("X"));
-		assertThat(CAMEL_CASE.to(KEBAB_CASE, "CDlibrary"), is("CDlibrary"));
-		assertThat(CAMEL_CASE.to(KEBAB_CASE, "CdLibrary"), is("Cd-library"));
-		assertThat(CAMEL_CASE.to(KEBAB_CASE, "userCDlibrary"), is("user-CDlibrary"));
+		assertThat(CAMEL_CASE.to(KEBAB_CASE, "X"), is("x"));
+		assertThat(CAMEL_CASE.to(KEBAB_CASE, "CDlibrary"), is("cdlibrary"));
+		assertThat(CAMEL_CASE.to(KEBAB_CASE, "CdLibrary"), is("cd-library"));
+		assertThat(CAMEL_CASE.to(KEBAB_CASE, "userCDlibrary"), is("user-cdlibrary"));
 		assertThat(CAMEL_CASE.to(KEBAB_CASE, "userCdLibrary"), is("user-cd-library"));
-		assertThat(CAMEL_CASE.to(KEBAB_CASE, "URL"), is("URL"));
-		assertThat(CAMEL_CASE.to(KEBAB_CASE, "URLconverter"), is("URLconverter"));
-		assertThat(CAMEL_CASE.to(KEBAB_CASE, "UrlConverter"), is("Url-converter"));
-		assertThat(CAMEL_CASE.to(KEBAB_CASE, "oldURLconverter"), is("old-URLconverter"));
+		assertThat(CAMEL_CASE.to(KEBAB_CASE, "URL"), is("url"));
+		assertThat(CAMEL_CASE.to(KEBAB_CASE, "URLconverter"), is("urlconverter"));
+		assertThat(CAMEL_CASE.to(KEBAB_CASE, "UrlConverter"), is("url-converter"));
+		assertThat(CAMEL_CASE.to(KEBAB_CASE, "oldURLconverter"), is("old-urlconverter"));
 		assertThat(CAMEL_CASE.to(KEBAB_CASE, "oldUrlConverter"), is("old-url-converter"));
-		assertThat(CAMEL_CASE.to(KEBAB_CASE, "oldURL"), is("old-URL"));
+		assertThat(CAMEL_CASE.to(KEBAB_CASE, "oldURL"), is("old-url"));
 	}
 
 	/**
@@ -241,7 +241,7 @@ public class CompoundTokenizationTest {
 		assertThrows(IllegalArgumentException.class, () -> CAMEL_CASE.to(SNAKE_CASE, ""));
 		assertThat(CAMEL_CASE.to(SNAKE_CASE, "foobar"), is("foobar"));
 		assertThat(CAMEL_CASE.to(SNAKE_CASE, "fooBar"), is("foo_bar"));
-		assertThat(CAMEL_CASE.to(SNAKE_CASE, "FooBar"), is("Foo_bar"));
+		assertThat(CAMEL_CASE.to(SNAKE_CASE, "FooBar"), is("foo_bar"));
 		assertThat(CAMEL_CASE.to(SNAKE_CASE, "foo.bar"), is("foo.bar"));
 		assertThat(CAMEL_CASE.to(SNAKE_CASE, "foo.Bar"), is("foo._bar"));
 		assertThat(CAMEL_CASE.to(SNAKE_CASE, "foo-bar"), is("foo-bar"));
@@ -251,17 +251,17 @@ public class CompoundTokenizationTest {
 		assertThrows(IllegalArgumentException.class, () -> CAMEL_CASE.to(SNAKE_CASE, "foo_Bar"),
 				"Snake case segments, split from camel case, must not already use snake case delimiter.");
 		assertThat(CAMEL_CASE.to(SNAKE_CASE, "x"), is("x"));
-		assertThat(CAMEL_CASE.to(SNAKE_CASE, "X"), is("X"));
-		assertThat(CAMEL_CASE.to(SNAKE_CASE, "CDlibrary"), is("CDlibrary"));
-		assertThat(CAMEL_CASE.to(SNAKE_CASE, "CdLibrary"), is("Cd_library"));
-		assertThat(CAMEL_CASE.to(SNAKE_CASE, "userCDlibrary"), is("user_CDlibrary"));
+		assertThat(CAMEL_CASE.to(SNAKE_CASE, "X"), is("x"));
+		assertThat(CAMEL_CASE.to(SNAKE_CASE, "CDlibrary"), is("cdlibrary"));
+		assertThat(CAMEL_CASE.to(SNAKE_CASE, "CdLibrary"), is("cd_library"));
+		assertThat(CAMEL_CASE.to(SNAKE_CASE, "userCDlibrary"), is("user_cdlibrary"));
 		assertThat(CAMEL_CASE.to(SNAKE_CASE, "userCdLibrary"), is("user_cd_library"));
-		assertThat(CAMEL_CASE.to(SNAKE_CASE, "URL"), is("URL"));
-		assertThat(CAMEL_CASE.to(SNAKE_CASE, "URLconverter"), is("URLconverter"));
-		assertThat(CAMEL_CASE.to(SNAKE_CASE, "UrlConverter"), is("Url_converter"));
-		assertThat(CAMEL_CASE.to(SNAKE_CASE, "oldURLconverter"), is("old_URLconverter"));
+		assertThat(CAMEL_CASE.to(SNAKE_CASE, "URL"), is("url"));
+		assertThat(CAMEL_CASE.to(SNAKE_CASE, "URLconverter"), is("urlconverter"));
+		assertThat(CAMEL_CASE.to(SNAKE_CASE, "UrlConverter"), is("url_converter"));
+		assertThat(CAMEL_CASE.to(SNAKE_CASE, "oldURLconverter"), is("old_urlconverter"));
 		assertThat(CAMEL_CASE.to(SNAKE_CASE, "oldUrlConverter"), is("old_url_converter"));
-		assertThat(CAMEL_CASE.to(SNAKE_CASE, "oldURL"), is("old_URL"));
+		assertThat(CAMEL_CASE.to(SNAKE_CASE, "oldURL"), is("old_url"));
 	}
 
 	//## dot.case
@@ -363,24 +363,24 @@ public class CompoundTokenizationTest {
 	void testDotCaseToSnakeCase() {
 		assertThrows(IllegalArgumentException.class, () -> DOT_CASE.to(SNAKE_CASE, ""));
 		assertThat(DOT_CASE.to(SNAKE_CASE, "foobar"), is("foobar"));
-		assertThat(DOT_CASE.to(SNAKE_CASE, "fooBar"), is("fooBar"));
-		assertThat(DOT_CASE.to(SNAKE_CASE, "FooBar"), is("FooBar"));
+		assertThat(DOT_CASE.to(SNAKE_CASE, "fooBar"), is("foobar"));
+		assertThat(DOT_CASE.to(SNAKE_CASE, "FooBar"), is("foobar"));
 		assertThat(DOT_CASE.to(SNAKE_CASE, "foo.bar"), is("foo_bar"));
-		assertThat(DOT_CASE.to(SNAKE_CASE, "foo.Bar"), is("foo_Bar"));
+		assertThat(DOT_CASE.to(SNAKE_CASE, "foo.Bar"), is("foo_bar"));
 		assertThat(DOT_CASE.to(SNAKE_CASE, "foo-bar"), is("foo-bar"));
-		assertThat(DOT_CASE.to(SNAKE_CASE, "foo-Bar"), is("foo-Bar"));
+		assertThat(DOT_CASE.to(SNAKE_CASE, "foo-Bar"), is("foo-bar"));
 		assertThrows(IllegalArgumentException.class, () -> DOT_CASE.to(SNAKE_CASE, "foo_bar"),
 				"Snake case segments, split from dot case, must not already use snake case delimiter.");
 		assertThrows(IllegalArgumentException.class, () -> DOT_CASE.to(SNAKE_CASE, "foo_Bar"),
 				"Snake case segments, split from dot case, must not already use snake case delimiter.");
 		assertThat(DOT_CASE.to(SNAKE_CASE, "x"), is("x"));
-		assertThat(DOT_CASE.to(SNAKE_CASE, "X"), is("X"));
-		assertThat(DOT_CASE.to(SNAKE_CASE, "CD.library"), is("CD_library"));
-		assertThat(DOT_CASE.to(SNAKE_CASE, "user.CD.library"), is("user_CD_library"));
-		assertThat(DOT_CASE.to(SNAKE_CASE, "URL"), is("URL"));
-		assertThat(DOT_CASE.to(SNAKE_CASE, "URL.converter"), is("URL_converter"));
-		assertThat(DOT_CASE.to(SNAKE_CASE, "old.URL.converter"), is("old_URL_converter"));
-		assertThat(DOT_CASE.to(SNAKE_CASE, "old.URL"), is("old_URL"));
+		assertThat(DOT_CASE.to(SNAKE_CASE, "X"), is("x"));
+		assertThat(DOT_CASE.to(SNAKE_CASE, "CD.library"), is("cd_library"));
+		assertThat(DOT_CASE.to(SNAKE_CASE, "user.CD.library"), is("user_cd_library"));
+		assertThat(DOT_CASE.to(SNAKE_CASE, "URL"), is("url"));
+		assertThat(DOT_CASE.to(SNAKE_CASE, "URL.converter"), is("url_converter"));
+		assertThat(DOT_CASE.to(SNAKE_CASE, "old.URL.converter"), is("old_url_converter"));
+		assertThat(DOT_CASE.to(SNAKE_CASE, "old.URL"), is("old_url"));
 	}
 
 	//## kebab-case
@@ -414,7 +414,7 @@ public class CompoundTokenizationTest {
 		assertThrows(IllegalArgumentException.class, () -> KEBAB_CASE.join(asList()));
 		assertThat(KEBAB_CASE.join(asList("foobar")), is("foobar"));
 		assertThat(KEBAB_CASE.join(asList("foo", "bar")), is("foo-bar"));
-		assertThat(KEBAB_CASE.join(asList("Foo", "bar")), is("Foo-bar"));
+		assertThat(KEBAB_CASE.join(asList("Foo", "bar")), is("foo-bar"));
 		assertThat(KEBAB_CASE.join(asList("foo.bar")), is("foo.bar"));
 		assertThat(KEBAB_CASE.join(asList("foo.", "bar")), is("foo.-bar"));
 		assertThrows(IllegalArgumentException.class, () -> KEBAB_CASE.join(asList("foo-bar")));
@@ -422,7 +422,7 @@ public class CompoundTokenizationTest {
 		assertThat(KEBAB_CASE.join(asList("foo_bar")), is("foo_bar"));
 		assertThat(KEBAB_CASE.join(asList("foo_", "bar")), is("foo_-bar"));
 		assertThat(KEBAB_CASE.join(asList("x")), is("x"));
-		assertThat(KEBAB_CASE.join(asList("X")), is("X"));
+		assertThat(KEBAB_CASE.join(asList("X")), is("x"));
 	}
 
 	/**
@@ -482,24 +482,24 @@ public class CompoundTokenizationTest {
 	void testKebabCaseToSnakeCase() {
 		assertThrows(IllegalArgumentException.class, () -> KEBAB_CASE.to(SNAKE_CASE, ""));
 		assertThat(KEBAB_CASE.to(SNAKE_CASE, "foobar"), is("foobar"));
-		assertThat(KEBAB_CASE.to(SNAKE_CASE, "fooBar"), is("fooBar"));
-		assertThat(KEBAB_CASE.to(SNAKE_CASE, "FooBar"), is("FooBar"));
+		assertThat(KEBAB_CASE.to(SNAKE_CASE, "fooBar"), is("foobar"));
+		assertThat(KEBAB_CASE.to(SNAKE_CASE, "FooBar"), is("foobar"));
 		assertThat(KEBAB_CASE.to(SNAKE_CASE, "foo.bar"), is("foo.bar"));
-		assertThat(KEBAB_CASE.to(SNAKE_CASE, "foo.Bar"), is("foo.Bar"));
+		assertThat(KEBAB_CASE.to(SNAKE_CASE, "foo.Bar"), is("foo.bar"));
 		assertThat(KEBAB_CASE.to(SNAKE_CASE, "foo-bar"), is("foo_bar"));
-		assertThat(KEBAB_CASE.to(SNAKE_CASE, "foo-Bar"), is("foo_Bar"));
+		assertThat(KEBAB_CASE.to(SNAKE_CASE, "foo-Bar"), is("foo_bar"));
 		assertThrows(IllegalArgumentException.class, () -> KEBAB_CASE.to(SNAKE_CASE, "foo_bar"),
 				"Snake case segments, split from kebab case, must not already use snake case delimiter.");
 		assertThrows(IllegalArgumentException.class, () -> KEBAB_CASE.to(SNAKE_CASE, "foo_Bar"),
 				"Snake case segments, split from kebab case, must not already use snake case delimiter.");
 		assertThat(KEBAB_CASE.to(SNAKE_CASE, "x"), is("x"));
-		assertThat(KEBAB_CASE.to(SNAKE_CASE, "X"), is("X"));
-		assertThat(KEBAB_CASE.to(SNAKE_CASE, "CD-library"), is("CD_library"));
-		assertThat(KEBAB_CASE.to(SNAKE_CASE, "user-CD-library"), is("user_CD_library"));
-		assertThat(KEBAB_CASE.to(SNAKE_CASE, "URL"), is("URL"));
-		assertThat(KEBAB_CASE.to(SNAKE_CASE, "URL-converter"), is("URL_converter"));
-		assertThat(KEBAB_CASE.to(SNAKE_CASE, "old-URL-converter"), is("old_URL_converter"));
-		assertThat(KEBAB_CASE.to(SNAKE_CASE, "old-URL"), is("old_URL"));
+		assertThat(KEBAB_CASE.to(SNAKE_CASE, "X"), is("x"));
+		assertThat(KEBAB_CASE.to(SNAKE_CASE, "CD-library"), is("cd_library"));
+		assertThat(KEBAB_CASE.to(SNAKE_CASE, "user-CD-library"), is("user_cd_library"));
+		assertThat(KEBAB_CASE.to(SNAKE_CASE, "URL"), is("url"));
+		assertThat(KEBAB_CASE.to(SNAKE_CASE, "URL-converter"), is("url_converter"));
+		assertThat(KEBAB_CASE.to(SNAKE_CASE, "old-URL-converter"), is("old_url_converter"));
+		assertThat(KEBAB_CASE.to(SNAKE_CASE, "old-URL"), is("old_url"));
 	}
 
 	//## snake_case
@@ -533,7 +533,7 @@ public class CompoundTokenizationTest {
 		assertThrows(IllegalArgumentException.class, () -> SNAKE_CASE.join(asList()));
 		assertThat(SNAKE_CASE.join(asList("foobar")), is("foobar"));
 		assertThat(SNAKE_CASE.join(asList("foo", "bar")), is("foo_bar"));
-		assertThat(SNAKE_CASE.join(asList("Foo", "bar")), is("Foo_bar"));
+		assertThat(SNAKE_CASE.join(asList("Foo", "bar")), is("foo_bar"));
 		assertThat(SNAKE_CASE.join(asList("foo.bar")), is("foo.bar"));
 		assertThat(SNAKE_CASE.join(asList("foo.", "bar")), is("foo._bar"));
 		assertThat(SNAKE_CASE.join(asList("foo-bar")), is("foo-bar"));
@@ -541,7 +541,7 @@ public class CompoundTokenizationTest {
 		assertThrows(IllegalArgumentException.class, () -> SNAKE_CASE.join(asList("foo_bar")));
 		assertThrows(IllegalArgumentException.class, () -> SNAKE_CASE.join(asList("foo_", "bar")));
 		assertThat(SNAKE_CASE.join(asList("x")), is("x"));
-		assertThat(SNAKE_CASE.join(asList("X")), is("X"));
+		assertThat(SNAKE_CASE.join(asList("X")), is("x"));
 	}
 
 	/**
@@ -578,22 +578,22 @@ public class CompoundTokenizationTest {
 	void testSnakeCaseToKebabCase() {
 		assertThrows(IllegalArgumentException.class, () -> SNAKE_CASE.to(KEBAB_CASE, ""));
 		assertThat(SNAKE_CASE.to(KEBAB_CASE, "foobar"), is("foobar"));
-		assertThat(SNAKE_CASE.to(KEBAB_CASE, "fooBar"), is("fooBar"));
-		assertThat(SNAKE_CASE.to(KEBAB_CASE, "FooBar"), is("FooBar"));
+		assertThat(SNAKE_CASE.to(KEBAB_CASE, "fooBar"), is("foobar"));
+		assertThat(SNAKE_CASE.to(KEBAB_CASE, "FooBar"), is("foobar"));
 		assertThrows(IllegalArgumentException.class, () -> SNAKE_CASE.to(KEBAB_CASE, "foo-bar"),
 				"Kebab case segments, split from snake case, must not already use kebab case delimiter.");
 		assertThrows(IllegalArgumentException.class, () -> SNAKE_CASE.to(KEBAB_CASE, "foo-Bar"),
 				"Kebab case segments, split from snake case, must not already use kebab case delimiter.");
 		assertThat(SNAKE_CASE.to(KEBAB_CASE, "foo_bar"), is("foo-bar"));
-		assertThat(SNAKE_CASE.to(KEBAB_CASE, "foo_Bar"), is("foo-Bar"));
+		assertThat(SNAKE_CASE.to(KEBAB_CASE, "foo_Bar"), is("foo-bar"));
 		assertThat(SNAKE_CASE.to(KEBAB_CASE, "x"), is("x"));
-		assertThat(SNAKE_CASE.to(KEBAB_CASE, "X"), is("X"));
-		assertThat(SNAKE_CASE.to(KEBAB_CASE, "CD_library"), is("CD-library"));
-		assertThat(SNAKE_CASE.to(KEBAB_CASE, "user_CD_library"), is("user-CD-library"));
-		assertThat(SNAKE_CASE.to(KEBAB_CASE, "URL"), is("URL"));
-		assertThat(SNAKE_CASE.to(KEBAB_CASE, "URL_converter"), is("URL-converter"));
-		assertThat(SNAKE_CASE.to(KEBAB_CASE, "old_URL_converter"), is("old-URL-converter"));
-		assertThat(SNAKE_CASE.to(KEBAB_CASE, "old_URL"), is("old-URL"));
+		assertThat(SNAKE_CASE.to(KEBAB_CASE, "X"), is("x"));
+		assertThat(SNAKE_CASE.to(KEBAB_CASE, "CD_library"), is("cd-library"));
+		assertThat(SNAKE_CASE.to(KEBAB_CASE, "user_CD_library"), is("user-cd-library"));
+		assertThat(SNAKE_CASE.to(KEBAB_CASE, "URL"), is("url"));
+		assertThat(SNAKE_CASE.to(KEBAB_CASE, "URL_converter"), is("url-converter"));
+		assertThat(SNAKE_CASE.to(KEBAB_CASE, "old_URL_converter"), is("old-url-converter"));
+		assertThat(SNAKE_CASE.to(KEBAB_CASE, "old_URL"), is("old-url"));
 	}
 
 	/** @see CompoundTokenization#SNAKE_CASE */
@@ -617,6 +617,25 @@ public class CompoundTokenizationTest {
 		assertThat(SNAKE_CASE.to(SNAKE_CASE, "URL_converter"), is("URL_converter"));
 		assertThat(SNAKE_CASE.to(SNAKE_CASE, "old_URL_converter"), is("old_URL_converter"));
 		assertThat(SNAKE_CASE.to(SNAKE_CASE, "old_URL"), is("old_URL"));
+	}
+
+	//## CONSTANT_CASE
+
+	/** @see CompoundTokenization#CONSTANT_CASE */
+	@Test
+	void testToConstantCase() {
+		assertThrows(IllegalArgumentException.class, () -> SNAKE_CASE.to(CONSTANT_CASE, ""));
+		assertThat(CAMEL_CASE.to(CONSTANT_CASE, "fooBar"), is("FOO_BAR"));
+		assertThat(CAMEL_CASE.to(CONSTANT_CASE, "$fooBar"), is("$FOO_BAR"));
+		assertThat(CAMEL_CASE.to(CONSTANT_CASE, "$FooBar"), is("$_FOO_BAR"));
+		assertThat(CAMEL_CASE.to(CONSTANT_CASE, "FooBar"), is("FOO_BAR"));
+		assertThat(PASCAL_CASE.to(CONSTANT_CASE, "FooBar"), is("FOO_BAR"));
+		assertThat(DOT_CASE.to(CONSTANT_CASE, "foo.bar"), is("FOO_BAR"));
+		assertThat(DOT_CASE.to(CONSTANT_CASE, "foo.Bar"), is("FOO_BAR"));
+		assertThat(KEBAB_CASE.to(CONSTANT_CASE, "foo-bar"), is("FOO_BAR"));
+		assertThat(KEBAB_CASE.to(CONSTANT_CASE, "foo-Bar"), is("FOO_BAR"));
+		assertThat(SNAKE_CASE.to(CONSTANT_CASE, "foo_bar"), is("FOO_BAR"));
+		assertThat(SNAKE_CASE.to(CONSTANT_CASE, "foo_Bar"), is("FOO_BAR"));
 	}
 
 	//## transformations
