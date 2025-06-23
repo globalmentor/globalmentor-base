@@ -246,6 +246,8 @@ public interface CompoundTokenization extends Named<String> {
 	 * A general case-based compound tokenization, supporting both <code>dromedaryCase</code> and <code>PascalCase</code> variations. Its conversion is agnostic
 	 * to whether the result is <code>dromedaryCase</code> or <code>PascalCase</code> (i.e. it depends on the existing case of the segments being joined).
 	 * @see <a href="https://en.wikipedia.org/wiki/Camel_case">Camel case</a>
+	 * @see <a href="https://en.wikipedia.org/wiki/Letter_case#Camel_case">Letter case: Camel case</a>
+	 * @see <a href="https://stringcase.org/cases/camel/">camelCase</a>
 	 * @see #DROMEDARY_CASE
 	 * @see #PASCAL_CASE
 	 */
@@ -264,53 +266,47 @@ public interface CompoundTokenization extends Named<String> {
 	 * @apiNote This tokenization uses a one-way conversion; it will not be possible to return to the previous tokenization unless the previous capitalization was
 	 *          known.
 	 * @see <a href="https://en.wikipedia.org/wiki/Camel_case">Camel case</a>
+	 * @see <a href="https://stringcase.org/cases/pascal/">PascalCase</a>
 	 */
 	public CamelCase PASCAL_CASE = CAMEL_CASE.namedWithAddedSegmentTransformation("PascalCase", CamelCase::transformCamelCaseSegmentToPascalCase);
 
 	/**
-	 * A delimiter-based compound tokenization using <code>.</code> as a delimiter.
+	 * A delimiter-based compound tokenization using <code>.</code> as a delimiter. Note that unlike {@link #KEBAB_CASE}, {@link #SNAKE_CASE}, and other similar
+	 * compound tokenizations, <code>dot-case</code> maintains the case of the letters between the delimiters and performs no additional transformation.
 	 * @see <a href="https://stackoverflow.com/q/49263762">Is there a name for dot-separated case?</a>
 	 */
 	public CharacterDelimitedCompoundTokenization DOT_CASE = namedDelimitedBy("dot.case", '.');
 
 	/**
-	 * A delimiter-based compound tokenization using <code>-</code> as a delimiter.
-	 * @apiNote This is a general tokenization using dash delimiters without regard to case. For a variation that ensures lowercase, see {@link #SLUG_CASE}.
-	 * @see <a href="https://stringcase.org/cases/kebab/">kebab-case</a>
-	 * @see <a href="https://stackoverflow.com/q/11273282/421049">What's the name for hyphen-separated case?</a>
-	 * @see #SLUG_CASE
-	 */
-	public CharacterDelimitedCompoundTokenization KEBAB_CASE = namedDelimitedBy("kebab-case", '-');
-
-	/**
-	 * The <code>SLUG-CASE</code> variation of <code>kebab-case</code>. This tokenization is typically used to represent web identifier tokens such as found in
-	 * URLs; CSS property names; and path segments.
+	 * A delimiter-based compound tokenization using <code>-</code> as a delimiter, in all lowercase.
 	 * @apiNote This tokenization uses a one-way conversion; it will not be possible to return to the previous tokenization unless the previous capitalization was
 	 *          known.
-	 * @see <a href="https://en.wikipedia.org/wiki/Clean_URL#Slug">Slug (web_publishing)</a>
+	 * @see <a href="https://en.wikipedia.org/wiki/Letter_case#Kebab_case">Letter case: Kebab case</a>
+	 * @see <a href="https://stringcase.org/cases/kebab/">kebab-case</a>
+	 * @see <a href="https://stackoverflow.com/q/11273282/421049">What's the name for hyphen-separated case?</a>
 	 */
-	public CharacterDelimitedCompoundTokenization SLUG_CASE = CompoundTokenization.KEBAB_CASE.namedWithAddedSegmentTransformation("slug-case",
-			TRANSFORM_TO_LOWERCASE);
+	public CharacterDelimitedCompoundTokenization KEBAB_CASE = namedDelimitedByWithSegmentTransformation("kebab-case", '-', TRANSFORM_TO_LOWERCASE);
 
 	/**
-	 * A delimiter-based compound tokenization using <code>_</code> as a delimiter.
-	 * @apiNote This is a general tokenization using underscore delimiters without regard to case. For a variation that ensures uppercase, see
-	 *          {@link #CONSTANT_CASE}.
+	 * A delimiter-based compound tokenization using <code>_</code> as a delimiter, in all lowercase. For the all-uppercase variation, see {@link #CONSTANT_CASE}.
+	 * @apiNote This tokenization uses a one-way conversion; it will not be possible to return to the previous tokenization unless the previous capitalization was
+	 *          known.
 	 * @see <a href="https://en.wikipedia.org/wiki/Snake_case">Snake case</a>
+	 * @see <a href="https://stringcase.org/cases/snake/">snake_case</a>
 	 * @see #CONSTANT_CASE
 	 */
-	public CharacterDelimitedCompoundTokenization SNAKE_CASE = namedDelimitedBy("snake_case", '_');
+	public CharacterDelimitedCompoundTokenization SNAKE_CASE = namedDelimitedByWithSegmentTransformation("snake_case", '_', TRANSFORM_TO_LOWERCASE);
 
 	/**
-	 * The <code>CONSTANT_CASE</code> variation of <code>snake_case</code>. This tokenization is typically used to represent constant values in programming
-	 * languages, such as <code>PI</code> and <code>MAX_VALUE</code>; as well as environment variables such as <code>JAVA_HOME</code>.
+	 * A delimiter-based compound tokenization using <code>_</code> as a delimiter, in all uppercase. For the all-lowercase variation, see {@link #SNAKE_CASE}.
+	 * This tokenization is typically used to represent constant values in programming languages, such as <code>PI</code> and <code>MAX_VALUE</code>; as well as
+	 * environment variables such as <code>JAVA_HOME</code>.
 	 * @apiNote This tokenization uses a one-way conversion; it will not be possible to return to the previous tokenization unless the previous capitalization was
 	 *          known.
 	 * @see <a href="https://stringcase.org/cases/constant/">CONSTANT_CASE</a>
 	 * @see <a href="https://docs.oracle.com/javase/specs/jls/se21/html/jls-6.html#jls-6.1-360">The Java® Language Specification, Java SE 21 Edition § 6.1-360
 	 *      Constant Names</a>
 	 */
-	public CharacterDelimitedCompoundTokenization CONSTANT_CASE = CompoundTokenization.SNAKE_CASE.namedWithAddedSegmentTransformation("CONSTANT_CASE",
-			TRANSFORM_TO_UPPERCASE);
+	public CharacterDelimitedCompoundTokenization CONSTANT_CASE = namedDelimitedByWithSegmentTransformation("CONSTANT_CASE", '_', TRANSFORM_TO_UPPERCASE);
 
 }
