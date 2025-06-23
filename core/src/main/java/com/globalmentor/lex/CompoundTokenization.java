@@ -229,6 +229,20 @@ public interface CompoundTokenization extends Named<String> {
 	}
 
 	/**
+	 * Function to transforms compound token text such as a segment to lowercase.
+	 * @apiNote This is a convenience function similar to {@link String#toLowerCase()}, except that it that converts text in a local-insensitive way.
+	 * @see String#toLowerCase()
+	 */
+	public static Function<CharSequence, String> TRANSFORM_TO_LOWERCASE = text -> text.toString().toLowerCase(Locale.ROOT);
+
+	/**
+	 * Function to transforms compound token text such as a segment to uppercase.
+	 * @apiNote This is a convenience function similar to {@link String#toUpperCase()}, except that it that converts text in a local-insensitive way.
+	 * @see String#toUpperCase()
+	 */
+	public static Function<CharSequence, String> TRANSFORM_TO_UPPERCASE = text -> text.toString().toUpperCase(Locale.ROOT);
+
+	/**
 	 * A general case-based compound tokenization, supporting both <code>dromedaryCase</code> and <code>PascalCase</code> variations. Its conversion is agnostic
 	 * to whether the result is <code>dromedaryCase</code> or <code>PascalCase</code> (i.e. it depends on the existing case of the segments being joined).
 	 * @see <a href="https://en.wikipedia.org/wiki/Camel_case">Camel case</a>
@@ -276,7 +290,7 @@ public interface CompoundTokenization extends Named<String> {
 	 * @see <a href="https://en.wikipedia.org/wiki/Clean_URL#Slug">Slug (web_publishing)</a>
 	 */
 	public CharacterDelimitedCompoundTokenization SLUG_CASE = CompoundTokenization.KEBAB_CASE.namedWithAddedSegmentTransformation("slug-case",
-			segment -> segment.toString().toLowerCase(Locale.ROOT));
+			TRANSFORM_TO_LOWERCASE);
 
 	/**
 	 * A delimiter-based compound tokenization using <code>_</code> as a delimiter.
@@ -297,6 +311,6 @@ public interface CompoundTokenization extends Named<String> {
 	 *      Constant Names</a>
 	 */
 	public CharacterDelimitedCompoundTokenization CONSTANT_CASE = CompoundTokenization.SNAKE_CASE.namedWithAddedSegmentTransformation("CONSTANT_CASE",
-			segment -> segment.toString().toUpperCase(Locale.ROOT));
+			TRANSFORM_TO_UPPERCASE);
 
 }
