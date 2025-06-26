@@ -70,7 +70,11 @@ public final class Optionals {
 	 */
 	public static <T> Optional<T> fold(@Nonnull final Optional<? extends T> optional1, @Nonnull final Optional<? extends T> optional2,
 			@Nonnull final BinaryOperator<T> combiner) {
-		return or(optional1.map(value1 -> optional2.map(value2 -> combiner.apply(value1, value2)).orElse(value1)), optional2);
+		@SuppressWarnings("unchecked") //`Optional<>` is immutable, so it can hold a subclass of `T`; see source code of `Optional.or(java.util.function.Supplier)`
+		final Optional<T> result = optional1.isPresent()
+				? optional2.isPresent() ? Optional.of(combiner.apply(optional1.orElseThrow(), optional2.orElseThrow())) : (Optional<T>)optional1
+				: (Optional<T>)optional2;
+		return result;
 	}
 
 	/**
@@ -103,10 +107,11 @@ public final class Optionals {
 	 * @see Optional#or(java.util.function.Supplier)
 	 * @see <a href="https://stackoverflow.com/q/24599996">Get value from one Optional or another</a>
 	 */
-	@SuppressWarnings("unchecked") //`Optional<>` is read-only, so it can hold a subclass of `T`; see source code of `Optional.or(java.util.function.Supplier)`
-	public static <T> Optional<T> or(@Nonnull final Optional<T> optional, @Nonnull Optional<? extends T> otherOptional) {
+	public static <T> Optional<T> or(@Nonnull final Optional<? extends T> optional, @Nonnull Optional<? extends T> otherOptional) {
 		requireNonNull(otherOptional);
-		return optional.isPresent() ? optional : (Optional<T>)otherOptional;
+		@SuppressWarnings("unchecked") //`Optional<>` is immutable, so it can hold a subclass of `T`; see source code of `Optional.or(java.util.function.Supplier)`
+		final Optional<T> result = optional.isPresent() ? (Optional<T>)optional : (Optional<T>)otherOptional;
+		return result;
 	}
 
 	/**
