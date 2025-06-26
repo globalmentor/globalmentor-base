@@ -29,6 +29,15 @@ import org.junit.jupiter.api.*;
  */
 public class OptionalsTest {
 
+	/** @see Optionals#fold(Optional, Optional, java.util.function.BinaryOperator) */
+	@Test
+	void testFold() {
+		assertThat(Optionals.fold(Optional.of("foo"), Optional.of("bar"), String::concat), is(Optional.of("foobar")));
+		assertThat(Optionals.fold(Optional.of("foo"), Optional.empty(), String::concat), is(Optional.of("foo")));
+		assertThat(Optionals.fold(Optional.empty(), Optional.of("bar"), String::concat), is(Optional.of("bar")));
+		assertThat(Optionals.fold(Optional.empty(), Optional.empty(), String::concat), is(Optional.empty()));
+	}
+
 	/** @see Optionals#or(Optional, Optional) */
 	@Test
 	void testOr() {

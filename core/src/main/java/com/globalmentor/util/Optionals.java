@@ -18,10 +18,8 @@ package com.globalmentor.util;
 
 import static java.util.Objects.*;
 
-import java.util.Optional;
-import java.util.OptionalDouble;
-import java.util.OptionalInt;
-import java.util.OptionalLong;
+import java.util.*;
+import java.util.function.*;
 
 import javax.annotation.*;
 
@@ -54,6 +52,28 @@ public final class Optionals {
 	}
 
 	/**
+	 * Performs a combining operation on the values of two <code>Optional</code>s if both are present, or the one that is present if any. This is a higher-order
+	 * functional <dfn>fold</dfn>.
+	 * @apiNote This operation is equivalent to converting each <code>Optional</code> to a stream using {@link Optional#stream()} and then performing a
+	 *          {@link java.util.stream.Stream#reduce(Object, BinaryOperator)} operation.
+	 * @apiNote For folding more than two values, be aware that there exists the choice of a "left fold" or a "right fold", differing in the order of pair-wise
+	 *          association of combining operations. The {@link java.util.stream.Stream#reduce(Object, BinaryOperator)} method performs a left fold; Java streams
+	 *          do not have a right fold operation as of Java 24. Either operation may be performed by calling this method in the correct associative order for
+	 *          each pair of values.
+	 * @param <T> The common type of optional value.
+	 * @param optional1 The first optional value.
+	 * @param optional2 The second optional value.
+	 * @param combiner The combining function.
+	 * @return The values combined with the combining function, if both are present; otherwise the value present, if any.
+	 * @see <a href="https://en.wikipedia.org/wiki/Fold_(higher-order_function)">Fold (higher-order function)</a>
+	 * @see <a href="https://stackoverflow.com/q/79679814">Map two Java `Optional`s or produce the one with a value</a>
+	 */
+	public static <T> Optional<T> fold(@Nonnull final Optional<? extends T> optional1, @Nonnull final Optional<? extends T> optional2,
+			@Nonnull final BinaryOperator<T> combiner) {
+		return or(optional1.map(value1 -> optional2.map(value2 -> combiner.apply(value1, value2)).orElse(value1)), optional2);
+	}
+
+	/**
 	 * Determines whether an optional value is present and is equal to some other nullable object.
 	 * @apiNote Note that the given object with which to compare the optional object can be <code>null</code>, as per the parameter of
 	 *          {@link Object#equals(Object)}.
@@ -83,9 +103,10 @@ public final class Optionals {
 	 * @see Optional#or(java.util.function.Supplier)
 	 * @see <a href="https://stackoverflow.com/q/24599996">Get value from one Optional or another</a>
 	 */
-	public static <T> Optional<T> or(@Nonnull final Optional<T> optional, @Nonnull Optional<T> otherOptional) {
+	@SuppressWarnings("unchecked") //`Optional<>` is read-only, so it can hold a subclass of `T`; see source code of `Optional.or(java.util.function.Supplier)`
+	public static <T> Optional<T> or(@Nonnull final Optional<T> optional, @Nonnull Optional<? extends T> otherOptional) {
 		requireNonNull(otherOptional);
-		return optional.isPresent() ? optional : otherOptional;
+		return optional.isPresent() ? optional : (Optional<T>)otherOptional;
 	}
 
 	/**
