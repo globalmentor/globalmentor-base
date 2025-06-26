@@ -88,11 +88,11 @@ public final class Optionals {
 	 * @return <code>true</code> if the given optional value is present and is equal to the given object.
 	 * @throws NullPointerException if the given optional is <code>null</code>.
 	 * @see Optional#isPresent()
-	 * @see Optional#get()
+	 * @see Optional#orElseThrow()
 	 * @see Optional#equals(Object)
 	 */
 	public static boolean isPresentAndEquals(@Nonnull final Optional<?> optional, @Nullable final Object object) {
-		return optional.isPresent() && optional.get().equals(object);
+		return optional.isPresent() && optional.orElseThrow().equals(object);
 	}
 
 	/**
@@ -120,7 +120,7 @@ public final class Optionals {
 	 * @return The equivalent primitive optional wrapper.
 	 */
 	public static OptionalDouble toOptionalDouble(@Nonnull final Optional<Double> optional) {
-		return optional.isPresent() ? OptionalDouble.of(optional.get().doubleValue()) : OptionalDouble.empty();
+		return optional.isPresent() ? OptionalDouble.of(optional.orElseThrow().doubleValue()) : OptionalDouble.empty();
 	}
 
 	/**
@@ -129,7 +129,7 @@ public final class Optionals {
 	 * @return The equivalent primitive optional wrapper.
 	 */
 	public static OptionalInt toOptionalInt(@Nonnull final Optional<Integer> optional) {
-		return optional.isPresent() ? OptionalInt.of(optional.get().intValue()) : OptionalInt.empty();
+		return optional.isPresent() ? OptionalInt.of(optional.orElseThrow().intValue()) : OptionalInt.empty();
 	}
 
 	/**
@@ -138,7 +138,7 @@ public final class Optionals {
 	 * @return The equivalent primitive optional wrapper.
 	 */
 	public static OptionalLong toOptionalLong(@Nonnull final Optional<Long> optional) {
-		return optional.isPresent() ? OptionalLong.of(optional.get().longValue()) : OptionalLong.empty();
+		return optional.isPresent() ? OptionalLong.of(optional.orElseThrow().longValue()) : OptionalLong.empty();
 	}
 
 }
