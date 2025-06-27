@@ -18,10 +18,8 @@ package com.globalmentor.util;
 
 import static java.util.Objects.*;
 
-import java.util.Optional;
-import java.util.OptionalDouble;
-import java.util.OptionalInt;
-import java.util.OptionalLong;
+import java.util.*;
+import java.util.function.*;
 
 import javax.annotation.*;
 
@@ -54,6 +52,32 @@ public final class Optionals {
 	}
 
 	/**
+	 * Performs a combining operation on the values of two <code>Optional</code>s if both are present, or the one that is present if any. This is a higher-order
+	 * functional <dfn>fold</dfn>.
+	 * @apiNote This operation is equivalent to converting each <code>Optional</code> to a stream using {@link Optional#stream()} and then performing a
+	 *          {@link java.util.stream.Stream#reduce(Object, BinaryOperator)} operation.
+	 * @apiNote For folding more than two values, be aware that there exists the choice of a "left fold" or a "right fold", differing in the order of pair-wise
+	 *          association of combining operations. The {@link java.util.stream.Stream#reduce(Object, BinaryOperator)} method performs a left fold; Java streams
+	 *          do not have a right fold operation as of Java 24. Either operation may be performed by calling this method in the correct associative order for
+	 *          each pair of values.
+	 * @param <T> The common type of optional value.
+	 * @param optional1 The first optional value.
+	 * @param optional2 The second optional value.
+	 * @param combiner The combining function.
+	 * @return The values combined with the combining function, if both are present; otherwise the value present, if any.
+	 * @see <a href="https://en.wikipedia.org/wiki/Fold_(higher-order_function)">Fold (higher-order function)</a>
+	 * @see <a href="https://stackoverflow.com/q/79679814">Map two Java `Optional`s or produce the one with a value</a>
+	 */
+	public static <T> Optional<T> fold(@Nonnull final Optional<? extends T> optional1, @Nonnull final Optional<? extends T> optional2,
+			@Nonnull final BinaryOperator<T> combiner) {
+		@SuppressWarnings("unchecked") //`Optional<>` is immutable, so it can hold a subclass of `T`; see source code of `Optional.or(java.util.function.Supplier)`
+		final Optional<T> result = optional1.isPresent()
+				? optional2.isPresent() ? Optional.of(combiner.apply(optional1.orElseThrow(), optional2.orElseThrow())) : (Optional<T>)optional1
+				: (Optional<T>)optional2;
+		return result;
+	}
+
+	/**
 	 * Determines whether an optional value is present and is equal to some other nullable object.
 	 * @apiNote Note that the given object with which to compare the optional object can be <code>null</code>, as per the parameter of
 	 *          {@link Object#equals(Object)}.
@@ -64,11 +88,11 @@ public final class Optionals {
 	 * @return <code>true</code> if the given optional value is present and is equal to the given object.
 	 * @throws NullPointerException if the given optional is <code>null</code>.
 	 * @see Optional#isPresent()
-	 * @see Optional#get()
+	 * @see Optional#orElseThrow()
 	 * @see Optional#equals(Object)
 	 */
 	public static boolean isPresentAndEquals(@Nonnull final Optional<?> optional, @Nullable final Object object) {
-		return optional.isPresent() && optional.get().equals(object);
+		return optional.isPresent() && optional.orElseThrow().equals(object);
 	}
 
 	/**
@@ -83,9 +107,11 @@ public final class Optionals {
 	 * @see Optional#or(java.util.function.Supplier)
 	 * @see <a href="https://stackoverflow.com/q/24599996">Get value from one Optional or another</a>
 	 */
-	public static <T> Optional<T> or(@Nonnull final Optional<T> optional, @Nonnull Optional<T> otherOptional) {
+	public static <T> Optional<T> or(@Nonnull final Optional<? extends T> optional, @Nonnull Optional<? extends T> otherOptional) {
 		requireNonNull(otherOptional);
-		return optional.isPresent() ? optional : otherOptional;
+		@SuppressWarnings("unchecked") //`Optional<>` is immutable, so it can hold a subclass of `T`; see source code of `Optional.or(java.util.function.Supplier)`
+		final Optional<T> result = optional.isPresent() ? (Optional<T>)optional : (Optional<T>)otherOptional;
+		return result;
 	}
 
 	/**
@@ -94,7 +120,7 @@ public final class Optionals {
 	 * @return The equivalent primitive optional wrapper.
 	 */
 	public static OptionalDouble toOptionalDouble(@Nonnull final Optional<Double> optional) {
-		return optional.isPresent() ? OptionalDouble.of(optional.get().doubleValue()) : OptionalDouble.empty();
+		return optional.isPresent() ? OptionalDouble.of(optional.orElseThrow().doubleValue()) : OptionalDouble.empty();
 	}
 
 	/**
@@ -103,7 +129,7 @@ public final class Optionals {
 	 * @return The equivalent primitive optional wrapper.
 	 */
 	public static OptionalInt toOptionalInt(@Nonnull final Optional<Integer> optional) {
-		return optional.isPresent() ? OptionalInt.of(optional.get().intValue()) : OptionalInt.empty();
+		return optional.isPresent() ? OptionalInt.of(optional.orElseThrow().intValue()) : OptionalInt.empty();
 	}
 
 	/**
@@ -112,7 +138,7 @@ public final class Optionals {
 	 * @return The equivalent primitive optional wrapper.
 	 */
 	public static OptionalLong toOptionalLong(@Nonnull final Optional<Long> optional) {
-		return optional.isPresent() ? OptionalLong.of(optional.get().longValue()) : OptionalLong.empty();
+		return optional.isPresent() ? OptionalLong.of(optional.orElseThrow().longValue()) : OptionalLong.empty();
 	}
 
 }
