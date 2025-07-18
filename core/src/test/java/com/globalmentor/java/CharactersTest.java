@@ -17,8 +17,10 @@
 package com.globalmentor.java;
 
 import static com.globalmentor.java.Characters.*;
+import static java.nio.charset.StandardCharsets.*;
 import static java.util.Arrays.*;
 import static org.hamcrest.Matchers.*;
+
 import static org.hamcrest.MatcherAssert.*;
 
 import org.junit.jupiter.api.Test;
@@ -60,6 +62,12 @@ public class CharactersTest {
 		assertThat(Characters.isContinuousSequence('a', 'b', 'c', 'd'), is(true));
 		assertThat(Characters.isContinuousSequence('a', '1', '2', 'x'), is(false));
 		assertThat(Characters.isContinuousSequence('a', 'z'), is(false));
+	}
+
+	/** @see Characters#toByteArray(char[]) */
+	@Test
+	void testToByteArray() {
+		assertThat(Characters.toByteArray(new char[] {'t', 'o', 'u', 'c', 'h', 'é', '™'}, UTF_8), is("touché™".getBytes(UTF_8)));
 	}
 
 	/** @see Characters#appendUnicodeCodePointLabel(StringBuilder, int) */
