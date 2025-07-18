@@ -25,6 +25,7 @@ import static java.util.Collections.*;
 import java.nio.charset.Charset;
 import java.util.*;
 
+import static com.globalmentor.io.OutputStreams.*;
 import static com.globalmentor.java.Arrays.*;
 import static com.globalmentor.java.CharSequences.*;
 import static com.globalmentor.java.Integers.*;
@@ -37,18 +38,12 @@ import com.globalmentor.text.*;
  * An immutable set of characters that supports various searching and other functions. This essentially provides an efficient yet immutable array with
  * object-oriented functionality.
  * 
- * <p>
- * This class is similar to {@link String}, except that it discards duplicate characters. Furthermore, this class allows no Unicode surrogates; the characters
- * contained are interpreted as complete Unicode code points. This also makes comparison more efficient. As this class is similar to an ordered set than a list,
- * it doesn't implement {@link CharSequence} in order to prevent signature conflicts; and provides {@link #size()} to count its contents instead of a "length"
- * property.
- * </p>
- * <p>
- * This class also provides static utilities and constants for interacting with characters in general.
- * </p>
- * <p>
- * In most cases, names of constants are derived from Unicode names.
- * </p>
+ * <p>This class is similar to {@link String}, except that it discards duplicate characters. Furthermore, this class allows no Unicode surrogates; the
+ * characters contained are interpreted as complete Unicode code points. This also makes comparison more efficient. As this class is similar to an ordered set
+ * than a list, it doesn't implement {@link CharSequence} in order to prevent signature conflicts; and provides {@link #size()} to count its contents instead of
+ * a "length" property.</p>
+ * <p>This class also provides static utilities and constants for interacting with characters in general.</p>
+ * <p>In most cases, names of constants are derived from Unicode names.</p>
  * @author Garret Wilson
  * @see <a href="http://unicode.org/unicode/standard/reports/tr13/tr13-5.html">Unicode Newline Guidelines</a>
  */
@@ -906,6 +901,7 @@ public final class Characters {
 	 * Converts an array of characters to an array of bytes, using the UTF-8 charset.
 	 * @param characters The characters to convert to bytes.
 	 * @return An array of bytes representing the given characters in the UTF-8 charset.
+	 * @see String#getBytes(Charset)
 	 */
 	public static byte[] toByteArray(final char[] characters) {
 		return toByteArray(characters, UTF_8); //convert the characters using UTF-8
@@ -916,17 +912,15 @@ public final class Characters {
 	 * @param characters The characters to convert to bytes.
 	 * @param charset The charset to use when converting characters to bytes.
 	 * @return An array of bytes representing the given characters in the specified encoding.
+	 * @see String#getBytes(Charset)
 	 */
 	public static byte[] toByteArray(final char[] characters, final Charset charset) {
-		final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(); //create a byte array output stream
-		final Writer writer = new OutputStreamWriter(byteArrayOutputStream, charset); //create a writer for converting characters to bytes
-		try {
-			writer.write(characters); //write the characters to the writer in one batch (writing them individually would be extremely inefficient)
-			writer.flush(); //flush everything we've written to the byte output stream
-		} catch(IOException ioException) { //we don't expect any errors
-			throw new AssertionError(ioException);
-		}
-		return byteArrayOutputStream.toByteArray(); //return the bytes we collected from the character conversion
+		return collectBytes(outputStream -> {
+			try (final Writer writer = new OutputStreamWriter(outputStream, charset)) { //create a writer for converting characters to bytes
+				writer.write(characters); //write the characters to the writer in one batch (writing them individually would be extremely inefficient)
+				writer.flush(); //flush everything we've written to the byte output stream
+			}
+		}, characters.length); //use an initial buffer size at least as long as needed for the characters (which will be exact if these are ASCII characters) in order to minimize copying 
 	}
 
 	/**
