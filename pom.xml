@@ -37,6 +37,7 @@
 		<module>core</module>
 		<module>java-model</module>
 		<module>management</module>
+		<module>text-csv</module>
 	</modules>
 
 	<dependencyManagement>
@@ -63,6 +64,12 @@
 			<dependency>
 				<groupId>com.globalmentor</groupId>
 				<artifactId>globalmentor-management</artifactId>
+				<version>0.17.1-SNAPSHOT</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.globalmentor</groupId>
+				<artifactId>globalmentor-text-csv</artifactId>
 				<version>0.17.1-SNAPSHOT</version>
 			</dependency>
 		</dependencies>
