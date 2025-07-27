@@ -1,11 +1,11 @@
 /*
- * Copyright © 1996-2008 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * Copyright © 1996-2008 GlobalMentor, Inc. <https://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -28,7 +28,10 @@ import static com.globalmentor.text.csv.CSV.*;
  * @author Garret Wilson
  * @see <a href="http://www.rfc-editor.org/rfc/rfc4180.txt">RFC 4180: Common Format and MIME Type for Comma-Separated Values (CSV) Files</a>
  */
-public class CSVSerializer {
+public final class CSVSerializer {
+
+	private CSVSerializer() {
+	}
 
 	/**
 	 * Serializes the given objects to the provided writer.
@@ -57,7 +60,7 @@ public class CSVSerializer {
 	 * @return An encoded string appropriate for serialization as a CSV field.
 	 */
 	public static String encodeField(final CharSequence charSequence) {
-		if(charIndexOf(charSequence, RESTRICTED_CHARACTERS) >= 0) { //if a restricted character is in the character sequence
+		if(indexOf(charSequence, RESTRICTED_CHARACTERS) >= 0) { //if a restricted character is in the character sequence
 			final StringBuilder stringBuilder = new StringBuilder(charSequence); //create a new string buffer to process the string 
 			replace(stringBuilder, QUOTATION_MARK_CHAR, ESCAPED_QUOTATION_MARK_STRING); //replace all quotes with doubled quotes
 			stringBuilder.insert(0, QUOTATION_MARK_CHAR); //prepend a quotation mark
