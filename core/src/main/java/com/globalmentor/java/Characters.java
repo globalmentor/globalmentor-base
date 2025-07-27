@@ -510,13 +510,13 @@ public final class Characters {
 		boolean duplicates = false; //start by assuming there are no duplicates
 		for(int i = length - 1; i > 0 && !duplicates; --i) { //check the characters for duplicates; iterate down to the second character
 			final char c = characters[i];
-			checkArgument(!Character.isSurrogate(c), "Characters contain surrogate character: %s.", getLabel(c));
+			checkArgument(!Character.isSurrogate(c), "Characters contain surrogate character: %s.", toLabel(c));
 			if(c == characters[i - 1]) { //because the characters are now sorted, we just check for two of the same character side-by-side
 				duplicates = true;
 			}
 		}
 		final char firstChar = characters[0];
-		checkArgument(!Character.isSurrogate(characters[0]), "Characters contain surrogate character: %s.", getLabel(firstChar)); //check the first character, which we skipped
+		checkArgument(!Character.isSurrogate(characters[0]), "Characters contain surrogate character: %s.", toLabel(firstChar)); //check the first character, which we skipped
 		if(duplicates) { //if there are duplicates, remove them
 			int lastChar = -1;
 			final StringBuilder stringBuilder = new StringBuilder(characters.length);
@@ -541,7 +541,7 @@ public final class Characters {
 	 */
 	public static Characters ofRange(final char first, final char last) {
 		if(last < first) {
-			throw new IllegalArgumentException("Last character in range " + getLabel(last) + " cannot come before first character " + getLabel(first) + ".");
+			throw new IllegalArgumentException("Last character in range " + toLabel(last) + " cannot come before first character " + toLabel(first) + ".");
 		}
 		final int length = last - first + 1;
 		final char[] chars = new char[length];
@@ -739,8 +739,8 @@ public final class Characters {
 	}
 
 	/**
-	 * Returns a string representing an array of these characters, each character represented as 'x', or if the character is a control character, the Unicode code
-	 * point of this character, e.g. "U+1234". Example: "['a', 0x0020]"
+	 * Returns a string representing an array of these characters, each character represented as 'x', or if the character is a control character or a surrogate,
+	 * either a special representation such as '\n' or the Unicode code point of this character, e.g. "U+1234". Example: <code>['a',' ','\t',U+1234]</code>
 	 * @implSpec This method does not treat surrogate characters specially.
 	 * @return A string containing an array representation of these characters.
 	 */
@@ -865,19 +865,35 @@ public final class Characters {
 	}
 
 	/**
-	 * Returns a string representing the character as 'x', or if the character is a control character, the Unicode code point of this character, e.g. "U+1234".
+	 * Returns a string representing the character as 'x', or if the character is a control character or a surrogate, either a special representation such as '\n'
+	 * or the Unicode code point of this character, e.g. "U+1234".
+	 * @implSpec This method supports Unicode supplementary code points.
+	 * @implSpec This implementation delegates to {@link #toLabel(int)}.
+	 * @param c The code point a string representation of which to append.
+	 * @return The string label representing the character.
+	 * @see #appendLabel(StringBuilder, int)
+	 * @deprecated to be replaced by {@link #toLabel(int)};
+	 */
+	@Deprecated(forRemoval = true)
+	public static String getLabel(final int c) {
+		return toLabel(c);
+	}
+
+	/**
+	 * Returns a string representing the character as 'x', or if the character is a control character or a surrogate, either a special representation such as '\n'
+	 * or the Unicode code point of this character, e.g. "U+1234".
 	 * @implSpec This method supports Unicode supplementary code points.
 	 * @param c The code point a string representation of which to append.
 	 * @return The string label representing the character.
 	 * @see #appendLabel(StringBuilder, int)
 	 */
-	public static String getLabel(final int c) {
+	public static String toLabel(final int c) {
 		return appendLabel(new StringBuilder(), c).toString();
 	}
 
 	/**
-	 * Returns a string representing an array of these characters, each character represented as 'x', or if the character is a control character, the Unicode code
-	 * point of this character, e.g. "U+1234". Example: "['a', 0x0020]"
+	 * Returns a string representing an array of these characters, each character represented as 'x', or if the character is a control character or a surrogate,
+	 * either a special representation such as '\n' or the Unicode code point of this character, e.g. "U+1234". Example: <code>['a',' ','\t',U+1234]</code>
 	 * @implSpec This method does not treat surrogate characters specially.
 	 * @param characters The characters to return as a string of an array.
 	 * @return A string containing an array representation of these characters.
@@ -887,8 +903,8 @@ public final class Characters {
 	}
 
 	/**
-	 * Returns a string representing an array of these characters, each character represented as 'x', or if the character is a control character, the Unicode code
-	 * point of this character, e.g. "U+1234". Example: "['a', 0x0020]"
+	 * Returns a string representing an array of these characters, each character represented as 'x', or if the character is a control character or a surrogate,
+	 * either a special representation such as '\n' or the Unicode code point of this character, e.g. "U+1234". Example: <code>['a',' ','\t',U+1234]</code>
 	 * @implSpec This method does not treat surrogate characters specially.
 	 * @param characters The characters to return as a string of an array.
 	 * @return A string containing an array representation of these characters.
@@ -924,8 +940,8 @@ public final class Characters {
 	}
 
 	/**
-	 * Appends a string representing an array of characters, each character represented as 'x', or if the character is a control character, the Unicode code point
-	 * of this character, e.g. "U+1234". Example: "['a', 0x0020]"
+	 * Appends a string representing an array of characters, each character represented as 'x', or if the character is a control character or a surrogate, either
+	 * a special representation such as '\n' or the Unicode code point of this character, e.g. "U+1234". Example: <code>['a',' ','\t',U+1234]</code>
 	 * @implSpec This method does not treat surrogate characters specially.
 	 * @param stringBuilder The string builder to which the string will be appended.
 	 * @param characters The characters the strings of the Unicode code points to append.
