@@ -77,10 +77,10 @@ public final class CSV {
 		//create a writer to the file, encoding in UTF-8
 		try (final BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file, true), UTF_8))) {
 			if(!exists && headers != null) { //if the file didn't exist and there headers
-				CSVSerializer.serialize(bufferedWriter, (Object[])headers); //write the headers
+				CsvSerializer.serialize(bufferedWriter, (Object[])headers); //write the headers
 			}
 			if(objects != null) { //if there are objects to serialize
-				CSVSerializer.serialize(bufferedWriter, objects); //write the objects
+				CsvSerializer.serialize(bufferedWriter, objects); //write the objects
 			}
 			bufferedWriter.flush(); //flush everything we've written
 		}
