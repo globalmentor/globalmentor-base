@@ -30,9 +30,10 @@ import java.util.*;
  * @see <a href="https://www.rfc-editor.org/rfc/rfc4180.html">RFC 4180: Common Format and MIME Type for Comma-Separated Values (CSV) Files</a>
  * @see <a href="https://www.rfc-editor.org/rfc/inline-errata/rfc4180.html">RFC 4180 with errata</a>
  */
-public final class CsvParser {
+public class CsvParser {
 
-	private CsvParser() {
+	/** Constructor. */
+	public CsvParser() {
 	}
 
 	/**
@@ -47,7 +48,7 @@ public final class CsvParser {
 	 * @return An array of parsed fields.
 	 * @throws ParseException if an error was encountered parsing the line.
 	 */
-	public static CharSequence[] parseLine(final CharSequence line) throws ParseException {
+	public CharSequence[] parseLine(final CharSequence line) throws ParseException {
 		final List<CharSequence> fields = new ArrayList<>();
 		final int length = line.length();
 		int fieldStartIndex = 0;

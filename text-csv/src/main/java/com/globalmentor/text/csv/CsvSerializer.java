@@ -31,7 +31,8 @@ import static com.globalmentor.text.csv.CSV.*;
  */
 public final class CsvSerializer {
 
-	private CsvSerializer() {
+	/** Constructor. */
+	public CsvSerializer() {
 	}
 
 	/**
