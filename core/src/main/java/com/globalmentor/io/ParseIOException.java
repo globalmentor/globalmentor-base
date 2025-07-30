@@ -19,7 +19,7 @@ package com.globalmentor.io;
 import java.io.*;
 import java.util.List;
 
-import javax.annotation.Nonnull;
+import javax.annotation.*;
 
 /**
  * Exception class for parsing errors that occur during I/O.
@@ -72,7 +72,7 @@ public class ParseIOException extends IOException {
 	 * @param message The error message, or <code>null</code> if there is no error message.
 	 */
 	public ParseIOException(final String message) {
-		this(message, (Throwable)null, -1, -1); //construct the class with no cause or location
+		this(message, (Throwable)null, -1); //construct the class with no cause or location
 	}
 
 	/**
@@ -80,7 +80,7 @@ public class ParseIOException extends IOException {
 	 * @param cause The cause of the error, or <code>null</code> if there is no cause.
 	 */
 	public ParseIOException(final Throwable cause) {
-		this(null, cause, -1, -1); //construct the class with no given message or location
+		this(null, cause, -1); //construct the class with no given message or location
 	}
 
 	/**
@@ -89,7 +89,7 @@ public class ParseIOException extends IOException {
 	 * @param cause The cause of the error, or <code>null</code> if there is no cause.
 	 */
 	public ParseIOException(final String message, final Throwable cause) {
-		this(message, cause, -1, -1); //construct the class with no location known
+		this(message, cause, -1); //construct the class with no location known
 	}
 
 	/**
@@ -99,7 +99,17 @@ public class ParseIOException extends IOException {
 	 * @param sourceName The name of the source of the data (perhaps a filename), or <code>null</code> if not known.
 	 */
 	public ParseIOException(final String message, final Throwable cause, final String sourceName) {
-		this(message, cause, sourceName, -1, -1); //construct the class with no location known
+		this(message, cause, sourceName, -1); //construct the class with no location known
+	}
+
+	/**
+	 * Message, source, and line index constructor with no cause.
+	 * @param message The error message, or <code>null</code> if there is no error message.
+	 * @param sourceName The name of the source of the data (perhaps a filename), or <code>null</code> if not known.
+	 * @param lineIndex The index of the line in which the error occurred, or -1 if not known.
+	 */
+	public ParseIOException(final String message, final String sourceName, final long lineIndex) {
+		this(message, sourceName, lineIndex, -1);
 	}
 
 	/**
@@ -111,6 +121,16 @@ public class ParseIOException extends IOException {
 	 */
 	public ParseIOException(final String message, final String sourceName, final long lineIndex, final long charIndex) {
 		this(message, null, sourceName, lineIndex, charIndex); //construct the class with no cause
+	}
+
+	/**
+	 * Cause, source, and line index constructor.
+	 * @param cause The cause of the error, or <code>null</code> if there is no cause.
+	 * @param sourceName The name of the source of the data (perhaps a filename), or <code>null</code> if not known.
+	 * @param lineIndex The index of the line in which the error occurred, or -1 if not known.
+	 */
+	public ParseIOException(final Throwable cause, final String sourceName, final long lineIndex) {
+		this(cause, sourceName, lineIndex, -1);
 	}
 
 	/**
@@ -162,6 +182,15 @@ public class ParseIOException extends IOException {
 	}
 
 	/**
+	 * Message and line index constructor with no cause.
+	 * @param message The error message, or <code>null</code> if there is no error message.
+	 * @param lineIndex The index of the line in which the error occurred, or -1 if not known.
+	 */
+	public ParseIOException(final String message, final long lineIndex) {
+		this(message, lineIndex, -1);
+	}
+
+	/**
 	 * Message and location constructor with no cause.
 	 * @param message The error message, or <code>null</code> if there is no error message.
 	 * @param lineIndex The index of the line in which the error occurred, or -1 if not known.
@@ -172,6 +201,15 @@ public class ParseIOException extends IOException {
 	}
 
 	/**
+	 * Cause and line index constructor.
+	 * @param cause The cause of the error, or <code>null</code> if there is no cause.
+	 * @param lineIndex The index of the line in which the error occurred, or -1 if not known.
+	 */
+	public ParseIOException(final Throwable cause, final long lineIndex) {
+		this(cause, lineIndex, -1);
+	}
+
+	/**
 	 * Cause and location constructor.
 	 * @param cause The cause of the error, or <code>null</code> if there is no cause.
 	 * @param lineIndex The index of the line in which the error occurred, or -1 if not known.
@@ -179,6 +217,16 @@ public class ParseIOException extends IOException {
 	 */
 	public ParseIOException(final Throwable cause, final long lineIndex, final long charIndex) {
 		this(null, cause, lineIndex, charIndex); //construct the class with no given message
+	}
+
+	/**
+	 * Message, cause, and line index constructor.
+	 * @param message The error message, or <code>null</code> if there is no error message.
+	 * @param cause The cause of the error, or <code>null</code> if there is no cause.
+	 * @param lineIndex The index of the line in which the error occurred, or -1 if not known.
+	 */
+	public ParseIOException(final String message, final Throwable cause, final long lineIndex) {
+		this(message, cause, lineIndex, -1);
 	}
 
 	/**
@@ -238,7 +286,7 @@ public class ParseIOException extends IOException {
 	 * @param sourceName The name of the source of the data (perhaps a filename), or <code>null</code> if not known.
 	 */
 	public ParseIOException(final String message, final String sourceName) {
-		this(message, null, sourceName, -1, -1); //construct the class with no cause or location
+		this(message, null, sourceName, -1); //construct the class with no cause or location
 	}
 
 	/**
@@ -247,7 +295,18 @@ public class ParseIOException extends IOException {
 	 * @param sourceName The name of the source of the data (perhaps a filename), or <code>null</code> if not known.
 	 */
 	public ParseIOException(final Throwable cause, final String sourceName) {
-		this(null, cause, sourceName, -1, -1); //construct the class with no given message or location
+		this(null, cause, sourceName, -1); //construct the class with no given message or location
+	}
+
+	/**
+	 * Message, cause, source, and line index constructor.
+	 * @param message The error message, or <code>null</code> if there is no error message.
+	 * @param cause The cause of the error, or <code>null</code> if there is no cause.
+	 * @param sourceName The name of the source of the data (perhaps a filename), or <code>null</code> if not known.
+	 * @param lineIndex The index of the line in which the error occurred, or -1 if not known.
+	 */
+	public ParseIOException(final String message, final Throwable cause, final String sourceName, final long lineIndex) {
+		this(message, cause, sourceName, lineIndex, -1);
 	}
 
 	/**
