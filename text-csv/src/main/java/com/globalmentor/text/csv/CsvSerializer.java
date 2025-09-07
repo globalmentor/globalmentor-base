@@ -24,13 +24,15 @@ import static com.globalmentor.java.StringBuilders.*;
 import static com.globalmentor.text.csv.CSV.*;
 
 /**
- * Serializes Comma Separated Value (CSV) information
+ * Serializes Comma Separated Value (CSV) information.
  * @author Garret Wilson
- * @see <a href="http://www.rfc-editor.org/rfc/rfc4180.txt">RFC 4180: Common Format and MIME Type for Comma-Separated Values (CSV) Files</a>
+ * @see <a href="https://www.rfc-editor.org/rfc/rfc4180.html">RFC 4180: Common Format and MIME Type for Comma-Separated Values (CSV) Files</a>
+ * @see <a href="https://www.rfc-editor.org/rfc/inline-errata/rfc4180.html">RFC 4180 with errata</a>
  */
-public final class CSVSerializer {
+public final class CsvSerializer {
 
-	private CSVSerializer() {
+	/** Constructor. */
+	public CsvSerializer() {
 	}
 
 	/**

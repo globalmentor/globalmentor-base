@@ -25,6 +25,7 @@ import javax.annotation.*;
 import com.globalmentor.java.Characters;
 
 import static com.globalmentor.io.Readers.*;
+import static com.globalmentor.java.Characters.*;
 import static com.globalmentor.java.Conditions.*;
 
 /**
@@ -104,7 +105,7 @@ public final class ReaderParser {
 	public static void checkReaderEnd(@Nonnull final Reader reader) throws IOException, ParseUnexpectedDataException {
 		final int c = reader.read(); //get the current character
 		if(c >= 0) { //if this character is valid (the reader is not out of data)
-			throw new ParseUnexpectedDataException(reader, "Expected end of data; found " + Characters.getLabel(c) + ".", (char)c);
+			throw new ParseUnexpectedDataException(reader, "Expected end of data; found " + toLabel(c) + ".", (char)c);
 		}
 	}
 

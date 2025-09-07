@@ -16,6 +16,7 @@
 
 package com.globalmentor.io;
 
+import static com.globalmentor.java.Characters.*;
 import static java.util.Objects.*;
 
 import java.io.Reader;
@@ -27,10 +28,8 @@ import com.globalmentor.java.Characters;
 
 /**
  * Class for unexpected characters encountered when parsing an input stream. Used by {@link ParseReader}.
- * <p>
- * This implementation assumes that if a list of strings were expected, a string will have been found. That is, if {@link #findExpectedCharacters()} returns a
- * value {@link #getFoundCharacter()} will hold a valid value; otherwise, {@link #getFoundString()} will hold the appropriate value.
- * </p>
+ * <p>This implementation assumes that if a list of strings were expected, a string will have been found. That is, if {@link #findExpectedCharacters()} returns
+ * a value {@link #getFoundCharacter()} will hold a valid value; otherwise, {@link #getFoundString()} will hold the appropriate value.</p>
  * @implNote This class does not fully support serialization; any expected strings or characters will be lost if serialized.
  * @see ParseIOException
  * @see ParseReader
@@ -153,7 +152,7 @@ public class ParseUnexpectedDataException extends ParseIOException {
 	 */
 	@SuppressWarnings("this-escape")
 	public ParseUnexpectedDataException(final String message, final char foundChar, final long lineIndex, final long charIndex) {
-		super(message != null ? message : "Unexpected character: found " + Characters.getLabel(foundChar) + ".", (String)null, lineIndex, charIndex);
+		super(message != null ? message : "Unexpected character: found " + toLabel(foundChar) + ".", (String)null, lineIndex, charIndex);
 		setFoundCharacter(foundChar); //save the character found
 	}
 
@@ -199,8 +198,8 @@ public class ParseUnexpectedDataException extends ParseIOException {
 	 */
 	@SuppressWarnings("this-escape")
 	public ParseUnexpectedDataException(final String message, final char expectedChar, final char foundChar, final long lineIndex, final long charIndex) {
-		super(message != null ? message : "Unexpected character: expected " + Characters.getLabel(expectedChar) + " found " + Characters.getLabel(foundChar) + ".",
-				(String)null, lineIndex, charIndex);
+		super(message != null ? message : "Unexpected character: expected " + toLabel(expectedChar) + " found " + toLabel(foundChar) + ".", (String)null, lineIndex,
+				charIndex);
 		setExpectedCharacters(Characters.of(expectedChar)); //save the expected character
 		setFoundCharacter(foundChar); //save the character found
 
@@ -225,8 +224,8 @@ public class ParseUnexpectedDataException extends ParseIOException {
 	 */
 	@SuppressWarnings("this-escape")
 	public ParseUnexpectedDataException(final Characters expectedChars, final char foundChar, final long lineIndex, final long charIndex) {
-		super("Unexpected character: expected one of " + expectedChars.toLabelArrayString() + " found " + Characters.getLabel(foundChar) + ".", (String)null,
-				lineIndex, charIndex);
+		super("Unexpected character: expected one of " + expectedChars.toLabelArrayString() + " found " + toLabel(foundChar) + ".", (String)null, lineIndex,
+				charIndex);
 		setExpectedCharacters(expectedChars); //save the expected characters
 		setFoundCharacter(foundChar); //save the character found
 	}
@@ -264,7 +263,7 @@ public class ParseUnexpectedDataException extends ParseIOException {
 	 */
 	public String getFoundMessage() {
 		if(findExpectedCharacters().isPresent()) { //if we were expecting characters
-			return Characters.getLabel(getFoundCharacter()); //we will have found a character, so return it
+			return toLabel(getFoundCharacter()); //we will have found a character, so return it
 		} else if(findExpectedStrings().isPresent()) { //if we were expecting strings
 			return convertStringsToMessage(getFoundString().map(List::of).orElseThrow(IllegalStateException::new)); //we will have found a string, so return what we found
 		} else
