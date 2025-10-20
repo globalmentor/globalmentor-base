@@ -328,7 +328,7 @@ public final class ClassResources {
 	 *          loader. The paths must not end in {@value #PATH_SEPARATOR}, and an empty path is not allowed.
 	 * @param options Options specifying how the copy should be performed.
 	 * @return The total number of bytes copied.
-	 * @throws FileNotFoundException if the indicated resource cannot be found.
+	 * @throws MissingClassResourceException if the indicated resource cannot be found.
 	 * @throws IOException if an I/O error occurs when reading or writing. The exception may be a subclass of {@link FileSystemException} as per
 	 *           {@link java.nio.file.Files#copy(InputStream, Path, CopyOption...)}.
 	 * @throws UnsupportedOperationException if {@code options} contains a copy option that is not supported.
@@ -356,7 +356,7 @@ public final class ClassResources {
 	 * @param targetFile The path to the destination to where the resource should be copied. Any target parent directories will be created as needed.
 	 * @param options Options specifying how the copy should be performed.
 	 * @return The number of bytes copied.
-	 * @throws FileNotFoundException if the indicated resource cannot be found.
+	 * @throws MissingClassResourceException if the indicated resource cannot be found.
 	 * @throws IOException if an I/O error occurs when reading or writing. The exception may be a subclass of {@link FileSystemException} as per
 	 *           {@link java.nio.file.Files#copy(InputStream, Path, CopyOption...)}.
 	 * @throws UnsupportedOperationException if {@code options} contains a copy option that is not supported.
@@ -377,7 +377,7 @@ public final class ClassResources {
 	 * @param targetFile The path to the destination to where the resource should be copied. Any target parent directories will be created as needed.
 	 * @param options Options specifying how the copy should be performed.
 	 * @return The number of bytes copied.
-	 * @throws FileNotFoundException if the indicated resource cannot be found.
+	 * @throws MissingClassResourceException if the indicated resource cannot be found.
 	 * @throws IOException if an I/O error occurs when reading or writing. The exception may be a subclass of {@link FileSystemException} as per
 	 *           {@link java.nio.file.Files#copy(InputStream, Path, CopyOption...)}.
 	 * @throws UnsupportedOperationException if {@code options} contains a copy option that is not supported.
@@ -386,7 +386,8 @@ public final class ClassResources {
 	public static long copy(@Nonnull final ClassLoader classLoader, @Nonnull final String resourcePath, @Nonnull final Path targetFile,
 			final CopyOption... options) throws IOException {
 		//getResourceAsStream() does this same thing, but opening the stream manually prevents discarding any IOException during opening
-		final URL resourceUrl = findResource(classLoader, resourcePath).orElseThrow(() -> new FileNotFoundException("Resource not found: " + resourcePath));
+		final URL resourceUrl = findResource(classLoader, resourcePath)
+				.orElseThrow(() -> new MissingClassResourceException("Missing class resource `%s`.".formatted(resourcePath)));
 		final Path targetParent = targetFile.getParent();
 		if(targetParent != null) {
 			createDirectories(targetParent);
@@ -403,7 +404,7 @@ public final class ClassResources {
 	 * @param contextClass The class the class loader of which to use for retrieving the resource.
 	 * @param resourcePath The path of the resource to access, relative to the context class; or an absolute path that will be made relative to the class loader.
 	 * @return An array of all the bytes read from the resource.
-	 * @throws FileNotFoundException if the indicated resource cannot be found.
+	 * @throws MissingClassResourceException if the indicated resource cannot be found.
 	 * @throws IOException if there is an error reading the bytes.
 	 * @see InputStream#readAllBytes()
 	 */
@@ -419,13 +420,14 @@ public final class ClassResources {
 	 * @param classLoader The class loader to use for retrieving the resource.
 	 * @param resourcePath The full relative path of the resource in relation to the class loader.
 	 * @return An array of all the bytes read from the resource.
-	 * @throws FileNotFoundException if the indicated resource cannot be found.
+	 * @throws MissingClassResourceException if the indicated resource cannot be found.
 	 * @throws IOException if there is an error reading the bytes.
 	 * @see InputStream#readAllBytes()
 	 */
 	public static byte[] readBytes(@Nonnull final ClassLoader classLoader, @Nonnull final String resourcePath) throws IOException {
 		//getResourceAsStream() does this same thing, but opening the stream manually prevents discarding any IOException during opening
-		final URL resourceUrl = findResource(classLoader, resourcePath).orElseThrow(() -> new FileNotFoundException("Resource not found: " + resourcePath));
+		final URL resourceUrl = findResource(classLoader, resourcePath)
+				.orElseThrow(() -> new MissingClassResourceException("Missing class resource `%s`.".formatted(resourcePath)));
 		try (final InputStream inputStream = resourceUrl.openConnection().getInputStream()) {
 			return inputStream.readAllBytes();
 		}
@@ -441,7 +443,7 @@ public final class ClassResources {
 	 * @param resourcePath The path of the resource to access, relative to the context class; or an absolute path that will be made relative to the class loader.
 	 * @param charset The charset to be used to decode the bytes.
 	 * @return A string read from the resource.
-	 * @throws FileNotFoundException if the indicated resource cannot be found.
+	 * @throws MissingClassResourceException if the indicated resource cannot be found.
 	 * @throws IOException if there is an error reading the string bytes.
 	 * @see InputStream#readAllBytes()
 	 */
@@ -460,7 +462,7 @@ public final class ClassResources {
 	 * @param resourcePath The full relative path of the resource in relation to the class loader.
 	 * @param charset The charset to be used to decode the bytes.
 	 * @return A string read from the resource.
-	 * @throws FileNotFoundException if the indicated resource cannot be found.
+	 * @throws MissingClassResourceException if the indicated resource cannot be found.
 	 * @throws IOException if there is an error reading the string bytes.
 	 * @see InputStream#readAllBytes()
 	 */

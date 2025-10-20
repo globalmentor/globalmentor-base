@@ -123,7 +123,7 @@ public class ClassResourcesTest {
 	@Test
 	void testCopyMissingResourceThrowsFileNotFoundException(@TempDir Path tempDir) throws IOException {
 		final Path targetFile = tempDir.resolve("dest.txt");
-		assertThrows(FileNotFoundException.class, () -> ClassResources.copy(ClassResourcesTest.class, "missing.txt", targetFile));
+		assertThrows(MissingClassResourceException.class, () -> ClassResources.copy(ClassResourcesTest.class, "missing.txt", targetFile));
 	}
 
 	/** @see ClassResources#copy(ClassLoader, String, Path, CopyOption...) */
@@ -146,14 +146,14 @@ public class ClassResourcesTest {
 	@Test
 	void textReadBytes() throws IOException {
 		assertThat(new String(ClassResources.readBytes(getClass(), FOO_TXT_RESOURCE_NAME), UTF_8), is("bar"));
-		assertThrows(FileNotFoundException.class, () -> ClassResources.readBytes(getClass(), "missing.txt"));
+		assertThrows(MissingClassResourceException.class, () -> ClassResources.readBytes(getClass(), "missing.txt"));
 	}
 
 	/** @see ClassResources#readString(Class, String, java.nio.charset.Charset) */
 	@Test
 	void textReadString() throws IOException {
 		assertThat(ClassResources.readString(getClass(), FOO_TXT_RESOURCE_NAME, UTF_8), is("bar"));
-		assertThrows(FileNotFoundException.class, () -> ClassResources.readString(getClass(), "missing.txt", UTF_8));
+		assertThrows(MissingClassResourceException.class, () -> ClassResources.readString(getClass(), "missing.txt", UTF_8));
 	}
 
 }
