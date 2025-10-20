@@ -40,10 +40,8 @@ import static com.globalmentor.net.URIs.*;
 
 /**
  * Various constants and utilities for examining files.
- * <p>
- * For file URIs Java incorrectly uses the form <code>file:/mnt/sdcard/...</code> instead of <code>file:///mnt/sdcard/...</code>, but these utilities use the
- * former for consistency.
- * </p>
+ * <p>For file URIs Java incorrectly uses the form <code>file:/mnt/sdcard/...</code> instead of <code>file:///mnt/sdcard/...</code>, but these utilities use the
+ * former for consistency.</p>
  * @author Garret Wilson
  * @see <a href="http://blogs.msdn.com/b/ie/archive/2006/12/06/file-uris-in-windows.aspx">File URIs in Windows</a>
  */
@@ -111,9 +109,7 @@ public class Files {
 
 	/**
 	 * Returns all the possible extensions of a filename, from the most specific to the most general.
-	 * <p>
-	 * For example for the file <code>path/to/example.foo.bar</code> the following would be returned in order:
-	 * </p>
+	 * <p>For example for the file <code>path/to/example.foo.bar</code> the following would be returned in order:</p>
 	 * <ol>
 	 * <li><code>foo.bar</code></li>
 	 * <li><code>bar</code></li>
@@ -129,9 +125,7 @@ public class Files {
 
 	/**
 	 * Returns all the possible extensions of a filename, from the most specific to the most general.
-	 * <p>
-	 * For example for the file <code>path/to/example.foo.bar</code> the following would be returned in order:
-	 * </p>
+	 * <p>For example for the file <code>path/to/example.foo.bar</code> the following would be returned in order:</p>
 	 * <ol>
 	 * <li><code>foo.bar</code></li>
 	 * <li><code>bar</code></li>
@@ -235,11 +229,9 @@ public class Files {
 
 	/**
 	 * Creates a temporary file for another file, with no automatic deletion on JVM exit.
-	 * <p>
-	 * This method can be used in two different ways, based upon the given file. If the given file is a directory, a temporary file will be created within the
+	 * <p>This method can be used in two different ways, based upon the given file. If the given file is a directory, a temporary file will be created within the
 	 * directory with the prefix {@value #TEMP_FILENAME_PREFIX}. Otherwise, if the given file is a directory and filename, a temporary file will be created in the
-	 * same directory, using the given filename as a prefix.
-	 * </p>
+	 * same directory, using the given filename as a prefix.</p>
 	 * @param file The file specifying the directory and optionally a filename to serve as a base name.
 	 * @return A new temporary file.
 	 * @throws NullPointerException if the given file is <code>null</code>.
@@ -345,9 +337,7 @@ public class Files {
 
 	/**
 	 * Deletes a directory or file, throwing an exception if unsuccessful.
-	 * <p>
-	 * If the file does not exist, no action occurs.
-	 * </p>
+	 * <p>If the file does not exist, no action occurs.</p>
 	 * @param file The directory or file to delete.
 	 * @throws IOException Thrown if there is an problem deleting any directory or file.
 	 */
@@ -357,9 +347,7 @@ public class Files {
 
 	/**
 	 * Deletes a directory or file, throwing an exception if unsuccessful. The operation will stop on the first error.
-	 * <p>
-	 * If the file does not exist, no action occurs.
-	 * </p>
+	 * <p>If the file does not exist, no action occurs.</p>
 	 * @implNote This implementation appears to follow symbolic links.
 	 * @param file The directory or file to delete. If a directory is passed, all its child files and directories will recursively be deleted if
 	 *          <code>recursive</code> is <code>true</code>. If a file is passed, it will be deleted normally.
@@ -457,9 +445,7 @@ public class Files {
 
 	/**
 	 * Returns a file suitable for a temporary file, based on the specified filename, by adding an extension for a temporary file.
-	 * <p>
-	 * This implementation requires the given file to have a parent.
-	 * </p>
+	 * <p>This implementation requires the given file to have a parent.</p>
 	 * @param file The file for which a temporary file should be returned.
 	 * @return The file suitable for temporary access.
 	 * @see #TEMP_FILENAME_EXTENSION
@@ -470,9 +456,7 @@ public class Files {
 
 	/**
 	 * Returns a file suitable for backup, based on the specified filename, by adding an extension for a backup file.
-	 * <p>
-	 * This implementation requires the given file to have a parent.
-	 * </p>
+	 * <p>This implementation requires the given file to have a parent.</p>
 	 * @param file The file for which a backup file should be returned.
 	 * @return The file suitable for backup.
 	 * @see #BACKUP_FILENAME_EXTENSION
@@ -527,20 +511,12 @@ public class Files {
 
 	/**
 	 * Constructs a {@link URIs#FILE_SCHEME} scheme URI that represents this abstract pathname.
-	 * <p>
-	 * This functions similarly to {@link File#toURI()}, except that this method always returns a true URI in which the characters all are within ranges allowed
-	 * by RFC 3986, notably that non-ASCII characters are all encoded.
-	 * </p>
-	 * <p>
-	 * In addition, the character <code>';'</code> is encoded, as expected by HTTP servers such as Apache when part of the path.
-	 * </p>
-	 * <p>
-	 * Following the examples in RFC 3986, this is guaranteed to produce only <em>lowercase</em> hexadecimal escape codes.
-	 * </p>
-	 * <p>
-	 * This method may not return a URI with a trailing slash for directories that don't exist. If it is known whether the file represents a directory,
-	 * {@link #toURI(File, boolean)} should be used instead.
-	 * </p>
+	 * <p>This functions similarly to {@link File#toURI()}, except that this method always returns a true URI in which the characters all are within ranges
+	 * allowed by RFC 3986, notably that non-ASCII characters are all encoded.</p>
+	 * <p>In addition, the character <code>';'</code> is encoded, as expected by HTTP servers such as Apache when part of the path.</p>
+	 * <p>Following the examples in RFC 3986, this is guaranteed to produce only <em>lowercase</em> hexadecimal escape codes.</p>
+	 * <p>This method may not return a URI with a trailing slash for directories that don't exist. If it is known whether the file represents a directory,
+	 * {@link #toURI(File, boolean)} should be used instead.</p>
 	 * @param file The file which should be converted to a URI.
 	 * @return An absolute, hierarchical URI with non-ASCII characters encoded, with a {@link URIs#FILE_SCHEME} scheme, a path representing this abstract
 	 *         pathname, and undefined authority, query, and fragment components.
@@ -556,20 +532,12 @@ public class Files {
 
 	/**
 	 * Constructs a {@link URIs#FILE_SCHEME} scheme URI that represents this abstract pathname.
-	 * <p>
-	 * This functions similarly to {@link File#toURI()}, except that this method always returns a true URI in which the characters all are within ranges allowed
-	 * by RFC 3986, notably that non-ASCII characters are all encoded.
-	 * </p>
-	 * <p>
-	 * In addition, the character <code>';'</code> is encoded, as expected by HTTP servers such as Apache when part of the path.
-	 * </p>
-	 * <p>
-	 * Following the examples in RFC 3986, this is guaranteed to produce only <em>lowercase</em> hexadecimal escape codes.
-	 * </p>
-	 * <p>
-	 * If a directory URI is requested, the appropriate URI for a directory is returned, whether or not the directory exists. Contrast this behavior with
-	 * {@link File#toURI()}, which will return a file URI without a trailing slash if the directory does not exist.
-	 * </p>
+	 * <p>This functions similarly to {@link File#toURI()}, except that this method always returns a true URI in which the characters all are within ranges
+	 * allowed by RFC 3986, notably that non-ASCII characters are all encoded.</p>
+	 * <p>In addition, the character <code>';'</code> is encoded, as expected by HTTP servers such as Apache when part of the path.</p>
+	 * <p>Following the examples in RFC 3986, this is guaranteed to produce only <em>lowercase</em> hexadecimal escape codes.</p>
+	 * <p>If a directory URI is requested, the appropriate URI for a directory is returned, whether or not the directory exists. Contrast this behavior with
+	 * {@link File#toURI()}, which will return a file URI without a trailing slash if the directory does not exist.</p>
 	 * @param file The file which should be converted to a URI.
 	 * @param forceDirectoryURI Whether the URI should be returned with a trailing slash, even if the file does not exist as a directory.
 	 * @return An absolute, hierarchical URI with non-ASCII characters encoded, with a {@link URIs#FILE_SCHEME} scheme, a path representing this abstract
@@ -605,9 +573,7 @@ public class Files {
 	/**
 	 * Determines whether the given child file is a child of the parent file in the file system hierarchy. This method returns <code>false</code> if the files
 	 * refer to the same file.
-	 * <p>
-	 * This implementation correctly recognizes parent/child relationships on case-insensitive file systems such as that used in Windows.
-	 * </p>
+	 * <p>This implementation correctly recognizes parent/child relationships on case-insensitive file systems such as that used in Windows.</p>
 	 * @param parentFile The supposed parent file.
 	 * @param file The supposed child file.
 	 * @return <code>true</code> if the files share a parent/child relationship in the file system hierarchy.
@@ -664,11 +630,11 @@ public class Files {
 	 * @param file The file from which to read.
 	 * @return An array of bytes from the input stream.
 	 * @throws IOException Thrown if there is an error loading the bytes.
-	 * @see InputStreams#readBytes(InputStream)
+	 * @see InputStream#readAllBytes()
 	 */
 	public static byte[] readBytes(final File file) throws IOException {
 		try (final InputStream fileInputStream = new FileInputStream(file)) { //create an input stream to the file
-			return InputStreams.readBytes(fileInputStream); //convert the file to an array of bytes
+			return fileInputStream.readAllBytes(); //convert the file to an array of bytes
 		}
 	}
 
@@ -700,10 +666,8 @@ public class Files {
 
 	/**
 	 * Renames the file, throwing an exception if unsuccessful.
-	 * <p>
-	 * This method is a direct delegation to {@link File#renameTo(File)} with added exception handling. If overwriting of a destination file is desired, use
-	 * {@link #move(File, File)} or a related method.
-	 * </p>
+	 * <p>This method is a direct delegation to {@link File#renameTo(File)} with added exception handling. If overwriting of a destination file is desired, use
+	 * {@link #move(File, File)} or a related method.</p>
 	 * @param source The file to rename.
 	 * @param destination The new name of the file
 	 * @throws IOException Thrown if there is an error renaming the file.
@@ -822,11 +786,9 @@ public class Files {
 
 	/**
 	 * Ensures that a path is a regular file with opaque content.
-	 * <p>
-	 * The {@code options} array may be used to indicate how symbolic links are handled for the case that the file is a symbolic link. By default, symbolic links
-	 * are followed and the file attribute of the final target of the link is read. If the option {@link LinkOption#NOFOLLOW_LINKS NOFOLLOW_LINKS} is present then
-	 * symbolic links are not followed.
-	 * </p>
+	 * <p>The {@code options} array may be used to indicate how symbolic links are handled for the case that the file is a symbolic link. By default, symbolic
+	 * links are followed and the file attribute of the final target of the link is read. If the option {@link LinkOption#NOFOLLOW_LINKS NOFOLLOW_LINKS} is
+	 * present then symbolic links are not followed.</p>
 	 * @param path The path to check.
 	 * @param options The options indicating how symbolic links are handled.
 	 * @return The given path.
@@ -1101,10 +1063,8 @@ public class Files {
 	 * <code>filename.ext.<var>number</var>.bak</code> in the sequence will be renamed to <code>filename.ext.<var>number+1</var>.bak</code> (if it exists) down to
 	 * and including <var>1</var>, and then the indicated file will be copied to the backup filename, which is <code>filename.ext.<var>1</var>.bak</code>.
 	 * 
-	 * <p>
-	 * If it's a rolling backup and one of the backup files are manually erased, the blank space that will be left between them will be rolled aswell, until the
-	 * blank space take the place of number <var><code>maxBackupCount</code></var> and then disappears.
-	 * </p>
+	 * <p>If it's a rolling backup and one of the backup files are manually erased, the blank space that will be left between them will be rolled aswell, until
+	 * the blank space take the place of number <var><code>maxBackupCount</code></var> and then disappears.</p>
 	 * 
 	 * @param path The path of the file to back up.
 	 * @param maxBackupCount The maximum number of rolling backup files to use.

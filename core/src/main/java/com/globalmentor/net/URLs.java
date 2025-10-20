@@ -20,8 +20,6 @@ import java.io.*;
 import java.net.*;
 import java.nio.charset.Charset;
 
-import com.globalmentor.io.*;
-
 /**
  * Various URL manipulating functions.
  * @author Garret Wilson
@@ -53,12 +51,8 @@ public final class URLs {
 
 	/**
 	 * Returns an input stream from given URL by establishing a connection to the requested URL.
-	 * <p>
-	 * This method knows how to follow HTTP redirects.
-	 * </p>
-	 * <p>
-	 * This method fulfills the requirements of <code>InputStreamLocator</code>.
-	 * </p>
+	 * <p>This method knows how to follow HTTP redirects.</p>
+	 * <p>This method fulfills the requirements of <code>InputStreamLocator</code>.</p>
 	 * @param url A complete URL to a file.
 	 * @return An input stream to the contents of the file represented by the given URL.
 	 * @throws IOException Thrown if an I/O error occurred.
@@ -90,11 +84,11 @@ public final class URLs {
 	 * @param url The URL from which to read.
 	 * @return An array of bytes from the URL.
 	 * @throws IOException Thrown if there is an error loading the bytes.
-	 * @see InputStreams#readBytes(InputStream)
+	 * @see InputStream#readAllBytes()
 	 */
 	public static byte[] readBytes(final URL url) throws IOException {
 		try (final InputStream urlInputStream = url.openConnection().getInputStream()) { //create an input stream to the URL
-			return InputStreams.readBytes(urlInputStream); //convert the URL to an array of bytes
+			return urlInputStream.readAllBytes(); //convert the URL to an array of bytes
 		}
 	}
 
@@ -112,11 +106,9 @@ public final class URLs {
 
 	/**
 	 * Converts a URL to a URI.
-	 * <p>
-	 * This method functions similar to {@link URL#toURI()}, except that for those few URLs which are not conforming URIs will result in a
+	 * <p>This method functions similar to {@link URL#toURI()}, except that for those few URLs which are not conforming URIs will result in a
 	 * {@link IllegalArgumentException} being thrown. In addition, the resulting URI is made to truly conform to RFC 3986 by making sure any non-ASCII characters
-	 * are encoded.
-	 * </p>
+	 * are encoded.</p>
 	 * @param url The URI to convert to a URI.
 	 * @return The URL as a URI.
 	 * @throws IllegalArgumentException if the given URL not formatted strictly according to to RFC 2396 and cannot be converted to a URI.

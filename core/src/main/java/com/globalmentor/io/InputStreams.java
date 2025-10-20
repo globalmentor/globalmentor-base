@@ -60,7 +60,9 @@ public final class InputStreams {
 	 * @throws IOException Thrown if there is an error loading the bytes.
 	 * @throws OutOfMemoryError if an array of the required size cannot be allocated, either because not enough memory is available or the JVM cannot otherwise
 	 *           create an array with the required number of bytes.
+	 * @deprecated in favor of {@link InputStream#readAllBytes()}.
 	 */
+	@Deprecated(forRemoval = true)
 	public static byte[] readBytes(final InputStream inputStream) throws IOException {
 		final List<byte[]> bufferList = new ArrayList<byte[]>(); //create a list for the buffers
 		int lastBufferSize = 0; //we haven't used any buffers yet
@@ -99,7 +101,9 @@ public final class InputStreams {
 	 *         less than requested.
 	 * @throws IllegalArgumentException if the offset or the length is negative.
 	 * @throws IOException if there is an error reading from the input stream.
+	 * @deprecated in favor of {@link InputStream#readNBytes(int)}.
 	 */
+	@Deprecated(forRemoval = true)
 	public static byte[] readBytes(final InputStream inputStream, final int length) throws IOException {
 		return readBytes(inputStream, 0, length); //get bytes from the stream starting at the beginning
 	}
@@ -113,7 +117,10 @@ public final class InputStreams {
 	 *         less than requested.
 	 * @throws IllegalArgumentException if the offset or the length is negative.
 	 * @throws IOException if there is an error reading from the input stream.
+	 * @deprecated in favor of {@link InputStream#read(byte[], int, int)}. Note also that the method does not provide a way to determine how many bytes were read,
+	 *             so its currently utility is questionable outside supporting the other deprecated {@link #readBytes(InputStream, int)} method.
 	 */
+	@Deprecated(forRemoval = true)
 	public static byte[] readBytes(final InputStream inputStream, final long offset, final int length) throws IOException {
 		if(offset < 0) { //if a negative offset is requested
 			throw new IllegalArgumentException("Offset cannot be negative.");
@@ -244,9 +251,7 @@ public final class InputStreams {
 
 	/**
 	 * Attempts to automatically detect the charset of a particular input stream based upon its byte order marker (BOM).
-	 * <p>
-	 * The input stream must be at its beginning and must support marking and resetting.
-	 * </p>
+	 * <p>The input stream must be at its beginning and must support marking and resetting.</p>
 	 * @param inputStream The stream the charset of which will be detected.
 	 * @return The charset detected, or <code>null</code> if no byte order mark could be detected.
 	 * @throws IOException if a mixed byte order mark is encountered.
@@ -260,9 +265,7 @@ public final class InputStreams {
 
 	/**
 	 * Attempts to automatically detect the charset from the byte order mark (BOM) of a particular input stream.
-	 * <p>
-	 * The input stream must be at its beginning and must support marking and resetting.
-	 * </p>
+	 * <p>The input stream must be at its beginning and must support marking and resetting.</p>
 	 * @param inputStream The stream the charset of which will be detected.
 	 * @param defaultCharset The charset to return if the encoding can't be determined by the byte order mark.
 	 * @return The charset detected, or the given default charset if no byte order mark could be detected.

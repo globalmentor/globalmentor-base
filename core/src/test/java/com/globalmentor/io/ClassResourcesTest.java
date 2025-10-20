@@ -43,7 +43,7 @@ public class ClassResourcesTest {
 
 	/** @see ClassResources#getClassLoaderResourcePath(Class, String) */
 	@Test
-	public void testGetClassLoaderResourcePath() {
+	void testGetClassLoaderResourcePath() {
 		//relative paths
 		assertThat(ClassResources.getClassLoaderResourcePath(java.lang.Integer.class, ""), is("java/lang/"));
 		assertThat(ClassResources.getClassLoaderResourcePath(java.lang.Integer.class, "foo"), is("java/lang/foo"));
@@ -65,7 +65,7 @@ public class ClassResourcesTest {
 
 	/** @see ClassResources#getPathSegments(String) */
 	@Test
-	public void testGetPathSegments() {
+	void testGetPathSegments() {
 		assertThat(ClassResources.getPathSegments(""), is(empty()));
 		assertThat(ClassResources.getPathSegments("a"), contains("a"));
 		assertThat(ClassResources.getPathSegments("/a"), contains("a"));
@@ -105,7 +105,7 @@ public class ClassResourcesTest {
 
 	/** @see ClassResources#copy(ClassLoader, String, Path, CopyOption...) */
 	@Test
-	public void testCopyResourceToFile(@TempDir Path tempDir) throws IOException {
+	void testCopyResourceToFile(@TempDir Path tempDir) throws IOException {
 		final Path targetFooFile = tempDir.resolve("dest.txt");
 		ClassResources.copy(ClassResourcesTest.class, FOO_TXT_RESOURCE_NAME, targetFooFile);
 		assertThat(new String(readAllBytes(targetFooFile), UTF_8), is("bar"));
@@ -113,7 +113,7 @@ public class ClassResourcesTest {
 
 	/** @see ClassResources#copy(ClassLoader, String, Path, CopyOption...) */
 	@Test
-	public void testCopySubDirResourceToFile(@TempDir Path tempDir) throws IOException {
+	void testCopySubDirResourceToFile(@TempDir Path tempDir) throws IOException {
 		final Path targetFile = tempDir.resolve("dest.txt");
 		ClassResources.copy(ClassResourcesTest.class, SUBDIR_EXAMPLE_TXT_RESOURCE_NAME, targetFile);
 		assertThat(new String(readAllBytes(targetFile), UTF_8), is("test"));
@@ -121,14 +121,14 @@ public class ClassResourcesTest {
 
 	/** @see ClassResources#copy(ClassLoader, String, Path, CopyOption...) */
 	@Test
-	public void testCopyMissingResourceThrowsFileNotFoundException(@TempDir Path tempDir) throws IOException {
+	void testCopyMissingResourceThrowsFileNotFoundException(@TempDir Path tempDir) throws IOException {
 		final Path targetFile = tempDir.resolve("dest.txt");
-		assertThrows(FileNotFoundException.class, () -> ClassResources.copy(ClassResourcesTest.class, "missing.txt", targetFile));
+		assertThrows(MissingClassResourceException.class, () -> ClassResources.copy(ClassResourcesTest.class, "missing.txt", targetFile));
 	}
 
 	/** @see ClassResources#copy(ClassLoader, String, Path, CopyOption...) */
 	@Test
-	public void testCopyResourceToSubDirFileCreatesSubDir(@TempDir Path tempDir) throws IOException {
+	void testCopyResourceToSubDirFileCreatesSubDir(@TempDir Path tempDir) throws IOException {
 		final Path targetFile = tempDir.resolve("first").resolve("second").resolve("test.txt");
 		ClassResources.copy(ClassResourcesTest.class, FOO_TXT_RESOURCE_NAME, targetFile);
 		assertThat(new String(readAllBytes(targetFile), UTF_8), is("bar"));
@@ -136,10 +136,24 @@ public class ClassResourcesTest {
 
 	/** @see ClassResources#copy(Class, Path, Iterable, CopyOption...) */
 	@Test
-	public void testCopyResources(@TempDir Path tempDir) throws IOException {
+	void testCopyResources(@TempDir Path tempDir) throws IOException {
 		ClassResources.copy(ClassResourcesTest.class, tempDir, asList(FOO_TXT_RESOURCE_NAME, SUBDIR_EXAMPLE_TXT_RESOURCE_NAME));
 		assertThat(new String(readAllBytes(tempDir.resolve(FOO_TXT_RESOURCE_NAME)), UTF_8), is("bar"));
 		assertThat(new String(readAllBytes(Paths.resolve(tempDir, asList(SUBDIR_EXAMPLE_TXT_RESOURCE_NAME.split(PATH_SEPARATOR_STRING)))), UTF_8), is("test"));
+	}
+
+	/** @see ClassResources#readBytes(ClassLoader, String) */
+	@Test
+	void textReadBytes() throws IOException {
+		assertThat(new String(ClassResources.readBytes(getClass(), FOO_TXT_RESOURCE_NAME), UTF_8), is("bar"));
+		assertThrows(MissingClassResourceException.class, () -> ClassResources.readBytes(getClass(), "missing.txt"));
+	}
+
+	/** @see ClassResources#readString(Class, String, java.nio.charset.Charset) */
+	@Test
+	void textReadString() throws IOException {
+		assertThat(ClassResources.readString(getClass(), FOO_TXT_RESOURCE_NAME, UTF_8), is("bar"));
+		assertThrows(MissingClassResourceException.class, () -> ClassResources.readString(getClass(), "missing.txt", UTF_8));
 	}
 
 }
