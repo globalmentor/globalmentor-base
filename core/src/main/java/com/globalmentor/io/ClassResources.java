@@ -22,6 +22,7 @@ import static java.util.Collections.*;
 
 import java.io.*;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.nio.file.*;
 import java.util.*;
 
@@ -153,18 +154,14 @@ public final class ClassResources {
 
 	/**
 	 * Determines the path necessary to access a named resource using the class loader of the given context class.
-	 * <p>
-	 * Accessing a resource via e.g. {@link Class#getResource(String)} for the class <code>com.example.Foo</code> may be accomplished using a resource name such
-	 * as <code>"bar"</code>, relative to the class package directory structure; but loading the same resource via {@link ClassLoader#getResource(String)} using
-	 * the class loader for the same class requires the full path to the resource, such as <code>com/example/bar</code>. This method determines the full path that
-	 * would need to be used to access a resource using a class loader for a class. Thus given class <code>com.example.Foo</code> and resource name
+	 * <p>Accessing a resource via e.g. {@link Class#getResource(String)} for the class <code>com.example.Foo</code> may be accomplished using a resource name
+	 * such as <code>"bar"</code>, relative to the class package directory structure; but loading the same resource via {@link ClassLoader#getResource(String)}
+	 * using the class loader for the same class requires the full path to the resource, such as <code>com/example/bar</code>. This method determines the full
+	 * path that would need to be used to access a resource using a class loader for a class. Thus given class <code>com.example.Foo</code> and resource name
 	 * <code>bar</code>, this method will return <code>"com/example/bar"</code>. But if the absolute path <code>/bar</code> is passed, <code>bar</code> will be
-	 * returned.
-	 * </p>
-	 * <p>
-	 * This method performs functionality equivalent to that performed internally to methods such as {@link Class#getResource(String)} before they delegate to the
-	 * class loader.
-	 * </p>
+	 * returned.</p>
+	 * <p>This method performs functionality equivalent to that performed internally to methods such as {@link Class#getResource(String)} before they delegate to
+	 * the class loader.</p>
 	 * @param contextClass The class in relation to which the resource name should be resolved
 	 * @param resourcePath The path of the resource to access, relative to the context class; or an absolute path that will be made relative to the class loader.
 	 * @return The full <em>relative</em> path of the resource necessary to access it using the resource loader of the given class.
@@ -320,10 +317,8 @@ public final class ClassResources {
 
 	/**
 	 * Copies several class resources to a base directory in a file system, maintaining the relative directory hierarchy.
-	 * <p>
-	 * For example copying the files <code>example.txt</code> and <code>foo/bar.txt</code> in the context of class <code>com.example.Test</code> to the target
-	 * base directory <code>/path/to/dest</code> would copy the files to <code>/path/to/dest/example.txt</code> and <code>/path/to/dest/foo/bar.txt</code>.
-	 * </p>
+	 * <p>For example copying the files <code>example.txt</code> and <code>foo/bar.txt</code> in the context of class <code>com.example.Test</code> to the target
+	 * base directory <code>/path/to/dest</code> would copy the files to <code>/path/to/dest/example.txt</code> and <code>/path/to/dest/foo/bar.txt</code>.</p>
 	 * @apiNote This operation is not atomic; it may fail having copied only some of the resources.
 	 * @implSpec This method delegates to {@link #copy(Class, String, Path, CopyOption...)} for each resource to copy.
 	 * @param contextClass The class the class loader of which to use for retrieving the resources.
@@ -434,6 +429,44 @@ public final class ClassResources {
 		try (final InputStream inputStream = resourceUrl.openConnection().getInputStream()) {
 			return InputStreams.readBytes(inputStream);
 		}
+	}
+
+	/**
+	 * Reads all the bytes of a class resource into a string.
+	 * @apiNote This method is analogous to the {@link java.nio.file.Files#readString(Path, Charset)} utility for paths.
+	 * @apiNote This method is intended for simple cases where it is needed to load a small text file into memory. It is not appropriate for loading large files
+	 *          for processing.
+	 * @implSpec This method delegates to {@link #readString(ClassLoader, String, Charset)}.
+	 * @param contextClass The class the class loader of which to use for retrieving the resource.
+	 * @param resourcePath The path of the resource to access, relative to the context class; or an absolute path that will be made relative to the class loader.
+	 * @param charset The charset to be used to decode the bytes.
+	 * @return A string read from the resource.
+	 * @throws FileNotFoundException if the indicated resource cannot be found.
+	 * @throws IOException if there is an error reading the string bytes.
+	 * @see InputStream#readAllBytes()
+	 */
+	public static String readString(@Nonnull final Class<?> contextClass, @Nonnull final String resourcePath, @Nonnull final Charset charset) throws IOException {
+		return readString(contextClass.getClassLoader(), getClassLoaderResourcePath(contextClass, resourcePath), charset);
+	}
+
+	/**
+	 * Reads all the bytes of a class resource into a string.
+	 * @apiNote This method requires the full classpath-relative path to the resource, unlike {@link #readString(Class, String, Charset)}, which requires a path
+	 *          relative to a class.
+	 * @apiNote This method is analogous to the {@link java.nio.file.Files#readString(Path, Charset)} utility for paths.
+	 * @apiNote This method is intended for simple cases where it is needed to load a small text file into memory. It is not appropriate for loading large files
+	 *          for processing.
+	 * @param classLoader The class loader to use for retrieving the resource.
+	 * @param resourcePath The full relative path of the resource in relation to the class loader.
+	 * @param charset The charset to be used to decode the bytes.
+	 * @return A string read from the resource.
+	 * @throws FileNotFoundException if the indicated resource cannot be found.
+	 * @throws IOException if there is an error reading the string bytes.
+	 * @see InputStream#readAllBytes()
+	 */
+	public static String readString(@Nonnull final ClassLoader classLoader, @Nonnull final String resourcePath, @Nonnull final Charset charset)
+			throws IOException {
+		return new String(readBytes(classLoader, resourcePath), charset);
 	}
 
 }
