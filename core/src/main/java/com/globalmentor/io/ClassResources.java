@@ -405,7 +405,7 @@ public final class ClassResources {
 	 * @return An array of all the bytes read from the resource.
 	 * @throws FileNotFoundException if the indicated resource cannot be found.
 	 * @throws IOException if there is an error reading the bytes.
-	 * @see InputStreams#readBytes(InputStream)
+	 * @see InputStream#readAllBytes()
 	 */
 	public static byte[] readBytes(@Nonnull final Class<?> contextClass, @Nonnull final String resourcePath) throws IOException {
 		return readBytes(contextClass.getClassLoader(), getClassLoaderResourcePath(contextClass, resourcePath));
@@ -421,13 +421,13 @@ public final class ClassResources {
 	 * @return An array of all the bytes read from the resource.
 	 * @throws FileNotFoundException if the indicated resource cannot be found.
 	 * @throws IOException if there is an error reading the bytes.
-	 * @see InputStreams#readBytes(InputStream)
+	 * @see InputStream#readAllBytes()
 	 */
 	public static byte[] readBytes(@Nonnull final ClassLoader classLoader, @Nonnull final String resourcePath) throws IOException {
 		//getResourceAsStream() does this same thing, but opening the stream manually prevents discarding any IOException during opening
 		final URL resourceUrl = findResource(classLoader, resourcePath).orElseThrow(() -> new FileNotFoundException("Resource not found: " + resourcePath));
 		try (final InputStream inputStream = resourceUrl.openConnection().getInputStream()) {
-			return InputStreams.readBytes(inputStream);
+			return inputStream.readAllBytes();
 		}
 	}
 

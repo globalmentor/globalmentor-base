@@ -18,7 +18,6 @@ package com.globalmentor.io;
 
 import static com.globalmentor.io.InputStreams.*;
 import static com.globalmentor.java.Bytes.*;
-import static java.lang.String.format;
 import static java.nio.charset.StandardCharsets.*;
 import static java.util.Arrays.*;
 import static org.hamcrest.MatcherAssert.*;
@@ -39,6 +38,7 @@ import com.globalmentor.java.Bytes;
 public class InputStreamsTest {
 
 	/** @see InputStreams#readBytes(InputStream) */
+	@SuppressWarnings("removal")
 	@Test
 	public void testReadBytes() throws IOException {
 		final Random random = new Random(20201128);
@@ -47,12 +47,13 @@ public class InputStreamsTest {
 				INITIAL_READ_BUFFER_SIZE * 2 - 1, INITIAL_READ_BUFFER_SIZE * 2, INITIAL_READ_BUFFER_SIZE * 2 + 1, MAX_READ_BUFFER_SIZE * 4)) {
 			final byte[] bytes = Bytes.generateRandom(length, random);
 			try (final InputStream inputStream = new ByteArrayInputStream(bytes)) {
-				assertThat(format("Read all %d bytes.", length), InputStreams.readBytes(inputStream), is(bytes));
+				assertThat("Read all %d bytes.".formatted(length), InputStreams.readBytes(inputStream), is(bytes));
 			}
 		}
 	}
 
 	/** @see InputStreams#read(InputStream, byte[]) */
+	@SuppressWarnings("removal")
 	@Test
 	public void testRead() throws IOException {
 		final InputStream inputStream = new ByteArrayInputStream("foobar".getBytes(US_ASCII));
@@ -63,6 +64,7 @@ public class InputStreamsTest {
 	}
 
 	/** @see InputStreams#read(InputStream, byte[]) */
+	@SuppressWarnings("removal")
 	@Test
 	public void testReadEmptyStream() throws IOException {
 		final InputStream inputStream = new EmptyInputStream();
@@ -73,6 +75,7 @@ public class InputStreamsTest {
 	}
 
 	/** @see InputStreams#read(InputStream, byte[]) */
+	@SuppressWarnings("removal")
 	@Test
 	public void testReadEmptyBuffer() throws IOException {
 		final InputStream inputStream = new ByteArrayInputStream("foobar".getBytes(US_ASCII));
@@ -83,6 +86,7 @@ public class InputStreamsTest {
 	}
 
 	/** @see InputStreams#read(InputStream, byte[], int) */
+	@SuppressWarnings("removal")
 	@Test
 	public void testReadLength() throws IOException {
 		final InputStream inputStream = new ByteArrayInputStream("foobar".getBytes(US_ASCII));
@@ -93,6 +97,7 @@ public class InputStreamsTest {
 	}
 
 	/** @see InputStreams#read(InputStream, byte[], int) */
+	@SuppressWarnings("removal")
 	@Test
 	public void testReadNegativeLengthThrowsException() throws IOException {
 		final InputStream inputStream = new ByteArrayInputStream("foobar".getBytes(US_ASCII));
@@ -105,6 +110,7 @@ public class InputStreamsTest {
 	}
 
 	/** @see InputStreams#read(InputStream, byte[], int, int) */
+	@SuppressWarnings("removal")
 	@Test
 	public void testReadWithRemainingData() throws IOException {
 		final InputStream inputStream = new ByteArrayInputStream("extraordinary".getBytes(US_ASCII));
@@ -115,6 +121,7 @@ public class InputStreamsTest {
 	}
 
 	/** @see InputStreams#read(InputStream, byte[], int, int) */
+	@SuppressWarnings("removal")
 	@Test
 	public void testReadBufferExactLengthRequested() throws IOException {
 		final InputStream inputStream = new ByteArrayInputStream("foobar".getBytes(US_ASCII));
@@ -125,6 +132,7 @@ public class InputStreamsTest {
 	}
 
 	/** @see InputStreams#read(InputStream, byte[], int, int) */
+	@SuppressWarnings("removal")
 	@Test
 	public void testReadRemainingBuffer() throws IOException {
 		final InputStream inputStream = new ByteArrayInputStream("foo".getBytes(US_ASCII));
