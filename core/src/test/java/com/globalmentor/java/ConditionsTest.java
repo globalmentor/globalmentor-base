@@ -147,6 +147,71 @@ public class ConditionsTest {
 				assertThrows(IllegalArgumentException.class, () -> checkArgumentNotNull(null, "error message", 123)).getMessage(), equalTo("error message"));
 	}
 
+	/** Tests the {@link Conditions#checkArgumentNotEmpty(String)} and the {@link Conditions#checkArgumentNotEmpty(String, String, Object...)} methods. */
+	@Test
+	void testCheckArgumentNotEmpty() {
+		final String string = "test";
+		assertThat(checkArgumentNotEmpty(string), sameInstance(string));
+		assertThat(checkArgumentNotEmpty(string, "error message"), sameInstance(string));
+		assertThat(checkArgumentNotEmpty(string, "error message", 123), sameInstance(string));
+		assertThat(checkArgumentNotEmpty(string, "error message %s", 123), sameInstance(string));
+	}
+
+	/** Tests the {@link Conditions#checkArgumentNotEmpty(String)} method with an empty string. */
+	@Test
+	void testCheckArgumentNotEmptyWithAnEmptyString() {
+		assertThrows(IllegalArgumentException.class, () -> checkArgumentNotEmpty(""));
+	}
+
+	/**
+	 * Tests the {@link Conditions#checkArgumentNotEmpty(String)} and {@link Conditions#checkArgumentNotEmpty(String, String, Object...)} methods with an empty
+	 * string and how the messages are being formatted.
+	 */
+	@Test
+	void testCheckArgumentNotEmptyErrorMessage() {
+		assertThrows(IllegalArgumentException.class, () -> checkArgumentNotEmpty(""));
+		assertThat(assertThrows(IllegalArgumentException.class, () -> checkArgumentNotEmpty("", "error message")).getMessage(), equalTo("error message"));
+		assertThat(assertThrows(IllegalArgumentException.class, () -> checkArgumentNotEmpty("", "error message %d", 123)).getMessage(),
+				equalTo("error message 123"));
+		assertThat("The arguments of the error message should be ignored.",
+				assertThrows(IllegalArgumentException.class, () -> checkArgumentNotEmpty("", "error message", 123)).getMessage(), equalTo("error message"));
+	}
+
+	/** Tests the {@link Conditions#checkArgumentNotBlank(String)} and the {@link Conditions#checkArgumentNotBlank(String, String, Object...)} methods. */
+	@Test
+	void testCheckArgumentNotBlank() {
+		final String string = "test";
+		assertThat(checkArgumentNotBlank(string), sameInstance(string));
+		assertThat(checkArgumentNotBlank(string, "error message"), sameInstance(string));
+		assertThat(checkArgumentNotBlank(string, "error message", 123), sameInstance(string));
+		assertThat(checkArgumentNotBlank(string, "error message %s", 123), sameInstance(string));
+	}
+
+	/** Tests the {@link Conditions#checkArgumentNotBlank(String)} method with a blank string. */
+	@Test
+	void testCheckArgumentNotBlankWithABlankString() {
+		assertThrows(IllegalArgumentException.class, () -> checkArgumentNotBlank(""));
+		assertThrows(IllegalArgumentException.class, () -> checkArgumentNotBlank(" "));
+		assertThrows(IllegalArgumentException.class, () -> checkArgumentNotBlank("  "));
+		assertThrows(IllegalArgumentException.class, () -> checkArgumentNotBlank("\t"));
+		assertThrows(IllegalArgumentException.class, () -> checkArgumentNotBlank("\n"));
+		assertThrows(IllegalArgumentException.class, () -> checkArgumentNotBlank(" \t\n "));
+	}
+
+	/**
+	 * Tests the {@link Conditions#checkArgumentNotBlank(String)} and {@link Conditions#checkArgumentNotBlank(String, String, Object...)} methods with a blank
+	 * string and how the messages are being formatted.
+	 */
+	@Test
+	void testCheckArgumentNotBlankErrorMessage() {
+		assertThrows(IllegalArgumentException.class, () -> checkArgumentNotBlank(""));
+		assertThat(assertThrows(IllegalArgumentException.class, () -> checkArgumentNotBlank("", "error message")).getMessage(), equalTo("error message"));
+		assertThat(assertThrows(IllegalArgumentException.class, () -> checkArgumentNotBlank("", "error message %d", 123)).getMessage(),
+				equalTo("error message 123"));
+		assertThat("The arguments of the error message should be ignored.",
+				assertThrows(IllegalArgumentException.class, () -> checkArgumentNotBlank("", "error message", 123)).getMessage(), equalTo("error message"));
+	}
+
 	/** Tests the {@link Conditions#checkArgumentPresent(Optional)} and the {@link Conditions#checkArgumentPresent(Optional, String, Object...)} methods. */
 	@Test
 	void testCheckArgumentPresent() {

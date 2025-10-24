@@ -178,6 +178,80 @@ public final class Conditions {
 	}
 
 	/**
+	 * Checks to make sure an argument isn't empty, throwing {@link IllegalArgumentException} if the string is empty.
+	 * @apiNote This is a precondition check.
+	 * @param string The string to test.
+	 * @return The string, if it is not empty.
+	 * @throws IllegalArgumentException if the given string is empty.
+	 * @see String#isEmpty()
+	 */
+	public static String checkArgumentNotEmpty(final String string) {
+		return checkArgumentNotEmpty(string, "Argument cannot be empty.");
+	}
+
+	/**
+	 * Checks to make sure an argument isn't empty, throwing {@link IllegalArgumentException} if the string is empty.
+	 * @apiNote This is a precondition check.
+	 * @param string The string to test.
+	 * @param description A description of the test to be used when generating an exception, optionally formatted with arguments, or <code>null</code> for no
+	 *          description.
+	 * @param arguments The arguments to be applied when formatting, or an empty array if the message should not be formatted.
+	 * @return The given string.
+	 * @throws IllegalArgumentException if the given string is empty.
+	 * @throws NullPointerException if the given arguments is <code>null</code>.
+	 * @throws IllegalArgumentException if the description is an invalid pattern, or if an argument in the arguments array is not of the type expected by the
+	 *           format element(s) that use it.
+	 * @see String#format(String, Object...)
+	 * @see String#isEmpty()
+	 */
+	public static String checkArgumentNotEmpty(final String string, String description, final Object... arguments) {
+		if(string.isEmpty()) { //format the message if appropriate
+			if(description != null && arguments.length > 0) {
+				description = String.format(description, arguments);
+			}
+			throw new IllegalArgumentException(description);
+		}
+		return string;
+	}
+
+	/**
+	 * Checks to make sure an argument isn't blank, throwing {@link IllegalArgumentException} if the string is blank.
+	 * @apiNote This is a precondition check.
+	 * @param string The string to test.
+	 * @return The string, if it is not blank.
+	 * @throws IllegalArgumentException if the given string is blank.
+	 * @see String#isBlank()
+	 */
+	public static String checkArgumentNotBlank(final String string) {
+		return checkArgumentNotBlank(string, "Argument cannot be blank.");
+	}
+
+	/**
+	 * Checks to make sure an argument isn't blank, throwing {@link IllegalArgumentException} if the string is blank.
+	 * @apiNote This is a precondition check.
+	 * @param string The string to test.
+	 * @param description A description of the test to be used when generating an exception, optionally formatted with arguments, or <code>null</code> for no
+	 *          description.
+	 * @param arguments The arguments to be applied when formatting, or an empty array if the message should not be formatted.
+	 * @return The given string.
+	 * @throws IllegalArgumentException if the given string is blank.
+	 * @throws NullPointerException if the given arguments is <code>null</code>.
+	 * @throws IllegalArgumentException if the description is an invalid pattern, or if an argument in the arguments array is not of the type expected by the
+	 *           format element(s) that use it.
+	 * @see String#format(String, Object...)
+	 * @see String#isBlank()
+	 */
+	public static String checkArgumentNotBlank(final String string, String description, final Object... arguments) {
+		if(string.isBlank()) { //format the message if appropriate
+			if(description != null && arguments.length > 0) {
+				description = String.format(description, arguments);
+			}
+			throw new IllegalArgumentException(description);
+		}
+		return string;
+	}
+
+	/**
 	 * Checks to make sure an argument is present, throwing {@link IllegalArgumentException} if the optional is not present.
 	 * @apiNote This is a precondition check.
 	 * @param <T> The type of optional object to be tested.
@@ -435,9 +509,7 @@ public final class Conditions {
 
 	/**
 	 * Checks to make sure that a given index is within the range of zero inclusive to the given length exclusive.
-	 * <p>
-	 * This is normally a precondition check.
-	 * </p>
+	 * <p>This is normally a precondition check.</p>
 	 * @apiNote Java 9 introduced an equivalent method {@link java.util.Objects#checkIndex(int, int)}.
 	 * @param index The index to check.
 	 * @param length The exclusive length.
@@ -451,9 +523,7 @@ public final class Conditions {
 
 	/**
 	 * Checks to make sure that a given index is within the range of zero inclusive to the given length exclusive.
-	 * <p>
-	 * This is normally a precondition check.
-	 * </p>
+	 * <p>This is normally a precondition check.</p>
 	 * @apiNote Java 16 introduced an equivalent method in {@link java.util.Objects#checkIndex(long, long)}.
 	 * @param index The index to check.
 	 * @param length The exclusive length.
@@ -467,9 +537,7 @@ public final class Conditions {
 
 	/**
 	 * Checks to make sure that a given index is within the given range.
-	 * <p>
-	 * This is normally a precondition check.
-	 * </p>
+	 * <p>This is normally a precondition check.</p>
 	 * @param index The index to check.
 	 * @param rangeMin The minimum range index, inclusive.
 	 * @param rangeMax The maximum range index, exclusive.
@@ -485,9 +553,7 @@ public final class Conditions {
 
 	/**
 	 * Checks to make sure that a given index is within the given range.
-	 * <p>
-	 * This is normally a precondition check.
-	 * </p>
+	 * <p>This is normally a precondition check.</p>
 	 * @param index The index to check.
 	 * @param rangeMin The minimum range index, inclusive.
 	 * @param rangeMax The maximum range index, exclusive.
@@ -592,13 +658,9 @@ public final class Conditions {
 
 	/**
 	 * Creates a throwable indicating an unexpected condition, which can be thrown by the caller.
-	 * <p>
-	 * An <dfn>unexpected</dfn> condition is one that is logically possible to occur, but yet should not occur because of an API contract, for instance. For
-	 * example, all JVMs should support UTF-8, so one would not expect an {@link UnsupportedEncodingException} if UTF-8 is explicitly specified.
-	 * </p>
-	 * <p>
-	 * This is a convenience method that makes the semantics of the condition more readily apparent.
-	 * </p>
+	 * <p>An <dfn>unexpected</dfn> condition is one that is logically possible to occur, but yet should not occur because of an API contract, for instance. For
+	 * example, all JVMs should support UTF-8, so one would not expect an {@link UnsupportedEncodingException} if UTF-8 is explicitly specified.</p>
+	 * <p>This is a convenience method that makes the semantics of the condition more readily apparent.</p>
 	 * @param message The detail message, or <code>null</code> if there is no detail message.
 	 * @return A throwable indicating an unexpected condition.
 	 */
@@ -608,13 +670,9 @@ public final class Conditions {
 
 	/**
 	 * Creates a throwable indicating an unexpected condition, which can be thrown by the caller.
-	 * <p>
-	 * An <dfn>unexpected</dfn> condition is one that is logically possible to occur, but yet should not occur because of an API contract, for instance. For
-	 * example, all JVMs should support UTF-8, so one would not expect an {@link UnsupportedEncodingException} if UTF-8 is explicitly specified.
-	 * </p>
-	 * <p>
-	 * This is a convenience method that makes the semantics of the condition more readily apparent.
-	 * </p>
+	 * <p>An <dfn>unexpected</dfn> condition is one that is logically possible to occur, but yet should not occur because of an API contract, for instance. For
+	 * example, all JVMs should support UTF-8, so one would not expect an {@link UnsupportedEncodingException} if UTF-8 is explicitly specified.</p>
+	 * <p>This is a convenience method that makes the semantics of the condition more readily apparent.</p>
 	 * @param cause The throwable cause of the unexpected condition, or <code>null</code> if a throwable cause is nonexistent or unknown.
 	 * @return A throwable indicating an unexpected condition.
 	 */
@@ -624,13 +682,9 @@ public final class Conditions {
 
 	/**
 	 * Creates a throwable indicating an unexpected condition, which can be thrown by the caller.
-	 * <p>
-	 * An <dfn>unexpected</dfn> condition is one that is logically possible to occur, but yet should not occur because of an API contract, for instance. For
-	 * example, all JVMs should support UTF-8, so one would not expect an {@link UnsupportedEncodingException} if UTF-8 is explicitly specified.
-	 * </p>
-	 * <p>
-	 * This is a convenience method that makes the semantics of the condition more readily apparent.
-	 * </p>
+	 * <p>An <dfn>unexpected</dfn> condition is one that is logically possible to occur, but yet should not occur because of an API contract, for instance. For
+	 * example, all JVMs should support UTF-8, so one would not expect an {@link UnsupportedEncodingException} if UTF-8 is explicitly specified.</p>
+	 * <p>This is a convenience method that makes the semantics of the condition more readily apparent.</p>
 	 * @param message The detail message, or <code>null</code> if there is no detail message.
 	 * @param cause The throwable cause of the unexpected condition, or <code>null</code> if a throwable cause is nonexistent or unknown.
 	 * @return A throwable indicating an unexpected condition.
@@ -641,15 +695,11 @@ public final class Conditions {
 
 	/**
 	 * Creates a throwable indicating a logically impossible condition, which can be thrown by the caller.
-	 * <p>
-	 * An <dfn>impossible</dfn> condition is one that is supposedly logically impossible to occur. For example, a default section of a switch statement covering
-	 * all possible values of an enum should never be executed; the throwable produced by this method provides a convenient outcome to indicate this condition
-	 * (for example, if a new enum value is later introduced and the switch statement isn't updated). The code following a method guaranteed to throw an exception
-	 * is another example.
-	 * </p>
-	 * <p>
-	 * This is a convenience method that makes the semantics of the condition more readily apparent.
-	 * </p>
+	 * <p>An <dfn>impossible</dfn> condition is one that is supposedly logically impossible to occur. For example, a default section of a switch statement
+	 * covering all possible values of an enum should never be executed; the throwable produced by this method provides a convenient outcome to indicate this
+	 * condition (for example, if a new enum value is later introduced and the switch statement isn't updated). The code following a method guaranteed to throw an
+	 * exception is another example.</p>
+	 * <p>This is a convenience method that makes the semantics of the condition more readily apparent.</p>
 	 * @return A throwable indicating an impossible condition.
 	 */
 	public static AssertionError impossible() {
@@ -658,15 +708,11 @@ public final class Conditions {
 
 	/**
 	 * Creates a throwable indicating a logically impossible condition, which can be thrown by the caller.
-	 * <p>
-	 * An <dfn>impossible</dfn> condition is one that is supposedly logically impossible to occur. For example, a default section of a switch statement covering
-	 * all possible values of an enum should never be executed; the throwable produced by this method provides a convenient outcome to indicate this condition
-	 * (for example, if a new enum value is later introduced and the switch statement isn't updated). The code following a method guaranteed to throw an exception
-	 * is another example.
-	 * </p>
-	 * <p>
-	 * This is a convenience method that makes the semantics of the condition more readily apparent.
-	 * </p>
+	 * <p>An <dfn>impossible</dfn> condition is one that is supposedly logically impossible to occur. For example, a default section of a switch statement
+	 * covering all possible values of an enum should never be executed; the throwable produced by this method provides a convenient outcome to indicate this
+	 * condition (for example, if a new enum value is later introduced and the switch statement isn't updated). The code following a method guaranteed to throw an
+	 * exception is another example.</p>
+	 * <p>This is a convenience method that makes the semantics of the condition more readily apparent.</p>
 	 * @param message The detail message, or <code>null</code> if there is no detail message.
 	 * @return A throwable indicating an impossible condition.
 	 */
@@ -676,15 +722,11 @@ public final class Conditions {
 
 	/**
 	 * Creates a throwable indicating a logically impossible condition, which can be thrown by the caller.
-	 * <p>
-	 * An <dfn>impossible</dfn> condition is one that is supposedly logically impossible to occur. For example, a default section of a switch statement covering
-	 * all possible values of an enum should never be executed; the throwable produced by this method provides a convenient outcome to indicate this condition
-	 * (for example, if a new enum value is later introduced and the switch statement isn't updated). The code following a method guaranteed to throw an exception
-	 * is another example.
-	 * </p>
-	 * <p>
-	 * This is a convenience method that makes the semantics of the condition more readily apparent.
-	 * </p>
+	 * <p>An <dfn>impossible</dfn> condition is one that is supposedly logically impossible to occur. For example, a default section of a switch statement
+	 * covering all possible values of an enum should never be executed; the throwable produced by this method provides a convenient outcome to indicate this
+	 * condition (for example, if a new enum value is later introduced and the switch statement isn't updated). The code following a method guaranteed to throw an
+	 * exception is another example.</p>
+	 * <p>This is a convenience method that makes the semantics of the condition more readily apparent.</p>
 	 * @param cause The throwable cause of the impossible condition, or <code>null</code> if a throwable cause is nonexistent or unknown.
 	 * @return A throwable indicating an impossible condition.
 	 */
@@ -694,15 +736,11 @@ public final class Conditions {
 
 	/**
 	 * Creates a throwable indicating a logically impossible condition, which can be thrown by the caller.
-	 * <p>
-	 * An <dfn>impossible</dfn> condition is one that is supposedly logically impossible to occur. For example, a default section of a switch statement covering
-	 * all possible values of an enum should never be executed; the throwable produced by this method provides a convenient outcome to indicate this condition
-	 * (for example, if a new enum value is later introduced and the switch statement isn't updated). The code following a method guaranteed to throw an exception
-	 * is another example.
-	 * </p>
-	 * <p>
-	 * This is a convenience method that makes the semantics of the condition more readily apparent.
-	 * </p>
+	 * <p>An <dfn>impossible</dfn> condition is one that is supposedly logically impossible to occur. For example, a default section of a switch statement
+	 * covering all possible values of an enum should never be executed; the throwable produced by this method provides a convenient outcome to indicate this
+	 * condition (for example, if a new enum value is later introduced and the switch statement isn't updated). The code following a method guaranteed to throw an
+	 * exception is another example.</p>
+	 * <p>This is a convenience method that makes the semantics of the condition more readily apparent.</p>
 	 * @param message The detail message, or <code>null</code> if there is no detail message.
 	 * @param cause The throwable cause of the impossible condition, or <code>null</code> if a throwable cause is nonexistent or unknown.
 	 * @return A throwable indicating an impossible condition.
