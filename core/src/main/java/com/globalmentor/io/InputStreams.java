@@ -36,7 +36,11 @@ public final class InputStreams {
 	private InputStreams() {
 	}
 
-	/** The shared instance of an input stream with no content. */
+	/**
+	 * The shared instance of an input stream with no content.
+	 * @deprecated in favor of {@link InputStream#nullInputStream()}.
+	 */
+	@Deprecated(forRemoval = true)
 	public static final InputStream EMPTY_INPUT_STREAM = new EmptyInputStream();
 
 	/** The initial size of buffers in the sequence when reading bytes. */
