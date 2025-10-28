@@ -23,7 +23,9 @@ import java.io.InputStream;
  * An input stream that has no content.
  * 
  * @author Garret Wilson
+ * @deprecated in favor of {@link InputStream#nullInputStream()}.
  */
+@Deprecated(forRemoval = true)
 public class EmptyInputStream extends InputStream {
 
 	/** Constructor. */
