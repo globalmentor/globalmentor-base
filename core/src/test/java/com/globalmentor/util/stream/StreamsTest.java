@@ -45,6 +45,56 @@ public class StreamsTest {
 		assertThrows(IllegalArgumentException.class, () -> Stream.of(1, 2, 3).reduce(toFindOnly()));
 	}
 
+	/** @see Streams#toFindOnlyOrElse(Runnable) */
+	@Test
+	void testToFindOnlyOrElse() {
+		//empty stream
+		final List<String> emptyLog = new ArrayList<>();
+		assertThat("empty stream returns empty", Stream.empty().collect(toFindOnlyOrElse(() -> emptyLog.add("multiple"))), isEmpty());
+		assertThat("action not called for empty stream", emptyLog, is(empty()));
+
+		//single element
+		final List<String> singleLog = new ArrayList<>();
+		assertThat("single element returns that element", Stream.of("first").collect(toFindOnlyOrElse(() -> singleLog.add("multiple"))), isPresentAndIs("first"));
+		assertThat("action not called for single element", singleLog, is(empty()));
+
+		//multiple elements
+		final List<String> multipleLog = new ArrayList<>();
+		assertThat("multiple elements returns empty", Stream.of("first", "second").collect(toFindOnlyOrElse(() -> multipleLog.add("multiple"))), isEmpty());
+		assertThat("action called once when multiple found", multipleLog, contains("multiple"));
+
+		//many elements
+		final List<String> manyLog = new ArrayList<>();
+		assertThat("many elements returns empty", Stream.of(1, 2, 3).collect(toFindOnlyOrElse(() -> manyLog.add("multiple"))), isEmpty());
+		assertThat("action called once even with multiple elements", manyLog, contains("multiple"));
+	}
+
+	/** @see Streams#toFindAnyWhenMany(Runnable) */
+	@Test
+	void testToFindAnyWhenMany() {
+		//empty stream
+		final List<String> emptyLog = new ArrayList<>();
+		assertThat("empty stream returns empty", Stream.empty().reduce(toFindAnyWhenMany(() -> emptyLog.add("many"))), isEmpty());
+		assertThat("action not called for empty stream", emptyLog, is(empty()));
+
+		//single element
+		final List<String> singleLog = new ArrayList<>();
+		assertThat("single element returns that element", Stream.of("first").reduce(toFindAnyWhenMany(() -> singleLog.add("many"))), isPresentAndIs("first"));
+		assertThat("action not called for single element", singleLog, is(empty()));
+
+		//multiple elements
+		final List<String> multipleLog = new ArrayList<>();
+		final Optional<String> multipleResult = Stream.of("first", "second").reduce(toFindAnyWhenMany(() -> multipleLog.add("many")));
+		assertThat("multiple elements returns an element", multipleResult, isPresent());
+		assertThat("action called once when many found", multipleLog, contains("many"));
+
+		//many elements
+		final List<String> manyLog = new ArrayList<>();
+		final Optional<Integer> manyResult = Stream.of(1, 2, 3).reduce(toFindAnyWhenMany(() -> manyLog.add("many")));
+		assertThat("many elements returns an element", manyResult, isPresent());
+		assertThat("action called once even with multiple elements", manyLog, contains("many"));
+	}
+
 	/** @see Streams#toOnly() */
 	@Test
 	void testToOnly() {

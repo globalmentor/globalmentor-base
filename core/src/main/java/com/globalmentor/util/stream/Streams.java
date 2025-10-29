@@ -20,6 +20,7 @@ import static java.lang.Math.*;
 import static java.util.stream.Collectors.*;
 
 import java.util.*;
+import java.util.concurrent.atomic.*;
 import java.util.function.*;
 import java.util.stream.*;
 
@@ -36,6 +37,8 @@ public final class Streams {
 
 	/**
 	 * Reduction operator to require a stream to contain at most one element.
+	 * <p>Example usage:</p>
+	 * <blockquote>{@code Optional<String> found = stream.reduce(toFindOnly());}</blockquote>
 	 * @implSpec This implementation delegates to {@link #toFindOnly(Supplier)},
 	 * @apiNote The method performs functionality similar to the terminal operation {@link Stream#findAny()} except that an exception is thrown if more than one
 	 *          element is present.
@@ -53,6 +56,8 @@ public final class Streams {
 
 	/**
 	 * Reduction operator to require a stream to contain at most one element.
+	 * <p>Example usage:</p>
+	 * <blockquote>{@code Optional<String> found = stream.reduce(toFindOnly(() -> new CustomException("Multiple found")));}</blockquote>
 	 * @apiNote The method performs functionality similar to the terminal operation {@link Stream#findAny()} except that an exception is thrown if more than one
 	 *          element is present.
 	 * @apiNote Code modified from <a href="https://blog.codefx.org/java/stream-findfirst-findany-reduce/">Beware Of findFirst() And findAny()</a>.
@@ -72,7 +77,72 @@ public final class Streams {
 	}
 
 	/**
+	 * Collector to require a stream to contain at most one element, performing a custom action if more than one element is encountered rather than throwing an
+	 * exception.
+	 * <p>Example usage:</p>
+	 * <blockquote>{@code Optional<String> found = stream.collect(toFindOnlyOrElse(() -> log.warn("Multiple found")));}</blockquote>
+	 * @apiNote The method performs functionality similar to the terminal operation {@link Stream#findAny()} except that a custom action is performed if more than
+	 *          one element is present, and an empty {@code Optional} is returned to signal the failure condition.
+	 * @apiNote This method is useful in scenarios such as annotation processing where instead of throwing an exception, a warning or even an error can be
+	 *          reported through a messenger (e.g. {@code javax.annotation.processing.Messager}), allowing the processing round to complete in a controlled manner
+	 *          before compilation fails.
+	 * @param <T> The type of element in the stream.
+	 * @param multipleElementsAction The action to perform when multiple elements are encountered. The action is executed once upon detecting that more than one
+	 *          element is present.
+	 * @return An {@code Optional} describing an element of the stream if exactly one is present, or an empty {@code Optional} if the stream is empty or contains
+	 *         more than one element.
+	 * @see Stream#collect(Collector)
+	 * @see #toFindOnly()
+	 * @see #toFindOnly(Supplier)
+	 * @see #toFindAnyWhenMany(Runnable)
+	 */
+	public static <T> Collector<T, ?, Optional<T>> toFindOnlyOrElse(@Nonnull final Runnable multipleElementsAction) {
+		final AtomicReference<T> foundElement = new AtomicReference<>();
+		final AtomicBoolean multipleFound = new AtomicBoolean(false);
+		return collectingAndThen(reducing((element, otherElement) -> {
+			if(multipleFound.compareAndSet(false, true)) {
+				foundElement.set(element);
+				multipleElementsAction.run();
+			}
+			return null; //doesn't matter what we return here
+		}), result -> multipleFound.get() ? Optional.empty() : result);
+	}
+
+	/**
+	 * Reduction operator to find any element in a stream, performing a custom action when more than one element is encountered.
+	 * <p>Example usage:</p>
+	 * <blockquote>{@code Optional<String> found = stream.reduce(toFindAnyWhenMany(() -> log.warn("Multiple found")));}</blockquote>
+	 * @apiNote The method performs functionality similar to the terminal operation {@link Stream#findAny()} except that a custom action is performed when more
+	 *          than one element is present, allowing notification of the ambiguity while still proceeding with one of the elements.
+	 * @apiNote This method is useful in scenarios such as annotation processing where multiple elements may be found, but processing can continue with one of
+	 *          them after reporting a warning through a messenger (e.g., {@code javax.annotation.processing.Messager}).
+	 * @apiNote Unlike {@link #toFindOnlyOrElse(Runnable)}, this method returns one of the elements found rather than an empty {@code Optional}, allowing
+	 *          processing to continue.
+	 * @implNote As a reduction operation, this will continue processing all stream elements even after multiple elements are detected, which may be inefficient
+	 *           for large streams. However, for typical use cases with small streams, this is not a practical concern.
+	 * @implNote This method does not guarantee which element will be returned when multiple elements are present, particularly in parallel streams.
+	 * @param <T> The type of element in the stream.
+	 * @param whenMany The action to perform when multiple elements are encountered. The action is executed once upon detecting that more than one element is
+	 *          present.
+	 * @return An {@code Optional} describing an element of the stream if one or more elements are present, or an empty {@code Optional} if the stream is empty.
+	 * @see Stream#reduce(BinaryOperator)
+	 * @see Stream#findAny()
+	 * @see #toFindOnlyOrElse(Runnable)
+	 */
+	public static <T> BinaryOperator<T> toFindAnyWhenMany(@Nonnull final Runnable whenMany) {
+		final AtomicBoolean manyFound = new AtomicBoolean(false);
+		return (element, otherElement) -> {
+			if(manyFound.compareAndSet(false, true)) {
+				whenMany.run();
+			}
+			return element; //return the first element encountered, allowing processing to continue
+		};
+	}
+
+	/**
 	 * Collector that returns the one and only one element expected to be in the stream.
+	 * <p>Example usage:</p>
+	 * <blockquote>{@code String only = stream.collect(toOnly());}</blockquote>
 	 * @implSpec This implementation delegates to {@link #toOnly(Supplier)}.
 	 * @implNote Code modified from <a href="https://stackoverflow.com/users/2057294/skiwi">skiwi</a> <a href="https://stackoverflow.com/a/22695031/421049">on
 	 *           Stack Overflow</a>.
@@ -92,6 +162,8 @@ public final class Streams {
 
 	/**
 	 * Collector that returns the one and only one element expected to be in the stream.
+	 * <p>Example usage:</p>
+	 * <blockquote>{@code String only = stream.collect(toOnly(() -> new CustomException("Multiple found")));}</blockquote>
 	 * @implNote Code modified from <a href="https://stackoverflow.com/users/2057294/skiwi">skiwi</a> <a href="https://stackoverflow.com/a/22695031/421049">on
 	 *           Stack Overflow</a>.
 	 * @implNote The current implementation extends an existing list collector. It would probably be possible to create a more efficient implementation that
