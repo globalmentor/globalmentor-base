@@ -20,7 +20,7 @@ import static com.globalmentor.java.Conditions.*;
 
 import java.util.stream.Stream;
 
-import javax.annotation.*;
+import org.jspecify.annotations.*;
 
 /**
  * Value class representing a Unicode code point.
@@ -100,7 +100,7 @@ public final class CodePointCharacter {
 	 * @return A new code point character representing one or two characters in the given character sequence.
 	 * @throws IllegalArgumentException if the given character sequence does not represent a single character.
 	 */
-	public static CodePointCharacter fromCharSequence(@Nonnull final CharSequence charSequence) {
+	public static CodePointCharacter fromCharSequence(@NonNull final CharSequence charSequence) {
 		switch(charSequence.length()) {
 			case 1:
 				return CodePointCharacter.of(charSequence.charAt(0));
@@ -117,7 +117,7 @@ public final class CodePointCharacter {
 	 * @param charSequence The character sequence the code points of which should be processed.
 	 * @return A stream of {@link CodePointCharacter} instances representing the code points of the given character sequence.
 	 */
-	public static Stream<CodePointCharacter> streamOf(@Nonnull final CharSequence charSequence) {
+	public static Stream<CodePointCharacter> streamOf(@NonNull final CharSequence charSequence) {
 		return charSequence.codePoints().mapToObj(CodePointCharacter::of);
 	}
 
@@ -160,7 +160,7 @@ public final class CodePointCharacter {
 	}
 
 	@Override
-	public boolean equals(@Nonnull final Object object) {
+	public boolean equals(@NonNull final Object object) {
 		if(this == object) {
 			return true;
 		}

@@ -20,7 +20,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.Optional;
 import java.util.function.*;
 
-import javax.annotation.*;
+import org.jspecify.annotations.*;
 
 import com.globalmentor.model.ConfiguredStateException;
 
@@ -77,7 +77,7 @@ public final class Conditions {
 	 * @param predicate The predicate to test.
 	 * @return A consumer that will throw {@link IllegalArgumentException} if the result of the predicate is <code>false</code>.
 	 */
-	public static <T> Consumer<T> checkArgument(@Nonnull final Predicate<? super T> predicate) {
+	public static <T> Consumer<T> checkArgument(@NonNull final Predicate<? super T> predicate) {
 		return checkArgument(predicate, null); //check the test with no description
 	}
 
@@ -96,7 +96,7 @@ public final class Conditions {
 	 *         arguments array is not of the type expected by the format element(s) that use it.
 	 * @see String#format(String, Object...)
 	 */
-	public static <T> Consumer<T> checkArgument(@Nonnull final Predicate<? super T> predicate, String description, final Object... arguments) {
+	public static <T> Consumer<T> checkArgument(@NonNull final Predicate<? super T> predicate, String description, final Object... arguments) {
 		return __ -> checkArgument(predicate.test(__));
 	}
 
@@ -109,7 +109,7 @@ public final class Conditions {
 	 * @return The given object, cast to the given type.
 	 * @throws IllegalArgumentException if the given object not of the indicated type.
 	 */
-	public static <T> T checkArgumentIsInstance(final Object object, @Nonnull final Class<T> instanceClass) {
+	public static <T> T checkArgumentIsInstance(final Object object, @NonNull final Class<T> instanceClass) {
 		final String instanceClassCanonicalName = instanceClass.getCanonicalName(); //the canonical name is more user-friendly for named inner classes, although it will be missing for e.g. anonymous inner classes
 		return checkArgumentIsInstance(object, instanceClass, "Argument not instance of class `%s`.",
 				instanceClassCanonicalName != null ? instanceClassCanonicalName : instanceClass.getName());
@@ -131,8 +131,8 @@ public final class Conditions {
 	 *           format element(s) that use it.
 	 * @see String#format(String, Object...)
 	 */
-	public static <T> T checkArgumentIsInstance(final Object object, @Nonnull final Class<T> instanceClass, @Nullable String description,
-			@Nonnull final Object... arguments) {
+	public static <T> T checkArgumentIsInstance(final Object object, @NonNull final Class<T> instanceClass, @Nullable String description,
+			@NonNull final Object... arguments) {
 		checkArgument(instanceClass.isInstance(object), description, arguments);
 		return instanceClass.cast(object);
 	}
@@ -262,7 +262,7 @@ public final class Conditions {
 	 * @see Optional#isPresent()
 	 * @see Optional#get()
 	 */
-	public static <T> T checkArgumentPresent(@Nonnull final Optional<T> optional) {
+	public static <T> T checkArgumentPresent(@NonNull final Optional<T> optional) {
 		return checkArgumentPresent(optional, "Argument not present.");
 	}
 
@@ -282,7 +282,7 @@ public final class Conditions {
 	 * @see Optional#isPresent()
 	 * @see Optional#get()
 	 */
-	public static <T> T checkArgumentPresent(@Nonnull final Optional<T> optional, @Nullable final String description, @Nonnull final Object... arguments) {
+	public static <T> T checkArgumentPresent(@NonNull final Optional<T> optional, @Nullable final String description, @NonNull final Object... arguments) {
 		return optional.orElseThrow(() -> {
 			final String message = description != null && arguments.length > 0 ? String.format(description, arguments) : description;
 			return new IllegalArgumentException(message);
@@ -459,7 +459,7 @@ public final class Conditions {
 	 * @param predicate The predicate to test.
 	 * @return A consumer that will throw {@link ConfiguredStateException} if the given value is <code>false</code>.
 	 */
-	public static <T> Consumer<T> checkConfiguredState(@Nonnull final Predicate<? super T> predicate) {
+	public static <T> Consumer<T> checkConfiguredState(@NonNull final Predicate<? super T> predicate) {
 		return checkConfiguredState(predicate, null); //check the test with no description
 	}
 
@@ -477,7 +477,7 @@ public final class Conditions {
 	 *         array is not of the type expected by the format element(s) that use it.
 	 * @see String#format(String, Object...)
 	 */
-	public static <T> Consumer<T> checkConfiguredState(@Nonnull final Predicate<? super T> predicate, String description, final Object... arguments) {
+	public static <T> Consumer<T> checkConfiguredState(@NonNull final Predicate<? super T> predicate, String description, final Object... arguments) {
 		return __ -> checkConfiguredState(predicate.test(__), description, arguments);
 	}
 
@@ -634,7 +634,7 @@ public final class Conditions {
 	 * @param predicate The predicate to test.
 	 * @return A consumer that will throw {@link UnsupportedOperationException} if the given value is <code>false</code>.
 	 */
-	public static <T> Consumer<T> checkSupportedOperation(@Nonnull final Predicate<? super T> predicate) {
+	public static <T> Consumer<T> checkSupportedOperation(@NonNull final Predicate<? super T> predicate) {
 		return checkSupportedOperation(predicate, null); //check the test with no description
 	}
 
@@ -652,7 +652,7 @@ public final class Conditions {
 	 *         arguments array is not of the type expected by the format element(s) that use it.
 	 * @see String#format(String, Object...)
 	 */
-	public static <T> Consumer<T> checkSupportedOperation(@Nonnull final Predicate<? super T> predicate, String description, final Object... arguments) {
+	public static <T> Consumer<T> checkSupportedOperation(@NonNull final Predicate<? super T> predicate, String description, final Object... arguments) {
 		return __ -> checkSupportedOperation(predicate.test(__), description, arguments);
 	}
 

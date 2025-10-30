@@ -21,7 +21,7 @@ import static java.util.Objects.*;
 
 import java.util.*;
 
-import javax.annotation.*;
+import org.jspecify.annotations.*;
 
 /**
  * An efficient class for creating templates which can be repeatedly applied with string arguments. Non-string parameter components will be added to the string
@@ -137,7 +137,7 @@ public final class StringTemplate {
 		 * @param text The literal text to append.
 		 * @return A reference to this builder.
 		 */
-		public Builder text(@Nonnull final String text) {
+		public Builder text(@NonNull final String text) {
 			object(text);
 			return this;
 		}
@@ -147,7 +147,7 @@ public final class StringTemplate {
 		 * @param object The object to append.
 		 * @return A reference to this builder.
 		 */
-		public Builder object(@Nonnull final Object object) {
+		public Builder object(@NonNull final Object object) {
 			components.add(requireNonNull(object));
 			return this;
 		}
@@ -157,7 +157,7 @@ public final class StringTemplate {
 		 * @param parameter The type of parameter to append.
 		 * @return A reference to this builder.
 		 */
-		public Builder parameter(@Nonnull final Parameter parameter) {
+		public Builder parameter(@NonNull final Parameter parameter) {
 			components.add(requireNonNull(parameter));
 			return this;
 		}

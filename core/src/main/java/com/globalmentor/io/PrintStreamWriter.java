@@ -20,7 +20,7 @@ import static java.util.Objects.*;
 
 import java.io.*;
 
-import javax.annotation.*;
+import org.jspecify.annotations.*;
 
 /**
  * Converts a {@link PrintStream} to a {@link Writer}.
@@ -51,7 +51,7 @@ public class PrintStreamWriter extends Writer {
 	 * @param printStream The print stream to convert.
 	 * @see <a href="https://stackoverflow.com/q/7457723">Why don't we close `System.out` Stream after using it?</a>
 	 */
-	public PrintStreamWriter(@Nonnull final PrintStream printStream) {
+	public PrintStreamWriter(@NonNull final PrintStream printStream) {
 		this(printStream, printStream != System.out && printStream != System.err);
 	}
 
@@ -64,7 +64,7 @@ public class PrintStreamWriter extends Writer {
 	 *          should be left open.
 	 * @see <a href="https://stackoverflow.com/q/7457723">Why don't we close `System.out` Stream after using it?</a>
 	 */
-	public PrintStreamWriter(@Nonnull final PrintStream printStream, boolean closeStreamOnClose) {
+	public PrintStreamWriter(@NonNull final PrintStream printStream, boolean closeStreamOnClose) {
 		this.printStream = requireNonNull(printStream);
 		this.closeStreamOnClose = closeStreamOnClose;
 

@@ -27,7 +27,7 @@ import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.*;
 
-import javax.annotation.*;
+import org.jspecify.annotations.*;
 
 import com.globalmentor.java.*;
 import com.globalmentor.text.*;
@@ -74,7 +74,7 @@ public final class Filenames {
 	 * @see #CURRENT_DIRECTORY_NAME
 	 * @see #PARENT_DIRECTORY_NAME
 	 */
-	public static boolean isSpecialName(@Nonnull final String name) {
+	public static boolean isSpecialName(@NonNull final String name) {
 		return name.equals(CURRENT_DIRECTORY_NAME) || name.equals(PARENT_DIRECTORY_NAME);
 	}
 
@@ -142,7 +142,7 @@ public final class Filenames {
 	 * @param locale The locale to use for comparison.
 	 * @return A filename comparator for the given locale.
 	 */
-	private static Comparator<CharSequence> createComparator(@Nonnull final Locale locale) {
+	private static Comparator<CharSequence> createComparator(@NonNull final Locale locale) {
 		return createComparator(BaseComparator.createCollator(locale));
 	}
 
@@ -151,7 +151,7 @@ public final class Filenames {
 	 * @param collator The collator to use for comparisons.
 	 * @return A filename comparator using the given collator.
 	 */
-	private static Comparator<CharSequence> createComparator(@Nonnull final Collator collator) {
+	private static Comparator<CharSequence> createComparator(@NonNull final Collator collator) {
 		final BaseComparator baseComparator = new BaseComparator(collator);
 		return baseComparator.thenComparing(new ExtensionComparator(baseComparator.getCollator())); //use the same collator for both comparators
 	}
@@ -172,7 +172,7 @@ public final class Filenames {
 	 * @param locale The locale to use for comparison.
 	 * @return A filename comparator for the given locale.
 	 */
-	public static Comparator<CharSequence> comparator(@Nonnull final Locale locale) {
+	public static Comparator<CharSequence> comparator(@NonNull final Locale locale) {
 		if(locale.equals(Locale.ROOT)) {
 			return ROOT_LOCALE_COMPARATOR;
 		}
@@ -184,7 +184,7 @@ public final class Filenames {
 	 * @param collator The collator to use for comparisons.
 	 * @return A filename comparator using the given collator.
 	 */
-	public static Comparator<CharSequence> comparator(@Nonnull final Collator collator) {
+	public static Comparator<CharSequence> comparator(@NonNull final Collator collator) {
 		return createComparator(collator);
 	}
 
@@ -211,7 +211,7 @@ public final class Filenames {
 	 * @see <a href="https://wiki.archlinux.org/index.php/Dotfiles">Dotfiles</a>
 	 * @see #DOTFILE_PREFIX
 	 */
-	public static boolean isDotfileFilename(@Nonnull final CharSequence filename) {
+	public static boolean isDotfileFilename(@NonNull final CharSequence filename) {
 		final int length = filename.length();
 		checkArgument(length > 0, "Empty filenames are not valid.");
 		return (length > 1) //A dotfile has at least two characters (e.g. "." is not a dotfile), …
@@ -357,7 +357,7 @@ public final class Filenames {
 	 * @param baseFilename The filename base name to match.
 	 * @return A pattern for for matching filenames against the given base name.
 	 */
-	public static Pattern getBaseFilenamePattern(@Nonnull final String baseFilename) {
+	public static Pattern getBaseFilenamePattern(@NonNull final String baseFilename) {
 		return Pattern.compile(Pattern.quote(baseFilename) + "\\..+"); //TODO test
 	}
 
@@ -370,7 +370,7 @@ public final class Filenames {
 	 * @param charSequence The characters to append to the filename.
 	 * @return A filename with the given character sequence appended before the filename extension, if any.
 	 */
-	public static String appendBase(@Nonnull final String filename, @Nonnull final CharSequence charSequence) {
+	public static String appendBase(@NonNull final String filename, @NonNull final CharSequence charSequence) {
 		if(charSequence.length() == 0) { //if there are no characters to add, short-circuit for efficiency
 			return requireNonNull(filename);
 		}
@@ -389,7 +389,7 @@ public final class Filenames {
 	 * @throws NullPointerException if the given filename and/or base is <code>null</code>.
 	 * @throws IllegalArgumentException if the given filename and/or base is empty.
 	 */
-	public static String changeBase(@Nonnull String filename, @Nonnull final String base) {
+	public static String changeBase(@NonNull String filename, @NonNull final String base) {
 		checkArgument(!filename.isEmpty(), "Cannot change base of an empty filename.");
 		requireNonNull(base, "New base filename cannot be null.");
 		checkArgument(!base.isEmpty(), "Cannot change to an empty base filename.");
@@ -412,7 +412,7 @@ public final class Filenames {
 	 * @param filename The filename that may contain an extension.
 	 * @return A filename with all extensions, if any, removed.
 	 */
-	public static String getBase(@Nonnull final String filename) {
+	public static String getBase(@NonNull final String filename) {
 		final int separatorIndex = filename.indexOf(EXTENSION_SEPARATOR); //see if we can find the extension separator
 		return separatorIndex >= 0 ? filename.substring(0, separatorIndex) : filename; //insert the characters before the extension or, if there is no extension, at the end of the string
 	}
@@ -428,12 +428,12 @@ public final class Filenames {
 		 * Collator constructor.
 		 * @param collator The collator to use for comparisons.
 		 */
-		public BaseComparator(@Nonnull final Collator collator) {
+		public BaseComparator(@NonNull final Collator collator) {
 			super(collator);
 		}
 
 		@Override
-		public int compare(@Nonnull final CharSequence charSequence1, @Nonnull final CharSequence charSequence2) {
+		public int compare(@NonNull final CharSequence charSequence1, @NonNull final CharSequence charSequence2) {
 			return super.compare(getBase(charSequence1.toString()), getBase(charSequence2.toString()));
 		}
 
@@ -496,7 +496,7 @@ public final class Filenames {
 	 * @return The filename with the new extension.
 	 * @throws IllegalArgumentException if the filename is empty.
 	 */
-	public static String changeExtension(@Nonnull String filename, @Nullable final String extension) {
+	public static String changeExtension(@NonNull String filename, @Nullable final String extension) {
 		checkArgument(!filename.isEmpty(), "Cannot change extension of an empty filename.");
 		final int separatorIndex = filename.lastIndexOf(EXTENSION_SEPARATOR); //see if we can find the extension separator
 		if(separatorIndex >= 0) { //if we found a separator
@@ -513,7 +513,7 @@ public final class Filenames {
 	 * @param filename The filename to examine.
 	 * @return The extension of the name (not including '.'), which may not be present.
 	 */
-	public static Optional<String> findExtension(@Nonnull final String filename) {
+	public static Optional<String> findExtension(@NonNull final String filename) {
 		final int separatorIndex = filename.lastIndexOf(EXTENSION_SEPARATOR); //see if we can find the extension separator, which will be the last such character in the string
 		return separatorIndex >= 0 ? Optional.of(filename.substring(separatorIndex + 1)) : Optional.empty(); //if we found a separator, return everything after it 
 	}
@@ -529,7 +529,7 @@ public final class Filenames {
 	 * @param extension The extension to match.
 	 * @return <code>true</code> if the given filename has the indicated extension in any allowed form.
 	 */
-	public static boolean hasExtension(@Nonnull final String filename, @Nonnull final String extension) {
+	public static boolean hasExtension(@NonNull final String filename, @NonNull final String extension) {
 		requireNonNull(extension);
 		return findExtension(filename).map(foundExtension -> Extensions.equals(foundExtension, extension)).orElse(false);
 	}
@@ -566,12 +566,12 @@ public final class Filenames {
 		 * Collator constructor.
 		 * @param collator The collator to use for comparisons.
 		 */
-		public ExtensionComparator(@Nonnull final Collator collator) {
+		public ExtensionComparator(@NonNull final Collator collator) {
 			super(collator);
 		}
 
 		@Override
-		public int compare(@Nonnull final CharSequence charSequence1, @Nonnull final CharSequence charSequence2) {
+		public int compare(@NonNull final CharSequence charSequence1, @NonNull final CharSequence charSequence2) {
 			return super.compare(findExtension(charSequence1.toString()).orElse(""), findExtension(charSequence2.toString()).orElse(""));
 		}
 
@@ -593,7 +593,7 @@ public final class Filenames {
 		 * @param extension The extension to normalize.
 		 * @return The normalized form of the extension.
 		 */
-		public static String normalize(@Nonnull final String extension) {
+		public static String normalize(@NonNull final String extension) {
 			return ASCII.toLowerCase(extension).toString();
 		}
 

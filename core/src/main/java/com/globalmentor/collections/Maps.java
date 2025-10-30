@@ -18,7 +18,7 @@ package com.globalmentor.collections;
 
 import java.util.*;
 
-import javax.annotation.*;
+import org.jspecify.annotations.*;
 
 /**
  * Various utilities to be used with objects implementing the {@link Map} interface.
@@ -106,7 +106,7 @@ public final class Maps {
 	 * @param map The map to convert to a properties object.
 	 * @return A properties object, potentially the same instance, containing entries from the given map.
 	 */
-	public static Properties toProperties(@Nonnull final Map<?, ?> map) {
+	public static Properties toProperties(@NonNull final Map<?, ?> map) {
 		if(map instanceof Properties properties) { //if the map is already a properties object
 			return properties; //return the map as a properties object
 		} else { //if the map is not a properties object

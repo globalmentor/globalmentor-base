@@ -19,7 +19,7 @@ package com.globalmentor.io;
 import java.io.*;
 import java.util.List;
 
-import javax.annotation.*;
+import org.jspecify.annotations.*;
 
 /**
  * Exception class for parsing errors that occur during I/O.
@@ -432,7 +432,7 @@ public class ParseIOException extends IOException {
 	 * @return The message string constructed
 	 */
 	//TODO convert the characters in these strings so that whitespace gets converted to characters
-	public static String convertStringsToMessage(@Nonnull final List<String> strings) {
+	public static String convertStringsToMessage(@NonNull final List<String> strings) {
 		final StringBuilder messageStringBuilder = new StringBuilder(); //this will receive the message to return
 		for(int i = 0; i < strings.size(); ++i) { //look at each string
 			messageStringBuilder.append('"').append(strings.get(i)); //add a double quote character followed by this string

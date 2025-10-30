@@ -20,7 +20,7 @@ import static java.util.Objects.*;
 
 import java.io.*;
 
-import javax.annotation.*;
+import org.jspecify.annotations.*;
 
 /**
  * Utility factory class for creating {@link Closeable} instances.
@@ -38,7 +38,7 @@ public final class Close {
 	 * @return A {@link Closeable} instance that will invoke the given close strategy when closed.
 	 * @throws NullPointerException if the optional is <code>null</code>; or if the value is present but the consumer is <code>null</code>.
 	 */
-	public static Closeable by(@Nonnull final Strategy closeStragy) {
+	public static Closeable by(@NonNull final Strategy closeStragy) {
 		requireNonNull(closeStragy);
 		return new AbstractCloseable() {
 			@Override

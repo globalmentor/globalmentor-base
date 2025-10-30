@@ -19,7 +19,7 @@ package com.globalmentor.java;
 import java.util.*;
 import java.util.function.Function;
 
-import javax.annotation.*;
+import org.jspecify.annotations.*;
 
 import com.globalmentor.lex.*;
 
@@ -111,7 +111,7 @@ public final class Enums {
 	 * @see CompoundTokenization#KEBAB_CASE
 	 * @see CompoundTokenization#CONSTANT_CASE
 	 */
-	public static <E extends Enum<E>> E getSerializedEnum(@Nonnull final Class<E> enumType, @Nonnull String serializationName) {
+	public static <E extends Enum<E>> E getSerializedEnum(@NonNull final Class<E> enumType, @NonNull String serializationName) {
 		final String name = Identifier.class.isAssignableFrom(enumType) //if the enum is an identifier, use the deserialized name form
 				? KEBAB_CASE.to(CONSTANT_CASE, serializationName)
 				: serializationName;
@@ -127,7 +127,7 @@ public final class Enums {
 	 * @throws NullPointerException if the enum type is <code>null</code>.
 	 * @see #getSerializedEnum(Class, String)
 	 */
-	public static <E extends Enum<E>> Function<String, E> fromSerializionOf(@Nonnull final Class<E> enumType) {
+	public static <E extends Enum<E>> Function<String, E> fromSerializionOf(@NonNull final Class<E> enumType) {
 		return serializationName -> getSerializedEnum(enumType, serializationName);
 	}
 

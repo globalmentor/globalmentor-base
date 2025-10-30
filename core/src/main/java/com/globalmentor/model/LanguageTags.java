@@ -23,7 +23,7 @@ import static java.nio.charset.StandardCharsets.*;
 import java.util.*;
 import java.util.regex.*;
 
-import javax.annotation.*;
+import org.jspecify.annotations.*;
 
 import com.globalmentor.text.ASCII;
 
@@ -84,7 +84,7 @@ public final class LanguageTags {
 	 * @return A list of extensions, such as <code>a-myext</code>, <code>b-another-one</code>, <code>c-last</code>.
 	 * @see #LANGTAG_PATTERN_GROUP_EXTENSIONS
 	 */
-	public static List<String> parseExtensions(@Nonnull final String group) {
+	public static List<String> parseExtensions(@NonNull final String group) {
 		final List<String> extensions = new ArrayList<>();
 		final int groupLength = group.length();
 		final int maxLastExtensionDividerIndex = groupLength - 5; //(inclusive) the smallest remaining extension possible at the end is `x-xx`, so ignore delimiters after that
@@ -122,7 +122,7 @@ public final class LanguageTags {
 	 * @throws IllegalArgumentException if one of the given input characters is outside the range of the US-ASCII charset.
 	 * @see <a href="https://datatracker.ietf.org/doc/html/rfc5646#section-2.1.1">RFC 5646 § 2.1.1. Formatting of Language Tags</a>
 	 */
-	public static CharSequence normalize(@Nonnull final CharSequence languageTagText) {
+	public static CharSequence normalize(@NonNull final CharSequence languageTagText) {
 		final int length = languageTagText.length();
 		byte[] normalizedLanguageTagTextIfNeeded = null; //lazily created only if needed; bytes support US-ASCII charset
 		boolean isAfterSingleton = false;

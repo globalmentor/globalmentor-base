@@ -21,7 +21,7 @@ import java.util.Objects;
 
 import java.util.function.IntPredicate;
 
-import javax.annotation.Nonnull;
+import org.jspecify.annotations.*;
 
 /**
  * Represents a predicate (boolean-valued function) of one {@code int}-valued argument. This is the {@code int}-consuming primitive type specialization of
@@ -57,7 +57,7 @@ public interface IOIntPredicate {
 	 * @return A composed predicate that represents the short-circuiting logical AND of this predicate and the {@code other} predicate.
 	 * @throws IOException if there is an I/O error performing the operation.
 	 */
-	default IOIntPredicate and(@Nonnull IOIntPredicate other) throws IOException {
+	default IOIntPredicate and(@NonNull IOIntPredicate other) throws IOException {
 		Objects.requireNonNull(other);
 		return (value) -> test(value) && other.test(value);
 	}
@@ -83,7 +83,7 @@ public interface IOIntPredicate {
 	 * @return A composed predicate that represents the short-circuiting logical OR of this predicate and the {@code other} predicate.
 	 * @throws IOException if there is an I/O error performing the operation.
 	 */
-	default IOIntPredicate or(@Nonnull IOIntPredicate other) throws IOException {
+	default IOIntPredicate or(@NonNull IOIntPredicate other) throws IOException {
 		Objects.requireNonNull(other);
 		return (value) -> test(value) || other.test(value);
 	}

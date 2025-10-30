@@ -20,7 +20,7 @@ import static com.globalmentor.java.Conditions.*;
 
 import java.util.Random;
 
-import javax.annotation.*;
+import org.jspecify.annotations.*;
 
 /**
  * Utilities for manipulating bytes.
@@ -43,7 +43,7 @@ public final class Bytes {
 	 * @throws IllegalArgumentException if the given length is negative.
 	 * @see Random#nextBytes(byte[])
 	 */
-	public static byte[] generateRandom(@Nonnegative final int length) {
+	public static byte[] generateRandom(final int length) {
 		return generateRandom(length, new Random());
 	}
 
@@ -56,7 +56,7 @@ public final class Bytes {
 	 * @throws IllegalArgumentException if the given length is negative.
 	 * @see Random#nextBytes(byte[])
 	 */
-	public static byte[] generateRandom(@Nonnegative final int length, @Nonnull final Random random) {
+	public static byte[] generateRandom(final int length, @NonNull final Random random) {
 		checkArgumentNotNegative(length);
 		final byte[] bytes = new byte[length]; //create a new array of bytes
 		random.nextBytes(bytes); //fill the byte array with random values

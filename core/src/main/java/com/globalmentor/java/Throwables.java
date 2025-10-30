@@ -20,7 +20,7 @@ import static com.globalmentor.java.Conditions.*;
 
 import java.io.*;
 
-import javax.annotation.*;
+import org.jspecify.annotations.*;
 
 /**
  * Utilities for working with throwables and exceptions.
@@ -42,7 +42,7 @@ public final class Throwables {
 	 * @throws NullPointerException if the throwable is <code>null</code>.
 	 * @see #setStackTrace(Throwable, StackTraceElement...)
 	 */
-	public static <T extends Throwable> T clearStackTrace(@Nonnull T throwable) {
+	public static <T extends Throwable> T clearStackTrace(@NonNull T throwable) {
 		return setStackTrace(throwable, StackTrace.NO_ELEMENTS);
 	}
 
@@ -58,7 +58,7 @@ public final class Throwables {
 	 * @see Throwable#setStackTrace(StackTraceElement[])
 	 * @see #clearStackTrace(Throwable)
 	 */
-	public static <T extends Throwable> T setStackTrace(@Nonnull T throwable, @Nonnull StackTraceElement... stackTraceElements) {
+	public static <T extends Throwable> T setStackTrace(@NonNull T throwable, @NonNull StackTraceElement... stackTraceElements) {
 		throwable.setStackTrace(stackTraceElements);
 		return throwable;
 	}
@@ -71,7 +71,7 @@ public final class Throwables {
 	 * @throws NullPointerException if the given throwable is <code>null</code>.
 	 * @see Throwable#printStackTrace(PrintWriter)
 	 */
-	public static String toStackTraceString(@Nonnull final Throwable throwable) {
+	public static String toStackTraceString(@NonNull final Throwable throwable) {
 		try (final StringWriter stringWriter = new StringWriter(); final PrintWriter printWriter = new PrintWriter(stringWriter)) {
 			throwable.printStackTrace(printWriter); //print to the print writer which prints to the string writer which prints to the string
 			printWriter.flush(); //flush the output

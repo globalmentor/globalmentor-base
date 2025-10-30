@@ -22,7 +22,7 @@ import static com.globalmentor.java.Conditions.*;
 import java.util.*;
 import java.util.function.*;
 
-import javax.annotation.*;
+import org.jspecify.annotations.*;
 
 import com.globalmentor.java.Characters;
 
@@ -51,7 +51,7 @@ public class CharacterDelimitedCompoundTokenization extends AbstractCompoundToke
 	 * @param segmentTransformation The function to be applied to each segment before joining with {@link #join(Iterable)}. The first function parameter is the
 	 *          index of the segment being joined. The second function parameter is the non-empty segment being joined.
 	 */
-	protected CharacterDelimitedCompoundTokenization(@Nonnull final String name, final char delimiter,
+	protected CharacterDelimitedCompoundTokenization(@NonNull final String name, final char delimiter,
 			final BiFunction<? super Integer, ? super CharSequence, ? extends CharSequence> segmentTransformation) {
 		super(name, segmentTransformation);
 		delimiterCharacters = Characters.of(delimiter);
@@ -59,20 +59,20 @@ public class CharacterDelimitedCompoundTokenization extends AbstractCompoundToke
 	}
 
 	@Override
-	public CharacterDelimitedCompoundTokenization namedWithAddedSegmentStringTransformation(@Nonnull final String name,
-			@Nonnull final Function<? super String, ? extends CharSequence> segmentTransformation) {
+	public CharacterDelimitedCompoundTokenization namedWithAddedSegmentStringTransformation(@NonNull final String name,
+			@NonNull final Function<? super String, ? extends CharSequence> segmentTransformation) {
 		return (CharacterDelimitedCompoundTokenization)super.namedWithAddedSegmentStringTransformation(name, segmentTransformation);
 	}
 
 	@Override
-	public CharacterDelimitedCompoundTokenization namedWithAddedSegmentTransformation(@Nonnull final String name,
-			@Nonnull final Function<? super CharSequence, ? extends CharSequence> segmentTransformation) {
+	public CharacterDelimitedCompoundTokenization namedWithAddedSegmentTransformation(@NonNull final String name,
+			@NonNull final Function<? super CharSequence, ? extends CharSequence> segmentTransformation) {
 		return (CharacterDelimitedCompoundTokenization)super.namedWithAddedSegmentTransformation(name, segmentTransformation);
 	}
 
 	@Override
-	public CharacterDelimitedCompoundTokenization namedWithAddedSegmentTransformation(@Nonnull final String name,
-			@Nonnull final BiFunction<? super Integer, ? super CharSequence, ? extends CharSequence> segmentTransformation) {
+	public CharacterDelimitedCompoundTokenization namedWithAddedSegmentTransformation(@NonNull final String name,
+			@NonNull final BiFunction<? super Integer, ? super CharSequence, ? extends CharSequence> segmentTransformation) {
 		return new CharacterDelimitedCompoundTokenization(name, getDelimiter(), addSegmentTransformation(segmentTransformation));
 	}
 
@@ -100,7 +100,7 @@ public class CharacterDelimitedCompoundTokenization extends AbstractCompoundToke
 	 * @see #getDelimiter()
 	 */
 	@Override
-	protected StringBuilder appendJoinDelimiter(@Nonnull StringBuilder stringBuilder, final int delimiterIndex) {
+	protected StringBuilder appendJoinDelimiter(@NonNull StringBuilder stringBuilder, final int delimiterIndex) {
 		return super.appendJoinDelimiter(stringBuilder, delimiterIndex).append(getDelimiter()); //the call to super is just for completeness; it does nothing
 	}
 

@@ -20,7 +20,7 @@ import java.io.UnsupportedEncodingException;
 import java.text.Collator;
 import java.util.regex.Pattern;
 
-import javax.annotation.*;
+import org.jspecify.annotations.*;
 
 import static java.util.Objects.*;
 
@@ -212,7 +212,7 @@ public final class Text {
 	 * @throws NullPointerException if the given character sequence and/or EOL characters is <code>null</code>.
 	 * @see #LINE_FEED_STRING
 	 */
-	public static CharSequence normalizeEol(@Nonnull final CharSequence charSequence) {
+	public static CharSequence normalizeEol(@NonNull final CharSequence charSequence) {
 		return normalizeEol(charSequence, LINE_FEED_STRING);
 	}
 
@@ -230,7 +230,7 @@ public final class Text {
 	 * @return A character sequence, which may be mutable, with the ends of lines normalized to the given end-of-line character sequence.
 	 * @throws NullPointerException if the given character sequence and/or EOL characters is <code>null</code>.
 	 */
-	public static CharSequence normalizeEol(@Nonnull final CharSequence charSequence, @Nonnull final CharSequence normalEol) {
+	public static CharSequence normalizeEol(@NonNull final CharSequence charSequence, @NonNull final CharSequence normalEol) {
 		final int length = charSequence.length();
 		final int normalEolLength = normalEol.length();
 		final char normalEolChar = normalEolLength == 1 ? normalEol.charAt(0) : 0; //the single normalization EOL character, or -1 if there are more than one

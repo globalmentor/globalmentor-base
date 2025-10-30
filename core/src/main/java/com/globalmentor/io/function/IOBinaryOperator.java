@@ -19,7 +19,7 @@ package com.globalmentor.io.function;
 import java.util.Objects;
 import java.util.function.BinaryOperator;
 
-import javax.annotation.Nonnull;
+import org.jspecify.annotations.*;
 
 import java.io.IOException;
 import java.util.Comparator;
@@ -51,7 +51,7 @@ public interface IOBinaryOperator<T> extends IOBiFunction<T, T, T> {
 	 * @return an {@code IOBinaryOperator} which returns the lesser of its operands, according to the supplied {@code Comparator}.
 	 * @throws IOException if there is an I/O error performing the operation.
 	 */
-	public static <T> IOBinaryOperator<T> minBy(@Nonnull Comparator<? super T> comparator) throws IOException {
+	public static <T> IOBinaryOperator<T> minBy(@NonNull Comparator<? super T> comparator) throws IOException {
 		Objects.requireNonNull(comparator);
 		return (a, b) -> comparator.compare(a, b) <= 0 ? a : b;
 	}
@@ -66,7 +66,7 @@ public interface IOBinaryOperator<T> extends IOBiFunction<T, T, T> {
 	 * @return An {@code IOBinaryOperator} which returns the greater of its operands, according to the supplied {@code Comparator}.
 	 * @throws IOException if there is an I/O error performing the operation
 	 */
-	public static <T> IOBinaryOperator<T> maxBy(@Nonnull Comparator<? super T> comparator) throws IOException {
+	public static <T> IOBinaryOperator<T> maxBy(@NonNull Comparator<? super T> comparator) throws IOException {
 		Objects.requireNonNull(comparator);
 		return (a, b) -> comparator.compare(a, b) >= 0 ? a : b;
 	}

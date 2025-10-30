@@ -22,7 +22,7 @@ import java.security.MessageDigest;
 import java.util.Arrays;
 import java.util.HexFormat;
 
-import javax.annotation.*;
+import org.jspecify.annotations.*;
 
 /**
  * The encapsulation of message digest output, providing data immutability and convenience methods for updating other message digests.
@@ -45,7 +45,7 @@ public final class Hash {
 	 * @implSpec This constructor does <em>not</em> make a defensive copy of the bytes.
 	 * @param bytes The bytes of a message digest.
 	 */
-	private Hash(@Nonnull final byte[] bytes) {
+	private Hash(@NonNull final byte[] bytes) {
 		this.bytes = requireNonNull(bytes);
 	}
 
@@ -55,7 +55,7 @@ public final class Hash {
 	 * @param bytes The bytes of a message digest.
 	 * @return The hash encapsulation of the message digest bytes.
 	 */
-	public static Hash of(@Nonnull final byte[] bytes) {
+	public static Hash of(@NonNull final byte[] bytes) {
 		return new Hash(bytes.clone());
 	}
 
@@ -65,7 +65,7 @@ public final class Hash {
 	 * @return The resulting hash.
 	 * @see MessageDigest#digest()
 	 */
-	public static Hash fromChecksum(@Nonnull final CharSequence checksum) {
+	public static Hash fromChecksum(@NonNull final CharSequence checksum) {
 		return new Hash(HexFormat.of().parseHex(checksum));
 	}
 
@@ -76,7 +76,7 @@ public final class Hash {
 	 * @return The resulting hash.
 	 * @see MessageDigest#digest()
 	 */
-	public static Hash fromDigest(@Nonnull final MessageDigest messageDigest) {
+	public static Hash fromDigest(@NonNull final MessageDigest messageDigest) {
 		return new Hash(messageDigest.digest());
 	}
 
@@ -88,7 +88,7 @@ public final class Hash {
 	 * @return The updated message digest.
 	 * @see MessageDigest#update(byte[])
 	 */
-	public MessageDigest updateMessageDigest(@Nonnull final MessageDigest messageDigest) {
+	public MessageDigest updateMessageDigest(@NonNull final MessageDigest messageDigest) {
 		messageDigest.update(bytes);
 		return messageDigest;
 	}

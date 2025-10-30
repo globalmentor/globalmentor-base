@@ -22,7 +22,7 @@ import static java.util.Objects.*;
 
 import java.util.*;
 
-import javax.annotation.*;
+import org.jspecify.annotations.*;
 
 /**
  * Iterates through the possible extensions of a filename, from the most specific to the most general.
@@ -49,7 +49,7 @@ public class FilenameExtensionIterator implements Iterator<String> {
 	 * @param filename The filename over which extensions should be iterated.
 	 * @see Filenames#EXTENSION_SEPARATOR
 	 */
-	public FilenameExtensionIterator(@Nonnull final CharSequence filename) {
+	public FilenameExtensionIterator(@NonNull final CharSequence filename) {
 		this(filename, EXTENSION_SEPARATOR);
 	}
 
@@ -59,7 +59,7 @@ public class FilenameExtensionIterator implements Iterator<String> {
 	 * @param extensionDelimiter The filename extension delimiter.
 	 */
 	@SuppressWarnings("this-escape")
-	public FilenameExtensionIterator(@Nonnull final CharSequence filename, final char extensionDelimiter) {
+	public FilenameExtensionIterator(@NonNull final CharSequence filename, final char extensionDelimiter) {
 		this.filename = requireNonNull(filename);
 		this.extensionDelimiter = extensionDelimiter;
 		nextDelimiterIndex = -1; //prepare the next delimiter index to be primed

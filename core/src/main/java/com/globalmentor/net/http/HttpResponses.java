@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.net.http.HttpResponse.*;
 import java.util.function.Function;
 
-import javax.annotation.*;
+import org.jspecify.annotations.*;
 
 /**
  * Utilities for working with {@link java.net.http.HttpResponse} and related classes, such as {@link BodyHandler} and {@link BodySubscriber}
@@ -42,7 +42,7 @@ public class HttpResponses {
 	 * @param bodyHandler The original body handler, which presumably does not check the status code.
 	 * @return A new body handler that checks the status, reports an error if appropriate, but otherwise delegates to the given body handler to function normally.
 	 */
-	public static <T> BodyHandler<T> checkingResponseStatus(@Nonnull final BodyHandler<T> bodyHandler) {
+	public static <T> BodyHandler<T> checkingResponseStatus(@NonNull final BodyHandler<T> bodyHandler) {
 		return checkingResponseStatus(bodyHandler,
 				responseInfo -> new IOException("HTTP request failed with response status code %d.".formatted(responseInfo.statusCode())));
 	}
@@ -57,8 +57,8 @@ public class HttpResponses {
 	 * @param errorStrategy The strategy for producing an error object to report if the status code is not successful.
 	 * @return A new body handler that checks the status, reports an error if appropriate, but otherwise delegates to the given body handler to function normally.
 	 */
-	public static <T> BodyHandler<T> checkingResponseStatus(@Nonnull final BodyHandler<T> bodyHandler,
-			@Nonnull final Function<ResponseInfo, ? extends Throwable> errorStrategy) {
+	public static <T> BodyHandler<T> checkingResponseStatus(@NonNull final BodyHandler<T> bodyHandler,
+			@NonNull final Function<ResponseInfo, ? extends Throwable> errorStrategy) {
 		return responseInfo -> switch(forStatusCode(responseInfo.statusCode())) {
 			case SUCCESSFUL -> bodyHandler.apply(responseInfo);
 			default -> {

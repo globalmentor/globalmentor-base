@@ -22,7 +22,7 @@ import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import javax.annotation.*;
+import org.jspecify.annotations.*;
 
 import static java.util.Collections.emptyList;
 import static java.util.Objects.*;
@@ -442,7 +442,7 @@ public final class URIs {
 	 * @param uri The URI for which a path object should be returned.
 	 * @return An object representing the path if any.
 	 */
-	public static Optional<URIPath> findURIPath(@Nonnull final URI uri) {
+	public static Optional<URIPath> findURIPath(@NonNull final URI uri) {
 		return Optional.ofNullable(uri.getRawPath()).map(URIPath::of);
 	}
 
@@ -460,7 +460,7 @@ public final class URIs {
 	 *         has no path.
 	 * @throws NullPointerException if the given URI is <code>null</code>.
 	 */
-	public static Optional<String> findRawName(@Nonnull final URI uri) {
+	public static Optional<String> findRawName(@NonNull final URI uri) {
 		final String rawPath = uri.isOpaque() && INFO_SCHEME.equals(uri.getScheme()) ? uri.getRawSchemeSpecificPart() : uri.getRawPath(); //get the raw path, using the scheme-specific part of any info URI
 		return Optional.ofNullable(rawPath).map(URIs::getName); //if we have a raw path, return the name
 	}
@@ -573,7 +573,7 @@ public final class URIs {
 	 * @return A URI with the given character sequence appended before the name extension, if any.
 	 * @throws IllegalArgumentException if the given URI has no raw name.
 	 */
-	public static URI appendRawNameBase(@Nonnull final URI uri, @Nonnull final CharSequence charSequence) {
+	public static URI appendRawNameBase(@NonNull final URI uri, @NonNull final CharSequence charSequence) {
 		final String oldRawName = findRawName(uri)
 				.orElseThrow(() -> new IllegalArgumentException(String.format("Cannot append to the name base of URI <%s>, which has no name.", uri)));
 		if(charSequence.length() == 0) { //if there are no characters to add, short-circuit for efficiency
@@ -594,7 +594,7 @@ public final class URIs {
 	 * @throws NullPointerException if the given URI's raw name and/or the new base is <code>null</code>.
 	 * @throws IllegalArgumentException if the given URI's raw name and/or the new base is empty.
 	 */
-	public static URI changeRawNameBase(@Nonnull URI uri, @Nonnull final String base) {
+	public static URI changeRawNameBase(@NonNull URI uri, @NonNull final String base) {
 		final String oldRawName = findRawName(uri)
 				.orElseThrow(() -> new IllegalArgumentException(String.format("Cannot change the name base of URI <%s>, which has no name.", uri)));
 		final String newRawName = Filenames.changeBase(oldRawName, base); //change the base of the name
@@ -623,7 +623,7 @@ public final class URIs {
 	 * @return The extension of the URI's name (not including '.'), which may not be present.
 	 * @see #findName(URI)
 	 */
-	public static Optional<String> findNameExtension(@Nonnull final URI uri) {
+	public static Optional<String> findNameExtension(@NonNull final URI uri) {
 		return findRawNameExtension(uri).map(URIs::decode); //if there is a raw extension, decode it
 	}
 
@@ -633,7 +633,7 @@ public final class URIs {
 	 * @return The raw, encoded extension of the URI's name (not including '.'), which may not be present.
 	 * @see #findRawName(URI)
 	 */
-	public static Optional<String> findRawNameExtension(@Nonnull final URI uri) {
+	public static Optional<String> findRawNameExtension(@NonNull final URI uri) {
 		return findRawName(uri).flatMap(Filenames::findExtension);
 	}
 
@@ -928,7 +928,7 @@ public final class URIs {
 	 * @param query The string containing URI query parameters (without the '?' prefix), or <code>null</code>.
 	 * @return A list of parameters represented by the query.
 	 */
-	public static List<URIQueryParameter> getQueryParameters(@Nonnull final String query) {
+	public static List<URIQueryParameter> getQueryParameters(@NonNull final String query) {
 		if(query.isEmpty()) { //if there is no query in the string
 			return emptyList();
 		}
@@ -1131,7 +1131,7 @@ public final class URIs {
 	 *         URI.
 	 * @see #normalize(URI)
 	 */
-	public static Optional<URI> findRelativeChildPath(@Nonnull final URI parentURI, @Nonnull final URI childURI) {
+	public static Optional<URI> findRelativeChildPath(@NonNull final URI parentURI, @NonNull final URI childURI) {
 		if(isCollectionURI(parentURI)) {
 			final URI relativeURI = normalize(parentURI).relativize(normalize(childURI)); //get a relative URI
 			if(!relativeURI.isAbsolute()) {
@@ -1157,7 +1157,7 @@ public final class URIs {
 	 * @return The relative path of the source URI to the target URI, or the target URI if the two URIs have no base in common.
 	 * @see #normalize(URI)
 	 */
-	public static URI relativizePath(@Nonnull final URI sourceURI, @Nonnull final URI targetURI) {
+	public static URI relativizePath(@NonNull final URI sourceURI, @NonNull final URI targetURI) {
 		return findRelativePath(sourceURI, targetURI).orElse(targetURI);
 	}
 
@@ -1178,7 +1178,7 @@ public final class URIs {
 	 * @throws IllegalArgumentException if the two URIs have no base URI in common.
 	 * @see #normalize(URI)
 	 */
-	public static Optional<URI> findRelativePath(@Nonnull URI sourceURI, @Nonnull URI targetURI) {
+	public static Optional<URI> findRelativePath(@NonNull URI sourceURI, @NonNull URI targetURI) {
 		sourceURI = normalize(sourceURI);
 		targetURI = normalize(targetURI);
 		StringBuilder backtrackPathBuilder = null; //only backtrack if we need to, but keep the string builder around for efficiency each time
@@ -1508,7 +1508,7 @@ public final class URIs {
 	 * @param uri The URI which should be checked for a path.
 	 * @return <code>true</code> if the given URI has a path.
 	 */
-	public static boolean hasPath(@Nonnull final URI uri) {
+	public static boolean hasPath(@NonNull final URI uri) {
 		return uri.getRawPath() != null; //check the raw path; no need for encoding just to check the presence of the path
 	}
 
@@ -1519,7 +1519,7 @@ public final class URIs {
 	 * @see #hasPath(URI)
 	 * @see #isPathAbsolute(String)
 	 */
-	public static boolean hasAbsolutePath(@Nonnull final URI uri) {
+	public static boolean hasAbsolutePath(@NonNull final URI uri) {
 		final String rawPath = uri.getRawPath(); //use the raw path in case the first character is an encoded slash
 		return rawPath != null && isPathAbsolute(rawPath); //see if the path begins with '/'
 	}
@@ -1535,7 +1535,7 @@ public final class URIs {
 	 * @see #hasPath(URI)
 	 * @see #PARENT_LEVEL_PATH_SEGMENT
 	 */
-	public static boolean hasSubPath(@Nonnull final URI uri) {
+	public static boolean hasSubPath(@NonNull final URI uri) {
 		final String rawPath = uri.normalize().getRawPath(); //normalize the URI first, to put all backtrack segments at the first
 		return rawPath != null && !isPathAbsolute(rawPath) && !rawPath.equals(PARENT_LEVEL_PATH_SEGMENT) && !rawPath.startsWith(PARENT_LEVEL_PATH);
 	}
@@ -2323,7 +2323,7 @@ public final class URIs {
 	 * @throws IllegalArgumentException if the provided path does not end with a slash ('/').
 	 * @see #isCollectionPath(String)
 	 */
-	public static String checkCollectionPath(@Nonnull final String path) {
+	public static String checkCollectionPath(@NonNull final String path) {
 		if(!isCollectionPath(path)) { //if the path is not a collection path
 			throw new IllegalArgumentException("The given path " + path + " is not a collection path.");
 		}
@@ -2439,7 +2439,7 @@ public final class URIs {
 	 * @return <code>true</code> if the path ends with a slash ('/').
 	 * @throws NullPointerException if the given path is <code>null</code>.
 	 */
-	public static boolean isCollectionPath(@Nonnull final String path) {
+	public static boolean isCollectionPath(@NonNull final String path) {
 		return endsWith(path, PATH_SEPARATOR); //see if the path ends with '/'		
 	}
 
@@ -2461,7 +2461,7 @@ public final class URIs {
 	 * @return <code>true</code> if the path begins with a slash ('/').
 	 * @throws NullPointerException if the path is <code>null</code>.
 	 */
-	public static boolean isPathAbsolute(@Nonnull final String path) {
+	public static boolean isPathAbsolute(@NonNull final String path) {
 		return requireNonNull(path, "Path cannot be null").startsWith(ROOT_PATH); //see if the path begins with '/'		
 	}
 

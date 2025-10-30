@@ -20,7 +20,7 @@ import java.util.*;
 
 import static java.util.Collections.*;
 
-import javax.annotation.*;
+import org.jspecify.annotations.*;
 
 import static java.util.function.Predicate.*;
 
@@ -52,7 +52,7 @@ public final class Locales {
 	 * @see <a href="https://bugs.java.com/bugdatabase/view_bug?bug_id=JDK-8318828">JDK-8318828: `Locale.getVariant()` returns different delimiter than in
 	 *      language tag</a>
 	 */
-	public static String toLanguageTagSubtags(@Nonnull final String string) {
+	public static String toLanguageTagSubtags(@NonNull final String string) {
 		return string.replace(LOCALE_SEPARATOR, LanguageTags.SUBTAG_SEPARATOR);
 	}
 
@@ -67,7 +67,7 @@ public final class Locales {
 	 * @return <code>true</code> if this locale indicates a language.
 	 * @see #isPrimaryLanguageLocale(Locale)
 	 */
-	public static boolean isLanguagePresent(@Nonnull final Locale locale) {
+	public static boolean isLanguagePresent(@NonNull final Locale locale) {
 		return !locale.getLanguage().isEmpty();
 	}
 
@@ -85,7 +85,7 @@ public final class Locales {
 	 * @return The language code, which will not be present if none is defined.
 	 * @throws NullPointerException if the given locale is <code>null</code>.
 	 */
-	public static Optional<String> findLanguage(@Nonnull final Locale locale) {
+	public static Optional<String> findLanguage(@NonNull final Locale locale) {
 		return Optional.of(locale.getLanguage()).filter(not(String::isEmpty));
 	}
 
@@ -98,7 +98,7 @@ public final class Locales {
 	 * @see #isLanguagePresent(Locale)
 	 * @see #toPrimaryLanguageLocale(Locale)
 	 */
-	public static boolean isPrimaryLanguageLocale(@Nonnull final Locale locale) {
+	public static boolean isPrimaryLanguageLocale(@NonNull final Locale locale) {
 		return isLanguagePresent(locale) && locale.getScript().isEmpty() && locale.getCountry().isEmpty() && locale.getVariant().isEmpty();
 	}
 
@@ -118,7 +118,7 @@ public final class Locales {
 	 * @see #isPrimaryLanguageLocale(Locale)
 	 * @see Locale#forLanguageTag(String)
 	 */
-	public static Locale toPrimaryLanguageLocale(@Nonnull final Locale locale) {
+	public static Locale toPrimaryLanguageLocale(@NonNull final Locale locale) {
 		return findLanguage(locale).map(Locale::forLanguageTag)
 				.orElseThrow(() -> new IllegalArgumentException("Cannot produce a language locale for locale `%s`, which has no language.".formatted(locale)));
 	}
@@ -132,7 +132,7 @@ public final class Locales {
 	 * @return The script code, which will not be present if none is defined.
 	 * @throws NullPointerException if the given locale is <code>null</code>.
 	 */
-	public static Optional<String> findScript(@Nonnull final Locale locale) {
+	public static Optional<String> findScript(@NonNull final Locale locale) {
 		return Optional.of(locale.getScript()).filter(not(String::isEmpty));
 	}
 
@@ -144,7 +144,7 @@ public final class Locales {
 	 * @return The country/region code, which will not be present if none is defined.
 	 * @throws NullPointerException if the given locale is <code>null</code>.
 	 */
-	public static Optional<String> findCountry(@Nonnull final Locale locale) {
+	public static Optional<String> findCountry(@NonNull final Locale locale) {
 		return Optional.of(locale.getCountry()).filter(not(String::isEmpty));
 	}
 
@@ -162,7 +162,7 @@ public final class Locales {
 	 * @see <a href="https://bugs.java.com/bugdatabase/view_bug?bug_id=JDK-8318828">JDK-8318828: `Locale.getVariant()` returns different delimiter than in
 	 *      language tag</a>
 	 */
-	public static Optional<String> findVariant(@Nonnull final Locale locale) {
+	public static Optional<String> findVariant(@NonNull final Locale locale) {
 		return Optional.of(locale.getVariant()).filter(not(String::isEmpty));
 	}
 
@@ -178,7 +178,7 @@ public final class Locales {
 	 * @see <a href="https://bugs.java.com/bugdatabase/view_bug?bug_id=JDK-8318828">JDK-8318828: `Locale.getVariant()` returns different delimiter than in
 	 *      language tag</a>
 	 */
-	public static Optional<String> findLanguageTagVariant(@Nonnull final Locale locale) {
+	public static Optional<String> findLanguageTagVariant(@NonNull final Locale locale) {
 		return findVariant(locale).map(Locales::toLanguageTagSubtags);
 	}
 
@@ -192,7 +192,7 @@ public final class Locales {
 	 * @throws NullPointerException if the given locale is <code>null</code>.
 	 * @throws MissingResourceException if a three-letter language abbreviation is not available for the locale.
 	 */
-	public static Optional<String> findISO3Language(@Nonnull final Locale locale) throws MissingResourceException {
+	public static Optional<String> findISO3Language(@NonNull final Locale locale) throws MissingResourceException {
 		return Optional.of(locale.getISO3Language()).filter(not(String::isEmpty));
 	}
 
@@ -204,7 +204,7 @@ public final class Locales {
 	 * @return The name of the display language.
 	 * @throws NullPointerException if the given locale is <code>null</code>.
 	 */
-	public final static Optional<String> findDisplayLanguage(@Nonnull final Locale locale) {
+	public final static Optional<String> findDisplayLanguage(@NonNull final Locale locale) {
 		return Optional.of(locale.getDisplayLanguage()).filter(not(String::isEmpty));
 	}
 
@@ -217,7 +217,7 @@ public final class Locales {
 	 * @return The name of the display language appropriate to the given locale.
 	 * @throws NullPointerException either of the given locales is <code>null</code>.
 	 */
-	public static Optional<String> findDisplayLanguage(@Nonnull final Locale locale, @Nonnull final Locale inLocale) {
+	public static Optional<String> findDisplayLanguage(@NonNull final Locale locale, @NonNull final Locale inLocale) {
 		return Optional.of(locale.getDisplayLanguage(inLocale)).filter(not(String::isEmpty));
 	}
 
@@ -229,7 +229,7 @@ public final class Locales {
 	 * @return The display name of the script code for the current default {@link Locale.Category#DISPLAY DISPLAY} locale.
 	 * @throws NullPointerException if the given locale is <code>null</code>.
 	 */
-	public static Optional<String> findDisplayScript(@Nonnull final Locale locale) {
+	public static Optional<String> findDisplayScript(@NonNull final Locale locale) {
 		return Optional.of(locale.getDisplayScript()).filter(not(String::isEmpty));
 	}
 
@@ -242,7 +242,7 @@ public final class Locales {
 	 * @return The display name of the script code for the current default {@link Locale.Category#DISPLAY DISPLAY} locale.
 	 * @throws NullPointerException if either of the given locales is <code>null</code>.
 	 */
-	public static Optional<String> findDisplayScript(@Nonnull final Locale locale, @Nonnull final Locale inLocale) {
+	public static Optional<String> findDisplayScript(@NonNull final Locale locale, @NonNull final Locale inLocale) {
 		return Optional.of(locale.getDisplayScript(inLocale)).filter(not(String::isEmpty));
 	}
 
@@ -254,7 +254,7 @@ public final class Locales {
 	 * @return The name of the country appropriate to the locale.
 	 * @throws NullPointerException if the given locale is <code>null</code>.
 	 */
-	public static Optional<String> findDisplayCountry(@Nonnull final Locale locale) {
+	public static Optional<String> findDisplayCountry(@NonNull final Locale locale) {
 		return Optional.of(locale.getDisplayCountry()).filter(not(String::isEmpty));
 	}
 
@@ -267,7 +267,7 @@ public final class Locales {
 	 * @return The name of the country appropriate to the given locale.
 	 * @throws NullPointerException if either of the given locales is <code>null</code>.
 	 */
-	public static Optional<String> findDisplayCountry(@Nonnull final Locale locale, @Nonnull final Locale inLocale) {
+	public static Optional<String> findDisplayCountry(@NonNull final Locale locale, @NonNull final Locale inLocale) {
 		return Optional.of(locale.getDisplayCountry(inLocale)).filter(not(String::isEmpty));
 	}
 
@@ -279,7 +279,7 @@ public final class Locales {
 	 * @return The name of the display variant code appropriate to the locale.
 	 * @throws NullPointerException if the given locale is <code>null</code>.
 	 */
-	public static Optional<String> findDisplayVariant(@Nonnull final Locale locale) {
+	public static Optional<String> findDisplayVariant(@NonNull final Locale locale) {
 		return Optional.of(locale.getDisplayVariant()).filter(not(String::isEmpty));
 	}
 
@@ -292,7 +292,7 @@ public final class Locales {
 	 * @return The name of the display variant code appropriate to the given locale.
 	 * @throws NullPointerException if either of the given locales is <code>null</code>.
 	 */
-	public static Optional<String> findDisplayVariant(@Nonnull final Locale locale, @Nonnull final Locale inLocale) {
+	public static Optional<String> findDisplayVariant(@NonNull final Locale locale, @NonNull final Locale inLocale) {
 		return Optional.of(locale.getDisplayVariant(inLocale)).filter(not(String::isEmpty));
 	}
 
@@ -304,7 +304,7 @@ public final class Locales {
 	 * @return The name of the locale appropriate to display.
 	 * @throws NullPointerException if the given locale is <code>null</code>.
 	 */
-	public static Optional<String> findDisplayName(@Nonnull final Locale locale) {
+	public static Optional<String> findDisplayName(@NonNull final Locale locale) {
 		return Optional.of(locale.getDisplayName()).filter(not(String::isEmpty));
 	}
 
@@ -317,7 +317,7 @@ public final class Locales {
 	 * @return The name of the locale appropriate to display.
 	 * @throws NullPointerException if either of the given locales is <code>null</code>.
 	 */
-	public static Optional<String> findDisplayName(@Nonnull final Locale locale, @Nonnull final Locale inLocale) {
+	public static Optional<String> findDisplayName(@NonNull final Locale locale, @NonNull final Locale inLocale) {
 		return Optional.of(locale.getDisplayName(inLocale)).filter(not(String::isEmpty));
 	}
 
@@ -333,7 +333,7 @@ public final class Locales {
 	 * @throws NullPointerException if the given locale and/or key is <code>null</code>.
 	 * @throws IllegalArgumentException if the key is not well-formed.
 	 */
-	public static Optional<String> findUnicodeLocaleType(@Nonnull final Locale locale, @Nonnull final String key) {
+	public static Optional<String> findUnicodeLocaleType(@NonNull final Locale locale, @NonNull final String key) {
 		return Optional.ofNullable(locale.getUnicodeLocaleType(key));
 	}
 

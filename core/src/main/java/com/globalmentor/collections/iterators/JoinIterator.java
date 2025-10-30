@@ -22,7 +22,7 @@ import static java.util.stream.Collectors.*;
 import java.util.*;
 import java.util.stream.Stream;
 
-import javax.annotation.*;
+import org.jspecify.annotations.*;
 
 /**
  * An iterator that joins the contents of zero or more iterators. This class also implements the {@link Enumeration} interface. Element removal is not
@@ -60,7 +60,7 @@ public class JoinIterator<E> extends AbstractIteratorDecorator<E> {
 	 * @param iterators The iterators to join.
 	 * @throws NullPointerException if any of the given iterators is <code>null</code>.
 	 */
-	public JoinIterator(@Nonnull final Stream<Iterator<E>> iterators) {
+	public JoinIterator(@NonNull final Stream<Iterator<E>> iterators) {
 		iteratorQueue = iterators.collect(toCollection(LinkedList::new));
 		iteratorQueue.forEach(Objects::requireNonNull);
 	}
@@ -72,7 +72,7 @@ public class JoinIterator<E> extends AbstractIteratorDecorator<E> {
 	 */
 	@SafeVarargs
 	@SuppressWarnings("varargs")
-	JoinIterator(@Nonnull final Iterator<E>... iterators) {
+	JoinIterator(@NonNull final Iterator<E>... iterators) {
 		this(Stream.of(iterators));
 	}
 

@@ -26,7 +26,7 @@ import java.nio.charset.Charset;
 import java.nio.file.*;
 import java.util.*;
 
-import javax.annotation.*;
+import org.jspecify.annotations.*;
 
 import static com.globalmentor.io.Paths.*;
 import static com.globalmentor.java.CharSequences.*;
@@ -60,7 +60,7 @@ public final class ClassResources {
 	 * @return <code>true</code> if the resource path begins with {@value #PATH_SEPARATOR}.
 	 * @see #isPathRelative(String)
 	 */
-	public static boolean isPathAbsolute(@Nonnull final String resourcePath) {
+	public static boolean isPathAbsolute(@NonNull final String resourcePath) {
 		return startsWith(resourcePath, PATH_SEPARATOR);
 	}
 
@@ -71,7 +71,7 @@ public final class ClassResources {
 	 * @throws IllegalArgumentException if the resource path is not absolute.
 	 * @see #isPathAbsolute(String)
 	 */
-	public static String checkArgumentPathAbsolute(@Nonnull final String resourcePath) throws IllegalArgumentException {
+	public static String checkArgumentPathAbsolute(@NonNull final String resourcePath) throws IllegalArgumentException {
 		checkArgument(isPathAbsolute(resourcePath), "The resource path %s is not absolute.", resourcePath);
 		return resourcePath;
 	}
@@ -82,7 +82,7 @@ public final class ClassResources {
 	 * @return <code>true</code> if the resource path does not begin with {@value #PATH_SEPARATOR}.
 	 * @see #isPathAbsolute(String)
 	 */
-	public static boolean isPathRelative(@Nonnull final String resourcePath) {
+	public static boolean isPathRelative(@NonNull final String resourcePath) {
 		return !isPathAbsolute(resourcePath);
 	}
 
@@ -93,7 +93,7 @@ public final class ClassResources {
 	 * @throws IllegalArgumentException if the resource path is absolute.
 	 * @see #isPathRelative(String)
 	 */
-	public static String checkArgumentPathRelative(@Nonnull final String resourcePath) throws IllegalArgumentException {
+	public static String checkArgumentPathRelative(@NonNull final String resourcePath) throws IllegalArgumentException {
 		checkArgument(isPathRelative(resourcePath), "The path %s is not relative.", resourcePath);
 		return resourcePath;
 	}
@@ -110,7 +110,7 @@ public final class ClassResources {
 	 * @throws IllegalArgumentException if there are more than one segment and a segment is empty, indicating subsequent path separators.
 	 * @see #PATH_SEPARATOR
 	 */
-	public static List<String> getPathSegments(@Nonnull final String resourcePath) {
+	public static List<String> getPathSegments(@NonNull final String resourcePath) {
 		if(resourcePath.isEmpty()) { //empty string
 			return emptyList();
 		}
@@ -148,7 +148,7 @@ public final class ClassResources {
 	 * @see ClassLoader#getResource(String)
 	 * @see ClassLoader#getResourceAsStream(String)
 	 */
-	public static String getClassLoaderResourceBasePath(@Nonnull final Class<?> contextClass) {
+	public static String getClassLoaderResourceBasePath(@NonNull final Class<?> contextClass) {
 		return contextClass.getPackage().getName().replace(PACKAGE_SEPARATOR, PATH_SEPARATOR) + PATH_SEPARATOR;
 	}
 
@@ -169,7 +169,7 @@ public final class ClassResources {
 	 * @see ClassLoader#getResourceAsStream(String)
 	 * @throws IllegalArgumentException if the given resource path begins with two path separators (i.e. two forward slashes).
 	 */
-	public static String getClassLoaderResourcePath(@Nonnull final Class<?> contextClass, @Nonnull final String resourcePath) {
+	public static String getClassLoaderResourcePath(@NonNull final Class<?> contextClass, @NonNull final String resourcePath) {
 		if(isPathAbsolute(resourcePath)) {
 			if(resourcePath.length() > 1) { //prevent returning an absolute path
 				checkArgument(resourcePath.charAt(1) != PATH_SEPARATOR, "Resource path %s must not begin with two path separators.");
@@ -185,7 +185,7 @@ public final class ClassResources {
 	 * @return The filename of the resource, or {@link Optional#empty()} if the path ends with a separator.
 	 * @throws IllegalArgumentException if the given resource path is empty.
 	 */
-	public static Optional<String> findResourceName(@Nonnull final String resourcePath) {
+	public static Optional<String> findResourceName(@NonNull final String resourcePath) {
 		checkArgument(!resourcePath.isEmpty(), "An empty resource path is not accepted.");
 		final int lastPathSeparatorIndex = resourcePath.lastIndexOf(PATH_SEPARATOR);
 		if(lastPathSeparatorIndex < 0) { //if there is no path separator, the whole path is the filename
@@ -208,7 +208,7 @@ public final class ClassResources {
 	 *         in a package that is not open to at least the caller module, or access to the resource is denied by the security manager.
 	 * @see Class#getResource(String)
 	 */
-	public static Optional<URL> findResource(@Nonnull final Class<?> contextClass, @Nonnull final String resourceName) {
+	public static Optional<URL> findResource(@NonNull final Class<?> contextClass, @NonNull final String resourceName) {
 		return Optional.ofNullable(contextClass.getResource(resourceName));
 	}
 
@@ -221,7 +221,7 @@ public final class ClassResources {
 	 *         resource is in a package that is not opened unconditionally, or access to the resource is denied by the security manager.
 	 * @see ClassLoader#getResource(String)
 	 */
-	public static Optional<URL> findResource(@Nonnull final ClassLoader classLoader, @Nonnull final String resourceName) {
+	public static Optional<URL> findResource(@NonNull final ClassLoader classLoader, @NonNull final String resourceName) {
 		return Optional.ofNullable(classLoader.getResource(resourceName));
 	}
 
@@ -234,7 +234,7 @@ public final class ClassResources {
 	 *         resource is in a package that is not opened unconditionally or access to the resource is denied by the security manager.
 	 * @see ClassLoader#getSystemResource(String)
 	 */
-	public static Optional<URL> findSystemResource(@Nonnull final String resourceName) {
+	public static Optional<URL> findSystemResource(@NonNull final String resourceName) {
 		return Optional.ofNullable(ClassLoader.getSystemResource(resourceName));
 	}
 
@@ -251,7 +251,7 @@ public final class ClassResources {
 	 * @see Class#getResource(String)
 	 * @see Class#getResourceAsStream(String)
 	 */
-	public static Optional<InputStream> findResourceAsStream(@Nonnull final Class<?> contextClass, @Nonnull final String resourceName) throws IOException {
+	public static Optional<InputStream> findResourceAsStream(@NonNull final Class<?> contextClass, @NonNull final String resourceName) throws IOException {
 		final URL resourceUrl = contextClass.getResource(resourceName);
 		return Optional.ofNullable(resourceUrl != null ? resourceUrl.openStream() : null);
 	}
@@ -270,7 +270,7 @@ public final class ClassResources {
 	 * @see ClassLoader#getResource(String)
 	 * @see ClassLoader#getResourceAsStream(String)
 	 */
-	public static Optional<InputStream> findResourceAsStream(@Nonnull final ClassLoader classLoader, @Nonnull final String resourceName) throws IOException {
+	public static Optional<InputStream> findResourceAsStream(@NonNull final ClassLoader classLoader, @NonNull final String resourceName) throws IOException {
 		final URL resourceUrl = classLoader.getResource(resourceName);
 		return Optional.ofNullable(resourceUrl != null ? resourceUrl.openStream() : null);
 	}
@@ -288,7 +288,7 @@ public final class ClassResources {
 	 * @see ClassLoader#getSystemResource(String)
 	 * @see ClassLoader#getSystemResourceAsStream(String)
 	 */
-	public static Optional<InputStream> findSystemResourceAsStream(@Nonnull final String resourceName) throws IOException {
+	public static Optional<InputStream> findSystemResourceAsStream(@NonNull final String resourceName) throws IOException {
 		final URL resourceUrl = ClassLoader.getSystemResource(resourceName);
 		return Optional.ofNullable(resourceUrl != null ? resourceUrl.openStream() : null);
 	}
@@ -311,7 +311,7 @@ public final class ClassResources {
 	 *           {@link java.nio.file.Files#copy(InputStream, Path, CopyOption...)}.
 	 * @throws SecurityException If the security manager does not permit the operation.
 	 */
-	public static long copy(@Nonnull final Class<?> contextClass, @Nonnull final Path targetBaseDirectory, @Nonnull String... resourcePaths) throws IOException {
+	public static long copy(@NonNull final Class<?> contextClass, @NonNull final Path targetBaseDirectory, @NonNull String... resourcePaths) throws IOException {
 		return copy(contextClass, targetBaseDirectory, asList(resourcePaths));
 	}
 
@@ -334,7 +334,7 @@ public final class ClassResources {
 	 * @throws UnsupportedOperationException if {@code options} contains a copy option that is not supported.
 	 * @throws SecurityException If the security manager does not permit the operation.
 	 */
-	public static long copy(@Nonnull final Class<?> contextClass, @Nonnull final Path targetBaseDirectory, @Nonnull Iterable<String> resourcePaths,
+	public static long copy(@NonNull final Class<?> contextClass, @NonNull final Path targetBaseDirectory, @NonNull Iterable<String> resourcePaths,
 			final CopyOption... options) throws IOException {
 		long totalByteCount = 0;
 		for(final String resourcePath : resourcePaths) {
@@ -362,7 +362,7 @@ public final class ClassResources {
 	 * @throws UnsupportedOperationException if {@code options} contains a copy option that is not supported.
 	 * @throws SecurityException If the security manager does not permit the operation.
 	 */
-	public static long copy(@Nonnull final Class<?> contextClass, @Nonnull final String resourcePath, @Nonnull final Path targetFile, final CopyOption... options)
+	public static long copy(@NonNull final Class<?> contextClass, @NonNull final String resourcePath, @NonNull final Path targetFile, final CopyOption... options)
 			throws IOException {
 		return copy(contextClass.getClassLoader(), getClassLoaderResourcePath(contextClass, resourcePath), targetFile, options);
 	}
@@ -383,7 +383,7 @@ public final class ClassResources {
 	 * @throws UnsupportedOperationException if {@code options} contains a copy option that is not supported.
 	 * @throws SecurityException If the security manager does not permit the operation.
 	 */
-	public static long copy(@Nonnull final ClassLoader classLoader, @Nonnull final String resourcePath, @Nonnull final Path targetFile,
+	public static long copy(@NonNull final ClassLoader classLoader, @NonNull final String resourcePath, @NonNull final Path targetFile,
 			final CopyOption... options) throws IOException {
 		//getResourceAsStream() does this same thing, but opening the stream manually prevents discarding any IOException during opening
 		final URL resourceUrl = findResource(classLoader, resourcePath)
@@ -408,7 +408,7 @@ public final class ClassResources {
 	 * @throws IOException if there is an error reading the bytes.
 	 * @see InputStream#readAllBytes()
 	 */
-	public static byte[] readBytes(@Nonnull final Class<?> contextClass, @Nonnull final String resourcePath) throws IOException {
+	public static byte[] readBytes(@NonNull final Class<?> contextClass, @NonNull final String resourcePath) throws IOException {
 		return readBytes(contextClass.getClassLoader(), getClassLoaderResourcePath(contextClass, resourcePath));
 	}
 
@@ -424,7 +424,7 @@ public final class ClassResources {
 	 * @throws IOException if there is an error reading the bytes.
 	 * @see InputStream#readAllBytes()
 	 */
-	public static byte[] readBytes(@Nonnull final ClassLoader classLoader, @Nonnull final String resourcePath) throws IOException {
+	public static byte[] readBytes(@NonNull final ClassLoader classLoader, @NonNull final String resourcePath) throws IOException {
 		//getResourceAsStream() does this same thing, but opening the stream manually prevents discarding any IOException during opening
 		final URL resourceUrl = findResource(classLoader, resourcePath)
 				.orElseThrow(() -> new MissingClassResourceException("Missing class resource `%s`.".formatted(resourcePath)));
@@ -447,7 +447,7 @@ public final class ClassResources {
 	 * @throws IOException if there is an error reading the string bytes.
 	 * @see InputStream#readAllBytes()
 	 */
-	public static String readString(@Nonnull final Class<?> contextClass, @Nonnull final String resourcePath, @Nonnull final Charset charset) throws IOException {
+	public static String readString(@NonNull final Class<?> contextClass, @NonNull final String resourcePath, @NonNull final Charset charset) throws IOException {
 		return readString(contextClass.getClassLoader(), getClassLoaderResourcePath(contextClass, resourcePath), charset);
 	}
 
@@ -466,7 +466,7 @@ public final class ClassResources {
 	 * @throws IOException if there is an error reading the string bytes.
 	 * @see InputStream#readAllBytes()
 	 */
-	public static String readString(@Nonnull final ClassLoader classLoader, @Nonnull final String resourcePath, @Nonnull final Charset charset)
+	public static String readString(@NonNull final ClassLoader classLoader, @NonNull final String resourcePath, @NonNull final Charset charset)
 			throws IOException {
 		return new String(readBytes(classLoader, resourcePath), charset);
 	}

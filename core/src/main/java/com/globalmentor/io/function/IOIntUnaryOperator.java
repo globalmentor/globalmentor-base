@@ -21,7 +21,7 @@ import java.util.Objects;
 
 import java.util.function.IntUnaryOperator;
 
-import javax.annotation.Nonnull;
+import org.jspecify.annotations.*;
 
 /**
  * Represents an operation on a single {@code int}-valued operand that produces an {@code int}-valued result. This is the primitive type specialization of
@@ -59,7 +59,7 @@ public interface IOIntUnaryOperator {
 	 *
 	 * @see #andThen(IOIntUnaryOperator)
 	 */
-	default IOIntUnaryOperator compose(@Nonnull IOIntUnaryOperator before) throws IOException {
+	default IOIntUnaryOperator compose(@NonNull IOIntUnaryOperator before) throws IOException {
 		Objects.requireNonNull(before);
 		return (int v) -> applyAsInt(before.applyAsInt(v));
 	}
@@ -75,7 +75,7 @@ public interface IOIntUnaryOperator {
 	 *
 	 * @see #compose(IOIntUnaryOperator)
 	 */
-	default IOIntUnaryOperator andThen(@Nonnull IOIntUnaryOperator after) throws IOException {
+	default IOIntUnaryOperator andThen(@NonNull IOIntUnaryOperator after) throws IOException {
 		Objects.requireNonNull(after);
 		return (int t) -> after.applyAsInt(applyAsInt(t));
 	}

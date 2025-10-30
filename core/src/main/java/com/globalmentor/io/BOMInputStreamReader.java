@@ -19,7 +19,7 @@ package com.globalmentor.io;
 import java.io.*;
 import java.nio.charset.*;
 
-import javax.annotation.*;
+import org.jspecify.annotations.*;
 
 import static com.globalmentor.io.Charsets.*;
 import static com.globalmentor.io.InputStreams.*;
@@ -77,7 +77,7 @@ public class BOMInputStreamReader extends InputStreamReader //TODO create a vers
 	 * @throws IOException if there is an error attempting to read the byte order mark from the input stream.
 	 * @throws UnsupportedEncodingException if the named charset is not supported.
 	 */
-	public BOMInputStreamReader(final InputStream inputStream, @Nonnull final CodingErrorAction codingErrorAction)
+	public BOMInputStreamReader(final InputStream inputStream, @NonNull final CodingErrorAction codingErrorAction)
 			throws IOException, UnsupportedEncodingException {
 		this(inputStream, UTF_8, codingErrorAction); //default to UTF-8 if we can't determine the charset by the BOM
 	}
@@ -90,7 +90,7 @@ public class BOMInputStreamReader extends InputStreamReader //TODO create a vers
 	 * @throws IOException if there is an error attempting to read the byte order mark from the input stream.
 	 * @throws UnsupportedEncodingException if the named charset is not supported.
 	 */
-	public BOMInputStreamReader(final InputStream inputStream, final Charset defaultCharset, @Nonnull final CodingErrorAction codingErrorAction)
+	public BOMInputStreamReader(final InputStream inputStream, final Charset defaultCharset, @NonNull final CodingErrorAction codingErrorAction)
 			throws IOException, UnsupportedEncodingException {
 		super(inputStream, newDecoder(detectCharset(inputStream, defaultCharset), codingErrorAction)); //construct an input stream reader, guessing the encoding from the BOM if we can
 	}

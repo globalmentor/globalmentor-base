@@ -23,7 +23,7 @@ import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.*;
 
-import javax.annotation.*;
+import org.jspecify.annotations.*;
 
 import com.globalmentor.collections.iterators.Iterators;
 
@@ -49,7 +49,7 @@ public final class Iterables {
 	 * @see Stream#findFirst()
 	 * @see Iterators#findNext(Iterator)
 	 */
-	public static <T> Optional<T> findFirst(@Nonnull final Iterable<T> iterable) {
+	public static <T> Optional<T> findFirst(@NonNull final Iterable<T> iterable) {
 		if(iterable instanceof Collection) { //short-circuit for empty collections
 			final Collection<T> collection = (Collection<T>)iterable;
 			if(collection.isEmpty()) {
@@ -69,7 +69,7 @@ public final class Iterables {
 	 * @throws IllegalArgumentException if the given stream has more than one element.
 	 * @see Iterator#next()
 	 */
-	public static <T> Optional<T> findOnly(@Nonnull final Iterable<T> iterable) {
+	public static <T> Optional<T> findOnly(@NonNull final Iterable<T> iterable) {
 		if(iterable instanceof Collection) { //short-circuit for empty collections
 			final Collection<T> collection = (Collection<T>)iterable;
 			if(collection.isEmpty()) {
@@ -91,8 +91,8 @@ public final class Iterables {
 	 * @throws RuntimeException if the given stream has more than one element.
 	 * @see Iterator#next()
 	 */
-	public static <T, X extends RuntimeException> Optional<T> findOnly(@Nonnull final Iterable<T> iterable,
-			@Nonnull final Supplier<X> manyElementsExceptionSupplier) {
+	public static <T, X extends RuntimeException> Optional<T> findOnly(@NonNull final Iterable<T> iterable,
+			@NonNull final Supplier<X> manyElementsExceptionSupplier) {
 		if(iterable instanceof Collection) { //short-circuit for empty collections
 			final Collection<T> collection = (Collection<T>)iterable;
 			if(collection.isEmpty()) {
@@ -111,7 +111,7 @@ public final class Iterables {
 	 * @throws NoSuchElementException if the iterable has no more elements
 	 * @throws IllegalArgumentException if the given iterable has more than one element.
 	 */
-	public static <E> E getOnly(@Nonnull final Iterable<E> iterable) {
+	public static <E> E getOnly(@NonNull final Iterable<E> iterable) {
 		return Iterators.getOnly(iterable.iterator());
 	}
 
@@ -126,7 +126,7 @@ public final class Iterables {
 	 * @throws NoSuchElementException if the iterable has no more elements
 	 * @throws RuntimeException if the given iterable has more than one element.
 	 */
-	public static <E, X extends RuntimeException> E getOnly(@Nonnull final Iterable<E> iterable, @Nonnull final Supplier<X> manyElementsExceptionSupplier) {
+	public static <E, X extends RuntimeException> E getOnly(@NonNull final Iterable<E> iterable, @NonNull final Supplier<X> manyElementsExceptionSupplier) {
 		return Iterators.getOnly(iterable.iterator(), manyElementsExceptionSupplier);
 	}
 
@@ -141,7 +141,7 @@ public final class Iterables {
 	 * @see <a href=
 	 *      "https://guava.dev/releases/snapshot-jre/api/docs/com/google/common/collect/Streams.html#stream(java.lang.Iterable)"><code>com.google.common.collect.Streams.stream(Iterable)</code></a>
 	 */
-	public static <T> Stream<T> toStream(@Nonnull final Iterable<T> iterable) {
+	public static <T> Stream<T> toStream(@NonNull final Iterable<T> iterable) {
 		return iterable instanceof Collection ? ((Collection<T>)iterable).stream() : stream(iterable.spliterator(), false);
 	}
 
@@ -156,7 +156,7 @@ public final class Iterables {
 	 * @see #toStream(Iterable)
 	 * @see Stream#concat(Stream, Stream)
 	 */
-	public static <T> Stream<T> toStreamConcat(@Nonnull final Iterable<? extends T> iterable, @Nullable T element) {
+	public static <T> Stream<T> toStreamConcat(@NonNull final Iterable<? extends T> iterable, @Nullable T element) {
 		return concat(toStream(iterable), Stream.of(element));
 	}
 

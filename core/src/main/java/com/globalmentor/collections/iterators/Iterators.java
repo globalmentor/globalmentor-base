@@ -24,7 +24,7 @@ import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.*;
 
-import javax.annotation.*;
+import org.jspecify.annotations.*;
 
 import com.globalmentor.collections.Lists;
 import com.globalmentor.java.Objects;
@@ -47,7 +47,7 @@ public final class Iterators {
 	 * @param iterator2 The iterator the contents of which will appear second in the iteration.
 	 * @return An iterator that will return the contents of the two iterators in order.
 	 */
-	public static <E> JoinIterator<E> concat(@Nonnull final Iterator<E> iterator1, @Nonnull final Iterator<E> iterator2) {
+	public static <E> JoinIterator<E> concat(@NonNull final Iterator<E> iterator1, @NonNull final Iterator<E> iterator2) {
 		return new JoinIterator<>(Stream.of(iterator1, iterator2));
 	}
 
@@ -61,7 +61,7 @@ public final class Iterators {
 	 */
 	@SafeVarargs
 	@SuppressWarnings("varargs")
-	public static <E> JoinIterator<E> concat(@Nonnull final Iterator<E>... iterators) {
+	public static <E> JoinIterator<E> concat(@NonNull final Iterator<E>... iterators) {
 		return new JoinIterator<>(iterators);
 	}
 
@@ -73,7 +73,7 @@ public final class Iterators {
 	 * @param enumeration An enumeration the contents of which will appear after that of the iterator.
 	 * @return An iterator that will return the contents of the iterator and the enumeration in order.
 	 */
-	public static <E> JoinIterator<E> concat(@Nonnull final Iterator<E> iterator, @Nonnull final Enumeration<E> enumeration) {
+	public static <E> JoinIterator<E> concat(@NonNull final Iterator<E> iterator, @NonNull final Enumeration<E> enumeration) {
 		return concat(iterator, toIterator(enumeration));
 	}
 
@@ -87,7 +87,7 @@ public final class Iterators {
 	 * @see Iterator#next()
 	 * @see Stream#findFirst()
 	 */
-	public static <E> Optional<E> findNext(@Nonnull final Iterator<E> iterator) {
+	public static <E> Optional<E> findNext(@NonNull final Iterator<E> iterator) {
 		return iterator.hasNext() ? Optional.of(iterator.next()) : Optional.empty();
 	}
 
@@ -100,7 +100,7 @@ public final class Iterators {
 	 * @throws IllegalArgumentException if the given stream has more than one element.
 	 * @see Iterator#next()
 	 */
-	public static <E> Optional<E> findOnly(@Nonnull final Iterator<E> iterator) {
+	public static <E> Optional<E> findOnly(@NonNull final Iterator<E> iterator) {
 		return findOnly(iterator, () -> new IllegalArgumentException("Multiple elements encountered when at most one was expected."));
 	}
 
@@ -114,8 +114,8 @@ public final class Iterators {
 	 * @throws RuntimeException if the given stream has more than one element.
 	 * @see Iterator#next()
 	 */
-	public static <E, X extends RuntimeException> Optional<E> findOnly(@Nonnull final Iterator<E> iterator,
-			@Nonnull final Supplier<X> manyElementsExceptionSupplier) {
+	public static <E, X extends RuntimeException> Optional<E> findOnly(@NonNull final Iterator<E> iterator,
+			@NonNull final Supplier<X> manyElementsExceptionSupplier) {
 		final Optional<E> only;
 		if(iterator.hasNext()) {
 			only = Optional.of(iterator.next());
@@ -136,7 +136,7 @@ public final class Iterators {
 	 * @throws NoSuchElementException if the iterator has no more elements
 	 * @throws IllegalArgumentException if the given iterator has more than one element.
 	 */
-	public static <E> E getOnly(@Nonnull final Iterator<E> iterator) {
+	public static <E> E getOnly(@NonNull final Iterator<E> iterator) {
 		return getOnly(iterator, () -> new IllegalArgumentException("Multiple elements encountered when at most one was expected."));
 	}
 
@@ -150,7 +150,7 @@ public final class Iterators {
 	 * @throws NoSuchElementException if the iterator has no more elements
 	 * @throws RuntimeException if the given stream has more than one element.
 	 */
-	public static <E, X extends RuntimeException> E getOnly(@Nonnull final Iterator<E> iterator, @Nonnull final Supplier<X> manyElementsExceptionSupplier) {
+	public static <E, X extends RuntimeException> E getOnly(@NonNull final Iterator<E> iterator, @NonNull final Supplier<X> manyElementsExceptionSupplier) {
 		requireNonNull(manyElementsExceptionSupplier);
 		final E next = iterator.next();
 		if(iterator.hasNext()) {
@@ -171,7 +171,7 @@ public final class Iterators {
 	 * @return An iterator view that iterates the given list iterator, but in reverse order.
 	 * @see Lists#reversing(List)
 	 */
-	public static <E> Iterator<E> reverse(@Nonnull final ListIterator<E> listIterator) {
+	public static <E> Iterator<E> reverse(@NonNull final ListIterator<E> listIterator) {
 		return new ReverseIterator<>(listIterator);
 	}
 
@@ -182,7 +182,7 @@ public final class Iterators {
 	 * @return An enumeration delegating to the given iterator, or the iterator itself it is also an {@link Enumeration}.
 	 */
 	@SuppressWarnings("unchecked") //if it's an Iterator of type <E>, we assume the Enumeration would be as well
-	public static <E> Enumeration<E> toEnumeration(@Nonnull final Iterator<E> iterator) {
+	public static <E> Enumeration<E> toEnumeration(@NonNull final Iterator<E> iterator) {
 		return Objects.asInstance(iterator, Enumeration.class).orElseGet(() -> new IteratorDecorator<>(iterator));
 	}
 
@@ -193,7 +193,7 @@ public final class Iterators {
 	 * @param iterator The iterator to be converted to an iterable.
 	 * @return A single-user iterable that returns the given iterator.
 	 */
-	public static <E> Iterable<E> toIterable(@Nonnull final Iterator<E> iterator) {
+	public static <E> Iterable<E> toIterable(@NonNull final Iterator<E> iterator) {
 		return () -> iterator;
 	}
 
@@ -204,7 +204,7 @@ public final class Iterators {
 	 * @return An iterator delegating to the given enumeration, or the enumeration itself it is also an {@link Iterator}.
 	 */
 	@SuppressWarnings("unchecked") //if it's an Iterator of type <E>, we assume the Enumeration would be as well
-	public static <E> Iterator<E> toIterator(@Nonnull final Enumeration<E> enumeration) {
+	public static <E> Iterator<E> toIterator(@NonNull final Enumeration<E> enumeration) {
 		return Objects.asInstance(enumeration, Iterator.class).orElseGet(() -> new EnumerationDecorator<>(enumeration));
 	}
 
@@ -220,7 +220,7 @@ public final class Iterators {
 	 * @see <a href=
 	 *      "https://guava.dev/releases/snapshot-jre/api/docs/com/google/common/collect/Streams.html#stream(java.util.Iterator)"><code>com.google.common.collect.Streams.stream(Iterator)</code></a>
 	 */
-	public static <E> Stream<E> toStream(@Nonnull final Iterator<E> iterator) {
+	public static <E> Stream<E> toStream(@NonNull final Iterator<E> iterator) {
 		return stream(spliteratorUnknownSize(iterator, 0), false);
 	}
 

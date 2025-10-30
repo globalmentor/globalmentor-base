@@ -21,7 +21,7 @@ import static java.util.Objects.*;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Supplier;
 
-import javax.annotation.*;
+import org.jspecify.annotations.*;
 
 /**
  * Supplies sequential string identifiers via {@link #get()}, each guaranteed to be sequentially unique. The identifiers begin with some prefix and end with a
@@ -49,7 +49,7 @@ public class SequentialdISupplier implements Supplier<String> {
 	 * Prefix constructor.
 	 * @param prefix The prefix to use in the generated identifiers.
 	 */
-	public SequentialdISupplier(@Nonnull final String prefix) {
+	public SequentialdISupplier(@NonNull final String prefix) {
 		this.prefix = requireNonNull(prefix);
 	}
 

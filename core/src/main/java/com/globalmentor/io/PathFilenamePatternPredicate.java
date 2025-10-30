@@ -22,7 +22,7 @@ import java.nio.file.Path;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
-import javax.annotation.*;
+import org.jspecify.annotations.*;
 
 /**
  * A predicate that matches paths based on whether the path filename matches a given pattern.
@@ -38,7 +38,7 @@ public class PathFilenamePatternPredicate implements Predicate<Path> {
 	 * Creates a predicate for matching a given filename pattern.
 	 * @param filenamePattern The pattern for matching a filename.
 	 */
-	private PathFilenamePatternPredicate(@Nonnull final Pattern filenamePattern) {
+	private PathFilenamePatternPredicate(@NonNull final Pattern filenamePattern) {
 		this.filenamePattern = requireNonNull(filenamePattern);
 	}
 
@@ -48,7 +48,7 @@ public class PathFilenamePatternPredicate implements Predicate<Path> {
 	 * @param filenamePattern The pattern for matching a filename.
 	 * @return A predicate for matching path filenames against the given pattern.
 	 */
-	public static PathFilenamePatternPredicate forPattern(@Nonnull final Pattern filenamePattern) {
+	public static PathFilenamePatternPredicate forPattern(@NonNull final Pattern filenamePattern) {
 		return new PathFilenamePatternPredicate(filenamePattern);
 	}
 

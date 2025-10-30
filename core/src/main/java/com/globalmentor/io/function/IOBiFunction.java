@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.util.Objects;
 import java.util.function.BiFunction;
 
-import javax.annotation.Nonnull;
+import org.jspecify.annotations.*;
 
 /**
  * Represents a function that accepts two arguments and produces a result. This is the two-arity specialization of {@link IOFunction}.
@@ -61,7 +61,7 @@ public interface IOBiFunction<T, U, R> {
 	 * @return A composed function that applies this function first and then the {@code after} function.
 	 * @throws IOException if there is an I/O error performing the operation
 	 */
-	default <V> IOBiFunction<T, U, V> andThen(@Nonnull IOFunction<? super R, ? extends V> after) throws IOException {
+	default <V> IOBiFunction<T, U, V> andThen(@NonNull IOFunction<? super R, ? extends V> after) throws IOException {
 		Objects.requireNonNull(after);
 		return (T t, U u) -> after.apply(apply(t, u));
 	}

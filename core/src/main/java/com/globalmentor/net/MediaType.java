@@ -24,7 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.*;
 import java.util.stream.Stream;
 
-import javax.annotation.*;
+import org.jspecify.annotations.*;
 
 import static java.util.Objects.*;
 import static java.util.stream.Collectors.*;
@@ -440,7 +440,7 @@ public final class MediaType {
 	 * @throws IllegalArgumentException if the given match type is not in the correct format, such as missing a type separator slash.
 	 * @see #WILDCARD_SUBTYPE
 	 */
-	public boolean matches(@Nonnull final CharSequence text) {
+	public boolean matches(@NonNull final CharSequence text) {
 		final int dividerIndex = indexOf(text, TYPE_DIVIDER);
 		checkArgument(dividerIndex >= 0, "Match type `%s` missing type divider slash.", text);
 		return matches(text.subSequence(0, dividerIndex).toString(), text.subSequence(dividerIndex + 1, text.length()).toString());
@@ -453,7 +453,7 @@ public final class MediaType {
 	 * @return <code>true</code> if the media type has a primary type and a subtype matching those given.
 	 * @see #WILDCARD_SUBTYPE
 	 */
-	public boolean matches(@Nonnull final String primaryType, @Nonnull final String subType) {
+	public boolean matches(@NonNull final String primaryType, @NonNull final String subType) {
 		final String mediaTypeSubType = getSubType(); //get the media type's subtype
 		return ASCII.equalsIgnoreCase(getPrimaryType(), primaryType)
 				&& (ASCII.equalsIgnoreCase(mediaTypeSubType, subType) || WILDCARD_SUBTYPE.equals(mediaTypeSubType) || WILDCARD_SUBTYPE.equals(subType)); //check the primary type and subtype and wildcards
@@ -467,7 +467,7 @@ public final class MediaType {
 	 * @return <code>true</code> if the media type has the same primary type and subtype as that given, along with a class parameter.
 	 * @see #WILDCARD_SUBTYPE
 	 */
-	public boolean matches(@Nonnull final String primaryType, @Nonnull final String subType, @Nonnull final Class<?> objectClass) {
+	public boolean matches(@NonNull final String primaryType, @NonNull final String subType, @NonNull final Class<?> objectClass) {
 		return matches(primaryType, subType) && objectClass.getName().equals(getParameter("string")); //see if the primary type and subtype match, and that "class" parameter indicates this class TODO use a constant
 	}
 
@@ -478,7 +478,7 @@ public final class MediaType {
 	 * @return <code>true</code> if the media type has the same primary type and subtype as that given, along with a class parameter.
 	 * @see #WILDCARD_SUBTYPE
 	 */
-	public boolean matches(@Nonnull final Class<?> objectClass) {
+	public boolean matches(@NonNull final Class<?> objectClass) {
 		return matches(APPLICATION_PRIMARY_TYPE, X_JAVA_OBJECT); //check for application/x-java-object and class name
 	}
 
@@ -594,7 +594,7 @@ public final class MediaType {
 	 * @see #CHARSET_PARAMETER
 	 * @see Charset#name()
 	 */
-	public MediaType withCharset(@Nonnull final Charset charset) {
+	public MediaType withCharset(@NonNull final Charset charset) {
 		return withParameter(CHARSET_PARAMETER, charset.name());
 	}
 
@@ -674,7 +674,7 @@ public final class MediaType {
 	 * @param parameters Optional name-value pairs representing parameters of the media type.
 	 * @return A string representing the type in the form "<var>primaryType</var>/<var>subType</var>[;<var>parameters</var>]".
 	 */
-	public static String toString(@Nonnull final String primaryType, @Nonnull final String subType, final Parameter... parameters) {
+	public static String toString(@NonNull final String primaryType, @NonNull final String subType, final Parameter... parameters) {
 		return toString(primaryType, subType, Set.of(parameters));
 	}
 
@@ -687,7 +687,7 @@ public final class MediaType {
 	 * @return A string representing the type in the form "<var>primaryType</var>/<var>subType</var>[;<var>parameters</var>]".
 	 * @throws NullPointerException if the given parameters set is <code>null</code>.
 	 */
-	public static String toString(@Nonnull final String primaryType, @Nonnull final String subType, @Nonnull final Iterable<Parameter> parameters) {
+	public static String toString(@NonNull final String primaryType, @NonNull final String subType, @NonNull final Iterable<Parameter> parameters) {
 		return toString(primaryType, subType, parameters, false);
 	}
 
@@ -701,7 +701,7 @@ public final class MediaType {
 	 * @throws NullPointerException if the given parameters set is <code>null</code>.
 	 * @see Parameter#toValueString()
 	 */
-	public static String toString(@Nonnull final String primaryType, @Nonnull final String subType, @Nonnull final Iterable<Parameter> parameters,
+	public static String toString(@NonNull final String primaryType, @NonNull final String subType, @NonNull final Iterable<Parameter> parameters,
 			final boolean formatted) {
 		final StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append(primaryType).append(TYPE_DIVIDER).append(subType); //primaryType/subType
@@ -812,7 +812,7 @@ public final class MediaType {
 		 * @throws IllegalArgumentException if the name does not conform to the {@link MediaType#RESTRICTED_NAME_PATTERN} pattern.
 		 * @throws IllegalArgumentException if the parameter value includes control characters.
 		 */
-		public static Parameter of(@Nonnull final String name, @Nonnull final String value) {
+		public static Parameter of(@NonNull final String name, @NonNull final String value) {
 			//often-used parameters
 			if(ASCII.equalsIgnoreCase(name, CHARSET_PARAMETER)) { //charset
 				if(ASCII.equalsIgnoreCase(value, UTF_8.name())) { //charset=UTF-8 (without regard to case)
@@ -889,7 +889,7 @@ public final class MediaType {
 		 * @throws IllegalArgumentException if the parameter value includes control characters.
 		 * @throws IOException If an I/O error occurs appending the value.
 		 */
-		public static <A extends Appendable> A appendValueTo(@Nonnull final A appendable, @Nonnull CharSequence parameterValue) throws IOException {
+		public static <A extends Appendable> A appendValueTo(@NonNull final A appendable, @NonNull CharSequence parameterValue) throws IOException {
 			checkArgument(!contains(parameterValue, QUOTED_STRING_PROHIBITED_CONTROL_CHARACTERS),
 					"Parameter value `%s` containing non-tab control characters not supported.", parameterValue);
 			final boolean needsQuotes = contains(parameterValue, ILLEGAL_TOKEN_CHARACTERS) || parameterValue.length() == 0; //see if there are any characters requiring quoting

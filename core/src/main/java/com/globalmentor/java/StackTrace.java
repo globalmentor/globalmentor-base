@@ -26,7 +26,7 @@ import java.io.*;
 import java.util.*;
 import java.util.regex.*;
 
-import javax.annotation.*;
+import org.jspecify.annotations.*;
 
 import com.globalmentor.text.RegularExpression;
 
@@ -97,7 +97,7 @@ public class StackTrace {
 	 * @return The stack trace element parsed from the text.
 	 * @throws IllegalArgumentException if the given text cannot be parsed as a stack trace element.
 	 */
-	public static StackTraceElement parseElement(@Nonnull final CharSequence text) {
+	public static StackTraceElement parseElement(@NonNull final CharSequence text) {
 		final Matcher matcher = checkArgumentMatches(text, ElementRegEx.PATTERN, "The text `%s` could not be parsed as a stack trace eleemnt.", text);
 		final Optional<String> foundFileName = ElementRegEx.FILE_NAME_GROUP.findIn(matcher);
 		final int lineNumber = ElementRegEx.LINE_NUMBER_GROUP.findIn(matcher).map(Integer::valueOf)

@@ -22,7 +22,7 @@ import static com.globalmentor.java.Conditions.*;
 import java.util.*;
 import java.util.function.*;
 
-import javax.annotation.*;
+import org.jspecify.annotations.*;
 
 import com.globalmentor.model.Named;
 
@@ -42,7 +42,7 @@ public interface CompoundTokenization extends Named<String> {
 	 * @return The segments of the compound token.
 	 * @throws IllegalArgumentException if the token is empty.
 	 */
-	public List<String> split(@Nonnull final CharSequence token);
+	public List<String> split(@NonNull final CharSequence token);
 
 	/**
 	 * Joins segments into a compound token.
@@ -53,7 +53,7 @@ public interface CompoundTokenization extends Named<String> {
 	 * @throws IllegalArgumentException if one of the segments is the empty string.
 	 * @throws IllegalArgumentException if one of the segments is not valid for this tokenization.
 	 */
-	public String join(@Nonnull final Iterable<? extends CharSequence> segments);
+	public String join(@NonNull final Iterable<? extends CharSequence> segments);
 
 	/**
 	 * Factory method to create a character-delimited compound tokenization with no segment transformation.
@@ -63,7 +63,7 @@ public interface CompoundTokenization extends Named<String> {
 	 * @return A new compound tokenization with the given name and using the given delimiter to {@link #split(CharSequence)} and {@link #join(Iterable)}.
 	 * @see #getName()
 	 */
-	public static CharacterDelimitedCompoundTokenization namedDelimitedBy(@Nonnull final String name, final char delimiter) {
+	public static CharacterDelimitedCompoundTokenization namedDelimitedBy(@NonNull final String name, final char delimiter) {
 		return namedDelimitedByWithSegmentTransformation(name, delimiter, CharacterDelimitedCompoundTokenization.noSegmentTransformation());
 	}
 
@@ -83,7 +83,7 @@ public interface CompoundTokenization extends Named<String> {
 	 * @see #getName()
 	 * @see #join(Iterable)
 	 */
-	public static CharacterDelimitedCompoundTokenization namedDelimitedByWithSegmentStringTransformation(@Nonnull final String name, final char delimiter,
+	public static CharacterDelimitedCompoundTokenization namedDelimitedByWithSegmentStringTransformation(@NonNull final String name, final char delimiter,
 			final Function<? super String, ? extends CharSequence> segmentTransformation) {
 		return namedDelimitedByWithSegmentTransformation(name, delimiter, segmentTransformation.compose(CharSequence::toString));
 	}
@@ -100,7 +100,7 @@ public interface CompoundTokenization extends Named<String> {
 	 * @see #getName()
 	 * @see #join(Iterable)
 	 */
-	public static CharacterDelimitedCompoundTokenization namedDelimitedByWithSegmentTransformation(@Nonnull final String name, final char delimiter,
+	public static CharacterDelimitedCompoundTokenization namedDelimitedByWithSegmentTransformation(@NonNull final String name, final char delimiter,
 			final Function<? super CharSequence, ? extends CharSequence> segmentTransformation) {
 		return namedDelimitedByWithSegmentTransformation(name, delimiter, toBiFunctionU(segmentTransformation));
 	}
@@ -116,7 +116,7 @@ public interface CompoundTokenization extends Named<String> {
 	 * @see #getName()
 	 * @see #join(Iterable)
 	 */
-	public static CharacterDelimitedCompoundTokenization namedDelimitedByWithSegmentTransformation(@Nonnull final String name, final char delimiter,
+	public static CharacterDelimitedCompoundTokenization namedDelimitedByWithSegmentTransformation(@NonNull final String name, final char delimiter,
 			final BiFunction<? super Integer, ? super CharSequence, ? extends CharSequence> segmentTransformation) {
 		return new CharacterDelimitedCompoundTokenization(name, delimiter, segmentTransformation);
 	}
@@ -136,8 +136,8 @@ public interface CompoundTokenization extends Named<String> {
 	 * @see #getName()
 	 * @see #join(Iterable)
 	 */
-	public default CompoundTokenization namedWithAddedSegmentStringTransformation(@Nonnull final String name,
-			@Nonnull final Function<? super String, ? extends CharSequence> segmentTransformation) {
+	public default CompoundTokenization namedWithAddedSegmentStringTransformation(@NonNull final String name,
+			@NonNull final Function<? super String, ? extends CharSequence> segmentTransformation) {
 		return namedWithAddedSegmentTransformation(name, segmentTransformation.compose(CharSequence::toString));
 	}
 
@@ -153,8 +153,8 @@ public interface CompoundTokenization extends Named<String> {
 	 * @see #getName()
 	 * @see #join(Iterable)
 	 */
-	public default CompoundTokenization namedWithAddedSegmentTransformation(@Nonnull final String name,
-			@Nonnull final Function<? super CharSequence, ? extends CharSequence> segmentTransformation) {
+	public default CompoundTokenization namedWithAddedSegmentTransformation(@NonNull final String name,
+			@NonNull final Function<? super CharSequence, ? extends CharSequence> segmentTransformation) {
 		return namedWithAddedSegmentTransformation(name, toBiFunctionU(segmentTransformation));
 	}
 
@@ -169,8 +169,8 @@ public interface CompoundTokenization extends Named<String> {
 	 * @see #getName()
 	 * @see #join(Iterable)
 	 */
-	public CompoundTokenization namedWithAddedSegmentTransformation(@Nonnull final String name,
-			@Nonnull final BiFunction<? super Integer, ? super CharSequence, ? extends CharSequence> segmentTransformation);
+	public CompoundTokenization namedWithAddedSegmentTransformation(@NonNull final String name,
+			@NonNull final BiFunction<? super Integer, ? super CharSequence, ? extends CharSequence> segmentTransformation);
 
 	/**
 	 * Converts a string from this compound tokenization to another compound tokenization. If both compound tokenizations are the same instance, the token is not
@@ -184,7 +184,7 @@ public interface CompoundTokenization extends Named<String> {
 	 * @return The same compound token using the other tokenization.
 	 * @throws IllegalArgumentException if the token is empty.
 	 */
-	public default String to(@Nonnull final CompoundTokenization otherCompoundTokenization, @Nonnull final CharSequence token) {
+	public default String to(@NonNull final CompoundTokenization otherCompoundTokenization, @NonNull final CharSequence token) {
 		if(otherCompoundTokenization == this) { //if the other compound tokenization is the same, assume the token will not change
 			checkArgument(token.length() > 0, "Token cannot be empty.");
 			return token.toString();
@@ -200,7 +200,7 @@ public interface CompoundTokenization extends Named<String> {
 	 * @throws IllegalArgumentException if the token is empty.
 	 * @see <a href="https://en.wikipedia.org/wiki/Camel_case">Camel case</a>
 	 */
-	public default String toCamelCase(@Nonnull final CharSequence token) {
+	public default String toCamelCase(@NonNull final CharSequence token) {
 		return to(CAMEL_CASE, token);
 	}
 
@@ -212,7 +212,7 @@ public interface CompoundTokenization extends Named<String> {
 	 * @throws IllegalArgumentException if the token is empty.
 	 * @see <a href="https://stackoverflow.com/q/11273282/421049">What's the name for hyphen-separated case?</a>
 	 */
-	public default String toKebabCase(@Nonnull final CharSequence token) {
+	public default String toKebabCase(@NonNull final CharSequence token) {
 		return to(KEBAB_CASE, token);
 	}
 
@@ -224,7 +224,7 @@ public interface CompoundTokenization extends Named<String> {
 	 * @throws IllegalArgumentException if the token is empty.
 	 * @see <a href="https://en.wikipedia.org/wiki/Snake_case">Snake case</a>
 	 */
-	public default String toSnakeCase(@Nonnull final CharSequence token) {
+	public default String toSnakeCase(@NonNull final CharSequence token) {
 		return to(SNAKE_CASE, token);
 	}
 

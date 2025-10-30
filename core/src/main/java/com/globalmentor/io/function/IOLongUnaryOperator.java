@@ -21,7 +21,7 @@ import java.util.Objects;
 
 import java.util.function.LongUnaryOperator;
 
-import javax.annotation.Nonnull;
+import org.jspecify.annotations.*;
 
 /**
  * Represents an operation on a single {@code long}-valued operand that produces a {@code long}-valued result. This is the primitive type specialization of
@@ -59,7 +59,7 @@ public interface IOLongUnaryOperator {
 	 *
 	 * @see #andThen(IOLongUnaryOperator)
 	 */
-	default IOLongUnaryOperator compose(@Nonnull IOLongUnaryOperator before) throws IOException {
+	default IOLongUnaryOperator compose(@NonNull IOLongUnaryOperator before) throws IOException {
 		Objects.requireNonNull(before);
 		return (long v) -> applyAsLong(before.applyAsLong(v));
 	}
@@ -75,7 +75,7 @@ public interface IOLongUnaryOperator {
 	 *
 	 * @see #compose(IOLongUnaryOperator)
 	 */
-	default IOLongUnaryOperator andThen(@Nonnull IOLongUnaryOperator after) throws IOException {
+	default IOLongUnaryOperator andThen(@NonNull IOLongUnaryOperator after) throws IOException {
 		Objects.requireNonNull(after);
 		return (long t) -> after.applyAsLong(applyAsLong(t));
 	}

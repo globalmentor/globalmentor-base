@@ -19,7 +19,7 @@ package com.globalmentor.net;
 import java.net.URI;
 import java.util.*;
 
-import javax.annotation.*;
+import org.jspecify.annotations.*;
 
 import static java.util.Objects.*;
 
@@ -93,7 +93,7 @@ public final class URIPath {
 	 * @throws IllegalArgumentException if the provided path specifies a URI authority, query, and/or fragment.
 	 * @see #createURIPathURI(String)
 	 */
-	public static URIPath of(@Nonnull final String path) {
+	public static URIPath of(@NonNull final String path) {
 		return new URIPath(createURIPathURI(requireNonNull(path, "Path cannot be null."))); //construct the class with a URI created from the path, compensating for relative paths that contain a colon in the first path segment
 	}
 
@@ -285,7 +285,7 @@ public final class URIPath {
 	 * @throws NullPointerException if the given path string is <code>null</code>.
 	 * @see URIs#findRelativePath(URI, URI)
 	 */
-	public URIPath relativize(@Nonnull final String targetPath) {
+	public URIPath relativize(@NonNull final String targetPath) {
 		return relativize(URIPath.of(targetPath));
 	}
 
@@ -306,7 +306,7 @@ public final class URIPath {
 	 * @throws NullPointerException if the given path string is <code>null</code>.
 	 * @see URIs#findRelativePath(URI, URI)
 	 */
-	public Optional<URIPath> findRelativePath(@Nonnull final String targetPath) {
+	public Optional<URIPath> findRelativePath(@NonNull final String targetPath) {
 		return findRelativePath(URIPath.of(targetPath));
 	}
 
@@ -325,7 +325,7 @@ public final class URIPath {
 	 * @throws NullPointerException if the given target path is <code>null</code>.
 	 * @see URIs#findRelativePath(URI, URI)
 	 */
-	public URIPath relativize(@Nonnull final URIPath targetPath) {
+	public URIPath relativize(@NonNull final URIPath targetPath) {
 		return findRelativePath(targetPath).orElse(targetPath);
 	}
 
@@ -344,7 +344,7 @@ public final class URIPath {
 	 * @throws NullPointerException if the given target path is <code>null</code>.
 	 * @see URIs#findRelativePath(URI, URI)
 	 */
-	public Optional<URIPath> findRelativePath(@Nonnull final URIPath targetPath) {
+	public Optional<URIPath> findRelativePath(@NonNull final URIPath targetPath) {
 		return findRelativePath(uri, targetPath.toURI());
 	}
 
@@ -366,7 +366,7 @@ public final class URIPath {
 	 * @throws IllegalArgumentException if the given base URI is not actually a base URI of the given URI.
 	 * @see URIs#relativizePath(URI, URI)
 	 */
-	public static URIPath relativize(@Nonnull final URI sourceURI, @Nonnull final URI targetURI) {
+	public static URIPath relativize(@NonNull final URI sourceURI, @NonNull final URI targetURI) {
 		return findRelativePath(sourceURI, targetURI)
 				.orElseThrow(() -> new IllegalArgumentException("The source URI " + sourceURI + " has no base URI in common with the target URI " + targetURI + "."));
 	}
@@ -387,7 +387,7 @@ public final class URIPath {
 	 * @throws NullPointerException if the given source URI and/or target URI is <code>null</code>.
 	 * @see URIs#findRelativePath(URI, URI)
 	 */
-	public static Optional<URIPath> findRelativePath(@Nonnull final URI sourceURI, @Nonnull final URI targetURI) {
+	public static Optional<URIPath> findRelativePath(@NonNull final URI sourceURI, @NonNull final URI targetURI) {
 		return URIs.findRelativePath(sourceURI, targetURI).map(URIPath::fromURI);
 	}
 

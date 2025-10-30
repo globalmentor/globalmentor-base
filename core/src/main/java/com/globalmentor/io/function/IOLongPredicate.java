@@ -21,7 +21,7 @@ import java.util.Objects;
 
 import java.util.function.LongPredicate;
 
-import javax.annotation.Nonnull;
+import org.jspecify.annotations.*;
 
 /**
  * Represents a predicate (boolean-valued function) of one {@code long}-valued argument. This is the {@code long}-consuming primitive type specialization of
@@ -57,7 +57,7 @@ public interface IOLongPredicate {
 	 * @return A composed predicate that represents the short-circuiting logical AND of this predicate and the {@code other} predicate.
 	 * @throws IOException if there is an I/O error performing the operation.
 	 */
-	default IOLongPredicate and(@Nonnull IOLongPredicate other) throws IOException {
+	default IOLongPredicate and(@NonNull IOLongPredicate other) throws IOException {
 		Objects.requireNonNull(other);
 		return (value) -> test(value) && other.test(value);
 	}
@@ -83,7 +83,7 @@ public interface IOLongPredicate {
 	 * @return A composed predicate that represents the short-circuiting logical OR of this predicate and the {@code other} predicate.
 	 * @throws IOException if there is an I/O error performing the operation.
 	 */
-	default IOLongPredicate or(@Nonnull IOLongPredicate other) throws IOException {
+	default IOLongPredicate or(@NonNull IOLongPredicate other) throws IOException {
 		Objects.requireNonNull(other);
 		return (value) -> test(value) || other.test(value);
 	}

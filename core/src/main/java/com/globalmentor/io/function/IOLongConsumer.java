@@ -21,7 +21,7 @@ import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.LongConsumer;
 
-import javax.annotation.Nonnull;
+import org.jspecify.annotations.*;
 
 /**
  * Represents an operation that accepts a single {@code long}-valued argument and returns no result. This is the primitive type specialization of
@@ -56,7 +56,7 @@ public interface IOLongConsumer {
 	 * @return A composed {@code LongConsumer} that performs this operation followed by the {@code after} operation in sequence.
 	 * @throws IOException if there is an I/O error performing the operation.
 	 */
-	default IOLongConsumer andThen(@Nonnull IOLongConsumer after) throws IOException {
+	default IOLongConsumer andThen(@NonNull IOLongConsumer after) throws IOException {
 		Objects.requireNonNull(after);
 		return (long t) -> {
 			accept(t);

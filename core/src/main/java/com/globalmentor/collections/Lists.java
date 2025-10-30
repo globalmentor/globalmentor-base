@@ -22,7 +22,7 @@ import static java.util.Objects.*;
 
 import java.util.*;
 
-import javax.annotation.*;
+import org.jspecify.annotations.*;
 
 import com.globalmentor.collections.iterators.Iterators;
 
@@ -48,7 +48,7 @@ public final class Lists {
 	 * @see <a href="https://guava.dev/releases/snapshot-jre/api/docs/com/google/common/collect/Lists.html#reverse(java.util.List)">Guava
 	 *      <code>Lists.reverse(List&lt;T&gt;)</code></a>
 	 */
-	public static <E> Iterable<E> reversing(@Nonnull final List<E> list) {
+	public static <E> Iterable<E> reversing(@NonNull final List<E> list) {
 		return () -> reverse(list.listIterator(list.size()));
 	}
 
@@ -61,7 +61,7 @@ public final class Lists {
 	 * @return A list representing the common suffix sublist of elements, compared using {@link Object#equals(Object)}.
 	 * @throws NullPointerException if one of the lists is <code>null</code> or contains a <code>null</code> value.
 	 */
-	public static <T> List<T> longestCommonSuffix(@Nonnull final List<List<T>> lists) {
+	public static <T> List<T> longestCommonSuffix(@NonNull final List<List<T>> lists) {
 		if(lists.isEmpty()) {
 			return emptyList();
 		}

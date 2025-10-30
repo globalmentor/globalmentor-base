@@ -20,7 +20,7 @@ import static com.globalmentor.java.Conditions.*;
 
 import java.util.*;
 
-import javax.annotation.*;
+import org.jspecify.annotations.*;
 
 /**
  * The order in which sorting should be performed.
@@ -85,7 +85,7 @@ public enum SortOrder {
 	 * @throws IllegalArgumentException if the given sign text is not recognized.
 	 * @see #fromSign(char)
 	 */
-	public static SortOrder parse(@Nonnull final CharSequence text) {
+	public static SortOrder parse(@NonNull final CharSequence text) {
 		checkArgument(text.length() == 1, "Invalid sort order `%`; must be a single character.", text);
 		return fromSign(text.charAt(0));
 	}
@@ -107,7 +107,7 @@ public enum SortOrder {
 	 * @return The comparator or its reverse order, based on this sort order.
 	 * @see Comparator#reversed()
 	 */
-	public <T> Comparator<T> applyTo(@Nonnull final Comparator<T> comparator) {
+	public <T> Comparator<T> applyTo(@NonNull final Comparator<T> comparator) {
 		switch(this) {
 			case ASCENDING:
 				return comparator;

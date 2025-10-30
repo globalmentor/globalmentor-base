@@ -22,7 +22,7 @@ import static java.util.Objects.*;
 import java.util.*;
 import java.util.function.BiFunction;
 
-import javax.annotation.*;
+import org.jspecify.annotations.*;
 
 /**
  * A base compound tokenization implementation.
@@ -57,7 +57,7 @@ public abstract class AbstractCompoundTokenization implements CompoundTokenizati
 	 * @param segmentTransformation The function to be applied to each segment before joining with {@link #join(Iterable)}. The first function parameter is the
 	 *          index of the segment being joined. The second function parameter is the non-empty segment being joined.
 	 */
-	protected AbstractCompoundTokenization(@Nonnull final String name,
+	protected AbstractCompoundTokenization(@NonNull final String name,
 			final BiFunction<? super Integer, ? super CharSequence, ? extends CharSequence> segmentTransformation) {
 		this.name = requireNonNull(name);
 		this.segmentTransformation = requireNonNull(segmentTransformation);
@@ -75,7 +75,7 @@ public abstract class AbstractCompoundTokenization implements CompoundTokenizati
 	 * @see #join(Iterable)
 	 */
 	protected BiFunction<? super Integer, ? super CharSequence, ? extends CharSequence> addSegmentTransformation(
-			@Nonnull final BiFunction<? super Integer, ? super CharSequence, ? extends CharSequence> segmentTransformation) {
+			@NonNull final BiFunction<? super Integer, ? super CharSequence, ? extends CharSequence> segmentTransformation) {
 		requireNonNull(segmentTransformation);
 		return (segmentIndex, segment) -> segmentTransformation.apply(segmentIndex, this.segmentTransformation.apply(segmentIndex, segment));
 	}
@@ -117,7 +117,7 @@ public abstract class AbstractCompoundTokenization implements CompoundTokenizati
 	 * @throws NullPointerException if the segment is <code>null</code>.
 	 * @throws IllegalArgumentException if the segment is the empty string.
 	 */
-	protected void validateSegment(final int segmentIndex, @Nonnull final CharSequence segment) {
+	protected void validateSegment(final int segmentIndex, @NonNull final CharSequence segment) {
 		checkArgument(segment.length() != 0, "Compound token segment cannot be empty.");
 	}
 
@@ -129,7 +129,7 @@ public abstract class AbstractCompoundTokenization implements CompoundTokenizati
 	 * @param delimiterIndex The index of the delimiter, which will be equal to the index of the segment just added.
 	 * @return The given string builder.
 	 */
-	protected StringBuilder appendJoinDelimiter(@Nonnull StringBuilder stringBuilder, final int delimiterIndex) {
+	protected StringBuilder appendJoinDelimiter(@NonNull StringBuilder stringBuilder, final int delimiterIndex) {
 		return stringBuilder;
 	}
 

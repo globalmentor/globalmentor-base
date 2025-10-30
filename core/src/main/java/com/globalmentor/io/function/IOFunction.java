@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.util.Objects;
 import java.util.function.Function;
 
-import javax.annotation.Nonnull;
+import org.jspecify.annotations.*;
 
 /**
  * Represents a function that accepts one argument and produces a result.
@@ -61,7 +61,7 @@ public interface IOFunction<T, R> {
 	 *
 	 * @see #andThen(IOFunction)
 	 */
-	default <V> IOFunction<V, R> compose(@Nonnull IOFunction<? super V, ? extends T> before) throws IOException {
+	default <V> IOFunction<V, R> compose(@NonNull IOFunction<? super V, ? extends T> before) throws IOException {
 		Objects.requireNonNull(before);
 		return (V v) -> apply(before.apply(v));
 	}
@@ -78,7 +78,7 @@ public interface IOFunction<T, R> {
 	 *
 	 * @see #compose(IOFunction)
 	 */
-	default <V> IOFunction<T, V> andThen(@Nonnull IOFunction<? super R, ? extends V> after) throws IOException {
+	default <V> IOFunction<T, V> andThen(@NonNull IOFunction<? super R, ? extends V> after) throws IOException {
 		Objects.requireNonNull(after);
 		return (T t) -> after.apply(apply(t));
 	}

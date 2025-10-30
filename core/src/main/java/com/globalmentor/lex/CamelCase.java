@@ -23,7 +23,7 @@ import java.beans.Introspector;
 import java.util.*;
 import java.util.function.*;
 
-import javax.annotation.*;
+import org.jspecify.annotations.*;
 
 /**
  * A compound tokenization implementation that relies on variation from non-uppercase to uppercase to delimit tokens.
@@ -45,7 +45,7 @@ public class CamelCase extends AbstractCompoundTokenization {
 	 * Name constructor using {@link #transformSegmentToCamelCase(int, CharSequence)} as the transformation.
 	 * @param name The name to use for the compound tokenization.
 	 */
-	CamelCase(@Nonnull final String name) {
+	CamelCase(@NonNull final String name) {
 		this(name, CamelCase::transformSegmentToCamelCase);
 	}
 
@@ -55,7 +55,7 @@ public class CamelCase extends AbstractCompoundTokenization {
 	 * @param segmentTransformation The function to be applied to each segment before joining with {@link #join(Iterable)}. The first function parameter is the
 	 *          index of the segment being joined. The second function parameter is the non-empty segment being joined.
 	 */
-	protected CamelCase(@Nonnull final String name, final BiFunction<? super Integer, ? super CharSequence, ? extends CharSequence> segmentTransformation) {
+	protected CamelCase(@NonNull final String name, final BiFunction<? super Integer, ? super CharSequence, ? extends CharSequence> segmentTransformation) {
 		super(name, segmentTransformation);
 	}
 
@@ -102,7 +102,7 @@ public class CamelCase extends AbstractCompoundTokenization {
 	 * @throws IllegalArgumentException if the segment is the empty string.
 	 * @see Introspector#decapitalize(String)
 	 */
-	protected CharSequence transformSplitSegment(final int segmentIndex, @Nonnull final CharSequence segment) {
+	protected CharSequence transformSplitSegment(final int segmentIndex, @NonNull final CharSequence segment) {
 		checkArgument(segment.length() != 0, "Compound token segment cannot be empty.");
 		if(segmentIndex != 0) {
 			final char firstChar = segment.charAt(0);
@@ -126,7 +126,7 @@ public class CamelCase extends AbstractCompoundTokenization {
 	 * @throws NullPointerException if the segment is <code>null</code>.
 	 * @throws IllegalArgumentException if the segment is the empty string.
 	 */
-	public static CharSequence transformSegmentToCamelCase(final int segmentIndex, @Nonnull final CharSequence segment) {
+	public static CharSequence transformSegmentToCamelCase(final int segmentIndex, @NonNull final CharSequence segment) {
 		if(segmentIndex == 0) {
 			return segment;
 		}
@@ -151,7 +151,7 @@ public class CamelCase extends AbstractCompoundTokenization {
 	 * @throws NullPointerException if the segment is <code>null</code>.
 	 * @throws IllegalArgumentException if the segment is the empty string.
 	 */
-	public static CharSequence transformCamelCaseSegmentToDromedaryCase(final int segmentIndex, @Nonnull final CharSequence segment) {
+	public static CharSequence transformCamelCaseSegmentToDromedaryCase(final int segmentIndex, @NonNull final CharSequence segment) {
 		if(segmentIndex > 0) { //`camelCase` to `dromedaryCase` only affects the first segment
 			return segment;
 		}
@@ -176,7 +176,7 @@ public class CamelCase extends AbstractCompoundTokenization {
 	 * @throws NullPointerException if the segment is <code>null</code>.
 	 * @throws IllegalArgumentException if the segment is the empty string.
 	 */
-	public static CharSequence transformCamelCaseSegmentToPascalCase(final int segmentIndex, @Nonnull final CharSequence segment) {
+	public static CharSequence transformCamelCaseSegmentToPascalCase(final int segmentIndex, @NonNull final CharSequence segment) {
 		if(segmentIndex > 0) { //`camelCase` to `PascalCase` only affects the first segment
 			return segment;
 		}
@@ -191,20 +191,20 @@ public class CamelCase extends AbstractCompoundTokenization {
 	}
 
 	@Override
-	public CamelCase namedWithAddedSegmentStringTransformation(@Nonnull final String name,
-			@Nonnull final Function<? super String, ? extends CharSequence> segmentTransformation) {
+	public CamelCase namedWithAddedSegmentStringTransformation(@NonNull final String name,
+			@NonNull final Function<? super String, ? extends CharSequence> segmentTransformation) {
 		return (CamelCase)super.namedWithAddedSegmentStringTransformation(name, segmentTransformation);
 	}
 
 	@Override
-	public CamelCase namedWithAddedSegmentTransformation(@Nonnull final String name,
-			@Nonnull final Function<? super CharSequence, ? extends CharSequence> segmentTransformation) {
+	public CamelCase namedWithAddedSegmentTransformation(@NonNull final String name,
+			@NonNull final Function<? super CharSequence, ? extends CharSequence> segmentTransformation) {
 		return (CamelCase)super.namedWithAddedSegmentTransformation(name, segmentTransformation);
 	}
 
 	@Override
-	public CamelCase namedWithAddedSegmentTransformation(@Nonnull final String name,
-			@Nonnull final BiFunction<? super Integer, ? super CharSequence, ? extends CharSequence> segmentTransformation) {
+	public CamelCase namedWithAddedSegmentTransformation(@NonNull final String name,
+			@NonNull final BiFunction<? super Integer, ? super CharSequence, ? extends CharSequence> segmentTransformation) {
 		return new CamelCase(name, addSegmentTransformation(segmentTransformation));
 	}
 
@@ -216,7 +216,7 @@ public class CamelCase extends AbstractCompoundTokenization {
 	 * @return <code>true</code> if the first character is in lowercase.
 	 * @throws IllegalArgumentException if the token is empty.
 	 */
-	public boolean isDromedaryCase(@Nonnull final CharSequence token) {
+	public boolean isDromedaryCase(@NonNull final CharSequence token) {
 		checkArgument(token.length() > 0, "Token cannot be empty.");
 		return Character.isLowerCase(token.charAt(0));
 	}
@@ -229,7 +229,7 @@ public class CamelCase extends AbstractCompoundTokenization {
 	 * @return <code>true</code> if the first character is in uppercase.
 	 * @throws IllegalArgumentException if the token is empty.
 	 */
-	public boolean isPascalCase(@Nonnull final CharSequence token) {
+	public boolean isPascalCase(@NonNull final CharSequence token) {
 		checkArgument(token.length() > 0, "Token cannot be empty.");
 		return Character.isUpperCase(token.charAt(0));
 	}

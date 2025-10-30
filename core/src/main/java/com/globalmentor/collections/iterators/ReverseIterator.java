@@ -18,7 +18,7 @@ package com.globalmentor.collections.iterators;
 
 import java.util.*;
 
-import javax.annotation.*;
+import org.jspecify.annotations.*;
 
 import static java.util.Objects.*;
 
@@ -37,7 +37,7 @@ class ReverseIterator<E> implements Iterator<E> {
 	 * @param listIterator The list iterator this iterator should decorate.
 	 * @throws NullPointerException if the given iterator is <code>null</code>.
 	 */
-	public ReverseIterator(@Nonnull final ListIterator<E> listIterator) {
+	public ReverseIterator(@NonNull final ListIterator<E> listIterator) {
 		this.listIterator = requireNonNull(listIterator, "Iterator cannot be null"); //save the iterator
 	}
 

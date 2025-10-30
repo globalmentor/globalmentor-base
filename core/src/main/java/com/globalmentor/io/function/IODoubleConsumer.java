@@ -21,7 +21,7 @@ import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.DoubleConsumer;
 
-import javax.annotation.Nonnull;
+import org.jspecify.annotations.*;
 
 /**
  * Represents an operation that accepts a single {@code double}-valued argument and returns no result. This is the primitive type specialization of
@@ -56,7 +56,7 @@ public interface IODoubleConsumer {
 	 * @return A composed {@code DoubleConsumer} that performs in sequence this operation followed by the {@code after} operation.
 	 * @throws IOException if there is an I/O error performing the operation.
 	 */
-	default IODoubleConsumer andThen(@Nonnull IODoubleConsumer after) throws IOException {
+	default IODoubleConsumer andThen(@NonNull IODoubleConsumer after) throws IOException {
 		Objects.requireNonNull(after);
 		return (double t) -> {
 			accept(t);

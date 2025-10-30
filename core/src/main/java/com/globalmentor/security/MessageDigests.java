@@ -24,7 +24,7 @@ import java.util.HexFormat;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.annotation.*;
+import org.jspecify.annotations.*;
 
 import com.globalmentor.model.Named;
 
@@ -114,7 +114,7 @@ public final class MessageDigests {
 	 * @param b The byte to digest.
 	 * @return The array of bytes for the resulting hash value.
 	 */
-	public static byte[] digest(@Nonnull final MessageDigest messageDigest, @Nonnull final byte b) {
+	public static byte[] digest(@NonNull final MessageDigest messageDigest, @NonNull final byte b) {
 		return update(messageDigest, b).digest();
 	}
 
@@ -128,7 +128,7 @@ public final class MessageDigests {
 	 * @param length The number of bytes to use, starting at the offset.
 	 * @return The array of bytes for the resulting hash value.
 	 */
-	public static byte[] digest(@Nonnull final MessageDigest messageDigest, @Nonnull byte[] bytes, final int offset, final int length) {
+	public static byte[] digest(@NonNull final MessageDigest messageDigest, @NonNull byte[] bytes, final int offset, final int length) {
 		return update(messageDigest, bytes, offset, length).digest();
 	}
 
@@ -138,7 +138,7 @@ public final class MessageDigests {
 	 * @param byteBuffer The byte buffer containing the bytes to digest.
 	 * @return The array of bytes for the resulting hash value.
 	 */
-	public static byte[] digest(@Nonnull final MessageDigest messageDigest, @Nonnull ByteBuffer byteBuffer) {
+	public static byte[] digest(@NonNull final MessageDigest messageDigest, @NonNull ByteBuffer byteBuffer) {
 		return update(messageDigest, byteBuffer).digest();
 	}
 
@@ -148,7 +148,7 @@ public final class MessageDigests {
 	 * @param charSequences The character sequences to digest.
 	 * @return The array of bytes for the resulting hash value.
 	 */
-	public static byte[] digest(@Nonnull final MessageDigest messageDigest, @Nonnull final CharSequence... charSequences) {
+	public static byte[] digest(@NonNull final MessageDigest messageDigest, @NonNull final CharSequence... charSequences) {
 		return update(messageDigest, charSequences).digest(); //update the digest with the given character sequences and return the digest
 	}
 
@@ -159,7 +159,7 @@ public final class MessageDigests {
 	 * @param charSequences The character sequences to digest.
 	 * @return The array of bytes for the resulting hash value.
 	 */
-	public static byte[] digest(@Nonnull final MessageDigest messageDigest, @Nonnull final Charset charset, @Nonnull final CharSequence... charSequences) {
+	public static byte[] digest(@NonNull final MessageDigest messageDigest, @NonNull final Charset charset, @NonNull final CharSequence... charSequences) {
 		return update(messageDigest, charset, charSequences).digest(); //update the digest from the character sequence's characters using the given charset and return the digest
 	}
 
@@ -169,7 +169,7 @@ public final class MessageDigests {
 	 * @param characters The characters to digest.
 	 * @return The array of bytes for the resulting hash value.
 	 */
-	public static byte[] digest(@Nonnull final MessageDigest messageDigest, @Nonnull final char[] characters) {
+	public static byte[] digest(@NonNull final MessageDigest messageDigest, @NonNull final char[] characters) {
 		return digest(messageDigest, UTF_8, characters); //digest the characters using UTF-8
 	}
 
@@ -180,7 +180,7 @@ public final class MessageDigests {
 	 * @param characters The arrays of characters to digest.
 	 * @return The array of bytes for the resulting hash value.
 	 */
-	public static byte[] digest(@Nonnull final MessageDigest messageDigest, @Nonnull final Charset charset, @Nonnull final char[] characters) {
+	public static byte[] digest(@NonNull final MessageDigest messageDigest, @NonNull final Charset charset, @NonNull final char[] characters) {
 		final byte[] bytes = toByteArray(characters, charset); //convert the characters to bytes
 		return messageDigest.digest(bytes); //calculate and return the digest
 	}
@@ -191,7 +191,7 @@ public final class MessageDigests {
 	 * @param hashes The hashes to digest.
 	 * @return The array of bytes for the resulting hash value.
 	 */
-	public static byte[] digest(@Nonnull final MessageDigest messageDigest, @Nonnull final Hash... hashes) {
+	public static byte[] digest(@NonNull final MessageDigest messageDigest, @NonNull final Hash... hashes) {
 		return update(messageDigest, hashes).digest();
 	}
 
@@ -202,7 +202,7 @@ public final class MessageDigests {
 	 * @return The array of bytes for the resulting hash value.
 	 * @throws IOException if there is an I/O exception reading from the input stream.
 	 */
-	public static byte[] digest(@Nonnull final MessageDigest messageDigest, @Nonnull final InputStream inputStream) throws IOException {
+	public static byte[] digest(@NonNull final MessageDigest messageDigest, @NonNull final InputStream inputStream) throws IOException {
 		return update(messageDigest, inputStream).digest();
 	}
 
@@ -213,7 +213,7 @@ public final class MessageDigests {
 	 * @return The array of bytes for the resulting hash value.
 	 * @throws IOException if there is an I/O exception reading from the file.
 	 */
-	public static byte[] digest(@Nonnull final MessageDigest messageDigest, @Nonnull final Path file) throws IOException {
+	public static byte[] digest(@NonNull final MessageDigest messageDigest, @NonNull final Path file) throws IOException {
 		return update(messageDigest, file).digest();
 	}
 
@@ -223,7 +223,7 @@ public final class MessageDigests {
 	 * @param b The byte to digest.
 	 * @return The resulting hash.
 	 */
-	public static Hash hash(@Nonnull final MessageDigest messageDigest, @Nonnull final byte b) {
+	public static Hash hash(@NonNull final MessageDigest messageDigest, @NonNull final byte b) {
 		return Hash.fromDigest(update(messageDigest, b));
 	}
 
@@ -233,7 +233,7 @@ public final class MessageDigests {
 	 * @param bytes The array of bytes to digest.
 	 * @return The array of bytes for the resulting hash value.
 	 */
-	public static Hash hash(@Nonnull final MessageDigest messageDigest, @Nonnull byte[] bytes) {
+	public static Hash hash(@NonNull final MessageDigest messageDigest, @NonNull byte[] bytes) {
 		return Hash.fromDigest(update(messageDigest, bytes));
 	}
 
@@ -245,7 +245,7 @@ public final class MessageDigests {
 	 * @param length The number of bytes to use, starting at the offset.
 	 * @return The resulting hash.
 	 */
-	public static Hash hash(@Nonnull final MessageDigest messageDigest, @Nonnull byte[] bytes, final int offset, final int length) {
+	public static Hash hash(@NonNull final MessageDigest messageDigest, @NonNull byte[] bytes, final int offset, final int length) {
 		return Hash.fromDigest(update(messageDigest, bytes, offset, length));
 	}
 
@@ -255,7 +255,7 @@ public final class MessageDigests {
 	 * @param byteBuffer The byte buffer containing the bytes to digest.
 	 * @return The resulting hash.
 	 */
-	public static Hash hash(@Nonnull final MessageDigest messageDigest, @Nonnull ByteBuffer byteBuffer) {
+	public static Hash hash(@NonNull final MessageDigest messageDigest, @NonNull ByteBuffer byteBuffer) {
 		return Hash.fromDigest(update(messageDigest, byteBuffer));
 	}
 
@@ -265,7 +265,7 @@ public final class MessageDigests {
 	 * @param charSequences The character sequences to digest.
 	 * @return The resulting hash.
 	 */
-	public static Hash hash(@Nonnull final MessageDigest messageDigest, @Nonnull final CharSequence... charSequences) {
+	public static Hash hash(@NonNull final MessageDigest messageDigest, @NonNull final CharSequence... charSequences) {
 		return Hash.fromDigest(update(messageDigest, charSequences));
 	}
 
@@ -276,7 +276,7 @@ public final class MessageDigests {
 	 * @param charSequences The character sequences to digest.
 	 * @return The resulting hash.
 	 */
-	public static Hash hash(@Nonnull final MessageDigest messageDigest, @Nonnull final Charset charset, @Nonnull final CharSequence... charSequences) {
+	public static Hash hash(@NonNull final MessageDigest messageDigest, @NonNull final Charset charset, @NonNull final CharSequence... charSequences) {
 		return Hash.fromDigest(update(messageDigest, charset, charSequences));
 	}
 
@@ -286,7 +286,7 @@ public final class MessageDigests {
 	 * @param characters The characters to digest.
 	 * @return The resulting hash.
 	 */
-	public static Hash hash(@Nonnull final MessageDigest messageDigest, @Nonnull final char[] characters) {
+	public static Hash hash(@NonNull final MessageDigest messageDigest, @NonNull final char[] characters) {
 		return Hash.fromDigest(update(messageDigest, characters));
 	}
 
@@ -297,7 +297,7 @@ public final class MessageDigests {
 	 * @param characters The arrays of characters to digest.
 	 * @return The resulting hash.
 	 */
-	public static Hash hash(@Nonnull final MessageDigest messageDigest, @Nonnull final Charset charset, @Nonnull final char[] characters) {
+	public static Hash hash(@NonNull final MessageDigest messageDigest, @NonNull final Charset charset, @NonNull final char[] characters) {
 		return Hash.fromDigest(update(messageDigest, charset, characters));
 	}
 
@@ -307,7 +307,7 @@ public final class MessageDigests {
 	 * @param hashes The hashes to digest.
 	 * @return The resulting hash.
 	 */
-	public static Hash hash(@Nonnull final MessageDigest messageDigest, @Nonnull final Hash... hashes) {
+	public static Hash hash(@NonNull final MessageDigest messageDigest, @NonNull final Hash... hashes) {
 		return Hash.fromDigest(update(messageDigest, hashes));
 	}
 
@@ -319,7 +319,7 @@ public final class MessageDigests {
 	 * @return The resulting hash.
 	 * @throws IOException if there is an I/O exception reading from the input stream.
 	 */
-	public static Hash hash(@Nonnull final MessageDigest messageDigest, @Nonnull final InputStream inputStream) throws IOException {
+	public static Hash hash(@NonNull final MessageDigest messageDigest, @NonNull final InputStream inputStream) throws IOException {
 		return Hash.fromDigest(update(messageDigest, inputStream));
 	}
 
@@ -330,7 +330,7 @@ public final class MessageDigests {
 	 * @return The resulting hash.
 	 * @throws IOException if there is an I/O exception reading from the file.
 	 */
-	public static Hash hash(@Nonnull final MessageDigest messageDigest, @Nonnull final Path file) throws IOException {
+	public static Hash hash(@NonNull final MessageDigest messageDigest, @NonNull final Path file) throws IOException {
 		return Hash.fromDigest(update(messageDigest, file));
 	}
 
@@ -341,7 +341,7 @@ public final class MessageDigests {
 	 * @return The message digest.
 	 * @see MessageDigest#update(byte)
 	 */
-	public static MessageDigest update(@Nonnull final MessageDigest messageDigest, final byte b) {
+	public static MessageDigest update(@NonNull final MessageDigest messageDigest, final byte b) {
 		messageDigest.update(b);
 		return messageDigest;
 	}
@@ -353,7 +353,7 @@ public final class MessageDigests {
 	 * @return The message digest.
 	 * @see MessageDigest#update(byte[])
 	 */
-	public static MessageDigest update(@Nonnull final MessageDigest messageDigest, @Nonnull final byte[] bytes) {
+	public static MessageDigest update(@NonNull final MessageDigest messageDigest, @NonNull final byte[] bytes) {
 		messageDigest.update(bytes);
 		return messageDigest;
 	}
@@ -367,7 +367,7 @@ public final class MessageDigests {
 	 * @return The message digest.
 	 * @see MessageDigest#update(byte[], int, int)
 	 */
-	public static MessageDigest update(@Nonnull final MessageDigest messageDigest, @Nonnull final byte[] bytes, final int offset, final int length) {
+	public static MessageDigest update(@NonNull final MessageDigest messageDigest, @NonNull final byte[] bytes, final int offset, final int length) {
 		messageDigest.update(bytes, offset, length);
 		return messageDigest;
 	}
@@ -379,7 +379,7 @@ public final class MessageDigests {
 	 * @return The message digest.
 	 * @see MessageDigest#update(ByteBuffer)
 	 */
-	public static MessageDigest update(@Nonnull final MessageDigest messageDigest, @Nonnull final ByteBuffer byteBuffer) {
+	public static MessageDigest update(@NonNull final MessageDigest messageDigest, @NonNull final ByteBuffer byteBuffer) {
 		messageDigest.update(byteBuffer);
 		return messageDigest;
 	}
@@ -390,7 +390,7 @@ public final class MessageDigests {
 	 * @param charSequences The character sequences to digest.
 	 * @return The message digest.
 	 */
-	public static MessageDigest update(@Nonnull final MessageDigest messageDigest, @Nonnull final CharSequence... charSequences) {
+	public static MessageDigest update(@NonNull final MessageDigest messageDigest, @NonNull final CharSequence... charSequences) {
 		return update(messageDigest, UTF_8, charSequences); //update the digest using UTF-8
 	}
 
@@ -401,7 +401,7 @@ public final class MessageDigests {
 	 * @param charSequences The character sequences to digest.
 	 * @return The message digest.
 	 */
-	public static MessageDigest update(@Nonnull final MessageDigest messageDigest, @Nonnull final Charset charset, @Nonnull final CharSequence... charSequences) {
+	public static MessageDigest update(@NonNull final MessageDigest messageDigest, @NonNull final Charset charset, @NonNull final CharSequence... charSequences) {
 		for(final CharSequence charSequence : charSequences) { //for each character sequence
 			update(messageDigest, charset, charSequence); //update the digest from the character sequence using the given charset
 		}
@@ -414,7 +414,7 @@ public final class MessageDigests {
 	 * @param characters The characters to digest.
 	 * @return The message digest.
 	 */
-	public static MessageDigest update(@Nonnull final MessageDigest messageDigest, @Nonnull final char[] characters) {
+	public static MessageDigest update(@NonNull final MessageDigest messageDigest, @NonNull final char[] characters) {
 		return update(messageDigest, UTF_8, characters); //update the digest using UTF-8
 	}
 
@@ -425,7 +425,7 @@ public final class MessageDigests {
 	 * @param charSequence The character sequence to digest.
 	 * @return The message digest.
 	 */
-	public static MessageDigest update(@Nonnull final MessageDigest messageDigest, @Nonnull final Charset charset, @Nonnull final CharSequence charSequence) {
+	public static MessageDigest update(@NonNull final MessageDigest messageDigest, @NonNull final Charset charset, @NonNull final CharSequence charSequence) {
 		final byte[] bytes = charSequence.toString().getBytes(charset); //convert the characters to bytes
 		messageDigest.update(bytes); //update the digest
 		return messageDigest; //return the message digest
@@ -438,7 +438,7 @@ public final class MessageDigests {
 	 * @param characters The arrays of characters to digest.
 	 * @return The message digest.
 	 */
-	public static MessageDigest update(@Nonnull final MessageDigest messageDigest, @Nonnull final Charset charset, @Nonnull final char[] characters) {
+	public static MessageDigest update(@NonNull final MessageDigest messageDigest, @NonNull final Charset charset, @NonNull final char[] characters) {
 		final byte[] bytes = toByteArray(characters, charset); //convert the characters to bytes
 		messageDigest.update(bytes); //update the digest
 		return messageDigest; //return the message digest
@@ -450,7 +450,7 @@ public final class MessageDigests {
 	 * @param hashes The hashes to digest.
 	 * @return The message digest.
 	 */
-	public static MessageDigest update(@Nonnull final MessageDigest messageDigest, @Nonnull final Hash... hashes) {
+	public static MessageDigest update(@NonNull final MessageDigest messageDigest, @NonNull final Hash... hashes) {
 		for(final Hash hash : hashes) {
 			hash.updateMessageDigest(messageDigest);
 		}
@@ -464,7 +464,7 @@ public final class MessageDigests {
 	 * @return The message digest.
 	 * @throws IOException if there is an I/O exception reading from the input stream.
 	 */
-	public static MessageDigest update(@Nonnull final MessageDigest messageDigest, @Nonnull final InputStream inputStream) throws IOException {
+	public static MessageDigest update(@NonNull final MessageDigest messageDigest, @NonNull final InputStream inputStream) throws IOException {
 		final byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
 		int readCount;
 		while((readCount = inputStream.read(buffer)) != -1) {
@@ -480,7 +480,7 @@ public final class MessageDigests {
 	 * @return The message digest.
 	 * @throws IOException if there is an I/O exception reading from the file.
 	 */
-	public static MessageDigest update(@Nonnull final MessageDigest messageDigest, @Nonnull final Path file) throws IOException {
+	public static MessageDigest update(@NonNull final MessageDigest messageDigest, @NonNull final Path file) throws IOException {
 		try (final InputStream inputStream = newInputStream(file)) { //our message digest utility will do its own buffering
 			return update(messageDigest, inputStream);
 		}
@@ -495,7 +495,7 @@ public final class MessageDigests {
 	 * @param input The byte for which a digest and then a checksum string should be created.
 	 * @return The lowercase hex checksum string of the resulting hash value.
 	 */
-	public static String checksum(@Nonnull final MessageDigest messageDigest, final byte input) {
+	public static String checksum(@NonNull final MessageDigest messageDigest, final byte input) {
 		return HexFormat.of().formatHex(digest(messageDigest, input));
 	}
 
@@ -509,7 +509,7 @@ public final class MessageDigests {
 	 * @return The lowercase hex checksum string of the resulting hash value.
 	 * @see MessageDigest#digest(byte[])
 	 */
-	public static String checksum(@Nonnull final MessageDigest messageDigest, @Nonnull final byte[] input) {
+	public static String checksum(@NonNull final MessageDigest messageDigest, @NonNull final byte[] input) {
 		return HexFormat.of().formatHex(messageDigest.digest(input));
 	}
 
@@ -524,7 +524,7 @@ public final class MessageDigests {
 	 * @param length The number of bytes to use, starting at the offset.
 	 * @return The lowercase hex checksum string of the resulting hash value.
 	 */
-	public static String checksum(@Nonnull final MessageDigest messageDigest, @Nonnull final byte[] input, final int offset, final int length) {
+	public static String checksum(@NonNull final MessageDigest messageDigest, @NonNull final byte[] input, final int offset, final int length) {
 		return HexFormat.of().formatHex(digest(messageDigest, input, offset, length));
 	}
 
@@ -537,7 +537,7 @@ public final class MessageDigests {
 	 * @param byteBuffer The byte buffer containing the bytes for which a digest and then a checksum string should be created.
 	 * @return The lowercase hex checksum string of the resulting hash value.
 	 */
-	public static String checksum(@Nonnull final MessageDigest messageDigest, @Nonnull final ByteBuffer byteBuffer) {
+	public static String checksum(@NonNull final MessageDigest messageDigest, @NonNull final ByteBuffer byteBuffer) {
 		return HexFormat.of().formatHex(digest(messageDigest, byteBuffer));
 	}
 
@@ -550,7 +550,7 @@ public final class MessageDigests {
 	 * @param charSequence The character sequence for which a checksum should be created.
 	 * @return The lowercase hex checksum string of the resulting hash value.
 	 */
-	public static String checksum(@Nonnull final MessageDigest messageDigest, @Nonnull final CharSequence charSequence) {
+	public static String checksum(@NonNull final MessageDigest messageDigest, @NonNull final CharSequence charSequence) {
 		return HexFormat.of().formatHex(digest(messageDigest, charSequence));
 	}
 
@@ -563,7 +563,7 @@ public final class MessageDigests {
 	 * @param characters The characters for which a checksum should be created.
 	 * @return The lowercase hex checksum string of the resulting hash value.
 	 */
-	public static String checksum(@Nonnull final MessageDigest messageDigest, @Nonnull final char[] characters) {
+	public static String checksum(@NonNull final MessageDigest messageDigest, @NonNull final char[] characters) {
 		return HexFormat.of().formatHex(digest(messageDigest, characters));
 	}
 
@@ -577,7 +577,7 @@ public final class MessageDigests {
 	 * @return The lowercase hex checksum string of the resulting hash value.
 	 * @throws IOException if there is an I/O exception reading from the input stream.
 	 */
-	public static String checksum(@Nonnull final MessageDigest messageDigest, @Nonnull final InputStream inputStream) throws IOException {
+	public static String checksum(@NonNull final MessageDigest messageDigest, @NonNull final InputStream inputStream) throws IOException {
 		return HexFormat.of().formatHex(digest(messageDigest, inputStream));
 	}
 
@@ -591,7 +591,7 @@ public final class MessageDigests {
 	 * @return The lowercase hex checksum string of the resulting hash value.
 	 * @throws IOException if there is an I/O exception reading from the file.
 	 */
-	public static String checksum(@Nonnull final MessageDigest messageDigest, @Nonnull final Path file) throws IOException {
+	public static String checksum(@NonNull final MessageDigest messageDigest, @NonNull final Path file) throws IOException {
 		return HexFormat.of().formatHex(digest(messageDigest, file));
 	}
 
@@ -609,7 +609,7 @@ public final class MessageDigests {
 		 * Name constructor.
 		 * @param name The algorithm name.
 		 */
-		private Algorithm(@Nonnull final String name) {
+		private Algorithm(@NonNull final String name) {
 			this.name = requireNonNull(name);
 		}
 
@@ -638,7 +638,7 @@ public final class MessageDigests {
 		 * @param b The byte to digest.
 		 * @return The array of bytes for the resulting hash value.
 		 */
-		public byte[] digest(@Nonnull final byte b) {
+		public byte[] digest(@NonNull final byte b) {
 			return MessageDigests.digest(newMessageDigest(), b);
 		}
 
@@ -649,7 +649,7 @@ public final class MessageDigests {
 		 * @param length The number of bytes to use, starting at the offset.
 		 * @return The array of bytes for the resulting hash value.
 		 */
-		public byte[] digest(@Nonnull byte[] bytes, final int offset, final int length) {
+		public byte[] digest(@NonNull byte[] bytes, final int offset, final int length) {
 			return MessageDigests.digest(newMessageDigest(), bytes, offset, length);
 		}
 
@@ -659,7 +659,7 @@ public final class MessageDigests {
 		 * @param bytes The array of bytes to digest.
 		 * @return The array of bytes for the resulting hash value.
 		 */
-		public byte[] digest(@Nonnull byte[] bytes) {
+		public byte[] digest(@NonNull byte[] bytes) {
 			return newMessageDigest().digest(bytes);
 		}
 
@@ -668,7 +668,7 @@ public final class MessageDigests {
 		 * @param byteBuffer The byte buffer containing the bytes to digest.
 		 * @return The array of bytes for the resulting hash value.
 		 */
-		public byte[] digest(@Nonnull ByteBuffer byteBuffer) {
+		public byte[] digest(@NonNull ByteBuffer byteBuffer) {
 			return MessageDigests.digest(newMessageDigest(), byteBuffer);
 		}
 
@@ -679,7 +679,7 @@ public final class MessageDigests {
 		 * @return The array of bytes for the resulting hash value.
 		 * @throws RuntimeException if no {@link Provider} supports a {@link MessageDigestSpi} implementation for this algorithm.
 		 */
-		public byte[] digest(@Nonnull final CharSequence... charSequences) {
+		public byte[] digest(@NonNull final CharSequence... charSequences) {
 			return MessageDigests.digest(newMessageDigest(), charSequences);
 		}
 
@@ -691,7 +691,7 @@ public final class MessageDigests {
 		 * @return The array of bytes for the resulting hash value.
 		 * @throws RuntimeException if no {@link Provider} supports a {@link MessageDigestSpi} implementation for this algorithm.
 		 */
-		public byte[] digest(@Nonnull final Charset charset, @Nonnull final CharSequence... charSequences) {
+		public byte[] digest(@NonNull final Charset charset, @NonNull final CharSequence... charSequences) {
 			return MessageDigests.digest(newMessageDigest(), charSequences);
 		}
 
@@ -702,7 +702,7 @@ public final class MessageDigests {
 		 * @return The array of bytes for the resulting hash value.
 		 * @throws RuntimeException if no {@link Provider} supports a {@link MessageDigestSpi} implementation for this algorithm.
 		 */
-		public byte[] digest(@Nonnull final char[] characters) {
+		public byte[] digest(@NonNull final char[] characters) {
 			return MessageDigests.digest(newMessageDigest(), characters);
 		}
 
@@ -714,7 +714,7 @@ public final class MessageDigests {
 		 * @return The array of bytes for the resulting hash value.
 		 * @throws RuntimeException if no {@link Provider} supports a {@link MessageDigestSpi} implementation for this algorithm.
 		 */
-		public byte[] digest(@Nonnull final Charset charset, @Nonnull final char[] characters) {
+		public byte[] digest(@NonNull final Charset charset, @NonNull final char[] characters) {
 			return MessageDigests.digest(newMessageDigest(), charset, characters);
 		}
 
@@ -726,7 +726,7 @@ public final class MessageDigests {
 		 * @throws RuntimeException if no {@link Provider} supports a {@link MessageDigestSpi} implementation for this algorithm.
 		 * @throws IOException if there is an I/O exception reading from the input stream.
 		 */
-		public byte[] digest(@Nonnull final InputStream inputStream) throws IOException {
+		public byte[] digest(@NonNull final InputStream inputStream) throws IOException {
 			return MessageDigests.digest(newMessageDigest(), inputStream);
 		}
 
@@ -738,7 +738,7 @@ public final class MessageDigests {
 		 * @throws RuntimeException if no {@link Provider} supports a {@link MessageDigestSpi} implementation for this algorithm.
 		 * @throws IOException if there is an I/O exception reading from the file.
 		 */
-		public byte[] digest(@Nonnull final Path file) throws IOException {
+		public byte[] digest(@NonNull final Path file) throws IOException {
 			return MessageDigests.digest(newMessageDigest(), file);
 		}
 
@@ -765,7 +765,7 @@ public final class MessageDigests {
 		 * @throws RuntimeException if no {@link Provider} supports a {@link MessageDigestSpi} implementation for this algorithm.
 		 * @see #emptyHash()
 		 */
-		public boolean isEmpty(@Nonnull final Hash hash) {
+		public boolean isEmpty(@NonNull final Hash hash) {
 			return hash.equals(emptyHash());
 		}
 
@@ -774,7 +774,7 @@ public final class MessageDigests {
 		 * @param b The byte to digest.
 		 * @return The resulting hash.
 		 */
-		public Hash hash(@Nonnull final byte b) {
+		public Hash hash(@NonNull final byte b) {
 			return MessageDigests.hash(newMessageDigest(), b);
 		}
 
@@ -783,7 +783,7 @@ public final class MessageDigests {
 		 * @param bytes The array of bytes to digest.
 		 * @return The array of bytes for the resulting hash value.
 		 */
-		public Hash hash(@Nonnull byte[] bytes) {
+		public Hash hash(@NonNull byte[] bytes) {
 			return MessageDigests.hash(newMessageDigest(), bytes);
 		}
 
@@ -794,7 +794,7 @@ public final class MessageDigests {
 		 * @param length The number of bytes to use, starting at the offset.
 		 * @return The resulting hash.
 		 */
-		public Hash hash(@Nonnull byte[] bytes, final int offset, final int length) {
+		public Hash hash(@NonNull byte[] bytes, final int offset, final int length) {
 			return MessageDigests.hash(newMessageDigest(), bytes, offset, length);
 		}
 
@@ -803,7 +803,7 @@ public final class MessageDigests {
 		 * @param byteBuffer The byte buffer containing the bytes to digest.
 		 * @return The resulting hash.
 		 */
-		public Hash hash(@Nonnull ByteBuffer byteBuffer) {
+		public Hash hash(@NonNull ByteBuffer byteBuffer) {
 			return MessageDigests.hash(newMessageDigest(), byteBuffer);
 		}
 
@@ -814,7 +814,7 @@ public final class MessageDigests {
 		 * @return The resulting hash.
 		 * @throws RuntimeException if no {@link Provider} supports a {@link MessageDigestSpi} implementation for this algorithm.
 		 */
-		public Hash hash(@Nonnull final CharSequence... charSequences) {
+		public Hash hash(@NonNull final CharSequence... charSequences) {
 			return MessageDigests.hash(newMessageDigest(), charSequences);
 		}
 
@@ -826,7 +826,7 @@ public final class MessageDigests {
 		 * @return The resulting hash.
 		 * @throws RuntimeException if no {@link Provider} supports a {@link MessageDigestSpi} implementation for this algorithm.
 		 */
-		public Hash hash(@Nonnull final Charset charset, @Nonnull final CharSequence... charSequences) {
+		public Hash hash(@NonNull final Charset charset, @NonNull final CharSequence... charSequences) {
 			return MessageDigests.hash(newMessageDigest(), charSequences);
 		}
 
@@ -837,7 +837,7 @@ public final class MessageDigests {
 		 * @return The resulting hash.
 		 * @throws RuntimeException if no {@link Provider} supports a {@link MessageDigestSpi} implementation for this algorithm.
 		 */
-		public Hash hash(@Nonnull final char[] characters) {
+		public Hash hash(@NonNull final char[] characters) {
 			return MessageDigests.hash(newMessageDigest(), characters);
 		}
 
@@ -849,7 +849,7 @@ public final class MessageDigests {
 		 * @return The resulting hash.
 		 * @throws RuntimeException if no {@link Provider} supports a {@link MessageDigestSpi} implementation for this algorithm.
 		 */
-		public Hash hash(@Nonnull final Charset charset, @Nonnull final char[] characters) {
+		public Hash hash(@NonNull final Charset charset, @NonNull final char[] characters) {
 			return MessageDigests.hash(newMessageDigest(), charset, characters);
 		}
 
@@ -860,7 +860,7 @@ public final class MessageDigests {
 		 * @return The resulting hash.
 		 * @throws RuntimeException if no {@link Provider} supports a {@link MessageDigestSpi} implementation for this algorithm.
 		 */
-		public Hash hash(@Nonnull final Hash... hashes) {
+		public Hash hash(@NonNull final Hash... hashes) {
 			return MessageDigests.hash(newMessageDigest(), hashes);
 		}
 
@@ -872,7 +872,7 @@ public final class MessageDigests {
 		 * @throws RuntimeException if no {@link Provider} supports a {@link MessageDigestSpi} implementation for this algorithm.
 		 * @throws IOException if there is an I/O exception reading from the input stream.
 		 */
-		public Hash hash(@Nonnull final InputStream inputStream) throws IOException {
+		public Hash hash(@NonNull final InputStream inputStream) throws IOException {
 			return MessageDigests.hash(newMessageDigest(), inputStream);
 		}
 
@@ -884,7 +884,7 @@ public final class MessageDigests {
 		 * @throws RuntimeException if no {@link Provider} supports a {@link MessageDigestSpi} implementation for this algorithm.
 		 * @throws IOException if there is an I/O exception reading from the file.
 		 */
-		public Hash hash(@Nonnull final Path file) throws IOException {
+		public Hash hash(@NonNull final Path file) throws IOException {
 			return MessageDigests.hash(newMessageDigest(), file);
 		}
 
@@ -909,7 +909,7 @@ public final class MessageDigests {
 		 * @return The lowercase hex checksum string of the resulting hash value.
 		 * @see MessageDigest#digest(byte[])
 		 */
-		public String checksum(@Nonnull final byte[] input) {
+		public String checksum(@NonNull final byte[] input) {
 			return MessageDigests.checksum(newMessageDigest(), input);
 		}
 
@@ -923,7 +923,7 @@ public final class MessageDigests {
 		 * @param length The number of bytes to use, starting at the offset.
 		 * @return The lowercase hex checksum string of the resulting hash value.
 		 */
-		public String checksum(@Nonnull final byte[] input, final int offset, final int length) {
+		public String checksum(@NonNull final byte[] input, final int offset, final int length) {
 			return MessageDigests.checksum(newMessageDigest(), input, offset, length);
 		}
 
@@ -935,7 +935,7 @@ public final class MessageDigests {
 		 * @param byteBuffer The byte buffer containing the bytes for which a digest and then a checksum string should be created.
 		 * @return The lowercase hex checksum string of the resulting hash value.
 		 */
-		public String checksum(@Nonnull final ByteBuffer byteBuffer) {
+		public String checksum(@NonNull final ByteBuffer byteBuffer) {
 			return MessageDigests.checksum(newMessageDigest(), byteBuffer);
 		}
 
@@ -948,7 +948,7 @@ public final class MessageDigests {
 		 * @throws RuntimeException if no {@link Provider} supports a {@link MessageDigestSpi} implementation for this algorithm.
 		 * @return The lowercase hex checksum string of the resulting hash value.
 		 */
-		public String checksum(@Nonnull final CharSequence charSequence) {
+		public String checksum(@NonNull final CharSequence charSequence) {
 			return MessageDigests.checksum(newMessageDigest(), charSequence);
 		}
 
@@ -961,7 +961,7 @@ public final class MessageDigests {
 		 * @return The lowercase hex checksum string of the resulting hash value.
 		 * @throws RuntimeException if no {@link Provider} supports a {@link MessageDigestSpi} implementation for this algorithm.
 		 */
-		public String checksum(@Nonnull final char[] characters) {
+		public String checksum(@NonNull final char[] characters) {
 			return MessageDigests.checksum(newMessageDigest(), characters);
 		}
 
@@ -976,7 +976,7 @@ public final class MessageDigests {
 		 * @throws RuntimeException if no {@link Provider} supports a {@link MessageDigestSpi} implementation for this algorithm.
 		 * @throws IOException if there is an I/O exception reading from the input stream.
 		 */
-		public String checksum(@Nonnull final InputStream inputStream) throws IOException {
+		public String checksum(@NonNull final InputStream inputStream) throws IOException {
 			return MessageDigests.checksum(newMessageDigest(), inputStream);
 		}
 
@@ -990,7 +990,7 @@ public final class MessageDigests {
 		 * @throws RuntimeException if no {@link Provider} supports a {@link MessageDigestSpi} implementation for this algorithm.
 		 * @throws IOException if there is an I/O exception reading from the file.
 		 */
-		public String checksum(@Nonnull final Path file) throws IOException {
+		public String checksum(@NonNull final Path file) throws IOException {
 			return MessageDigests.checksum(newMessageDigest(), file);
 		}
 
@@ -1010,7 +1010,7 @@ public final class MessageDigests {
 		 * @see #getName()
 		 */
 		@Override
-		public boolean equals(@Nonnull final Object object) {
+		public boolean equals(@NonNull final Object object) {
 			if(this == object) {
 				return true;
 			}
