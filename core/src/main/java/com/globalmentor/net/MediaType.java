@@ -20,6 +20,7 @@ import java.net.URLConnection;
 import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.*;
 import java.util.stream.Stream;
 
@@ -150,6 +151,20 @@ public final class MediaType {
 	}
 
 	/**
+	 * Normalizes the given input to ASCII lowercase and validates that it conforms to the rules for <code>restricted-name</code> according to RFC 6838.
+	 * @apiNote This method is useful for normalizing and validating a type, subtype, or parameter name.
+	 * @param input The character sequence to normalize and check.
+	 * @return The normalized (ASCII lowercase) input as a string.
+	 * @throws NullPointerException if the given input is <code>null</code>.
+	 * @throws IllegalArgumentException if the normalized input does not conform to the rules for <code>restricted-name</code>.
+	 * @see #RESTRICTED_NAME_PATTERN
+	 * @see #checkArgumentRestrictedName(CharSequence)
+	 */
+	private static String normalize(final CharSequence input) {
+		return checkArgumentRestrictedName(ASCII.toLowerCaseString(input));
+	}
+
+	/**
 	 * A pattern for checking the basic form of a parameter, <em>including</em> the {@value #PARAMETER_DELIMITER_CHAR} delimiter that precedes and separates each
 	 * parameter. The pattern may be repeated. The two matching groups are the name and value.
 	 * @see #PARAMETER_PATTERN_NAME_GROUP
@@ -236,6 +251,21 @@ public final class MediaType {
 	/** The shared <code>application/octet-stream</code> media type. */
 	public static final MediaType APPLICATION_OCTET_STREAM_MEDIA_TYPE = MediaType.of(APPLICATION_PRIMARY_TYPE, OCTET_STREAM_SUBTYPE);
 
+	/**
+	 * Cache of recently parsed media types, organized as a two-level map keyed first by primary type, then by subtype. The cached instance is only returned if
+	 * the parameters also match.
+	 * @implNote This cache optimizes for the common case where the same media types (especially without parameters or with consistent parameters) are encountered
+	 *           repeatedly. The two-level structure avoids the overhead of constructing normalized cache keys and leverages the fact that there are relatively
+	 *           few primary types. When the same type/subtype combination is parsed with different parameters, the cache entry is overwritten with the most
+	 *           recently parsed instance—only one parameter variant per type/subtype pair is retained at any time. This "last variant wins" behavior is not worse
+	 *           than having no cache. To prevent unbounded memory growth from malicious input, each primary type's subtype map is capped at
+	 *           {@value #CACHE_MAX_SUBTYPES_PER_PRIMARY_TYPE} entries; additional subtypes are still parsed correctly but not cached.
+	 */
+	private static final Map<String, Map<String, MediaType>> CACHE = new ConcurrentHashMap<>();
+
+	/** The maximum number of subtypes to cache per primary type, to prevent unbounded growth from malicious or malformed input. */
+	private static final int CACHE_MAX_SUBTYPES_PER_PRIMARY_TYPE = 1000;
+
 	private final String primaryType;
 
 	/**
@@ -278,18 +308,19 @@ public final class MediaType {
 
 	/**
 	 * Primary type and subtype constructor.
-	 * @implSpec The primary type and subtype are each normalized to lowercase.
+	 * @implSpec This private constructor assumes that the primary type and subtype have already been normalized to lowercase and validated to conform to the
+	 *           {@link MediaType#RESTRICTED_NAME_PATTERN} pattern. Normalization and validation should be performed in all public static factory methods before
+	 *           invoking this constructor.
 	 * @implNote This private constructor assumes that the given parameter set is immutable and will not be referenced elsewhere, and therefore does not make a
 	 *           defensive copy.
-	 * @param primaryType The primary type of the media type.
-	 * @param subType The subtype of the media type.
+	 * @param primaryType The primary type of the media type, already normalized to lowercase.
+	 * @param subType The subtype of the media type, already normalized to lowercase.
 	 * @param parameters The media type parameters.
 	 * @throws NullPointerException if the given primary type, subtype, and/or parameters is <code>null</code>.
-	 * @throws IllegalArgumentException if the primary type and/or subtype does not conform to the {@link MediaType#RESTRICTED_NAME_PATTERN} pattern.
 	 */
 	private MediaType(final String primaryType, final String subType, final Set<Parameter> parameters) {
-		this.primaryType = ASCII.toLowerCase(checkArgumentRestrictedName(primaryType)).toString();
-		this.subType = ASCII.toLowerCase(checkArgumentRestrictedName(subType)).toString();
+		this.primaryType = primaryType;
+		this.subType = subType;
 		this.parameters = requireNonNull(parameters);
 	}
 
@@ -303,7 +334,7 @@ public final class MediaType {
 	 * @throws IllegalArgumentException if the primary type and/or subtype does not conform to the {@link MediaType#RESTRICTED_NAME_PATTERN} pattern.
 	 */
 	public static MediaType of(final String primaryType, final String subType, final Parameter... parameters) {
-		return new MediaType(primaryType, subType, Set.of(parameters)); //create a new media type from the given values, creating an immutable copy of the parameters
+		return new MediaType(normalize(primaryType), normalize(subType), Set.of(parameters)); //create a new media type from the given values, creating an immutable copy of the parameters
 	}
 
 	/**
@@ -317,15 +348,17 @@ public final class MediaType {
 	 * @throws IllegalArgumentException if the primary type and/or subtype does not conform to the {@link MediaType#RESTRICTED_NAME_PATTERN} pattern.
 	 */
 	public static MediaType of(final String primaryType, final String subType, final Set<Parameter> parameters) {
-		return new MediaType(primaryType, subType, Set.copyOf(parameters)); //create a new media type from the given values, creating an immutable copy of the parameters
+		return new MediaType(normalize(primaryType), normalize(subType), Set.copyOf(parameters)); //create a new media type from the given values, creating an immutable copy of the parameters
 	}
 
 	/**
 	 * Parses a media type object from a sequence of characters.
 	 * @implSpec The primary type, subtype, and parameter names, if any, are each normalized to lowercase. The value of the {@value MediaType#CHARSET_PARAMETER}
 	 *           parameter, if present, is normalized to lowercase.
+	 * @implSpec This implementation uses a two-level cache to avoid re-parsing frequently encountered media types. The cache provides best performance for media
+	 *           types without parameters or with consistent parameters across invocations.
 	 * @param text The character sequence representation of the media type.
-	 * @return A new media type object parsed from the string.
+	 * @return A media type object parsed from the string, either newly created or retrieved from cache.
 	 * @throws IllegalArgumentException if the primary type, subtype, and/or a parameter name does not conform to the {@link MediaType#RESTRICTED_NAME_PATTERN}
 	 *           pattern.
 	 */
@@ -335,7 +368,24 @@ public final class MediaType {
 		final String subType = matcher.group(PATTERN_SUBTYPE_GROUP);
 		final String parameterString = matcher.group(PATTERN_PARAMETERS_GROUP);
 		final Set<Parameter> parameters = parameterString != null ? parseParameters(parameterString) : emptySet();
-		return new MediaType(primaryType, subType, parameters);
+
+		//Normalize and validate.
+		final String normalizedPrimaryType = normalize(primaryType);
+		final String normalizedSubType = normalize(subType);
+
+		//Check cache: first by primary type, then by subtype, then verify parameters match.
+		final MediaType cachedMediaType = CACHE.computeIfAbsent(normalizedPrimaryType, k -> new ConcurrentHashMap<>()).get(normalizedSubType);
+		if(cachedMediaType != null && cachedMediaType.getParameters().equals(parameters)) {
+			return cachedMediaType;
+		}
+
+		//Create new instance and update cache if not at capacity.
+		final MediaType mediaType = new MediaType(normalizedPrimaryType, normalizedSubType, parameters);
+		final Map<String, MediaType> subtypeMap = CACHE.get(normalizedPrimaryType);
+		if(subtypeMap.size() < CACHE_MAX_SUBTYPES_PER_PRIMARY_TYPE) {
+			subtypeMap.put(normalizedSubType, mediaType);
+		}
+		return mediaType;
 	}
 
 	/**
@@ -550,8 +600,9 @@ public final class MediaType {
 
 	/**
 	 * {@inheritDoc}
-	 * @implSpec This implementation returns the hash code of the primary type, the subtype, the parameter names, and the {@value #CHARSET_PARAMETER} parameter
-	 *           value in a case insensitive manner, as these items have already been normalized by this class.
+	 * @implSpec This implementation returns the hash code of the primary type, the subtype, and all parameters (including both parameter names and values). The
+	 *           primary type, subtype, parameter names, and the {@value #CHARSET_PARAMETER} parameter value are hashed in a case-insensitive manner, as these
+	 *           items have already been normalized to lowercase by this class. All other parameter values are hashed as-is (case-sensitive).
 	 * @return A hash code value for this object.
 	 * @see #getPrimaryType()
 	 * @see #getSubType()
@@ -684,7 +735,7 @@ public final class MediaType {
 	public static String createSubTypeSuffix(final String... suffixes) {
 		final StringBuilder stringBuilder = new StringBuilder();
 		for(final String suffix : suffixes) { //for each suffix
-			stringBuilder.append(SUBTYPE_SUFFIX_DELIMITER_CHAR).append(ASCII.toLowerCase(checkArgumentRestrictedName(suffix))); //+suffix
+			stringBuilder.append(SUBTYPE_SUFFIX_DELIMITER_CHAR).append(normalize(suffix)); //+suffix
 		}
 		return stringBuilder.toString(); //return the suffix we constructed
 	}
@@ -746,8 +797,7 @@ public final class MediaType {
 		 * @throws IllegalArgumentException if the parameter value includes control characters other than horizontal tab.
 		 */
 		Parameter(final String name, final String value) {
-			super(ASCII.toLowerCase(checkArgumentRestrictedName(name)).toString(),
-					ASCII.equalsIgnoreCase(name, CHARSET_PARAMETER) ? ASCII.toLowerCase(value).toString() : value);
+			super(normalize(name), ASCII.equalsIgnoreCase(name, CHARSET_PARAMETER) ? ASCII.toLowerCase(value).toString() : value);
 			checkArgument(!contains(value, QUOTED_STRING_PROHIBITED_CONTROL_CHARACTERS), "Parameter value `%s` containing non-tab control characters not supported.",
 					value);
 		}
