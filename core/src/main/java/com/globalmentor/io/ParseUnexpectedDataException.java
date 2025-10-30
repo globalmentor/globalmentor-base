@@ -22,7 +22,7 @@ import static java.util.Objects.*;
 import java.io.Reader;
 import java.util.*;
 
-import javax.annotation.*;
+import org.jspecify.annotations.*;
 
 import com.globalmentor.java.Characters;
 
@@ -53,7 +53,7 @@ public class ParseUnexpectedDataException extends ParseIOException {
 	 * Sets the expected characters.
 	 * @param expectedCharacters The expected characters.
 	 */
-	protected final void setExpectedCharacters(@Nonnull final Characters expectedCharacters) {
+	protected final void setExpectedCharacters(@NonNull final Characters expectedCharacters) {
 		this.expectedCharacters = requireNonNull(expectedCharacters);
 	}
 
@@ -91,7 +91,7 @@ public class ParseUnexpectedDataException extends ParseIOException {
 	 * Sets the expected strings.
 	 * @param expectedStrings The expected strings.
 	 */
-	protected final void setExpectedStrings(@Nonnull final List<String> expectedStrings) {
+	protected final void setExpectedStrings(@NonNull final List<String> expectedStrings) {
 		this.expectedStrings = List.copyOf(expectedStrings);
 	}
 
@@ -110,7 +110,7 @@ public class ParseUnexpectedDataException extends ParseIOException {
 	 * Sets the string found.
 	 * @param foundString The string found.
 	 */
-	protected final void setFoundString(@Nonnull final String foundString) {
+	protected final void setFoundString(@NonNull final String foundString) {
 		this.foundString = requireNonNull(foundString);
 	}
 

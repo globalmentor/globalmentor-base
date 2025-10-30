@@ -18,7 +18,7 @@ package com.globalmentor.java;
 
 import java.util.Comparator;
 
-import javax.annotation.*;
+import org.jspecify.annotations.*;
 
 import com.globalmentor.collections.comparators.SortOrder;
 
@@ -94,7 +94,7 @@ public final class Comparables {
 	 * @see java.lang.Math#min(int, int)
 	 * @see java.util.Collections#min(java.util.Collection)
 	 */
-	public static <T extends Comparable<? super T>> T min(@Nonnull final T a, @Nonnull final T b) {
+	public static <T extends Comparable<? super T>> T min(@NonNull final T a, @NonNull final T b) {
 		return a.compareTo(b) > 0 ? b : a;
 	}
 
@@ -107,7 +107,7 @@ public final class Comparables {
 	 * @see java.lang.Math#max(int, int)
 	 * @see java.util.Collections#max(java.util.Collection)
 	 */
-	public static <T extends Comparable<? super T>> T max(@Nonnull final T a, @Nonnull final T b) {
+	public static <T extends Comparable<? super T>> T max(@NonNull final T a, @NonNull final T b) {
 		return a.compareTo(b) < 0 ? b : a;
 	}
 

@@ -21,7 +21,7 @@ import static com.globalmentor.java.Conditions.*;
 
 import java.util.*;
 
-import javax.annotation.*;
+import org.jspecify.annotations.*;
 
 import com.globalmentor.java.CharSequences;
 
@@ -54,7 +54,7 @@ public final class DomainName {
 	 * @param name The string form of the domain name; empty names are allowed.
 	 * @throws IllegalArgumentException if a domain name other than the root begins with a dot <code>.</code> character, or has two subsequent dot characters.
 	 */
-	private DomainName(@Nonnull final String name) {
+	private DomainName(@NonNull final String name) {
 		checkArgument(name.length() == 1 || !startsWith(name, DELIMITER), "Non-root domain name %s must not start with the `%s` delimiter.", name, DELIMITER);
 		checkArgument(!name.contains(SUBSEQUENT_DELIMITERS), "Domain name %s must not contain subsequent `%s` delimiters.", name, DELIMITER);
 		this.name = name;
@@ -67,7 +67,7 @@ public final class DomainName {
 	 * @throws IllegalArgumentException if a domain name other than the root begins with a dot <code>.</code> character, or has two subsequent dot characters.
 	 * @see #DELIMITER
 	 */
-	public static DomainName of(@Nonnull final String name) {
+	public static DomainName of(@NonNull final String name) {
 		if(name.isEmpty()) {
 			return EMPTY;
 		}
@@ -146,7 +146,7 @@ public final class DomainName {
 	 * @return A domain name that, when resolved against this domain, will result in the given domain.
 	 * @see #resolve(DomainName)
 	 */
-	public DomainName relativize(@Nonnull final DomainName domainName) {
+	public DomainName relativize(@NonNull final DomainName domainName) {
 		if(!isEmpty()) {
 			final String string = toString();
 			final String domainNameString = domainName.toString();
@@ -181,7 +181,7 @@ public final class DomainName {
 	 * @return The other domain name resolved against this one.
 	 * @see #relativize(DomainName)
 	 */
-	public DomainName resolve(@Nonnull final DomainName domainName) {
+	public DomainName resolve(@NonNull final DomainName domainName) {
 		if(domainName.isEmpty()) {
 			return this;
 		}
@@ -235,7 +235,7 @@ public final class DomainName {
 	 * @throws NullPointerException if the iterable is <code>null</code> or contains a <code>null</code> value.
 	 * @throws IllegalArgumentException if both relative and absolute domains names are passed.
 	 */
-	public static Optional<DomainName> findGreatestCommonBase(@Nonnull final Iterable<DomainName> domainNames) {
+	public static Optional<DomainName> findGreatestCommonBase(@NonNull final Iterable<DomainName> domainNames) {
 		final Iterator<DomainName> domainNameIterator = domainNames.iterator();
 		if(!domainNameIterator.hasNext()) { //no domains given
 			return Optional.empty();

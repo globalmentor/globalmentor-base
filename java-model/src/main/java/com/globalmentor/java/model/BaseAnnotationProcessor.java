@@ -24,7 +24,7 @@ import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import javax.annotation.*;
+import org.jspecify.annotations.*;
 import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.TypeElement;
@@ -107,7 +107,7 @@ public abstract class BaseAnnotationProcessor extends AbstractProcessor {
 	 * @return The type element for the class, which will not be present if no type element can be uniquely determined.
 	 * @see Class#getCanonicalName()
 	 */
-	public Optional<TypeElement> findTypeElementForClass(@Nonnull final Class<?> clazz) { //TODO create module-related variations as well
+	public Optional<TypeElement> findTypeElementForClass(@NonNull final Class<?> clazz) { //TODO create module-related variations as well
 		return ModelElements.findTypeElementForClass(getProcessingEnvironment().getElementUtils(), clazz);
 	}
 
@@ -119,7 +119,7 @@ public abstract class BaseAnnotationProcessor extends AbstractProcessor {
 	 * @param canonicalName The canonical name of the type element to return.
 	 * @return The named type element, which will not be present if no type element can be uniquely determined.
 	 */
-	public Optional<TypeElement> findTypeElementForCanonicalName(@Nonnull final CharSequence canonicalName) { //TODO create module-related variations as well
+	public Optional<TypeElement> findTypeElementForCanonicalName(@NonNull final CharSequence canonicalName) { //TODO create module-related variations as well
 		return ModelElements.findTypeElementForCanonicalName(getProcessingEnvironment().getElementUtils(), canonicalName);
 	}
 
@@ -132,8 +132,8 @@ public abstract class BaseAnnotationProcessor extends AbstractProcessor {
 	 * @param annotationClass The type of annotation to look for.
 	 * @return The interfaces of the type element which are in turn annotated with the given annotation.
 	 */
-	public Stream<DeclaredType> elementInterfacesAnnotatedWith(@Nonnull final Elements elements, @Nonnull final TypeElement typeElement,
-			@Nonnull final Class<? extends Annotation> annotationClass) {
+	public Stream<DeclaredType> elementInterfacesAnnotatedWith(@NonNull final Elements elements, @NonNull final TypeElement typeElement,
+			@NonNull final Class<? extends Annotation> annotationClass) {
 		return ModelElements.elementInterfacesAnnotatedWith(elements, getProcessingEnvironment().getTypeUtils(), typeElement, annotationClass);
 	}
 
@@ -149,7 +149,7 @@ public abstract class BaseAnnotationProcessor extends AbstractProcessor {
 	 * @throws IllegalArgumentException if no type could be found for the given class; or given a type for an executable, package, or module is invalid.
 	 * @see Types#isAssignable(TypeMirror, TypeMirror)
 	 */
-	public boolean isTypeAssignableTo(@Nonnull final TypeMirror typeMirror, @Nonnull final Class<?> clazz) {
+	public boolean isTypeAssignableTo(@NonNull final TypeMirror typeMirror, @NonNull final Class<?> clazz) {
 		return ModelTypes.isTypeAssignableTo(getProcessingEnvironment().getElementUtils(), getProcessingEnvironment().getTypeUtils(), typeMirror, clazz);
 	}
 
@@ -163,7 +163,7 @@ public abstract class BaseAnnotationProcessor extends AbstractProcessor {
 	 * @throws IllegalArgumentException if no type could be found for the given class; or given a type for an executable, package, or module is invalid.
 	 * @see Types#isAssignable(TypeMirror, TypeMirror)
 	 */
-	public Predicate<TypeMirror> isTypeAssignableTo(@Nonnull final Class<?> clazz) {
+	public Predicate<TypeMirror> isTypeAssignableTo(@NonNull final Class<?> clazz) {
 		return ModelTypes.isTypeAssignableTo(getProcessingEnvironment().getElementUtils(), getProcessingEnvironment().getTypeUtils(), clazz);
 	}
 
@@ -177,7 +177,7 @@ public abstract class BaseAnnotationProcessor extends AbstractProcessor {
 	 * @see Elements#getTypeElement(CharSequence)
 	 * @see Types#getDeclaredType(TypeElement, TypeMirror...)
 	 */
-	public Optional<DeclaredType> findDeclaredTypeForClass(@Nonnull final Class<?> clazz, @Nonnull final TypeMirror... typeArgs) {
+	public Optional<DeclaredType> findDeclaredTypeForClass(@NonNull final Class<?> clazz, @NonNull final TypeMirror... typeArgs) {
 		return ModelTypes.findDeclaredType(getProcessingEnvironment().getElementUtils(), getProcessingEnvironment().getTypeUtils(), clazz, typeArgs);
 	}
 
@@ -192,7 +192,7 @@ public abstract class BaseAnnotationProcessor extends AbstractProcessor {
 	 * @see Types#getDeclaredType(TypeElement, TypeMirror...)
 	 * @see #getUnboundedWildcardType()
 	 */
-	public Optional<DeclaredType> findDeclaredTypeWithUnboundedWildcardForClass(@Nonnull final Class<?> clazz) {
+	public Optional<DeclaredType> findDeclaredTypeWithUnboundedWildcardForClass(@NonNull final Class<?> clazz) {
 		return ModelTypes.findDeclaredTypeWithUnboundedWildcardForClass(getProcessingEnvironment().getElementUtils(), getProcessingEnvironment().getTypeUtils(),
 				clazz);
 	}

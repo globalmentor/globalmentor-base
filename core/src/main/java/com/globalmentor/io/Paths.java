@@ -30,7 +30,7 @@ import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
-import javax.annotation.*;
+import org.jspecify.annotations.*;
 
 /**
  * Utility methods to manipulate {@link Path}s.
@@ -59,7 +59,7 @@ public class Paths {
 	 * @see Path#resolveSibling(Path)
 	 * @throws IllegalArgumentException if the old base path is not a base path (or the same path) of the given path.
 	 */
-	public static Path changeBase(@Nonnull final Path path, Path oldBasePath, Path newBasePath) {
+	public static Path changeBase(@NonNull final Path path, Path oldBasePath, Path newBasePath) {
 		oldBasePath = oldBasePath.normalize();
 		newBasePath = newBasePath.normalize();
 		if(oldBasePath.equals(newBasePath)) {
@@ -78,7 +78,7 @@ public class Paths {
 	 * @throws IllegalArgumentException if the given path is not absolute.
 	 * @see Path#isAbsolute()
 	 */
-	public static Path checkArgumentAbsolute(@Nonnull final Path path) {
+	public static Path checkArgumentAbsolute(@NonNull final Path path) {
 		checkArgument(path.isAbsolute(), "The path %s is not absolute.", path);
 		return path;
 	}
@@ -91,7 +91,7 @@ public class Paths {
 	 * @throws IllegalArgumentException if the given subpath is not a subpath of (or the same path as) the base path.
 	 * @see #isSubPath(Path, Path)
 	 */
-	public static Path checkArgumentSubPath(@Nonnull final Path basePath, @Nonnull final Path subPath) {
+	public static Path checkArgumentSubPath(@NonNull final Path basePath, @NonNull final Path subPath) {
 		checkArgument(isSubPath(basePath, subPath), "The path %s is not a subpath of the path %s.", subPath, basePath);
 		return subPath;
 	}
@@ -103,7 +103,7 @@ public class Paths {
 	 * @throws IllegalArgumentException if the two path trees overlap.
 	 * @see #isDisjoint(Path, Path)
 	 */
-	public static void checkArgumentDisjoint(@Nonnull final Path path1, @Nonnull final Path path2) {
+	public static void checkArgumentDisjoint(@NonNull final Path path1, @NonNull final Path path2) {
 		checkArgument(isDisjoint(path1, path2), "The paths %s and %s are not allowed to overlap.", path1, path2);
 	}
 
@@ -119,7 +119,7 @@ public class Paths {
 	 * @throws InvalidPathException If the path string cannot be converted.
 	 * @see FileSystem#getPath(String, String...)
 	 */
-	public static Path getPath(@Nonnull final FileSystem fileSystem, @Nonnull Collection<String> names) {
+	public static Path getPath(@NonNull final FileSystem fileSystem, @NonNull Collection<String> names) {
 		final int nameCount = names.size();
 		checkArgument(nameCount > 0, "No names provided for path.");
 		final Iterator<String> nameIterator = names.iterator();
@@ -145,7 +145,7 @@ public class Paths {
 	 * @return <code>true</code> if the two path trees do not overlap.
 	 * @see #isSubPath(Path, Path)
 	 */
-	public static boolean isDisjoint(@Nonnull final Path path1, @Nonnull final Path path2) {
+	public static boolean isDisjoint(@NonNull final Path path1, @NonNull final Path path2) {
 		return !isSubPath(path1, path2) && !isSubPath(path2, path1);
 	}
 
@@ -156,7 +156,7 @@ public class Paths {
 	 * @param subPath The potential subpath.
 	 * @return <code>true</code> if the given subpath is truly a subpath of (or the same path as) the base path.
 	 */
-	public static boolean isSubPath(@Nonnull final Path basePath, @Nonnull final Path subPath) {
+	public static boolean isSubPath(@NonNull final Path basePath, @NonNull final Path subPath) {
 		return subPath.normalize().startsWith(basePath.normalize()); //normalize files to compare apples to apples
 	}
 
@@ -170,7 +170,7 @@ public class Paths {
 	 * @return The resulting path.
 	 * @throws InvalidPathException If the path string cannot be converted.
 	 */
-	public static Path resolve(@Nonnull Path path, @Nonnull String... otherNames) {
+	public static Path resolve(@NonNull Path path, @NonNull String... otherNames) {
 		return resolve(path, asList(otherNames));
 	}
 
@@ -184,7 +184,7 @@ public class Paths {
 	 * @return The resulting path.
 	 * @throws InvalidPathException If the path string cannot be converted.
 	 */
-	public static Path resolve(@Nonnull Path path, @Nonnull Collection<String> otherNames) {
+	public static Path resolve(@NonNull Path path, @NonNull Collection<String> otherNames) {
 		if(otherNames.isEmpty()) {
 			return path;
 		}
@@ -199,7 +199,7 @@ public class Paths {
 	 * @param path The path to examine.
 	 * @return The path's filename, which may not be present, as a string.
 	 */
-	public static Optional<String> findFilename(@Nonnull final Path path) {
+	public static Optional<String> findFilename(@NonNull final Path path) {
 		return Optional.ofNullable(path.getFileName()).map(Path::toString);
 	}
 
@@ -224,7 +224,7 @@ public class Paths {
 	 * @return A path filename comparator for the given locale.
 	 * @see Filenames#comparator(Locale)
 	 */
-	public static Comparator<Path> filenameComparator(@Nonnull final Locale locale) {
+	public static Comparator<Path> filenameComparator(@NonNull final Locale locale) {
 		if(locale.equals(Locale.ROOT)) {
 			return ROOT_LOCALE_PATH_FILENAME_COMPARATOR;
 		}
@@ -238,7 +238,7 @@ public class Paths {
 	 * @return A path filename comparator using the given collator.
 	 * @see Filenames#comparator(Collator)
 	 */
-	public static Comparator<Path> filenameComparator(@Nonnull final Collator collator) {
+	public static Comparator<Path> filenameComparator(@NonNull final Collator collator) {
 		return new PathFilenameComparator(Filenames.comparator(collator));
 	}
 
@@ -255,12 +255,12 @@ public class Paths {
 		 * Filename comparator constructor.
 		 * @param filenameComparator The comparator used to compare filenames.
 		 */
-		public PathFilenameComparator(@Nonnull final Comparator<? super String> filenameComparator) {
+		public PathFilenameComparator(@NonNull final Comparator<? super String> filenameComparator) {
 			this.filenameComparator = requireNonNull(filenameComparator);
 		}
 
 		@Override
-		public int compare(@Nonnull final Path path1, @Nonnull final Path path2) {
+		public int compare(@NonNull final Path path1, @NonNull final Path path2) {
 			final Path path1FileName = path1.getFileName();
 			final Path path2FileName = path2.getFileName();
 			if(path1FileName == path2FileName) { //if paths are identical or both null
@@ -289,7 +289,7 @@ public class Paths {
 	 * @see Path#getFileName()
 	 * @see Filenames#isDotfileFilename(CharSequence)
 	 */
-	public static boolean isDotfile(@Nonnull final Path path) {
+	public static boolean isDotfile(@NonNull final Path path) {
 		final Path filename = path.getFileName();
 		return filename != null && isDotfileFilename(filename.toString());
 	}
@@ -307,7 +307,7 @@ public class Paths {
 	 * @return A path with the given character sequence appended before the filename extension, if any.
 	 * @throws IllegalArgumentException if the given path has no filename.
 	 */
-	public static Path appendFilenameBase(@Nonnull final Path path, @Nonnull final CharSequence charSequence) {
+	public static Path appendFilenameBase(@NonNull final Path path, @NonNull final CharSequence charSequence) {
 		final String filename = findFilename(path)
 				.orElseThrow(() -> new IllegalArgumentException(String.format("Path %s has no filename for appending to its base.", path)));
 		if(charSequence.length() == 0) { //if there are no characters to add, short-circuit for efficiency
@@ -327,7 +327,7 @@ public class Paths {
 	 * @throws NullPointerException if the given path's filename and/or the new base is <code>null</code>.
 	 * @throws IllegalArgumentException if the given path's filename and/or the new base is empty.
 	 */
-	public static Path changeFilenameBase(@Nonnull Path path, @Nonnull final String base) {
+	public static Path changeFilenameBase(@NonNull Path path, @NonNull final String base) {
 		final String filename = findFilename(path)
 				.orElseThrow(() -> new IllegalArgumentException(String.format("Path %s has no filename for changing its base.", path)));
 		return path.resolveSibling(Filenames.changeBase(filename, base));
@@ -382,7 +382,7 @@ public class Paths {
 	 * @throws IllegalArgumentException If a filename is not present.
 	 * @see Filenames#addExtension(String, String)
 	 */
-	public static Path addFilenameExtension(@Nonnull final Path path, @Nonnull final String extension) {
+	public static Path addFilenameExtension(@NonNull final Path path, @NonNull final String extension) {
 		requireNonNull(path, "the <path> cannot be null.");
 		requireNonNull(extension, "the <extension> to be added cannot be null.");
 		final String filename = findFilename(path)
@@ -400,7 +400,7 @@ public class Paths {
 	 * @throws IllegalArgumentException If a filename is not present, or if the name is just a "/".
 	 * @see Filenames#changeExtension(String, String)
 	 */
-	public static Path changeFilenameExtension(@Nonnull final Path path, @Nullable final String extension) {
+	public static Path changeFilenameExtension(@NonNull final Path path, @Nullable final String extension) {
 		final String filename = findFilename(path)
 				.orElseThrow(() -> new IllegalArgumentException(String.format("Path %s has no filename for changing its extension.", path)));
 		return path.resolveSibling(Filenames.changeExtension(filename, extension));
@@ -412,7 +412,7 @@ public class Paths {
 	 * @return The extension (not including '.') of the path's filename if any, which may not be present.
 	 * @see Filenames#findExtension(String)
 	 */
-	public static Optional<String> findFilenameExtension(@Nonnull final Path path) {
+	public static Optional<String> findFilenameExtension(@NonNull final Path path) {
 		return findFilename(path).flatMap(Filenames::findExtension);
 	}
 
@@ -423,7 +423,7 @@ public class Paths {
 	 * @return The path with the filename with no extension.
 	 * @see Filenames#removeExtension(String)
 	 */
-	public static Path removeFilenameExtension(@Nonnull final Path path) {
+	public static Path removeFilenameExtension(@NonNull final Path path) {
 		final String filename = findFilename(path)
 				.orElseThrow(() -> new IllegalArgumentException(String.format("Path %s has no filename for removing its extension.", path)));
 		return path.resolveSibling(Filenames.removeExtension(filename));
@@ -438,7 +438,7 @@ public class Paths {
 	 * @return A predicate for matching path filenames against the given base name.
 	 * @see Filenames#getBaseFilenamePattern(String)
 	 */
-	public static Predicate<Path> byBaseFilename(@Nonnull final String baseFilename) {
+	public static Predicate<Path> byBaseFilename(@NonNull final String baseFilename) {
 		return PathFilenamePatternPredicate.forPattern(getBaseFilenamePattern(baseFilename)); //TODO test
 	}
 
@@ -448,7 +448,7 @@ public class Paths {
 	 * @param filenamePattern The pattern for matching a filename.
 	 * @return A predicate for matching path filenames against the given pattern.
 	 */
-	public static Predicate<Path> byFilenamePattern(@Nonnull final Pattern filenamePattern) {
+	public static Predicate<Path> byFilenamePattern(@NonNull final Pattern filenamePattern) {
 		return PathFilenamePatternPredicate.forPattern(filenamePattern);
 	}
 

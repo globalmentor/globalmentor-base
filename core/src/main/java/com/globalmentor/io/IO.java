@@ -20,7 +20,7 @@ import static java.util.Objects.*;
 
 import java.io.*;
 
-import javax.annotation.*;
+import org.jspecify.annotations.*;
 
 /**
  * I/O utilities.
@@ -71,7 +71,7 @@ public final class IO {
 	 * @return A {@link Closeable} instance that will ensure the object is closed if it implements {@link Closeable}.
 	 * @see com.globalmentor.java.Objects#toAutoCloseable(Object)
 	 */
-	public static Closeable toCloseable(@Nonnull final Object object) {
+	public static Closeable toCloseable(@NonNull final Object object) {
 		if(object instanceof Closeable) {
 			return (Closeable)object;
 		}

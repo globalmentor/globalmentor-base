@@ -22,7 +22,7 @@ import static org.hamcrest.Matchers.*;
 
 import java.util.*;
 
-import javax.annotation.*;
+import org.jspecify.annotations.*;
 
 import org.junit.jupiter.api.*;
 
@@ -82,6 +82,6 @@ public abstract class AbstractAnnotationsTest {
 	 * @param The name of the method for which test annotations should be returned.
 	 * @return Method annotations to be tested.
 	 */
-	protected abstract Annotations getMethodTestAnnotations(@Nonnull String methodName);
+	protected abstract Annotations getMethodTestAnnotations(@NonNull String methodName);
 
 }

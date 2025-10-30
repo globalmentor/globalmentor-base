@@ -21,7 +21,7 @@ import java.util.Objects;
 
 import java.util.function.DoubleUnaryOperator;
 
-import javax.annotation.Nonnull;
+import org.jspecify.annotations.*;
 
 /**
  * Represents an operation on a single {@code double}-valued operand that produces a {@code double}-valued result. This is the primitive type specialization of
@@ -59,7 +59,7 @@ public interface IODoubleUnaryOperator {
 	 *
 	 * @see #andThen(IODoubleUnaryOperator)
 	 */
-	default IODoubleUnaryOperator compose(@Nonnull IODoubleUnaryOperator before) throws IOException {
+	default IODoubleUnaryOperator compose(@NonNull IODoubleUnaryOperator before) throws IOException {
 		Objects.requireNonNull(before);
 		return (double v) -> applyAsDouble(before.applyAsDouble(v));
 	}
@@ -75,7 +75,7 @@ public interface IODoubleUnaryOperator {
 	 *
 	 * @see #compose(IODoubleUnaryOperator)
 	 */
-	default IODoubleUnaryOperator andThen(@Nonnull IODoubleUnaryOperator after) throws IOException {
+	default IODoubleUnaryOperator andThen(@NonNull IODoubleUnaryOperator after) throws IOException {
 		Objects.requireNonNull(after);
 		return (double t) -> after.applyAsDouble(applyAsDouble(t));
 	}

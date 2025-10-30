@@ -26,7 +26,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-import javax.annotation.*;
+import org.jspecify.annotations.*;
 import javax.lang.model.element.*;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.util.*;
@@ -55,7 +55,7 @@ public final class ModelElements {
 	 * @see javax.annotation.processing.ProcessingEnvironment#getElementUtils()
 	 * @see Class#getCanonicalName()
 	 */
-	public static Optional<TypeElement> findTypeElementForClass(@Nonnull final Elements elements, @Nonnull final Class<?> clazz) { //TODO create module-related variations as well
+	public static Optional<TypeElement> findTypeElementForClass(@NonNull final Elements elements, @NonNull final Class<?> clazz) { //TODO create module-related variations as well
 		return findTypeElementForCanonicalName(elements, clazz.getCanonicalName());
 	}
 
@@ -69,7 +69,7 @@ public final class ModelElements {
 	 * @return The named type element, which will not be present if no type element can be uniquely determined.
 	 * @see javax.annotation.processing.ProcessingEnvironment#getElementUtils()
 	 */
-	public static Optional<TypeElement> findTypeElementForCanonicalName(@Nonnull final Elements elements, @Nonnull final CharSequence canonicalName) { //TODO create module-related variations as well
+	public static Optional<TypeElement> findTypeElementForCanonicalName(@NonNull final Elements elements, @NonNull final CharSequence canonicalName) { //TODO create module-related variations as well
 		return Optional.ofNullable(elements.getTypeElement(canonicalName));
 	}
 
@@ -85,8 +85,8 @@ public final class ModelElements {
 	 * @return The mirror for the present annotation annotating the indicated type, if any.
 	 * @see Elements#getAllAnnotationMirrors(Element)
 	 */
-	public static Optional<? extends AnnotationMirror> findElementAnnotationMirrorForClass(@Nonnull final Elements elements, @Nonnull final Element element,
-			@Nonnull final Class<? extends Annotation> annotationClass) {
+	public static Optional<? extends AnnotationMirror> findElementAnnotationMirrorForClass(@NonNull final Elements elements, @NonNull final Element element,
+			@NonNull final Class<? extends Annotation> annotationClass) {
 		return elementAnnotationMirrorsForClass(elements, element, annotationClass).findAny();
 	}
 
@@ -98,8 +98,8 @@ public final class ModelElements {
 	 * @return The mirrors for the annotation(s) annotating the indicated type, if any.
 	 * @see Elements#getAllAnnotationMirrors(Element)
 	 */
-	public static Stream<? extends AnnotationMirror> elementAnnotationMirrorsForClass(@Nonnull final Elements elements, @Nonnull final Element element,
-			@Nonnull final Class<? extends Annotation> annotationClass) {
+	public static Stream<? extends AnnotationMirror> elementAnnotationMirrorsForClass(@NonNull final Elements elements, @NonNull final Element element,
+			@NonNull final Class<? extends Annotation> annotationClass) {
 		return elementAnnotationMirrorsForClass(element, annotationClass, e -> elements.getAllAnnotationMirrors(e));
 	}
 
@@ -112,8 +112,8 @@ public final class ModelElements {
 	 * @return The mirror for the declared annotation annotating the indicated type, if any.
 	 * @see Element#getAnnotationMirrors()
 	 */
-	public static Optional<? extends AnnotationMirror> findElementDeclaredAnnotationMirrorForClass(@Nonnull final Element element,
-			@Nonnull final Class<? extends Annotation> annotationClass) {
+	public static Optional<? extends AnnotationMirror> findElementDeclaredAnnotationMirrorForClass(@NonNull final Element element,
+			@NonNull final Class<? extends Annotation> annotationClass) {
 		return elementDeclaredAnnotationMirrorsForClass(element, annotationClass).findAny();
 	}
 
@@ -124,8 +124,8 @@ public final class ModelElements {
 	 * @return The mirrors for the annotation(s) annotating the indicated type, if any.
 	 * @see Element#getAnnotationMirrors()
 	 */
-	public static Stream<? extends AnnotationMirror> elementDeclaredAnnotationMirrorsForClass(@Nonnull final Element element,
-			@Nonnull final Class<? extends Annotation> annotationClass) {
+	public static Stream<? extends AnnotationMirror> elementDeclaredAnnotationMirrorsForClass(@NonNull final Element element,
+			@NonNull final Class<? extends Annotation> annotationClass) {
 		return elementAnnotationMirrorsForClass(element, annotationClass, Element::getAnnotationMirrors);
 	}
 
@@ -137,9 +137,9 @@ public final class ModelElements {
 	 * @param annotationMirrorsStrategy The strategy for listing the annotation mirrors for the element.
 	 * @return The mirrors for the annotation(s) annotating the indicated type, if any.
 	 */
-	private static Stream<? extends AnnotationMirror> elementAnnotationMirrorsForClass(@Nonnull final Element element,
-			@Nonnull final Class<? extends Annotation> annotationClass,
-			@Nonnull final Function<Element, ? extends List<? extends AnnotationMirror>> annotationMirrorsStrategy) {
+	private static Stream<? extends AnnotationMirror> elementAnnotationMirrorsForClass(@NonNull final Element element,
+			@NonNull final Class<? extends Annotation> annotationClass,
+			@NonNull final Function<Element, ? extends List<? extends AnnotationMirror>> annotationMirrorsStrategy) {
 		final String canonicalName = annotationClass.getCanonicalName();
 		checkArgument(canonicalName != null, "Annotation class `%s` has no canonical name.", annotationClass.getName()); //check for completeness; not realistically possible: an annotation cannot be defined as an anonymous inner class
 		return annotationMirrorsStrategy.apply(element).stream().filter(annotationMirror -> {
@@ -158,8 +158,8 @@ public final class ModelElements {
 	 * @param annotationClass The type of annotation to look for.
 	 * @return The interfaces of the type element which are in turn annotated with the given annotation.
 	 */
-	public static Stream<DeclaredType> elementInterfacesAnnotatedWith(@Nonnull final Elements elements, @Nonnull final Types types,
-			@Nonnull final TypeElement typeElement, @Nonnull final Class<? extends Annotation> annotationClass) {
+	public static Stream<DeclaredType> elementInterfacesAnnotatedWith(@NonNull final Elements elements, @NonNull final Types types,
+			@NonNull final TypeElement typeElement, @NonNull final Class<? extends Annotation> annotationClass) {
 		return typeElement.getInterfaces().stream().flatMap(asInstances(DeclaredType.class))
 				.filter(interfaceType -> findElementAnnotationMirrorForClass(elements, (TypeElement)interfaceType.asElement(), annotationClass).isPresent());
 	}
@@ -170,7 +170,7 @@ public final class ModelElements {
 	 * @param element The element such as representing a type or method for which an abstraction should be created.
 	 * @return An adapter of the type element to an annotations abstraction interface.
 	 */
-	public static Annotations annotationsOf(@Nonnull final Elements elements, @Nonnull final Element element) {
+	public static Annotations annotationsOf(@NonNull final Elements elements, @NonNull final Element element) {
 		return new Annotations() {
 
 			@Override

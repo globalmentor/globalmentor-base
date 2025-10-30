@@ -26,7 +26,7 @@ import java.util.Optional;
 
 import static java.util.Objects.*;
 
-import javax.annotation.Nonnull;
+import org.jspecify.annotations.*;
 
 import com.globalmentor.java.Bytes;
 import com.globalmentor.model.MutableReference;
@@ -180,7 +180,7 @@ public enum ByteOrderMark {
 	 * @param bytes The array of bytes potentially starting with a byte order mark.
 	 * @return The byte order mark detected.
 	 */
-	public static Optional<ByteOrderMark> detect(@Nonnull final byte[] bytes) {
+	public static Optional<ByteOrderMark> detect(@NonNull final byte[] bytes) {
 		//note: this implementation depends on the order of the BOM enum values, from shorter bytes to longer bytes
 		final ByteOrderMark[] boms = values(); //check each BOM manually
 		for(int i = boms.length - 1; i >= 0; --i) { //work backwards to check longer BOMs first, as UTF-32LE starts with the UTF-16LE BOM

@@ -21,7 +21,7 @@ import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-import javax.annotation.Nonnull;
+import org.jspecify.annotations.*;
 
 /**
  * Represents an operation that accepts two input arguments and returns no result. This is the two-arity specialization of {@link Consumer}. Unlike most other
@@ -60,7 +60,7 @@ public interface IOBiConsumer<T, U> {
 	 * @return A composed {@code IOBiConsumer} that performs this operation followed by the {@code after} operation in sequence.
 	 * @throws IOException if there is an I/O error performing the operation.
 	 */
-	default IOBiConsumer<T, U> andThen(@Nonnull IOBiConsumer<? super T, ? super U> after) throws IOException {
+	default IOBiConsumer<T, U> andThen(@NonNull IOBiConsumer<? super T, ? super U> after) throws IOException {
 		Objects.requireNonNull(after);
 
 		return (l, r) -> {

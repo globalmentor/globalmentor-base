@@ -21,7 +21,7 @@ import static java.util.Objects.*;
 import java.io.IOException;
 import java.util.function.Consumer;
 
-import javax.annotation.*;
+import org.jspecify.annotations.*;
 
 /**
  * Represents an I/O operation that accepts a single input argument and returns no result.
@@ -45,7 +45,7 @@ public interface IOConsumer<T> {
 	 * @param t the input argument
 	 * @throws IOException if there is an I/O error performing the operation
 	 */
-	public void accept(@Nonnull T t) throws IOException;
+	public void accept(@NonNull T t) throws IOException;
 
 	/**
 	 * <p>
@@ -56,7 +56,7 @@ public interface IOConsumer<T> {
 	 * @return A consumer that performs this operation followed by the given operation in sequence.
 	 * @throws IOException if there is an I/O error performing the operation.
 	 */
-	public default IOConsumer<T> andThen(@Nonnull final IOConsumer<? super T> after) throws IOException {
+	public default IOConsumer<T> andThen(@NonNull final IOConsumer<? super T> after) throws IOException {
 		requireNonNull(after);
 		return t -> {
 			accept(t);

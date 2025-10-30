@@ -31,7 +31,7 @@ import java.text.Normalizer;
 import java.util.*;
 import java.util.function.*;
 
-import javax.annotation.*;
+import org.jspecify.annotations.*;
 
 import com.globalmentor.io.UTF8;
 import com.globalmentor.text.Case;
@@ -123,8 +123,8 @@ public final class CharSequences {
 	 * @see #CONSTRAIN_TRUNCATE_MIDDLE
 	 * @see #CONSTRAIN_TRUNCATE_END
 	 */
-	public static CharSequence constrain(@Nonnull final CharSequence charSequence, @Nonnegative final int maxLength,
-			@Nonnull final ToIntBiFunction<CharSequence, CharSequence> truncateIndexStrategy, @Nonnull final CharSequence omissionSequence) {
+	public static CharSequence constrain(@NonNull final CharSequence charSequence, final int maxLength,
+			@NonNull final ToIntBiFunction<CharSequence, CharSequence> truncateIndexStrategy, @NonNull final CharSequence omissionSequence) {
 		requireNonNull(charSequence);
 		checkArgumentNotNegative(maxLength);
 		requireNonNull(truncateIndexStrategy);
@@ -922,7 +922,7 @@ public final class CharSequences {
 	 * @return A string representing the longest common suffix of segments, which may not be present if there is no longest common segment suffix.
 	 * @throws NullPointerException if the list is <code>null</code> or contains a <code>null</code> value.
 	 */
-	public static Optional<String> longestCommonSegmentSuffix(@Nonnull final List<? extends CharSequence> charSequences, final char delimiter) {
+	public static Optional<String> longestCommonSegmentSuffix(@NonNull final List<? extends CharSequence> charSequences, final char delimiter) {
 		final Characters delimiterCharacters = Characters.of(delimiter);
 		final List<List<String>> segmentsLists = charSequences.stream().map(delimiterCharacters::split).collect(toList());
 		final List<String> longestCommonSuffix = longestCommonSuffix(segmentsLists);
@@ -982,7 +982,7 @@ public final class CharSequences {
 	 * @return <code>true</code> if every character in the sequence complies with the given predicate, or if the sequence is empty.
 	 * @see #isEveryCodePoint(CharSequence, IntPredicate)
 	 */
-	public static boolean isEveryChar(@Nonnull final CharSequence charSequence, @Nonnull final Predicate<Character> predicate) {
+	public static boolean isEveryChar(@NonNull final CharSequence charSequence, @NonNull final Predicate<Character> predicate) {
 		for(int i = charSequence.length() - 1; i >= 0; i--) {
 			if(!predicate.test(charSequence.charAt(i))) {
 				return false;
@@ -999,7 +999,7 @@ public final class CharSequences {
 	 * @param predicate The test to apply to each code point.
 	 * @return <code>true</code> if every character in the sequence complies with the given predicate, or if the sequence is empty.
 	 */
-	public static boolean isEveryCodePoint(@Nonnull final CharSequence charSequence, @Nonnull IntPredicate predicate) {
+	public static boolean isEveryCodePoint(@NonNull final CharSequence charSequence, @NonNull IntPredicate predicate) {
 		//Rather than checking to see if all code points match the predicate,
 		//see if there is _not_ any code point that does _not_ match the predicate.
 		return !charSequence.codePoints().filter(predicate.negate()).findAny().isPresent();
@@ -1217,7 +1217,7 @@ public final class CharSequences {
 	 * @return The normalized string with marks removed.
 	 * @see <a href="http://stackoverflow.com/q/3322152/421049">Java - getting rid of accents and converting them to regular letters</a>
 	 */
-	public static String normalizeForSearch(@Nonnull final CharSequence charSequence) {
+	public static String normalizeForSearch(@NonNull final CharSequence charSequence) {
 		return normalizeForSearch(charSequence, Locale.ROOT);
 	}
 
@@ -1233,7 +1233,7 @@ public final class CharSequences {
 	 * @return The normalized string with marks removed.
 	 * @see <a href="http://stackoverflow.com/q/3322152/421049">Java - getting rid of accents and converting them to regular letters</a>
 	 */
-	public static String normalizeForSearch(@Nonnull final CharSequence charSequence, @Nonnull final Locale locale) {
+	public static String normalizeForSearch(@NonNull final CharSequence charSequence, @NonNull final Locale locale) {
 		final String string = Normalizer.normalize(charSequence, Normalizer.Form.NFKD); //perform compatibility decomposition
 		return string.replaceAll("\\p{M}", "").toLowerCase(locale); //remove all resulting decomposed marks and convert to lowercase
 	}
@@ -1489,7 +1489,7 @@ public final class CharSequences {
 	 * @param text The text to display.
 	 * @return A string form of character sequence that might be more appropriate for displaying to the user.
 	 */
-	public static CharSequence toDisplay(@Nonnull final CharSequence text) {
+	public static CharSequence toDisplay(@NonNull final CharSequence text) {
 		//assume most character sequences don't need any characters replaced
 		final int length = text.length();
 		boolean unchanged = true;

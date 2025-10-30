@@ -18,7 +18,7 @@ package com.globalmentor.io;
 
 import java.nio.charset.*;
 
-import javax.annotation.*;
+import org.jspecify.annotations.*;
 
 /**
  * Utilities for working with charsets.
@@ -66,7 +66,7 @@ public final class Charsets {
 	 * @see CharsetDecoder#onMalformedInput(CodingErrorAction)
 	 * @see CharsetDecoder#onUnmappableCharacter(CodingErrorAction)
 	 */
-	public static CharsetDecoder newDecoder(@Nonnull final Charset charset, @Nonnull final CodingErrorAction codingErrorAction) {
+	public static CharsetDecoder newDecoder(@NonNull final Charset charset, @NonNull final CodingErrorAction codingErrorAction) {
 		final CharsetDecoder decoder = charset.newDecoder();
 		decoder.onMalformedInput(codingErrorAction);
 		decoder.onUnmappableCharacter(codingErrorAction);

@@ -18,7 +18,7 @@ package com.globalmentor.java;
 
 import static com.globalmentor.java.Conditions.*;
 
-import javax.annotation.*;
+import org.jspecify.annotations.*;
 
 /**
  * Utilities for manipulating long objects.
@@ -63,7 +63,7 @@ public class Longs {
 	 * @throws IllegalArgumentException if the number of bytes given is not exactly {@value Long#BYTES}.
 	 * @throws ArrayIndexOutOfBoundsException if the given array does not have sufficient bytes to store a long value.
 	 */
-	public static long fromBytes(@Nonnull final byte[] bytes) {
+	public static long fromBytes(@NonNull final byte[] bytes) {
 		checkArgument(bytes.length == Long.BYTES, "Exactly %d bytes are required to define a long value.", Long.BYTES);
 		return fromBytes(bytes, 0);
 	}
@@ -76,7 +76,7 @@ public class Longs {
 	 * @return The long value stored as bytes.
 	 * @throws ArrayIndexOutOfBoundsException if the given array, starting at the given index, does not have sufficient bytes to store a long value.
 	 */
-	public static long fromBytes(@Nonnull final byte[] bytes, final int index) {
+	public static long fromBytes(@NonNull final byte[] bytes, final int index) {
 		long value = 0;
 		for(int i = index, len = index + Long.BYTES; i < len; i++) {
 			value = (value << 8) | (bytes[i] & 0xFF);
@@ -103,7 +103,7 @@ public class Longs {
 	 * @return The given array of bytes with the long value stored.
 	 * @throws ArrayIndexOutOfBoundsException if the given array does not have sufficient bytes to store a long value.
 	 */
-	public static byte[] toBytes(final long value, @Nonnull final byte[] bytes) {
+	public static byte[] toBytes(final long value, @NonNull final byte[] bytes) {
 		return toBytes(value, bytes, 0);
 	}
 
@@ -116,7 +116,7 @@ public class Longs {
 	 * @return The given array of bytes with the long value stored.
 	 * @throws ArrayIndexOutOfBoundsException if the given array, starting at the given index, does not have sufficient bytes to store a long value.
 	 */
-	public static byte[] toBytes(long value, @Nonnull final byte[] bytes, final int index) {
+	public static byte[] toBytes(long value, @NonNull final byte[] bytes, final int index) {
 		for(int i = index + Long.BYTES - 1; i >= index; i--) {
 			bytes[i] = (byte)(value & 0xFF);
 			value = value >>> Byte.SIZE;

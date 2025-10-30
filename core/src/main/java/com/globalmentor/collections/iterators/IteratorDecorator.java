@@ -18,7 +18,7 @@ package com.globalmentor.collections.iterators;
 
 import java.util.*;
 
-import javax.annotation.*;
+import org.jspecify.annotations.*;
 
 import static java.util.Objects.*;
 
@@ -45,7 +45,7 @@ public class IteratorDecorator<E> extends AbstractIteratorDecorator<E> {
 	 * @param iterator The iterator this iterator will decorate.
 	 * @throws NullPointerException if the given iterator is <code>null</code>.
 	 */
-	public IteratorDecorator(@Nonnull final Iterator<E> iterator) {
+	public IteratorDecorator(@NonNull final Iterator<E> iterator) {
 		this.iterator = requireNonNull(iterator, "Iterator cannot be null."); //save the iterator
 	}
 

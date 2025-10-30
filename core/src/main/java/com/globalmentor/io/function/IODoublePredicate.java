@@ -21,7 +21,7 @@ import java.util.Objects;
 
 import java.util.function.DoublePredicate;
 
-import javax.annotation.Nonnull;
+import org.jspecify.annotations.*;
 
 /**
  * Represents a predicate (boolean-valued function) of one {@code double}-valued argument. This is the {@code double}-consuming primitive type specialization of
@@ -57,7 +57,7 @@ public interface IODoublePredicate {
 	 * @return A composed predicate that represents the short-circuiting logical AND of this predicate and the {@code other} predicate.
 	 * @throws IOException if there is an I/O error performing the operation.
 	 */
-	default IODoublePredicate and(@Nonnull IODoublePredicate other) throws IOException {
+	default IODoublePredicate and(@NonNull IODoublePredicate other) throws IOException {
 		Objects.requireNonNull(other);
 		return (value) -> test(value) && other.test(value);
 	}

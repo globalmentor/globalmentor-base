@@ -21,7 +21,7 @@ import static java.util.Objects.*;
 import java.io.IOException;
 import java.util.Iterator;
 
-import javax.annotation.*;
+import org.jspecify.annotations.*;
 
 /**
  * Utilities for working with {@link Appendable} objects.
@@ -45,7 +45,7 @@ public class Appendables {
 	 * @throws NullPointerException if the given appendable is <code>null</code>.
 	 * @throws IOException if there is an error appending to the appendable.
 	 */
-	public static <A extends Appendable> A append(@Nonnull final A appendable, final char character, int count) throws IOException {
+	public static <A extends Appendable> A append(@NonNull final A appendable, final char character, int count) throws IOException {
 		for(; count > 0; --count) {
 			appendable.append(character);
 		}
@@ -66,7 +66,7 @@ public class Appendables {
 	 * @throws IOException if there is an error appending to the appendable.
 	 * @see String#join(CharSequence, CharSequence...)
 	 */
-	public static <A extends Appendable> A appendJoined(@Nonnull final A appendable, final char delimiter, @Nonnull CharSequence... elements) throws IOException {
+	public static <A extends Appendable> A appendJoined(@NonNull final A appendable, final char delimiter, @NonNull CharSequence... elements) throws IOException {
 		final int count = elements.length;
 		if(count > 0) { //append the first element separately to avoid checking for the last element each time
 			appendable.append(elements[0]);
@@ -91,7 +91,7 @@ public class Appendables {
 	 * @throws IOException if there is an error appending to the appendable.
 	 * @see String#join(CharSequence, CharSequence...)
 	 */
-	public static <A extends Appendable> A appendJoined(@Nonnull final A appendable, final char delimiter, @Nonnull Iterable<? extends CharSequence> elements)
+	public static <A extends Appendable> A appendJoined(@NonNull final A appendable, final char delimiter, @NonNull Iterable<? extends CharSequence> elements)
 			throws IOException {
 		requireNonNull(delimiter);
 		final Iterator<? extends CharSequence> iterator = elements.iterator();
@@ -118,7 +118,7 @@ public class Appendables {
 	 * @throws IOException if there is an error appending to the appendable.
 	 * @see String#join(CharSequence, CharSequence...)
 	 */
-	public static <A extends Appendable> A appendJoined(@Nonnull final A appendable, @Nullable final CharSequence delimiter, @Nonnull CharSequence... elements)
+	public static <A extends Appendable> A appendJoined(@NonNull final A appendable, @Nullable final CharSequence delimiter, @NonNull CharSequence... elements)
 			throws IOException {
 		requireNonNull(delimiter);
 		final int count = elements.length;
@@ -145,8 +145,8 @@ public class Appendables {
 	 * @throws IOException if there is an error appending to the appendable.
 	 * @see String#join(CharSequence, CharSequence...)
 	 */
-	public static <A extends Appendable> A appendJoined(@Nonnull final A appendable, @Nullable final CharSequence delimiter,
-			@Nonnull Iterable<? extends CharSequence> elements) throws IOException {
+	public static <A extends Appendable> A appendJoined(@NonNull final A appendable, @Nullable final CharSequence delimiter,
+			@NonNull Iterable<? extends CharSequence> elements) throws IOException {
 		requireNonNull(delimiter);
 		final Iterator<? extends CharSequence> iterator = elements.iterator();
 		if(iterator.hasNext()) { //append the first element separately to avoid checking for the last element each time

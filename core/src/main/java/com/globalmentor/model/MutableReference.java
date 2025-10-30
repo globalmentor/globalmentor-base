@@ -18,7 +18,7 @@ package com.globalmentor.model;
 
 import java.util.Objects;
 
-import javax.annotation.Nullable;
+import org.jspecify.annotations.*;
 
 /**
  * A lightweight reference to another object that can be updated.

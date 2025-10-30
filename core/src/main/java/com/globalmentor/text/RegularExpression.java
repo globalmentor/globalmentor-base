@@ -23,7 +23,7 @@ import static java.util.Objects.*;
 import java.util.Optional;
 import java.util.regex.*;
 
-import javax.annotation.*;
+import org.jspecify.annotations.*;
 
 import com.globalmentor.java.*;
 
@@ -104,7 +104,7 @@ public final class RegularExpression {
 	 * @return A matcher that has successfully matched the given input.
 	 * @throws IllegalArgumentException if the given input does not match the pattern.
 	 */
-	public static Matcher checkArgumentMatches(final CharSequence input, @Nonnull final Pattern pattern) {
+	public static Matcher checkArgumentMatches(final CharSequence input, @NonNull final Pattern pattern) {
 		return checkArgumentMatches(input, pattern, "Input `%s` did not match pattern `%s`.", input, pattern);
 	}
 
@@ -125,8 +125,8 @@ public final class RegularExpression {
 	 *           format element(s) that use it.
 	 * @see String#format(String, Object...)
 	 */
-	public static Matcher checkArgumentMatches(final CharSequence input, @Nonnull final Pattern pattern, @Nullable String description,
-			@Nonnull final Object... arguments) {
+	public static Matcher checkArgumentMatches(final CharSequence input, @NonNull final Pattern pattern, @Nullable String description,
+			@NonNull final Object... arguments) {
 		final Matcher matcher = pattern.matcher(requireNonNull(input));
 		checkArgument(matcher.matches(), description, arguments);
 		return matcher;
@@ -215,7 +215,7 @@ public final class RegularExpression {
 	 * @param input The character sequence to be matched.
 	 * @return A new matcher for the matched pattern, which will not be present if the pattern did not match.
 	 */
-	public static Optional<Matcher> findMatch(@Nonnull final Pattern pattern, final CharSequence input) {
+	public static Optional<Matcher> findMatch(@NonNull final Pattern pattern, final CharSequence input) {
 		final Matcher matcher = pattern.matcher(input);
 		return matcher.matches() ? Optional.of(matcher) : Optional.empty();
 	}
@@ -248,7 +248,7 @@ public final class RegularExpression {
 		 * @return The subsequence captured by this group in the match, which will be empty if this group did not capture part of the input.
 		 * @throws IllegalStateException If no match has yet been attempted, or if the previous match operation failed.
 		 */
-		public Optional<String> findIn(@Nonnull final Matcher matcher);
+		public Optional<String> findIn(@NonNull final Matcher matcher);
 
 	}
 
@@ -263,7 +263,7 @@ public final class RegularExpression {
 		 * @throws IndexOutOfBoundsException If there is no capturing group in the pattern with the one-based equivalent of this group's ordinal.
 		 */
 		@Override
-		default Optional<String> findIn(@Nonnull final Matcher matcher) {
+		default Optional<String> findIn(@NonNull final Matcher matcher) {
 			return Optional.ofNullable(matcher.group(ordinal() + 1));
 		}
 
@@ -280,7 +280,7 @@ public final class RegularExpression {
 		 * @throws IndexOutOfBoundsException If there is no capturing group in the pattern with the this group's name.
 		 */
 		@Override
-		default Optional<String> findIn(@Nonnull final Matcher matcher) {
+		default Optional<String> findIn(@NonNull final Matcher matcher) {
 			return Optional.ofNullable(matcher.group(ordinal() + 1));
 		}
 

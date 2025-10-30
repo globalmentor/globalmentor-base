@@ -24,7 +24,7 @@ import java.util.stream.Stream;
 
 import static java.util.Objects.*;
 
-import javax.annotation.*;
+import org.jspecify.annotations.*;
 
 import static com.globalmentor.java.Java.*;
 import static com.globalmentor.java.Strings.*;
@@ -1015,7 +1015,7 @@ public final class Classes {
 	 * @deprecated Moved to {@link ClassResources#getClassLoaderResourceBasePath(Class)}.
 	 */
 	@Deprecated
-	public static String getResourceBasePath(@Nonnull final Class<?> contextClass) {
+	public static String getResourceBasePath(@NonNull final Class<?> contextClass) {
 		return ClassResources.getClassLoaderResourceBasePath(contextClass);
 	}
 
@@ -1040,7 +1040,7 @@ public final class Classes {
 	 * @deprecated Moved to {@link ClassResources#getClassLoaderResourcePath(Class, String)}.
 	 */
 	@Deprecated
-	public static String resolveResourcePath(@Nonnull final Class<?> contextClass, @Nonnull final String resourcePath) {
+	public static String resolveResourcePath(@NonNull final Class<?> contextClass, @NonNull final String resourcePath) {
 		return ClassResources.getClassLoaderResourcePath(contextClass, resourcePath);
 	}
 
@@ -1052,7 +1052,7 @@ public final class Classes {
 	 * @deprecated Moved to {@link ClassResources#findResourceName(String)}.
 	 */
 	@Deprecated
-	public static Optional<String> getResourceName(@Nonnull final String resourcePath) {
+	public static Optional<String> getResourceName(@NonNull final String resourcePath) {
 		return ClassResources.findResourceName(resourcePath);
 	}
 

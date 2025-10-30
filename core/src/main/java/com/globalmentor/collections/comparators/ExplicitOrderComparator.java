@@ -18,7 +18,7 @@ package com.globalmentor.collections.comparators;
 
 import java.util.*;
 
-import javax.annotation.*;
+import org.jspecify.annotations.*;
 
 import static java.util.Objects.*;
 
@@ -56,7 +56,7 @@ public class ExplicitOrderComparator<T> implements Comparator<T> {
 	 * @return A new explicit order comparator, with explicitly ordered items ordered before other items.
 	 * @throws NullPointerException if the given list is <code>null</code>.
 	 */
-	public static <T> Comparator<T> explicitOrderFirst(@Nonnull final List<T> order) {
+	public static <T> Comparator<T> explicitOrderFirst(@NonNull final List<T> order) {
 		return new ExplicitOrderComparator<>(order, true);
 	}
 
@@ -67,7 +67,7 @@ public class ExplicitOrderComparator<T> implements Comparator<T> {
 	 * @return A new explicit order comparator, with explicitly ordered items ordered after other items.
 	 * @throws NullPointerException if the given list is <code>null</code>.
 	 */
-	public static <T> Comparator<T> explicitOrderLast(@Nonnull final List<T> order) {
+	public static <T> Comparator<T> explicitOrderLast(@NonNull final List<T> order) {
 		return new ExplicitOrderComparator<>(order, false);
 	}
 
@@ -77,7 +77,7 @@ public class ExplicitOrderComparator<T> implements Comparator<T> {
 	 * @param orderedFirst <code>true</code> if explicitly ordered items should come before items with no known order.
 	 * @throws NullPointerException if the given list is <code>null</code>.
 	 */
-	private ExplicitOrderComparator(@Nonnull final List<T> order, final boolean orderedFirst) {
+	private ExplicitOrderComparator(@NonNull final List<T> order, final boolean orderedFirst) {
 		this.order = requireNonNull(order, "Order list cannot be null."); //save the default order list
 		this.orderedFirst = orderedFirst;
 	}

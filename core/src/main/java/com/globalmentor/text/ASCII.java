@@ -20,7 +20,7 @@ import static com.globalmentor.java.CharSequences.*;
 import static com.globalmentor.java.Conditions.*;
 import static java.lang.Math.*;
 
-import javax.annotation.*;
+import org.jspecify.annotations.*;
 
 import com.globalmentor.java.Characters;
 
@@ -323,7 +323,7 @@ public final class ASCII {
 	 * @return <code>true</code> if the characters in the first character sequence equal the indicated characters in the second character sequence.
 	 * @throws StringIndexOutOfBoundsException if <code>start</code> is negative or greater than the length of the second character sequence.
 	 */
-	public static boolean equalsIgnoreCase(@Nonnull final CharSequence charSequence1, @Nonnull final CharSequence charSequence2, final int start) {
+	public static boolean equalsIgnoreCase(@NonNull final CharSequence charSequence1, @NonNull final CharSequence charSequence2, final int start) {
 		return equalsIgnoreCase(charSequence1, charSequence2, start, charSequence2.length());
 	}
 
@@ -341,7 +341,7 @@ public final class ASCII {
 	 *           is greater than <code>end</code>, with the exception that if <code>end</code> is greater than the length of the second character sequence it will
 	 *           be adjusted to equal the end.
 	 */
-	public static boolean equalsIgnoreCase(@Nonnull final CharSequence charSequence1, @Nonnull final CharSequence charSequence2, final int start, final int end) {
+	public static boolean equalsIgnoreCase(@NonNull final CharSequence charSequence1, @NonNull final CharSequence charSequence2, final int start, final int end) {
 		return equalsIgnoreCase(charSequence1, 0, charSequence1.length(), charSequence2, start, end);
 	}
 
@@ -361,7 +361,7 @@ public final class ASCII {
 	 *           is greater than <code>end</code>, with the exception that if <code>end2</code> is greater than the length of the second character sequence it
 	 *           will be adjusted to equal the end.
 	 */
-	public static boolean equalsIgnoreCase(@Nonnull final CharSequence charSequence1, final int start1, final int end1, @Nonnull final CharSequence charSequence2,
+	public static boolean equalsIgnoreCase(@NonNull final CharSequence charSequence1, final int start1, final int end1, @NonNull final CharSequence charSequence2,
 			final int start2, int end2) {
 		checkBounds(charSequence1, start1, end1);
 		final int length2 = charSequence2.length();
@@ -404,7 +404,7 @@ public final class ASCII {
 	 * @param charSequence The sequence of characters for which an ASCII case-insensitive hash should be produce.
 	 * @return The ASCII case-insensitive hash of the characters in the sequence.
 	 */
-	public static int hashCodeIgnoreCase(@Nonnull final CharSequence charSequence) {
+	public static int hashCodeIgnoreCase(@NonNull final CharSequence charSequence) {
 		int hash = 0;
 		final int length = charSequence.length();
 		for(int index = 0; index < length; index++) {
@@ -422,7 +422,7 @@ public final class ASCII {
 	 * @param character The character to search for.
 	 * @return The index of the first occurrence of the given character without regard to ASCII case, or -1 if the character was not found.
 	 */
-	public static int indexOfIgnoreCase(@Nonnull final CharSequence charSequence, final char character) {
+	public static int indexOfIgnoreCase(@NonNull final CharSequence charSequence, final char character) {
 		return indexOfIgnoreCase(charSequence, character, 0); //search from the beginning
 	}
 

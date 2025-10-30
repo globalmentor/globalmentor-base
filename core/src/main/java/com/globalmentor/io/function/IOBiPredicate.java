@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.util.Objects;
 import java.util.function.BiPredicate;
 
-import javax.annotation.Nonnull;
+import org.jspecify.annotations.*;
 
 /**
  * Represents a predicate (boolean-valued function) of two arguments. This is the two-arity specialization of {@link IOPredicate}.
@@ -59,7 +59,7 @@ public interface IOBiPredicate<T, U> {
 	 * @return A composed predicate that represents the short-circuiting logical AND of this predicate and the {@code other} predicate.
 	 * @throws IOException if there is an I/O error performing the operation.
 	 */
-	default IOBiPredicate<T, U> and(@Nonnull IOBiPredicate<? super T, ? super U> other) throws IOException {
+	default IOBiPredicate<T, U> and(@NonNull IOBiPredicate<? super T, ? super U> other) throws IOException {
 		Objects.requireNonNull(other);
 		return (T t, U u) -> test(t, u) && other.test(t, u);
 	}
@@ -85,7 +85,7 @@ public interface IOBiPredicate<T, U> {
 	 * @return A composed predicate that represents the short-circuiting logical OR of this predicate and the {@code other} predicate.
 	 * @throws IOException if there is an I/O error performing the operation.
 	 */
-	default IOBiPredicate<T, U> or(@Nonnull IOBiPredicate<? super T, ? super U> other) throws IOException {
+	default IOBiPredicate<T, U> or(@NonNull IOBiPredicate<? super T, ? super U> other) throws IOException {
 		Objects.requireNonNull(other);
 		return (T t, U u) -> test(t, u) || other.test(t, u);
 	}

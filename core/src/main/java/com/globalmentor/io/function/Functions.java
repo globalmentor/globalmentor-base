@@ -21,7 +21,7 @@ import static java.util.Objects.*;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.*;
 
-import javax.annotation.*;
+import org.jspecify.annotations.*;
 
 /**
  * Utility higher-order functions.
@@ -49,7 +49,7 @@ public final class Functions {
 	 * @param biConsumer The consumer accepting the input argument along with the count.
 	 * @return A consumer that keeps track of the count of invocations and passes that to the enclosed consumer.
 	 */
-	public static <T> Consumer<T> countingConsumer(@Nonnull final BiConsumer<T, Long> biConsumer) {
+	public static <T> Consumer<T> countingConsumer(@NonNull final BiConsumer<T, Long> biConsumer) {
 		return countingConsumer(new AtomicLong(0), biConsumer);
 	}
 
@@ -67,7 +67,7 @@ public final class Functions {
 	 * @param biConsumer The consumer accepting the input argument along with the count.
 	 * @return A consumer that keeps track of the count of invocations and passes that to the enclosed consumer.
 	 */
-	public static <T> Consumer<T> countingConsumer(@Nonnull final AtomicLong counter, @Nonnull final BiConsumer<T, Long> biConsumer) {
+	public static <T> Consumer<T> countingConsumer(@NonNull final AtomicLong counter, @NonNull final BiConsumer<T, Long> biConsumer) {
 		return new Consumer<T>() {
 			@Override
 			public void accept(final T t) {
@@ -84,7 +84,7 @@ public final class Functions {
 	 * @param function The function to convert to a bifunction.
 	 * @return A bifunction that delegates to the given function, passing its first argument.
 	 */
-	public static <T, U, R> BiFunction<T, U, R> toBiFunctionT(@Nonnull final Function<? super T, ? extends R> function) {
+	public static <T, U, R> BiFunction<T, U, R> toBiFunctionT(@NonNull final Function<? super T, ? extends R> function) {
 		requireNonNull(function);
 		return (final T t, final U u) -> function.apply(t);
 	}
@@ -97,7 +97,7 @@ public final class Functions {
 	 * @param function The function to convert to a bifunction.
 	 * @return A bifunction that delegates to the given function, passing its second argument.
 	 */
-	public static <T, U, R> BiFunction<T, U, R> toBiFunctionU(@Nonnull final Function<? super U, ? extends R> function) {
+	public static <T, U, R> BiFunction<T, U, R> toBiFunctionU(@NonNull final Function<? super U, ? extends R> function) {
 		requireNonNull(function);
 		return (final T t, final U u) -> function.apply(u);
 	}
@@ -118,7 +118,7 @@ public final class Functions {
 	 * @return A predicate that tests an extracted value using the specified predicate.
 	 * @throws NullPointerException if either argument is <code>null</code>
 	 */
-	public static <T, U> Predicate<T> testing(@Nonnull final Function<? super T, ? extends U> valueExtractor, @Nonnull final Predicate<? super U> valueTester) {
+	public static <T, U> Predicate<T> testing(@NonNull final Function<? super T, ? extends U> valueExtractor, @NonNull final Predicate<? super U> valueTester) {
 		requireNonNull(valueExtractor);
 		requireNonNull(valueTester);
 		return input -> valueTester.test(valueExtractor.apply(input));

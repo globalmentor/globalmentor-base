@@ -25,7 +25,7 @@ import java.lang.reflect.*;
 import java.util.*;
 import java.util.stream.Stream;
 
-import javax.annotation.*;
+import org.jspecify.annotations.*;
 
 import com.globalmentor.java.Annotations;
 
@@ -49,7 +49,7 @@ public final class AnnotatedElements {
 	 * @return The element's annotation for the specified annotation type if present on this element.
 	 * @throws NullPointerException if the given annotated element and/or annotation class is <code>null</code>.
 	 */
-	public static <T extends Annotation> Optional<T> findAnnotation(@Nonnull AnnotatedElement annotatedElement, @Nonnull final Class<T> annotationClass) {
+	public static <T extends Annotation> Optional<T> findAnnotation(@NonNull AnnotatedElement annotatedElement, @NonNull final Class<T> annotationClass) {
 		return Optional.ofNullable(annotatedElement.getAnnotation(annotationClass));
 	}
 
@@ -59,7 +59,7 @@ public final class AnnotatedElements {
 	 * @param annotatedElement The element that may have annotations.
 	 * @return annotations present on this element
 	 */
-	public static Stream<Annotation> annotations(@Nonnull AnnotatedElement annotatedElement) {
+	public static Stream<Annotation> annotations(@NonNull AnnotatedElement annotatedElement) {
 		return Stream.of(annotatedElement.getAnnotations());
 	}
 
@@ -72,7 +72,7 @@ public final class AnnotatedElements {
 	 * @return All of the element's annotations for the specified annotation type if associated with the element.
 	 * @throws NullPointerException if the given annotated element and/or annotation class is <code>null</code>.
 	 */
-	public static <T extends Annotation> Stream<T> annotationsByType(@Nonnull AnnotatedElement annotatedElement, @Nonnull final Class<T> annotationClass) {
+	public static <T extends Annotation> Stream<T> annotationsByType(@NonNull AnnotatedElement annotatedElement, @NonNull final Class<T> annotationClass) {
 		return Stream.of(annotatedElement.getAnnotationsByType(annotationClass));
 	}
 
@@ -85,7 +85,7 @@ public final class AnnotatedElements {
 	 * @return The element's annotation for the specified annotation type if directly present on the element.
 	 * @throws NullPointerException if the given annotated element and/or annotation class is <code>null</code>.
 	 */
-	public static <T extends Annotation> Optional<T> findDeclaredAnnotation(@Nonnull AnnotatedElement annotatedElement, @Nonnull final Class<T> annotationClass) {
+	public static <T extends Annotation> Optional<T> findDeclaredAnnotation(@NonNull AnnotatedElement annotatedElement, @NonNull final Class<T> annotationClass) {
 		return Optional.ofNullable(annotatedElement.getDeclaredAnnotation(annotationClass));
 	}
 
@@ -99,8 +99,8 @@ public final class AnnotatedElements {
 	 * @return All of the element's annotations for the specified annotation type if directly or indirectly present on the element.
 	 * @throws NullPointerException if the given annotated element and/or annotation class class is <code>null</code>.
 	 */
-	public static <T extends Annotation> Stream<T> declaredAnnotationsByType(@Nonnull AnnotatedElement annotatedElement,
-			@Nonnull final Class<T> annotationClass) {
+	public static <T extends Annotation> Stream<T> declaredAnnotationsByType(@NonNull AnnotatedElement annotatedElement,
+			@NonNull final Class<T> annotationClass) {
 		return Stream.of(annotatedElement.getDeclaredAnnotationsByType(annotationClass));
 	}
 
@@ -110,7 +110,7 @@ public final class AnnotatedElements {
 	 * @param annotatedElement The element that may have annotations.
 	 * @return annotations directly present on the element.
 	 */
-	public static Stream<Annotation> declaredAnnotations(@Nonnull AnnotatedElement annotatedElement) {
+	public static Stream<Annotation> declaredAnnotations(@NonNull AnnotatedElement annotatedElement) {
 		return Stream.of(annotatedElement.getDeclaredAnnotations());
 	}
 
@@ -119,7 +119,7 @@ public final class AnnotatedElements {
 	 * @param annotatedElement The annotated element for which an abstraction should be created.
 	 * @return An adapter of the annotated element to an annotations abstraction interface.
 	 */
-	public static Annotations annotationsOf(@Nonnull final AnnotatedElement annotatedElement) {
+	public static Annotations annotationsOf(@NonNull final AnnotatedElement annotatedElement) {
 		return new Annotations() {
 
 			@Override

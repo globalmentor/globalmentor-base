@@ -19,7 +19,7 @@ package com.globalmentor.model;
 import java.net.URI;
 import java.util.UUID;
 
-import javax.annotation.*;
+import org.jspecify.annotations.*;
 
 import com.globalmentor.java.Longs;
 
@@ -51,7 +51,7 @@ public final class UUIDs {
 	 * @see UUID#getMostSignificantBits()
 	 * @see UUID#getLeastSignificantBits()
 	 */
-	public static UUID fromBytes(@Nonnull final byte[] bytes) {
+	public static UUID fromBytes(@NonNull final byte[] bytes) {
 		checkArgument(bytes.length == BYTE_COUNT, "Exactly %d bytes are required to define a UUID.", BYTE_COUNT);
 		return fromBytes(bytes, 0);
 	}
@@ -64,7 +64,7 @@ public final class UUIDs {
 	 * @see UUID#getMostSignificantBits()
 	 * @see UUID#getLeastSignificantBits()
 	 */
-	public static UUID fromBytes(@Nonnull final byte[] bytes, final int index) {
+	public static UUID fromBytes(@NonNull final byte[] bytes, final int index) {
 		return new UUID(Longs.fromBytes(bytes, index), Longs.fromBytes(bytes, index + Long.BYTES));
 	}
 
@@ -78,7 +78,7 @@ public final class UUIDs {
 	 * @see UUID#getLeastSignificantBits()
 	 * @see #fromBytes(byte[])
 	 */
-	public static byte[] toBytes(@Nonnull final UUID uuid) {
+	public static byte[] toBytes(@NonNull final UUID uuid) {
 		return toBytes(uuid, new byte[BYTE_COUNT]);
 	}
 
@@ -93,7 +93,7 @@ public final class UUIDs {
 	 * @see UUID#getLeastSignificantBits()
 	 * @see #fromBytes(byte[])
 	 */
-	public static byte[] toBytes(@Nonnull final UUID uuid, @Nonnull final byte[] bytes) {
+	public static byte[] toBytes(@NonNull final UUID uuid, @NonNull final byte[] bytes) {
 		return toBytes(uuid, bytes, 0);
 	}
 
@@ -108,7 +108,7 @@ public final class UUIDs {
 	 * @see UUID#getLeastSignificantBits()
 	 * @see #fromBytes(byte[])
 	 */
-	public static byte[] toBytes(@Nonnull final UUID uuid, @Nonnull final byte[] bytes, final int index) {
+	public static byte[] toBytes(@NonNull final UUID uuid, @NonNull final byte[] bytes, final int index) {
 		Longs.toBytes(uuid.getMostSignificantBits(), bytes, index);
 		Longs.toBytes(uuid.getLeastSignificantBits(), bytes, index + Long.BYTES);
 		return bytes;
@@ -119,7 +119,7 @@ public final class UUIDs {
 	 * @param uuid The UUID from which to construct a hex string.
 	 * @return A pure hex string representing the UUID.
 	 */
-	public static String toHexString(@Nonnull final UUID uuid) {
+	public static String toHexString(@NonNull final UUID uuid) {
 		final StringBuilder hexStringBuilder = new StringBuilder(uuid.toString()); //create a string from the UUID
 		return removeEvery(hexStringBuilder, '-').toString(); //remove all the hyphens and return the resulting string
 	}
@@ -130,7 +130,7 @@ public final class UUIDs {
 	 * @param uuid The UUID.
 	 * @return A URI representing the UUID.
 	 */
-	public static URI toURI(@Nonnull final UUID uuid) {
+	public static URI toURI(@NonNull final UUID uuid) {
 		return createURN(UUID_URN_NAMESPACE, uuid.toString()); //construct an return the URN
 	}
 

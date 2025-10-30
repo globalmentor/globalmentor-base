@@ -21,7 +21,7 @@ import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.IntConsumer;
 
-import javax.annotation.Nonnull;
+import org.jspecify.annotations.*;
 
 /**
  * Represents an operation that accepts a single {@code int}-valued argument and returns no result. This is the primitive type specialization of
@@ -56,7 +56,7 @@ public interface IOIntConsumer {
 	 * @return A composed {@code IntConsumer} that performs this operation followed by the {@code after} operation in sequence.
 	 * @throws IOException if there is an I/O error performing the operation.
 	 */
-	default IOIntConsumer andThen(@Nonnull IOIntConsumer after) throws IOException {
+	default IOIntConsumer andThen(@NonNull IOIntConsumer after) throws IOException {
 		Objects.requireNonNull(after);
 		return (int t) -> {
 			accept(t);

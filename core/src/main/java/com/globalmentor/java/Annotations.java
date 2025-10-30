@@ -21,7 +21,7 @@ import static java.util.stream.Collectors.*;
 import java.lang.annotation.Annotation;
 import java.util.*;
 
-import javax.annotation.*;
+import org.jspecify.annotations.*;
 
 /**
  * Abstraction for accessing annotations.
@@ -56,7 +56,7 @@ public interface Annotations {
 	 * @param annotationClass The class object representing the annotation type.
 	 * @return <code>true</code> if an annotation of the specified annotation type is present.
 	 */
-	public boolean isAnnotationPresent(@Nonnull final Class<? extends Annotation> annotationClass);
+	public boolean isAnnotationPresent(@NonNull final Class<? extends Annotation> annotationClass);
 
 	/**
 	 * Determines which, if any, of the given annotations types are <em>present</em>. Only the exactly queried types will be founded; annotation type hierarchy is
@@ -68,7 +68,7 @@ public interface Annotations {
 	 * @param annotationClasses The class objects representing the annotation types to check for.
 	 * @return The types of annotations of those given that are present.
 	 */
-	public default Set<Class<? extends Annotation>> getWhichAnnotationTypesPresent(@Nonnull Set<Class<? extends Annotation>> annotationClasses) {
+	public default Set<Class<? extends Annotation>> getWhichAnnotationTypesPresent(@NonNull Set<Class<? extends Annotation>> annotationClasses) {
 		return annotationClasses.stream().filter(this::isAnnotationPresent).collect(toUnmodifiableSet());
 	}
 
@@ -81,6 +81,6 @@ public interface Annotations {
 	 * @see <a href="https://docs.oracle.com/javase/specs/jls/se21/html/jls-9.html#jls-9.7.3">The Java® Language Specification, Java SE 21 Edition § 9.7.3.
 	 *      Single-Element Annotations</a>
 	 */
-	public Optional<Object> findAnnotationValue(@Nonnull final Class<? extends Annotation> annotationClass);
+	public Optional<Object> findAnnotationValue(@NonNull final Class<? extends Annotation> annotationClass);
 
 }

@@ -23,7 +23,7 @@ import static java.util.stream.Stream.*;
 
 import java.util.*;
 
-import javax.annotation.*;
+import org.jspecify.annotations.*;
 
 /**
  * Utilities to be used with sets.
@@ -46,7 +46,7 @@ public final class Sets {
 	 * @return A set containing the logical union of the contents of the given two sets, which will be one of the input sets if the other set is empty.
 	 * @see #unionCopyOf(Collection, Collection)
 	 */
-	public static <T> Set<T> toUnion(@Nonnull final Set<T> set1, @Nonnull final Set<T> set2) {
+	public static <T> Set<T> toUnion(@NonNull final Set<T> set1, @NonNull final Set<T> set2) {
 		if(set1.isEmpty()) {
 			return requireNonNull(set2);
 		}
@@ -66,7 +66,7 @@ public final class Sets {
 	 * @throws NullPointerException if either of the collections is <code>null</code>.
 	 * @see Set#copyOf(Collection)
 	 */
-	public static <E> Set<E> unionCopyOf(@Nonnull final Collection<? extends E> collection1, @Nonnull final Collection<? extends E> collection2) {
+	public static <E> Set<E> unionCopyOf(@NonNull final Collection<? extends E> collection1, @NonNull final Collection<? extends E> collection2) {
 		if(collection1.isEmpty()) {
 			if(collection2.isEmpty()) {
 				return Set.of();
@@ -89,7 +89,7 @@ public final class Sets {
 	 * @throws NullPointerException if the collection and/or element is <code>null</code>.
 	 * @see Set#copyOf(Collection)
 	 */
-	public static <E> Set<E> unionCopyOf(@Nonnull final Collection<? extends E> collection, @Nonnull final E element) {
+	public static <E> Set<E> unionCopyOf(@NonNull final Collection<? extends E> collection, @NonNull final E element) {
 		if(collection.isEmpty()) {
 			return Set.of(element);
 		}

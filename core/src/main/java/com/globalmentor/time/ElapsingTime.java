@@ -24,7 +24,7 @@ import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 import java.util.function.*;
 
-import javax.annotation.*;
+import org.jspecify.annotations.*;
 
 /**
  * Lightweight class for measuring elapsing time.
@@ -66,7 +66,7 @@ public final class ElapsingTime {
 	 * @param timeSupplier The time source for measuring elapsed time since the start time, in the indicated unit.
 	 * @param timeUnit The unit in which time is measured.
 	 */
-	private ElapsingTime(final long startTime, @Nonnull final LongSupplier timeSupplier, @Nonnull final TimeUnit timeUnit) {
+	private ElapsingTime(final long startTime, @NonNull final LongSupplier timeSupplier, @NonNull final TimeUnit timeUnit) {
 		this.startTime = startTime;
 		this.timeSupplier = requireNonNull(timeSupplier);
 		this.timeUnit = requireNonNull(timeUnit);
@@ -91,7 +91,7 @@ public final class ElapsingTime {
 	 * @return A new elapsing time measurer elapsing since the given start time.
 	 * @see #fromNow(LongSupplier, TimeUnit)
 	 */
-	public static ElapsingTime since(final long startTime, @Nonnull final LongSupplier timeSupplier, @Nonnull final TimeUnit timeUnit) {
+	public static ElapsingTime since(final long startTime, @NonNull final LongSupplier timeSupplier, @NonNull final TimeUnit timeUnit) {
 		return new ElapsingTime(startTime, timeSupplier, timeUnit);
 	}
 
@@ -129,7 +129,7 @@ public final class ElapsingTime {
 	 * @return A new elapsing time measurer that conceptually has already been elapsing since the given elapsed time.
 	 * @see #getTimeUnit()
 	 */
-	ElapsingTime withElapsed(@Nonnull final long elapsed) {
+	ElapsingTime withElapsed(@NonNull final long elapsed) {
 		return since(timeSupplier.getAsLong() - elapsed, timeSupplier, getTimeUnit());
 	}
 
@@ -146,7 +146,7 @@ public final class ElapsingTime {
 	 * @return A new elapsing time measurer that conceptually has already been elapsing since the given duration.
 	 * @throws IllegalArgumentException if the duration would overflow when converting to the unit of this elapsing time.
 	 */
-	public ElapsingTime withElapsed(@Nonnull final Duration duration) {
+	public ElapsingTime withElapsed(@NonNull final Duration duration) {
 		final long durationInTimeUnit = getTimeUnit().convert(duration);
 		checkArgument(durationInTimeUnit != Long.MIN_VALUE && durationInTimeUnit != Long.MAX_VALUE, "Duration %s will cause an overflow.", duration);
 		return withElapsed(durationInTimeUnit);
@@ -161,7 +161,7 @@ public final class ElapsingTime {
 	 * @param timeUnit The unit in which time is measured.
 	 * @return A new elapsing time measurer.
 	 */
-	public static ElapsingTime fromNow(@Nonnull final LongSupplier timeSupplier, @Nonnull final TimeUnit timeUnit) {
+	public static ElapsingTime fromNow(@NonNull final LongSupplier timeSupplier, @NonNull final TimeUnit timeUnit) {
 		return new ElapsingTime(timeSupplier.getAsLong(), timeSupplier, timeUnit);
 	}
 
@@ -175,7 +175,7 @@ public final class ElapsingTime {
 	 * @param asTimeUnit The unit in which elapsed time is to be returned.
 	 * @return The amount of time elapsed until the current time in the requested unit.
 	 */
-	public long get(@Nonnull final TimeUnit asTimeUnit) {
+	public long get(@NonNull final TimeUnit asTimeUnit) {
 		return asTimeUnit.convert(getElapsedTime(), getTimeUnit());
 	}
 
@@ -194,7 +194,7 @@ public final class ElapsingTime {
 	 * @return The duration in terms of this elapsing time unit.
 	 * @see #getTimeUnit()
 	 */
-	long convertToTimeUnit(@Nonnull final Duration duration) {
+	long convertToTimeUnit(@NonNull final Duration duration) {
 		return duration.get(getTimeUnit().toChronoUnit());
 	}
 
@@ -228,7 +228,7 @@ public final class ElapsingTime {
 	 * @return The converted {@link ChronoUnit} equivalent to the given {@link TimeUnit}.
 	 */
 	//TODO delete	
-	//	static ChronoUnit toChronoUnit(@Nonnull final TimeUnit timeUnit) { //TODO switch to `timeUnit.toChronoUnit()` in Java 9+
+	//	static ChronoUnit toChronoUnit(@NonNull final TimeUnit timeUnit) { //TODO switch to `timeUnit.toChronoUnit()` in Java 9+
 	//		switch(timeUnit) {
 	//			case NANOSECONDS:
 	//				return ChronoUnit.NANOS;

@@ -21,7 +21,7 @@ import static java.lang.Math.*;
 
 import java.io.*;
 
-import javax.annotation.*;
+import org.jspecify.annotations.*;
 
 /**
  * Utility methods for working with {@link Reader} instances.
@@ -116,7 +116,7 @@ public final class Readers {
 	 * @return A string containing all the remaining characters read from the reader.
 	 * @throws IOException if an I/O error occurs.
 	 */
-	public static String readString(@Nonnull final Reader reader) throws IOException {
+	public static String readString(@NonNull final Reader reader) throws IOException {
 		return readString(reader, Integer.MAX_VALUE);
 	}
 
@@ -129,7 +129,7 @@ public final class Readers {
 	 * @throws IllegalArgumentException if the given maximum length is negative.
 	 * @throws IOException if an I/O error occurs.
 	 */
-	public static String readString(@Nonnull final Reader reader, @Nonnegative final int maxLength) throws IOException {
+	public static String readString(@NonNull final Reader reader, final int maxLength) throws IOException {
 		if(maxLength == 0) {
 			return ""; //if they don't want anything, no need to do anything
 		}

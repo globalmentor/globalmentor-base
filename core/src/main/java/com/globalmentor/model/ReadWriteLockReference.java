@@ -18,8 +18,8 @@ package com.globalmentor.model;
 
 import java.util.concurrent.locks.*;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jspecify.annotations.*;
+import org.jspecify.annotations.*;
 
 import static java.util.Objects.*;
 
@@ -59,7 +59,7 @@ public final class ReadWriteLockReference<T> implements ReadWriteLock {
 	 * @param readWriteLock The lock for controlling access to the properties.
 	 * @throws NullPointerException if the given lock is <code>null</code>.
 	 */
-	public ReadWriteLockReference(@Nonnull final ReadWriteLock readWriteLock) {
+	public ReadWriteLockReference(@NonNull final ReadWriteLock readWriteLock) {
 		this(null, readWriteLock);
 	}
 
@@ -79,7 +79,7 @@ public final class ReadWriteLockReference<T> implements ReadWriteLock {
 	 * @param readWriteLock The lock for controlling access to the properties.
 	 * @throws NullPointerException if the given lock is <code>null</code>.
 	 */
-	public ReadWriteLockReference(@Nullable final T object, @Nonnull final ReadWriteLock readWriteLock) {
+	public ReadWriteLockReference(@Nullable final T object, @NonNull final ReadWriteLock readWriteLock) {
 		this.object = object;
 		this.readWriteLock = requireNonNull(readWriteLock, "Read write lock cannot be null.");
 	}

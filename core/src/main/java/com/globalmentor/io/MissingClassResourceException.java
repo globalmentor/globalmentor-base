@@ -16,7 +16,7 @@
 
 package com.globalmentor.io;
 
-import javax.annotation.*;
+import org.jspecify.annotations.*;
 
 import com.globalmentor.model.ConfiguredStateException;
 

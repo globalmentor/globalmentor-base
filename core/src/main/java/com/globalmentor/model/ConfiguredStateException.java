@@ -16,7 +16,7 @@
 
 package com.globalmentor.model;
 
-import javax.annotation.*;
+import org.jspecify.annotations.*;
 
 /**
  * An unchecked illegal state exception to indicate that the system is not configured correctly for some operation. For example, this exception might be thrown

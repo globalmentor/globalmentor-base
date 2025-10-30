@@ -24,7 +24,7 @@ import static java.lang.String.format;
 import java.time.Duration;
 import java.time.format.DateTimeParseException;
 
-import javax.annotation.*;
+import org.jspecify.annotations.*;
 
 import com.globalmentor.text.ASCII;
 
@@ -50,7 +50,7 @@ public final class Durations {
 	 * @return The parsed duration.
 	 * @throws IllegalArgumentException if the given text cannot be parsed as duration user input or as a strict ISO 8601 duration.
 	 */
-	public static Duration parseUserInput(@Nonnull final CharSequence userInput) {
+	public static Duration parseUserInput(@NonNull final CharSequence userInput) {
 		final CharSequence text;
 		final int userInputLength = userInput.length();
 		checkArgument(userInputLength > 0, "Duration input must not be empty.");

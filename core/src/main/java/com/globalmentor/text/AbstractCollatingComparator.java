@@ -22,7 +22,7 @@ import java.text.Collator;
 import java.util.Comparator;
 import java.util.Locale;
 
-import javax.annotation.*;
+import org.jspecify.annotations.*;
 
 /**
  * Abstract base class for a text comparator that uses a {@link Collator} for comparison.
@@ -46,7 +46,7 @@ public class AbstractCollatingComparator implements Comparator<CharSequence> {
 	 * @implSpec This implementation uses a collator that takes into account differences in case and accents.
 	 * @param locale The locale to use for comparison.
 	 */
-	protected AbstractCollatingComparator(@Nonnull final Locale locale) {
+	protected AbstractCollatingComparator(@NonNull final Locale locale) {
 		this(createCollator(locale));
 	}
 
@@ -54,12 +54,12 @@ public class AbstractCollatingComparator implements Comparator<CharSequence> {
 	 * Collator constructor.
 	 * @param collator The collator to use for comparisons.
 	 */
-	protected AbstractCollatingComparator(@Nonnull final Collator collator) {
+	protected AbstractCollatingComparator(@NonNull final Collator collator) {
 		this.collator = requireNonNull(collator);
 	}
 
 	@Override
-	public int compare(@Nonnull final CharSequence charSequence1, @Nonnull final CharSequence charSequence2) {
+	public int compare(@NonNull final CharSequence charSequence1, @NonNull final CharSequence charSequence2) {
 		return getCollator().compare(charSequence1.toString(), charSequence2.toString());
 	}
 
@@ -69,7 +69,7 @@ public class AbstractCollatingComparator implements Comparator<CharSequence> {
 	 * @param locale The locale to use for comparison.
 	 * @return A collator for the indicated locale.
 	 */
-	public static Collator createCollator(@Nonnull final Locale locale) {
+	public static Collator createCollator(@NonNull final Locale locale) {
 		final Collator collator = Collator.getInstance(locale);
 		collator.setDecomposition(Collator.CANONICAL_DECOMPOSITION);
 		collator.setStrength(Collator.TERTIARY); //take into account accents and case

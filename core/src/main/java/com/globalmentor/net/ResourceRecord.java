@@ -22,7 +22,7 @@ import static java.util.Objects.*;
 
 import java.util.*;
 
-import javax.annotation.*;
+import org.jspecify.annotations.*;
 
 /**
  * Encapsulation of information that appears in the resource record of a DNS zone file.
@@ -222,7 +222,7 @@ public class ResourceRecord {
 	 * @throws IllegalArgumentException if the given TTL is a negative value other than <code>-1</code>.
 	 * @see #detectCharacterStringEncoded(String)
 	 */
-	public ResourceRecord(@Nonnull final Type type, @Nullable final DomainName name, @Nonnull final String value, @Nonnegative final long ttl) {
+	public ResourceRecord(@NonNull final Type type, @Nullable final DomainName name, @NonNull final String value, final long ttl) {
 		this(type.name(), name, value, ttl);
 	}
 
@@ -238,7 +238,7 @@ public class ResourceRecord {
 	 * @throws IllegalArgumentException if the given TTL is a negative value other than <code>-1</code>.
 	 * @see #detectCharacterStringEncoded(String)
 	 */
-	public ResourceRecord(@Nonnull final String type, @Nullable final DomainName name, @Nonnull final String value, @Nonnegative final long ttl) {
+	public ResourceRecord(@NonNull final String type, @Nullable final DomainName name, @NonNull final String value, final long ttl) {
 		this.type = requireNonNull(type);
 		this.name = name;
 		this.value = requireNonNull(value);
@@ -269,7 +269,7 @@ public class ResourceRecord {
 	 * @throws IllegalArgumentException if the given value is incorrectly encoded, for example starting but not ending with a double quote.
 	 * @see #CHARACTER_STRING_QUOTE_CHAR
 	 */
-	public static boolean detectCharacterStringEncoded(@Nonnull final String string) {
+	public static boolean detectCharacterStringEncoded(@NonNull final String string) {
 		if(!string.isEmpty()) {
 			if(startsWith(string, CHARACTER_STRING_QUOTE_CHAR)) {
 				checkArgument(endsWith(string, CHARACTER_STRING_QUOTE_CHAR), "Value %s not correctly encoded.", string);
@@ -293,7 +293,7 @@ public class ResourceRecord {
 	 * @see #detectCharacterStringEncoded(String)
 	 * @see #encodeCharacterString(String)
 	 */
-	public static String normalizeCharacterString(@Nonnull String string) {
+	public static String normalizeCharacterString(@NonNull String string) {
 		return normalizeCharacterString(string, false);
 	}
 
@@ -309,7 +309,7 @@ public class ResourceRecord {
 	 * @see #detectCharacterStringEncoded(String)
 	 * @see #encodeCharacterString(String, boolean)
 	 */
-	public static String normalizeCharacterString(@Nonnull String string, final boolean alwaysQuote) {
+	public static String normalizeCharacterString(@NonNull String string, final boolean alwaysQuote) {
 		return detectCharacterStringEncoded(string) ? string : encodeCharacterString(string, alwaysQuote);
 	}
 
@@ -321,7 +321,7 @@ public class ResourceRecord {
 	 * @param string A raw, unencoded resource record string value.
 	 * @return The value encoded as necessary for a "character string".
 	 */
-	public static String encodeCharacterString(@Nonnull String string) {
+	public static String encodeCharacterString(@NonNull String string) {
 		return encodeCharacterString(string, false);
 	}
 
@@ -333,7 +333,7 @@ public class ResourceRecord {
 	 * @param alwaysQuote <code>true</code> if the string should always be quoted, even if it contains no characters that require quoting by RFC 1035.
 	 * @return The value encoded as necessary for a "character string".
 	 */
-	public static String encodeCharacterString(@Nonnull String string, final boolean alwaysQuote) {
+	public static String encodeCharacterString(@NonNull String string, final boolean alwaysQuote) {
 		if(alwaysQuote || contains(string, ' ') || startsWith(string, CHARACTER_STRING_QUOTE_CHAR) || endsWith(string, CHARACTER_STRING_QUOTE_CHAR)) {
 			string = CHARACTER_STRING_QUOTE_CHAR + string.replace(CHARACTER_STRING_UNESCAPED_ESCAPE, CHARACTER_STRING_ESCAPED_ESCAPE)
 					.replace(CHARACTER_STRING_UNESCAPED_QUOTE, CHARACTER_STRING_ESCAPED_QUOTE) + CHARACTER_STRING_QUOTE_CHAR;
@@ -350,7 +350,7 @@ public class ResourceRecord {
 	 * @throws IllegalArgumentException if the given value is incorrectly encoded, for example starting but not ending with a double quote.
 	 * @return The character string decoded as appropriate.
 	 */
-	public static String decodeCharactString(@Nonnull String characterString) {
+	public static String decodeCharactString(@NonNull String characterString) {
 		if(!characterString.isEmpty()) {
 			if(startsWith(characterString, CHARACTER_STRING_QUOTE_CHAR)) {
 				checkArgument(endsWith(characterString, CHARACTER_STRING_QUOTE_CHAR), "Value %s not correctly encoded.", characterString);

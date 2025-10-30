@@ -22,7 +22,7 @@ import java.time.*;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
-import javax.annotation.*;
+import org.jspecify.annotations.*;
 
 /**
  * Tracks time that continually elapses to a certain point and then resets to start elapsing again. Detecting the recurrence requires polling the instance—this
@@ -62,7 +62,7 @@ public final class RecurringTime {
 	 * @param elapsingTime The already elapsing time that should recur.
 	 * @param recurStrategy The strategy for determining when and how to recur.
 	 */
-	public RecurringTime(@Nonnull final ElapsingTime elapsingTime, @Nonnull final RecurStrategy recurStrategy) {
+	public RecurringTime(@NonNull final ElapsingTime elapsingTime, @NonNull final RecurStrategy recurStrategy) {
 		this.elapsingTimeReference = new AtomicReference<ElapsingTime>(requireNonNull(elapsingTime));
 		this.recurStrategy = requireNonNull(recurStrategy);
 	}
@@ -78,7 +78,7 @@ public final class RecurringTime {
 	 * @throws ArithmeticException if a numeric overflow occurs
 	 * 
 	 */
-	public static RecurringTime fromNowByInterval(final long interval, @Nonnull final TimeUnit timeUnit) {
+	public static RecurringTime fromNowByInterval(final long interval, @NonNull final TimeUnit timeUnit) {
 		return fromNowByInterval(Duration.of(interval, timeUnit.toChronoUnit()));
 	}
 
@@ -89,7 +89,7 @@ public final class RecurringTime {
 	 * @param interval At each recurrence, the interval to add to determine the time of the next recurrence.
 	 * @return A new interval-based recurring time.
 	 */
-	public static RecurringTime fromNowByInterval(@Nonnull final Duration interval) {
+	public static RecurringTime fromNowByInterval(@NonNull final Duration interval) {
 		return fromElapsingByInterval(ElapsingTime.fromNow(), interval);
 	}
 
@@ -101,7 +101,7 @@ public final class RecurringTime {
 	 * @param interval At each recurrence, the interval to add to determine the time of the next recurrence.
 	 * @return A new interval-based recurring time.
 	 */
-	public static RecurringTime fromElapsingByInterval(@Nonnull final ElapsingTime elapsingTime, @Nonnull final Duration interval) {
+	public static RecurringTime fromElapsingByInterval(@NonNull final ElapsingTime elapsingTime, @NonNull final Duration interval) {
 		return fromElapsingByInterval(elapsingTime, elapsingTime.convertToTimeUnit(interval));
 	}
 
@@ -117,7 +117,7 @@ public final class RecurringTime {
 	 * @throws ArithmeticException if a numeric overflow occurs
 	 * @see ElapsingTime#getTimeUnit()
 	 */
-	static RecurringTime fromElapsingByInterval(@Nonnull final ElapsingTime elapsingTime, final long interval) {
+	static RecurringTime fromElapsingByInterval(@NonNull final ElapsingTime elapsingTime, final long interval) {
 		return new RecurringTime(elapsingTime, AbstractElapsedTimeRecurStrategy.byInterval(interval));
 	}
 
@@ -134,7 +134,7 @@ public final class RecurringTime {
 	 * @throws DateTimeException if the period unit has an estimated duration
 	 * @throws ArithmeticException if a numeric overflow occurs
 	 */
-	public static RecurringTime fromNowByPeriod(final long period, @Nonnull final TimeUnit timeUnit) {
+	public static RecurringTime fromNowByPeriod(final long period, @NonNull final TimeUnit timeUnit) {
 		return fromNowByPeriod(Duration.of(period, timeUnit.toChronoUnit()));
 	}
 
@@ -148,7 +148,7 @@ public final class RecurringTime {
 	 * @param period The evenly-spaced periods between recurrences.
 	 * @return A new period-based recur recurring time.
 	 */
-	public static RecurringTime fromNowByPeriod(@Nonnull final Duration period) {
+	public static RecurringTime fromNowByPeriod(@NonNull final Duration period) {
 		return fromElapsingByPeriod(ElapsingTime.fromNow(), period);
 	}
 
@@ -163,7 +163,7 @@ public final class RecurringTime {
 	 * @param period The evenly-spaced periods between recurrences.
 	 * @return A new period-based recur recurring time.
 	 */
-	public static RecurringTime fromElapsingByPeriod(@Nonnull final ElapsingTime elapsingTime, @Nonnull final Duration period) {
+	public static RecurringTime fromElapsingByPeriod(@NonNull final ElapsingTime elapsingTime, @NonNull final Duration period) {
 		return fromElapsingByPeriod(elapsingTime, elapsingTime.convertToTimeUnit(period));
 	}
 
@@ -181,7 +181,7 @@ public final class RecurringTime {
 	 * @throws ArithmeticException if a numeric overflow occurs
 	 * @see ElapsingTime#getTimeUnit()
 	 */
-	static RecurringTime fromElapsingByPeriod(@Nonnull final ElapsingTime elapsingTime, final long period) {
+	static RecurringTime fromElapsingByPeriod(@NonNull final ElapsingTime elapsingTime, final long period) {
 		return new RecurringTime(elapsingTime, AbstractElapsedTimeRecurStrategy.byPeriod(period));
 	}
 
@@ -250,7 +250,7 @@ public final class RecurringTime {
 		 * @param elapsingTime The current elapsing time since the last registered recurrence.
 		 * @return <code>true</code> if sufficient time has elapsed so that recurrence should take place.
 		 */
-		public boolean shouldRecur(@Nonnull ElapsingTime elapsingTime);
+		public boolean shouldRecur(@NonNull ElapsingTime elapsingTime);
 
 		/**
 		 * Registers a recurrence. The new elapsing time will be relative to this recurrence registration, but specifically what the new elapsing time will be will
@@ -258,7 +258,7 @@ public final class RecurringTime {
 		 * @param elapsingTime The current elapsing time since the last registered recurrence.
 		 * @return The new elapsing time relative to this registration of a recurrence.
 		 */
-		public ElapsingTime recur(@Nonnull ElapsingTime elapsingTime);
+		public ElapsingTime recur(@NonNull ElapsingTime elapsingTime);
 
 	}
 

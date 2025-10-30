@@ -21,7 +21,7 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-import javax.annotation.*;
+import org.jspecify.annotations.*;
 
 import static java.util.Objects.*;
 
@@ -273,7 +273,7 @@ public class Objects {
 	 * @return An {@link AutoCloseable} instance that will ensure the object is closed if it implements {@link AutoCloseable}.
 	 * @see com.globalmentor.io.IO#toCloseable(Object)
 	 */
-	public static AutoCloseable toAutoCloseable(@Nonnull final Object object) {
+	public static AutoCloseable toAutoCloseable(@NonNull final Object object) {
 		if(object instanceof AutoCloseable) {
 			return (AutoCloseable)object;
 		}

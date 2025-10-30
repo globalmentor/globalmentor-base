@@ -18,7 +18,7 @@ package com.globalmentor.collections.iterators;
 
 import java.util.*;
 
-import javax.annotation.*;
+import org.jspecify.annotations.*;
 
 import static java.util.Objects.*;
 
@@ -46,7 +46,7 @@ public class EnumerationDecorator<E> extends AbstractEnumerationDecorator<E> {
 	 * @param enumeration The enumeration this enumeration will decorate.
 	 * @throws NullPointerException if the given enumeration is <code>null</code>.
 	 */
-	public EnumerationDecorator(@Nonnull final Enumeration<E> enumeration) {
+	public EnumerationDecorator(@NonNull final Enumeration<E> enumeration) {
 		this.enumeration = requireNonNull(enumeration, "Enumeration cannot be null."); //save the enumeration
 	}
 

@@ -21,7 +21,7 @@ import static java.util.Objects.*;
 import java.util.*;
 import java.util.function.Predicate;
 
-import javax.annotation.*;
+import org.jspecify.annotations.*;
 import javax.lang.model.element.*;
 import javax.lang.model.type.*;
 import javax.lang.model.util.*;
@@ -50,7 +50,7 @@ public final class ModelTypes {
 	 * @see <a href="https://docs.oracle.com/javase/specs/jls/se21/html/jls-9.html#jls-9.7.3">The Java® Language Specification, Java SE 21 Edition § 9.7.3.
 	 *      Single-Element Annotations</a>
 	 */
-	public static Optional<? extends AnnotationValue> findAnnotationValueElementValue(@Nonnull AnnotationMirror annotationMirror) {
+	public static Optional<? extends AnnotationValue> findAnnotationValueElementValue(@NonNull AnnotationMirror annotationMirror) {
 		return findAnnotationElementValueBySimpleName(annotationMirror, Annotations.VALUE_ELEMENT_NAME);
 	}
 
@@ -62,8 +62,8 @@ public final class ModelTypes {
 	 * @param simpleName The simple name (i.e. property name) of the value to retrieve.
 	 * @return The annotation value if found.
 	 */
-	public static Optional<? extends AnnotationValue> findAnnotationElementValueBySimpleName(@Nonnull AnnotationMirror annotationMirror,
-			@Nonnull final CharSequence simpleName) {
+	public static Optional<? extends AnnotationValue> findAnnotationElementValueBySimpleName(@NonNull AnnotationMirror annotationMirror,
+			@NonNull final CharSequence simpleName) {
 		return findElementValueBySimpleName(annotationMirror.getElementValues(), simpleName);
 	}
 
@@ -77,7 +77,7 @@ public final class ModelTypes {
 	 *      AnnotationProcessor</a>
 	 */
 	public static Optional<? extends AnnotationValue> findElementValueBySimpleName(
-			@Nonnull final Map<? extends ExecutableElement, ? extends AnnotationValue> elementValues, @Nonnull final CharSequence simpleName) {
+			@NonNull final Map<? extends ExecutableElement, ? extends AnnotationValue> elementValues, @NonNull final CharSequence simpleName) {
 		requireNonNull(simpleName);
 		return elementValues.entrySet().stream().filter(entry -> entry.getKey().getSimpleName().contentEquals(simpleName)).findAny().map(Map.Entry::getValue);
 	}
@@ -94,8 +94,8 @@ public final class ModelTypes {
 	 * @throws IllegalArgumentException if no type could be found for the given class; or given a type for an executable, package, or module is invalid.
 	 * @see Types#isAssignable(TypeMirror, TypeMirror)
 	 */
-	public static boolean isTypeAssignableTo(@Nonnull final Elements elements, @Nonnull final Types types, @Nonnull final TypeMirror typeMirror,
-			@Nonnull final Class<?> clazz) {
+	public static boolean isTypeAssignableTo(@NonNull final Elements elements, @NonNull final Types types, @NonNull final TypeMirror typeMirror,
+			@NonNull final Class<?> clazz) {
 		return isTypeAssignableTo(elements, types, clazz).test(typeMirror);
 	}
 
@@ -111,7 +111,7 @@ public final class ModelTypes {
 	 * @throws IllegalArgumentException if no type could be found for the given class; or given a type for an executable, package, or module is invalid.
 	 * @see Types#isAssignable(TypeMirror, TypeMirror)
 	 */
-	public static Predicate<TypeMirror> isTypeAssignableTo(@Nonnull final Elements elements, @Nonnull final Types types, @Nonnull final Class<?> clazz) {
+	public static Predicate<TypeMirror> isTypeAssignableTo(@NonNull final Elements elements, @NonNull final Types types, @NonNull final Class<?> clazz) {
 		final TypeMirror classType = findDeclaredType(elements, types, clazz)
 				.orElseThrow(() -> new IllegalArgumentException("No declared type found for class `%s`.`".formatted(clazz.getName())));
 		return type -> types.isAssignable(type, classType);
@@ -131,8 +131,8 @@ public final class ModelTypes {
 	 * @see Elements#getTypeElement(CharSequence)
 	 * @see Types#getDeclaredType(TypeElement, TypeMirror...)
 	 */
-	public static Optional<DeclaredType> findDeclaredType(@Nonnull final Elements elements, @Nonnull final Types types, @Nonnull final Class<?> clazz,
-			@Nonnull final TypeMirror... typeArgs) {
+	public static Optional<DeclaredType> findDeclaredType(@NonNull final Elements elements, @NonNull final Types types, @NonNull final Class<?> clazz,
+			@NonNull final TypeMirror... typeArgs) {
 		return ModelElements.findTypeElementForClass(elements, clazz).map(typeElement -> types.getDeclaredType(typeElement, typeArgs));
 	}
 
@@ -151,8 +151,8 @@ public final class ModelTypes {
 	 * @see Types#getDeclaredType(TypeElement, TypeMirror...)
 	 * @see #getUnboundedWildcardType(Types)
 	 */
-	public static Optional<DeclaredType> findDeclaredTypeWithUnboundedWildcardForClass(@Nonnull final Elements elements, @Nonnull final Types types,
-			@Nonnull final Class<?> clazz) {
+	public static Optional<DeclaredType> findDeclaredTypeWithUnboundedWildcardForClass(@NonNull final Elements elements, @NonNull final Types types,
+			@NonNull final Class<?> clazz) {
 		return findDeclaredType(elements, types, clazz, getUnboundedWildcardType(types));
 	}
 
@@ -162,7 +162,7 @@ public final class ModelTypes {
 	 * @implSpec This implementation delegates to {@link Types#getWildcardType(TypeMirror, TypeMirror)}, passing <code>null</code> for both bounds.
 	 * @return The new unbounded wildcard type.
 	 */
-	public static WildcardType getUnboundedWildcardType(@Nonnull final Types types) {
+	public static WildcardType getUnboundedWildcardType(@NonNull final Types types) {
 		return types.getWildcardType(null, null);
 	}
 

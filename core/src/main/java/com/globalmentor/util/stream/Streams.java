@@ -24,7 +24,7 @@ import java.util.concurrent.atomic.*;
 import java.util.function.*;
 import java.util.stream.*;
 
-import javax.annotation.*;
+import org.jspecify.annotations.*;
 
 /**
  * Utilities for working with {@link Stream}s.
@@ -70,7 +70,7 @@ public final class Streams {
 	 * @see #toOnly(Supplier)
 	 * @see <a href="https://blog.codefx.org/java/stream-findfirst-findany-reduce/">Beware Of findFirst() And findAny()</a>
 	 */
-	public static <T, X extends RuntimeException> BinaryOperator<T> toFindOnly(@Nonnull final Supplier<X> manyElementsExceptionSupplier) {
+	public static <T, X extends RuntimeException> BinaryOperator<T> toFindOnly(@NonNull final Supplier<X> manyElementsExceptionSupplier) {
 		return (element, otherElement) -> {
 			throw manyElementsExceptionSupplier.get();
 		};
@@ -96,7 +96,7 @@ public final class Streams {
 	 * @see #toFindOnly(Supplier)
 	 * @see #toFindAnyWhenMany(Runnable)
 	 */
-	public static <T> Collector<T, ?, Optional<T>> toFindOnlyOrElse(@Nonnull final Runnable multipleElementsAction) {
+	public static <T> Collector<T, ?, Optional<T>> toFindOnlyOrElse(@NonNull final Runnable multipleElementsAction) {
 		final AtomicReference<T> foundElement = new AtomicReference<>();
 		final AtomicBoolean multipleFound = new AtomicBoolean(false);
 		return collectingAndThen(reducing((element, otherElement) -> {
@@ -129,7 +129,7 @@ public final class Streams {
 	 * @see Stream#findAny()
 	 * @see #toFindOnlyOrElse(Runnable)
 	 */
-	public static <T> BinaryOperator<T> toFindAnyWhenMany(@Nonnull final Runnable whenMany) {
+	public static <T> BinaryOperator<T> toFindAnyWhenMany(@NonNull final Runnable whenMany) {
 		final AtomicBoolean manyFound = new AtomicBoolean(false);
 		return (element, otherElement) -> {
 			if(manyFound.compareAndSet(false, true)) {
@@ -178,7 +178,7 @@ public final class Streams {
 	 * @see #toFindOnly(Supplier)
 	 * @see <a href="https://stackoverflow.com/q/22694884/421049">Filter Java Stream to 1 and only 1 element</a>
 	 */
-	public static <T, X extends RuntimeException> Collector<T, ?, T> toOnly(@Nonnull final Supplier<X> manyElementsExceptionSupplier) {
+	public static <T, X extends RuntimeException> Collector<T, ?, T> toOnly(@NonNull final Supplier<X> manyElementsExceptionSupplier) {
 		return Collectors.collectingAndThen(toList(), list -> {
 			if(list.isEmpty()) {
 				throw new NoSuchElementException("No element present.");
@@ -205,8 +205,8 @@ public final class Streams {
 	 * @param zipper The function for combining the elements.
 	 * @return A new stream zipping the contents of the two input streams.
 	 */
-	public static <A, B, R> Stream<R> zip(@Nonnull final Stream<A> streamA, @Nonnull final Stream<B> streamB,
-			@Nonnull final BiFunction<? super A, ? super B, R> zipper) {
+	public static <A, B, R> Stream<R> zip(@NonNull final Stream<A> streamA, @NonNull final Stream<B> streamB,
+			@NonNull final BiFunction<? super A, ? super B, R> zipper) {
 		return zip(streamA, streamB, false, zipper);
 	}
 
@@ -227,8 +227,8 @@ public final class Streams {
 	 * @param zipper The function for combining the elements.
 	 * @return A new stream zipping the contents of the two input streams.
 	 */
-	public static <A, B, R> Stream<R> zip(@Nonnull final Stream<A> streamA, @Nonnull final Stream<B> streamB, final boolean retainExtraElements,
-			@Nonnull final BiFunction<? super A, ? super B, R> zipper) {
+	public static <A, B, R> Stream<R> zip(@NonNull final Stream<A> streamA, @NonNull final Stream<B> streamB, final boolean retainExtraElements,
+			@NonNull final BiFunction<? super A, ? super B, R> zipper) {
 		return zip(streamA, streamB, null, null, retainExtraElements, zipper);
 	}
 
@@ -248,8 +248,8 @@ public final class Streams {
 	 * @param zipper The function for combining the elements.
 	 * @return A new stream zipping the contents of the two input streams.
 	 */
-	public static <T, R> Stream<R> zip(@Nonnull final Stream<T> streamA, @Nonnull final Stream<T> streamB,
-			@Nonnull final BiFunction<? super T, ? super T, R> zipper, @Nullable final T defaultElement) {
+	public static <T, R> Stream<R> zip(@NonNull final Stream<T> streamA, @NonNull final Stream<T> streamB,
+			@NonNull final BiFunction<? super T, ? super T, R> zipper, @Nullable final T defaultElement) {
 		return zip(streamA, streamB, defaultElement, defaultElement, zipper);
 	}
 
@@ -271,8 +271,8 @@ public final class Streams {
 	 * @param zipper The function for combining the elements.
 	 * @return A new stream zipping the contents of the two input streams.
 	 */
-	public static <A, B, R> Stream<R> zip(@Nonnull final Stream<A> streamA, @Nonnull final Stream<B> streamB, @Nullable final A defaultElementA,
-			@Nullable final B defaultElementB, @Nonnull final BiFunction<? super A, ? super B, R> zipper) {
+	public static <A, B, R> Stream<R> zip(@NonNull final Stream<A> streamA, @NonNull final Stream<B> streamB, @Nullable final A defaultElementA,
+			@Nullable final B defaultElementB, @NonNull final BiFunction<? super A, ? super B, R> zipper) {
 		return zip(streamA, streamB, defaultElementA, defaultElementB, true, zipper);
 	}
 
@@ -297,8 +297,8 @@ public final class Streams {
 	 * @param zipper The function for combining the elements.
 	 * @return A new stream zipping the contents of the two input streams.
 	 */
-	static <A, B, R> Stream<R> zip(@Nonnull final Stream<A> streamA, @Nonnull final Stream<B> streamB, @Nullable final A defaultElementA,
-			@Nullable final B defaultElementB, final boolean retainExtraElements, @Nonnull final BiFunction<? super A, ? super B, R> zipper) {
+	static <A, B, R> Stream<R> zip(@NonNull final Stream<A> streamA, @NonNull final Stream<B> streamB, @Nullable final A defaultElementA,
+			@Nullable final B defaultElementB, final boolean retainExtraElements, @NonNull final BiFunction<? super A, ? super B, R> zipper) {
 		final boolean isParallel = streamA.isParallel() || streamB.isParallel();
 		final Spliterator<A> spliteratorA = streamA.spliterator();
 		final Spliterator<B> spliteratorB = streamB.spliterator();

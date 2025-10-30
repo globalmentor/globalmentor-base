@@ -24,7 +24,7 @@ import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import javax.annotation.*;
+import org.jspecify.annotations.*;
 
 import static java.nio.file.Files.*;
 import static java.util.Collections.*;
@@ -148,7 +148,7 @@ public class Files {
 	 * @return The file with the new name extension.
 	 * @see File#getName()
 	 */
-	public static File addNameExtension(@Nonnull final File file, @Nonnull final String extension) {
+	public static File addNameExtension(@NonNull final File file, @NonNull final String extension) {
 		return new File(file.getParent(), Filenames.addExtension(file.getName(), extension)); //return the file with a "temp" extension
 	}
 
@@ -373,7 +373,7 @@ public class Files {
 	 * @param file The file to examine.
 	 * @return The extension of the file (not including '.'), or <code>null</code> if no extension is present.
 	 */
-	public static Optional<String> findNameExtension(@Nonnull final File file) {
+	public static Optional<String> findNameExtension(@NonNull final File file) {
 		return Filenames.findExtension(file.getName());
 	}
 
@@ -400,7 +400,7 @@ public class Files {
 	 * @param extension The extension to set, or <code>null</code> if the extension should be removed.
 	 * @return The file with the new extension.
 	 */
-	public static File changeNameExtension(@Nonnull final File file, @Nullable final String extension) {
+	public static File changeNameExtension(@NonNull final File file, @Nullable final String extension) {
 		return changeName(file, Filenames.changeExtension(file.getName(), extension)); //return a file based on the name with the new extension
 	}
 
@@ -439,7 +439,7 @@ public class Files {
 	 * @param file The file to examine.
 	 * @return The file with no extension.
 	 */
-	public static File removeNameExtension(@Nonnull final File file) {
+	public static File removeNameExtension(@NonNull final File file) {
 		return changeNameExtension(file, null); //replace the extension with nothing
 	}
 
@@ -767,7 +767,7 @@ public class Files {
 	 * @throws IllegalArgumentException if the given path is not a directory.
 	 * @see java.nio.file.Files#isDirectory(Path, LinkOption...)
 	 */
-	public static Path checkArgumentDirectory(@Nonnull final Path path) {
+	public static Path checkArgumentDirectory(@NonNull final Path path) {
 		checkArgument(isDirectory(path), "Path %s does not exist or is not a directory.", path);
 		return path;
 	}
@@ -779,7 +779,7 @@ public class Files {
 	 * @throws IllegalArgumentException if the given path does not exist.
 	 * @see java.nio.file.Files#exists(Path, LinkOption...)
 	 */
-	public static Path checkArgumentExists(@Nonnull final Path path) {
+	public static Path checkArgumentExists(@NonNull final Path path) {
 		checkArgument(exists(path), "Path %s does not exist.", path);
 		return path;
 	}
@@ -795,7 +795,7 @@ public class Files {
 	 * @throws IllegalArgumentException if the given path is not a regular file.
 	 * @see java.nio.file.Files#isRegularFile(Path, LinkOption...)
 	 */
-	public static Path checkArgumentRegularFile(@Nonnull final Path path, @Nonnull final LinkOption... options) {
+	public static Path checkArgumentRegularFile(@NonNull final Path path, @NonNull final LinkOption... options) {
 		checkArgument(isRegularFile(path, options), "Path %s does not exist or is not a regular file.", path);
 		return path;
 	}
@@ -813,7 +813,7 @@ public class Files {
 	 * @throws IOException if an I/O error is thrown while deleting the path.
 	 * @see java.nio.file.Files#deleteIfExists(Path)
 	 */
-	public static boolean deleteIfExists(@Nonnull final Path path, final boolean force) throws IOException {
+	public static boolean deleteIfExists(@NonNull final Path path, final boolean force) throws IOException {
 		try {
 			return java.nio.file.Files.deleteIfExists(path);
 		} catch(final AccessDeniedException accessDeniedException) {
@@ -844,7 +844,7 @@ public class Files {
 	 * @throws IOException if an I/O error is thrown while deleting the tree.
 	 * @see java.nio.file.Files#deleteIfExists(Path)
 	 */
-	public static boolean deleteFileTree(@Nonnull final Path path) throws IOException {
+	public static boolean deleteFileTree(@NonNull final Path path) throws IOException {
 		return deleteFileTree(path, false);
 	}
 
@@ -865,7 +865,7 @@ public class Files {
 	 * @throws IOException if an I/O error is thrown while deleting the tree.
 	 * @see java.nio.file.Files#deleteIfExists(Path)
 	 */
-	public static boolean deleteFileTree(@Nonnull final Path path, final boolean force) throws IOException {
+	public static boolean deleteFileTree(@NonNull final Path path, final boolean force) throws IOException {
 		try {
 			if(readAttributes(path, BasicFileAttributes.class, LinkOption.NOFOLLOW_LINKS).isDirectory()) { //directory; throws exception if doesn't exist
 				walkFileTree(path, new SimpleFileVisitor<Path>() {
@@ -909,7 +909,7 @@ public class Files {
 	 * @return The path to the matching file, if present in the given directory or up the hierarchy.
 	 * @throws IOException if an I/O error occurred during the search.
 	 */
-	public static Optional<Path> findAncestorFileByName(@Nonnull Path directory, @Nonnull final String filename) throws IOException {
+	public static Optional<Path> findAncestorFileByName(@NonNull Path directory, @NonNull final String filename) throws IOException {
 		return findAncestorFileByName(directory, filename, path -> true);
 	}
 
@@ -923,7 +923,7 @@ public class Files {
 	 * @return The path to the matching file, if present in the given directory or up the hierarchy.
 	 * @throws IOException if an I/O error occurred during the search.
 	 */
-	public static Optional<Path> findAncestorFileByName(@Nonnull Path directory, @Nonnull final String filename, @Nonnull final Predicate<Path> filter)
+	public static Optional<Path> findAncestorFileByName(@NonNull Path directory, @NonNull final String filename, @NonNull final Predicate<Path> filter)
 			throws IOException {
 		return findAncestorFileByName(directory, filename, filter, null);
 	}
@@ -940,7 +940,7 @@ public class Files {
 	 *           directory was not in the given root directory.
 	 * @throws IOException if an I/O error occurred during the search.
 	 */
-	public static Optional<Path> findAncestorFileByName(@Nonnull Path directory, @Nonnull final String filename, @Nullable final Path rootDirectory)
+	public static Optional<Path> findAncestorFileByName(@NonNull Path directory, @NonNull final String filename, @Nullable final Path rootDirectory)
 			throws IOException {
 		return findAncestorFileByName(directory, filename, path -> true, rootDirectory);
 	}
@@ -958,7 +958,7 @@ public class Files {
 	 *           directory was not in the given root directory.
 	 * @throws IOException if an I/O error occurred during the search.
 	 */
-	public static Optional<Path> findAncestorFileByName(@Nonnull Path directory, @Nonnull final String filename, @Nonnull final Predicate<Path> filter,
+	public static Optional<Path> findAncestorFileByName(@NonNull Path directory, @NonNull final String filename, @NonNull final Predicate<Path> filter,
 			@Nullable final Path rootDirectory) throws IOException {
 		return findAncestorFileByName(directory, singleton(filename), filter, rootDirectory);
 	}
@@ -975,7 +975,7 @@ public class Files {
 	 *           directory was not in the given root directory.
 	 * @throws IOException if an I/O error occurred during the search.
 	 */
-	public static Optional<Path> findAncestorFileByName(@Nonnull Path directory, @Nonnull final Iterable<String> filenames, @Nonnull final Predicate<Path> filter,
+	public static Optional<Path> findAncestorFileByName(@NonNull Path directory, @NonNull final Iterable<String> filenames, @NonNull final Predicate<Path> filter,
 			@Nullable final Path rootDirectory) throws IOException {
 		for(final String filename : filenames) {
 			final Path file = directory.resolve(requireNonNull(filename));
@@ -1003,7 +1003,7 @@ public class Files {
 	 * @param path The path of the file to back up.
 	 * @return The path to the backup file to use.
 	 */
-	public static Path getBackupPath(@Nonnull final Path path) { //TODO move to Paths?
+	public static Path getBackupPath(@NonNull final Path path) { //TODO move to Paths?
 		return getBackupPath(path, 1);
 	}
 
@@ -1023,7 +1023,7 @@ public class Files {
 	 * @return The path to the backup file to use.
 	 * @throws IllegalArgumentException if <var><code>maxBackupCount</code></var> is zero or negative.
 	 */
-	public static Path getBackupPath(@Nonnull final Path path, @Nonnegative final long maxBackupCount) { //TODO move to Paths?
+	public static Path getBackupPath(@NonNull final Path path, final long maxBackupCount) { //TODO move to Paths?
 		checkArgumentNotNull(path, "The path to the file cannot be null.");
 		checkArgument(java.nio.file.Files.exists(path) && !java.nio.file.Files.isDirectory(path),
 				"The provided path is referring to a directory or doesn't exist.");
@@ -1051,7 +1051,7 @@ public class Files {
 	 * 
 	 * @see #backupFile(Path, long)
 	 */
-	public static Path backupFile(@Nonnull final Path path) throws IOException {
+	public static Path backupFile(@NonNull final Path path) throws IOException {
 		return backupFile(path, 1);
 	}
 
@@ -1073,7 +1073,7 @@ public class Files {
 	 * @throws IllegalArgumentException if <var><code>maxBackupCount</code></var> is zero or negative.
 	 * @throws IOException If an error occurs while rolling the backup files.
 	 */
-	public static Path backupFile(@Nonnull final Path path, @Nonnegative final long maxBackupCount) throws IOException {
+	public static Path backupFile(@NonNull final Path path, final long maxBackupCount) throws IOException {
 		checkArgumentNotNull(path, "The path to the file cannot be null.");
 		checkArgument(java.nio.file.Files.exists(path) && !java.nio.file.Files.isDirectory(path),
 				"The provided path is referring to a directory or doesn't exist.");
@@ -1096,7 +1096,7 @@ public class Files {
 	 * 
 	 * @throws IOException If an error occurs while rolling the backup files.
 	 */
-	private static void rollBackupFiles(@Nonnull final Path path, @Nonnegative final long maxBackupCount) throws IOException {
+	private static void rollBackupFiles(@NonNull final Path path, final long maxBackupCount) throws IOException {
 		checkArgumentNotNull(path, "The path to the file cannot be null.");
 		checkArgument(java.nio.file.Files.exists(path) && !java.nio.file.Files.isDirectory(path),
 				"The provided path is referring to a directory or doesn't exist.");
@@ -1127,7 +1127,7 @@ public class Files {
 	 * 
 	 * @see #newOutputStreamWithBackup(Path, long, OpenOption...)
 	 */
-	public static OutputStream newOutputStreamWithBackup(@Nonnull final Path path, final OpenOption... options) throws IOException {
+	public static OutputStream newOutputStreamWithBackup(@NonNull final Path path, final OpenOption... options) throws IOException {
 		return newOutputStreamWithBackup(path, 1, options);
 	}
 
@@ -1143,7 +1143,7 @@ public class Files {
 	 * @throws IllegalArgumentException if <var><code>maxBackupCount</code></var> is negative.
 	 * @throws IOException If an error occurs while creating the backup file.
 	 */
-	public static OutputStream newOutputStreamWithBackup(@Nonnull final Path path, @Nonnegative final long maxBackupCount, final OpenOption... options)
+	public static OutputStream newOutputStreamWithBackup(@NonNull final Path path, final long maxBackupCount, final OpenOption... options)
 			throws IOException {
 		backupFile(path, maxBackupCount);
 		return java.nio.file.Files.newOutputStream(path, options);
