@@ -20,14 +20,12 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import org.jspecify.annotations.*;
 
-import static java.util.Collections.emptyList;
+import static java.util.Collections.*;
 import static java.util.Objects.*;
-import static java.util.stream.Collectors.mapping;
-import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.*;
 
 import com.globalmentor.io.*;
 
@@ -42,10 +40,8 @@ import com.globalmentor.text.*;
 /**
  * Various URI manipulating functions for working with URIs as defined in <a href="https://tools.ietf.org/html/rfc3986">RFC 3986</a>, "Uniform Resource
  * Identifiers (URI): Generic Syntax".
- * <p>
- * For file URIs Java incorrectly uses the form <code>file:/mnt/sdcard/...</code> instead of <code>file:///mnt/sdcard/...</code>, but these utilities use the
- * former for consistency.
- * </p>
+ * <p>For file URIs Java incorrectly uses the form <code>file:/mnt/sdcard/...</code> instead of <code>file:///mnt/sdcard/...</code>, but these utilities use the
+ * former for consistency.</p>
  * @see URI
  * @see <a href="https://tools.ietf.org/html/rfc3986">RFC 3986: Uniform Resource Identifiers (URI): Generic Syntax</a>
  */
@@ -95,9 +91,7 @@ public final class URIs {
 
 	/**
 	 * The pattern to match the scheme-specific part of a URN.
-	 * <p>
-	 * This pattern is not currently meant to be a vigorous validation of URN format, but rather a means to easily discover the components of a URN.
-	 * </p>
+	 * <p>This pattern is not currently meant to be a vigorous validation of URN format, but rather a means to easily discover the components of a URN.</p>
 	 */
 	public static final Pattern URN_SSP_PATTERN = Pattern.compile(String.format("(.+)%s(.+)", SCHEME_SEPARATOR));
 	/** The matching group to retrieve the URN namespace identifier. */
@@ -206,7 +200,7 @@ public final class URIs {
 	public static final String FILE_URI_PATH_ROOT_PREFIX = ROOT_PATH + PATH_SEPARATOR;
 
 	/**
-	 * The maximum URL length allowed by Microsoft Internet Explorer for HTTP GET.
+	 * The maximum URI length allowed by Microsoft Internet Explorer for HTTP GET.
 	 * @see <a href="http://support.microsoft.com/default.aspx?scid=kb;EN-US;q208427">Maximum URL length is 2,083 characters in Internet Explorer</a>
 	 */
 	public static final int MICROSOFT_INTERNET_EXPLORER_MAXIMUM_URI_LENGTH = 2083;
@@ -653,8 +647,8 @@ public final class URIs {
 	}
 
 	/**
-	 * Adds the extension, if any, to a name and returns the new URI. This is a convenience method that delegates to {@link #addRawNameExtension(URI, String)} if
-	 * a non-<code>null</code> extension is given.
+	 * Adds the extension, if any, to a name and returns the new URI.
+	 * @apiNote This is a convenience method that delegates to {@link #addRawNameExtension(URI, String)} if a non-<code>null</code> extension is given.
 	 * @param uri The URI to examine.
 	 * @param extension The raw, encoded extension to add, or <code>null</code> if no extension should be added.
 	 * @return A URI with a raw name with the new extension, if any.
@@ -664,8 +658,8 @@ public final class URIs {
 	}
 
 	/**
-	 * Removes the extension, if any, of a URI name and returns a new URI with no extension. This is a convenience method that delegates to
-	 * {@link #changeRawNameExtension(URI, String)}.
+	 * Removes the extension, if any, of a URI name and returns a new URI with no extension.
+	 * @apiNote This is a convenience method that delegates to {@link #changeRawNameExtension(URI, String)}.
 	 * @param uri The URI to examine.
 	 * @return The URI with no extension.
 	 */
@@ -781,129 +775,6 @@ public final class URIs {
 		return paramStringBuilder.toString(); //return the query parameter string we constructed
 	}
 
-	//	/**
-	//	 * Creates a path-based query from a standard URI query. A query in the form <code>?var1=value1&amp;var2=value2</code> will be converted to the form
-	//	 * <code>/var1%3Dvalue1/var2&3Dvalue2</code>.
-	//	 * @param query The standard URI query string, optionally beginning with '?'.
-	//	 * @return A query string converted to a path. A query string beginning with '?' will be converted into an absolute path.
-	//	 */
-	/*TODO fix; do *not* use URLEncoder, which is for www-encoded forms	
-		public static String createPathQuery(final String query)
-		{
-			if(query.length()>0) {	//if the query has at least one character
-				final StringBuilder stringBuilder=new StringBuilder();	//create a string builder for creating a path query
-				final int startIndex;	//find out if we should skip the first character			
-				if(query.charAt(0)==QUERY_SEPARATOR) {	//if the first character is '?'
-					stringBuilder.append(PATH_SEPARATOR);	//convert it to a '/'
-					startIndex=1;	//skip the introductory character
-				}
-				else {	//if the string doesn't begin with '?'
-					startIndex=0;	//we'll just start at the first
-				}
-					//tokenize the string on the attribute delimiter, '&'
-				final StringTokenizer stringTokenizer=new StringTokenizer(query.substring(startIndex), String.valueOf(QUERY_NAME_VALUE_PAIR_DELIMITER));
-				while(stringTokenizer.hasMoreTokens()) {	//while there are more tokens
-					final String token=stringTokenizer.nextToken();	//get the next token
-					try
-					{
-						stringBuilder.append(URLEncoder.encode(token, UTF_8));	//encode and append the next token
-					}
-					catch(UnsupportedEncodingException unsupportedEncodingException) {	//we should always support UTF-8
-						throw new AssertionError(unsupportedEncodingException);
-					}					
-					if(stringTokenizer.hasMoreTokens()) {	//if there are more tokens
-						stringBuilder.append(PATH_SEPARATOR);	//add a path separator, '/'					
-					}
-				}
-				return stringBuilder.toString();	//return the string we constructed
-			}
-			else {	//if the query is empty
-				return query;	//return the query as it is
-			}		
-		}
-	*/
-
-	//	/**
-	//	 * Creates a standard URI based query from a path-based query. A query in the form <code>/var1%3Dvalue1/var2&3Dvalue2</code> will be converted to the form
-	//	 * <code>?var1=value1&amp;var2=value2</code>.
-	//	 * @param pathQuery The standard URI query string, optionally beginning with '?'.
-	//	 * @return A query string converted to a path. A query string beginning with '?' will be converted into an absolute path.
-	//	 */
-	/*TODO fix; do *not* use URLEncoder, which is for www-encoded forms	
-		public static String createQuery(final String pathQuery)
-		{
-			if(pathQuery.length()>0) {	//if the query has at least one character
-				final StringBuilder stringBuilder=new StringBuilder();	//create a string builder for creating a query
-				final int startIndex;	//find out if we should skip the first character			
-				if(pathQuery.charAt(0)==PATH_SEPARATOR) {	//if the first character is '/'
-					stringBuilder.append(QUERY_SEPARATOR);	//convert it to a '?'
-					startIndex=1;	//skip the introductory character
-				}
-				else {	//if the string doesn't begin with '/'
-					startIndex=0;	//we'll just start at the first
-				}
-					//tokenize the string on path separators, '/'
-				final StringTokenizer stringTokenizer=new StringTokenizer(pathQuery.substring(startIndex), String.valueOf(PATH_SEPARATOR));
-				while(stringTokenizer.hasMoreTokens()) {	//while there are more tokens
-					final String token=stringTokenizer.nextToken();	//get the next token
-					try
-					{
-						stringBuilder.append(URLDecoder.decode(token, UTF_8));	//encode and append the next token
-					}
-					catch(UnsupportedEncodingException unsupportedEncodingException) {	//we should always support UTF-8
-						throw new AssertionError(unsupportedEncodingException);
-					}					
-					if(stringTokenizer.hasMoreTokens()) {	//if there are more tokens
-						stringBuilder.append(QUERY_NAME_VALUE_PAIR_DELIMITER);	//add a query name/value pair separator, '&'					
-					}
-				}
-				return stringBuilder.toString();	//return the string we constructed
-			}
-			else {	//if the path query is empty
-				return pathQuery;	//return the path query as it is
-			}		
-		}
-	*/
-
-	//	/**
-	//	 * Retrieves name-value parameters from a standard URI query string.
-	//	 * @param query The URI query string, optionally beginning with a '?' character.
-	//	 * @return An array of name-value pairs representing query parameters.
-	//	 */
-	/*TODO fix; do *not* use URLEncoder, which is for www-encoded forms	
-		public static NameValuePair<String, String>[] getQueryParameters(final String query)
-		{
-			final List<NameValuePair<String, String>> parameterList=new ArrayList<NameValuePair<String, String>>();	//create a list to hold our parameters
-			if(query.length()>0) {	//if the query has at least one character
-				final int startIndex;	//find out if we should skip the first character			
-				if(query.charAt(0)==QUERY_SEPARATOR) {	//if the first character is '?'
-					startIndex=1;	//skip the introductory character
-				}
-				else {	//if the string doesn't begin with '?'
-					startIndex=0;	//we'll just start at the first
-				}
-					//tokenize the string on the attribute delimiter, '&'
-				final StringTokenizer stringTokenizer=new StringTokenizer(query.substring(startIndex), String.valueOf(QUERY_NAME_VALUE_PAIR_DELIMITER));
-				while(stringTokenizer.hasMoreTokens()) {	//while there are more tokens
-					final String token=stringTokenizer.nextToken();	//get the next token
-					final int equalsIndex=token.indexOf(QUERY_NAME_VALUE_ASSIGNMENT);	//get the index of the '=' character
-					final String name;	//we'll determine the name and the value
-					final String value;
-					if(equalsIndex>=0) {	//if there is an equals character
-						name=token.substring(0, equalsIndex);	//the name is everything up to but not including the '='
-						value=token.substring(equalsIndex+1);	//the value is everything after the '='
-					}
-					else {	//if there is no equals character
-						name=token;	//take the token as it is for the name
-						value=null;	//there is no value TODO is this the correct thing to do? should it be ""?
-					}
-					parameterList.add(new NameValuePair<String, String>(name, value));	//add this parameter to the list 
-				}
-			}
-			return parameterList.toArray(new NameValuePair[parameterList.size()]);	//return the list as an array
-		}
-	*/
-
 	/**
 	 * Retrieves the parameters from the query of a URI, if present.
 	 * @param uri The URI from which to extract parameters.
@@ -911,7 +782,7 @@ public final class URIs {
 	 */
 	public static Map<String, List<String>> getQueryParameterMap(final URI uri) {
 		return findQueryParameters(uri).stream().flatMap(List::stream)
-				.collect(Collectors.groupingBy(URIQueryParameter::getName, mapping(URIQueryParameter::getValue, toList())));
+				.collect(groupingBy(URIQueryParameter::getName, mapping(URIQueryParameter::getValue, toList())));
 	}
 
 	/**
@@ -1074,9 +945,7 @@ public final class URIs {
 
 	/**
 	 * Determines the parent collection of a hierarchical URI.
-	 * <p>
-	 * Non-normalized collection paths (e.g. ending with <code>/.</code>) are not supported.
-	 * </p>
+	 * <p>Non-normalized collection paths (e.g. ending with <code>/.</code>) are not supported.</p>
 	 * @param uri The URI to examine.
 	 * @return A URI representing the parent collection of a hierarchical URI; if the URI ends in '/', equivalent to resolving the path ".." to the URI; if the
 	 *         URI does not end in '/', equivalent to resolving the path "." to the URI; or <code>null</code> if the given URI's path equates to the root path.
@@ -1100,10 +969,8 @@ public final class URIs {
 
 	/**
 	 * Returns a URI relative to the given parent URI. A collection URI relativized against itself will return an empty URI.
-	 * <p>
-	 * This method does not support backtracking, that is, creating a path to a parent or child path. For that functionality use
-	 * {@link #findRelativePath(URI, URI)} instead.
-	 * </p>
+	 * <p>This method does not support backtracking, that is, creating a path to a parent or child path. For that functionality use
+	 * {@link #findRelativePath(URI, URI)} instead.</p>
 	 * @apiNote This method differs from {@link URI#relativize(URI)} in that the parent URI must be a collection URI (i.e. end with a slash) for a relative child
 	 *          path to be found.
 	 * @implSpec This method delegates to {@link #findRelativeChildPath(URI, URI)}
@@ -1118,10 +985,8 @@ public final class URIs {
 
 	/**
 	 * Returns a URI relative to the given parent URI. A collection URI relativized against itself will return an empty URI.
-	 * <p>
-	 * This method does not support backtracking, that is, creating a path to a parent or child path. For that functionality use
-	 * {@link #findRelativePath(URI, URI)} instead.
-	 * </p>
+	 * <p>This method does not support backtracking, that is, creating a path to a parent or child path. For that functionality use
+	 * {@link #findRelativePath(URI, URI)} instead.</p>
 	 * @apiNote This method differs from {@link URI#relativize(URI)} in that the parent URI must be a collection URI (i.e. end with a slash) for a relative child
 	 *          path to be found.
 	 * @implSpec This method first normalizes both URIs.
@@ -1271,12 +1136,8 @@ public final class URIs {
 
 	/**
 	 * Creates an absolute URI from the given string, guessing what the string represents.
-	 * <p>
-	 * If the string is not a valid URL (e.g. it contains a space), this method assumes that a file was intended and a file URI is constructed.
-	 * </p>
-	 * <p>
-	 * This method is convenient for creating URIs based upon user input.
-	 * </p>
+	 * <p>If the string is not a valid URI (e.g. it contains a space), this method assumes that a file was intended and a file URI is constructed.</p>
+	 * @apiNote This method is convenient for creating URIs based upon user input.
 	 * @param string The string to convert to a URI.
 	 * @return A URI representing the contents of the string, interpreted in a lenient fashion.
 	 */
@@ -1298,16 +1159,6 @@ public final class URIs {
 		catch(URISyntaxException uriSyntaxException) { //if the string is not a valid URI
 			return Files.toURI(new File(string)); //construct a file object and convert that to an absolute URI
 		}
-	}
-
-	/**
-	 * Returns a URL representing the directory of the given file URL. (It is assumed that the given URL represents a file.)
-	 * @param url The URL of a file.
-	 * @return A URL of the file's directory, ending with '/'.
-	 * @throws MalformedURLException Thrown if a directory URL cannot be created.
-	 */
-	public static URL getDirectoryURL(final URL url) throws MalformedURLException {
-		return new URL(url, "."); //create a new URL from the directory of the URL TODO use a constant here
 	}
 
 	/**
@@ -1359,92 +1210,6 @@ public final class URIs {
 		//if any of the components were present (which is distinct from them having string content), return the constructed string; otherwise, return null
 		return rawPath != null || rawFragment != null || rawFragment != null ? stringBuilder.toString() : null;
 	}
-
-	//	/**
-	//	 * Returns a relative path to the URL from the given context URL. This version requires the file to be on the same branch of the context path (e.g.
-	//	 * "http://abc.de/a/c/d.html" is not on the same branch of "http://abc.de/a/b"). TODO del The context URL must be a URL of a directory, ending with the
-	//	 * directory divider character '/'
-	//	 * @param contextURL The reference URL to use in making the relative path.
-	//	 * @param url The URL for which a relative path should be returned, in relation to the context URL.
-	//	 * @return A relative path to the URL in relation to the context URL.
-	//	 * @throws MalformedURLException Thrown if a relative URL cannot be determined from the context URL.
-	//	 */
-	/*TODO fix
-		public static String getRelativePath(final URL contextURL, final URL url) throws MalformedURLException
-		{
-	
-			  //TODO check this new implementation; this simply chops off everything that matches
-	
-			if(urlPath.startsWith(directoryURLPath)) {	//if the directory URL path is at the beginning of the URL path
-				final String relativePath=urlPath.substring(directoryURLPath.length());  //get everything after the directory URL
-				return relativePath;  //return the relative path
-			}
-			throw new MalformedURLException("Cannot create relative path for "+url+" from context "+contextURL);  //show that we couldn't determine a relative path
-		}
-	*/
-
-	//	/**
-	//	 * Opens a connection to the given URL, recognizing redirects. This method was inspired by the source code to <code>javax.swing.JTextPane.getStream()</code>.
-	//	 * @param url The URL a connection to which should be opened.
-	//	 * @return A connection to the given URL or the URL to which it redirects.
-	//	 */
-	/*TODO fix; we need to leave the old version in XMLTextPane because it changes the URL appropriately instead of just automatically redirecting
-		public static URLConnection openConnection(final URL url) {	//TODO fix throws IOException
-			final URLConnection urlConnection=url.openConnection(); //open a connection to the URL
-			if(urlConnection instanceof HttpURLConnection) {	//if this is a HTTP connection
-			  final HttpURLConnection httpURLConnectoin=(HttpURLConnection)urlConnection; //cast the
-		    hconn.setInstanceFollowRedirects(false);
-		    int response = hconn.getResponseCode();
-		    boolean redirect = (response >= 300 && response <= 399);
-	
-	//TODO del In the case of a redirect, we want to actually change the URL
-	//TODO del that was input to the new, redirected URL
-	
-		    if (redirect) {
-			String loc = conn.getHeaderField("L4ocation");
-			if (loc.startsWith("http", 0)) {
-			    page = new URL(loc);
-			} else {
-			    page = new URL(page, loc);
-			}
-			return getStream(page);
-		    }
-		}
-		String contentType = conn.getContentType();
-		if(contentType!=null) {	//if we receive at least a guess of the content type
-	*/
-
-	//	/**
-	//	 * Loads the contents of a URL into an array of bytes.
-	//	 * @param url The URL from which to read.
-	//	 * @return An array of bytes from the URL.
-	//	 * @throws IOException Thrown if there is an error loading the bytes.
-	//	 * @see InputStreamUtilities#getBytes
-	//	 */
-	/*TODO fix
-		public static byte[] readBytes(final URL url) throws IOException
-		{
-			try (final InputStream urlInputStream=url.openConnection().getInputStream()) {  //create an input stream to the URL
-				return InputStreamUtilities.getBytes(urlInputStream);  //convert the URL to an array of bytes
-				urlInputStream.close();  //always close the URL input stream
-			}
-		}
-	*/
-
-	//	/**
-	//	 * Loads the contents of a URL into a string.
-	//	 * @param url The URL from which to read.
-	//	 * @param encoding The encoding (such as UTF-8) used to store the string.
-	//	 * @return A string containing the contents of the URL.
-	//	 * @throws IOException Thrown if there is an error loading the bytes.
-	//	 */
-	/*TODO fix
-		public static String readString(final URL url, final String encoding) throws IOException
-		{
-			final byte[] bytes=readBytes(url); //load the contents of the URL
-			return new String(bytes, encoding); //convert the bytes into a string, using the given encoding
-		}
-	*/
 
 	/**
 	 * Determines the relative path of the given absolute path by removing the root path '/' character from the beginning of the path.
@@ -1504,7 +1269,8 @@ public final class URIs {
 	}
 
 	/**
-	 * Determines whether the URI has a path. This is a convenience method that delegates to {@link URI#getRawPath()}.
+	 * Determines whether the URI has a path.
+	 * @apiNote This is a convenience method that delegates to {@link URI#getRawPath()}.
 	 * @param uri The URI which should be checked for a path.
 	 * @return <code>true</code> if the given URI has a path.
 	 */
@@ -1554,8 +1320,10 @@ public final class URIs {
 	 * Creates a URL from a URI. If a valid URL cannot be formed, <code>null</code> is returned.
 	 * @param uri The URI to convert to a URL, or <code>null</code> if no URI is available (in which case <code>null</code> will be returned).
 	 * @return The URL form of the URI, or <code>null</code> if the URI cannot be converted to a valid URL.
+	 * @deprecated to be replaced with an {@link Optional} returning version if needed or simply not replaced.
 	 */
-	public static URL toValidURL(final URI uri) {
+	@Deprecated(forRemoval = true)
+	public static @Nullable URL toValidURL(@NonNull final URI uri) {
 		try {
 			//TODO we probably want to check for the condition java.lang.IllegalArgumentException: URI is not absolute
 			return uri != null ? uri.toURL() : null; //convert the URI to a URL, if we have a URI	
@@ -1569,10 +1337,8 @@ public final class URIs {
 
 	/**
 	 * Determines whether the given URI is a UNC file path URI in the form <code>file:////server/file.ext</code>.
-	 * <p>
-	 * Strangely, the Java URI form of a UNC path will contain a path prefixed with <code>//</code>, but the entire scheme-specific part will be prefixed with
-	 * <code>////</code>.
-	 * </p>
+	 * <p>Strangely, the Java URI form of a UNC path will contain a path prefixed with <code>//</code>, but the entire scheme-specific part will be prefixed with
+	 * <code>////</code>.</p>
 	 * @param uri The URI to test.
 	 * @return <code>true</code> if the given URI has a scheme of {@value #FILE_SCHEME} and its scheme-specific part begins with four slashes.
 	 * @see #WINDOWS_UNC_PATH_URI_SSP_PREFIX
@@ -1625,13 +1391,9 @@ public final class URIs {
 	/**
 	 * Resolves a string against a base URI with added functionality and bug fixes over {@link URI#resolve(String)}, following
 	 * <a href="https://tools.ietf.org/html/rfc3986">RFC 3986</a>.
-	 * <p>
-	 * This method correctly resolves fragment URIs against opaque base URIs.
-	 * </p>
-	 * <p>
-	 * This method corrects Java's erroneous collapsing of slashes in UNC paths, so that for example <code>file:////server/file.ext</code> can successfully be
-	 * resolved against.
-	 * </p>
+	 * <p>This method correctly resolves fragment URIs against opaque base URIs.</p>
+	 * <p>This method corrects Java's erroneous collapsing of slashes in UNC paths, so that for example <code>file:////server/file.ext</code> can successfully be
+	 * resolved against.</p>
 	 * @apiNote This method follows differs from {@link URI#resolve(URI)}, which would resolve the empty path <code>""</code> as if it were <code>.</code>,
 	 *          following RFC 2396. That is, <code>http://example.com/foo/bar</code> resolved against <code>""</code> would return
 	 *          <code>http://example.com/foo/</code>. This method instead follows <a href="https://tools.ietf.org/html/rfc3986">RFC 3986</a>, as discussed at
@@ -1653,13 +1415,9 @@ public final class URIs {
 	/**
 	 * Resolves a relative URI against a base URI with added functionality and bug fixes over {@link URI#resolve(URI)}, following
 	 * <a href="https://tools.ietf.org/html/rfc3986">RFC 3986</a>.
-	 * <p>
-	 * This method correctly resolves fragment URIs against opaque base URIs.
-	 * </p>
-	 * <p>
-	 * This method corrects Java's erroneous collapsing of slashes in UNC paths in {@link URI#resolve(URI)}, so that for example
-	 * <code>file:////server/file.ext</code> can successfully be resolved against.
-	 * </p>
+	 * <p>This method correctly resolves fragment URIs against opaque base URIs.</p>
+	 * <p>This method corrects Java's erroneous collapsing of slashes in UNC paths in {@link URI#resolve(URI)}, so that for example
+	 * <code>file:////server/file.ext</code> can successfully be resolved against.</p>
 	 * @apiNote This method follows differs from {@link URI#resolve(URI)}, which would resolve the empty path <code>""</code> as if it were <code>.</code>,
 	 *          following RFC 2396. That is, <code>http://example.com/foo/bar</code> resolved against <code>""</code> would return
 	 *          <code>http://example.com/foo/</code>. This method instead follows <a href="https://tools.ietf.org/html/rfc3986">RFC 3986</a>, as discussed at
@@ -1682,19 +1440,13 @@ public final class URIs {
 	 * <a href="https://tools.ietf.org/html/rfc3986">RFC 3986</a>. If a deep resolution is requested, a URI's contents will be further resolved if possible, even
 	 * if the URI itself is already absolute. For example, a deep resolution of <code>file:/foo/bar.txt</code> against <code>file:///C:/test</code> would yield
 	 * <code>file:///C:/test/foo/bar.txt</code>.
-	 * <p>
-	 * This implementation supports deep resolution of the following URI schemes:
-	 * </p>
+	 * <p>This implementation supports deep resolution of the following URI schemes:</p>
 	 * <ul>
 	 * <li>Files{@value #FILE_SCHEME}</li>
 	 * </ul>
-	 * <p>
-	 * This method correctly resolves fragment URIs against opaque base URIs.
-	 * </p>
-	 * <p>
-	 * This method corrects Java's erroneous collapsing of slashes in UNC paths in {@link URI#resolve(URI)}, so that for example
-	 * <code>file:////server/file.ext</code> can successfully be resolved against.
-	 * </p>
+	 * <p>This method correctly resolves fragment URIs against opaque base URIs.</p>
+	 * <p>This method corrects Java's erroneous collapsing of slashes in UNC paths in {@link URI#resolve(URI)}, so that for example
+	 * <code>file:////server/file.ext</code> can successfully be resolved against.</p>
 	 * @apiNote This method follows differs from {@link URI#resolve(URI)}, which would resolve the empty path <code>""</code> as if it were <code>.</code>,
 	 *          following RFC 2396. That is, <code>http://example.com/foo/bar</code> resolved against <code>""</code> would return
 	 *          <code>http://example.com/foo/</code>. This method instead follows <a href="https://tools.ietf.org/html/rfc3986">RFC 3986</a>, as discussed at
@@ -1758,9 +1510,7 @@ public final class URIs {
 
 	/**
 	 * Returns a URI constructed from a given URI and a fragment identifier. The fragment will first be URI-encoded.
-	 * <p>
-	 * If no URI is provided, a URI is created from the fragment itself.
-	 * </p>
+	 * <p>If no URI is provided, a URI is created from the fragment itself.</p>
 	 * @param uri The URI to which to add a fragment identifier, or <code>null</code> if a URI should be created from just the fragment.
 	 * @param fragment The unencoded fragment to add to the end of the URI.
 	 * @return The URI constructed.
@@ -1774,14 +1524,9 @@ public final class URIs {
 
 	/**
 	 * Returns a URI constructed from a given URI and a raw fragment identifier.
-	 * <p>
-	 * If the URI is not syntactically correct, an <code>IllegalArgumentException</code>will be thrown.
-	 * <p>
-	 * This method should normally only be used when the format of the string is known to be a syntactically correct URI.
-	 * </p>
-	 * <p>
-	 * If no URI is provided, a URI is created from the fragment itself.
-	 * </p>
+	 * <p>If the URI is not syntactically correct, an <code>IllegalArgumentException</code>will be thrown.
+	 * <p>This method should normally only be used when the format of the string is known to be a syntactically correct URI.</p>
+	 * <p>If no URI is provided, a URI is created from the fragment itself.</p>
 	 * @param uri The URI to which to add a fragment identifier, or <code>null</code> if a URI should be created from just the fragment.
 	 * @param rawFragment The raw, encoded fragment to add to the end of the URI.
 	 * @return The URI constructed.
@@ -1836,9 +1581,7 @@ public final class URIs {
 
 	/**
 	 * Returns a URI constructed from the given parts, any of which can be <code>null</code>.
-	 * <p>
-	 * This method should normally only be used when the format of the string is known to be a syntactically correct URI.
-	 * </p>
+	 * <p>This method should normally only be used when the format of the string is known to be a syntactically correct URI.</p>
 	 * @param scheme The name of the URI scheme.
 	 * @param rawSchemeSpecificPart The raw, encoded scheme-specific part, or <code>null</code> if there is no scheme-specific part.
 	 * @return The URI constructed.
@@ -1850,9 +1593,7 @@ public final class URIs {
 
 	/**
 	 * Returns a URI constructed from the given parts, any of which can be <code>null</code>.
-	 * <p>
-	 * This method should normally only be used when the format of the string is known to be a syntactically correct URI.
-	 * </p>
+	 * <p>This method should normally only be used when the format of the string is known to be a syntactically correct URI.</p>
 	 * @param scheme The name of the URI scheme.
 	 * @param rawSchemeSpecificPart The raw, encoded scheme-specific part, or <code>null</code> if there is no scheme-specific part.
 	 * @param rawFragment The raw, encoded fragment at the end of the URI, or <code>null</code> if there is no fragment.
@@ -1875,9 +1616,7 @@ public final class URIs {
 
 	/**
 	 * Returns a URI constructed from the given parts, any of which can be <code>null</code>.
-	 * <p>
-	 * This method should normally only be used when the format of the string is known to be a syntactically correct URI.
-	 * </p>
+	 * <p>This method should normally only be used when the format of the string is known to be a syntactically correct URI.</p>
 	 * @param scheme The name of the URI scheme.
 	 * @param rawUserInfo The raw, encoded user information, or <code>null</code> if there is no user information.
 	 * @param host The host information, or <code>null</code> if there is no host.
@@ -1895,9 +1634,7 @@ public final class URIs {
 
 	/**
 	 * Returns a URI constructed from the given parts, any of which can be <code>null</code>.
-	 * <p>
-	 * This method should normally only be used when the format of the string is known to be a syntactically correct URI.
-	 * </p>
+	 * <p>This method should normally only be used when the format of the string is known to be a syntactically correct URI.</p>
 	 * @param scheme The name of the URI scheme.
 	 * @param rawUserInfo The raw, encoded user information, or <code>null</code> if there is no user information.
 	 * @param host The host information, or <code>null</code> if there is no host.
@@ -2042,10 +1779,8 @@ public final class URIs {
 
 	/**
 	 * Ensures that the given URI is in canonical form.
-	 * <p>
-	 * This implementation, following the recommendation of <a href="https://datatracker.ietf.org/doc/html/rfc3986">RFC 3986</a>, ensures that all hexadecimal
-	 * escape codes are in uppercase.
-	 * </p>
+	 * <p>This implementation, following the recommendation of <a href="https://datatracker.ietf.org/doc/html/rfc3986">RFC 3986</a>, ensures that all hexadecimal
+	 * escape codes are in uppercase.</p>
 	 * @apiNote This method should be distinguished from {@link #normalize(URI)}, which normalizes the hierarchy of path segments.
 	 * @implNote This implementation does not currently encode any non-ASCII or reserved characters.
 	 * @implSpec This implementation delegates to {@link #normalizeEncodingCase(String)}.
@@ -2267,9 +2002,7 @@ public final class URIs {
 	 * <li>The characters {@value #PLAIN_ENCODING_REPLACE_CHAR}, {@value #PLAIN_ENCODING_ESCAPE_CHAR}, and all other non-URI characters are escaped using
 	 * {@value #PLAIN_ENCODING_ESCAPE_CHAR} as the escape character.</li>
 	 * </ol>
-	 * <p>
-	 * This implementation ensures that all hexadecimal escape codes are in lowercase.
-	 * </p>
+	 * <p>This implementation ensures that all hexadecimal escape codes are in lowercase.</p>
 	 * @implNote The implementation encodes all non-ASCII characters.
 	 * @param uri The URI to encode
 	 * @return A string representing the plain encoding of the URI.
@@ -2432,9 +2165,7 @@ public final class URIs {
 
 	/**
 	 * Determines whether the given path is a canonical collection path.
-	 * <p>
-	 * Non-normalized collection paths (e.g. ending with <code>/.</code>) are not supported.
-	 * </p>
+	 * <p>Non-normalized collection paths (e.g. ending with <code>/.</code>) are not supported.</p>
 	 * @param path The raw path to examine.
 	 * @return <code>true</code> if the path ends with a slash ('/').
 	 * @throws NullPointerException if the given path is <code>null</code>.
