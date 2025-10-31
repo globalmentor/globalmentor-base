@@ -251,9 +251,22 @@ public final class EmailAddress implements Resource, Comparable<EmailAddress> {
 
 	//Resource
 
-	/** @return The resource identifier URI, or <code>null</code> if the identifier is not known. */
+	/**
+	 * {@inheritDoc}
+	 * @apiNote Non {@link Resource} related code should prefer {@link #toURI()}.
+	 * @return The resource identifier URI, or <code>null</code> if the identifier is not known.
+	 * @see #toURI()
+	 */
 	public URI getURI() {
-		return URI.create(MAILTO_SCHEME + SCHEME_SEPARATOR + toString()); //construct and return the mailto URI
+		return toURI();
+	}
+
+	/**
+	 * Determines the <a href="https://datatracker.ietf.org/doc/html/rfc6068">RFC 6068</a> form of the email address using the {@value URIs#MAILTO_SCHEME} scheme.
+	 * @return The <cite>RFC 6068</cite> URI form of the email address.
+	 */
+	public URI toURI() {
+		return URI.create(MAILTO_SCHEME + SCHEME_SEPARATOR + toString());
 	}
 
 	/**

@@ -25,7 +25,7 @@ import org.junit.jupiter.api.*;
 import com.globalmentor.text.ArgumentSyntaxException;
 
 /**
- * Tests of {@link EmailAddress} to ensure compliance with RFC 5322 addr-spec format.
+ * Tests of {@link EmailAddress} to ensure compliance with RFC 5322 <code>addr-spec</code> format.
  * @implNote Many test examples are derived from <a href="https://en.wikipedia.org/wiki/Email_address">Wikipedia's Email Address</a> article.
  * @author Garret Wilson
  */
@@ -408,13 +408,13 @@ public final class EmailAddressTest {
 	//## URI generation
 
 	/**
-	 * Tests for {@link EmailAddress#getURI()}.
-	 * <p>Generating mailto URI from email address.</p>
+	 * Tests for {@link EmailAddress#toURI()}.
+	 * <p>Generating <code>mailto</code> URI from email address.</p>
 	 */
 	@Test
 	public void testGetURI() throws ArgumentSyntaxException {
 		final EmailAddress address = EmailAddress.fromString("test@example.com");
-		assertThat("mailto URI", address.getURI().toString(), is("mailto:test@example.com"));
+		assertThat("mailto URI", address.toURI().toString(), is("mailto:test@example.com"));
 	}
 
 }
