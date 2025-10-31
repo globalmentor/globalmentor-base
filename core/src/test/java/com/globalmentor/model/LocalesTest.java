@@ -46,11 +46,11 @@ public class LocalesTest {
 	@Test
 	void testIsLanguagePresent() {
 		assertThat(Locales.isLanguagePresent(Locale.ROOT), is(false));
-		assertThat(Locales.isLanguagePresent(new Locale("")), is(false));
-		assertThat(Locales.isLanguagePresent(new Locale("en")), is(true));
-		assertThat(Locales.isLanguagePresent(new Locale("en", "US")), is(true));
-		assertThat(Locales.isLanguagePresent(new Locale("", "")), is(false));
-		assertThat(Locales.isLanguagePresent(new Locale("", "", "")), is(false));
+		assertThat(Locales.isLanguagePresent(Locale.of("")), is(false));
+		assertThat(Locales.isLanguagePresent(Locale.of("en")), is(true));
+		assertThat(Locales.isLanguagePresent(Locale.of("en", "US")), is(true));
+		assertThat(Locales.isLanguagePresent(Locale.of("", "")), is(false));
+		assertThat(Locales.isLanguagePresent(Locale.of("", "", "")), is(false));
 		assertThat(Locales.isLanguagePresent(Locale.forLanguageTag("hy-Latn-IT-arevela")), is(true));
 	}
 
