@@ -33,6 +33,7 @@ import static java.util.Objects.*;
 import com.globalmentor.java.*;
 import com.globalmentor.net.*;
 import com.globalmentor.text.*;
+import com.globalmentor.text.StringTemplate;	//explicit import necessary to avoid ambiguity in Java 21; TODO remove in Java 25
 
 import static com.globalmentor.io.Paths.*;
 import static com.globalmentor.java.Conditions.*;

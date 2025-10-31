@@ -216,6 +216,7 @@ public class Objects {
 	 * @throws ExceptionInInitializerError if the initialization provoked by the getter method fails.
 	 * @deprecated To be removed in favor of a separate library.
 	 */
+	@SuppressWarnings("removal")
 	@Deprecated(forRemoval = true)
 	public static Object getProperty(final Object object, final String propertyName)
 			throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {

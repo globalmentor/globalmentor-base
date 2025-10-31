@@ -98,7 +98,7 @@ public class StackProbeOperation extends AbstractReadWriteLockOperation {
 
 	@Override
 	protected void execute() throws CancelException {
-		final long threadID = Thread.currentThread().getId();
+		final long threadID = Thread.currentThread().threadId();
 		final ThreadInfo[] threadInfos = threadMXBean.dumpAllThreads(false, false); //get info on all current threads
 		for(final ThreadInfo threadInfo : threadInfos) { //look at info on each thread
 			if(threadInfo.getThreadId() == threadID) { //ignore ourselves

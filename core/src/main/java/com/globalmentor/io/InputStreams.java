@@ -40,6 +40,7 @@ public final class InputStreams {
 	 * The shared instance of an input stream with no content.
 	 * @deprecated in favor of {@link InputStream#nullInputStream()}.
 	 */
+	@SuppressWarnings("removal")
 	@Deprecated(forRemoval = true)
 	public static final InputStream EMPTY_INPUT_STREAM = new EmptyInputStream();
 
