@@ -29,12 +29,12 @@ import com.globalmentor.text.*;
 /**
  * Value class for email addresses represented in the form specified by <a href="https://datatracker.ietf.org/doc/html/rfc5322"><cite>RFC 5322: Internet Message
  * Format</cite></a>.
+ * @apiNote This class validates email addresses according to RFC 5322 syntax but does not perform normalization such as lowercasing domain names as recommended
+ *          by other RFCs. Email addresses are stored and compared as provided.
  * @author Garret Wilson
  * @see <a href="https://datatracker.ietf.org/doc/html/rfc5322">RFC 5322</a>
  */
 public final class EmailAddress implements Resource, Comparable<EmailAddress> {
-
-	//TODO make explicit whether these definitions include RFC 5322 obsolete ("obs-") elements
 
 	/**
 	 * Email address <code>atext</code> characters as per <cite>RFC 5322</cite>. <blockquote>Printable US-ASCII characters not including specials. Used for
@@ -60,25 +60,31 @@ public final class EmailAddress implements Resource, Comparable<EmailAddress> {
 
 	/**
 	 * A regular expression pattern for matching the local part of an email addresses according to <cite>RFC 5322</cite>.
+	 * @apiNote According to RFC 5322, the local part can be either a dot-atom or a quoted-string. The dot-atom allows alphanumerics and certain special
+	 *          characters separated by dots. The quoted-string allows spaces and other special characters when enclosed in double quotes, with backslash
+	 *          escaping.
 	 * @implNote This pattern is derived from the regular expression provided at <a href="http://stackoverflow.com/a/201378/421049">an answer to <cite>Using a
 	 *           regular expression to validate an email address</cite></a>.
 	 * @see <a href="http://stackoverflow.com/q/201323/421049">Using a regular expression to validate an email address</a>
 	 */
-	public static final Pattern LOCAL_PART_PATTERN = Pattern.compile("[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*" //
-			+ "|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]" //
-			+ "|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\""); //
+	public static final Pattern LOCAL_PART_PATTERN = Pattern.compile("(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*" //dot-atom
+			+ "|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x21\\x23-\\x5b\\x5d-\\x7f]" //quoted-string: printable chars except \ and " (now includes space \x20)
+			+ "|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")", //quoted-pair: backslash followed by any char
+			Pattern.CASE_INSENSITIVE); //
 
 	/**
 	 * A regular expression pattern for matching the domain of an email addresses according to <cite>RFC 5322</cite>.
+	 * @apiNote According to RFC 5322, the domain can be either a dot-atom (standard domain name) or a domain-literal (IP address in square brackets). Domain
+	 *          literals support both IPv4 addresses and IPv6 addresses (prefixed with "IPv6:"). Note that domain literals use simplified patterns for syntax
+	 *          validation; they do not enforce strict octet ranges for IPv4 (0-255) or full RFC 4291 compliance for IPv6 addresses.
 	 * @implNote This pattern is derived from the regular expression provided at <a href="http://stackoverflow.com/a/201378/421049">an answer to <cite>Using a
-	 *           regular expression to validate an email address</cite></a>.
+	 *           regular expression to validate an email address</cite></a>, with improvements for IPv6 support.
 	 * @see <a href="http://stackoverflow.com/q/201323/421049">Using a regular expression to validate an email address</a>
 	 */
-	public static final Pattern DOMAIN_PATTERN = Pattern.compile("(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?" //
-			+ "|\\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\\.){3}" //
-			+ "(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:" //
-			+ "(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]" //
-			+ "|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\]");
+	public static final Pattern DOMAIN_PATTERN = Pattern.compile("(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?" //domain name
+			+ "|\\[(?:[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}" //IPv4 literal: simple digit pattern
+			+ "|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x5c-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])", //IPv6 prefix and content
+			Pattern.CASE_INSENSITIVE);
 
 	/**
 	 * Regular expression definition for matching an email address.
@@ -99,7 +105,8 @@ public final class EmailAddress implements Resource, Comparable<EmailAddress> {
 		 * @see #LOCAL_PART_DOMAIN_DELIMITER
 		 * @see #DOMAIN_PATTERN
 		 */
-		public static final Pattern PATTERN = Pattern.compile("(" + LOCAL_PART_PATTERN + ")" + LOCAL_PART_DOMAIN_DELIMITER + "(" + DOMAIN_PATTERN + ")");
+		public static final Pattern PATTERN = Pattern.compile("(" + LOCAL_PART_PATTERN + ")" + LOCAL_PART_DOMAIN_DELIMITER + "(" + DOMAIN_PATTERN + ")",
+				Pattern.CASE_INSENSITIVE);
 	}
 
 	/**
