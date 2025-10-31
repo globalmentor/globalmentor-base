@@ -17,6 +17,7 @@
 package com.globalmentor.io;
 
 import java.io.*;
+import java.nio.charset.Charset;
 
 import com.globalmentor.io.function.IOConsumer;
 
@@ -101,6 +102,60 @@ public final class OutputStreams {
 		try (final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(initialBufferSize)) {
 			byteProducer.accept(byteArrayOutputStream);
 			return byteArrayOutputStream.toByteArray(); //TODO make improvement, with extensive tests, exposing the underlying buffer and returning it without copying if the count is the same size as the buffer  
+		} catch(final IOException ioException) {
+			throw new UncheckedIOException(ioException);
+		}
+	}
+
+	/**
+	 * Collects string data written to an output stream provided to a string producer.
+	 * @apiNote Regarding terminology, the string <em>producer</em> is technically also a <em>consumer</em> because it consumes the {@link OutputStream} to which
+	 *          it will produce string data.
+	 * @implSpec This implementation internally uses a {@link ByteArrayOutputStream} and converts the resulting bytes to a string using
+	 *           {@link ByteArrayOutputStream#toString(Charset)}, which more efficiently converts bytes to a string without additional copying.
+	 * @implNote An initial internal buffer size of <code>32</code> is used, which is the same as that {@link ByteArrayOutputStream#ByteArrayOutputStream()} uses.
+	 * @implNote This API was designed so that in normal circumstances the caller can collect string data without worrying about exception handling. The
+	 *           {@link OutputStream} used by the implementation cannot throw an {@link IOException}. Nevertheless, a consumer that allows for throwing an
+	 *           {@link IOException} was used because many operations that work with {@link OutputStream} report throwing an {@link IOException}, which would have
+	 *           required tedious wrapping of the logic. (Calling {@link Writer#write(String)} on a wrapped {@link Writer} is one example.) The string producer
+	 *           must not actually throw an {@link IOException} in its processing of data unless the caller is prepared to handle an {@link UncheckedIOException}.
+	 * @param stringProducer The logic to produce string data by writing to a provided output stream. The producer is expected not to throw an
+	 *          {@link IOException}.
+	 * @param charset The charset to use for converting the bytes to a string.
+	 * @return The string collected after the string producer is finished writing to the provided output stream.
+	 * @throws UncheckedIOException if the string producer throws an {@link IOException} during its processing of data (not in its writing to the
+	 *           {@link OutputStream}, which cannot throw an {@link IOException}). If the string producer does not throw an {@link IOException} in its processing
+	 *           of data, no {@link UncheckedIOException} will be thrown.
+	 */
+	public static String collectString(final IOConsumer<OutputStream> stringProducer, final Charset charset) {
+		return collectString(stringProducer, charset, 32); //use the same initial buffer size that an `OutputStream` would use
+	}
+
+	/**
+	 * Collects string data written to an output stream provided to a string producer, using a buffer with the specified initial size.
+	 * @apiNote Regarding terminology, the string <em>producer</em> is technically also a <em>consumer</em> because it consumes the {@link OutputStream} to which
+	 *          it will produce string data.
+	 * @implSpec This implementation internally uses a {@link ByteArrayOutputStream} using an initial buffer of the requested size and converts the resulting
+	 *           bytes to a string using {@link ByteArrayOutputStream#toString(Charset)}, which more efficiently converts bytes to a string without additional
+	 *           copying.
+	 * @implNote This API was designed so that in normal circumstances the caller can collect string data without worrying about exception handling. The
+	 *           {@link OutputStream} used by the implementation cannot throw an {@link IOException}. Nevertheless, a consumer that allows for throwing an
+	 *           {@link IOException} was used because many operations that work with {@link OutputStream} report throwing an {@link IOException}, which would have
+	 *           required tedious wrapping of the logic. (Calling {@link Writer#write(String)} on a wrapped {@link Writer} is one example.) The string producer
+	 *           must not actually throw an {@link IOException} in its processing of data unless the caller is prepared to handle an {@link UncheckedIOException}.
+	 * @param stringProducer The logic to produce string data by writing to a provided output stream. The producer is expected not to throw an
+	 *          {@link IOException}.
+	 * @param charset The charset to use for converting the bytes to a string.
+	 * @param initialBufferSize The initial size to use for the buffer.
+	 * @return The string collected after the string producer is finished writing to the provided output stream.
+	 * @throws UncheckedIOException if the string producer throws an {@link IOException} during its processing of data (not in its writing to the
+	 *           {@link OutputStream}, which cannot throw an {@link IOException}). If the string producer does not throw an {@link IOException} in its processing
+	 *           of data, no {@link UncheckedIOException} will be thrown.
+	 */
+	public static String collectString(final IOConsumer<OutputStream> stringProducer, final Charset charset, final int initialBufferSize) {
+		try (final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(initialBufferSize)) {
+			stringProducer.accept(byteArrayOutputStream);
+			return byteArrayOutputStream.toString(charset);
 		} catch(final IOException ioException) {
 			throw new UncheckedIOException(ioException);
 		}
