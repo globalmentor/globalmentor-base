@@ -24,14 +24,13 @@ import static java.util.Objects.*;
 import com.globalmentor.java.Characters;
 import static com.globalmentor.net.URIs.*;
 
-import com.globalmentor.text.ABNF;
-import com.globalmentor.text.ArgumentSyntaxException;
+import com.globalmentor.text.*;
 
 /**
- * Value class for email addresses represented in the form specified by <a href="http://www.ietf.org/rfc/rfc5322.txt"><cite>RFC 5322: Internet Message
+ * Value class for email addresses represented in the form specified by <a href="https://datatracker.ietf.org/doc/html/rfc5322"><cite>RFC 5322: Internet Message
  * Format</cite></a>.
  * @author Garret Wilson
- * @see <a href="http://www.ietf.org/rfc/rfc5322.txt">RFC 5322</a>
+ * @see <a href="https://datatracker.ietf.org/doc/html/rfc5322">RFC 5322</a>
  */
 public final class EmailAddress implements Resource, Comparable<EmailAddress> {
 
@@ -60,9 +59,9 @@ public final class EmailAddress implements Resource, Comparable<EmailAddress> {
 	public static final char DOMAIN_LITERAL_END = ']';
 
 	/**
-	 * A regular expression pattern for matching the local part of an email addresses according to <cite>RFC 5322</cite>. This pattern is derived from the regular
-	 * expression provided at <a href="http://stackoverflow.com/a/201378/421049">an answer to <cite>Using a regular expression to validate an email
-	 * address</cite></a>.
+	 * A regular expression pattern for matching the local part of an email addresses according to <cite>RFC 5322</cite>.
+	 * @implNote This pattern is derived from the regular expression provided at <a href="http://stackoverflow.com/a/201378/421049">an answer to <cite>Using a
+	 *           regular expression to validate an email address</cite></a>.
 	 * @see <a href="http://stackoverflow.com/q/201323/421049">Using a regular expression to validate an email address</a>
 	 */
 	public static final Pattern LOCAL_PART_PATTERN = Pattern.compile("[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*" //
@@ -70,9 +69,9 @@ public final class EmailAddress implements Resource, Comparable<EmailAddress> {
 			+ "|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\""); //
 
 	/**
-	 * A regular expression pattern for matching the domain of an email addresses according to <cite>RFC 5322</cite>. This pattern is derived from the regular
-	 * expression provided at <a href="http://stackoverflow.com/a/201378/421049">an answer to <cite>Using a regular expression to validate an email
-	 * address</cite></a>.
+	 * A regular expression pattern for matching the domain of an email addresses according to <cite>RFC 5322</cite>.
+	 * @implNote This pattern is derived from the regular expression provided at <a href="http://stackoverflow.com/a/201378/421049">an answer to <cite>Using a
+	 *           regular expression to validate an email address</cite></a>.
 	 * @see <a href="http://stackoverflow.com/q/201323/421049">Using a regular expression to validate an email address</a>
 	 */
 	public static final Pattern DOMAIN_PATTERN = Pattern.compile("(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?" //
@@ -82,8 +81,32 @@ public final class EmailAddress implements Resource, Comparable<EmailAddress> {
 			+ "|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\]");
 
 	/**
-	 * A regular expression pattern for matching email addresses according to <cite>RFC 5322</cite>. This pattern is derived from the regular expression provided
-	 * at <a href="http://stackoverflow.com/a/201378/421049">an answer to <cite>Using a regular expression to validate an email address</cite></a>.
+	 * Regular expression definition for matching an email address.
+	 * @see <a href="http://stackoverflow.com/q/201323/421049">Using a regular expression to validate an email address</a>
+	 */
+	public enum EmailAddressRegEx implements RegularExpression.NumberedCapturingGroup {
+		/** The group of the email address local part. */
+		LOCAL_PART_GROUP,
+		/** The group of the email address domain. */
+		DOMAIN_GROUP;
+
+		/**
+		 * The pattern for matching an email address according to <cite>RFC 5322</cite>.
+		 * @implNote This pattern is derived from the regular expression provided at <a href="http://stackoverflow.com/a/201378/421049">an answer to <cite>Using a
+		 *           regular expression to validate an email address</cite></a>.
+		 * @see <a href="http://stackoverflow.com/q/201323/421049">Using a regular expression to validate an email address</a>
+		 * @see #LOCAL_PART_PATTERN
+		 * @see #LOCAL_PART_DOMAIN_DELIMITER
+		 * @see #DOMAIN_PATTERN
+		 */
+		public static final Pattern PATTERN = Pattern.compile("(" + LOCAL_PART_PATTERN + ")" + LOCAL_PART_DOMAIN_DELIMITER + "(" + DOMAIN_PATTERN + ")");
+	}
+
+	/**
+	 * A regular expression pattern for matching email addresses according to <cite>RFC 5322</cite>.
+	 * @implNote This pattern is derived from the regular expression provided at <a href="http://stackoverflow.com/a/201378/421049">an answer to <cite>Using a
+	 *           regular expression to validate an email address</cite></a>.
+	 * @deprecated for removal in favor of {@link EmailAddressRegEx#PATTERN}.
 	 * @see <a href="http://stackoverflow.com/q/201323/421049">Using a regular expression to validate an email address</a>
 	 * @see #EMAIL_ADDRESS_PATTERN_LOCAL_PART_GROUP
 	 * @see #EMAIL_ADDRESS_PATTERN_DOMAIN_GROUP
@@ -91,11 +114,19 @@ public final class EmailAddress implements Resource, Comparable<EmailAddress> {
 	 * @see #LOCAL_PART_DOMAIN_DELIMITER
 	 * @see #DOMAIN_PATTERN
 	 */
-	public static final Pattern EMAIL_ADDRESS_PATTERN = Pattern
-			.compile("(" + LOCAL_PART_PATTERN + ")" + LOCAL_PART_DOMAIN_DELIMITER + "(" + DOMAIN_PATTERN + ")");
-	/** The group for returning the local part of an email address from a matcher derived from {@link #EMAIL_ADDRESS_PATTERN}. */
+	@Deprecated(forRemoval = true)
+	public static final Pattern EMAIL_ADDRESS_PATTERN = EmailAddressRegEx.PATTERN;
+	/**
+	 * The group for returning the local part of an email address from a matcher derived from {@link #EMAIL_ADDRESS_PATTERN}.
+	 * @deprecated for removal in favor of {@link EmailAddressRegEx#LOCAL_PART_GROUP}.
+	 */
+	@Deprecated(forRemoval = true)
 	public static final int EMAIL_ADDRESS_PATTERN_LOCAL_PART_GROUP = 1;
-	/** The group for returning the domain of an email address from a matcher derived from {@link #EMAIL_ADDRESS_PATTERN}. */
+	/**
+	 * The group for returning the domain of an email address from a matcher derived from {@link #EMAIL_ADDRESS_PATTERN}.
+	 * @deprecated for removal in favor of {@link EmailAddressRegEx#DOMAIN_GROUP}.
+	 */
+	@Deprecated(forRemoval = true)
 	public static final int EMAIL_ADDRESS_PATTERN_DOMAIN_GROUP = 2;
 
 	/** The local part of the email address. */
@@ -157,12 +188,12 @@ public final class EmailAddress implements Resource, Comparable<EmailAddress> {
 	 * @throws ArgumentSyntaxException if the input string violates <cite>RFC 5322</cite>.
 	 */
 	public static EmailAddress fromString(final String input) throws ArgumentSyntaxException {
-		final Matcher matcher = EMAIL_ADDRESS_PATTERN.matcher(requireNonNull(input, "Email address string cannot be null.")); //get a matcher for matching the given input string
+		final Matcher matcher = EmailAddressRegEx.PATTERN.matcher(requireNonNull(input, "Email address string cannot be null.")); //get a matcher for matching the given input string
 		if(!matcher.matches()) { //if the input string does not match the email address patter
 			throw new ArgumentSyntaxException("Email address " + input + " is syntactically incorrect.");
 		}
-		final String localPart = matcher.group(EMAIL_ADDRESS_PATTERN_LOCAL_PART_GROUP); //the first group contains the local part
-		final String domain = matcher.group(EMAIL_ADDRESS_PATTERN_DOMAIN_GROUP); //the second group contains the domain
+		final String localPart = EmailAddressRegEx.LOCAL_PART_GROUP.findIn(matcher).orElseThrow(AssertionError::new); //the first group contains the local part
+		final String domain = EmailAddressRegEx.DOMAIN_GROUP.findIn(matcher).orElseThrow(AssertionError::new); //the second group contains the domain
 		return new EmailAddress(localPart, domain);
 	}
 
@@ -226,11 +257,11 @@ public final class EmailAddress implements Resource, Comparable<EmailAddress> {
 	 * @throws ArgumentSyntaxException if the input string violates <cite>RFC 5322</cite>.
 	 */
 	public static String getLocalPart(final CharSequence input) throws ArgumentSyntaxException {
-		final Matcher matcher = EMAIL_ADDRESS_PATTERN.matcher(requireNonNull(input, "Email address string cannot be null.")); //get a matcher for matching the given input string
+		final Matcher matcher = EmailAddressRegEx.PATTERN.matcher(requireNonNull(input, "Email address string cannot be null.")); //get a matcher for matching the given input string
 		if(!matcher.matches()) { //if the input string does not match the email address patter
 			throw new ArgumentSyntaxException("Email address " + input + " is syntactically incorrect.");
 		}
-		return matcher.group(EMAIL_ADDRESS_PATTERN_LOCAL_PART_GROUP); //the first group contains the local part
+		return EmailAddressRegEx.LOCAL_PART_GROUP.findIn(matcher).orElseThrow(AssertionError::new); //the first group contains the local part
 	}
 
 	/**
@@ -241,11 +272,11 @@ public final class EmailAddress implements Resource, Comparable<EmailAddress> {
 	 * @throws ArgumentSyntaxException if the input string violates <cite>RFC 5322</cite>.
 	 */
 	public static String getDomain(final CharSequence input) throws ArgumentSyntaxException {
-		final Matcher matcher = EMAIL_ADDRESS_PATTERN.matcher(requireNonNull(input, "Email address string cannot be null.")); //get a matcher for matching the given input string
+		final Matcher matcher = EmailAddressRegEx.PATTERN.matcher(requireNonNull(input, "Email address string cannot be null.")); //get a matcher for matching the given input string
 		if(!matcher.matches()) { //if the input string does not match the email address patter
 			throw new ArgumentSyntaxException("Email address " + input + " is syntactically incorrect.");
 		}
-		return matcher.group(EMAIL_ADDRESS_PATTERN_DOMAIN_GROUP); //the second group contains the domain
+		return EmailAddressRegEx.DOMAIN_GROUP.findIn(matcher).orElseThrow(AssertionError::new); //the second group contains the domain
 	}
 
 }
