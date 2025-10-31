@@ -33,9 +33,7 @@ import com.globalmentor.model.MutableReference;
 
 /**
  * The Byte Order Mark (BOM) designations for different character encodings.
- * <p>
- * This implementation only supports UTF-8, UTF-16, and UTF-32 BOM variants.
- * </p>
+ * @implSpec This implementation only supports UTF-8, UTF-16, and UTF-32 BOM variants.
  * @author Garret Wilson
  * @see <a href="http://www.unicode.org/faq/utf_bom.html#BOM">Unicode Byte Order Mark (BOM) FAQ</a>
  */
@@ -204,39 +202,38 @@ public enum ByteOrderMark {
 	 *      Information)</a>
 	 */
 	public static Optional<ByteOrderMark> impute(final byte[] bytes, final CharSequence expectedChars, final MutableReference<ByteOrderMark> actualBOM) { //TODO maybe allow a default eight-bit encoding to be specified
-		Optional<ByteOrderMark> bom = ByteOrderMark.detect(bytes); //check the byte order mark by itself; if there is no BOM, this will return null
-		if(bom.isPresent()) { //if we found a byte order mark TODO improve with Java 9: https://bugs.openjdk.java.net/browse/JDK-8071670
-			actualBOM.set(bom.get()); //show that we actually found a byte order mark
-		} else { //if no byte order mark was found, try to compare characters with what is expected
-			if(bytes.length >= 4 && expectedChars.length() >= 1) { //if there are at least four bytes in the array, and we have at least one character to compare them with
-				final char expected0 = expectedChars.charAt(0); //find the first character they were expecting
-				if(bytes[0] == 0x00 && bytes[1] == 0x00 && bytes[2] == 0x00 && bytes[3] == (byte)expected0) { //00 00 00 X1: UCS-4, big-endian (1234 order)
-					bom = Optional.of(UTF_32BE);
-				} else if(bytes[0] == (byte)expected0 && bytes[1] == 0x00 && bytes[2] == 0x00 && bytes[3] == 0x00) { //X1 00 00 00: UCS-4, little-endian (4321 order)
-					bom = Optional.of(UTF_32LE);
-				} else if(bytes[0] == 0x00 && bytes[1] == 0x00 && bytes[2] == (byte)expected0 && bytes[3] == 0x00) { //00 00 X1 00: UCS-4, 2143 order
-					bom = Optional.of(UTF_32BE_MIXED);
-				} else if(bytes[0] == 0x00 && bytes[1] == (byte)expected0 && bytes[2] == 0x00 && bytes[3] == 0x00) { //00 X1 00 00 UCS-4, 3412 order
-					bom = Optional.of(UTF_32LE_MIXED);
-				}
-				if(expectedChars.length() >= 2) { //if we have at least two character with which to compare the bytes in the array
-					final char expected1 = expectedChars.charAt(1); //find the second character they were expecting
-					if(bytes[0] == 0x00 && bytes[1] == (byte)expected0 && bytes[2] == 0x00 && bytes[3] == (byte)expected1) { //00 X1 00 X2: UTF-16, big-endian, no Byte Order Mark
-						bom = Optional.of(UTF_16BE);
-					} else if(bytes[0] == (byte)expected0 && bytes[1] == 0x00 && bytes[2] == (byte)expected1 && bytes[3] == 0x00) { //X1 00 X2 00: UTF-16, little-endian, no Byte Order Mark
-						bom = Optional.of(UTF_16LE);
-					}
-					if(expectedChars.length() >= 4) { //if we have at least four character with which to compare the bytes in the array
-						final char expected3 = expectedChars.charAt(2); //find the third character they were expecting
-						final char expected4 = expectedChars.charAt(3); //find the fourth character they were expecting
-						if(bytes[0] == (byte)expected0 && bytes[1] == (byte)expected1 && bytes[2] == (byte)expected3 && bytes[3] == (byte)expected4) { //X1 X2 X3 X4: UTF-8 (or similar), no Byte Order Mark
-							bom = Optional.of(UTF_8);
+		return ByteOrderMark.detect(bytes) //check the byte order mark by itself; if there is no BOM, this will be empty
+				.map(detectedBOM -> { //if we found a byte order mark
+					actualBOM.set(detectedBOM); //show that we actually found a byte order mark
+					return detectedBOM;
+				}).or(() -> { //if no byte order mark was found, try to compare characters with what is expected
+					if(bytes.length >= 4 && expectedChars.length() >= 1) { //if there are at least four bytes in the array, and we have at least one character to compare them with
+						final char expected0 = expectedChars.charAt(0); //find the first character they were expecting
+						if(bytes[0] == 0x00 && bytes[1] == 0x00 && bytes[2] == 0x00 && bytes[3] == (byte)expected0) { //00 00 00 X1: UCS-4, big-endian (1234 order)
+							return Optional.of(UTF_32BE);
+						} else if(bytes[0] == (byte)expected0 && bytes[1] == 0x00 && bytes[2] == 0x00 && bytes[3] == 0x00) { //X1 00 00 00: UCS-4, little-endian (4321 order)
+							return Optional.of(UTF_32LE);
+						} else if(bytes[0] == 0x00 && bytes[1] == 0x00 && bytes[2] == (byte)expected0 && bytes[3] == 0x00) { //00 00 X1 00: UCS-4, 2143 order
+							return Optional.of(UTF_32BE_MIXED);
+						} else if(bytes[0] == 0x00 && bytes[1] == (byte)expected0 && bytes[2] == 0x00 && bytes[3] == 0x00) { //00 X1 00 00 UCS-4, 3412 order
+							return Optional.of(UTF_32LE_MIXED);
+						} else if(expectedChars.length() >= 2) { //if we have at least two character with which to compare the bytes in the array
+							final char expected1 = expectedChars.charAt(1); //find the second character they were expecting
+							if(bytes[0] == 0x00 && bytes[1] == (byte)expected0 && bytes[2] == 0x00 && bytes[3] == (byte)expected1) { //00 X1 00 X2: UTF-16, big-endian, no Byte Order Mark
+								return Optional.of(UTF_16BE);
+							} else if(bytes[0] == (byte)expected0 && bytes[1] == 0x00 && bytes[2] == (byte)expected1 && bytes[3] == 0x00) { //X1 00 X2 00: UTF-16, little-endian, no Byte Order Mark
+								return Optional.of(UTF_16LE);
+							} else if(expectedChars.length() >= 4) { //if we have at least four character with which to compare the bytes in the array
+								final char expected2 = expectedChars.charAt(2); //find the third character they were expecting
+								final char expected3 = expectedChars.charAt(3); //find the fourth character they were expecting
+								if(bytes[0] == (byte)expected0 && bytes[1] == (byte)expected1 && bytes[2] == (byte)expected2 && bytes[3] == (byte)expected3) { //X1 X2 X3 X4: UTF-8 (or similar), no Byte Order Mark
+									return Optional.of(UTF_8);
+								}
+							}
 						}
 					}
-				}
-			}
-		}
-		return bom; //return whatever BOM was found (which may be empty)
+					return Optional.empty();
+				});
 	}
 
 	/**
@@ -269,11 +266,9 @@ public enum ByteOrderMark {
 
 	/**
 	 * Returns a charset corresponding to this byte order mark.
-	 * <p>
-	 * The byte order marks {@link #UTF_32BE_MIXED} and {@link #UTF_32LE_MIXED} are defined in XML but have no corresponding charset, so calling this method for
-	 * them (i.e. for byte order marks for which {@link #isMixed()} returns <code>true</code>) will result in a {@link UnsupportedOperationException} being
-	 * thrown.
-	 * </p>
+	 * <p>The byte order marks {@link #UTF_32BE_MIXED} and {@link #UTF_32LE_MIXED} are defined in XML but have no corresponding charset, so calling this method
+	 * for them (i.e. for byte order marks for which {@link #isMixed()} returns <code>true</code>) will result in a {@link UnsupportedOperationException} being
+	 * thrown.</p>
 	 * @return a charset corresponding to this byte order mark.
 	 * @throws UnsupportedOperationException if this byte order mark has no corresponding charset.
 	 * @see #isMixed()
