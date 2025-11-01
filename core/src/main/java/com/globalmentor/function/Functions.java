@@ -16,7 +16,6 @@
 
 package com.globalmentor.function;
 
-import static com.globalmentor.java.Conditions.*;
 import static java.util.Objects.*;
 
 import java.util.concurrent.atomic.AtomicLong;
@@ -123,41 +122,6 @@ public final class Functions {
 		requireNonNull(valueExtractor);
 		requireNonNull(valueTester);
 		return input -> valueTester.test(valueExtractor.apply(input));
-	}
-
-	/**
-	 * Creates a thread-safe supplier that lazily initializes and caches the result of the given supplier on first access. The supplier must not return itself as
-	 * its value.
-	 * <p>The returned supplier is thread-safe and guarantees the original supplier completes successfully at most once, even under concurrent access. Subsequent
-	 * calls return the cached value with no synchronization overhead. If the original supplier throws an exception, the value is not cached and the supplier will
-	 * be invoked again on the next call.</p>
-	 * @apiNote This is useful for values that may not be needed, but if needed once may be needed multiple times.
-	 * @implNote Uses double-checked locking for optimal performance after initialization.
-	 * @param <T> The type of value supplied.
-	 * @param supplier The supplier to invoke on first access.
-	 * @return A new lazy, thread-safe supplier that caches the result.
-	 * @throws IllegalStateException if the supplier returns itself as its value.
-	 */
-	public static <T> Supplier<T> supplyLazily(@NonNull final Supplier<T> supplier) {
-		requireNonNull(supplier);
-		return new Supplier<T>() {
-			private volatile Object value = supplier;
-
-			@Override
-			public T get() {
-				if(value == supplier) {
-					synchronized(supplier) {
-						if(value == supplier) {
-							value = supplier.get();
-							checkState(value != supplier, "Supplier cannot return itself as its value.");
-						}
-					}
-				}
-				@SuppressWarnings("unchecked")
-				final T typedResult = (T)value;
-				return typedResult;
-			}
-		};
 	}
 
 }
