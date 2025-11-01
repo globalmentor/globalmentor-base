@@ -16,7 +16,7 @@
 
 package com.globalmentor.lex;
 
-import static com.globalmentor.io.function.Functions.*;
+import static com.globalmentor.function.Functions.*;
 import static com.globalmentor.java.Conditions.*;
 
 import java.util.*;

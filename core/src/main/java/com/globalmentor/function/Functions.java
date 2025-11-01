@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-package com.globalmentor.io.function;
+package com.globalmentor.function;
+
+import static java.util.Objects.*;
 
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.*;
@@ -46,11 +48,9 @@ public final class Functions {
 	 * @param <T> The type of input argument.
 	 * @param biConsumer The consumer accepting the input argument along with the count.
 	 * @return A consumer that keeps track of the count of invocations and passes that to the enclosed consumer.
-	 * @deprecated and replaced with the equivalent function in {@link com.globalmentor.function.Functions}.
 	 */
-	@Deprecated(forRemoval = true)
 	public static <T> Consumer<T> countingConsumer(@NonNull final BiConsumer<T, Long> biConsumer) {
-		return com.globalmentor.function.Functions.countingConsumer(biConsumer);
+		return countingConsumer(new AtomicLong(0), biConsumer);
 	}
 
 	/**
@@ -66,11 +66,14 @@ public final class Functions {
 	 * @param counter An existing counter to use.
 	 * @param biConsumer The consumer accepting the input argument along with the count.
 	 * @return A consumer that keeps track of the count of invocations and passes that to the enclosed consumer.
-	 * @deprecated and replaced with the equivalent function in {@link com.globalmentor.function.Functions}.
 	 */
-	@Deprecated(forRemoval = true)
 	public static <T> Consumer<T> countingConsumer(@NonNull final AtomicLong counter, @NonNull final BiConsumer<T, Long> biConsumer) {
-		return com.globalmentor.function.Functions.countingConsumer(counter, biConsumer);
+		return new Consumer<T>() {
+			@Override
+			public void accept(final T t) {
+				biConsumer.accept(t, counter.incrementAndGet());
+			}
+		};
 	}
 
 	/**
@@ -80,11 +83,10 @@ public final class Functions {
 	 * @param <R> The type of the result of the function.
 	 * @param function The function to convert to a bifunction.
 	 * @return A bifunction that delegates to the given function, passing its first argument.
-	 * @deprecated and replaced with the equivalent function in {@link com.globalmentor.function.Functions}.
 	 */
-	@Deprecated(forRemoval = true)
 	public static <T, U, R> BiFunction<T, U, R> toBiFunctionT(@NonNull final Function<? super T, ? extends R> function) {
-		return com.globalmentor.function.Functions.toBiFunctionT(function);
+		requireNonNull(function);
+		return (final T t, final U u) -> function.apply(t);
 	}
 
 	/**
@@ -94,11 +96,10 @@ public final class Functions {
 	 * @param <R> The type of the result of the function.
 	 * @param function The function to convert to a bifunction.
 	 * @return A bifunction that delegates to the given function, passing its second argument.
-	 * @deprecated and replaced with the equivalent function in {@link com.globalmentor.function.Functions}.
 	 */
-	@Deprecated(forRemoval = true)
 	public static <T, U, R> BiFunction<T, U, R> toBiFunctionU(@NonNull final Function<? super U, ? extends R> function) {
-		return toBiFunctionU(function);
+		requireNonNull(function);
+		return (final T t, final U u) -> function.apply(u);
 	}
 
 	/**
@@ -116,11 +117,11 @@ public final class Functions {
 	 * @param valueTester The predicate used to test the value extracted from the input.
 	 * @return A predicate that tests an extracted value using the specified predicate.
 	 * @throws NullPointerException if either argument is <code>null</code>
-	 * @deprecated and replaced with the equivalent function in {@link com.globalmentor.function.Functions}.
 	 */
-	@Deprecated(forRemoval = true)
 	public static <T, U> Predicate<T> testing(@NonNull final Function<? super T, ? extends U> valueExtractor, @NonNull final Predicate<? super U> valueTester) {
-		return com.globalmentor.function.Functions.testing(valueExtractor, valueTester);
+		requireNonNull(valueExtractor);
+		requireNonNull(valueTester);
+		return input -> valueTester.test(valueExtractor.apply(input));
 	}
 
 }

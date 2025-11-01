@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.globalmentor.io.function;
+package com.globalmentor.function;
 
 import static java.util.Arrays.*;
 import static org.hamcrest.MatcherAssert.*;
