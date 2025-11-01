@@ -19,6 +19,7 @@ package com.globalmentor.function;
 import static java.util.Arrays.*;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -65,4 +66,72 @@ public class FunctionsTest {
 				contains(LocalDate.of(1950, 01, 02), LocalDate.of(1960, 03, 04), LocalDate.of(1970, 10, 20), LocalDate.of(1985, 11, 05), LocalDate.of(1999, 12, 31)));
 
 	}
+
+	// Tests for [Functions#supplyLazily(java.util.function.Supplier)].
+
+	/** Supplier is invoked on first access. */
+	@Test
+	void testSupplyLazilyInvokesSupplierOnFirstAccess() {
+		final AtomicLong invocationCount = new AtomicLong(0);
+		final var lazySupplier = Functions.supplyLazily(() -> {
+			invocationCount.incrementAndGet();
+			return "value";
+		});
+		assertThat("supplier not invoked before first access", invocationCount.get(), is(0L));
+		assertThat(lazySupplier.get(), is("value"));
+		assertThat("supplier invoked once after first access", invocationCount.get(), is(1L));
+	}
+
+	/** Supplier is not invoked again on subsequent access. */
+	@Test
+	void testSupplyLazilyCachesValue() {
+		final AtomicLong invocationCount = new AtomicLong(0);
+		final var lazySupplier = Functions.supplyLazily(() -> {
+			invocationCount.incrementAndGet();
+			return "cached";
+		});
+		lazySupplier.get();
+		lazySupplier.get();
+		lazySupplier.get();
+		assertThat("supplier invoked only once", invocationCount.get(), is(1L));
+	}
+
+	/** Cached value is returned on subsequent access. */
+	@Test
+	void testSupplyLazilyReturnsCachedValue() {
+		final var lazySupplier = Functions.supplyLazily(() -> "result");
+		final String firstResult = lazySupplier.get();
+		final String secondResult = lazySupplier.get();
+		final String thirdResult = lazySupplier.get();
+		assertThat("first result", firstResult, is("result"));
+		assertThat("second result is same", secondResult, is(sameInstance(firstResult)));
+		assertThat("third result is same", thirdResult, is(sameInstance(firstResult)));
+	}
+
+	/** Null values are supported. */
+	@Test
+	void testSupplyLazilySupportsNull() {
+		final AtomicLong invocationCount = new AtomicLong(0);
+		final var lazySupplier = Functions.supplyLazily(() -> {
+			invocationCount.incrementAndGet();
+			return null;
+		});
+		assertThat(lazySupplier.get(), is(nullValue()));
+		assertThat(lazySupplier.get(), is(nullValue()));
+		assertThat("supplier invoked only once", invocationCount.get(), is(1L));
+	}
+
+	/** Supplier returning itself throws IllegalStateException. */
+	@Test
+	void testSupplyLazilyThrowsIfSupplierReturnsItself() {
+		final var selfReturningSupplier = new java.util.function.Supplier<Object>() {
+			@Override
+			public Object get() {
+				return this;
+			}
+		};
+		final var lazySupplier = Functions.supplyLazily(selfReturningSupplier);
+		assertThrows(IllegalStateException.class, lazySupplier::get);
+	}
+
 }
