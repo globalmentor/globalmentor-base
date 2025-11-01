@@ -38,7 +38,7 @@ public final class Streams {
 	/**
 	 * Reduction operator to require a stream to contain at most one element.
 	 * <p>Example usage:</p>
-	 * <blockquote>{@code Optional<String> found = stream.reduce(toFindOnly());}</blockquote>
+	 * <pre>{@code Optional<String> found = stream.reduce(toFindOnly());}</pre>
 	 * @implSpec This implementation delegates to {@link #toFindOnly(Supplier)},
 	 * @apiNote The method performs functionality similar to the terminal operation {@link Stream#findAny()} except that an exception is thrown if more than one
 	 *          element is present.
@@ -57,7 +57,7 @@ public final class Streams {
 	/**
 	 * Reduction operator to require a stream to contain at most one element.
 	 * <p>Example usage:</p>
-	 * <blockquote>{@code Optional<String> found = stream.reduce(toFindOnly(() -> new CustomException("Multiple found")));}</blockquote>
+	 * <pre>{@code Optional<String> found = stream.reduce(toFindOnly(() -> new CustomException("Multiple found")));}</pre>
 	 * @apiNote The method performs functionality similar to the terminal operation {@link Stream#findAny()} except that an exception is thrown if more than one
 	 *          element is present.
 	 * @apiNote Code modified from <a href="https://blog.codefx.org/java/stream-findfirst-findany-reduce/">Beware Of findFirst() And findAny()</a>.
@@ -80,7 +80,7 @@ public final class Streams {
 	 * Collector to require a stream to contain at most one element, performing a custom action if more than one element is encountered rather than throwing an
 	 * exception.
 	 * <p>Example usage:</p>
-	 * <blockquote>{@code Optional<String> found = stream.collect(toFindOnlyOrElse(() -> log.warn("Multiple found")));}</blockquote>
+	 * <pre>{@code Optional<String> found = stream.collect(toFindOnlyOrElse(() -> log.warn("Multiple found")));}</pre>
 	 * @apiNote The method performs functionality similar to the terminal operation {@link Stream#findAny()} except that a custom action is performed if more than
 	 *          one element is present, and an empty {@code Optional} is returned to signal the failure condition.
 	 * @apiNote This method is useful in scenarios such as annotation processing where instead of throwing an exception, a warning or even an error can be
@@ -111,7 +111,7 @@ public final class Streams {
 	/**
 	 * Reduction operator to find any element in a stream, performing a custom action when more than one element is encountered.
 	 * <p>Example usage:</p>
-	 * <blockquote>{@code Optional<String> found = stream.reduce(toFindAnyWhenMany(() -> log.warn("Multiple found")));}</blockquote>
+	 * <pre>{@code Optional<String> found = stream.reduce(toFindAnyWhenMany(() -> log.warn("Multiple found")));}</pre>
 	 * @apiNote The method performs functionality similar to the terminal operation {@link Stream#findAny()} except that a custom action is performed when more
 	 *          than one element is present, allowing notification of the ambiguity while still proceeding with one of the elements.
 	 * @apiNote This method is useful in scenarios such as annotation processing where multiple elements may be found, but processing can continue with one of
@@ -142,7 +142,7 @@ public final class Streams {
 	/**
 	 * Collector that returns the one and only one element expected to be in the stream.
 	 * <p>Example usage:</p>
-	 * <blockquote>{@code String only = stream.collect(toOnly());}</blockquote>
+	 * <pre>{@code String only = stream.collect(toOnly());}</pre>
 	 * @implSpec This implementation delegates to {@link #toOnly(Supplier)}.
 	 * @implNote Code modified from <a href="https://stackoverflow.com/users/2057294/skiwi">skiwi</a> <a href="https://stackoverflow.com/a/22695031/421049">on
 	 *           Stack Overflow</a>.
@@ -163,7 +163,7 @@ public final class Streams {
 	/**
 	 * Collector that returns the one and only one element expected to be in the stream.
 	 * <p>Example usage:</p>
-	 * <blockquote>{@code String only = stream.collect(toOnly(() -> new CustomException("Multiple found")));}</blockquote>
+	 * <pre>{@code String only = stream.collect(toOnly(() -> new CustomException("Multiple found")));}</pre>
 	 * @implNote Code modified from <a href="https://stackoverflow.com/users/2057294/skiwi">skiwi</a> <a href="https://stackoverflow.com/a/22695031/421049">on
 	 *           Stack Overflow</a>.
 	 * @implNote The current implementation extends an existing list collector. It would probably be possible to create a more efficient implementation that

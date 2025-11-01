@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.globalmentor.io.function;
+package com.globalmentor.function;
 
 import static java.util.Arrays.*;
 import static org.hamcrest.MatcherAssert.*;
@@ -65,4 +65,5 @@ public class FunctionsTest {
 				contains(LocalDate.of(1950, 01, 02), LocalDate.of(1960, 03, 04), LocalDate.of(1970, 10, 20), LocalDate.of(1985, 11, 05), LocalDate.of(1999, 12, 31)));
 
 	}
+
 }
