@@ -5,12 +5,12 @@
 	<parent>
 		<groupId>com.globalmentor</groupId>
 		<artifactId>globalmentor-root</artifactId>
-		<version>3.0.0</version>
+		<version>3.0.2</version>
 		<relativePath />
 	</parent>
 
 	<artifactId>globalmentor-base</artifactId>
-	<version>0.21.0-SNAPSHOT</version>
+	<version>0.21.0</version>
 	<packaging>pom</packaging>
 
 	<name>GlobalMentor Base</name>
@@ -33,7 +33,7 @@
 	</scm>
 
 	<properties>
-		<central.publishing.enabled>true</central.publishing.enabled>
+		<enableCentralPublishing>true</enableCentralPublishing>
 	</properties>
 
 	<modules>
@@ -49,32 +49,32 @@
 			<dependency>
 				<groupId>com.globalmentor</groupId>
 				<artifactId>globalmentor-core</artifactId>
-				<version>0.21.0-SNAPSHOT</version>
+				<version>0.21.0</version>
 			</dependency>
 
 			<dependency>
 				<groupId>com.globalmentor</groupId>
 				<artifactId>globalmentor-core</artifactId>
-				<version>0.21.0-SNAPSHOT</version>
+				<version>0.21.0</version>
 				<type>test-jar</type>
 			</dependency>
 
 			<dependency>
 				<groupId>com.globalmentor</groupId>
 				<artifactId>globalmentor-java-model</artifactId>
-				<version>0.21.0-SNAPSHOT</version>
+				<version>0.21.0</version>
 			</dependency>
 
 			<dependency>
 				<groupId>com.globalmentor</groupId>
 				<artifactId>globalmentor-management</artifactId>
-				<version>0.21.0-SNAPSHOT</version>
+				<version>0.21.0</version>
 			</dependency>
 
 			<dependency>
 				<groupId>com.globalmentor</groupId>
 				<artifactId>globalmentor-text-csv</artifactId>
-				<version>0.21.0-SNAPSHOT</version>
+				<version>0.21.0</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

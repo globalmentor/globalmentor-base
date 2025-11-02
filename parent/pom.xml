@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>com.globalmentor</groupId>
 		<artifactId>globalmentor-base</artifactId>
-		<version>0.21.0-SNAPSHOT</version>
+		<version>0.21.0</version>
 	</parent>
 
 	<artifactId>globalmentor-base-parent</artifactId>
@@ -19,7 +19,7 @@
 			<dependency>
 				<groupId>org.eclipse.jgit</groupId>
 				<artifactId>org.eclipse.jgit</artifactId>
-				<version>7.3.0.202506031305-r</version>
+				<version>7.4.0.202509020913-r</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
