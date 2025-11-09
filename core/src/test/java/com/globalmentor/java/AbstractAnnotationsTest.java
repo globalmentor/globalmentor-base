@@ -16,7 +16,8 @@
 
 package com.globalmentor.java;
 
-import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresentAndIs;
+import static com.github.npathai.hamcrestopt.OptionalMatchers.*;
+import static java.util.stream.Collectors.*;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
@@ -29,59 +30,123 @@ import org.junit.jupiter.api.*;
 import com.globalmentor.reflect.AnnotatedElementsTest;
 
 /**
- * Abstract base test for consistency in testing implementations of {@link Annotations}. Subclasses must implement {@link #getTestAnnotations()} to return an
- * instance of {@link Annotations} to test.
- * @implNote These tests usually require a class with annotations such as those in parallel those in {@link AnnotatedElementsTest}.
+ * Abstract base test for consistency in testing implementations of {@link Annotations}. Subclasses must implement {@link #getMethodTestAnnotations(String)} and
+ * {@link #getTypeTestAnnotations(String)} to return instances of {@link Annotations} to test.
+ * @implNote These tests usually require a class with annotations such as those in parallel to those in {@link AnnotatedElementsTest}.
  * @author Garret Wilson
  * @see AnnotatedElementsTest
  */
 public abstract class AbstractAnnotationsTest {
 
-	/** Tests {@link Annotations#isAnnotationPresent(Class)}. */
+	/** Tests for {@link Annotations#isAnnotationPresent(Class)}. */
 	@Test
 	void testIsAnnotationPresentOfAnnotatedElement() {
-		assertThat(getMethodTestAnnotations("methodWithAnnotationHavingNoValue").isAnnotationPresent(BeforeEach.class), is(true));
-		assertThat(getMethodTestAnnotations("methodWithAnnotationHavingValue").isAnnotationPresent(Disabled.class), is(true));
-		assertThat(getMethodTestAnnotations("methodWithAnnotationHavingValue").isAnnotationPresent(BeforeEach.class), is(false));
+		assertThat("single annotation", getMethodTestAnnotations("methodWithAnnotationHavingNoValue").isAnnotationPresent(TestAnnotation.class), is(true));
+		assertThat("annotation with value", getMethodTestAnnotations("methodWithAnnotationHavingValue").isAnnotationPresent(TestAnnotationWithValue.class),
+				is(true));
+		assertThat("not present", getMethodTestAnnotations("methodWithAnnotationHavingValue").isAnnotationPresent(TestAnnotation.class), is(false));
 	}
 
-	/** Tests {@link Annotations#getWhichAnnotationTypesPresent(Class...)}. */
+	/** Tests for {@link Annotations#getWhichAnnotationTypesPresent(Set)}. */
 	@Test
 	void testGetWhichAnnotationTypesPresent() {
-		assertThat(getMethodTestAnnotations("methodWithAnnotationHavingNoValue").getWhichAnnotationTypesPresent(Set.of()), is(empty()));
-		assertThat(getMethodTestAnnotations("methodWithAnnotationHavingNoValue").getWhichAnnotationTypesPresent(Set.of(BeforeAll.class)), is(empty()));
-		assertThat(getMethodTestAnnotations("methodWithAnnotationHavingNoValue").getWhichAnnotationTypesPresent(Set.of(BeforeEach.class)),
-				containsInAnyOrder(BeforeEach.class));
-		assertThat(getMethodTestAnnotations("methodWithAnnotationHavingNoValue")
-				.getWhichAnnotationTypesPresent(Set.of(BeforeAll.class, BeforeEach.class, AfterEach.class, Test.class)), containsInAnyOrder(BeforeEach.class));
+		assertThat("empty query", getMethodTestAnnotations("methodWithAnnotationHavingNoValue").getWhichAnnotationTypesPresent(Set.of()), is(empty()));
+		assertThat("not present", getMethodTestAnnotations("methodWithAnnotationHavingNoValue").getWhichAnnotationTypesPresent(Set.of(AnotherTestAnnotation.class)),
+				is(empty()));
+		assertThat("single match", getMethodTestAnnotations("methodWithAnnotationHavingNoValue").getWhichAnnotationTypesPresent(Set.of(TestAnnotation.class)),
+				containsInAnyOrder(TestAnnotation.class));
+		assertThat("one of several", getMethodTestAnnotations("methodWithAnnotationHavingNoValue").getWhichAnnotationTypesPresent(
+				Set.of(AnotherTestAnnotation.class, TestAnnotation.class, TestAnnotationWithValue.class)), containsInAnyOrder(TestAnnotation.class));
 
-		assertThat(getMethodTestAnnotations("methodWithAnnotationsHavingNoValue").getWhichAnnotationTypesPresent(Set.of()), is(empty()));
-		assertThat(getMethodTestAnnotations("methodWithAnnotationsHavingNoValue").getWhichAnnotationTypesPresent(Set.of(BeforeAll.class)), is(empty()));
-		assertThat(getMethodTestAnnotations("methodWithAnnotationsHavingNoValue").getWhichAnnotationTypesPresent(Set.of(BeforeEach.class, AfterEach.class)),
-				containsInAnyOrder(BeforeEach.class, AfterEach.class));
-		assertThat(getMethodTestAnnotations("methodWithAnnotationsHavingNoValue").getWhichAnnotationTypesPresent(
-				Set.of(BeforeAll.class, BeforeEach.class, AfterEach.class, Test.class)), containsInAnyOrder(BeforeEach.class, AfterEach.class));
+		assertThat("empty query", getMethodTestAnnotations("methodWithAnnotationsHavingNoValue").getWhichAnnotationTypesPresent(Set.of()), is(empty()));
+		assertThat("not present",
+				getMethodTestAnnotations("methodWithAnnotationsHavingNoValue").getWhichAnnotationTypesPresent(Set.of(TestAnnotationWithValue.class)), is(empty()));
+		assertThat("both match", getMethodTestAnnotations("methodWithAnnotationsHavingNoValue").getWhichAnnotationTypesPresent(
+				Set.of(TestAnnotation.class, AnotherTestAnnotation.class)), containsInAnyOrder(TestAnnotation.class, AnotherTestAnnotation.class));
+		assertThat("two of several",
+				getMethodTestAnnotations("methodWithAnnotationsHavingNoValue")
+						.getWhichAnnotationTypesPresent(Set.of(AnotherTestAnnotation.class, TestAnnotation.class, TestAnnotationWithValue.class)),
+				containsInAnyOrder(TestAnnotation.class, AnotherTestAnnotation.class));
 
-		assertThat(getMethodTestAnnotations("methodWithAnnotationHavingValue").getWhichAnnotationTypesPresent(Set.of()), is(empty()));
-		assertThat(getMethodTestAnnotations("methodWithAnnotationHavingValue").getWhichAnnotationTypesPresent(Set.of(BeforeAll.class)), is(empty()));
-		assertThat(getMethodTestAnnotations("methodWithAnnotationHavingValue").getWhichAnnotationTypesPresent(Set.of(Disabled.class)),
-				containsInAnyOrder(Disabled.class));
-		assertThat(getMethodTestAnnotations("methodWithAnnotationHavingValue").getWhichAnnotationTypesPresent(
-				Set.of(BeforeAll.class, BeforeEach.class, Disabled.class, AfterEach.class, Test.class)), containsInAnyOrder(Disabled.class));
+		assertThat("empty query", getMethodTestAnnotations("methodWithAnnotationHavingValue").getWhichAnnotationTypesPresent(Set.of()), is(empty()));
+		assertThat("not present", getMethodTestAnnotations("methodWithAnnotationHavingValue").getWhichAnnotationTypesPresent(Set.of(TestAnnotation.class)),
+				is(empty()));
+		assertThat("single match",
+				getMethodTestAnnotations("methodWithAnnotationHavingValue").getWhichAnnotationTypesPresent(Set.of(TestAnnotationWithValue.class)),
+				containsInAnyOrder(TestAnnotationWithValue.class));
+		assertThat("one of several", getMethodTestAnnotations("methodWithAnnotationHavingValue").getWhichAnnotationTypesPresent(
+				Set.of(AnotherTestAnnotation.class, TestAnnotation.class, TestAnnotationWithValue.class)), containsInAnyOrder(TestAnnotationWithValue.class));
 	}
 
-	/** Tests {@link Annotations#findAnnotationValue(Class)}. */
+	/** Tests for {@link Annotations#findAnnotationValue(Class)}. */
 	@Test
 	void testFindAnnotationValueOfAnnotatedElement() {
-		assertThat(getMethodTestAnnotations("methodWithAnnotationHavingValue").findAnnotationValue(BeforeEach.class), is(Optional.empty()));
-		assertThat(getMethodTestAnnotations("methodWithAnnotationHavingValue").findAnnotationValue(Disabled.class), isPresentAndIs("value for testing"));
+		assertThat("no value element", getMethodTestAnnotations("methodWithAnnotationHavingValue").findAnnotationValue(TestAnnotation.class), is(Optional.empty()));
+		assertThat("value element", getMethodTestAnnotations("methodWithAnnotationHavingValue").findAnnotationValue(TestAnnotationWithValue.class),
+				isPresentAndIs("value for testing"));
+	}
+
+	/** Tests for {@link Annotations#findAnnotation(Class)}. */
+	@Test
+	void testFindAnnotation() {
+		assertThat("present", getMethodTestAnnotations("methodWithAnnotationHavingNoValue").findAnnotation(TestAnnotation.class), isPresent());
+		assertThat("not present", getMethodTestAnnotations("methodWithAnnotationHavingNoValue").findAnnotation(AnotherTestAnnotation.class), isEmpty());
+		final var foundAnnotationWithValue = getMethodTestAnnotations("methodWithAnnotationHavingValue").findAnnotation(TestAnnotationWithValue.class);
+		assertThat("annotation with value is present", foundAnnotationWithValue, isPresent());
+		assertThat("value element", foundAnnotationWithValue.orElseThrow().value(), is("value for testing"));
+	}
+
+	/** Tests for {@link Annotations#annotationsByType(Class)}. */
+	@Test
+	void testAnnotationsByType() {
+		assertThat("single annotation", getMethodTestAnnotations("methodWithAnnotationHavingNoValue").annotationsByType(TestAnnotation.class).count(), is(1L));
+		assertThat("not present", getMethodTestAnnotations("methodWithAnnotationHavingNoValue").annotationsByType(AnotherTestAnnotation.class).count(), is(0L));
+		assertThat("repeatable annotations", getMethodTestAnnotations("methodWithRepeatableAnnotations").annotationsByType(Tag.class).count(), is(2L));
+		assertThat("repeatable annotation values",
+				getMethodTestAnnotations("methodWithRepeatableAnnotations").annotationsByType(Tag.class).map(Tag::value).collect(toList()),
+				contains("first", "second"));
+	}
+
+	/** Tests for {@link Annotations#findDeclaredAnnotation(Class)}. */
+	@Test
+	void testFindDeclaredAnnotation() {
+		assertThat("directly present", getMethodTestAnnotations("methodWithAnnotationHavingNoValue").findDeclaredAnnotation(TestAnnotation.class), isPresent());
+		assertThat("not present", getMethodTestAnnotations("methodWithAnnotationHavingNoValue").findDeclaredAnnotation(AnotherTestAnnotation.class), isEmpty());
+		final var foundDeclaredAnnotationWithValue = getMethodTestAnnotations("methodWithAnnotationHavingValue")
+				.findDeclaredAnnotation(TestAnnotationWithValue.class);
+		assertThat("annotation with value is directly present", foundDeclaredAnnotationWithValue, isPresent());
+		assertThat("value element", foundDeclaredAnnotationWithValue.orElseThrow().value(), is("value for testing"));
+		assertThat("inherited annotation not declared",
+				getTypeTestAnnotations("ChildTestAnnotatedInterface").findDeclaredAnnotation(InheritableTestAnnotation.class), isEmpty());
+	}
+
+	/** Tests for {@link Annotations#declaredAnnotationsByType(Class)}. */
+	@Test
+	void testDeclaredAnnotationsByType() {
+		assertThat("single annotation", getMethodTestAnnotations("methodWithAnnotationHavingNoValue").declaredAnnotationsByType(TestAnnotation.class).count(),
+				is(1L));
+		assertThat("not present", getMethodTestAnnotations("methodWithAnnotationHavingNoValue").declaredAnnotationsByType(AnotherTestAnnotation.class).count(),
+				is(0L));
+		assertThat("repeatable annotations", getMethodTestAnnotations("methodWithRepeatableAnnotations").declaredAnnotationsByType(Tag.class).count(), is(2L));
+		assertThat("repeatable annotation values",
+				getMethodTestAnnotations("methodWithRepeatableAnnotations").declaredAnnotationsByType(Tag.class).map(Tag::value).collect(toList()),
+				contains("first", "second"));
+		assertThat("inherited annotation not declared",
+				getTypeTestAnnotations("ChildTestAnnotatedInterface").declaredAnnotationsByType(InheritableTestAnnotation.class).count(), is(0L));
 	}
 
 	/**
 	 * Abstract strategy method for retrieving an implementation-specific instance of {@link Annotations} of a method for testing.
-	 * @param The name of the method for which test annotations should be returned.
+	 * @param methodName The name of the method for which test annotations should be returned.
 	 * @return Method annotations to be tested.
 	 */
 	protected abstract Annotations getMethodTestAnnotations(@NonNull String methodName);
+
+	/**
+	 * Abstract strategy method for retrieving an implementation-specific instance of {@link Annotations} of a type for testing.
+	 * @param typeName The simple name of the type for which test annotations should be returned.
+	 * @return Type annotations to be tested.
+	 */
+	protected abstract Annotations getTypeTestAnnotations(@NonNull String typeName);
 
 }

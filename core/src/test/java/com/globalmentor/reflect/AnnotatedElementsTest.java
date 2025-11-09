@@ -16,20 +16,18 @@
 
 package com.globalmentor.reflect;
 
-import org.junit.jupiter.api.*;
-
-import com.globalmentor.java.AbstractAnnotationsTest;
-import com.globalmentor.java.Annotations;
+import com.globalmentor.java.*;
 
 /**
- * Tests of {@link AnnotatedElement} and its implementation of {@link Annotations}.
+ * Tests of {@link AnnotatedElements} and its implementation of {@link Annotations}.
  * @author Garret Wilson
  */
 public class AnnotatedElementsTest extends AbstractAnnotationsTest {
 
 	/**
 	 * {@inheritDoc}
-	 * @implSpec This implementation returns an {@link Annotations} implementation by delegating to {@link AnnotatedElements#annotationsOf(AnnotatedElement)}.
+	 * @implSpec This implementation returns an {@link Annotations} implementation by delegating to
+	 *           {@link AnnotatedElements#annotationsOf(java.lang.reflect.AnnotatedElement)}.
 	 */
 	@Override
 	protected Annotations getMethodTestAnnotations(final String methodName) {
@@ -43,20 +41,46 @@ public class AnnotatedElementsTest extends AbstractAnnotationsTest {
 	}
 
 	/**
+	 * {@inheritDoc}
+	 * @implSpec This implementation returns an {@link Annotations} implementation by delegating to
+	 *           {@link AnnotatedElements#annotationsOf(java.lang.reflect.AnnotatedElement)}.
+	 */
+	@Override
+	protected Annotations getTypeTestAnnotations(final String typeName) {
+		for(final Class<?> declaredClass : TestAnnotatedInterface.class.getDeclaredClasses()) {
+			if(declaredClass.getSimpleName().equals(typeName)) {
+				return AnnotatedElements.annotationsOf(declaredClass);
+			}
+		}
+		throw new IllegalArgumentException("Unknown `%s` type referenced in test: %s".formatted(TestAnnotatedInterface.class.getSimpleName(), typeName));
+	}
+
+	/**
 	 * Interface for testing annotations.
 	 * @apiNote The annotations here have no semantic significance; they are only for testing annotation access.
 	 */
 	interface TestAnnotatedInterface {
 
-		@BeforeEach
+		@TestAnnotation
 		public void methodWithAnnotationHavingNoValue();
 
-		@BeforeEach
-		@AfterEach
+		@TestAnnotation
+		@AnotherTestAnnotation
 		public void methodWithAnnotationsHavingNoValue();
 
-		@Disabled("value for testing")
+		@TestAnnotationWithValue("value for testing")
 		public void methodWithAnnotationHavingValue();
+
+		@Tag("first")
+		@Tag("second")
+		public void methodWithRepeatableAnnotations();
+
+		@InheritableTestAnnotation
+		interface ParentTestAnnotatedInterface {
+		}
+
+		interface ChildTestAnnotatedInterface extends ParentTestAnnotatedInterface {
+		}
 
 	}
 
