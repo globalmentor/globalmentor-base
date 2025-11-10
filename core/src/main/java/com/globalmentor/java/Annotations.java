@@ -20,20 +20,17 @@ import static java.util.stream.Collectors.*;
 
 import java.lang.annotation.Annotation;
 import java.util.*;
+import java.util.stream.Stream;
 
 import org.jspecify.annotations.*;
 
 /**
  * Abstraction for accessing annotations.
- * <p>
- * While {@link java.lang.reflect.AnnotatedElement} provides an abstraction for accessing annotations via <em>reflection</em>, it assumes all related classes
+ * <p>While {@link java.lang.reflect.AnnotatedElement} provides an abstraction for accessing annotations via <em>reflection</em>, it assumes all related classes
  * are accessible, which may not apply to annotation processing during compilation. Annotation processing instead uses annotation mirrors, which provide less
- * type safety but also make fewer assumptions about available class files, allowing annotation access in terms of structures in the source code.
- * </p>
- * <p>
- * This interface provides a lowest-common-denominator abstraction for accessing basic annotation information that will work for annotated elements or
- * annotation mirrors. It is not appropriate for all annotation access, such as annotations that need only be accessed after compilation.
- * </p>
+ * type safety but also make fewer assumptions about available class files, allowing annotation access in terms of structures in the source code.</p>
+ * <p>This interface provides a lowest-common-denominator abstraction for accessing basic annotation information that will work for annotated elements or
+ * annotation mirrors. It is not appropriate for all annotation access, such as annotations that need only be accessed after compilation.</p>
  * @apiNote As this annotation access is not necessarily performed via reflection, it is not in the <code>reflect</code> package along with
  *          {@link java.lang.reflect.AnnotatedElement}.
  * @apiNote Definitions of "declared", "present", "associated", etc. can be found in {@link java.lang.reflect.AnnotatedElement}.
@@ -82,5 +79,61 @@ public interface Annotations {
 	 *      Single-Element Annotations</a>
 	 */
 	public Optional<Object> findAnnotationValue(@NonNull final Class<? extends Annotation> annotationClass);
+
+	/**
+	 * Finds the annotation for the specified type if such an annotation is <em>present</em>. If multiple annotations of a repeatable annotation type are present,
+	 * this method does not look through the container annotation; use {@link #annotationsByType(Class)} instead.
+	 * @apiNote This method functions identically to {@link java.lang.reflect.AnnotatedElement#getAnnotation(Class)} except that it returns an {@link Optional}.
+	 * @apiNote This method requires the annotation class and all types it references to be available.
+	 * @param <T> The type of the annotation to query for and return if present.
+	 * @param annotationClass The class object corresponding to the annotation type.
+	 * @return The annotation for the specified annotation type if present, which may not be present.
+	 * @throws NullPointerException if the given annotation class is <code>null</code>.
+	 */
+	public <T extends Annotation> Optional<T> findAnnotation(@NonNull final Class<T> annotationClass);
+
+	/**
+	 * Returns annotations that are <em>associated</em>. An annotation is associated if it is either directly or indirectly present, or if it is inherited (for
+	 * classes with inheritable annotations).
+	 * <p>This method detects if the argument is a repeatable annotation type, and if so, attempts to find one or more annotations of that type by "looking
+	 * through" a container annotation. For example, multiple {@code @Tag} annotations are stored as {@code @Tags({@Tag(...), @Tag(...)})}, and this method
+	 * unwraps them.</p>
+	 * @apiNote This method functions identically to {@link java.lang.reflect.AnnotatedElement#getAnnotationsByType(Class)}.
+	 * @apiNote This method requires the annotation class and all types it references to be available.
+	 * @param <T> The type of the annotation to query for and return if present.
+	 * @param annotationClass The class object corresponding to the annotation type.
+	 * @return All annotations for the specified annotation type if associated.
+	 * @throws NullPointerException if the given annotation class is <code>null</code>.
+	 */
+	public <T extends Annotation> Stream<T> annotationsByType(@NonNull final Class<T> annotationClass);
+
+	/**
+	 * Finds the annotation for the specified type if such an annotation is <em>directly present</em>. This method ignores inherited annotations. If multiple
+	 * annotations of a repeatable annotation type are present, this method does not look through the container annotation; use
+	 * {@link #declaredAnnotationsByType(Class)} instead.
+	 * @apiNote This method functions identically to {@link java.lang.reflect.AnnotatedElement#getDeclaredAnnotation(Class)} except that it returns an
+	 *          {@link Optional}.
+	 * @apiNote This method requires the annotation class and all types it references to be available.
+	 * @param <T> The type of the annotation to query for and return if directly present.
+	 * @param annotationClass The class object corresponding to the annotation type.
+	 * @return The annotation for the specified annotation type if directly present, which may not be present.
+	 * @throws NullPointerException if the given annotation class is <code>null</code>.
+	 */
+	public <T extends Annotation> Optional<T> findDeclaredAnnotation(@NonNull final Class<T> annotationClass);
+
+	/**
+	 * Returns annotation(s) for the specified type if such annotations are either <em>directly present</em> or <em>indirectly present</em>. This method ignores
+	 * inherited annotations. An annotation is indirectly present if it is stored within a container annotation for a repeatable annotation type.
+	 * <p>This method detects if the argument is a repeatable annotation type, and if so, attempts to find one or more annotations of that type by "looking
+	 * through" a container annotation if one is present. For example, multiple {@code @Tag} annotations are stored as {@code @Tags({@Tag(...), @Tag(...)})}, and
+	 * this method unwraps them.</p>
+	 * @apiNote This method functions identically to {@link java.lang.reflect.AnnotatedElement#getDeclaredAnnotationsByType(Class)}.
+	 * @apiNote This method requires the annotation class and all types it references to be available.
+	 * @param <T> The type of the annotation to query for and return if directly or indirectly present.
+	 * @param annotationClass The class object corresponding to the annotation type.
+	 * @return All annotations for the specified annotation type if directly or indirectly present.
+	 * @throws NullPointerException if the given annotation class is <code>null</code>.
+	 */
+	public <T extends Annotation> Stream<T> declaredAnnotationsByType(@NonNull final Class<T> annotationClass);
 
 }

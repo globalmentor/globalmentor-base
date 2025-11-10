@@ -41,7 +41,7 @@ public final class AnnotatedElements {
 	}
 
 	/**
-	 * Finds an element's annotation for the specified type.
+	 * Finds an element's <em>present</em> annotation for the specified type.
 	 * @implSpec This implementation delegates to {@link AnnotatedElement#getAnnotation(Class)}.
 	 * @param <T> The type of the annotation to query for and return if present.
 	 * @param annotatedElement The element that may have annotations.
@@ -134,7 +134,7 @@ public final class AnnotatedElements {
 
 			@Override
 			public Optional<Object> findAnnotationValue(final Class<? extends Annotation> annotationClass) {
-				return findAnnotation(annotatedElement, annotationClass).flatMap(annotation -> {
+				return AnnotatedElements.findAnnotation(annotatedElement, annotationClass).flatMap(annotation -> {
 					return findMethod(annotationClass, VALUE_ELEMENT_NAME).map(valueMethod -> {
 						try {
 							return valueMethod.invoke(annotation);
@@ -151,7 +151,26 @@ public final class AnnotatedElements {
 				});
 			}
 
+			@Override
+			public <T extends Annotation> Optional<T> findAnnotation(final Class<T> annotationClass) {
+				return AnnotatedElements.findAnnotation(annotatedElement, annotationClass);
+			}
+
+			@Override
+			public <T extends Annotation> Stream<T> annotationsByType(final Class<T> annotationClass) {
+				return AnnotatedElements.annotationsByType(annotatedElement, annotationClass);
+			}
+
+			@Override
+			public <T extends Annotation> Optional<T> findDeclaredAnnotation(final Class<T> annotationClass) {
+				return AnnotatedElements.findDeclaredAnnotation(annotatedElement, annotationClass);
+			}
+
+			@Override
+			public <T extends Annotation> Stream<T> declaredAnnotationsByType(final Class<T> annotationClass) {
+				return AnnotatedElements.declaredAnnotationsByType(annotatedElement, annotationClass);
+			}
+
 		};
 	}
-
 }

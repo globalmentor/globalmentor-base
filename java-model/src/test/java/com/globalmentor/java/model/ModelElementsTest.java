@@ -18,11 +18,9 @@ package com.globalmentor.java.model;
 
 import static com.karuslabs.elementary.junit.Tools.*;
 
-import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import com.globalmentor.java.AbstractAnnotationsTest;
-import com.globalmentor.java.Annotations;
+import com.globalmentor.java.*;
 import com.karuslabs.elementary.junit.ToolsExtension;
 import com.karuslabs.elementary.junit.annotations.*;
 
@@ -37,11 +35,21 @@ public class ModelElementsTest extends AbstractAnnotationsTest {
 	/**
 	 * {@inheritDoc}
 	 * @implSpec This implementation returns an {@link Annotations} implementation by delegating to
-	 *           {@link ModelElements#annotationsOf(javax.lang.model.element.Element)}
+	 *           {@link ModelElements#annotationsOf(javax.lang.model.util.Elements, javax.lang.model.element.Element)}.
 	 */
 	@Override
 	protected Annotations getMethodTestAnnotations(final String methodName) {
 		return ModelElements.annotationsOf(elements(), labels().get(methodName));
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @implSpec This implementation returns an {@link Annotations} implementation by delegating to
+	 *           {@link ModelElements#annotationsOf(javax.lang.model.util.Elements, javax.lang.model.element.Element)}.
+	 */
+	@Override
+	protected Annotations getTypeTestAnnotations(final String typeName) {
+		return ModelElements.annotationsOf(elements(), labels().get(typeName));
 	}
 
 	/**
@@ -50,18 +58,32 @@ public class ModelElementsTest extends AbstractAnnotationsTest {
 	 */
 	interface TestAnnotatedInterface {
 
-		@BeforeEach
+		@TestAnnotation
 		@Label("methodWithAnnotationHavingNoValue")
 		public void methodWithAnnotationHavingNoValue();
 
-		@BeforeEach
-		@AfterEach
+		@TestAnnotation
+		@AnotherTestAnnotation
 		@Label("methodWithAnnotationsHavingNoValue")
 		public void methodWithAnnotationsHavingNoValue();
 
-		@Disabled("value for testing")
+		@TestAnnotationWithValue("value for testing")
 		@Label("methodWithAnnotationHavingValue")
 		public void methodWithAnnotationHavingValue();
+
+		@Tag("first")
+		@Tag("second")
+		@Label("methodWithRepeatableAnnotations")
+		public void methodWithRepeatableAnnotations();
+
+		@InheritableTestAnnotation
+		@Label("ParentTestAnnotatedInterface")
+		interface ParentTestAnnotatedInterface {
+		}
+
+		@Label("ChildTestAnnotatedInterface")
+		interface ChildTestAnnotatedInterface extends ParentTestAnnotatedInterface {
+		}
 
 	}
 

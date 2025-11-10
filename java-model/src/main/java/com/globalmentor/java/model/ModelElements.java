@@ -21,7 +21,7 @@ import static com.globalmentor.java.Objects.*;
 import static java.util.function.Function.*;
 import static java.util.stream.Collectors.*;
 
-import java.lang.annotation.Annotation;
+import java.lang.annotation.*;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -173,6 +173,17 @@ public final class ModelElements {
 	public static Annotations annotationsOf(@NonNull final Elements elements, @NonNull final Element element) {
 		return new Annotations() {
 
+			/**
+			 * Finds the containing annotation interface for a repeatable annotation interface.
+			 * @apiNote This is a utility method for handling repeatable annotations as specified in JLS §9.6.3.
+			 * @param <T> The type of the repeatable annotation.
+			 * @param repeatableAnnotationClass The class of the potentially repeatable annotation.
+			 * @return The containing annotation interface class if the annotation is repeatable.
+			 */
+			private static <T extends Annotation> Optional<Class<? extends Annotation>> findContainingAnnotationInterface(final Class<T> repeatableAnnotationClass) {
+				return Optional.ofNullable(repeatableAnnotationClass.getAnnotation(Repeatable.class)).map(Repeatable::value);
+			}
+
 			@Override
 			public boolean isAnnotationPresent(final Class<? extends Annotation> annotationClass) {
 				return findElementAnnotationMirrorForClass(elements, element, annotationClass).isPresent();
@@ -202,7 +213,36 @@ public final class ModelElements {
 						.map(AnnotationValue::getValue);
 			}
 
+			@Override
+			public <T extends Annotation> Optional<T> findAnnotation(final Class<T> annotationClass) {
+				return Optional.ofNullable(element.getAnnotation(annotationClass));
+			}
+
+			@Override
+			public <T extends Annotation> Stream<T> annotationsByType(final Class<T> annotationClass) {
+				return Stream.of(element.getAnnotationsByType(annotationClass));
+			}
+
+			@Override
+			public <T extends Annotation> Optional<T> findDeclaredAnnotation(final Class<T> annotationClass) {
+				//If a declared annotation mirror is present, getting the present annotation will return the declared one.
+				return findElementDeclaredAnnotationMirrorForClass(element, annotationClass).map(__ -> element.getAnnotation(annotationClass));
+			}
+
+			@Override
+			public <T extends Annotation> Stream<T> declaredAnnotationsByType(final Class<T> annotationClass) {
+				final Set<String> declaredAnnotationClassCanonicalNames = element.getAnnotationMirrors().stream()
+						.map(annotationMirror -> ((TypeElement)annotationMirror.getAnnotationType().asElement()).getQualifiedName().toString())
+						.collect(toUnmodifiableSet());
+				//For repeatable annotations, the containing annotation interface is implicitly declared (JLS §9.7.5),
+				//so we need to check for either the annotation itself or its containing annotation interface.
+				final Optional<String> foundContainingAnnotationCanonicalName = findContainingAnnotationInterface(annotationClass).map(Class::getCanonicalName);
+				return Stream.of(element.getAnnotationsByType(annotationClass)).filter(annotation -> {
+					final String annotationCanonicalName = annotation.annotationType().getCanonicalName();
+					return declaredAnnotationClassCanonicalNames.contains(annotationCanonicalName)
+							|| foundContainingAnnotationCanonicalName.filter(declaredAnnotationClassCanonicalNames::contains).isPresent();
+				});
+			}
 		};
 	}
-
 }
