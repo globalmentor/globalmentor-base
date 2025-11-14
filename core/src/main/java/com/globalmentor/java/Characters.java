@@ -882,10 +882,12 @@ public final class Characters {
 	/**
 	 * Returns a string representing the character as 'x', or if the character is a control character or a surrogate, either a special representation such as '\n'
 	 * or the Unicode code point of this character, e.g. "U+1234".
+	 * @apiNote This "label" method is appropriate for including the character in a message, e.g. to refer to that character.
 	 * @implSpec This method supports Unicode supplementary code points.
 	 * @param c The code point a string representation of which to append.
 	 * @return The string label representing the character.
 	 * @see #appendLabel(StringBuilder, int)
+	 * @see #toDisplay(char)
 	 */
 	public static String toLabel(final int c) {
 		return appendLabel(new StringBuilder(), c).toString();
@@ -1014,6 +1016,7 @@ public final class Characters {
 	 * Returns a character for display to represent the given character. Typically this is the character itself, but for certain characters, notably control
 	 * characters, a symbol may be returned. Note that in some cases this will result in ambiguity between whether the original character was a control character
 	 * replaced by a symbol, or already the control symbol character itself.
+	 * @apiNote This "display" method is merely for making sure a character is visible and presentable when displaying some string, such as the source of parsing.
 	 * @apiNote This method does not sanitize character in any secure way to provide against injection attacks. It only makes a character more readable for
 	 *          displaying to a user.
 	 * @implSpec This implementation replaces C0 control characters and the delete character with their corresponding symbols
