@@ -199,6 +199,42 @@ public final class Text {
 	}
 
 	/**
+	 * Checks the result of an expression to see if an argument syntax is correct, and throws an {@link ArgumentSyntaxException} if the value is
+	 * <code>false</code>.
+	 * @apiNote This is a precondition check.
+	 * @apiNote This method is typically used in a static factory {@code parse(CharSequence)} method such as {@link java.time.LocalDate#parse(CharSequence)}.
+	 * @param test The result of the test.
+	 * @throws ArgumentSyntaxException if the given value is <code>false</code>.
+	 */
+	public static void checkArgumentSyntax(final boolean test) {
+		checkArgumentSyntax(test, null);
+	}
+
+	/**
+	 * Checks the result of an expression to see if an argument syntax is correct, and throws an {@link ArgumentSyntaxException} if the value is
+	 * <code>false</code>.
+	 * @apiNote This is a precondition check.
+	 * @apiNote This method is typically used in a static factory {@code parse(CharSequence)} method such as {@link java.time.LocalDate#parse(CharSequence)}.
+	 * @param test The result of the test.
+	 * @param description A description of the test to be used when generating an exception, optionally formatted with arguments, or {@code null} for no
+	 *          description.
+	 * @param arguments The arguments to be applied when formatting, or an empty array if the message should not be formatted.
+	 * @throws NullPointerException if the given arguments is {@code null}.
+	 * @throws ArgumentSyntaxException if the given value is <code>false</code>.
+	 * @throws IllegalArgumentException if the description is an invalid pattern, or if an argument in the arguments array is not of the type expected by the
+	 *           format element(s) that use it.
+	 * @see String#format(String, Object...)
+	 */
+	public static void checkArgumentSyntax(final boolean test, @Nullable String description, @NonNull final Object... arguments) {
+		if(!test) {
+			if(description != null && arguments.length > 0) {
+				description = String.format(description, arguments);
+			}
+			throw new ArgumentSyntaxException(description);
+		}
+	}
+
+	/**
 	 * Normalizes end-of-line sequences in the character sequence to <code>LF</code>. The following sequences are normalized:
 	 * <ul>
 	 * <li><code>CR</code></li>
