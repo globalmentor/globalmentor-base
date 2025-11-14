@@ -18,6 +18,7 @@ package com.globalmentor.text;
 
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
@@ -78,6 +79,39 @@ public class TextTest {
 		assertThat(Text.normalizeEol("foo\r\nbar", "\r"), hasToString("foo\rbar"));
 		assertThat(Text.normalizeEol("foo\n\rbar", "\r"), hasToString("foo\r\rbar"));
 		assertThat(Text.normalizeEol("foo\r\rbar", "\r"), hasToString("foo\r\rbar"));
+	}
+
+	/**
+	 * @see Text#checkArgumentSyntax(boolean)
+	 * @see Text#checkArgumentSyntax(boolean, String, Object...)
+	 */
+	@Test
+	void testCheckArgumentSyntax() {
+		Text.checkArgumentSyntax(true);
+		Text.checkArgumentSyntax(true, "test message");
+		Text.checkArgumentSyntax(true, "test %s", "formatted");
+	}
+
+	/**
+	 * Tests that {@link Text#checkArgumentSyntax(boolean)} throws {@link ArgumentSyntaxException} with a false statement.
+	 */
+	@Test
+	void testCheckArgumentSyntaxThrowsException() {
+		final var argumentSyntaxException = assertThrows(ArgumentSyntaxException.class, () -> Text.checkArgumentSyntax(false));
+		assertThat("exception has default message for no description", argumentSyntaxException.getMessage(), not(emptyOrNullString()));
+	}
+
+	/**
+	 * Tests the {@link Text#checkArgumentSyntax(boolean)} and {@link Text#checkArgumentSyntax(boolean, String, Object...)} methods with a false statement and how
+	 * the messages are being formatted.
+	 */
+	@Test
+	void testCheckArgumentSyntaxErrorMessage() {
+		final var argumentSyntaxExceptionWithMessage = assertThrows(ArgumentSyntaxException.class, () -> Text.checkArgumentSyntax(false, "Invalid syntax"));
+		assertThat("exception message", argumentSyntaxExceptionWithMessage.getMessage(), is("Invalid syntax"));
+		final var argumentSyntaxExceptionWithFormattedMessage = assertThrows(ArgumentSyntaxException.class,
+				() -> Text.checkArgumentSyntax(false, "Invalid %s at position %d", "format", 42));
+		assertThat("formatted exception message", argumentSyntaxExceptionWithFormattedMessage.getMessage(), is("Invalid format at position 42"));
 	}
 
 }

@@ -71,26 +71,28 @@ public class ArgumentSyntaxException extends IllegalArgumentException {
 
 	/**
 	 * Message constructor.
-	 * @param message An explanation of why the input could not be parsed, or <code>null</code> if a default message should be used.
+	 * @param message An explanation of why the input could not be parsed, or <code>null</code> if a default message should be constructed.
 	 */
 	public ArgumentSyntaxException(final String message) {
 		this(message, (Throwable)null); //construct the class with no cause
 	}
 
 	/**
-	 * Message, cause, input, and index constructor. A message will be constructed including the given message, if any, or the given message of the cause, if any.
-	 * @param message An explanation of why the input could not be parsed, or <code>null</code> if a default message should be used.
+	 * Message and cause constructor.
+	 * @param message An explanation of why the input could not be parsed, or <code>null</code> if a default message should be constructed.
 	 * @param cause The cause error or <code>null</code> if the cause is nonexistent or unknown.
+	 * @implSpec If no message is given, a default message will be constructed from the cause message if available, or a generic message otherwise.
 	 */
 	public ArgumentSyntaxException(final String message, final Throwable cause) {
 		this(message, cause, null); //construct the class with no input
 	}
 
 	/**
-	 * Message, cause, and input constructor. A message will be constructed including the given message, if any, or the given message of the cause, if any.
-	 * @param message An explanation of why the input could not be parsed, or <code>null</code> if a default message should be used.
+	 * Message, cause, and input constructor.
+	 * @param message An explanation of why the input could not be parsed, or <code>null</code> if a default message should be constructed.
 	 * @param cause The cause error or <code>null</code> if the cause is nonexistent or unknown.
 	 * @param input The input, or <code>null</code> if the input is not known.
+	 * @implSpec If no message is given, a default message will be constructed from the cause message if available, or a generic message including input details otherwise.
 	 */
 	public ArgumentSyntaxException(final String message, final Throwable cause, final CharSequence input) {
 		this(message, cause, input, -1); //construct the class with an unknown input
@@ -108,8 +110,9 @@ public class ArgumentSyntaxException extends IllegalArgumentException {
 
 	/**
 	 * Message and input constructor.
-	 * @param message An explanation of why the input could not be parsed, or <code>null</code> if a default message should be used.
+	 * @param message An explanation of why the input could not be parsed, or <code>null</code> if a default message should be constructed.
 	 * @param input The input, or <code>null</code> if the input is not known.
+	 * @implSpec If no message is given, a default message will be constructed including input details.
 	 */
 	public ArgumentSyntaxException(final String message, final CharSequence input) {
 		this(message, input, -1); //construct the class with an unknown index
@@ -117,10 +120,11 @@ public class ArgumentSyntaxException extends IllegalArgumentException {
 
 	/**
 	 * Message, input, and index constructor.
-	 * @param message An explanation of why the input could not be parsed, or <code>null</code> if a default message should be used.
+	 * @param message An explanation of why the input could not be parsed, or <code>null</code> if a default message should be constructed.
 	 * @param input The input, or <code>null</code> if the input is not known.
 	 * @param index The index into the input of the position at which the parse error occurred, or -1 if the position is not known.
 	 * @throws IllegalArgumentException if the given index is less than -1.
+	 * @implSpec If no message is given, a default message will be constructed including input and index details.
 	 */
 	public ArgumentSyntaxException(final String message, final CharSequence input, final int index) {
 		this(message, null, input, index); //construct the class with no cause
@@ -155,12 +159,13 @@ public class ArgumentSyntaxException extends IllegalArgumentException {
 	}
 
 	/**
-	 * Message, cause, input, and index constructor. A message will be constructed including the given message, if any, or the given message of the cause, if any.
-	 * @param message An explanation of why the input could not be parsed, or <code>null</code> if a default message should be used.
+	 * Message, cause, input, and index constructor.
+	 * @param message An explanation of why the input could not be parsed, or <code>null</code> if a default message should be constructed.
 	 * @param cause The cause error or <code>null</code> if the cause is nonexistent or unknown.
 	 * @param input The input, or <code>null</code> if the input is not known.
 	 * @param index The index into the input of the position at which the parse error occurred, or -1 if the position is not known.
 	 * @throws IllegalArgumentException if the given index is less than -1.
+	 * @implSpec If no message is given, a default message will be constructed from the cause message if available, or a generic message including input and index details otherwise.
 	 */
 	public ArgumentSyntaxException(final String message, final Throwable cause, final CharSequence input, final int index) {
 		super(createMessage(message, cause, input, index), cause); //construct the parent class with the message and the cause
