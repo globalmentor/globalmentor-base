@@ -85,18 +85,85 @@ public class CharactersTest {
 	/** @see Characters#toDisplay(char) */
 	@Test
 	void testToDisplay() {
-		assertThat(Characters.toDisplay((char)0x00), is('␀'));
-		assertThat(Characters.toDisplay((char)0x07), is('␇'));
-		assertThat(Characters.toDisplay((char)0x0A), is('␊'));
-		assertThat(Characters.toDisplay((char)0x0D), is('␍'));
-		assertThat(Characters.toDisplay((char)0x1F), is('␟'));
-		assertThat(Characters.toDisplay(' '), is(' '));
-		assertThat(Characters.toDisplay((char)0x7F), is('␡'));
-		assertThat(Characters.toDisplay('A'), is('A'));
-		assertThat(Characters.toDisplay('x'), is('x'));
-		assertThat(Characters.toDisplay('é'), is('é'));
-		assertThat(Characters.toDisplay((char)0xFF), is((char)0xFF));
-		assertThat(Characters.toDisplay('™'), is('™'));
+		assertThat("NULL is replaced with symbol.", Characters.toDisplay((char)0x00), is('␀'));
+		assertThat("BEL C0 control is replaced with symbol.", Characters.toDisplay((char)0x07), is('␇'));
+		assertThat("LF C0 control is replaced with symbol.", Characters.toDisplay((char)0x0A), is('␊'));
+		assertThat("CR C0 control is replaced with symbol.", Characters.toDisplay((char)0x0D), is('␍'));
+		assertThat("UNIT SEPARATOR C0 control is replaced with symbol.", Characters.toDisplay((char)0x1F), is('␟'));
+		assertThat("Space is not replaced.", Characters.toDisplay(' '), is(' '));
+		assertThat("DELETE is replaced with symbol.", Characters.toDisplay((char)0x7F), is('␡'));
+		assertThat("Latin letter A is not replaced.", Characters.toDisplay('A'), is('A'));
+		assertThat("Latin letter x is not replaced.", Characters.toDisplay('x'), is('x'));
+		assertThat("Latin letter é is not replaced.", Characters.toDisplay('é'), is('é'));
+		assertThat("Non-control character 0xFF is not replaced.", Characters.toDisplay((char)0xFF), is((char)0xFF));
+		assertThat("Trademark symbol is not replaced.", Characters.toDisplay('™'), is('™'));
+		assertThat("C1 control character is not replaced.", Characters.toDisplay((char)0x85), is((char)0x85));
+	}
+
+	/** @see Characters#appendLabel(StringBuilder, int) */
+	@Test
+	void testAppendLabel() {
+		assertThat("Tab control character uses escape sequence.", Characters.appendLabel(new StringBuilder(), '\t'), hasToString("'\\t'"));
+		assertThat("CR control character uses escape sequence.", Characters.appendLabel(new StringBuilder(), '\r'), hasToString("'\\r'"));
+		assertThat("LF control character uses escape sequence.", Characters.appendLabel(new StringBuilder(), '\n'), hasToString("'\\n'"));
+		assertThat("NULL control character uses Unicode code point.", Characters.appendLabel(new StringBuilder(), 0x00), hasToString("U+0000"));
+		assertThat("BEL C0 control uses Unicode code point.", Characters.appendLabel(new StringBuilder(), 0x07), hasToString("U+0007"));
+		assertThat("DELETE control uses Unicode code point.", Characters.appendLabel(new StringBuilder(), 0x7F), hasToString("U+007F"));
+		assertThat("NEL C1 control uses Unicode code point.", Characters.appendLabel(new StringBuilder(), 0x85), hasToString("U+0085"));
+		assertThat("High surrogate uses Unicode code point.", Characters.appendLabel(new StringBuilder(), 0xD800), hasToString("U+D800"));
+		assertThat("Low surrogate uses Unicode code point.", Characters.appendLabel(new StringBuilder(), 0xDFFF), hasToString("U+DFFF"));
+		assertThat("Regular ASCII character is quoted.", Characters.appendLabel(new StringBuilder(), 'A'), hasToString("'A'"));
+		assertThat("Space is quoted.", Characters.appendLabel(new StringBuilder(), ' '), hasToString("' '"));
+		assertThat("Latin letter with diacritic is quoted.", Characters.appendLabel(new StringBuilder(), 'é'), hasToString("'é'"));
+		assertThat("Trademark symbol is quoted.", Characters.appendLabel(new StringBuilder(), '™'), hasToString("'™'"));
+		assertThat("Supplementary code point is quoted.", Characters.appendLabel(new StringBuilder(), 0x1F602), hasToString("'😂'")); //face with tears of joy emoji
+	}
+
+	/** @see Characters#toLabel(int) */
+	@Test
+	void testToLabel() {
+		assertThat("Tab control character uses escape sequence.", Characters.toLabel('\t'), is("'\\t'"));
+		assertThat("Regular ASCII character is quoted.", Characters.toLabel('x'), is("'x'"));
+		assertThat("Supplementary code point is quoted.", Characters.toLabel(0x1F602), is("'😂'")); //face with tears of joy emoji
+	}
+
+	/** @see Characters#getLabel(int) */
+	@SuppressWarnings("removal")
+	@Test
+	void testGetLabel() {
+		assertThat("Deprecated method delegates correctly.", Characters.getLabel('A'), is("'A'"));
+	}
+
+	/** @see Characters#appendLabelArrayString(StringBuilder, char[]) */
+	@Test
+	void testAppendLabelArrayString() {
+		assertThat("Empty array produces empty brackets.", Characters.appendLabelArrayString(new StringBuilder(), new char[] {}), hasToString("[]"));
+		assertThat("Single character is bracketed.", Characters.appendLabelArrayString(new StringBuilder(), new char[] {'a'}), hasToString("['a']"));
+		assertThat("Multiple regular characters are comma-separated.", Characters.appendLabelArrayString(new StringBuilder(), new char[] {'a', 'b', 'c'}),
+				hasToString("['a', 'b', 'c']"));
+		assertThat("Control characters use appropriate format.", Characters.appendLabelArrayString(new StringBuilder(), new char[] {'a', '\t', '\n'}),
+				hasToString("['a', '\\t', '\\n']"));
+		assertThat("Mixed character types are formatted appropriately.",
+				Characters.appendLabelArrayString(new StringBuilder(), new char[] {'a', ' ', '\t', 'é', '™'}), hasToString("['a', ' ', '\\t', 'é', '™']"));
+	}
+
+	/** @see Characters#toLabelArrayString(char...) */
+	@Test
+	void testToLabelArrayStringCharArray() {
+		assertThat("Empty array produces empty brackets.", Characters.toLabelArrayString(new char[] {}), is("[]"));
+		assertThat("Multiple characters are formatted.", Characters.toLabelArrayString(new char[] {'x', 'y', 'z'}), is("['x', 'y', 'z']"));
+	}
+
+	/** @see Characters#toLabelArrayString(CharSequence) */
+	@Test
+	void testToLabelArrayStringCharSequence() {
+		assertThat("String is converted to array format.", Characters.toLabelArrayString("abc"), is("['a', 'b', 'c']"));
+	}
+
+	/** @see Characters#toLabelArrayString() */
+	@Test
+	void testToLabelArrayStringInstance() {
+		assertThat("Instance method formats characters.", Characters.of('x', 'y', 'z').toLabelArrayString(), is("['x', 'y', 'z']"));
 	}
 
 }

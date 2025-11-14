@@ -18,6 +18,7 @@ package com.globalmentor.reflect;
 
 import static com.globalmentor.java.Classes.*;
 import static com.globalmentor.java.Conditions.*;
+import static java.util.Objects.*;
 import static java.util.stream.Collectors.*;
 
 import java.lang.annotation.Annotation;
@@ -120,6 +121,7 @@ public final class AnnotatedElements {
 	 * @return An adapter of the annotated element to an annotations abstraction interface.
 	 */
 	public static Annotations annotationsOf(@NonNull final AnnotatedElement annotatedElement) {
+		requireNonNull(annotatedElement);
 		return new Annotations() {
 
 			@Override

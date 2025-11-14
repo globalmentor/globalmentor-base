@@ -18,6 +18,7 @@ package com.globalmentor.java.model;
 
 import static com.globalmentor.java.Conditions.*;
 import static com.globalmentor.java.Objects.*;
+import static java.util.Objects.*;
 import static java.util.function.Function.*;
 import static java.util.stream.Collectors.*;
 
@@ -171,6 +172,8 @@ public final class ModelElements {
 	 * @return An adapter of the type element to an annotations abstraction interface.
 	 */
 	public static Annotations annotationsOf(@NonNull final Elements elements, @NonNull final Element element) {
+		requireNonNull(elements);
+		requireNonNull(element);
 		return new Annotations() {
 
 			/**
