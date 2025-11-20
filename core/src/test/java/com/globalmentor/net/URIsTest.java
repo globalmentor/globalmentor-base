@@ -102,6 +102,7 @@ public class URIsTest {
 	}
 
 	/** Tests whether {@link URIs#checkScheme(URI, String)} is working properly. */
+	@SuppressWarnings("removal")
 	@Test
 	public void testCheckScheme() {
 		assertThat(URIs.checkScheme(URI.create("http://example.com/"), "http"), is(URI.create("http://example.com/")));
@@ -109,18 +110,21 @@ public class URIsTest {
 	}
 
 	/** Tests whether {@link URIs#checkScheme(URI, String)} is throwing an exception when an incompatible scheme is provided. */
+	@SuppressWarnings("removal")
 	@Test
 	public void testCheckSchemeFail() {
 		assertThrows(IllegalArgumentException.class, () -> URIs.checkScheme(URI.create("http://example.com/"), "https"));
 	}
 
 	/** Tests whether {@link URIs#checkScheme(URI, String)} is throwing an exception when a null {@link URI} is provided. */
+	@SuppressWarnings("removal")
 	@Test
 	public void testCheckSchemeNullURIFail() {
 		assertThrows(NullPointerException.class, () -> URIs.checkScheme(null, "http"));
 	}
 
 	/** Tests whether {@link URIs#checkScheme(URI, String)} is throwing an exception when a null scheme is provided. */
+	@SuppressWarnings("removal")
 	@Test
 	public void testCheckSchemeNullSchemeFail() {
 		assertThrows(NullPointerException.class, () -> URIs.checkScheme(URI.create("http://example.com/"), null));
@@ -150,6 +154,66 @@ public class URIsTest {
 	@Test
 	public void testCheckChangeSchemeNullSchemeFail() {
 		assertThrows(NullPointerException.class, () -> URIs.changeScheme(URI.create("http://example.com/"), null));
+	}
+
+	/** Tests for {@link URIs#normalizeScheme(String)}. */
+	@Test
+	public void testNormalizeScheme() {
+		assertThat("lowercase scheme is unchanged", URIs.normalizeScheme("http"), is("http"));
+		assertThat("uppercase scheme is lowercase", URIs.normalizeScheme("HTTP"), is("http"));
+		assertThat("mixed case scheme is lowercase", URIs.normalizeScheme("HtTp"), is("http"));
+		assertThat("https scheme is lowercase", URIs.normalizeScheme("HTTPS"), is("https"));
+		assertThat("file scheme is lowercase", URIs.normalizeScheme("FILE"), is("file"));
+		assertThat("ftp scheme is lowercase", URIs.normalizeScheme("FTP"), is("ftp"));
+	}
+
+	/** Tests for {@link URIs#findScheme(URI)}. */
+	@Test
+	public void testFindScheme() {
+		assertThat("http URI has scheme", URIs.findScheme(URI.create("http://example.com/")), isPresentAnd(is("http")));
+		assertThat("https URI has scheme", URIs.findScheme(URI.create("https://example.com/")), isPresentAnd(is("https")));
+		assertThat("file URI has scheme", URIs.findScheme(URI.create("file:///path/to/file")), isPresentAnd(is("file")));
+		assertThat("relative URI has no scheme", URIs.findScheme(URI.create("/path/to/file")), isEmpty());
+		assertThat("relative URI with path has no scheme", URIs.findScheme(URI.create("path/to/file")), isEmpty());
+	}
+
+	/** Tests for {@link URIs#hasScheme(URI, String)}. */
+	@Test
+	public void testHasScheme() {
+		assertThat("http URI has http scheme", URIs.hasScheme(URI.create("http://example.com/"), "http"), is(true));
+		assertThat("http URI has http scheme (case-insensitive)", URIs.hasScheme(URI.create("http://example.com/"), "HTTP"), is(true));
+		assertThat("HTTP URI has http scheme (case-insensitive)", URIs.hasScheme(URI.create("HTTP://example.com/"), "http"), is(true));
+		assertThat("HtTp URI has http scheme (case-insensitive)", URIs.hasScheme(URI.create("HtTp://example.com/"), "HTTP"), is(true));
+		assertThat("https URI does not have http scheme", URIs.hasScheme(URI.create("https://example.com/"), "http"), is(false));
+		assertThat("file URI has file scheme", URIs.hasScheme(URI.create("file:///path/to/file"), "file"), is(true));
+		assertThat("file URI has file scheme (case-insensitive)", URIs.hasScheme(URI.create("file:///path/to/file"), "FILE"), is(true));
+		assertThat("FILE URI has file scheme (case-insensitive)", URIs.hasScheme(URI.create("FILE:///path/to/file"), "file"), is(true));
+	}
+
+	/** Tests for {@link URIs#checkArgumentScheme(URI, String)}. */
+	@Test
+	public void testCheckArgumentScheme() {
+		assertThat("http URI checked with http scheme", URIs.checkArgumentScheme(URI.create("http://example.com/"), "http"), is(URI.create("http://example.com/")));
+		assertThat("http URI checked with HTTP scheme (case-insensitive)", URIs.checkArgumentScheme(URI.create("http://example.com/"), "HTTP"),
+				is(URI.create("http://example.com/")));
+		assertThat("HTTP URI checked with http scheme (case-insensitive)", URIs.checkArgumentScheme(URI.create("HTTP://example.com/"), "http"),
+				is(URI.create("HTTP://example.com/")));
+		assertThat("https URI checked with https scheme", URIs.checkArgumentScheme(URI.create("https://example.com/"), "https"),
+				is(URI.create("https://example.com/")));
+		assertThrows(IllegalArgumentException.class, () -> URIs.checkArgumentScheme(URI.create("http://example.com/"), "https"),
+				"http URI fails check with https scheme");
+		assertThrows(IllegalArgumentException.class, () -> URIs.checkArgumentScheme(URI.create("https://example.com/"), "http"),
+				"https URI fails check with http scheme");
+	}
+
+	/** Tests for {@link URIs#checkArgumentScheme(URI, String, String, Object...)}. */
+	@Test
+	public void testCheckArgumentSchemeWithDescription() {
+		assertThat("http URI checked with http scheme and description", URIs.checkArgumentScheme(URI.create("http://example.com/"), "http", "test description"),
+				is(URI.create("http://example.com/")));
+		final IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+				() -> URIs.checkArgumentScheme(URI.create("http://example.com/"), "https", "Expected %s scheme", "https"));
+		assertThat("exception message uses description", exception.getMessage(), is("Expected https scheme"));
 	}
 
 	/** Tests whether {@link URIs#checkInfoNamespace(URI, String)} is working properly. */

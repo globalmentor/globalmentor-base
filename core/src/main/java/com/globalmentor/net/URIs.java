@@ -224,13 +224,95 @@ public final class URIs {
 	}
 
 	/**
+	 * Normalizes a URI scheme to lowercase as per <a href="https://tools.ietf.org/html/rfc3986#section-3.1">RFC 3986 § 3.1 Scheme</a>.
+	 * <p>RFC 3986 indicates that although schemes are case-insensitive, the canonical form is lowercase and documents that specify schemes must do so with
+	 * lowercase letters.</p>
+	 * @implNote This method uses ASCII-specific lowercase conversion because URI schemes are restricted to ASCII characters.
+	 * @param scheme The scheme to normalize.
+	 * @return The scheme in lowercase form.
+	 * @throws NullPointerException if the given scheme is <code>null</code>.
+	 * @see <a href="https://tools.ietf.org/html/rfc3986#section-3.1">RFC 3986 § 3.1 Scheme</a>
+	 */
+	public static String normalizeScheme(final String scheme) {
+		return ASCII.toLowerCaseString(scheme);
+	}
+
+	/**
+	 * Returns the scheme of the given URI if present.
+	 * @param uri The URI for which to retrieve the scheme.
+	 * @return The scheme of the URI, which may not be present.
+	 * @throws NullPointerException if the given URI is <code>null</code>.
+	 * @see URI#getScheme()
+	 */
+	public static Optional<String> findScheme(final URI uri) {
+		return Optional.ofNullable(uri.getScheme());
+	}
+
+	/**
+	 * Determines whether the given URI has the specified scheme, using case-insensitive comparison as per
+	 * <a href="https://tools.ietf.org/html/rfc3986#section-3.1">RFC 3986 § 3.1 Scheme</a>.
+	 * @param uri The URI to check.
+	 * @param scheme The scheme to match for the URI.
+	 * @return <code>true</code> if the URI has the specified scheme, ignoring ASCII case.
+	 * @throws NullPointerException if the given URI and/or scheme is <code>null</code>.
+	 * @see <a href="https://tools.ietf.org/html/rfc3986#section-3.1">RFC 3986 § 3.1 Scheme</a>
+	 */
+	public static boolean hasScheme(final URI uri, final String scheme) {
+		requireNonNull(scheme);
+		return ASCII.equalsIgnoreCase(scheme, uri.getScheme());
+	}
+
+	/**
+	 * Checks to make sure a URI has the indicated scheme, using case-insensitive comparison as per <a href="https://tools.ietf.org/html/rfc3986#section-3.1">RFC
+	 * 3986 § 3.1 Scheme</a>.
+	 * @apiNote This is a precondition check.
+	 * @param uri The URI to check.
+	 * @param scheme The scheme to match for the URI.
+	 * @return The given URI.
+	 * @throws NullPointerException if the given URI and/or scheme is <code>null</code>.
+	 * @throws IllegalArgumentException if the scheme of the given URI does not match the given scheme.
+	 * @see #hasScheme(URI, String)
+	 * @see <a href="https://tools.ietf.org/html/rfc3986#section-3.1">RFC 3986 § 3.1 Scheme</a>
+	 */
+	public static URI checkArgumentScheme(final URI uri, final String scheme) {
+		return checkArgumentScheme(uri, scheme, null);
+	}
+
+	/**
+	 * Checks to make sure a URI has the indicated scheme, using case-insensitive comparison as per <a href="https://tools.ietf.org/html/rfc3986#section-3.1">RFC
+	 * 3986 § 3.1 Scheme</a>.
+	 * @apiNote This is a precondition check.
+	 * @param uri The URI to check.
+	 * @param scheme The scheme to match for the URI.
+	 * @param description A description of the test to be used when generating an exception, optionally formatted with arguments, or <code>null</code> for no
+	 *          description.
+	 * @param arguments The arguments to be applied when formatting, or an empty array if the message should not be formatted.
+	 * @return The given URI.
+	 * @throws NullPointerException if the given URI, scheme, and/or arguments is <code>null</code>.
+	 * @throws IllegalArgumentException if the scheme of the given URI does not match the given scheme, or if an argument in the arguments array is not of the
+	 *           type expected by the format element(s) that use it.
+	 * @see #hasScheme(URI, String)
+	 * @see String#format(String, Object...)
+	 * @see <a href="https://tools.ietf.org/html/rfc3986#section-3.1">RFC 3986 § 3.1 Scheme</a>
+	 */
+	public static URI checkArgumentScheme(final URI uri, final String scheme, final String description, final Object... arguments) {
+		if(!hasScheme(uri, scheme)) {
+			throw new IllegalArgumentException(description != null ? String.format(description, arguments) : "Scheme of URI " + uri + " must be " + scheme);
+		}
+		return uri;
+	}
+
+	/**
 	 * Verifies that the given URI has the indicated scheme.
 	 * @param uri The URI to check.
 	 * @param scheme The scheme to match for the URI.
 	 * @return The given URI.
 	 * @throws NullPointerException if the given URI and/or scheme is <code>null</code>.
 	 * @throws IllegalArgumentException if the scheme of the given URI does not match the given scheme.
+	 * @see #checkArgumentScheme(URI, String)
+	 * @deprecated To be removed in favor of {@link #checkArgumentScheme(URI, String)}, which performs correct case-insensitive comparison per RFC 3986.
 	 */
+	@Deprecated(forRemoval = true)
 	public static final URI checkScheme(final URI uri, final String scheme) {
 		if(!scheme.equals(uri.getScheme())) { //if the URI's scheme doesn't match the given scheme
 			throw new IllegalArgumentException("Scheme of URI " + uri + " must be " + scheme);
@@ -261,7 +343,7 @@ public final class URIs {
 	 *           namespace.
 	 */
 	public static final URI checkInfoNamespace(final URI uri, final String infoNamespace) {
-		if(!checkScheme(uri, INFO_SCHEME).getRawSchemeSpecificPart().startsWith(infoNamespace + INFO_SCHEME_NAMESPACE_DELIMITER)) { //check for the info scheme; if the scheme-specific part is not what was expected
+		if(!checkArgumentScheme(uri, INFO_SCHEME).getRawSchemeSpecificPart().startsWith(infoNamespace + INFO_SCHEME_NAMESPACE_DELIMITER)) { //check for the info scheme; if the scheme-specific part is not what was expected
 			throw new IllegalArgumentException("Info namespace of URI " + uri + " must be " + infoNamespace);
 		}
 		return uri; //return the URI
@@ -275,7 +357,7 @@ public final class URIs {
 	 * @throws IllegalArgumentException if the given URI is not a valid {@value URIs#INFO_SCHEME} scheme URI.
 	 */
 	public static final String getInfoNamespace(final URI uri) {
-		final String ssp = checkScheme(uri, INFO_SCHEME).getRawSchemeSpecificPart(); //get the raw scheme-specific part after checking to make sure this is an info URI
+		final String ssp = checkArgumentScheme(uri, INFO_SCHEME).getRawSchemeSpecificPart(); //get the raw scheme-specific part after checking to make sure this is an info URI
 		final int namespaceDelimiterIndex = ssp.indexOf(INFO_SCHEME_NAMESPACE_DELIMITER); //get the index of the info URI namespace delimiter
 		if(namespaceDelimiterIndex < 1) { //if there is no namespace delimiter, or there are no namespace characters
 			throw new IllegalArgumentException("info URI " + uri + " missing delimited namespace.");
@@ -302,7 +384,7 @@ public final class URIs {
 	 * @throws IllegalArgumentException if the given URI is not a valid {@value URIs#INFO_SCHEME} scheme URI.
 	 */
 	public static final String getInfoRawIdentifier(final URI uri) {
-		final String ssp = checkScheme(uri, INFO_SCHEME).getRawSchemeSpecificPart(); //get the raw scheme-specific part after checking to make sure this is an info URI
+		final String ssp = checkArgumentScheme(uri, INFO_SCHEME).getRawSchemeSpecificPart(); //get the raw scheme-specific part after checking to make sure this is an info URI
 		final int namespaceDelimiterIndex = ssp.indexOf(INFO_SCHEME_NAMESPACE_DELIMITER); //get the index of the info URI namespace delimiter
 		if(namespaceDelimiterIndex < 1) { //if there is no namespace delimiter, or there are no namespace characters
 			throw new IllegalArgumentException("info URI " + uri + " missing delimited namespace.");
@@ -318,7 +400,7 @@ public final class URIs {
 	 * @throws NullPointerException if the given URI and/or info namespace is <code>null</code>.
 	 */
 	public static final boolean isInfoNamespace(final URI uri, final String infoNamespace) {
-		return INFO_SCHEME.equals(uri.getScheme()) && uri.getRawSchemeSpecificPart().startsWith(infoNamespace + INFO_SCHEME_NAMESPACE_DELIMITER); //check for the info scheme and the info namespace
+		return hasScheme(uri, INFO_SCHEME) && uri.getRawSchemeSpecificPart().startsWith(infoNamespace + INFO_SCHEME_NAMESPACE_DELIMITER); //check for the info scheme and the info namespace
 	}
 
 	/**
@@ -331,7 +413,7 @@ public final class URIs {
 	 * @throws IllegalArgumentException if the given URI is not a valid {@value #PATH_SCHEME} scheme URI.
 	 */
 	public static final String getPathRawPath(final URI uri) {
-		String rawPath = checkScheme(uri, PATH_SCHEME).getRawPath(); //get the raw path of the URI, ensuring that it is a "path:" URI
+		String rawPath = checkArgumentScheme(uri, PATH_SCHEME).getRawPath(); //get the raw path of the URI, ensuring that it is a "path:" URI
 		if(rawPath == null) { //if Java sees no path, it must be a relative path; extract it manually
 			rawPath = uri.getRawSchemeSpecificPart(); //the raw path is the scheme-specific part
 			final int queryStart = rawPath.indexOf(QUERY_SEPARATOR); //see if this URI has a query (the scheme-specific part will not include the fragment, if any
@@ -455,7 +537,7 @@ public final class URIs {
 	 * @throws NullPointerException if the given URI is <code>null</code>.
 	 */
 	public static Optional<String> findRawName(@NonNull final URI uri) {
-		final String rawPath = uri.isOpaque() && INFO_SCHEME.equals(uri.getScheme()) ? uri.getRawSchemeSpecificPart() : uri.getRawPath(); //get the raw path, using the scheme-specific part of any info URI
+		final String rawPath = uri.isOpaque() && hasScheme(uri, INFO_SCHEME) ? uri.getRawSchemeSpecificPart() : uri.getRawPath(); //get the raw path, using the scheme-specific part of any info URI
 		return Optional.ofNullable(rawPath).map(URIs::getName); //if we have a raw path, return the name
 	}
 
@@ -524,7 +606,7 @@ public final class URIs {
 	 * @see #findRawName(URI)
 	 */
 	public static URI changeRawName(final URI uri, final String rawName) {
-		if(uri.isOpaque() && INFO_SCHEME.equals(uri.getScheme())) { //if this is an info URI
+		if(uri.isOpaque() && hasScheme(uri, INFO_SCHEME)) { //if this is an info URI
 			final String rawSSP = uri.getRawSchemeSpecificPart(); //get the raw scheme-specific part
 			final String newRawSSP = changePathName(rawSSP, rawName); //change the name to the given name
 			return changeRawSchemeSpecificPart(uri, newRawSSP); //change the URI's scheme-specific part to the new scheme-specific part			
@@ -1344,7 +1426,7 @@ public final class URIs {
 	 * @see #WINDOWS_UNC_PATH_URI_SSP_PREFIX
 	 */
 	public static boolean isUNCFileURI(final URI uri) {
-		return FILE_SCHEME.equals(uri.getScheme()) && uri.getRawSchemeSpecificPart().startsWith(WINDOWS_UNC_PATH_URI_SSP_PREFIX);
+		return hasScheme(uri, FILE_SCHEME) && uri.getRawSchemeSpecificPart().startsWith(WINDOWS_UNC_PATH_URI_SSP_PREFIX);
 	}
 
 	/**
@@ -1357,7 +1439,7 @@ public final class URIs {
 	 * @see #isUNCFileURI(URI)
 	 */
 	private static URI fixUNCPathFileURI(final URI uri) {
-		if(!FILE_SCHEME.equals(uri.getScheme())) {
+		if(!hasScheme(uri, FILE_SCHEME)) {
 			throw new IllegalArgumentException("Cannot fix UNC path of non-file URI: " + uri);
 		}
 		final String rawPath = uri.getRawPath(); //get the path of the URI
@@ -1479,7 +1561,7 @@ public final class URIs {
 			resolvedURI = fixUNCPathFileURI(resolvedURI); //restore the URI to a UNC path file URI, as Java will have collapsed several slashes
 		}
 		if(deep) { //if we are doing a deep resolve
-			if(FILE_SCHEME.equals(resolvedURI.getScheme()) && FILE_SCHEME.equals(baseURI.getScheme())) { //if both URIs are file URIs
+			if(hasScheme(resolvedURI, FILE_SCHEME) && hasScheme(baseURI, FILE_SCHEME)) { //if both URIs are file URIs
 				final String resolvedFilePath = resolvedURI.getSchemeSpecificPart(); //determine the file's path from its SSP; if the file is relative, the URI path will be null
 				File resolvedFile = new File(resolvedFilePath);
 				if(!resolvedFile.isAbsolute()) { //if the resolved file isn't absolute
