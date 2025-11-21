@@ -482,7 +482,7 @@ public final class URIPath {
 	 * @see URIs#PATH_SCHEME
 	 */
 	public static URIPath asPathURIPath(final URI uri) {
-		if(PATH_SCHEME.equals(uri.getScheme())) { //if this is a path URI
+		if(hasScheme(uri, PATH_SCHEME)) { //if this is a path URI
 			return getPathURIPath(uri); //create a new URI path from the raw path information of the URI (which may involve several types of processing based upon whether the path is relative or absolute)
 		} else { //if this is not a path URI
 			return null;

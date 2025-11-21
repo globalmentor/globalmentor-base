@@ -153,25 +153,28 @@ public final class URIs {
 	/** The character separating a <code>mailto</code> URI username from the domain. */
 	public static final char MAILTO_USERNAME_DOMAIN_SEPARATOR = '@'; //TODO reuse EmailAddress definition
 
-	/** Alphabetic characters as defined by RFC 2396. */
+	/** Alphabetic characters as defined by <a href="https://datatracker.ietf.org/doc/html/rfc2396#section-2.3">RFC 2396 § 2.3 Unreserved Characters</a>. */
 	public static final Characters ALPHA_CHARACTERS = Characters.ofRange('a', 'z').addRange('A', 'Z'); //count 52
 
-	/** Digit characters as defined by RFC 2396. */
+	/** Digit characters as defined by <a href="https://datatracker.ietf.org/doc/html/rfc2396#section-2.3">RFC 2396 § 2.3 Unreserved Characters</a>. */
 	public static final Characters DIGIT_CHARACTERS = Characters.ofRange('0', '9'); //count 10
 
-	/** Safe characters as defined by RFC 2396. */
+	/** Safe characters as defined by <a href="https://datatracker.ietf.org/doc/html/rfc2396#section-2.3">RFC 2396 § 2.3 Unreserved Characters</a>. */
 	public static final Characters SAFE_CHARACTERS = Characters.of('$', '-', '_', '@', '.', '&'); //count 6
 
-	/** Extra characters as defined by RFC 2396. */
+	/** Extra characters as defined by <a href="https://datatracker.ietf.org/doc/html/rfc2396#section-2.3">RFC 2396 § 2.3 Unreserved Characters</a>. */
 	public static final Characters EXTRA_CHARACTERS = Characters.of('!', '*', '"', '\'', '(', ')', ','); //count 7
 
-	/** The character to use for escaping URI data as defined by RFC 2396. */
+	/**
+	 * The character to use for escaping URI data as defined by <a href="https://datatracker.ietf.org/doc/html/rfc2396#section-2.4.1">RFC 2396 § 2.4.1 Escaped
+	 * Encoding</a>.
+	 */
 	public static final char ESCAPE_CHAR = '%'; //count 1
 
-	/** Reserved characters as defined by RFC 2396. */
+	/** Reserved characters as defined by <a href="https://datatracker.ietf.org/doc/html/rfc2396#section-2.2">RFC 2396 § 2.2 Reserved Characters</a>. */
 	public static final Characters RESERVED_CHARACTERS = Characters.of('=', ';', '/', '#', '?', ':', ' '); //count 7
 
-	/** Characters that can appear in a URI as defined by RFC 2396. */
+	/** Characters that can appear in a URI as defined by <a href="https://datatracker.ietf.org/doc/html/rfc2396">RFC 2396</a>. */
 	public static final Characters URI_CHARACTERS = ALPHA_CHARACTERS.add(DIGIT_CHARACTERS).add(SAFE_CHARACTERS).add(EXTRA_CHARACTERS).add(ESCAPE_CHAR)
 			.add(RESERVED_CHARACTERS); //count 83
 
@@ -224,13 +227,95 @@ public final class URIs {
 	}
 
 	/**
+	 * Normalizes a URI scheme to lowercase as per <a href="https://tools.ietf.org/html/rfc3986#section-3.1">RFC 3986 § 3.1 Scheme</a>.
+	 * <p>RFC 3986 indicates that although schemes are case-insensitive, the canonical form is lowercase and documents that specify schemes must do so with
+	 * lowercase letters.</p>
+	 * @implNote This method uses ASCII-specific lowercase conversion because URI schemes are restricted to ASCII characters.
+	 * @param scheme The scheme to normalize.
+	 * @return The scheme in lowercase form.
+	 * @throws NullPointerException if the given scheme is <code>null</code>.
+	 * @see <a href="https://tools.ietf.org/html/rfc3986#section-3.1">RFC 3986 § 3.1 Scheme</a>
+	 */
+	public static String normalizeScheme(final String scheme) {
+		return ASCII.toLowerCaseString(scheme);
+	}
+
+	/**
+	 * Returns the scheme of the given URI if present.
+	 * @param uri The URI for which to retrieve the scheme.
+	 * @return The scheme of the URI, which may not be present.
+	 * @throws NullPointerException if the given URI is <code>null</code>.
+	 * @see URI#getScheme()
+	 */
+	public static Optional<String> findScheme(final URI uri) {
+		return Optional.ofNullable(uri.getScheme());
+	}
+
+	/**
+	 * Determines whether the given URI has the specified scheme, using case-insensitive comparison as per
+	 * <a href="https://tools.ietf.org/html/rfc3986#section-3.1">RFC 3986 § 3.1 Scheme</a>.
+	 * @param uri The URI to check.
+	 * @param scheme The scheme to match for the URI.
+	 * @return <code>true</code> if the URI has the specified scheme, ignoring ASCII case.
+	 * @throws NullPointerException if the given URI and/or scheme is <code>null</code>.
+	 * @see <a href="https://tools.ietf.org/html/rfc3986#section-3.1">RFC 3986 § 3.1 Scheme</a>
+	 */
+	public static boolean hasScheme(final URI uri, final String scheme) {
+		requireNonNull(scheme);
+		return ASCII.equalsIgnoreCase(scheme, uri.getScheme());
+	}
+
+	/**
+	 * Checks to make sure a URI has the indicated scheme, using case-insensitive comparison as per <a href="https://tools.ietf.org/html/rfc3986#section-3.1">RFC
+	 * 3986 § 3.1 Scheme</a>.
+	 * @apiNote This is a precondition check.
+	 * @param uri The URI to check.
+	 * @param scheme The scheme to match for the URI.
+	 * @return The given URI.
+	 * @throws NullPointerException if the given URI and/or scheme is <code>null</code>.
+	 * @throws IllegalArgumentException if the scheme of the given URI does not match the given scheme.
+	 * @see #hasScheme(URI, String)
+	 * @see <a href="https://tools.ietf.org/html/rfc3986#section-3.1">RFC 3986 § 3.1 Scheme</a>
+	 */
+	public static URI checkArgumentScheme(final URI uri, final String scheme) {
+		return checkArgumentScheme(uri, scheme, null);
+	}
+
+	/**
+	 * Checks to make sure a URI has the indicated scheme, using case-insensitive comparison as per <a href="https://tools.ietf.org/html/rfc3986#section-3.1">RFC
+	 * 3986 § 3.1 Scheme</a>.
+	 * @apiNote This is a precondition check.
+	 * @param uri The URI to check.
+	 * @param scheme The scheme to match for the URI.
+	 * @param description A description of the test to be used when generating an exception, optionally formatted with arguments, or <code>null</code> for no
+	 *          description.
+	 * @param arguments The arguments to be applied when formatting, or an empty array if the message should not be formatted.
+	 * @return The given URI.
+	 * @throws NullPointerException if the given URI, scheme, and/or arguments is <code>null</code>.
+	 * @throws IllegalArgumentException if the scheme of the given URI does not match the given scheme, or if an argument in the arguments array is not of the
+	 *           type expected by the format element(s) that use it.
+	 * @see #hasScheme(URI, String)
+	 * @see String#format(String, Object...)
+	 * @see <a href="https://tools.ietf.org/html/rfc3986#section-3.1">RFC 3986 § 3.1 Scheme</a>
+	 */
+	public static URI checkArgumentScheme(final URI uri, final String scheme, final @Nullable String description, final Object... arguments) {
+		if(!hasScheme(uri, scheme)) {
+			throw new IllegalArgumentException(description != null ? String.format(description, arguments) : "Scheme of URI " + uri + " must be " + scheme);
+		}
+		return uri;
+	}
+
+	/**
 	 * Verifies that the given URI has the indicated scheme.
 	 * @param uri The URI to check.
 	 * @param scheme The scheme to match for the URI.
 	 * @return The given URI.
 	 * @throws NullPointerException if the given URI and/or scheme is <code>null</code>.
 	 * @throws IllegalArgumentException if the scheme of the given URI does not match the given scheme.
+	 * @see #checkArgumentScheme(URI, String)
+	 * @deprecated To be removed in favor of {@link #checkArgumentScheme(URI, String)}, which performs correct case-insensitive comparison per RFC 3986.
 	 */
+	@Deprecated(forRemoval = true)
 	public static final URI checkScheme(final URI uri, final String scheme) {
 		if(!scheme.equals(uri.getScheme())) { //if the URI's scheme doesn't match the given scheme
 			throw new IllegalArgumentException("Scheme of URI " + uri + " must be " + scheme);
@@ -261,7 +346,7 @@ public final class URIs {
 	 *           namespace.
 	 */
 	public static final URI checkInfoNamespace(final URI uri, final String infoNamespace) {
-		if(!checkScheme(uri, INFO_SCHEME).getRawSchemeSpecificPart().startsWith(infoNamespace + INFO_SCHEME_NAMESPACE_DELIMITER)) { //check for the info scheme; if the scheme-specific part is not what was expected
+		if(!checkArgumentScheme(uri, INFO_SCHEME).getRawSchemeSpecificPart().startsWith(infoNamespace + INFO_SCHEME_NAMESPACE_DELIMITER)) { //check for the info scheme; if the scheme-specific part is not what was expected
 			throw new IllegalArgumentException("Info namespace of URI " + uri + " must be " + infoNamespace);
 		}
 		return uri; //return the URI
@@ -275,7 +360,7 @@ public final class URIs {
 	 * @throws IllegalArgumentException if the given URI is not a valid {@value URIs#INFO_SCHEME} scheme URI.
 	 */
 	public static final String getInfoNamespace(final URI uri) {
-		final String ssp = checkScheme(uri, INFO_SCHEME).getRawSchemeSpecificPart(); //get the raw scheme-specific part after checking to make sure this is an info URI
+		final String ssp = checkArgumentScheme(uri, INFO_SCHEME).getRawSchemeSpecificPart(); //get the raw scheme-specific part after checking to make sure this is an info URI
 		final int namespaceDelimiterIndex = ssp.indexOf(INFO_SCHEME_NAMESPACE_DELIMITER); //get the index of the info URI namespace delimiter
 		if(namespaceDelimiterIndex < 1) { //if there is no namespace delimiter, or there are no namespace characters
 			throw new IllegalArgumentException("info URI " + uri + " missing delimited namespace.");
@@ -302,7 +387,7 @@ public final class URIs {
 	 * @throws IllegalArgumentException if the given URI is not a valid {@value URIs#INFO_SCHEME} scheme URI.
 	 */
 	public static final String getInfoRawIdentifier(final URI uri) {
-		final String ssp = checkScheme(uri, INFO_SCHEME).getRawSchemeSpecificPart(); //get the raw scheme-specific part after checking to make sure this is an info URI
+		final String ssp = checkArgumentScheme(uri, INFO_SCHEME).getRawSchemeSpecificPart(); //get the raw scheme-specific part after checking to make sure this is an info URI
 		final int namespaceDelimiterIndex = ssp.indexOf(INFO_SCHEME_NAMESPACE_DELIMITER); //get the index of the info URI namespace delimiter
 		if(namespaceDelimiterIndex < 1) { //if there is no namespace delimiter, or there are no namespace characters
 			throw new IllegalArgumentException("info URI " + uri + " missing delimited namespace.");
@@ -318,7 +403,7 @@ public final class URIs {
 	 * @throws NullPointerException if the given URI and/or info namespace is <code>null</code>.
 	 */
 	public static final boolean isInfoNamespace(final URI uri, final String infoNamespace) {
-		return INFO_SCHEME.equals(uri.getScheme()) && uri.getRawSchemeSpecificPart().startsWith(infoNamespace + INFO_SCHEME_NAMESPACE_DELIMITER); //check for the info scheme and the info namespace
+		return hasScheme(uri, INFO_SCHEME) && uri.getRawSchemeSpecificPart().startsWith(infoNamespace + INFO_SCHEME_NAMESPACE_DELIMITER); //check for the info scheme and the info namespace
 	}
 
 	/**
@@ -331,7 +416,7 @@ public final class URIs {
 	 * @throws IllegalArgumentException if the given URI is not a valid {@value #PATH_SCHEME} scheme URI.
 	 */
 	public static final String getPathRawPath(final URI uri) {
-		String rawPath = checkScheme(uri, PATH_SCHEME).getRawPath(); //get the raw path of the URI, ensuring that it is a "path:" URI
+		String rawPath = checkArgumentScheme(uri, PATH_SCHEME).getRawPath(); //get the raw path of the URI, ensuring that it is a "path:" URI
 		if(rawPath == null) { //if Java sees no path, it must be a relative path; extract it manually
 			rawPath = uri.getRawSchemeSpecificPart(); //the raw path is the scheme-specific part
 			final int queryStart = rawPath.indexOf(QUERY_SEPARATOR); //see if this URI has a query (the scheme-specific part will not include the fragment, if any
@@ -357,11 +442,11 @@ public final class URIs {
 	 * Creates a new URI identical to the supplied URI with a different path.
 	 * @param uri The URI to change.
 	 * @param path The path, or <code>null</code> if there should be no path.
-	 * @return A new URI with the new path.
+	 * @return A new URI with the new path, or with no path if the given path is <code>null</code>.
 	 * @throws NullPointerException if the given URI is <code>null</code>.
 	 * @throws IllegalArgumentException if the given path results in an invalid URI.
 	 */
-	public static URI changePath(final URI uri, final URIPath path) {
+	public static URI changePath(final URI uri, final @Nullable URIPath path) {
 		return changeRawPath(uri, path != null ? path.toString() : null);
 	}
 
@@ -369,11 +454,11 @@ public final class URIs {
 	 * Creates a new URI identical to the supplied URI with a different raw path.
 	 * @param uri The URI to change.
 	 * @param newRawPath The raw, escaped path, or <code>null</code> if there should be no path.
-	 * @return A new URI with the new raw path information.
+	 * @return A new URI with the new raw path information, or with no path if the given path is <code>null</code>.
 	 * @throws NullPointerException if the given URI is <code>null</code>.
 	 * @throws IllegalArgumentException if the given path results in an invalid URI.
 	 */
-	public static URI changeRawPath(final URI uri, final String newRawPath) {
+	public static URI changeRawPath(final URI uri, final @Nullable String newRawPath) {
 		return createURI(uri.getScheme(), uri.getRawUserInfo(), uri.getHost(), uri.getPort(), newRawPath, uri.getRawQuery(), uri.getRawFragment()); //construct an identical URI except with a different raw path
 	}
 
@@ -443,19 +528,18 @@ public final class URIs {
 	/**
 	 * Returns the raw name of the resource at the given URI's path, which will be the raw name of the last path component. If the path is a collection (i.e. it
 	 * ends with slash), the component before the last slash will be returned. As examples, "/path/name.ext" and "name.ext" will return "name.ext". "/path/",
-	 * "path/", and "path" will all return "path". A empty path will return "", while the root path will return "/".
-	 * @apiNote The return value of "/" for <code>http://example.com</code> indicates that it is a special resource that doesn't have a name, but still
-	 *          distinguishes between that case and the resource <code>http://example.com</code>, which has an empty relative path and is not equivalent to the
-	 *          root. Thus "" and "/" should be considered special values indicating certain conditions, not actual names.
+	 * "path/", and "path" will all return "path". An empty path will return "", while the root path will return "/".
+	 * @apiNote The return values "" and "/" are special indicators of URI states where no name exists. An empty string indicates an empty relative path (such as
+	 *          in <code>http://example.com</code>), while "/" indicates the root path (such as in <code>http://example.com/</code>). These values should not be
+	 *          treated as actual names, but rather as signals that the URI does not have a name component.
 	 * @implSpec This method correctly handles {@value URIs#INFO_SCHEME} URIs.
 	 * @implSpec This implementation calls {@link #getName(String)}.
 	 * @param uri The URI the path of which will be examined.
-	 * @return The name of the last last path component, the empty string if the path is the empty string, "/" if the path is the root path, or empty if the URI
-	 *         has no path.
+	 * @return The name of the last path component, or a special value: "" for an empty path, "/" for the root path, or empty if the URI has no path.
 	 * @throws NullPointerException if the given URI is <code>null</code>.
 	 */
 	public static Optional<String> findRawName(@NonNull final URI uri) {
-		final String rawPath = uri.isOpaque() && INFO_SCHEME.equals(uri.getScheme()) ? uri.getRawSchemeSpecificPart() : uri.getRawPath(); //get the raw path, using the scheme-specific part of any info URI
+		final String rawPath = uri.isOpaque() && hasScheme(uri, INFO_SCHEME) ? uri.getRawSchemeSpecificPart() : uri.getRawPath(); //get the raw path, using the scheme-specific part of any info URI
 		return Optional.ofNullable(rawPath).map(URIs::getName); //if we have a raw path, return the name
 	}
 
@@ -464,13 +548,12 @@ public final class URIs {
 	 * (i.e. it ends with slash), the component before the last slash will be returned. As examples, "/path/name.ext" and "name.ext" will return "name.ext".
 	 * "/path/", "path/", and "path" will all return "path". The path name is first extracted from the URI's raw path and then decoded so that encoded
 	 * {@value URIs#PATH_SEPARATOR} characters will not prevent correct parsing.
-	 * @apiNote The return value of "/" for <code>http://example.com</code> indicates that it is a special resource that doesn't have a name, but still
-	 *          distinguishes between that case and the resource <code>http://example.com</code>, which has an empty relative path and is not equivalent to the
-	 *          root. Thus "" and "/" should be considered special values indicating certain conditions, not actual names.
+	 * @apiNote The return values "" and "/" are special indicators of URI states where no name exists. An empty string indicates an empty relative path (such as
+	 *          in <code>http://example.com</code>), while "/" indicates the root path (such as in <code>http://example.com/</code>). These values should not be
+	 *          treated as actual names, but rather as signals that the URI does not have a name component.
 	 * @implSpec This method correctly handles {@value URIs#INFO_SCHEME} URIs.
 	 * @param uri The URI the path of which will be examined.
-	 * @return The name of the last path component, the empty string if the path is the empty string, "/" if the path is the root path, or empty if the URI has no
-	 *         path.
+	 * @return The name of the last path component, or a special value: "" for an empty path, "/" for the root path, or empty if the URI has no path.
 	 * @throws NullPointerException if the given URI is <code>null</code>.
 	 */
 	public static Optional<String> findName(final URI uri) {
@@ -524,7 +607,7 @@ public final class URIs {
 	 * @see #findRawName(URI)
 	 */
 	public static URI changeRawName(final URI uri, final String rawName) {
-		if(uri.isOpaque() && INFO_SCHEME.equals(uri.getScheme())) { //if this is an info URI
+		if(uri.isOpaque() && hasScheme(uri, INFO_SCHEME)) { //if this is an info URI
 			final String rawSSP = uri.getRawSchemeSpecificPart(); //get the raw scheme-specific part
 			final String newRawSSP = changePathName(rawSSP, rawName); //change the name to the given name
 			return changeRawSchemeSpecificPart(uri, newRawSSP); //change the URI's scheme-specific part to the new scheme-specific part			
@@ -636,10 +719,10 @@ public final class URIs {
 	 * added.
 	 * @param uri The URI to examine.
 	 * @param extension The raw extension to set, or <code>null</code> if the extension should be removed.
-	 * @return A URI with a raw name with the new extension.
+	 * @return A URI with a raw name with the new extension, or with the extension removed if the given extension is <code>null</code>.
 	 * @throws IllegalArgumentException if the given URI has no path, if the path is empty, or if the path is just a "/".
 	 */
-	public static URI changeRawNameExtension(final URI uri, final String extension) {
+	public static URI changeRawNameExtension(final URI uri, final @Nullable String extension) {
 		final String oldRawName = findRawName(uri)
 				.orElseThrow(() -> new IllegalArgumentException(String.format("Cannot change the name extension of URI <%s>, which has no name.", uri)));
 		final String newRawName = Filenames.changeExtension(oldRawName, extension); //change the extension of the name
@@ -653,7 +736,7 @@ public final class URIs {
 	 * @param extension The raw, encoded extension to add, or <code>null</code> if no extension should be added.
 	 * @return A URI with a raw name with the new extension, if any.
 	 */
-	public static URI setRawNameExtension(final URI uri, final String extension) {
+	public static URI setRawNameExtension(final URI uri, final @Nullable String extension) {
 		return extension != null ? addRawNameExtension(uri, extension) : uri; //if an extension was given, add it; otherwise, return the URI unmodified
 	}
 
@@ -747,7 +830,7 @@ public final class URIs {
 	 * @param params The name-value pairs representing the query parameters.
 	 * @return A string representing the query with the appended parameters, or the empty string if there was no query and there were no parameters.
 	 */
-	public static String appendQueryParameters(final String query, final URIQueryParameter... params) {
+	public static String appendQueryParameters(final @Nullable String query, final URIQueryParameter... params) {
 		final String queryParameters = constructQueryParameters(params); //get query parameters
 		return query != null && query.length() > 0 ? query + QUERY_NAME_VALUE_PAIR_DELIMITER + queryParameters : queryParameters; //if there was a query, append the new parameters; otherwise, just return the parameters
 	}
@@ -796,8 +879,9 @@ public final class URIs {
 
 	/**
 	 * Retrieves the parameters from a URI query. An empty string query will return an empty array of name/value pairs.
-	 * @param query The string containing URI query parameters (without the '?' prefix), or <code>null</code>.
+	 * @param query The string containing URI query parameters (without the '?' prefix).
 	 * @return A list of parameters represented by the query.
+	 * @throws NullPointerException if the given query is <code>null</code>.
 	 */
 	public static List<URIQueryParameter> getQueryParameters(@NonNull final String query) {
 		if(query.isEmpty()) { //if there is no query in the string
@@ -1081,7 +1165,7 @@ public final class URIs {
 	 * @param nss The namespace-specific string.
 	 * @return A URN based upon the given parameters.
 	 * @see <a href="http://www.ietf.org/rfc/rfc2141.txt">RFC 2141</a>
-	 * @throws IllegalArgumentException if the resulting string violates RFC 2396.
+	 * @throws IllegalArgumentException if the resulting string violates <a href="https://datatracker.ietf.org/doc/html/rfc2396">RFC 2396</a>.
 	 */
 	public static URI createURN(final String nid, final String nss) {
 		return URI.create(URN_SCHEME + SCHEME_SEPARATOR + nid + SCHEME_SEPARATOR + nss); //construct and return the URN
@@ -1110,7 +1194,7 @@ public final class URIs {
 	 * @throws NullPointerException if the given namespace and/or identifier is <code>null</code>.
 	 * @throws IllegalArgumentException if the given namespace, identifier, and/or fragment result in an invalid URI.
 	 */
-	public static URI createInfoURI(final String namespace, final String rawIdentifier, final String rawFragment) {
+	public static URI createInfoURI(final String namespace, final String rawIdentifier, final @Nullable String rawFragment) {
 		final StringBuilder stringBuilder = new StringBuilder(); //create a string builder
 		stringBuilder.append(INFO_SCHEME).append(SCHEME_SEPARATOR).append(requireNonNull(namespace, "Namespace cannot be null."))
 				.append(INFO_SCHEME_NAMESPACE_DELIMITER); //info:namespace/
@@ -1308,12 +1392,23 @@ public final class URIs {
 
 	/**
 	 * Determines whether the URI contains only a host and optional port.
+	 * @apiNote This method is quite restrictive: it requires a URI with <em>only</em> a host (and optional port), with no scheme, userinfo, path, query, or
+	 *          fragment. Such URIs can be constructed using {@link URI#URI(String, String, String, int, String, String, String)} with <code>null</code> values
+	 *          for all components except host and port, e.g. {@code new URI(null, null, "example.com", 8080, null, null, null)}. However, Java's {@link URI}
+	 *          class normalizes a <code>null</code> path parameter to an empty string, so this method must check for an empty path rather than a
+	 *          <code>null</code> path.
+	 * @implNote The original implementation checked for {@code getPath() == null}, which would never return <code>true</code> because Java's {@link URI}
+	 *           implementation always returns at least an empty string from {@link URI#getPath()}. This method has been corrected to check for an empty path
+	 *           instead, though it appears the original implementation never worked as intended.
 	 * @param uri The URI the path of which to examine.
 	 * @return <code>true</code> if the URI contains only a host and optionally a port.
+	 * @deprecated to be removed in favor of using the {@link Host} class for representing host and port information.
 	 */
+	@Deprecated(forRemoval = true)
 	public static boolean isHost(final URI uri) {
+		final String path = uri.getPath();
 		return uri.getHost() != null //a host URI contains only a host and nothing else except maybe a port
-				&& uri.getScheme() == null && uri.getUserInfo() == null && uri.getPath() == null && uri.getQuery() == null && uri.getFragment() == null;
+				&& uri.getScheme() == null && uri.getUserInfo() == null && (path == null || path.isEmpty()) && uri.getQuery() == null && uri.getFragment() == null;
 	}
 
 	/**
@@ -1323,10 +1418,13 @@ public final class URIs {
 	 * @deprecated to be replaced with an {@link Optional} returning version if needed or simply not replaced.
 	 */
 	@Deprecated(forRemoval = true)
-	public static @Nullable URL toValidURL(@NonNull final URI uri) {
+	public static @Nullable URL toValidURL(@Nullable final URI uri) {
+		if(uri == null) { //if no URI is available
+			return null; //return null as documented
+		}
 		try {
 			//TODO we probably want to check for the condition java.lang.IllegalArgumentException: URI is not absolute
-			return uri != null ? uri.toURL() : null; //convert the URI to a URL, if we have a URI	
+			return uri.toURL(); //convert the URI to a URL
 		} catch(MalformedURLException e) { //if there was an error converting to a URL
 			return null; //show that we couldn't create a valid URL from the given URI
 		}
@@ -1344,7 +1442,7 @@ public final class URIs {
 	 * @see #WINDOWS_UNC_PATH_URI_SSP_PREFIX
 	 */
 	public static boolean isUNCFileURI(final URI uri) {
-		return FILE_SCHEME.equals(uri.getScheme()) && uri.getRawSchemeSpecificPart().startsWith(WINDOWS_UNC_PATH_URI_SSP_PREFIX);
+		return hasScheme(uri, FILE_SCHEME) && uri.getRawSchemeSpecificPart().startsWith(WINDOWS_UNC_PATH_URI_SSP_PREFIX);
 	}
 
 	/**
@@ -1357,7 +1455,7 @@ public final class URIs {
 	 * @see #isUNCFileURI(URI)
 	 */
 	private static URI fixUNCPathFileURI(final URI uri) {
-		if(!FILE_SCHEME.equals(uri.getScheme())) {
+		if(!hasScheme(uri, FILE_SCHEME)) {
 			throw new IllegalArgumentException("Cannot fix UNC path of non-file URI: " + uri);
 		}
 		final String rawPath = uri.getRawPath(); //get the path of the URI
@@ -1479,7 +1577,7 @@ public final class URIs {
 			resolvedURI = fixUNCPathFileURI(resolvedURI); //restore the URI to a UNC path file URI, as Java will have collapsed several slashes
 		}
 		if(deep) { //if we are doing a deep resolve
-			if(FILE_SCHEME.equals(resolvedURI.getScheme()) && FILE_SCHEME.equals(baseURI.getScheme())) { //if both URIs are file URIs
+			if(hasScheme(resolvedURI, FILE_SCHEME) && hasScheme(baseURI, FILE_SCHEME)) { //if both URIs are file URIs
 				final String resolvedFilePath = resolvedURI.getSchemeSpecificPart(); //determine the file's path from its SSP; if the file is relative, the URI path will be null
 				File resolvedFile = new File(resolvedFilePath);
 				if(!resolvedFile.isAbsolute()) { //if the resolved file isn't absolute
@@ -1518,7 +1616,7 @@ public final class URIs {
 	 * @see #encode(String)
 	 * @see URI#create(String)
 	 */
-	public static URI resolveFragment(final URI uri, final String fragment) throws IllegalArgumentException {
+	public static URI resolveFragment(final @Nullable URI uri, final String fragment) throws IllegalArgumentException {
 		return resolveRawFragment(uri, encode(fragment)); //encode and resolve the fragment
 	}
 
@@ -1533,7 +1631,7 @@ public final class URIs {
 	 * @throws IllegalArgumentException if the a URI cannot be constructed from the given information.
 	 * @see URI#create(String)
 	 */
-	public static URI resolveRawFragment(final URI uri, final String rawFragment) throws IllegalArgumentException {
+	public static URI resolveRawFragment(final @Nullable URI uri, final String rawFragment) throws IllegalArgumentException {
 		final String fragmentSuffix = new StringBuilder().append(FRAGMENT_SEPARATOR).append(rawFragment).toString(); //create a suffix that includes the fragment separator and the fragment
 		final URI fragmentURI = URI.create(fragmentSuffix); //create a URI from the fragment
 		return uri != null ? resolve(uri, fragmentURI) : fragmentURI; //if a URI was given, resolve the fragment against the URI; otherwise, just return the fragment suffix itself 
@@ -1557,7 +1655,7 @@ public final class URIs {
 	 * @return The URI with the fragment, if any, removed and replaced with the given raw fragment, if any.
 	 * @throws NullPointerException if the given URI is <code>null</code>.
 	 */
-	public static URI replaceRawFragment(final URI uri, final String newRawFragment) {
+	public static URI replaceRawFragment(final URI uri, final @Nullable String newRawFragment) {
 		final String oldRawFragment = uri.getRawFragment(); //get the raw fragment, if any
 		if(oldRawFragment != null) { //if there is currently a fragment
 			final int oldRawFragmentLength = oldRawFragment.length(); //get the length of the current raw fragment
@@ -1587,7 +1685,7 @@ public final class URIs {
 	 * @return The URI constructed.
 	 * @throws IllegalArgumentException if the a URI cannot be constructed from the given strings.
 	 */
-	public static URI createURI(final String scheme, final String rawSchemeSpecificPart) throws IllegalArgumentException {
+	public static URI createURI(final String scheme, final @Nullable String rawSchemeSpecificPart) throws IllegalArgumentException {
 		return createURI(scheme, rawSchemeSpecificPart, null); //create a URI with no fragment
 	}
 
@@ -1600,7 +1698,8 @@ public final class URIs {
 	 * @return The URI constructed.
 	 * @throws IllegalArgumentException if the a URI cannot be constructed from the given strings.
 	 */
-	public static URI createURI(final String scheme, final String rawSchemeSpecificPart, final String rawFragment) throws IllegalArgumentException {
+	public static URI createURI(final String scheme, final @Nullable String rawSchemeSpecificPart, final @Nullable String rawFragment)
+			throws IllegalArgumentException {
 		final StringBuilder stringBuilder = new StringBuilder(); //we'll use this to construct the URI
 		if(scheme != null) { //if there is a scheme
 			stringBuilder.append(scheme).append(SCHEME_SEPARATOR); //append the scheme and its separator
@@ -1627,8 +1726,8 @@ public final class URIs {
 	 * @return The URI constructed.
 	 * @throws IllegalArgumentException if the a URI cannot be constructed from the given strings.
 	 */
-	public static URI createURI(final String scheme, final String rawUserInfo, final String host, final int port, final URIPath path, final String rawQuery,
-			final String rawFragment) throws IllegalArgumentException {
+	public static URI createURI(final String scheme, final @Nullable String rawUserInfo, final @Nullable String host, final int port,
+			final @Nullable URIPath path, final @Nullable String rawQuery, final @Nullable String rawFragment) throws IllegalArgumentException {
 		return createURI(scheme, rawUserInfo, host, port, path != null ? path.toString() : null, rawQuery, rawFragment);
 	}
 
@@ -1645,8 +1744,8 @@ public final class URIs {
 	 * @return The URI constructed.
 	 * @throws IllegalArgumentException if the a URI cannot be constructed from the given strings.
 	 */
-	public static URI createURI(final String scheme, final String rawUserInfo, final String host, final int port, final String rawPath, final String rawQuery,
-			final String rawFragment) throws IllegalArgumentException {
+	public static URI createURI(final String scheme, final @Nullable String rawUserInfo, final @Nullable String host, final int port,
+			final @Nullable String rawPath, final @Nullable String rawQuery, final @Nullable String rawFragment) throws IllegalArgumentException {
 		final StringBuilder stringBuilder = new StringBuilder(); //we'll use this to construct the URI
 		if(scheme != null) { //if there is a scheme
 			stringBuilder.append(scheme).append(SCHEME_SEPARATOR); //append the scheme and its separator
@@ -1752,28 +1851,33 @@ public final class URIs {
 	}
 
 	/**
-	 * Decodes the escaped characters in the character iterator according to the URI encoding rules in <a href="http://www.ietf.org/rfc/rfc2396.txt">RFC 2396</a>,
-	 * "Uniform Resource Identifiers (URI): Generic Syntax", using the URI escape character, {@value URIs#ESCAPE_CHAR}.
+	 * Decodes the escaped characters in the character iterator according to the URI encoding rules in
+	 * <a href="https://datatracker.ietf.org/doc/html/rfc2396#section-2.4">RFC 2396 § 2.4 Escape Sequences</a>, using the URI escape character,
+	 * {@value URIs#ESCAPE_CHAR}.
+	 * @implNote This implementation uses RFC 2396 encoding rules, which are compatible with but superseded by
+	 *           <a href="https://tools.ietf.org/html/rfc3986#section-2.1">RFC 3986 § 2.1 Percent-Encoding</a>.
 	 * @param uri The data to URI-decode.
 	 * @return A character sequence containing the encoded URI data.
 	 * @throws IllegalArgumentException if the given URI string contains a character greater than U+00FF.
 	 * @throws IllegalArgumentException if a given escape character is not followed by a two-digit escape sequence.
 	 * @see URIs#ESCAPE_CHAR
 	 */
-	public static String decode(final CharSequence uri) {
+	public static String decode(final CharSequence uri) { //TODO update to RFC 3986
 		return decode(uri, ESCAPE_CHAR); //decode the string using the standard URI escape character
 	}
 
 	/**
-	 * Decodes the escaped ('%') characters in the character iterator according to the URI encoding rules in <a href="http://www.ietf.org/rfc/rfc2396.txt">RFC
-	 * 2396</a>, "Uniform Resource Identifiers (URI): Generic Syntax".
+	 * Decodes the escaped ('%') characters in the character iterator according to the URI encoding rules in
+	 * <a href="https://datatracker.ietf.org/doc/html/rfc2396#section-2.4">RFC 2396 § 2.4 Escape Sequences</a>.
+	 * @implNote This implementation uses RFC 2396 encoding rules, which are compatible with but superseded by
+	 *           <a href="https://tools.ietf.org/html/rfc3986#section-2.1">RFC 3986 § 2.1 Percent-Encoding</a>.
 	 * @param uri The data to URI-decode.
 	 * @param escapeChar The escape character.
 	 * @return A character sequence containing the encoded URI data.
 	 * @throws IllegalArgumentException if the given URI string contains a character greater than U+00FF.
 	 * @throws IllegalArgumentException if a given escape character is not followed by a two-digit escape sequence.
 	 */
-	public static String decode(final CharSequence uri, final char escapeChar) {
+	public static String decode(final CharSequence uri, final char escapeChar) { //TODO update to RFC 3986
 		return unescapeHex(uri, escapeChar, 2).toString(); //unescape the string using two escape hex digits
 	}
 
@@ -2130,7 +2234,6 @@ public final class URIs {
 		}
 		for(final String pathElement : pathElements) { //look at each path element
 			stringBuilder.append(encode(pathElement)); //encode and append this path element
-			stringBuilder.append(pathElement); //encode and append this path element
 			stringBuilder.append(PATH_SEPARATOR); //separate the path elements
 		}
 		if(!collection && pathElements.length > 0) { //if there were path elements but this wasn't a collection, we have one too many path separators 

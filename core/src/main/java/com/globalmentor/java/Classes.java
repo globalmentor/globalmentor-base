@@ -103,7 +103,7 @@ public final class Classes {
 	 * @see Java#JAVA_URI_SCHEME
 	 */
 	public static Class<?> asClass(final URI resourceURI) throws ClassNotFoundException {
-		if(resourceURI != null && JAVA_URI_SCHEME.equals(resourceURI.getScheme())) { //if an java: URI was given
+		if(resourceURI != null && hasScheme(resourceURI, JAVA_URI_SCHEME)) { //if a `java:` URI was given
 			final String classPath = resourceURI.getRawPath(); //get the path to the class
 			if(classPath != null) { //if there is a path
 				checkNotCollectionPath(classPath); //a class URI is not a collection
