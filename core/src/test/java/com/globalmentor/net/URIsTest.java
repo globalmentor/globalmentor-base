@@ -1400,4 +1400,296 @@ public class URIsTest {
 		assertThat(URIs.hasSubPath(URI.create("urn:uuid:f81d4fae-7dec-11d0-a765-00a0c91e6bf6")), is(false));
 	}
 
+	/** Tests for {@link URIs#constructPath(boolean, boolean, String...)}. */
+	@Test
+	public void testConstructPath() {
+		assertThat("absolute collection with no elements", URIs.constructPath(true, true), is("/"));
+		assertThat("relative non-collection with no elements", URIs.constructPath(false, false), is(""));
+		assertThat("absolute non-collection with one element", URIs.constructPath(true, false, "foo"), is("/foo"));
+		assertThat("absolute collection with one element", URIs.constructPath(true, true, "foo"), is("/foo/"));
+		assertThat("relative non-collection with one element", URIs.constructPath(false, false, "foo"), is("foo"));
+		assertThat("relative collection with one element", URIs.constructPath(false, true, "foo"), is("foo/"));
+		assertThat("absolute non-collection with multiple elements", URIs.constructPath(true, false, "foo", "bar"), is("/foo/bar"));
+		assertThat("absolute collection with multiple elements", URIs.constructPath(true, true, "foo", "bar"), is("/foo/bar/"));
+		assertThat("relative non-collection with multiple elements", URIs.constructPath(false, false, "foo", "bar"), is("foo/bar"));
+		assertThat("relative collection with multiple elements", URIs.constructPath(false, true, "foo", "bar"), is("foo/bar/"));
+		assertThat("elements are properly encoded", URIs.constructPath(false, false, "foo bar", "baz?qux"), is("foo%20bar/baz%3Fqux"));
+		assertThrows(IllegalArgumentException.class, () -> URIs.constructPath(true, false), "absolute non-collection with no elements should throw");
+		assertThrows(IllegalArgumentException.class, () -> URIs.constructPath(false, true), "relative collection with no elements should throw");
+	}
+
+	/** Tests for {@link URIs#appendRawNameBase(URI, CharSequence)}. */
+	@Test
+	public void testAppendRawNameBase() {
+		assertThat(URIs.appendRawNameBase(URI.create("http://example.com/file.txt"), "_en"), is(URI.create("http://example.com/file_en.txt")));
+		assertThat(URIs.appendRawNameBase(URI.create("http://example.com/file.foo.txt"), "_en"), is(URI.create("http://example.com/file_en.foo.txt")));
+		assertThat(URIs.appendRawNameBase(URI.create("http://example.com/file"), "_en"), is(URI.create("http://example.com/file_en")));
+	}
+
+	/** Tests for {@link URIs#changeRawNameBase(URI, String)}. */
+	@Test
+	public void testChangeRawNameBase() {
+		assertThat(URIs.changeRawNameBase(URI.create("http://example.com/file.txt"), "other"), is(URI.create("http://example.com/other.txt")));
+		assertThat(URIs.changeRawNameBase(URI.create("http://example.com/file.foo.txt"), "other"), is(URI.create("http://example.com/other.foo.txt")));
+		assertThat(URIs.changeRawNameBase(URI.create("http://example.com/file"), "other"), is(URI.create("http://example.com/other")));
+	}
+
+	/** Tests for {@link URIs#setRawNameExtension(URI, String)}. */
+	@Test
+	public void testSetRawNameExtension() {
+		assertThat(URIs.setRawNameExtension(URI.create("http://example.com/file.txt"), "xml"), is(URI.create("http://example.com/file.txt.xml")));
+		assertThat(URIs.setRawNameExtension(URI.create("http://example.com/file"), "xml"), is(URI.create("http://example.com/file.xml")));
+		assertThat(URIs.setRawNameExtension(URI.create("http://example.com/file.txt"), null), is(URI.create("http://example.com/file.txt")));
+	}
+
+	/** Tests for {@link URIs#removeRawNameExtension(URI)}. */
+	@Test
+	public void testRemoveRawNameExtension() {
+		assertThat(URIs.removeRawNameExtension(URI.create("http://example.com/file.txt")), is(URI.create("http://example.com/file")));
+		assertThat(URIs.removeRawNameExtension(URI.create("http://example.com/file.foo.txt")), is(URI.create("http://example.com/file.foo")));
+		assertThat(URIs.removeRawNameExtension(URI.create("http://example.com/file")), is(URI.create("http://example.com/file")));
+	}
+
+	/** Tests for {@link URIs#createURN(String, String)}. */
+	@Test
+	public void testCreateURN() {
+		assertThat(URIs.createURN("isbn", "0451450523"), is(URI.create("urn:isbn:0451450523")));
+		assertThat(URIs.createURN("uuid", "f81d4fae-7dec-11d0-a765-00a0c91e6bf6"), is(URI.create("urn:uuid:f81d4fae-7dec-11d0-a765-00a0c91e6bf6")));
+	}
+
+	/** Tests for {@link URIs#createInfoURI(String, String)}. */
+	@Test
+	public void testCreateInfoURI() {
+		assertThat(URIs.createInfoURI("ddc", "22/eng//004.678"), is(URI.create("info:ddc/22/eng//004.678")));
+		assertThat(URIs.createInfoURI("lccn", "2002022641"), is(URI.create("info:lccn/2002022641")));
+	}
+
+	/** Tests for {@link URIs#createInfoURI(String, String, String)}. */
+	@Test
+	public void testCreateInfoURIWithFragment() {
+		assertThat(URIs.createInfoURI("ddc", "22/eng//004.678", "section1"), is(URI.create("info:ddc/22/eng//004.678#section1")));
+		assertThat(URIs.createInfoURI("lccn", "2002022641", null), is(URI.create("info:lccn/2002022641")));
+	}
+
+	/** Tests for {@link URIs#createMailtoURI(String, String)}. */
+	@Test
+	public void testCreateMailtoURI() {
+		assertThat(URIs.createMailtoURI("user", "example.com"), is(URI.create("mailto:user@example.com")));
+		assertThat(URIs.createMailtoURI("test", "example.org"), is(URI.create("mailto:test@example.org")));
+	}
+
+	/** Tests for {@link URIs#getRootURI(URI)}. */
+	@Test
+	public void testGetRootURI() {
+		assertThat(URIs.getRootURI(URI.create("http://example.com/foo/bar")), is(URI.create("http://example.com")));
+		assertThat(URIs.getRootURI(URI.create("http://example.com/foo?query=value")), is(URI.create("http://example.com")));
+		assertThat(URIs.getRootURI(URI.create("http://example.com/foo#fragment")), is(URI.create("http://example.com")));
+	}
+
+	/** Tests for {@link URIs#isCollectionURI(URI)}. */
+	@Test
+	public void testIsCollectionURI() {
+		assertThat(URIs.isCollectionURI(URI.create("http://example.com/")), is(true));
+		assertThat(URIs.isCollectionURI(URI.create("http://example.com/foo/")), is(true));
+		assertThat(URIs.isCollectionURI(URI.create("http://example.com/foo")), is(false));
+		assertThat(URIs.isCollectionURI(URI.create("http://example.com/foo.txt")), is(false));
+	}
+
+	/** Tests for {@link URIs#checkCollectionURI(URI)}. */
+	@Test
+	public void testCheckCollectionURI() {
+		assertThat(URIs.checkCollectionURI(URI.create("http://example.com/")), is(URI.create("http://example.com/")));
+		assertThat(URIs.checkCollectionURI(URI.create("http://example.com/foo/")), is(URI.create("http://example.com/foo/")));
+		assertThrows(IllegalArgumentException.class, () -> URIs.checkCollectionURI(URI.create("http://example.com/foo")));
+	}
+
+	/** Tests for {@link URIs#checkNotCollectionURI(URI)}. */
+	@Test
+	public void testCheckNotCollectionURI() {
+		assertThat(URIs.checkNotCollectionURI(URI.create("http://example.com/foo")), is(URI.create("http://example.com/foo")));
+		assertThat(URIs.checkNotCollectionURI(URI.create("http://example.com/foo.txt")), is(URI.create("http://example.com/foo.txt")));
+		assertThrows(IllegalArgumentException.class, () -> URIs.checkNotCollectionURI(URI.create("http://example.com/foo/")));
+	}
+
+	/** Tests for {@link URIs#hasPath(URI)}. */
+	@Test
+	public void testHasPath() {
+		assertThat(URIs.hasPath(URI.create("http://example.com/")), is(true));
+		assertThat(URIs.hasPath(URI.create("http://example.com/foo")), is(true));
+		assertThat(URIs.hasPath(URI.create("http://example.com")), is(true)); //empty string path
+		assertThat(URIs.hasPath(URI.create("mailto:user@example.com")), is(false)); //opaque URI, no path
+		assertThat(URIs.hasPath(URI.create("urn:isbn:0451450523")), is(false)); //opaque URI, no path
+	}
+
+	/** Tests for {@link URIs#hasAbsolutePath(URI)}. */
+	@Test
+	public void testHasAbsolutePath() {
+		assertThat(URIs.hasAbsolutePath(URI.create("http://example.com/")), is(true));
+		assertThat(URIs.hasAbsolutePath(URI.create("http://example.com/foo")), is(true));
+		assertThat(URIs.hasAbsolutePath(URI.create("foo/bar")), is(false));
+		assertThat(URIs.hasAbsolutePath(URI.create("http://example.com")), is(false));
+	}
+
+	/**
+	 * Tests for {@link URIs#isHost(URI)}.
+	 * @implNote Host-only URIs must be constructed using {@link URI#URI(String, String, String, int, String, String, String)} with <code>null</code> for all
+	 *           components except host and port. Java's {@link URI} class normalizes a <code>null</code> path parameter to an empty string, which is why the
+	 *           method checks for an empty path.
+	 */
+	@SuppressWarnings("removal")
+	@Test
+	public void testIsHost() throws Exception {
+		assertThat("Host-only URI without port", URIs.isHost(new URI(null, null, "example.com", -1, null, null, null)), is(true));
+		assertThat("Host-only URI with port", URIs.isHost(new URI(null, null, "example.com", 8080, null, null, null)), is(true));
+		assertThat("localhost is host-only", URIs.isHost(new URI(null, null, "localhost", -1, null, null, null)), is(true));
+		assertThat("Authority-only URI (//example.com) is also host-only", URIs.isHost(URI.create("//example.com")), is(true));
+		assertThat("URI with scheme is not host-only", URIs.isHost(URI.create("http://example.com")), is(false));
+		assertThat("URI with scheme and port is not host-only", URIs.isHost(URI.create("http://example.com:8080")), is(false));
+		assertThat("URI with path is not host-only", URIs.isHost(URI.create("http://example.com/")), is(false));
+		assertThat("URI with scheme and path is not host-only", URIs.isHost(URI.create("http://example.com/foo")), is(false));
+	}
+
+	/** Tests for {@link URIs#normalize(URI)}. */
+	@Test
+	public void testNormalize() {
+		assertThat(URIs.normalize(URI.create("http://example.com/foo/./bar")), is(URI.create("http://example.com/foo/bar")));
+		assertThat(URIs.normalize(URI.create("http://example.com/foo/../bar")), is(URI.create("http://example.com/bar")));
+		assertThat(URIs.normalize(URI.create("http://example.com/foo/bar/..")), is(URI.create("http://example.com/foo/")));
+	}
+
+	/** Tests for {@link URIs#resolveFragment(URI, String)}. */
+	@Test
+	public void testResolveFragment() {
+		assertThat(URIs.resolveFragment(URI.create("http://example.com/foo"), "section1"), is(URI.create("http://example.com/foo#section1")));
+		assertThat(URIs.resolveFragment(null, "section1"), is(URI.create("#section1")));
+	}
+
+	/** Tests for {@link URIs#resolveRawFragment(URI, String)}. */
+	@Test
+	public void testResolveRawFragment() {
+		assertThat(URIs.resolveRawFragment(URI.create("http://example.com/foo"), "section%201"), is(URI.create("http://example.com/foo#section%201")));
+		assertThat(URIs.resolveRawFragment(null, "section%201"), is(URI.create("#section%201")));
+	}
+
+	/** Tests for {@link URIs#removeFragment(URI)}. */
+	@Test
+	public void testRemoveFragment() {
+		assertThat(URIs.removeFragment(URI.create("http://example.com/foo#section1")), is(URI.create("http://example.com/foo")));
+		assertThat(URIs.removeFragment(URI.create("http://example.com/foo")), is(URI.create("http://example.com/foo")));
+	}
+
+	/** Tests for {@link URIs#replaceRawFragment(URI, String)}. */
+	@Test
+	public void testReplaceRawFragment() {
+		assertThat(URIs.replaceRawFragment(URI.create("http://example.com/foo#old"), "new"), is(URI.create("http://example.com/foo#new")));
+		assertThat(URIs.replaceRawFragment(URI.create("http://example.com/foo"), "new"), is(URI.create("http://example.com/foo#new")));
+		assertThat(URIs.replaceRawFragment(URI.create("http://example.com/foo#old"), null), is(URI.create("http://example.com/foo")));
+	}
+
+	/** Tests for {@link URIs#getName(String)}. */
+	@Test
+	public void testGetName() {
+		assertThat(URIs.getName("foo/bar"), is("bar"));
+		assertThat(URIs.getName("foo/bar/"), is("bar"));
+		assertThat(URIs.getName("/foo/bar"), is("bar"));
+		assertThat(URIs.getName("foo"), is("foo"));
+		assertThat(URIs.getName("/"), is("/"));
+		assertThat(URIs.getName(""), is(""));
+	}
+
+	/** Tests for {@link URIs#isCollectionPath(String)}. */
+	@Test
+	public void testIsCollectionPath() {
+		assertThat(URIs.isCollectionPath("/"), is(true));
+		assertThat(URIs.isCollectionPath("foo/"), is(true));
+		assertThat(URIs.isCollectionPath("/foo/"), is(true));
+		assertThat(URIs.isCollectionPath("foo"), is(false));
+		assertThat(URIs.isCollectionPath("/foo"), is(false));
+	}
+
+	/** Tests for {@link URIs#isPath(String)}. */
+	@Test
+	public void testIsPath() {
+		assertThat(URIs.isPath("foo/bar"), is(true));
+		assertThat(URIs.isPath("/foo/bar"), is(true));
+		assertThat(URIs.isPath(""), is(true));
+		assertThat(URIs.isPath("http://example.com"), is(false));
+	}
+
+	/** Tests for {@link URIs#isPathAbsolute(String)}. */
+	@Test
+	public void testIsPathAbsolute() {
+		assertThat(URIs.isPathAbsolute("/foo/bar"), is(true));
+		assertThat(URIs.isPathAbsolute("/"), is(true));
+		assertThat(URIs.isPathAbsolute("foo/bar"), is(false));
+		assertThat(URIs.isPathAbsolute(""), is(false));
+	}
+
+	/** Tests for {@link URIs#checkCollectionPath(String)}. */
+	@Test
+	public void testCheckCollectionPath() {
+		assertThat(URIs.checkCollectionPath("/"), is("/"));
+		assertThat(URIs.checkCollectionPath("foo/"), is("foo/"));
+		assertThrows(IllegalArgumentException.class, () -> URIs.checkCollectionPath("foo"));
+	}
+
+	/** Tests for {@link URIs#checkNotCollectionPath(String)}. */
+	@Test
+	public void testCheckNotCollectionPath() {
+		assertThat(URIs.checkNotCollectionPath("foo"), is("foo"));
+		assertThat(URIs.checkNotCollectionPath("/foo"), is("/foo"));
+		assertThrows(IllegalArgumentException.class, () -> URIs.checkNotCollectionPath("foo/"));
+	}
+
+	/** Tests for {@link URIs#checkPathURI(URI)}. */
+	@Test
+	public void testCheckPathURI() {
+		assertThat(URIs.checkPathURI(URI.create("foo/bar")), is(URI.create("foo/bar")));
+		assertThat(URIs.checkPathURI(URI.create("/foo/bar")), is(URI.create("/foo/bar")));
+		assertThrows(IllegalArgumentException.class, () -> URIs.checkPathURI(URI.create("http://example.com/foo")));
+		assertThrows(IllegalArgumentException.class, () -> URIs.checkPathURI(URI.create("/foo?query=value")));
+	}
+
+	/** Tests for {@link URIs#checkPlainURI(URI)}. */
+	@Test
+	public void testCheckPlainURI() {
+		assertThat(URIs.checkPlainURI(URI.create("http://example.com/foo")), is(URI.create("http://example.com/foo")));
+		assertThrows(IllegalArgumentException.class, () -> URIs.checkPlainURI(URI.create("http://example.com/foo?query=value")));
+		assertThrows(IllegalArgumentException.class, () -> URIs.checkPlainURI(URI.create("http://example.com/foo#fragment")));
+	}
+
+	/** Tests for {@link URIs#getRelativePath(String)}. */
+	@Test
+	public void testGetRelativePath() {
+		assertThat(URIs.getRelativePath("/foo/bar"), is("foo/bar"));
+		assertThat(URIs.getRelativePath("/foo"), is("foo"));
+		assertThat(URIs.getRelativePath("/"), is(""));
+		assertThrows(IllegalArgumentException.class, () -> URIs.getRelativePath("foo/bar"));
+	}
+
+	/** Tests for {@link URIs#checkPath(String)}. */
+	@Test
+	public void testCheckPath() {
+		assertThat(URIs.checkPath("foo/bar"), is("foo/bar"));
+		assertThat(URIs.checkPath("/foo/bar"), is("/foo/bar"));
+		assertThrows(IllegalArgumentException.class, () -> URIs.checkPath("http://example.com/foo"));
+	}
+
+	/** Tests for {@link URIs#checkRelativePath(String)}. */
+	@Test
+	public void testCheckRelativePath() {
+		assertThat(URIs.checkRelativePath("foo/bar"), is("foo/bar"));
+		assertThat(URIs.checkRelativePath("foo"), is("foo"));
+		assertThrows(IllegalArgumentException.class, () -> URIs.checkRelativePath("/foo/bar"));
+	}
+
+	/** Tests for {@link URIs#normalizePath(String)}. */
+	@Test
+	public void testNormalizePath() {
+		assertThat(URIs.normalizePath("foo/./bar"), is("foo/bar"));
+		assertThat(URIs.normalizePath("foo/../bar"), is("bar"));
+		assertThat(URIs.normalizePath("/foo/bar/.."), is("/foo/"));
+		assertThat(URIs.normalizePath("foo/bar"), is("foo/bar"));
+	}
+
 }

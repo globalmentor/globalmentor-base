@@ -153,25 +153,28 @@ public final class URIs {
 	/** The character separating a <code>mailto</code> URI username from the domain. */
 	public static final char MAILTO_USERNAME_DOMAIN_SEPARATOR = '@'; //TODO reuse EmailAddress definition
 
-	/** Alphabetic characters as defined by RFC 2396. */
+	/** Alphabetic characters as defined by <a href="https://datatracker.ietf.org/doc/html/rfc2396#section-2.3">RFC 2396 § 2.3 Unreserved Characters</a>. */
 	public static final Characters ALPHA_CHARACTERS = Characters.ofRange('a', 'z').addRange('A', 'Z'); //count 52
 
-	/** Digit characters as defined by RFC 2396. */
+	/** Digit characters as defined by <a href="https://datatracker.ietf.org/doc/html/rfc2396#section-2.3">RFC 2396 § 2.3 Unreserved Characters</a>. */
 	public static final Characters DIGIT_CHARACTERS = Characters.ofRange('0', '9'); //count 10
 
-	/** Safe characters as defined by RFC 2396. */
+	/** Safe characters as defined by <a href="https://datatracker.ietf.org/doc/html/rfc2396#section-2.3">RFC 2396 § 2.3 Unreserved Characters</a>. */
 	public static final Characters SAFE_CHARACTERS = Characters.of('$', '-', '_', '@', '.', '&'); //count 6
 
-	/** Extra characters as defined by RFC 2396. */
+	/** Extra characters as defined by <a href="https://datatracker.ietf.org/doc/html/rfc2396#section-2.3">RFC 2396 § 2.3 Unreserved Characters</a>. */
 	public static final Characters EXTRA_CHARACTERS = Characters.of('!', '*', '"', '\'', '(', ')', ','); //count 7
 
-	/** The character to use for escaping URI data as defined by RFC 2396. */
+	/**
+	 * The character to use for escaping URI data as defined by <a href="https://datatracker.ietf.org/doc/html/rfc2396#section-2.4.1">RFC 2396 § 2.4.1 Escaped
+	 * Encoding</a>.
+	 */
 	public static final char ESCAPE_CHAR = '%'; //count 1
 
-	/** Reserved characters as defined by RFC 2396. */
+	/** Reserved characters as defined by <a href="https://datatracker.ietf.org/doc/html/rfc2396#section-2.2">RFC 2396 § 2.2 Reserved Characters</a>. */
 	public static final Characters RESERVED_CHARACTERS = Characters.of('=', ';', '/', '#', '?', ':', ' '); //count 7
 
-	/** Characters that can appear in a URI as defined by RFC 2396. */
+	/** Characters that can appear in a URI as defined by <a href="https://datatracker.ietf.org/doc/html/rfc2396">RFC 2396</a>. */
 	public static final Characters URI_CHARACTERS = ALPHA_CHARACTERS.add(DIGIT_CHARACTERS).add(SAFE_CHARACTERS).add(EXTRA_CHARACTERS).add(ESCAPE_CHAR)
 			.add(RESERVED_CHARACTERS); //count 83
 
@@ -295,7 +298,7 @@ public final class URIs {
 	 * @see String#format(String, Object...)
 	 * @see <a href="https://tools.ietf.org/html/rfc3986#section-3.1">RFC 3986 § 3.1 Scheme</a>
 	 */
-	public static URI checkArgumentScheme(final URI uri, final String scheme, final String description, final Object... arguments) {
+	public static URI checkArgumentScheme(final URI uri, final String scheme, final @Nullable String description, final Object... arguments) {
 		if(!hasScheme(uri, scheme)) {
 			throw new IllegalArgumentException(description != null ? String.format(description, arguments) : "Scheme of URI " + uri + " must be " + scheme);
 		}
@@ -439,11 +442,11 @@ public final class URIs {
 	 * Creates a new URI identical to the supplied URI with a different path.
 	 * @param uri The URI to change.
 	 * @param path The path, or <code>null</code> if there should be no path.
-	 * @return A new URI with the new path.
+	 * @return A new URI with the new path, or with no path if the given path is <code>null</code>.
 	 * @throws NullPointerException if the given URI is <code>null</code>.
 	 * @throws IllegalArgumentException if the given path results in an invalid URI.
 	 */
-	public static URI changePath(final URI uri, final URIPath path) {
+	public static URI changePath(final URI uri, final @Nullable URIPath path) {
 		return changeRawPath(uri, path != null ? path.toString() : null);
 	}
 
@@ -451,11 +454,11 @@ public final class URIs {
 	 * Creates a new URI identical to the supplied URI with a different raw path.
 	 * @param uri The URI to change.
 	 * @param newRawPath The raw, escaped path, or <code>null</code> if there should be no path.
-	 * @return A new URI with the new raw path information.
+	 * @return A new URI with the new raw path information, or with no path if the given path is <code>null</code>.
 	 * @throws NullPointerException if the given URI is <code>null</code>.
 	 * @throws IllegalArgumentException if the given path results in an invalid URI.
 	 */
-	public static URI changeRawPath(final URI uri, final String newRawPath) {
+	public static URI changeRawPath(final URI uri, final @Nullable String newRawPath) {
 		return createURI(uri.getScheme(), uri.getRawUserInfo(), uri.getHost(), uri.getPort(), newRawPath, uri.getRawQuery(), uri.getRawFragment()); //construct an identical URI except with a different raw path
 	}
 
@@ -525,15 +528,14 @@ public final class URIs {
 	/**
 	 * Returns the raw name of the resource at the given URI's path, which will be the raw name of the last path component. If the path is a collection (i.e. it
 	 * ends with slash), the component before the last slash will be returned. As examples, "/path/name.ext" and "name.ext" will return "name.ext". "/path/",
-	 * "path/", and "path" will all return "path". A empty path will return "", while the root path will return "/".
-	 * @apiNote The return value of "/" for <code>http://example.com</code> indicates that it is a special resource that doesn't have a name, but still
-	 *          distinguishes between that case and the resource <code>http://example.com</code>, which has an empty relative path and is not equivalent to the
-	 *          root. Thus "" and "/" should be considered special values indicating certain conditions, not actual names.
+	 * "path/", and "path" will all return "path". An empty path will return "", while the root path will return "/".
+	 * @apiNote The return values "" and "/" are special indicators of URI states where no name exists. An empty string indicates an empty relative path (such as
+	 *          in <code>http://example.com</code>), while "/" indicates the root path (such as in <code>http://example.com/</code>). These values should not be
+	 *          treated as actual names, but rather as signals that the URI does not have a name component.
 	 * @implSpec This method correctly handles {@value URIs#INFO_SCHEME} URIs.
 	 * @implSpec This implementation calls {@link #getName(String)}.
 	 * @param uri The URI the path of which will be examined.
-	 * @return The name of the last last path component, the empty string if the path is the empty string, "/" if the path is the root path, or empty if the URI
-	 *         has no path.
+	 * @return The name of the last path component, or a special value: "" for an empty path, "/" for the root path, or empty if the URI has no path.
 	 * @throws NullPointerException if the given URI is <code>null</code>.
 	 */
 	public static Optional<String> findRawName(@NonNull final URI uri) {
@@ -546,13 +548,12 @@ public final class URIs {
 	 * (i.e. it ends with slash), the component before the last slash will be returned. As examples, "/path/name.ext" and "name.ext" will return "name.ext".
 	 * "/path/", "path/", and "path" will all return "path". The path name is first extracted from the URI's raw path and then decoded so that encoded
 	 * {@value URIs#PATH_SEPARATOR} characters will not prevent correct parsing.
-	 * @apiNote The return value of "/" for <code>http://example.com</code> indicates that it is a special resource that doesn't have a name, but still
-	 *          distinguishes between that case and the resource <code>http://example.com</code>, which has an empty relative path and is not equivalent to the
-	 *          root. Thus "" and "/" should be considered special values indicating certain conditions, not actual names.
+	 * @apiNote The return values "" and "/" are special indicators of URI states where no name exists. An empty string indicates an empty relative path (such as
+	 *          in <code>http://example.com</code>), while "/" indicates the root path (such as in <code>http://example.com/</code>). These values should not be
+	 *          treated as actual names, but rather as signals that the URI does not have a name component.
 	 * @implSpec This method correctly handles {@value URIs#INFO_SCHEME} URIs.
 	 * @param uri The URI the path of which will be examined.
-	 * @return The name of the last path component, the empty string if the path is the empty string, "/" if the path is the root path, or empty if the URI has no
-	 *         path.
+	 * @return The name of the last path component, or a special value: "" for an empty path, "/" for the root path, or empty if the URI has no path.
 	 * @throws NullPointerException if the given URI is <code>null</code>.
 	 */
 	public static Optional<String> findName(final URI uri) {
@@ -718,10 +719,10 @@ public final class URIs {
 	 * added.
 	 * @param uri The URI to examine.
 	 * @param extension The raw extension to set, or <code>null</code> if the extension should be removed.
-	 * @return A URI with a raw name with the new extension.
+	 * @return A URI with a raw name with the new extension, or with the extension removed if the given extension is <code>null</code>.
 	 * @throws IllegalArgumentException if the given URI has no path, if the path is empty, or if the path is just a "/".
 	 */
-	public static URI changeRawNameExtension(final URI uri, final String extension) {
+	public static URI changeRawNameExtension(final URI uri, final @Nullable String extension) {
 		final String oldRawName = findRawName(uri)
 				.orElseThrow(() -> new IllegalArgumentException(String.format("Cannot change the name extension of URI <%s>, which has no name.", uri)));
 		final String newRawName = Filenames.changeExtension(oldRawName, extension); //change the extension of the name
@@ -735,7 +736,7 @@ public final class URIs {
 	 * @param extension The raw, encoded extension to add, or <code>null</code> if no extension should be added.
 	 * @return A URI with a raw name with the new extension, if any.
 	 */
-	public static URI setRawNameExtension(final URI uri, final String extension) {
+	public static URI setRawNameExtension(final URI uri, final @Nullable String extension) {
 		return extension != null ? addRawNameExtension(uri, extension) : uri; //if an extension was given, add it; otherwise, return the URI unmodified
 	}
 
@@ -829,7 +830,7 @@ public final class URIs {
 	 * @param params The name-value pairs representing the query parameters.
 	 * @return A string representing the query with the appended parameters, or the empty string if there was no query and there were no parameters.
 	 */
-	public static String appendQueryParameters(final String query, final URIQueryParameter... params) {
+	public static String appendQueryParameters(final @Nullable String query, final URIQueryParameter... params) {
 		final String queryParameters = constructQueryParameters(params); //get query parameters
 		return query != null && query.length() > 0 ? query + QUERY_NAME_VALUE_PAIR_DELIMITER + queryParameters : queryParameters; //if there was a query, append the new parameters; otherwise, just return the parameters
 	}
@@ -878,8 +879,9 @@ public final class URIs {
 
 	/**
 	 * Retrieves the parameters from a URI query. An empty string query will return an empty array of name/value pairs.
-	 * @param query The string containing URI query parameters (without the '?' prefix), or <code>null</code>.
+	 * @param query The string containing URI query parameters (without the '?' prefix).
 	 * @return A list of parameters represented by the query.
+	 * @throws NullPointerException if the given query is <code>null</code>.
 	 */
 	public static List<URIQueryParameter> getQueryParameters(@NonNull final String query) {
 		if(query.isEmpty()) { //if there is no query in the string
@@ -1163,7 +1165,7 @@ public final class URIs {
 	 * @param nss The namespace-specific string.
 	 * @return A URN based upon the given parameters.
 	 * @see <a href="http://www.ietf.org/rfc/rfc2141.txt">RFC 2141</a>
-	 * @throws IllegalArgumentException if the resulting string violates RFC 2396.
+	 * @throws IllegalArgumentException if the resulting string violates <a href="https://datatracker.ietf.org/doc/html/rfc2396">RFC 2396</a>.
 	 */
 	public static URI createURN(final String nid, final String nss) {
 		return URI.create(URN_SCHEME + SCHEME_SEPARATOR + nid + SCHEME_SEPARATOR + nss); //construct and return the URN
@@ -1192,7 +1194,7 @@ public final class URIs {
 	 * @throws NullPointerException if the given namespace and/or identifier is <code>null</code>.
 	 * @throws IllegalArgumentException if the given namespace, identifier, and/or fragment result in an invalid URI.
 	 */
-	public static URI createInfoURI(final String namespace, final String rawIdentifier, final String rawFragment) {
+	public static URI createInfoURI(final String namespace, final String rawIdentifier, final @Nullable String rawFragment) {
 		final StringBuilder stringBuilder = new StringBuilder(); //create a string builder
 		stringBuilder.append(INFO_SCHEME).append(SCHEME_SEPARATOR).append(requireNonNull(namespace, "Namespace cannot be null."))
 				.append(INFO_SCHEME_NAMESPACE_DELIMITER); //info:namespace/
@@ -1390,12 +1392,23 @@ public final class URIs {
 
 	/**
 	 * Determines whether the URI contains only a host and optional port.
+	 * @apiNote This method is quite restrictive: it requires a URI with <em>only</em> a host (and optional port), with no scheme, userinfo, path, query, or
+	 *          fragment. Such URIs can be constructed using {@link URI#URI(String, String, String, int, String, String, String)} with <code>null</code> values
+	 *          for all components except host and port, e.g. {@code new URI(null, null, "example.com", 8080, null, null, null)}. However, Java's {@link URI}
+	 *          class normalizes a <code>null</code> path parameter to an empty string, so this method must check for an empty path rather than a
+	 *          <code>null</code> path.
+	 * @implNote The original implementation checked for {@code getPath() == null}, which would never return <code>true</code> because Java's {@link URI}
+	 *           implementation always returns at least an empty string from {@link URI#getPath()}. This method has been corrected to check for an empty path
+	 *           instead, though it appears the original implementation never worked as intended.
 	 * @param uri The URI the path of which to examine.
 	 * @return <code>true</code> if the URI contains only a host and optionally a port.
+	 * @deprecated to be removed in favor of using the {@link Host} class for representing host and port information.
 	 */
+	@Deprecated(forRemoval = true)
 	public static boolean isHost(final URI uri) {
+		final String path = uri.getPath();
 		return uri.getHost() != null //a host URI contains only a host and nothing else except maybe a port
-				&& uri.getScheme() == null && uri.getUserInfo() == null && uri.getPath() == null && uri.getQuery() == null && uri.getFragment() == null;
+				&& uri.getScheme() == null && uri.getUserInfo() == null && (path == null || path.isEmpty()) && uri.getQuery() == null && uri.getFragment() == null;
 	}
 
 	/**
@@ -1405,10 +1418,13 @@ public final class URIs {
 	 * @deprecated to be replaced with an {@link Optional} returning version if needed or simply not replaced.
 	 */
 	@Deprecated(forRemoval = true)
-	public static @Nullable URL toValidURL(@NonNull final URI uri) {
+	public static @Nullable URL toValidURL(@Nullable final URI uri) {
+		if(uri == null) { //if no URI is available
+			return null; //return null as documented
+		}
 		try {
 			//TODO we probably want to check for the condition java.lang.IllegalArgumentException: URI is not absolute
-			return uri != null ? uri.toURL() : null; //convert the URI to a URL, if we have a URI	
+			return uri.toURL(); //convert the URI to a URL
 		} catch(MalformedURLException e) { //if there was an error converting to a URL
 			return null; //show that we couldn't create a valid URL from the given URI
 		}
@@ -1600,7 +1616,7 @@ public final class URIs {
 	 * @see #encode(String)
 	 * @see URI#create(String)
 	 */
-	public static URI resolveFragment(final URI uri, final String fragment) throws IllegalArgumentException {
+	public static URI resolveFragment(final @Nullable URI uri, final String fragment) throws IllegalArgumentException {
 		return resolveRawFragment(uri, encode(fragment)); //encode and resolve the fragment
 	}
 
@@ -1615,7 +1631,7 @@ public final class URIs {
 	 * @throws IllegalArgumentException if the a URI cannot be constructed from the given information.
 	 * @see URI#create(String)
 	 */
-	public static URI resolveRawFragment(final URI uri, final String rawFragment) throws IllegalArgumentException {
+	public static URI resolveRawFragment(final @Nullable URI uri, final String rawFragment) throws IllegalArgumentException {
 		final String fragmentSuffix = new StringBuilder().append(FRAGMENT_SEPARATOR).append(rawFragment).toString(); //create a suffix that includes the fragment separator and the fragment
 		final URI fragmentURI = URI.create(fragmentSuffix); //create a URI from the fragment
 		return uri != null ? resolve(uri, fragmentURI) : fragmentURI; //if a URI was given, resolve the fragment against the URI; otherwise, just return the fragment suffix itself 
@@ -1639,7 +1655,7 @@ public final class URIs {
 	 * @return The URI with the fragment, if any, removed and replaced with the given raw fragment, if any.
 	 * @throws NullPointerException if the given URI is <code>null</code>.
 	 */
-	public static URI replaceRawFragment(final URI uri, final String newRawFragment) {
+	public static URI replaceRawFragment(final URI uri, final @Nullable String newRawFragment) {
 		final String oldRawFragment = uri.getRawFragment(); //get the raw fragment, if any
 		if(oldRawFragment != null) { //if there is currently a fragment
 			final int oldRawFragmentLength = oldRawFragment.length(); //get the length of the current raw fragment
@@ -1669,7 +1685,7 @@ public final class URIs {
 	 * @return The URI constructed.
 	 * @throws IllegalArgumentException if the a URI cannot be constructed from the given strings.
 	 */
-	public static URI createURI(final String scheme, final String rawSchemeSpecificPart) throws IllegalArgumentException {
+	public static URI createURI(final String scheme, final @Nullable String rawSchemeSpecificPart) throws IllegalArgumentException {
 		return createURI(scheme, rawSchemeSpecificPart, null); //create a URI with no fragment
 	}
 
@@ -1682,7 +1698,8 @@ public final class URIs {
 	 * @return The URI constructed.
 	 * @throws IllegalArgumentException if the a URI cannot be constructed from the given strings.
 	 */
-	public static URI createURI(final String scheme, final String rawSchemeSpecificPart, final String rawFragment) throws IllegalArgumentException {
+	public static URI createURI(final String scheme, final @Nullable String rawSchemeSpecificPart, final @Nullable String rawFragment)
+			throws IllegalArgumentException {
 		final StringBuilder stringBuilder = new StringBuilder(); //we'll use this to construct the URI
 		if(scheme != null) { //if there is a scheme
 			stringBuilder.append(scheme).append(SCHEME_SEPARATOR); //append the scheme and its separator
@@ -1709,8 +1726,8 @@ public final class URIs {
 	 * @return The URI constructed.
 	 * @throws IllegalArgumentException if the a URI cannot be constructed from the given strings.
 	 */
-	public static URI createURI(final String scheme, final String rawUserInfo, final String host, final int port, final URIPath path, final String rawQuery,
-			final String rawFragment) throws IllegalArgumentException {
+	public static URI createURI(final String scheme, final @Nullable String rawUserInfo, final @Nullable String host, final int port,
+			final @Nullable URIPath path, final @Nullable String rawQuery, final @Nullable String rawFragment) throws IllegalArgumentException {
 		return createURI(scheme, rawUserInfo, host, port, path != null ? path.toString() : null, rawQuery, rawFragment);
 	}
 
@@ -1727,8 +1744,8 @@ public final class URIs {
 	 * @return The URI constructed.
 	 * @throws IllegalArgumentException if the a URI cannot be constructed from the given strings.
 	 */
-	public static URI createURI(final String scheme, final String rawUserInfo, final String host, final int port, final String rawPath, final String rawQuery,
-			final String rawFragment) throws IllegalArgumentException {
+	public static URI createURI(final String scheme, final @Nullable String rawUserInfo, final @Nullable String host, final int port,
+			final @Nullable String rawPath, final @Nullable String rawQuery, final @Nullable String rawFragment) throws IllegalArgumentException {
 		final StringBuilder stringBuilder = new StringBuilder(); //we'll use this to construct the URI
 		if(scheme != null) { //if there is a scheme
 			stringBuilder.append(scheme).append(SCHEME_SEPARATOR); //append the scheme and its separator
@@ -1834,28 +1851,33 @@ public final class URIs {
 	}
 
 	/**
-	 * Decodes the escaped characters in the character iterator according to the URI encoding rules in <a href="http://www.ietf.org/rfc/rfc2396.txt">RFC 2396</a>,
-	 * "Uniform Resource Identifiers (URI): Generic Syntax", using the URI escape character, {@value URIs#ESCAPE_CHAR}.
+	 * Decodes the escaped characters in the character iterator according to the URI encoding rules in
+	 * <a href="https://datatracker.ietf.org/doc/html/rfc2396#section-2.4">RFC 2396 § 2.4 Escape Sequences</a>, using the URI escape character,
+	 * {@value URIs#ESCAPE_CHAR}.
+	 * @implNote This implementation uses RFC 2396 encoding rules, which are compatible with but superseded by
+	 *           <a href="https://tools.ietf.org/html/rfc3986#section-2.1">RFC 3986 § 2.1 Percent-Encoding</a>.
 	 * @param uri The data to URI-decode.
 	 * @return A character sequence containing the encoded URI data.
 	 * @throws IllegalArgumentException if the given URI string contains a character greater than U+00FF.
 	 * @throws IllegalArgumentException if a given escape character is not followed by a two-digit escape sequence.
 	 * @see URIs#ESCAPE_CHAR
 	 */
-	public static String decode(final CharSequence uri) {
+	public static String decode(final CharSequence uri) { //TODO update to RFC 3986
 		return decode(uri, ESCAPE_CHAR); //decode the string using the standard URI escape character
 	}
 
 	/**
-	 * Decodes the escaped ('%') characters in the character iterator according to the URI encoding rules in <a href="http://www.ietf.org/rfc/rfc2396.txt">RFC
-	 * 2396</a>, "Uniform Resource Identifiers (URI): Generic Syntax".
+	 * Decodes the escaped ('%') characters in the character iterator according to the URI encoding rules in
+	 * <a href="https://datatracker.ietf.org/doc/html/rfc2396#section-2.4">RFC 2396 § 2.4 Escape Sequences</a>.
+	 * @implNote This implementation uses RFC 2396 encoding rules, which are compatible with but superseded by
+	 *           <a href="https://tools.ietf.org/html/rfc3986#section-2.1">RFC 3986 § 2.1 Percent-Encoding</a>.
 	 * @param uri The data to URI-decode.
 	 * @param escapeChar The escape character.
 	 * @return A character sequence containing the encoded URI data.
 	 * @throws IllegalArgumentException if the given URI string contains a character greater than U+00FF.
 	 * @throws IllegalArgumentException if a given escape character is not followed by a two-digit escape sequence.
 	 */
-	public static String decode(final CharSequence uri, final char escapeChar) {
+	public static String decode(final CharSequence uri, final char escapeChar) { //TODO update to RFC 3986
 		return unescapeHex(uri, escapeChar, 2).toString(); //unescape the string using two escape hex digits
 	}
 
@@ -2212,7 +2234,6 @@ public final class URIs {
 		}
 		for(final String pathElement : pathElements) { //look at each path element
 			stringBuilder.append(encode(pathElement)); //encode and append this path element
-			stringBuilder.append(pathElement); //encode and append this path element
 			stringBuilder.append(PATH_SEPARATOR); //separate the path elements
 		}
 		if(!collection && pathElements.length > 0) { //if there were path elements but this wasn't a collection, we have one too many path separators 
