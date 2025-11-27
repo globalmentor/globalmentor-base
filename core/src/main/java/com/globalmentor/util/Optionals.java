@@ -35,6 +35,24 @@ public final class Optionals {
 	}
 
 	/**
+	 * Returns an {@link Optional} containing {@link Boolean#TRUE} if the given value is <code>true</code>; otherwise returns an empty {@link Optional}.
+	 * <p>This method allows for a fluent, functional approach to conditional logic by converting a Boolean expression into an {@link Optional} which can be
+	 * subsequently mapped or transformed.</p>
+	 * <p>Example usage:</p>
+	 * <pre>{@code
+	 * Optional<Path> foundLogFile = optionally(loggingEnabled).map(_ -> logDirectory.resolve("app.log"));
+	 * }</pre>
+	 * <p>This method is functionally equivalent to {@code Optional.of(value).filter(Boolean::booleanValue)}.</p>
+	 * @apiNote This method is analogous to JavaScript "truthy" values: whereas JavaScript coerces a value to a Boolean value based upon its "truthiness", this
+	 *          method coerces the result of a Boolean expression to an {@link Optional} based upon whether the expression evaluated to <code>true</code>.
+	 * @param value The Boolean value to convert.
+	 * @return An {@link Optional} containing {@link Boolean#TRUE} if the value is <code>true</code>; otherwise an empty {@link Optional}.
+	 */
+	public static Optional<Boolean> optionally(final boolean value) {
+		return value ? Optional.of(Boolean.TRUE) : Optional.empty();
+	}
+
+	/**
 	 * Convenience method that returns a value if and only if it the given optional is present and is an instance of the given class. This method is equivalent to
 	 * {@code optional.filter(instanceClass::isInstance).map(instanceClass::cast)}.
 	 * @apiNote Depending on the circumstances, it may be more natural to call {@code optional.flatMap(Objects.asInstance(instanceClass)}, which has the same

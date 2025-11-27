@@ -29,6 +29,13 @@ import org.junit.jupiter.api.*;
  */
 public class OptionalsTest {
 
+	/** @see Optionals#optionally(boolean) */
+	@Test
+	void testOptionally() {
+		assertThat("true produces Optional containing true", Optionals.optionally(true), is(Optional.of(Boolean.TRUE)));
+		assertThat("false produces empty Optional", Optionals.optionally(false), is(Optional.empty()));
+	}
+
 	/** @see Optionals#fold(Optional, Optional, java.util.function.BinaryOperator) */
 	@Test
 	void testFold() {
