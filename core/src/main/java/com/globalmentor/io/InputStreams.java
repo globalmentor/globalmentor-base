@@ -292,7 +292,7 @@ public final class InputStreams {
 				bom.checkUsualIO(); //make sure this is a usual 
 				//throw away the BOM
 				inputStream.reset(); //reset the stream back to where we found it
-				for(int i = bom.getLength() - 1; i >= 0; --i) { //throw away the correct number of bytes
+				for(int i = bom.length() - 1; i >= 0; --i) { //throw away the correct number of bytes
 					inputStream.read(); //throw away a byte
 				}
 				return bom.toCharset(); //return the charset for this BOM

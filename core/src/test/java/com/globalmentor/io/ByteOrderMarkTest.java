@@ -250,4 +250,49 @@ public class ByteOrderMarkTest {
 				is(Optional.of(ByteOrderMark.UTF_8)));
 		assertThat("actual BOM is set to UTF-8", actualBOM.get(), is(ByteOrderMark.UTF_8));
 	}
+
+	/** Tests for {@link ByteOrderMark#toByteSequence()} and {@link ByteOrderMark#length()}. */
+	@Test
+	public void testToByteSequenceAndLength() {
+		assertThat("UTF-8 length", ByteOrderMark.UTF_8.length(), is(3));
+		assertThat("UTF-8 toByteSequence length", ByteOrderMark.UTF_8.toByteSequence().length(), is(3));
+		assertThat("UTF-8 toByteSequence bytes", ByteOrderMark.UTF_8.toByteSequence().toByteArray(), is(new byte[] {(byte)0xEF, (byte)0xBB, (byte)0xBF}));
+
+		assertThat("UTF-16BE length", ByteOrderMark.UTF_16BE.length(), is(2));
+		assertThat("UTF-16BE toByteSequence length", ByteOrderMark.UTF_16BE.toByteSequence().length(), is(2));
+		assertThat("UTF-16BE toByteSequence bytes", ByteOrderMark.UTF_16BE.toByteSequence().toByteArray(), is(new byte[] {(byte)0xFE, (byte)0xFF}));
+
+		assertThat("UTF-16LE length", ByteOrderMark.UTF_16LE.length(), is(2));
+		assertThat("UTF-16LE toByteSequence length", ByteOrderMark.UTF_16LE.toByteSequence().length(), is(2));
+		assertThat("UTF-16LE toByteSequence bytes", ByteOrderMark.UTF_16LE.toByteSequence().toByteArray(), is(new byte[] {(byte)0xFF, (byte)0xFE}));
+
+		assertThat("UTF-32BE length", ByteOrderMark.UTF_32BE.length(), is(4));
+		assertThat("UTF-32BE toByteSequence length", ByteOrderMark.UTF_32BE.toByteSequence().length(), is(4));
+		assertThat("UTF-32BE toByteSequence bytes", ByteOrderMark.UTF_32BE.toByteSequence().toByteArray(), is(new byte[] {0x00, 0x00, (byte)0xFE, (byte)0xFF}));
+
+		assertThat("UTF-32LE length", ByteOrderMark.UTF_32LE.length(), is(4));
+		assertThat("UTF-32LE toByteSequence length", ByteOrderMark.UTF_32LE.toByteSequence().length(), is(4));
+		assertThat("UTF-32LE toByteSequence bytes", ByteOrderMark.UTF_32LE.toByteSequence().toByteArray(), is(new byte[] {(byte)0xFF, (byte)0xFE, 0x00, 0x00}));
+
+		assertThat("UTF-32BE_MIXED length", ByteOrderMark.UTF_32BE_MIXED.length(), is(4));
+		assertThat("UTF-32LE_MIXED length", ByteOrderMark.UTF_32LE_MIXED.length(), is(4));
+	}
+
+	/** Tests that {@link ByteOrderMark#toByteSequence()} returns the same instance on repeated calls. */
+	@Test
+	public void testToByteSequenceReturnsSameInstance() {
+		assertThat("same instance returned", ByteOrderMark.UTF_8.toByteSequence(), is(sameInstance(ByteOrderMark.UTF_8.toByteSequence())));
+		assertThat("same instance returned", ByteOrderMark.UTF_16BE.toByteSequence(), is(sameInstance(ByteOrderMark.UTF_16BE.toByteSequence())));
+		assertThat("same instance returned", ByteOrderMark.UTF_32LE.toByteSequence(), is(sameInstance(ByteOrderMark.UTF_32LE.toByteSequence())));
+	}
+
+	/** Tests for deprecated {@link ByteOrderMark#getBytes()} and {@link ByteOrderMark#getLength()}. */
+	@SuppressWarnings("removal")
+	@Test
+	public void testDeprecatedMethods() {
+		assertThat("getBytes() returns same content as toByteSequence().toByteArray()", ByteOrderMark.UTF_8.getBytes(),
+				is(ByteOrderMark.UTF_8.toByteSequence().toByteArray()));
+		assertThat("getLength() returns same value as length()", ByteOrderMark.UTF_8.getLength(), is(ByteOrderMark.UTF_8.length()));
+		assertThat("getBytes() returns defensive copy", ByteOrderMark.UTF_8.getBytes(), is(not(sameInstance(ByteOrderMark.UTF_8.getBytes()))));
+	}
 }
