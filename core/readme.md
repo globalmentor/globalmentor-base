@@ -25,9 +25,13 @@ checkIndexBounds(index, array.length);
 ```java
 ByteSequence bytes = ByteSequence.copyOf(data);  // defensive copy
 ByteSequence bytes = Bytes.asByteSequence(data); // no copy (caller guarantees immutability)
+ByteSequence bytes = ByteSequence.copyOf(byteBuffer); // from ByteBuffer
+ByteSequence bytes = InputStreams.readByteSequence(inputStream); // from InputStream
 
 bytes.startsWith(prefix);
-bytes.toByteArray();
+bytes.toByteArray();     // defensive copy
+bytes.toByteBuffer();    // read-only ByteBuffer view
+bytes.asInputStream();   // InputStream view
 ```
 
 ### `com.globalmentor.security`

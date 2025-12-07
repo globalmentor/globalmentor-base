@@ -20,6 +20,8 @@ import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.io.*;
+import java.nio.*;
 import java.util.Arrays;
 
 import org.junit.jupiter.api.*;
@@ -57,6 +59,30 @@ public class ByteSequenceTest {
 	@Test
 	void testCopyOfEmptyReturnsEmptySingleton() {
 		assertThat("copyOf empty returns empty singleton", ByteSequence.copyOf(new byte[0]), is(sameInstance(ByteSequence.empty())));
+	}
+
+	/** Tests for {@link ByteSequence#copyOf(ByteBuffer)}. */
+	@Test
+	void testCopyOfByteBuffer() {
+		final byte[] original = {0x01, 0x02, 0x03, 0x04, 0x05};
+		final ByteBuffer buffer = ByteBuffer.wrap(original);
+		buffer.position(1).limit(4); // remaining: [0x02, 0x03, 0x04]
+		final ByteSequence bs = ByteSequence.copyOf(buffer);
+		assertThat("copyOf ByteBuffer length", bs.length(), is(3));
+		assertThat("copyOf ByteBuffer content", bs.toByteArray(), is(new byte[] {0x02, 0x03, 0x04}));
+		assertThat("buffer position advanced to limit", buffer.position(), is(4));
+		original[1] = 0x00; // modify original to prove defensive copy
+		assertThat("copyOf ByteBuffer is independent of original", bs.byteAt(0), is((byte)0x02));
+	}
+
+	/** Tests that {@link ByteSequence#copyOf(ByteBuffer)} returns the empty singleton for empty buffers. */
+	@Test
+	void testCopyOfByteBufferEmptyReturnsEmptySingleton() {
+		final ByteBuffer buffer = ByteBuffer.allocate(0);
+		assertThat("copyOf empty buffer returns empty singleton", ByteSequence.copyOf(buffer), is(sameInstance(ByteSequence.empty())));
+		final ByteBuffer exhausted = ByteBuffer.wrap(new byte[] {0x01, 0x02});
+		exhausted.position(2); // no remaining
+		assertThat("copyOf exhausted buffer returns empty singleton", ByteSequence.copyOf(exhausted), is(sameInstance(ByteSequence.empty())));
 	}
 
 	/** Tests for {@link Bytes#asByteSequence(byte[])}. */
@@ -132,6 +158,67 @@ public class ByteSequenceTest {
 		assertThat("toByteArray equals original", result, is(original));
 		result[0] = 0x00; // modify result to prove it's a defensive copy
 		assertThat("toByteArray returns defensive copy", bs.byteAt(0), is((byte)0x0A));
+	}
+
+	/** Tests for {@link ByteSequence#toByteBuffer()}. */
+	@Test
+	void testToByteBuffer() {
+		final byte[] original = {0x01, 0x02, 0x03};
+		final ByteSequence bs = ByteSequence.copyOf(original);
+		final ByteBuffer buffer = bs.toByteBuffer();
+		assertThat("toByteBuffer position", buffer.position(), is(0));
+		assertThat("toByteBuffer limit", buffer.limit(), is(3));
+		assertThat("toByteBuffer capacity", buffer.capacity(), is(3));
+		assertThat("toByteBuffer isReadOnly", buffer.isReadOnly(), is(true));
+		final byte[] extracted = new byte[3];
+		buffer.get(extracted);
+		assertThat("toByteBuffer content", extracted, is(original));
+	}
+
+	/** Tests that {@link ByteSequence#toByteBuffer()} returns a read-only buffer. */
+	@Test
+	void testToByteBufferIsReadOnly() {
+		final ByteSequence bs = ByteSequence.copyOf(new byte[] {0x01, 0x02});
+		final ByteBuffer buffer = bs.toByteBuffer();
+		assertThrows(ReadOnlyBufferException.class, () -> buffer.put((byte)0x00), "put on read-only buffer");
+		assertThrows(ReadOnlyBufferException.class, () -> buffer.put(0, (byte)0x00), "put at index on read-only buffer");
+	}
+
+	/** Tests for {@link ByteSequence#asInputStream()}. */
+	@Test
+	void testAsInputStream() throws IOException {
+		final byte[] original = {0x01, 0x02, 0x03, 0x04};
+		final ByteSequence bs = ByteSequence.copyOf(original);
+		try (final InputStream in = bs.asInputStream()) {
+			assertThat("asInputStream supports mark", in.markSupported(), is(true));
+			assertThat("first byte", in.read(), is(0x01));
+			assertThat("second byte", in.read(), is(0x02));
+			in.mark(10);
+			assertThat("third byte", in.read(), is(0x03));
+			in.reset();
+			assertThat("third byte after reset", in.read(), is(0x03));
+			assertThat("fourth byte", in.read(), is(0x04));
+			assertThat("EOF", in.read(), is(-1));
+		}
+	}
+
+	/** Tests that {@link ByteSequence#asInputStream()} returns all bytes correctly. */
+	@Test
+	void testAsInputStreamReadAllBytes() throws IOException {
+		final byte[] original = {0x10, 0x20, 0x30, 0x40, 0x50};
+		final ByteSequence bs = ByteSequence.copyOf(original);
+		try (final InputStream in = bs.asInputStream()) {
+			assertThat("readAllBytes equals original", in.readAllBytes(), is(original));
+		}
+	}
+
+	/** Tests for empty {@link ByteSequence#asInputStream()}. */
+	@Test
+	void testAsInputStreamEmpty() throws IOException {
+		try (final InputStream in = ByteSequence.empty().asInputStream()) {
+			assertThat("empty stream returns EOF", in.read(), is(-1));
+			assertThat("empty stream readAllBytes", in.readAllBytes(), is(new byte[0]));
+		}
 	}
 
 	//## Default methods

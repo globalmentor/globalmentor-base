@@ -16,10 +16,13 @@
 
 package com.globalmentor.java;
 
+import static com.globalmentor.java.Bytes.*;
 import static com.globalmentor.java.Conditions.*;
 import static java.lang.Byte.*;
 import static java.lang.Math.*;
 
+import java.io.*;
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.stream.IntStream;
 
@@ -61,7 +64,24 @@ public interface ByteSequence {
 		if(bytes.length == 0) {
 			return empty();
 		}
-		return Bytes.asByteSequence(bytes.clone());
+		return asByteSequence(bytes.clone());
+	}
+
+	/**
+	 * Constructs a byte sequence from the remaining bytes in the given {@link ByteBuffer}.
+	 * <p>This method reads from the buffer's current position to its limit, advancing the position to the limit. The returned byte sequence contains a copy of
+	 * the bytes; subsequent modifications to the buffer do not affect the returned sequence.</p>
+	 * @param buffer The byte buffer from which to copy the remaining bytes.
+	 * @return A byte sequence containing a copy of the buffer's remaining bytes.
+	 * @throws NullPointerException if the buffer is {@code null}.
+	 */
+	public static ByteSequence copyOf(@NonNull final ByteBuffer buffer) {
+		if(!buffer.hasRemaining()) {
+			return empty();
+		}
+		final byte[] bytes = new byte[buffer.remaining()];
+		buffer.get(bytes);
+		return asByteSequence(bytes);
 	}
 
 	/**
@@ -121,6 +141,34 @@ public interface ByteSequence {
 	 * @return A new byte array containing the bytes in this sequence.
 	 */
 	byte[] toByteArray();
+
+	/**
+	 * Returns a read-only {@link ByteBuffer} view of this byte sequence.
+	 * <p>The returned buffer's position is zero, its limit and capacity are equal to this sequence's length, and its byte order is
+	 * {@link java.nio.ByteOrder#BIG_ENDIAN BIG_ENDIAN}. The buffer is read-only; attempts to modify it will throw {@link java.nio.ReadOnlyBufferException}.</p>
+	 * @apiNote This method is useful for interoperability with APIs that accept {@link ByteBuffer}, such as NIO channels and third-party libraries like the AWS
+	 *          SDK's {@code SdkBytes.fromByteBuffer()}.
+	 * @implSpec The default implementation creates a new byte array via {@link #toByteArray()}, wraps it in a buffer, and returns a read-only view.
+	 *           Implementations backed by an array may override this to return a zero-copy read-only view of the underlying array.
+	 * @return A read-only {@link ByteBuffer} containing the bytes in this sequence.
+	 */
+	default ByteBuffer toByteBuffer() {
+		return ByteBuffer.wrap(toByteArray()).asReadOnlyBuffer();
+	}
+
+	/**
+	 * Returns an {@link InputStream} for reading the bytes in this sequence.
+	 * <p>The returned stream supports {@link InputStream#mark(int)} and {@link InputStream#reset()}. The stream is independent of this byte sequence; closing the
+	 * stream has no effect on this sequence.</p>
+	 * @apiNote The name {@code asInputStream()} (rather than {@code toInputStream()}) signals that this method provides a <em>view</em> of the underlying data
+	 *          rather than a converted copy. However, the default implementation does involve a copy; see {@code @implSpec} for details.
+	 * @implSpec The default implementation creates a new byte array via {@link #toByteArray()} and wraps it in a {@link ByteArrayInputStream}. Implementations
+	 *           backed by an array may override this to wrap the underlying array directly, providing a zero-copy view.
+	 * @return An {@link InputStream} for reading this byte sequence.
+	 */
+	default InputStream asInputStream() {
+		return new ByteArrayInputStream(toByteArray());
+	}
 
 	/**
 	 * Returns {@code true} if this byte sequence is empty.

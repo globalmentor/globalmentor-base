@@ -20,6 +20,8 @@ import static com.globalmentor.java.Bytes.NO_BYTES;
 import static com.globalmentor.java.Conditions.*;
 import static java.util.Objects.*;
 
+import java.io.*;
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.stream.IntStream;
 
@@ -101,6 +103,25 @@ public abstract class AbstractByteArrayByteSequence implements ByteSequence {
 	@Override
 	public byte[] toByteArray() {
 		return getByteArray().clone();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @implSpec This implementation returns a read-only {@link ByteBuffer} wrapping the underlying byte array directly, without copying. The returned buffer
+	 *           cannot be used to modify the underlying data.
+	 */
+	@Override
+	public ByteBuffer toByteBuffer() {
+		return ByteBuffer.wrap(getByteArray()).asReadOnlyBuffer();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @implSpec This implementation returns a {@link ByteArrayInputStream} wrapping the underlying byte array directly, without copying.
+	 */
+	@Override
+	public InputStream asInputStream() {
+		return new ByteArrayInputStream(getByteArray());
 	}
 
 	@Override

@@ -29,7 +29,7 @@ import java.util.Random;
 
 import org.junit.jupiter.api.Test;
 
-import com.globalmentor.java.Bytes;
+import com.globalmentor.java.*;
 
 /**
  * Tests of {@link InputStreams}.
@@ -140,6 +140,80 @@ public class InputStreamsTest {
 		assertThat(InputStreams.read(inputStream, buffer, 1, 3), is(3)); //correct number of bytes read
 		assertThat(buffer, is(new byte[] {0, 'f', 'o', 'o', 0, 0, 0, 0})); //correct data read
 		assertThat(readBytes(inputStream), is(NO_BYTES)); //no data remaining
+	}
+
+	//## readByteSequence
+
+	/** Tests for {@link InputStreams#readByteSequence(InputStream)}. */
+	@Test
+	void testReadByteSequence() throws IOException {
+		final byte[] data = {0x01, 0x02, 0x03, 0x04, 0x05};
+		try (final InputStream inputStream = new ByteArrayInputStream(data)) {
+			final ByteSequence result = InputStreams.readByteSequence(inputStream);
+			assertThat("readByteSequence returns correct content", result.toByteArray(), is(data));
+			assertThat("readByteSequence returns correct length", result.length(), is(5));
+		}
+	}
+
+	/** Tests that {@link InputStreams#readByteSequence(InputStream)} returns empty singleton for empty stream. */
+	@Test
+	void testReadByteSequenceEmpty() throws IOException {
+		try (final InputStream inputStream = InputStream.nullInputStream()) {
+			final ByteSequence result = InputStreams.readByteSequence(inputStream);
+			assertThat("readByteSequence of empty stream returns empty singleton", result, is(sameInstance(ByteSequence.empty())));
+		}
+	}
+
+	/** Tests that {@link InputStreams#readByteSequence(InputStream)} reads all bytes from a large stream. */
+	@Test
+	void testReadByteSequenceLarge() throws IOException {
+		final byte[] data = Bytes.generateRandom(100_000, new Random(20251207));
+		try (final InputStream inputStream = new ByteArrayInputStream(data)) {
+			final ByteSequence result = InputStreams.readByteSequence(inputStream);
+			assertThat("readByteSequence handles large data", result.toByteArray(), is(data));
+		}
+	}
+
+	/** Tests for {@link InputStreams#readByteSequence(InputStream, int)}. */
+	@Test
+	void testReadByteSequenceWithLength() throws IOException {
+		final byte[] data = {0x01, 0x02, 0x03, 0x04, 0x05};
+		try (final InputStream inputStream = new ByteArrayInputStream(data)) {
+			final ByteSequence result = InputStreams.readByteSequence(inputStream, 3);
+			assertThat("readByteSequence with length returns correct content", result.toByteArray(), is(new byte[] {0x01, 0x02, 0x03}));
+			assertThat("readByteSequence with length returns correct length", result.length(), is(3));
+			assertThat("remaining bytes still available", inputStream.readAllBytes(), is(new byte[] {0x04, 0x05}));
+		}
+	}
+
+	/** Tests that {@link InputStreams#readByteSequence(InputStream, int)} returns fewer bytes at end-of-stream. */
+	@Test
+	void testReadByteSequenceWithLengthAtEndOfStream() throws IOException {
+		final byte[] data = {0x01, 0x02, 0x03};
+		try (final InputStream inputStream = new ByteArrayInputStream(data)) {
+			final ByteSequence result = InputStreams.readByteSequence(inputStream, 10); // request more than available
+			assertThat("readByteSequence returns available bytes at EOF", result.toByteArray(), is(data));
+			assertThat("readByteSequence returns actual length at EOF", result.length(), is(3));
+		}
+	}
+
+	/** Tests that {@link InputStreams#readByteSequence(InputStream, int)} with zero length returns empty singleton. */
+	@Test
+	void testReadByteSequenceWithZeroLength() throws IOException {
+		final byte[] data = {0x01, 0x02, 0x03};
+		try (final InputStream inputStream = new ByteArrayInputStream(data)) {
+			final ByteSequence result = InputStreams.readByteSequence(inputStream, 0);
+			assertThat("readByteSequence with zero length returns empty singleton", result, is(sameInstance(ByteSequence.empty())));
+			assertThat("all bytes still available after zero-length read", inputStream.readAllBytes(), is(data));
+		}
+	}
+
+	/** Tests that {@link InputStreams#readByteSequence(InputStream, int)} throws for negative length. */
+	@Test
+	void testReadByteSequenceWithNegativeLengthThrows() throws IOException {
+		try (final InputStream inputStream = new ByteArrayInputStream(new byte[] {0x01, 0x02})) {
+			assertThrows(IllegalArgumentException.class, () -> InputStreams.readByteSequence(inputStream, -1), "negative length");
+		}
 	}
 
 }
