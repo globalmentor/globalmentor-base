@@ -16,12 +16,14 @@
 
 package com.globalmentor.java;
 
+import static java.nio.charset.StandardCharsets.*;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.*;
 import java.nio.*;
+import java.util.*;
 import java.util.Arrays;
 
 import org.junit.jupiter.api.*;
@@ -412,6 +414,52 @@ public class ByteSequenceTest {
 		final ByteSequence bs2 = ByteSequence.copyOf(new byte[] {0x10, 0x20, 0x30});
 		assertThat("equals implies same hashCode", bs1.equals(bs2), is(true));
 		assertThat("hashCode consistency", bs1.hashCode(), is(bs2.hashCode()));
+	}
+
+	//## String encoding methods
+
+	/** Tests for {@link ByteSequence#toHexString()}. */
+	@Test
+	void testToHexString() {
+		assertThat("hex of typical bytes", ByteSequence.copyOf(new byte[] {0x0A, (byte)0xFF, 0x00, 0x1B}).toHexString(), is("0aff001b"));
+		assertThat("hex of empty", ByteSequence.empty().toHexString(), is(""));
+		assertThat("hex of single byte", ByteSequence.copyOf(new byte[] {0x42}).toHexString(), is("42"));
+	}
+
+	/** Tests for {@link ByteSequence#toHexString(HexFormat)}. */
+	@Test
+	void testToHexStringWithFormat() {
+		final ByteSequence bs = ByteSequence.copyOf(new byte[] {0x0A, (byte)0xBC, 0x12});
+		assertThat("hex uppercase", bs.toHexString(HexFormat.of().withUpperCase()), is("0ABC12"));
+		assertThat("hex with delimiter", bs.toHexString(HexFormat.ofDelimiter(":")), is("0a:bc:12"));
+		assertThat("hex with prefix", bs.toHexString(HexFormat.of().withPrefix("0x")), is("0x0a0xbc0x12"));
+	}
+
+	/** Tests for {@link ByteSequence#toBase64String()}. */
+	@Test
+	void testToBase64String() {
+		assertThat("base64 of 'Hello'", ByteSequence.copyOf("Hello".getBytes(US_ASCII)).toBase64String(), is("SGVsbG8="));
+		assertThat("base64 of empty", ByteSequence.empty().toBase64String(), is(""));
+		assertThat("base64 of binary", ByteSequence.copyOf(new byte[] {(byte)0xFB, (byte)0xFF}).toBase64String(), is("+/8="));
+	}
+
+	/** Tests for {@link ByteSequence#toBase64String(Base64.Encoder)}. */
+	@Test
+	void testToBase64StringWithEncoder() {
+		final ByteSequence bs = ByteSequence.copyOf(new byte[] {(byte)0xFB, (byte)0xFF});
+		assertThat("base64 URL-safe", bs.toBase64String(Base64.getUrlEncoder()), is("-_8="));
+		assertThat("base64 without padding", bs.toBase64String(Base64.getEncoder().withoutPadding()), is("+/8"));
+		assertThat("base64 URL-safe without padding", bs.toBase64String(Base64.getUrlEncoder().withoutPadding()), is("-_8"));
+	}
+
+	/** Tests for {@link ByteSequence#toString(java.nio.charset.Charset)}. */
+	@Test
+	void testToStringWithCharset() {
+		assertThat("UTF-8 decode", ByteSequence.copyOf("Hello".getBytes(UTF_8)).toString(UTF_8), is("Hello"));
+		assertThat("ISO-8859-1 decode", ByteSequence.copyOf(new byte[] {(byte)0xE9}).toString(ISO_8859_1), is("é"));
+		assertThat("empty decode", ByteSequence.empty().toString(UTF_8), is(""));
+		final byte[] utf8Bytes = "日本語".getBytes(UTF_8); // Japanese: "Nihongo" (Japanese language)
+		assertThat("UTF-8 multibyte", ByteSequence.copyOf(utf8Bytes).toString(UTF_8), is("日本語")); // Japanese: "Nihongo"
 	}
 
 }

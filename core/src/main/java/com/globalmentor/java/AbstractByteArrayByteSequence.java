@@ -22,7 +22,10 @@ import static java.util.Objects.*;
 
 import java.io.*;
 import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
 import java.util.Arrays;
+import java.util.Base64;
+import java.util.HexFormat;
 import java.util.stream.IntStream;
 
 import org.jspecify.annotations.*;
@@ -122,6 +125,33 @@ public abstract class AbstractByteArrayByteSequence implements ByteSequence {
 	@Override
 	public InputStream asInputStream() {
 		return new ByteArrayInputStream(getByteArray());
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @implSpec This implementation delegates to {@link HexFormat#formatHex(byte[])} using the underlying byte array directly, without copying.
+	 */
+	@Override
+	public String toHexString(@NonNull final HexFormat hexFormat) {
+		return hexFormat.formatHex(getByteArray());
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @implSpec This implementation delegates to {@link Base64.Encoder#encodeToString(byte[])} using the underlying byte array directly, without copying.
+	 */
+	@Override
+	public String toBase64String(final Base64.Encoder encoder) {
+		return encoder.encodeToString(getByteArray());
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @implSpec This implementation creates a new {@link String} from the underlying byte array directly, without copying.
+	 */
+	@Override
+	public String toString(@NonNull final Charset charset) {
+		return new String(getByteArray(), charset);
 	}
 
 	@Override

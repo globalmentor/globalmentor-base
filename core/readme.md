@@ -32,6 +32,9 @@ bytes.startsWith(prefix);
 bytes.toByteArray();     // defensive copy
 bytes.toByteBuffer();    // read-only ByteBuffer view
 bytes.asInputStream();   // InputStream view
+bytes.toHexString();     // "0a1b2c..."
+bytes.toBase64String();  // "Chs..."
+bytes.toString(UTF_8);   // decode as text
 ```
 
 ### `com.globalmentor.security`

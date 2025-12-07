@@ -23,10 +23,11 @@ import static java.lang.Math.*;
 
 import java.io.*;
 import java.nio.ByteBuffer;
-import java.util.Arrays;
+import java.nio.charset.Charset;
+import java.util.*;
 import java.util.stream.IntStream;
 
-import org.jspecify.annotations.*;
+import org.jspecify.annotations.NonNull;
 
 /**
  * A readable sequence of byte values.
@@ -34,7 +35,7 @@ import org.jspecify.annotations.*;
  * semantics for binary data.</p>
  * <p>This interface refines the general contracts of the {@link #equals(Object)} and {@link #hashCode()} methods. Two {@code ByteSequence} instances are
  * considered equal if and only if they have the same length and contain the same byte values in the same order. The hash code of a {@code ByteSequence} is
- * defined to be equivalent to {@link Arrays#hashCode(byte[])} applied to the result of {@link #toByteArray()}.</p>
+ * defined to be equivalent to {@link java.util.Arrays#hashCode(byte[])} applied to the result of {@link #toByteArray()}.</p>
  * @apiNote This interface is analogous to {@link CharSequence} but for characters. Unlike {@link CharSequence}, which does not define an equality contract,
  *          {@code ByteSequence} does refine equality semantics. This ensures that {@code byteSequence1.equals(byteSequence2)} implies
  *          {@code byteSequence1.hashCode() == byteSequence2.hashCode()} for any two {@code ByteSequence} instances, allowing {@code ByteSequence} instances to
@@ -168,6 +169,89 @@ public interface ByteSequence {
 	 */
 	default InputStream asInputStream() {
 		return new ByteArrayInputStream(toByteArray());
+	}
+
+	/**
+	 * Returns a hexadecimal string representation of the bytes in this sequence using lowercase characters.
+	 * <p>Each byte is represented as two hexadecimal digits, with no separators between bytes. For example, the bytes {@code {0x0A, 0xFF}} would produce the
+	 * string {@code "0aff"}. This is equivalent to {@code HexFormat.of().formatHex(toByteArray())}.</p>
+	 * @apiNote This method exists because implementations will typically provide a more efficient version that accesses the underlying byte array directly,
+	 *          avoiding the defensive copy that {@link #toByteArray()} requires.
+	 * @implSpec The default implementation delegates to {@link #toHexString(HexFormat)} with a default {@link HexFormat} instance.
+	 * @return A lowercase hexadecimal string representation of this byte sequence.
+	 * @see #toHexString(HexFormat)
+	 * @see HexFormat#formatHex(byte[])
+	 */
+	default String toHexString() {
+		return toHexString(HexFormat.of());
+	}
+
+	/**
+	 * Returns a hexadecimal string representation of the bytes in this sequence using the specified {@link HexFormat}.
+	 * <p>The format controls aspects such as uppercase/lowercase, delimiters, and prefix/suffix. This is equivalent to
+	 * {@code hexFormat.formatHex(toByteArray())}.</p>
+	 * @apiNote This method exists because implementations will typically provide a more efficient version that accesses the underlying byte array directly,
+	 *          avoiding the defensive copy that {@link #toByteArray()} requires.
+	 * @implSpec The default implementation delegates to {@link HexFormat#formatHex(byte[])} with the provided format.
+	 * @param hexFormat The format to use for encoding.
+	 * @return A hexadecimal string representation of this byte sequence.
+	 * @throws NullPointerException if {@code hexFormat} is {@code null}.
+	 * @see #toHexString()
+	 * @see HexFormat#formatHex(byte[])
+	 */
+	default String toHexString(@NonNull final HexFormat hexFormat) {
+		return hexFormat.formatHex(toByteArray());
+	}
+
+	/**
+	 * Returns a Base64-encoded string representation of the bytes in this sequence using the standard RFC 4648 encoding.
+	 * <p>The encoding uses the standard Base64 alphabet ({@code A-Za-z0-9+/}) with padding ({@code =}). This is equivalent to
+	 * {@code Base64.getEncoder().encodeToString(toByteArray())}.</p>
+	 * @apiNote This method exists because implementations will typically provide a more efficient version that accesses the underlying byte array directly,
+	 *          avoiding the defensive copy that {@link #toByteArray()} requires.
+	 * @implSpec The default implementation delegates to {@link #toBase64String(Base64.Encoder)} using {@link Base64#getEncoder()}.
+	 * @return A Base64-encoded string representation of this byte sequence.
+	 * @see #toBase64String(Base64.Encoder)
+	 * @see Base64#getEncoder()
+	 * @see Base64.Encoder#encodeToString(byte[])
+	 */
+	default String toBase64String() {
+		return toBase64String(Base64.getEncoder());
+	}
+
+	/**
+	 * Returns a Base64-encoded string representation of the bytes in this sequence using the specified encoder.
+	 * <p>Common encoders include {@link Base64#getEncoder()} (standard), {@link Base64#getUrlEncoder()} (URL-safe), and {@link Base64#getMimeEncoder()}
+	 * (MIME-style with line breaks). Each can be further customized with {@link Base64.Encoder#withoutPadding()}. This is equivalent to
+	 * {@code encoder.encodeToString(toByteArray())}.</p>
+	 * @apiNote This method exists because implementations will typically provide a more efficient version that accesses the underlying byte array directly,
+	 *          avoiding the defensive copy that {@link #toByteArray()} requires.
+	 * @implSpec The default implementation delegates to {@link Base64.Encoder#encodeToString(byte[])} with the provided encoder.
+	 * @param encoder The Base64 encoder to use.
+	 * @return A Base64-encoded string representation of this byte sequence.
+	 * @throws NullPointerException if {@code encoder} is {@code null}.
+	 * @see #toBase64String()
+	 * @see Base64#getEncoder()
+	 * @see Base64#getUrlEncoder()
+	 * @see Base64.Encoder#encodeToString(byte[])
+	 */
+	default String toBase64String(final Base64.Encoder encoder) {
+		return encoder.encodeToString(toByteArray());
+	}
+
+	/**
+	 * Decodes the bytes in this sequence into a string using the specified charset.
+	 * <p>This is equivalent to {@code new String(toByteArray(), charset)}.</p>
+	 * @apiNote This method exists because implementations will typically provide a more efficient version that accesses the underlying byte array directly,
+	 *          avoiding the defensive copy that {@link #toByteArray()} requires.
+	 * @implSpec The default implementation creates a new {@link String} from {@link #toByteArray()} using the specified charset.
+	 * @param charset The charset to use for decoding.
+	 * @return A string decoded from this byte sequence using the specified charset.
+	 * @throws NullPointerException if {@code charset} is {@code null}.
+	 * @see String#String(byte[], Charset)
+	 */
+	default String toString(@NonNull final Charset charset) {
+		return new String(toByteArray(), charset);
 	}
 
 	/**
@@ -393,13 +477,13 @@ public interface ByteSequence {
 	boolean equals(Object obj);
 
 	/**
-	 * Returns the hash code value for this byte sequence. The hash code is defined to be equivalent to {@link Arrays#hashCode(byte[])} applied to the result of
-	 * {@link #toByteArray()}.
+	 * Returns the hash code value for this byte sequence. The hash code is defined to be equivalent to {@link java.util.Arrays#hashCode(byte[])} applied to the
+	 * result of {@link #toByteArray()}.
 	 * <p>This ensures that {@code byteSequence1.equals(byteSequence2)} implies {@code byteSequence1.hashCode() == byteSequence2.hashCode()} for any two
 	 * {@code ByteSequence} instances {@code byteSequence1} and {@code byteSequence2}, as required by the general contract of {@link Object#hashCode()}.</p>
 	 * @return The hash code value for this byte sequence.
 	 * @see #equals(Object)
-	 * @see Arrays#hashCode(byte[])
+	 * @see java.util.Arrays#hashCode(byte[])
 	 */
 	@Override
 	int hashCode();
