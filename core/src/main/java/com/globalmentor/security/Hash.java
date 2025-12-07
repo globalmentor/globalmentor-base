@@ -1,5 +1,5 @@
 /*
- * Copyright © 1996-2019 GlobalMentor, Inc. <https://www.globalmentor.com/>
+ * Copyright © 1996-2025 GlobalMentor, Inc. <https://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,29 +16,31 @@
 
 package com.globalmentor.security;
 
-import static java.util.Objects.*;
-
 import java.security.MessageDigest;
-import java.util.Arrays;
 import java.util.HexFormat;
 
 import org.jspecify.annotations.*;
 
+import com.globalmentor.java.AbstractByteArrayByteSequence;
+import com.globalmentor.java.ByteSequence;
+
 /**
  * The encapsulation of message digest output, providing data immutability and convenience methods for updating other message digests.
- * @apiNote This class provides programming safety mutability but not cryptographic safety again Byzantine attacks. In other words, this class is useful for
- *          preventing accidental modification of bytes due to a logic error, and is thus orders of magnitude safer than using a raw byte array. However it
- *          would be possible to create a back-door mutable instance by passing a rogue or buggy {@link MessageDigest} implementation to
+ * <p>This class extends {@link AbstractByteArrayByteSequence} and thus implements {@link ByteSequence}, allowing hash values to be compared and manipulated as
+ * immutable byte sequences. Two {@code Hash} instances are equal if and only if they contain the same byte values, regardless of the algorithm used to produce
+ * them. A {@code Hash} can also be equal to other {@link ByteSequence} implementations containing the same bytes.</p>
+ * @apiNote This class provides programming safety against mutability but not cryptographic safety against Byzantine attacks. In other words, this class is
+ *          useful for preventing accidental modification of bytes due to a logic error, and is thus orders of magnitude safer than using a raw byte array.
+ *          However it would be possible to create a back-door mutable instance by passing a rogue or buggy {@link MessageDigest} implementation to
  *          {@link Hash#fromDigest(MessageDigest)}. A rogue or buggy {@link MessageDigest} implementation could also change the contents of the hash bytes via
  *          its {@link MessageDigest#update(byte[])} method when {@link #updateMessageDigest(MessageDigest)} is called.
- * @implNote The immutability of this class in conjunction with {@link MessageDigests} depends on all implementation of {@link MessageDigest#digest()} and
+ * @implNote The immutability of this class in conjunction with {@link MessageDigests} depends on all implementations of {@link MessageDigest#digest()} and
  *           similar methods to return a byte array free from other references; and depends on all implementations of {@link MessageDigest#update(byte[])} not
  *           to change any information in the byte array passed to it.
  * @author Garret Wilson
+ * @see ByteSequence
  */
-public final class Hash {
-
-	private final byte[] bytes;
+public final class Hash extends AbstractByteArrayByteSequence {
 
 	/**
 	 * Hash bytes constructor.
@@ -46,7 +48,7 @@ public final class Hash {
 	 * @param bytes The bytes of a message digest.
 	 */
 	private Hash(@NonNull final byte[] bytes) {
-		this.bytes = requireNonNull(bytes);
+		super(bytes);
 	}
 
 	/**
@@ -89,7 +91,7 @@ public final class Hash {
 	 * @see MessageDigest#update(byte[])
 	 */
 	public MessageDigest updateMessageDigest(@NonNull final MessageDigest messageDigest) {
-		messageDigest.update(bytes);
+		messageDigest.update(getByteArray());
 		return messageDigest;
 	}
 
@@ -97,11 +99,13 @@ public final class Hash {
 	 * Returns the message digest bytes. The resulting byte array is guaranteed to be free from other references.
 	 * @apiNote This method should only be called when the actual bytes are truly needed, because of the overhead in protecting the bytes using e.g. a defensive
 	 *          copy. Otherwise try to use other methods that can access the bytes internally, such as {@link #updateMessageDigest(MessageDigest)}.
-	 * @implSpec This implementation makes a defensive copy of the bytes before returning them.
+	 * @implSpec This implementation delegates to {@link #toByteArray()}.
 	 * @return The message digest bytes.
+	 * @deprecated Use {@link #toByteArray()} instead.
 	 */
+	@Deprecated(forRemoval = true)
 	public byte[] getBytes() {
-		return bytes.clone();
+		return toByteArray();
 	}
 
 	/**
@@ -109,47 +113,21 @@ public final class Hash {
 	 * @apiNote This method considers a <dfn>checksum</dfn> to be a string version of a message <dfn>digest</dfn>, as the former is often used in the context of
 	 *          file contents verification.
 	 * @implNote This implementation exposes the underlying mutable bytes of the hash to {@link HexFormat#formatHex(byte[])}, which is considered safe because the
-	 *           class is <code>final</code> and part of the JDK.
+	 *           class is {@code final} and part of the JDK.
 	 * @return The lowercase hex checksum string of the hash bytes.
-	 * @see #getBytes()
+	 * @see #toByteArray()
 	 */
 	public String toChecksum() {
-		return HexFormat.of().formatHex(bytes);
+		return HexFormat.of().formatHex(getByteArray());
 	}
 
 	/**
 	 * {@inheritDoc}
 	 * @implSpec This implementation delegates to {@link #toChecksum()}.
-	 * @see #getBytes()
 	 */
 	@Override
 	public String toString() {
 		return toChecksum();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 * @implSpec This implementation returns a hash code of the hash bytes.
-	 * @see #getBytes()
-	 */
-	@Override
-	public int hashCode() {
-		return Arrays.hashCode(bytes);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 * @implSpec This implementation considers another object equal if it is an instance of {@link Hash} and contains the same hash bytes.
-	 * @see #getBytes()
-	 */
-	@Override
-	public boolean equals(final Object object) {
-		if(object == this) {
-			return true;
-		}
-		if(!(object instanceof Hash)) {
-			return false;
-		}
-		return Arrays.equals(bytes, ((Hash)object).bytes);
-	}
 }
