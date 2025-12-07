@@ -545,6 +545,64 @@ public class ConditionsTest {
 		assertThrows(IndexOutOfBoundsException.class, () -> checkIndexBounds(10L, 10L));
 	}
 
+	/** Tests for {@link Conditions#checkIndexRangeBounds(int, int, int)}. */
+	@Test
+	void testCheckIndexRangeBoundsWithIntegers() {
+		checkIndexRangeBounds(0, 0, 10); // empty range at start
+		checkIndexRangeBounds(0, 10, 10); // full range
+		checkIndexRangeBounds(5, 10, 10); // partial range
+		checkIndexRangeBounds(0, 5, 10); // partial range from start
+		checkIndexRangeBounds(3, 7, 10); // middle range
+		checkIndexRangeBounds(10, 10, 10); // empty range at end
+	}
+
+	/** Tests for {@link Conditions#checkIndexRangeBounds(long, long, long)}. */
+	@Test
+	void testCheckIndexRangeBoundsWithLongs() {
+		checkIndexRangeBounds(0L, 0L, 10L); // empty range at start
+		checkIndexRangeBounds(0L, 10L, 10L); // full range
+		checkIndexRangeBounds(5L, 10L, 10L); // partial range
+		checkIndexRangeBounds(0L, 5L, 10L); // partial range from start
+		checkIndexRangeBounds(3L, 7L, 10L); // middle range
+		checkIndexRangeBounds(10L, 10L, 10L); // empty range at end
+	}
+
+	/** Tests that {@link Conditions#checkIndexRangeBounds(int, int, int)} throws for negative from. */
+	@Test
+	void testCheckIndexRangeBoundsNegativeFrom() {
+		assertThrows(IndexOutOfBoundsException.class, () -> checkIndexRangeBounds(-1, 5, 10), "negative from");
+	}
+
+	/** Tests that {@link Conditions#checkIndexRangeBounds(int, int, int)} throws when to less than from. */
+	@Test
+	void testCheckIndexRangeBoundsToLessThanFrom() {
+		assertThrows(IndexOutOfBoundsException.class, () -> checkIndexRangeBounds(5, 3, 10), "to less than from");
+	}
+
+	/** Tests that {@link Conditions#checkIndexRangeBounds(int, int, int)} throws when to exceeds length. */
+	@Test
+	void testCheckIndexRangeBoundsToExceedsLength() {
+		assertThrows(IndexOutOfBoundsException.class, () -> checkIndexRangeBounds(5, 11, 10), "to exceeds length");
+	}
+
+	/** Tests that {@link Conditions#checkIndexRangeBounds(long, long, long)} throws for negative from. */
+	@Test
+	void testCheckIndexRangeBoundsLongNegativeFrom() {
+		assertThrows(IndexOutOfBoundsException.class, () -> checkIndexRangeBounds(-1L, 5L, 10L), "negative from");
+	}
+
+	/** Tests that {@link Conditions#checkIndexRangeBounds(long, long, long)} throws when to less than from. */
+	@Test
+	void testCheckIndexRangeBoundsLongToLessThanFrom() {
+		assertThrows(IndexOutOfBoundsException.class, () -> checkIndexRangeBounds(5L, 3L, 10L), "to less than from");
+	}
+
+	/** Tests that {@link Conditions#checkIndexRangeBounds(long, long, long)} throws when to exceeds length. */
+	@Test
+	void testCheckIndexRangeBoundsLongToExceedsLength() {
+		assertThrows(IndexOutOfBoundsException.class, () -> checkIndexRangeBounds(5L, 11L, 10L), "to exceeds length");
+	}
+
 	/** Tests the {@link Conditions#checkState(boolean)} and the {@link Conditions#checkState(boolean, String, Object...)} methods. */
 	@Test
 	void testCheckState() {

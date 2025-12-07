@@ -568,6 +568,56 @@ public final class Conditions {
 	}
 
 	/**
+	 * Checks to make sure that a given index range is valid within the bounds {@code [0, length)}.
+	 * <p>This method validates that {@code from} and {@code to} define a valid half-open range {@code [from, to)} where:</p>
+	 * <ul>
+	 * <li>{@code from >= 0}</li>
+	 * <li>{@code to >= from}</li>
+	 * <li>{@code to <= length}</li>
+	 * </ul>
+	 * <p>This is normally a precondition check.</p>
+	 * @apiNote This method is the index-bounds equivalent of {@link #checkArgumentRange(int, int, int, int)}, but throws {@link IndexOutOfBoundsException}
+	 *          instead of {@link IllegalArgumentException}. Use this method when validating index ranges for indexed data structures such as arrays, lists, or
+	 *          sequences—where the JDK convention is to throw {@code IndexOutOfBoundsException}. Use {@code checkArgumentRange()} for general numeric argument
+	 *          validation where the values do not represent indices.
+	 * @param from The start index, inclusive.
+	 * @param to The end index, exclusive.
+	 * @param length The length of the indexed structure (exclusive upper bound).
+	 * @throws IndexOutOfBoundsException if {@code from} is negative, {@code to} is less than {@code from}, or {@code to} is greater than {@code length}.
+	 * @see #checkIndexBounds(int, int)
+	 */
+	public static void checkIndexRangeBounds(final int from, final int to, final int length) {
+		if(from < 0 || to < from || to > length) {
+			throw new IndexOutOfBoundsException("Index range [%d, %d) out of bounds for length %d.".formatted(from, to, length));
+		}
+	}
+
+	/**
+	 * Checks to make sure that a given index range is valid within the bounds {@code [0, length)}.
+	 * <p>This method validates that {@code from} and {@code to} define a valid half-open range {@code [from, to)} where:</p>
+	 * <ul>
+	 * <li>{@code from >= 0}</li>
+	 * <li>{@code to >= from}</li>
+	 * <li>{@code to <= length}</li>
+	 * </ul>
+	 * <p>This is normally a precondition check.</p>
+	 * @apiNote This method is the index-bounds equivalent of {@link #checkArgumentRange(int, int, int, int)}, but throws {@link IndexOutOfBoundsException}
+	 *          instead of {@link IllegalArgumentException}. Use this method when validating index ranges for indexed data structures such as arrays, lists, or
+	 *          sequences—where the JDK convention is to throw {@code IndexOutOfBoundsException}. Use {@code checkArgumentRange()} for general numeric argument
+	 *          validation where the values do not represent indices.
+	 * @param from The start index, inclusive.
+	 * @param to The end index, exclusive.
+	 * @param length The length of the indexed structure (exclusive upper bound).
+	 * @throws IndexOutOfBoundsException if {@code from} is negative, {@code to} is less than {@code from}, or {@code to} is greater than {@code length}.
+	 * @see #checkIndexBounds(long, long)
+	 */
+	public static void checkIndexRangeBounds(final long from, final long to, final long length) {
+		if(from < 0 || to < from || to > length) {
+			throw new IndexOutOfBoundsException("Index range [%d, %d) out of bounds for length %d.".formatted(from, to, length));
+		}
+	}
+
+	/**
 	 * Checks to make sure a given state is <code>true</code>.
 	 * @param state The state to check.
 	 * @throws IllegalStateException if the given state is <code>false</code>.
