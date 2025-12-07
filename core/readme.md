@@ -1,5 +1,49 @@
 # GlobalMentor Core Java Library
 
+The core library provides foundational utilities for Java development, including precondition checks, immutable byte sequences, and cryptographic hashing helpers.
+
+## Overview
+
+### `com.globalmentor.java`
+
+#### Precondition Checks
+
+`Conditions` provides expressive precondition and state validation methods that throw appropriate exceptions with formatted messages.
+
+```java
+import static com.globalmentor.java.Conditions.*;
+
+checkArgument(count >= 0, "Count `%d` cannot be negative.", count);
+checkState(isInitialized(), "Service not initialized.");
+checkIndexBounds(index, array.length);
+```
+
+#### Byte Sequences
+
+`ByteSequence` is an immutable, value-semantics interface for byte data—analogous to `CharSequence` for characters. Use it to safely pass binary data without defensive copying at every layer.
+
+```java
+ByteSequence bytes = ByteSequence.copyOf(data);  // defensive copy
+ByteSequence bytes = Bytes.asByteSequence(data); // no copy (caller guarantees immutability)
+
+bytes.startsWith(prefix);
+bytes.toByteArray();
+```
+
+### `com.globalmentor.security`
+
+#### Message Digests and Hashes
+
+`MessageDigests` simplifies computing cryptographic hashes, providing algorithm constants and fluent methods for digesting bytes, strings, streams, and files. `Hash` encapsulates digest output as an immutable `ByteSequence`.
+
+```java
+import static com.globalmentor.security.MessageDigests.*;
+
+Hash hash = SHA_256.hash("content");
+String checksum = SHA_256.checksum(path);
+byte[] digest = SHA_256.digest(inputStream);
+```
+
 ## Issues
 
 Issues tracked by [JIRA](https://globalmentor.atlassian.net/projects/JAVA).
