@@ -121,6 +121,34 @@ public class MessageDigestsTests {
 		assertThat("toString returns algorithm name", MD5.toString(), is("MD5"));
 	}
 
+	/**
+	 * Tests that [MessageDigests.Algorithm#digest(java.nio.charset.Charset, CharSequence...)] uses the specified charset.
+	 * @see MessageDigests.Algorithm#digest(java.nio.charset.Charset, CharSequence...)
+	 */
+	@Test
+	void testAlgorithmDigestWithCharset() {
+		// "é" encodes differently in UTF-8 vs ISO-8859-1
+		final byte[] digestUtf8 = SHA_256.digest(UTF_8, "é");
+		final byte[] digestLatin1 = SHA_256.digest(ISO_8859_1, "é");
+		assertThat("Charset affects digest result", digestUtf8, is(not(digestLatin1)));
+		assertThat("UTF-8 digest matches expected", digestUtf8, is(SHA_256.digest("é".getBytes(UTF_8))));
+		assertThat("ISO-8859-1 digest matches expected", digestLatin1, is(SHA_256.digest("é".getBytes(ISO_8859_1))));
+	}
+
+	/**
+	 * Tests that [MessageDigests.Algorithm#hash(java.nio.charset.Charset, CharSequence...)] uses the specified charset.
+	 * @see MessageDigests.Algorithm#hash(java.nio.charset.Charset, CharSequence...)
+	 */
+	@Test
+	void testAlgorithmHashWithCharset() {
+		// "é" encodes differently in UTF-8 vs ISO-8859-1
+		final Hash hashUtf8 = SHA_256.hash(UTF_8, "é");
+		final Hash hashLatin1 = SHA_256.hash(ISO_8859_1, "é");
+		assertThat("Charset affects hash result", hashUtf8, is(not(hashLatin1)));
+		assertThat("UTF-8 hash matches expected", hashUtf8, is(SHA_256.hash("é".getBytes(UTF_8))));
+		assertThat("ISO-8859-1 hash matches expected", hashLatin1, is(SHA_256.hash("é".getBytes(ISO_8859_1))));
+	}
+
 	//## `update()` fluent API
 
 	/** Tests that [MessageDigests#update(MessageDigest, byte[])] returns the same message digest for chaining. */
