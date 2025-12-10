@@ -20,12 +20,13 @@ import java.io.*;
 import java.nio.charset.Charset;
 
 import static com.globalmentor.io.IOStreams.DEFAULT_BUFFER_SIZE;
+import static com.globalmentor.java.Bytes.*;
 import static com.globalmentor.java.Conditions.*;
 import static java.lang.String.format;
 import static java.lang.System.*;
 import java.util.*;
 
-import com.globalmentor.java.Bytes;
+import com.globalmentor.java.*;
 
 /**
  * Class to manipulate input streams.
@@ -34,6 +35,41 @@ import com.globalmentor.java.Bytes;
 public final class InputStreams {
 
 	private InputStreams() {
+	}
+
+	/**
+	 * Reads all remaining bytes from an input stream and returns them as an immutable {@link ByteSequence}.
+	 * <p>The input stream will be left open after this operation, positioned at end-of-stream.</p>
+	 * @apiNote This method provides a convenient way to read stream content into an immutable byte holder, analogous to {@link InputStream#readAllBytes()} but
+	 *          returning a {@link ByteSequence} instead of a mutable {@code byte[]}.
+	 * @param inputStream The input stream from which to read.
+	 * @return A {@link ByteSequence} containing all bytes read from the stream.
+	 * @throws IOException if an I/O error occurs while reading from the stream.
+	 * @throws OutOfMemoryError if an array of the required size cannot be allocated.
+	 * @see InputStream#readAllBytes()
+	 * @see ByteSequence
+	 */
+	public static ByteSequence readByteSequence(final InputStream inputStream) throws IOException {
+		return asByteSequence(inputStream.readAllBytes());
+	}
+
+	/**
+	 * Reads up to a specified number of bytes from an input stream and returns them as an immutable {@link ByteSequence}.
+	 * <p>The input stream will be left open after this operation. Fewer than {@code length} bytes may be read if the stream reaches end-of-stream before the
+	 * requested number of bytes have been read.</p>
+	 * @apiNote This method provides a convenient way to read a limited number of bytes into an immutable byte holder, analogous to
+	 *          {@link InputStream#readNBytes(int)} but returning a {@link ByteSequence} instead of a mutable {@code byte[]}.
+	 * @param inputStream The input stream from which to read.
+	 * @param length The maximum number of bytes to read.
+	 * @return A {@link ByteSequence} containing the bytes read from the stream, which may be shorter than {@code length} if end-of-stream was reached.
+	 * @throws IllegalArgumentException if {@code length} is negative.
+	 * @throws IOException if an I/O error occurs while reading from the stream.
+	 * @throws OutOfMemoryError if an array of the required size cannot be allocated.
+	 * @see InputStream#readNBytes(int)
+	 * @see ByteSequence
+	 */
+	public static ByteSequence readByteSequence(final InputStream inputStream, final int length) throws IOException {
+		return asByteSequence(inputStream.readNBytes(length));
 	}
 
 	/**
@@ -292,7 +328,7 @@ public final class InputStreams {
 				bom.checkUsualIO(); //make sure this is a usual 
 				//throw away the BOM
 				inputStream.reset(); //reset the stream back to where we found it
-				for(int i = bom.getLength() - 1; i >= 0; --i) { //throw away the correct number of bytes
+				for(int i = bom.length() - 1; i >= 0; --i) { //throw away the correct number of bytes
 					inputStream.read(); //throw away a byte
 				}
 				return bom.toCharset(); //return the charset for this BOM

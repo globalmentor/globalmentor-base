@@ -1,5 +1,5 @@
 /*
- * Copyright © 1996-2013 GlobalMentor, Inc. <https://www.globalmentor.com/>
+ * Copyright © 1996-2025 GlobalMentor, Inc. <https://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,15 +20,14 @@ import static com.globalmentor.io.Charsets.*;
 
 import java.io.IOException;
 import java.nio.ByteOrder;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
+import java.nio.charset.*;
 import java.util.Optional;
 
 import static java.util.Objects.*;
 
 import org.jspecify.annotations.*;
 
-import com.globalmentor.java.Bytes;
+import com.globalmentor.java.*;
 import com.globalmentor.model.MutableReference;
 
 /**
@@ -57,23 +56,44 @@ public enum ByteOrderMark {
 	/** The maximum number of bytes used by any of the byte order marks in this implementation. */
 	public static final int MAX_BYTE_COUNT = 4;
 
-	/** The bytes of this byte order mark. */
-	private final byte[] bytes;
+	/** The bytes of this byte order mark as an immutable byte sequence. */
+	private final ByteSequence byteSequence;
+
+	/**
+	 * Returns the bytes of this byte order mark as an immutable {@link ByteSequence}.
+	 * @return The bytes of this byte order mark.
+	 * @see ByteSequence
+	 */
+	public ByteSequence toByteSequence() {
+		return byteSequence;
+	}
 
 	/**
 	 * Returns the bytes of this byte order mark.
 	 * @return The bytes of this byte order mark.
+	 * @deprecated Use {@link #toByteSequence()} and {@link ByteSequence#toByteArray()} instead.
 	 */
+	@Deprecated(forRemoval = true)
 	public byte[] getBytes() {
-		return bytes.clone(); //clone the bytes so that the authoritative copy cannot be modified
+		return byteSequence.toByteArray();
 	}
 
 	/**
 	 * Returns the number of bytes in this byte order mark.
 	 * @return The number of bytes in this byte order mark.
 	 */
+	public int length() {
+		return byteSequence.length();
+	}
+
+	/**
+	 * Returns the number of bytes in this byte order mark.
+	 * @return The number of bytes in this byte order mark.
+	 * @deprecated Use {@link #length()} instead.
+	 */
+	@Deprecated(forRemoval = true)
 	public int getLength() {
-		return bytes.length;
+		return length();
 	}
 
 	/**
@@ -167,27 +187,27 @@ public enum ByteOrderMark {
 	/**
 	 * Bytes constructor.
 	 * @param bytes The bytes that represent this BOM
-	 * @throws NullPointerException if the given bytes is <code>null</code>.
+	 * @throws NullPointerException if the given bytes is {@code null}.
 	 */
 	private ByteOrderMark(final byte... bytes) {
-		this.bytes = requireNonNull(bytes, "Bytes cannot be null");
+		this.byteSequence = Bytes.asByteSequence(requireNonNull(bytes, "Bytes cannot be null"));
 	}
 
 	/**
-	 * Returns the byte order mark with which the given bytes start. If no valid byte order mark is present, <code>null</code> is returned.
+	 * Returns the byte order mark with which the given bytes start. If no valid byte order mark is present, {@link Optional#empty()} is returned.
 	 * @param bytes The array of bytes potentially starting with a byte order mark.
 	 * @return The byte order mark detected.
 	 */
 	public static Optional<ByteOrderMark> detect(@NonNull final byte[] bytes) {
-		//note: this implementation depends on the order of the BOM enum values, from shorter bytes to longer bytes
-		final ByteOrderMark[] boms = values(); //check each BOM manually
-		for(int i = boms.length - 1; i >= 0; --i) { //work backwards to check longer BOMs first, as UTF-32LE starts with the UTF-16LE BOM
+		// note: this implementation depends on the order of the BOM enum values, from shorter bytes to longer bytes
+		final ByteOrderMark[] boms = values();
+		for(int i = boms.length - 1; i >= 0; --i) { // work backwards to check longer BOMs first, as UTF-32LE starts with the UTF-16LE BOM
 			final ByteOrderMark bom = boms[i];
-			if(Bytes.startsWith(bytes, bom.bytes)) { //if the bytes starts with the BOM's bytes (trusting the comparison method not to modify the bytes, as we pass in our private array)
+			if(bom.byteSequence.isPrefixOf(bytes)) {
 				return Optional.of(bom);
 			}
 		}
-		return Optional.empty(); //no matching BOM was found
+		return Optional.empty();
 	}
 
 	/**

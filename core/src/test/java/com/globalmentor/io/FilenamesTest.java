@@ -90,40 +90,31 @@ public class FilenamesTest {
 	/**
 	 * Test to verify if the method {@link Filenames#encodeCrossPlatformFilename(String)} and {@link Filenames#decodeFilename(String)} are encoding and decoding
 	 * the file name correctly
-	 * <p>
-	 * Test contributed by Magno Nascimento.
-	 * </p>
 	 */
 	@Test
 	void testRecoverNotAllowedCharactersWithLatinCharacters() {
-		final String publicationName = Filenames.encodeCrossPlatformFilename("Dream Of The Red Chamber");
-		assertThat(Filenames.decodeFilename(publicationName), equalTo("Dream Of The Red Chamber"));
+		final String publicationName = Filenames.encodeCrossPlatformFilename("Beijing Shanghai");
+		assertThat(Filenames.decodeFilename(publicationName), equalTo("Beijing Shanghai"));
 	}
 
 	/**
 	 * Test to verify if the method {@link Filenames#encodeCrossPlatformFilename(String)} and {@link Filenames#decodeFilename(String)} are encoding and decoding
 	 * the file name correctly
-	 * <p>
-	 * Test contributed by Magno Nascimento.
-	 * </p>
 	 */
 	@Test
 	void testRecoverNotAllowedCharactersWithChineseCharacters() {
-		final String publicationName = Filenames.encodeCrossPlatformFilename("紅樓夢红楼梦 (Dream of the Red Chamber)");
-		assertThat(Filenames.decodeFilename(publicationName), equalTo("紅樓夢红楼梦 (Dream of the Red Chamber)"));
+		final String publicationName = Filenames.encodeCrossPlatformFilename("北京上海 (Beijing Shanghai)"); // Chinese: "Beijing Shanghai"
+		assertThat(Filenames.decodeFilename(publicationName), equalTo("北京上海 (Beijing Shanghai)")); // Chinese: "Beijing Shanghai"
 	}
 
 	/**
 	 * Test to verify if the method {@link Filenames#encodeCrossPlatformFilename(String)} and {@link Filenames#decodeFilename(String)} are encoding and decoding
 	 * the file name correctly
-	 * <p>
-	 * Test contributed by Magno Nascimento.
-	 * </p>
 	 */
 	@Test
 	void testRecoverNotAllowedCharactersWithChineseCharactersAndSlash() {
-		final String publicationName = Filenames.encodeCrossPlatformFilename("紅樓夢/红楼梦 (Dream of the Red Chamber)");
-		assertThat(Filenames.decodeFilename(publicationName), equalTo("紅樓夢/红楼梦 (Dream of the Red Chamber)"));
+		final String publicationName = Filenames.encodeCrossPlatformFilename("北京/上海 (Beijing/Shanghai)"); // Chinese: "Beijing/Shanghai"
+		assertThat(Filenames.decodeFilename(publicationName), equalTo("北京/上海 (Beijing/Shanghai)")); // Chinese: "Beijing/Shanghai"
 	}
 
 	/**

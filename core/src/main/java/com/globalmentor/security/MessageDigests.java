@@ -692,7 +692,7 @@ public final class MessageDigests {
 		 * @throws RuntimeException if no {@link Provider} supports a {@link MessageDigestSpi} implementation for this algorithm.
 		 */
 		public byte[] digest(@NonNull final Charset charset, @NonNull final CharSequence... charSequences) {
-			return MessageDigests.digest(newMessageDigest(), charSequences);
+			return MessageDigests.digest(newMessageDigest(), charset, charSequences);
 		}
 
 		/**
@@ -827,7 +827,7 @@ public final class MessageDigests {
 		 * @throws RuntimeException if no {@link Provider} supports a {@link MessageDigestSpi} implementation for this algorithm.
 		 */
 		public Hash hash(@NonNull final Charset charset, @NonNull final CharSequence... charSequences) {
-			return MessageDigests.hash(newMessageDigest(), charSequences);
+			return MessageDigests.hash(newMessageDigest(), charset, charSequences);
 		}
 
 		/**

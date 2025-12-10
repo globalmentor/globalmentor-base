@@ -62,7 +62,7 @@ public final class Conditions {
 	public static void checkArgument(final boolean test, String description, final Object... arguments) {
 		if(!test) { //format the message if appropriate
 			if(description != null && arguments.length > 0) {
-				description = String.format(description, arguments);
+				description = description.formatted(arguments);
 			}
 			throw new IllegalArgumentException(description);
 		}
@@ -170,7 +170,7 @@ public final class Conditions {
 	public static <T> T checkArgumentNotNull(final T object, String description, final Object... arguments) {
 		if(object == null) { //format the message if appropriate
 			if(description != null && arguments.length > 0) {
-				description = String.format(description, arguments);
+				description = description.formatted(arguments);
 			}
 			throw new IllegalArgumentException(description);
 		}
@@ -207,7 +207,7 @@ public final class Conditions {
 	public static String checkArgumentNotEmpty(final String string, String description, final Object... arguments) {
 		if(string.isEmpty()) { //format the message if appropriate
 			if(description != null && arguments.length > 0) {
-				description = String.format(description, arguments);
+				description = description.formatted(arguments);
 			}
 			throw new IllegalArgumentException(description);
 		}
@@ -244,7 +244,7 @@ public final class Conditions {
 	public static String checkArgumentNotBlank(final String string, String description, final Object... arguments) {
 		if(string.isBlank()) { //format the message if appropriate
 			if(description != null && arguments.length > 0) {
-				description = String.format(description, arguments);
+				description = description.formatted(arguments);
 			}
 			throw new IllegalArgumentException(description);
 		}
@@ -284,7 +284,7 @@ public final class Conditions {
 	 */
 	public static <T> T checkArgumentPresent(@NonNull final Optional<T> optional, @Nullable final String description, @NonNull final Object... arguments) {
 		return optional.orElseThrow(() -> {
-			final String message = description != null && arguments.length > 0 ? String.format(description, arguments) : description;
+			final String message = description != null && arguments.length > 0 ? description.formatted(arguments) : description;
 			return new IllegalArgumentException(message);
 		});
 	}
@@ -299,7 +299,7 @@ public final class Conditions {
 	 */
 	public static int checkArgumentMinimum(final int value, final int rangeMin) {
 		if(value < rangeMin) { //if the value not within the range
-			throw new IllegalArgumentException(String.format("Value %d cannot be less than %d", value, rangeMin));
+			throw new IllegalArgumentException("Value %d cannot be less than %d".formatted(value, rangeMin));
 		}
 		return value; //return the value, which has been determined to be within the range
 	}
@@ -314,7 +314,7 @@ public final class Conditions {
 	 */
 	public static long checkArgumentMinimum(final long value, final long rangeMin) {
 		if(value < rangeMin) { //if the value not within the range
-			throw new IllegalArgumentException(String.format("Value %d cannot be less than %d", value, rangeMin));
+			throw new IllegalArgumentException("Value %d cannot be less than %d".formatted(value, rangeMin));
 		}
 		return value; //return the value, which has been determined to be within the range
 	}
@@ -378,7 +378,7 @@ public final class Conditions {
 	 */
 	public static int checkArgumentRange(final int value, final int rangeMin, final int rangeMax) {
 		if(value < rangeMin || value > rangeMax) { //if the value not within the range
-			throw new IllegalArgumentException(String.format("Value %d is not within the range %d to %d", value, rangeMin, rangeMax));
+			throw new IllegalArgumentException("Value %d is not within the range %d to %d".formatted(value, rangeMin, rangeMax));
 		}
 		return value; //return the value, which has been determined to be within the range
 	}
@@ -395,13 +395,13 @@ public final class Conditions {
 	 */
 	public static void checkArgumentRange(final int from, final int to, final int rangeMin, final int rangeMax) {
 		if(to < from) {
-			throw new IllegalArgumentException(String.format("Range from value %d cannot be less than range to value %d", from, to));
+			throw new IllegalArgumentException("Range from value %d cannot be less than range to value %d".formatted(from, to));
 		}
 		if(from < rangeMin) { //if the from value is below the range
-			throw new IllegalArgumentException(String.format("Range from value %d is not within the range %d to %d", from, rangeMin, rangeMax));
+			throw new IllegalArgumentException("Range from value %d is not within the range %d to %d".formatted(from, rangeMin, rangeMax));
 		}
 		if(to > rangeMax) { //if the to value is above the range
-			throw new IllegalArgumentException(String.format("Range to value %d is not within the range %d to %d", to, rangeMin, rangeMax));
+			throw new IllegalArgumentException("Range to value %d is not within the range %d to %d".formatted(to, rangeMin, rangeMax));
 		}
 	}
 
@@ -416,7 +416,7 @@ public final class Conditions {
 	 */
 	public static long checkArgumentRange(final long value, final long rangeMin, final long rangeMax) {
 		if(value < rangeMin || value > rangeMax) { //if the value not within the range
-			throw new IllegalArgumentException(String.format("Value %d is not within the range %d to %d", value, rangeMin, rangeMax));
+			throw new IllegalArgumentException("Value %d is not within the range %d to %d".formatted(value, rangeMin, rangeMax));
 		}
 		return value; //return the value, which has been determined to be within the range
 	}
@@ -445,7 +445,7 @@ public final class Conditions {
 	public static void checkConfiguredState(final boolean test, String description, final Object... arguments) {
 		if(!test) { //format the message if appropriate
 			if(description != null && arguments.length > 0) {
-				description = String.format(description, arguments);
+				description = description.formatted(arguments);
 			}
 			throw new ConfiguredStateException(description);
 		}
@@ -509,7 +509,7 @@ public final class Conditions {
 
 	/**
 	 * Checks to make sure that a given index is within the range of zero inclusive to the given length exclusive.
-	 * <p>This is normally a precondition check.</p>
+	 * @apiNote This is normally a precondition check.
 	 * @apiNote Java 9 introduced an equivalent method {@link java.util.Objects#checkIndex(int, int)}.
 	 * @param index The index to check.
 	 * @param length The exclusive length.
@@ -523,7 +523,7 @@ public final class Conditions {
 
 	/**
 	 * Checks to make sure that a given index is within the range of zero inclusive to the given length exclusive.
-	 * <p>This is normally a precondition check.</p>
+	 * @apiNote This is normally a precondition check.
 	 * @apiNote Java 16 introduced an equivalent method in {@link java.util.Objects#checkIndex(long, long)}.
 	 * @param index The index to check.
 	 * @param length The exclusive length.
@@ -537,7 +537,7 @@ public final class Conditions {
 
 	/**
 	 * Checks to make sure that a given index is within the given range.
-	 * <p>This is normally a precondition check.</p>
+	 * @apiNote This is normally a precondition check.
 	 * @param index The index to check.
 	 * @param rangeMin The minimum range index, inclusive.
 	 * @param rangeMax The maximum range index, exclusive.
@@ -553,7 +553,7 @@ public final class Conditions {
 
 	/**
 	 * Checks to make sure that a given index is within the given range.
-	 * <p>This is normally a precondition check.</p>
+	 * @apiNote This is normally a precondition check.
 	 * @param index The index to check.
 	 * @param rangeMin The minimum range index, inclusive.
 	 * @param rangeMax The maximum range index, exclusive.
@@ -565,6 +565,57 @@ public final class Conditions {
 			throw new IndexOutOfBoundsException("Index out of bounds: " + index);
 		}
 		return index; //return the index, which has been determined to be in bounds
+	}
+
+	/**
+	 * Checks to make sure that a given index range is valid within the bounds {@code [0, length)}.
+	 * <p>This method validates that {@code from} and {@code to} define a valid half-open range {@code [from, to)} where:</p>
+	 * <ul>
+	 * <li>{@code from >= 0}</li>
+	 * <li>{@code to >= from}</li>
+	 * <li>{@code to <= length}</li>
+	 * </ul>
+	 * @apiNote This is normally a precondition check.
+	 * @apiNote This is normally a precondition check.
+	 * @apiNote This method is the index-bounds equivalent of {@link #checkArgumentRange(int, int, int, int)}, but throws {@link IndexOutOfBoundsException}
+	 *          instead of {@link IllegalArgumentException}. Use this method when validating index ranges for indexed data structures such as arrays, lists, or
+	 *          sequences—where the JDK convention is to throw {@code IndexOutOfBoundsException}. Use {@code checkArgumentRange()} for general numeric argument
+	 *          validation where the values do not represent indices.
+	 * @param from The start index, inclusive.
+	 * @param to The end index, exclusive.
+	 * @param length The length of the indexed structure (exclusive upper bound).
+	 * @throws IndexOutOfBoundsException if {@code from} is negative, {@code to} is less than {@code from}, or {@code to} is greater than {@code length}.
+	 * @see #checkIndexBounds(int, int)
+	 */
+	public static void checkIndexRangeBounds(final int from, final int to, final int length) {
+		if(from < 0 || to < from || to > length) {
+			throw new IndexOutOfBoundsException("Index range [%d, %d) out of bounds for length %d.".formatted(from, to, length));
+		}
+	}
+
+	/**
+	 * Checks to make sure that a given index range is valid within the bounds {@code [0, length)}.
+	 * <p>This method validates that {@code from} and {@code to} define a valid half-open range {@code [from, to)} where:</p>
+	 * <ul>
+	 * <li>{@code from >= 0}</li>
+	 * <li>{@code to >= from}</li>
+	 * <li>{@code to <= length}</li>
+	 * </ul>
+	 * @apiNote This is normally a precondition check.
+	 * @apiNote This method is the index-bounds equivalent of {@link #checkArgumentRange(int, int, int, int)}, but throws {@link IndexOutOfBoundsException}
+	 *          instead of {@link IllegalArgumentException}. Use this method when validating index ranges for indexed data structures such as arrays, lists, or
+	 *          sequences—where the JDK convention is to throw {@code IndexOutOfBoundsException}. Use {@code checkArgumentRange()} for general numeric argument
+	 *          validation where the values do not represent indices.
+	 * @param from The start index, inclusive.
+	 * @param to The end index, exclusive.
+	 * @param length The length of the indexed structure (exclusive upper bound).
+	 * @throws IndexOutOfBoundsException if {@code from} is negative, {@code to} is less than {@code from}, or {@code to} is greater than {@code length}.
+	 * @see #checkIndexBounds(long, long)
+	 */
+	public static void checkIndexRangeBounds(final long from, final long to, final long length) {
+		if(from < 0 || to < from || to > length) {
+			throw new IndexOutOfBoundsException("Index range [%d, %d) out of bounds for length %d.".formatted(from, to, length));
+		}
 	}
 
 	/**
@@ -587,7 +638,7 @@ public final class Conditions {
 	public static void checkState(final boolean state, String description, final Object... errorMessageArgs) {
 		if(!state) {
 			if(description != null && description.length() > 0) {
-				description = String.format(description, errorMessageArgs);
+				description = description.formatted(errorMessageArgs);
 			}
 
 			throw new IllegalStateException(description);
@@ -620,7 +671,7 @@ public final class Conditions {
 	public static void checkSupportedOperation(final boolean test, String description, final Object... arguments) {
 		if(!test) { //format the message if appropriate
 			if(description != null && arguments.length > 0) {
-				description = String.format(description, arguments);
+				description = description.formatted(arguments);
 			}
 			throw new UnsupportedOperationException(description);
 		}
