@@ -26,6 +26,8 @@ Foundational utilities for Java development, including precondition checks, immu
 
 **Media types:** `com.globalmentor.net.MediaType` — RFC 6838-compliant MIME type parsing with `findCharset()`, `hasBaseType()`.
 
+**Type-safe value wrappers:** `com.globalmentor.model.Newtype` — marker interface for the "newtype" idiom; wrap types like `UUID` in domain-specific records (e.g., `UserId`, `WidgetRef`) for compile-time type safety while enabling transparent serialization.
+
 **Character sets:** `com.globalmentor.java.Characters` — immutable character sets with Unicode/ASCII constants (`DIGIT_CHARACTERS`, `ALPHA_CHARACTERS`); `com.globalmentor.text.ABNF` for RFC 2234 character classes.
 
 **Functional I/O:** `com.globalmentor.io.function` — `IOFunction`, `IOConsumer`, `IOSupplier` etc. that declare `IOException`, enabling functional patterns with I/O operations.
@@ -517,6 +519,26 @@ String namespace = KEBAB_CASE.to(NAMESPACE_CASE, "my-module-name"); // "MY::MODU
 ### `com.globalmentor.model`
 
 Domain model utilities and common patterns.
+
+#### Newtype
+
+`Newtype<V>` is a marker interface for the "newtype" idiom—a type-safe wrapper around a single value. It originated in Haskell and was popularized by Rust. Use it when multiple domain concepts share the same underlying type (e.g., `UUID`) but should not be interchangeable.
+
+```java
+public record UserId(UUID value) implements Newtype<UUID> {
+    public UserId { requireNonNull(value); }
+}
+
+public record WidgetRef(UUID value) implements Newtype<UUID> {
+    public WidgetRef { requireNonNull(value); }
+}
+```
+
+Now a method expecting `UserId` won't accept `WidgetRef`, even though both wrap `UUID`. Serialization frameworks can recognize `Newtype` and serialize as the bare value rather than a wrapper object.
+
+**Construction precedence:** Frameworks should instantiate newtypes using (1) a `public static of(V)` factory method if present, or (2) the single-argument constructor.
+
+**Constraints:** The wrapped type `V` must not itself implement `Newtype`. Null values should be rejected in the constructor.
 
 #### Locales and Language Tags
 
